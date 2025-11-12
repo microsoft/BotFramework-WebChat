@@ -23,8 +23,14 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     // TODO: [P2] #3953 Rename to "webchat:client-activity-id".
     clientActivityID?: string;
 
-    // Sequence ID must be available when chat adapter send it to Web Chat.
-    'webchat:sequence-id': number;
+    // Web Chat semi-permanent ID.
+    'webchat:internal:id': string;
+
+    // Web Chat ordering sequence, must be computed before inserting into Redux.
+    'webchat:internal:position': number;
+
+    // Chat adapter may send sequence ID to Web Chat to affect ordering.
+    'webchat:sequence-id'?: number | undefined;
 
     webChat?: {
       /**

@@ -5,6 +5,8 @@ import { type WebChatActivity } from '../src/index';
 // All activities that are sending, are activities that did not reach the server yet (a.k.a. activity-in-transit).
 expectAssignable<WebChatActivity>({
   channelData: {
+    'webchat:internal:id': 'a-00001',
+    'webchat:internal:position': 0,
     'webchat:send-status': 'sending',
     'webchat:sequence-id': 0
   },

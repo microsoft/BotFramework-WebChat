@@ -24,6 +24,16 @@
         "types": "./dist/botframework-webchat-base.utils.d.ts",
         "default": "./dist/botframework-webchat-base.utils.js"
       }
+    },
+    "./valibot": {
+      "import": {
+        "types": "./dist/botframework-webchat-base.valibot.d.mts",
+        "default": "./dist/botframework-webchat-base.valibot.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-base.valibot.d.ts",
+        "default": "./dist/botframework-webchat-base.valibot.js"
+      }
     }
   },
   "author": "Microsoft Corporation",
@@ -76,6 +86,7 @@
     "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
   },
-  "dependencies": {},
-  "peerDependencies": {}
+  "peerDependencies": {
+    "valibot": "1.1.0"
+  }
 }

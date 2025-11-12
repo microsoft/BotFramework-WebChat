@@ -1,3 +1,4 @@
+import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
 import {
   type LegacyActivityMiddleware,
@@ -748,11 +749,13 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
-        <ActivityKeyerComposer>
-          <ActivityAcknowledgementComposer>
-            <ComposerCore onTelemetry={onTelemetry} {...props} />
-          </ActivityAcknowledgementComposer>
-        </ActivityKeyerComposer>
+        <GraphProvider store={memoizedStore}>
+          <ActivityKeyerComposer>
+            <ActivityAcknowledgementComposer>
+              <ComposerCore onTelemetry={onTelemetry} {...props} />
+            </ActivityAcknowledgementComposer>
+          </ActivityKeyerComposer>
+        </GraphProvider>
       </ReduxStoreComposer>
     </Provider>
   );

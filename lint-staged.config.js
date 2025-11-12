@@ -12,6 +12,7 @@ module.exports = {
   '**/*.md': prettierMarkdown,
   'packages/**/*.css': ['npm run precommit:biome'],
   'packages/api/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:api'],
+  'packages/api-graph/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:api-graph'],
   'packages/api-middleware/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:api-middleware'],
   'packages/base/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:base'],
   'packages/bundle/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:bundle'],

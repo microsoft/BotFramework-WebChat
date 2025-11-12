@@ -93,7 +93,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\" \"../react-hooks/package.json\" \"../react-valibot/package.json\" \"../styles/package.json\" \"../tsconfig/package.json\" \"../api/package.json\" \"../core/package.json\""
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../styles/package.json\" \"../api/package.json\""
   },
   "pinDependencies": {
     "@types/react": [

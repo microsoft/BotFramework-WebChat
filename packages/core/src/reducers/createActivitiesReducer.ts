@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, -1] }] */
 
 import updateIn from 'simple-update-in';
+import { v4 } from 'uuid';
 
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
@@ -14,7 +15,6 @@ import {
 import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from '../utils/getOrgSchemaMessage';
-import findBeforeAfter from './private/findBeforeAfter';
 
 import type { Reducer } from 'redux';
 import type { DeleteActivityAction } from '../actions/deleteActivity';
@@ -52,11 +52,38 @@ function findByClientActivityID(clientActivityID: string): (activity: WebChatAct
   return (activity: WebChatActivity) => getClientActivityID(activity) === clientActivityID;
 }
 
-function patchActivity(
+/**
+ * Get sequence ID from `activity.channelData['webchat:sequence-id']` and fallback to `+new Date(activity.timestamp)`.
+ *
+ * Chat adapter may send sequence ID to affect activity reordering. Sequence ID is supposed to be Unix timestamp.
+ *
+ * @param activity Activity to get sequence ID from.
+ * @returns Sequence ID.
+ */
+function getSequenceIdOrDeriveFromTimestamp(
   activity: WebChatActivity,
-  activities: WebChatActivity[],
-  { Date }: GlobalScopePonyfill
-): WebChatActivity {
+  ponyfill: Pick<GlobalScopePonyfill, 'Date'>
+): number | undefined {
+  const sequenceId = activity.channelData?.['webchat:sequence-id'];
+
+  if (typeof sequenceId === 'number') {
+    return sequenceId;
+  }
+
+  const { timestamp } = activity;
+
+  if (typeof timestamp === 'string') {
+    return +new ponyfill.Date(timestamp);
+  } else if ((timestamp as any) instanceof ponyfill.Date) {
+    console.warn('botframework-webchat: "timestamp" must be of type string, instead of Date.');
+
+    return +timestamp;
+  }
+
+  return undefined;
+}
+
+function patchActivity(activity: WebChatActivity, { Date }: GlobalScopePonyfill): WebChatActivity {
   // Direct Line channel will return a placeholder image for the user-uploaded image.
   // As observed, the URL for the placeholder image is https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png.
   // To make our code simpler, we are removing the value if "contentUrl" is pointing to a placeholder image.
@@ -79,63 +106,10 @@ function patchActivity(
   const entityPosition = messageEntity?.position;
   const entityPartOf = messageEntity?.isPartOf?.['@id'];
 
-  const {
-    channelData: { 'webchat:sequence-id': sequenceId }
-  } = activity;
-
-  // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
-  // If the message does not have sequence ID, use these fallback values:
-  // 1. "channelData.streamSequence" field (if available)
-  //    - 0.0001 * streamSequence should be good
-  // 2. "timestamp" field
-  //    - outgoing activity will not have "timestamp" field
-  // 3. last activity sequence ID (or 0) + 0.001
-  //    - best effort to put this message the last one in the chat history
-  if (typeof sequenceId !== 'number') {
-    let after: WebChatActivity;
-    let before: WebChatActivity;
-    const metadata = getActivityLivestreamingMetadata(activity);
-
-    if (metadata) {
-      [before, after] = findBeforeAfter(activities, target => {
-        const targetMetadata = getActivityLivestreamingMetadata(target);
-
-        if (targetMetadata?.sessionId === metadata.sessionId) {
-          return targetMetadata.sequenceNumber < metadata.sequenceNumber ? 'before' : 'after';
-        }
-
-        return 'unknown';
-      });
-    }
-
-    let sequenceId: number;
-
-    if (before) {
-      if (after) {
-        // eslint-disable-next-line no-magic-numbers
-        sequenceId = (before.channelData['webchat:sequence-id'] + after.channelData['webchat:sequence-id']) / 2;
-      } else {
-        // eslint-disable-next-line no-magic-numbers
-        sequenceId = before.channelData['webchat:sequence-id'] + 0.001;
-      }
-    } else if (after) {
-      // eslint-disable-next-line no-magic-numbers
-      sequenceId = after.channelData['webchat:sequence-id'] - 0.001;
-    } else if (typeof activity.timestamp !== 'undefined') {
-      sequenceId = +new Date(activity.timestamp);
-    } else {
-      // We assume there will be no more than 1,000 messages sent before receiving server response.
-      // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
-      // eslint-disable-next-line no-magic-numbers
-      sequenceId = (activities[activities.length - 1]?.channelData['webchat:sequence-id'] || 0) + 0.001;
-    }
-
-    activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], () => sequenceId);
-  }
-
   if (typeof entityPosition === 'number') {
     activity = updateIn(activity, ['channelData', 'webchat:entity-position'], () => entityPosition);
   }
+
   if (typeof entityPartOf === 'string') {
     activity = updateIn(activity, ['channelData', 'webchat:entity-part-of'], () => entityPartOf);
   }
@@ -145,13 +119,14 @@ function patchActivity(
 
 function upsertActivityWithSort(
   activities: WebChatActivity[],
-  nextActivity: WebChatActivity,
+  upsertingActivity: WebChatActivity,
   ponyfill: GlobalScopePonyfill
 ): WebChatActivity[] {
-  const metadata = getActivityLivestreamingMetadata(nextActivity);
+  const upsertingLivestreamingMetadata = getActivityLivestreamingMetadata(upsertingActivity);
 
-  if (metadata) {
-    const { sessionId } = metadata;
+  // TODO: [P1] To support time-travelling, we should not drop obsoleted livestreaming activities.
+  if (upsertingLivestreamingMetadata) {
+    const { sessionId } = upsertingLivestreamingMetadata;
 
     // If the upserting activity is going upsert into a concluded livestream, skip the activity.
     const isLivestreamConcluded = activities.find(targetActivity => {
@@ -165,40 +140,113 @@ function upsertActivityWithSort(
     }
   }
 
-  nextActivity = patchActivity(nextActivity, activities, ponyfill);
+  upsertingActivity = patchActivity(upsertingActivity, ponyfill);
 
-  const { channelData: { clientActivityID: nextClientActivityID, 'webchat:sequence-id': nextSequenceId } = {} } =
-    nextActivity;
+  const { channelData: { clientActivityID: upsertingClientActivityID } = {} } = upsertingActivity;
 
   const nextActivities = activities.filter(
     ({ channelData: { clientActivityID } = {}, id }) =>
       // We will remove all "sending messages" activities and activities with same ID
       // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
-      !(nextClientActivityID && clientActivityID === nextClientActivityID) && !(id && id === nextActivity.id)
+      !(upsertingClientActivityID && clientActivityID === upsertingClientActivityID) &&
+      !(id && id === upsertingActivity.id)
   );
 
-  const nextEntityPosition = nextActivity.channelData?.['webchat:entity-position'];
-  const nextPartOf = nextActivity.channelData?.['webchat:entity-part-of'];
+  const upsertingEntityPosition = upsertingActivity.channelData?.['webchat:entity-position'];
+  const upsertingPartOf = upsertingActivity.channelData?.['webchat:entity-part-of'];
+  const upsertingSequenceId = getSequenceIdOrDeriveFromTimestamp(upsertingActivity, ponyfill);
 
-  const indexToInsert = nextActivities.findIndex(({ channelData = {} }) => {
-    const currentSequenceId = channelData['webchat:sequence-id'] || 0;
-    const currentPosition = channelData['webchat:entity-position'];
-    const currentPartOf = channelData['webchat:entity-part-of'];
+  // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
+  // If the message does not have sequence ID, use these fallback values:
+  // 1. `entities.position` where `entities.isPartOf[@type === 'HowTo']`
+  //    - If they are not of same set, ignore `entities.position`
+  // 2. `channelData.streamSequence` field for same session IDk
+  // 3. `channelData['webchat:sequence-id']`
+  //    - If not available, it will fallback to `+new Date(timestamp)`
+  //    - Outgoing activity will not have `timestamp` field
 
-    const bothHavePosition = typeof currentPosition === 'number' && typeof nextEntityPosition === 'number';
-    const bothArePartOf = typeof currentPartOf === 'string' && currentPartOf === nextPartOf;
+  let indexToInsert = nextActivities.findIndex(activity => {
+    const { channelData = {} } = activity;
+    const currentEntityPosition = channelData['webchat:entity-position'];
+    const currentEntityPartOf = channelData['webchat:entity-part-of'];
+
+    const bothHavePosition = typeof currentEntityPosition === 'number' && typeof upsertingEntityPosition === 'number';
+    const bothArePartOf = typeof currentEntityPartOf === 'string' && currentEntityPartOf === upsertingPartOf;
 
     // For activities in the same creative work part, position is primary sort key
     if (bothHavePosition && bothArePartOf) {
-      return currentPosition > nextEntityPosition;
+      return currentEntityPosition > upsertingEntityPosition;
     }
 
-    // For activities not in the same part or without positions follow sequence ID order
-    return (currentSequenceId || 0) > (nextSequenceId || 0);
+    return false;
   });
 
-  // If no right place are found, append it
-  nextActivities.splice(~indexToInsert ? indexToInsert : nextActivities.length, 0, nextActivity);
+  if (!~indexToInsert) {
+    indexToInsert = nextActivities.findIndex(activity => {
+      const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
+
+      if (
+        upsertingLivestreamingMetadata &&
+        currentLivestreamingMetadata &&
+        upsertingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
+      ) {
+        return currentLivestreamingMetadata.sequenceNumber > upsertingLivestreamingMetadata.sequenceNumber;
+      }
+
+      return false;
+    });
+  }
+
+  // If the upserting activity does not have sequence ID or timestamp, always append it.
+  if (!~indexToInsert && typeof upsertingSequenceId === 'number') {
+    indexToInsert = nextActivities.findIndex(activity => {
+      const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
+
+      if (typeof currentSequenceId === 'undefined') {
+        // Treat messages without sequence ID and timestamp as hidden/opaque. Don't use them to influence ordering.
+        // Related to /__tests__/html2/activityOrdering/mixingMessagesWithAndWithoutTimestamp.html.
+        return false;
+      }
+
+      return currentSequenceId > upsertingSequenceId;
+    });
+  }
+
+  if (!~indexToInsert) {
+    // If no right place can be found, append it.
+    indexToInsert = nextActivities.length;
+  }
+
+  const prevSibling: WebChatActivity = indexToInsert === 0 ? undefined : nextActivities.at(indexToInsert - 1);
+  const nextSibling: WebChatActivity = nextActivities.at(indexToInsert);
+  let upsertingPosition: number;
+
+  if (prevSibling) {
+    const prevPosition = prevSibling.channelData['webchat:internal:position'];
+
+    if (nextSibling) {
+      const nextSequenceId = nextSibling.channelData['webchat:internal:position'];
+
+      // eslint-disable-next-line no-magic-numbers
+      upsertingPosition = (prevPosition + nextSequenceId) / 2;
+    } else {
+      upsertingPosition = prevPosition + 1;
+    }
+  } else if (nextSibling) {
+    const nextSequenceId = nextSibling.channelData['webchat:internal:position'];
+
+    upsertingPosition = nextSequenceId - 1;
+  } else {
+    upsertingPosition = 1;
+  }
+
+  upsertingActivity = updateIn(
+    upsertingActivity,
+    ['channelData', 'webchat:internal:position'],
+    () => upsertingPosition
+  );
+
+  nextActivities.splice(indexToInsert, 0, upsertingActivity);
 
   return nextActivities;
 }
@@ -231,10 +279,35 @@ export default function createActivitiesReducer(
             payload: { activity }
           } = action;
 
+          activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
           // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
           // Please refer to #4362 for details. Remove on or after 2024-07-31.
           activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
           activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENDING);
+
+          // Assume the message was sent immediately after the very last message.
+          // This helps to maintain the order of the outgoing message before the server respond.
+          activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], () => {
+            const lastActivity = state.at(-1);
+
+            if (!lastActivity) {
+              return 1;
+            }
+
+            const lastSequenceId = lastActivity.channelData['webchat:sequence-id'];
+
+            if (typeof lastSequenceId === 'number') {
+              return lastSequenceId + 1;
+            }
+
+            const lastTimestampInNumber = +new ponyfill.Date(lastActivity.timestamp);
+
+            if (!isNaN(lastTimestampInNumber)) {
+              return lastTimestampInNumber + 1;
+            }
+
+            return +new ponyfill.Date();
+          });
 
           state = upsertActivityWithSort(state, activity, ponyfill);
         }
@@ -263,17 +336,38 @@ export default function createActivitiesReducer(
 
       case POST_ACTIVITY_FULFILLED:
         {
-          // We will replace the activity with the version from the server
-          const activity = updateIn(
-            updateIn(
-              patchActivity(action.payload.activity, state, ponyfill),
-              // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
-              // Please refer to #4362 for details. Remove on or after 2024-07-31.
-              ['channelData', 'state'],
-              () => SENT
-            ),
-            ['channelData', 'webchat:send-status'],
+          const existingActivity = state.find(findByClientActivityID(action.meta.clientActivityID));
+
+          if (!existingActivity) {
+            throw new Error(
+              'botframework-webchat-internal: On POST_ACTIVITY_FULFILLED, there is no activities with same client activity ID'
+            );
+          }
+
+          // We will replace the outgoing activity with the version from the server
+          let activity = patchActivity(action.payload.activity, ponyfill);
+
+          activity = updateIn(
+            activity,
+            // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+            // Please refer to #4362 for details. Remove on or after 2024-07-31.
+            ['channelData', 'state'],
             () => SENT
+          );
+
+          activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+
+          activity = updateIn(
+            activity,
+            ['channelData', 'webchat:internal:id'],
+            () => existingActivity.channelData['webchat:internal:id']
+          );
+
+          // Keep existing position.
+          activity = updateIn(
+            activity,
+            ['channelData', 'webchat:internal:position'],
+            () => existingActivity.channelData['webchat:internal:position']
           );
 
           state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => activity);
@@ -286,6 +380,11 @@ export default function createActivitiesReducer(
           let {
             payload: { activity }
           } = action;
+
+          // Clean internal properties if they were passed from chat adapter.
+          // These properties should not be passed from external systems.
+          activity = updateIn(activity, ['channelData', 'webchat:internal:id']);
+          activity = updateIn(activity, ['channelData', 'webchat:internal:position']);
 
           // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` field.
           //
@@ -323,17 +422,47 @@ export default function createActivitiesReducer(
 
             if (existingActivity) {
               const {
-                channelData: { 'webchat:send-status': sendStatus }
+                channelData: { 'webchat:internal:id': permanentId, 'webchat:send-status': sendStatus }
               } = existingActivity;
+
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => permanentId);
 
               if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
                 activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
               }
             } else {
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
+
               // If there are no existing activity, probably this activity is restored from chat history.
               // All outgoing activities restored from service means they arrived at the service successfully.
               // Thus, we are marking them as "sent".
               activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+            }
+          } else {
+            if (!activity.id) {
+              const newActivityId = v4();
+
+              console.warn(
+                'botframework-webchat: Incoming activity must have "id" field set, assigning a random value as ID',
+                {
+                  activity,
+                  newActivityId
+                }
+              );
+
+              activity = updateIn(activity, ['id'], () => newActivityId);
+            }
+
+            const existingActivity = state.find(({ id }) => id === activity.id);
+
+            if (existingActivity) {
+              activity = updateIn(
+                activity,
+                ['channelData', 'webchat:internal:id'],
+                () => existingActivity.channelData['webchat:internal:id']
+              );
+            } else {
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
             }
           }
 

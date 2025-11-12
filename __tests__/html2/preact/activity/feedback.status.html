@@ -136,6 +136,7 @@
         );
 
         await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(3);
 
         await host.snapshot('local');
 

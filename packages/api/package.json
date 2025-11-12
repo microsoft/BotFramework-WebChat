@@ -93,7 +93,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../api-middleware/package.json\" \"../base/package.json\" \"../support/cldr-data/package.json\" \"../react-hooks/package.json\" \"../react-valibot/package.json\" \"../redux-store/package.json\" \"../tsconfig/package.json\" \"../core/package.json\""
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../api-graph/package.json\" \"../api-middleware/package.json\" \"../support/cldr-data/package.json\" \"../redux-store/package.json\""
   },
   "pinDependencies": {
     "@types/react": [
@@ -110,6 +110,7 @@
     ]
   },
   "localDependencies": {
+    "@msinternal/botframework-webchat-api-graph": "development",
     "@msinternal/botframework-webchat-api-middleware": "development",
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-cldr-data": "development",
@@ -124,6 +125,7 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@msinternal/botframework-webchat-api-graph": "0.0.0-0",
     "@msinternal/botframework-webchat-api-middleware": "0.0.0-0",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-cldr-data": "0.0.0-0",

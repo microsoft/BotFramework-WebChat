@@ -26,6 +26,7 @@
             () =>
               createDirectLineWithTranscript([
                 {
+                  id: 'a-00001', // ID is needed to make sure activity is not added twice when remounted and resubscribed.
                   text: `Hello, World!`,
                   type: 'message',
                   timestamp: '2000-01-23T12:34:56.12345Z'
