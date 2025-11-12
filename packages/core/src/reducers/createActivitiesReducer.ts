@@ -120,14 +120,14 @@ function patchActivity(activity: WebChatActivity, { Date }: GlobalScopePonyfill)
 
 function upsertActivityWithSort(
   activities: WebChatActivity[],
-  incomingActivity: WebChatActivity,
+  upsertingActivity: WebChatActivity,
   ponyfill: GlobalScopePonyfill
 ): WebChatActivity[] {
-  const incomingLivestreamingMetadata = getActivityLivestreamingMetadata(incomingActivity);
+  const upsertingLivestreamingMetadata = getActivityLivestreamingMetadata(upsertingActivity);
 
   // TODO: [P1] To support time-travelling, we should not drop obsoleted livestreaming activities.
-  if (incomingLivestreamingMetadata) {
-    const { sessionId } = incomingLivestreamingMetadata;
+  if (upsertingLivestreamingMetadata) {
+    const { sessionId } = upsertingLivestreamingMetadata;
 
     // If the upserting activity is going upsert into a concluded livestream, skip the activity.
     const isLivestreamConcluded = activities.find(targetActivity => {
@@ -141,21 +141,21 @@ function upsertActivityWithSort(
     }
   }
 
-  incomingActivity = patchActivity(incomingActivity, ponyfill);
+  upsertingActivity = patchActivity(upsertingActivity, ponyfill);
 
-  const { channelData: { clientActivityID: incomingClientActivityID } = {} } = incomingActivity;
+  const { channelData: { clientActivityID: upsertingClientActivityID } = {} } = upsertingActivity;
 
   const nextActivities = activities.filter(
     ({ channelData: { clientActivityID } = {}, id }) =>
       // We will remove all "sending messages" activities and activities with same ID
       // "clientActivityID" is unique and used to track if the message has been sent and echoed back from the server
-      !(incomingClientActivityID && clientActivityID === incomingClientActivityID) &&
-      !(id && id === incomingActivity.id)
+      !(upsertingClientActivityID && clientActivityID === upsertingClientActivityID) &&
+      !(id && id === upsertingActivity.id)
   );
 
-  const incomingEntityPosition = incomingActivity.channelData?.['webchat:entity-position'];
-  const incomingPartOf = incomingActivity.channelData?.['webchat:entity-part-of'];
-  const incomingSequenceId = getSequenceIdOrDeriveFromTimestamp(incomingActivity, ponyfill);
+  const upsertingEntityPosition = upsertingActivity.channelData?.['webchat:entity-position'];
+  const upsertingPartOf = upsertingActivity.channelData?.['webchat:entity-part-of'];
+  const upsertingSequenceId = getSequenceIdOrDeriveFromTimestamp(upsertingActivity, ponyfill);
 
   // TODO: [P2] Turn (activity) => boolean into comparer (x, y) => number.
   //       It is not trivial to write in current form.
@@ -175,12 +175,12 @@ function upsertActivityWithSort(
     const currentEntityPosition = channelData['webchat:entity-position'];
     const currentEntityPartOf = channelData['webchat:entity-part-of'];
 
-    const bothHavePosition = typeof currentEntityPosition === 'number' && typeof incomingEntityPosition === 'number';
-    const bothArePartOf = typeof currentEntityPartOf === 'string' && currentEntityPartOf === incomingPartOf;
+    const bothHavePosition = typeof currentEntityPosition === 'number' && typeof upsertingEntityPosition === 'number';
+    const bothArePartOf = typeof currentEntityPartOf === 'string' && currentEntityPartOf === upsertingPartOf;
 
     // For activities in the same creative work part, position is primary sort key
     if (bothHavePosition && bothArePartOf) {
-      return currentEntityPosition > incomingEntityPosition;
+      return currentEntityPosition > upsertingEntityPosition;
     }
 
     return false;
@@ -191,19 +191,19 @@ function upsertActivityWithSort(
       const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
       if (
-        incomingLivestreamingMetadata &&
+        upsertingLivestreamingMetadata &&
         currentLivestreamingMetadata &&
-        incomingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
+        upsertingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
       ) {
-        return currentLivestreamingMetadata.sequenceNumber > incomingLivestreamingMetadata.sequenceNumber;
+        return currentLivestreamingMetadata.sequenceNumber > upsertingLivestreamingMetadata.sequenceNumber;
       }
 
       return false;
     });
   }
 
-  // If the incoming activity does not have sequence ID or timestamp, always append it.
-  if (!~indexToInsert && typeof incomingSequenceId === 'number') {
+  // If the upserting activity does not have sequence ID or timestamp, always append it.
+  if (!~indexToInsert && typeof upsertingSequenceId === 'number') {
     indexToInsert = nextActivities.findIndex(activity => {
       const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
 
@@ -213,7 +213,7 @@ function upsertActivityWithSort(
         return false;
       }
 
-      return currentSequenceId > incomingSequenceId;
+      return currentSequenceId > upsertingSequenceId;
     });
   }
 
@@ -222,32 +222,36 @@ function upsertActivityWithSort(
     indexToInsert = nextActivities.length;
   }
 
-  const prevActivity: WebChatActivity = indexToInsert === 0 ? undefined : nextActivities.at(indexToInsert - 1);
-  const nextActivity: WebChatActivity = nextActivities.at(indexToInsert);
-  let incomingPosition: number;
+  const prevSibling: WebChatActivity = indexToInsert === 0 ? undefined : nextActivities.at(indexToInsert - 1);
+  const nextSibling: WebChatActivity = nextActivities.at(indexToInsert);
+  let upsertingPosition: number;
 
-  if (prevActivity) {
-    const prevPosition = prevActivity.channelData['webchat:internal:position'];
+  if (prevSibling) {
+    const prevPosition = prevSibling.channelData['webchat:internal:position'];
 
-    if (nextActivity) {
-      const nextSequenceId = nextActivity.channelData['webchat:internal:position'];
+    if (nextSibling) {
+      const nextSequenceId = nextSibling.channelData['webchat:internal:position'];
 
       // eslint-disable-next-line no-magic-numbers
-      incomingPosition = (prevPosition + nextSequenceId) / 2;
+      upsertingPosition = (prevPosition + nextSequenceId) / 2;
     } else {
-      incomingPosition = prevPosition + 1;
+      upsertingPosition = prevPosition + 1;
     }
-  } else if (nextActivity) {
-    const nextSequenceId = nextActivity.channelData['webchat:internal:position'];
+  } else if (nextSibling) {
+    const nextSequenceId = nextSibling.channelData['webchat:internal:position'];
 
-    incomingPosition = nextSequenceId - 1;
+    upsertingPosition = nextSequenceId - 1;
   } else {
-    incomingPosition = 1;
+    upsertingPosition = 1;
   }
 
-  incomingActivity = updateIn(incomingActivity, ['channelData', 'webchat:internal:position'], () => incomingPosition);
+  upsertingActivity = updateIn(
+    upsertingActivity,
+    ['channelData', 'webchat:internal:position'],
+    () => upsertingPosition
+  );
 
-  nextActivities.splice(indexToInsert, 0, incomingActivity);
+  nextActivities.splice(indexToInsert, 0, upsertingActivity);
 
   return nextActivities;
 }
