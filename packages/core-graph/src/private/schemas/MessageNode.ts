@@ -15,7 +15,6 @@ import {
 
 import { DirectLineActivityNodeSchema } from './DirectLineActivityNode';
 
-// TODO: [P*] When nodes are added to graph, check against this schema if it has @type of "Message".
 const MessageNodeSchema = pipe(
   intersect([
     // TODO: [P*] Not sure why if SlantNode is intersected, the object become frozen and cannot assign @id.
