@@ -129,8 +129,6 @@ function flattenNodeObject_(
     }
   }
 
-  // const id = parse(optional(IdentifierSchema), targetMap.get('@id')) ?? `_:${randomUUID()}`;
-
   targetMap.set('@id', id);
 
   const output: FlatNodeObject = parse(FlatNodeObjectSchema, Object.fromEntries(Array.from(targetMap)));
