@@ -44,12 +44,8 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
     const activitySet = new Set(activities);
     const prevActivitySet = new Set(prevActivities);
 
-    // TODO: Delete node from the graph
-    // const deleted = prevActivitySet.difference(activitySet);
+    // TODO: [P*] Supports deleting node from the graph.
     const addedActivities = activitySet.difference(prevActivitySet);
-
-    // console.log('🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️', { activities, prevActivities });
-    // throw new Error(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️ ${JSON.stringify(Array.from(addedActivities.values()), null, 2)}`);
 
     graph.act(graph => {
       for (const activity of addedActivities) {
@@ -70,16 +66,12 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
                 ? { '@id': channelAudience['@id'] }
                 : undefined;
 
-        // TODO: [P*] "activity.id" could be null here, we should do the keyer here.
         if (activity.type === 'message' || activity.type === 'typing') {
           // TODO: [P*] If this is livestreaming, add isPartOf to indicate the livestream head.
           graph.upsert({
             '@context': 'https://schema.org',
 
-            // TODO: [P0] Maybe we should do keyer here, maybe UUID here.
             '@id': `_:${permanentId}`,
-
-            // TODO: [P0] We should allowlist types.
             '@type': ['Message', `urn:microsoft:webchat:direct-line-activity`],
 
             encodingFormat:
