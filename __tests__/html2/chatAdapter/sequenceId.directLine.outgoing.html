@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -87,19 +87,6 @@
 
         // THEN: The second outgoing message should be the third.
         expect(activities[2].text).toBe('User activity has timestamp of 0.');
-
-        console.log(
-          JSON.stringify(
-            activities.map(activity => ({
-              'webchat:internal:position': activity.channelData['webchat:internal:position'],
-              channelData: activity.channelData,
-              text: activity.text,
-              timestamp: activity.timestamp
-            })),
-            null,
-            2
-          )
-        );
 
         // THEN: The first outgoing message should have a smaller position than the bot's message.
         expect(
