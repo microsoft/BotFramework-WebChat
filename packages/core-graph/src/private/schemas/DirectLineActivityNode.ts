@@ -20,7 +20,7 @@ const DirectLineActivityNodeSchema = pipe(
   object({
     '@id': IdentifierSchema,
     '@type': pipe(array(string()), includes('urn:microsoft:webchat:direct-line-activity')),
-    // TODO: [P*] Checks why tdentifier could be undefined.
+    // TODO: [P*] Checks why identifier could be undefined.
     //       Related to /html2/accessibility/suggestedActions/stackedLayout.ariaAttributes.html.
     identifier: optional(array(IdentifierSchema)),
     position: tuple([number()]),
