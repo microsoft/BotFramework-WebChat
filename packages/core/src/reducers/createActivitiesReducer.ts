@@ -391,6 +391,11 @@ export default function createActivitiesReducer(
             payload: { activity }
           } = action;
 
+          // Clean internal properties if they were passed from chat adapter.
+          // These properties should not be passed from external systems.
+          activity = updateIn(activity, ['channelData', 'webchat:internal:id']);
+          activity = updateIn(activity, ['channelData', 'webchat:internal:position']);
+
           // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` field.
           //
           // Otherwise, it will fail following scenario:
