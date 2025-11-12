@@ -95,7 +95,7 @@
         const root = createRoot(document.getElementById('webchat'));
 
         root.render(
-          variant === 'copilot' || variant === 'fluent' ? 
+          variant ? 
             React.createElement(
               FluentProvider,
               { theme: fluentTheme },

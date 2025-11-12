@@ -42,7 +42,7 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
   const isFromUser = activity?.from?.role === 'user';
   const isFromBot = activity?.from?.role === 'bot';
 
-  const shouldRenderHeader = variants.includes('copilot') && activity?.from?.role === 'bot';
+  const shouldRenderHeader = variants.includes('copilot-deprecated') && activity?.from?.role === 'bot';
 
   return (
     <div

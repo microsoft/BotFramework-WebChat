@@ -10,8 +10,9 @@
   --webchat-sendbox-border-radius: var(--webchat-borderRadiusLarge);
 }
 
-/* Copilot variant */
-:global(.webchat-fluent) .sendbox.variant-copilot {
+/* Copilot and Copilot-deprecated variants */
+:global(.webchat-fluent) .sendbox.variant-copilot,
+:global(.webchat-fluent) .sendbox.variant-copilot-deprecated {
   .sendbox__text-counter:not(.sendbox__text-counter--error) {
     visibility: hidden;
   }

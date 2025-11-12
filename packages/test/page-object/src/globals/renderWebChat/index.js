@@ -9,7 +9,8 @@ export default function renderWebChat(props, container) {
 
   const { searchParams } = new URL(window.location.href);
   const isFluentTheme = searchParams.get('theme') === 'fluent';
-  const isCopilotVariant = searchParams.get('variant') === 'copilot';
+  const isCopilotDeprecatedVariant = searchParams.get('variant') === 'copilot-deprecated';
+  const isCopilotVariant = searchParams.get('variant') === 'copilot' || isCopilotDeprecatedVariant;
 
   if (isFluentTheme) {
     if (!window.React || !window.ReactDOM) {
@@ -28,7 +29,8 @@ export default function renderWebChat(props, container) {
       React.createElement(
         FluentThemeProvider,
         {
-          ...(isCopilotVariant && { variant: 'copilot' })
+          ...(isCopilotVariant && { variant: 'copilot' }),
+          ...(isCopilotDeprecatedVariant && { variant: 'copilot-deprecated' })
         },
         React.createElement(ReactWebChat, props)
       ),
@@ -41,5 +43,5 @@ export default function renderWebChat(props, container) {
     window.WebChat.renderWebChat(props, container);
   }
 
-  return { isFluentTheme, isCopilotVariant };
+  return { isFluentTheme, isCopilotVariant, isCopilotDeprecatedVariant };
 }
