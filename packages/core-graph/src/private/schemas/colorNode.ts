@@ -73,6 +73,17 @@ type SlantNode = InferOutput<ObjectSchema<(typeof SlantNodeSchema)['entries'], u
   [key: string]: unknown;
 };
 
+const InputValueSchema = union(
+  [
+    array(union([JSONLiteralSchema, LiteralSchema, NodeReferenceSchema])),
+    JSONLiteralSchema,
+    LiteralSchema,
+    NodeReferenceSchema,
+    null_()
+  ],
+  'Only JSON literal, literal, node reference or null can be parsed into slant node'
+);
+
 const SlantNodeWithFixSchema = pipe(
   looseObject({}),
   transform(node => {
@@ -81,20 +92,6 @@ const SlantNodeWithFixSchema = pipe(
     let id: string | undefined;
 
     for (const [key, value] of Object.entries(node)) {
-      const parsedValue = parse(
-        union(
-          [
-            array(union([JSONLiteralSchema, LiteralSchema, NodeReferenceSchema])),
-            JSONLiteralSchema,
-            LiteralSchema,
-            NodeReferenceSchema,
-            null_()
-          ],
-          'Only JSON literal, literal, node reference or null can be parsed into slant node'
-        ),
-        value
-      );
-
       switch (key) {
         case '@context':
           context = parse(string('@context must be an IRI'), value);
@@ -105,6 +102,8 @@ const SlantNodeWithFixSchema = pipe(
           break;
 
         default: {
+          const parsedValue = parse(InputValueSchema, value);
+
           const slantedValue = Object.freeze(
             Array.isArray(parsedValue)
               ? parsedValue.slice(0)

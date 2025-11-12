@@ -299,10 +299,7 @@ scenario('Do not handle full JSON-LD spec: `@context` is an opaque string and th
       ],
       [
         'node with @context of object',
-        () => [
-          { '@context': {}, '@id': '_:b1', '@type': ['Person'] },
-          'Only JSON literal, literal, node reference or null can be parsed into slant node'
-        ]
+        () => [{ '@context': {}, '@id': '_:b1', '@type': ['Person'] }, '@context must be an IRI']
       ]
     ])
     .when('colored', executeWhen)
