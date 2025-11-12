@@ -1,7 +1,7 @@
+import { freeze } from '@msinternal/botframework-webchat-base/valibot';
 import { array, is, minLength, optional, pipe, strictObject, string, union, type InferOutput } from 'valibot';
 
 import { IdentifierSchema } from './Identifier';
-import freeze from './private/freeze';
 
 /**
  * Schema of JSON-LD node reference. A node reference is an object with only `@id`, an optional `@type`, and nothing else.

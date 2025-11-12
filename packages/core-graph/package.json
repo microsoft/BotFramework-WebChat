@@ -48,7 +48,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "node ../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\""
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\""
   },
   "pinDependencies": {
     "uuid": [
@@ -56,8 +56,11 @@
       "uuid@9 emit non-ES5 build because of default parameters"
     ]
   },
-  "localDependencies": {},
+  "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development"
+  },
   "devDependencies": {
+    "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@testduet/given-when-then": "^0.1.1-main.28754e6",
     "@types/uuid": "^8.3.4",
     "type-fest": "^4.41.0",

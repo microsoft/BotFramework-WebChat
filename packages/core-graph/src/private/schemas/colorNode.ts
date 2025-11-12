@@ -1,3 +1,4 @@
+import { freeze } from '@msinternal/botframework-webchat-base/valibot';
 import {
   array,
   looseObject,
@@ -19,7 +20,6 @@ import { IdentifierSchema } from './Identifier';
 import { JSONLiteralSchema, type JSONLiteral } from './JSONLiteral';
 import { LiteralSchema, type Literal } from './Literal';
 import { NodeReferenceSchema, type NodeReference } from './NodeReference';
-import freeze from './private/freeze';
 
 // Our opinions.
 const SlantNodeSchema = pipe(

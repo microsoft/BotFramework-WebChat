@@ -1,3 +1,4 @@
+import { freeze } from '@msinternal/botframework-webchat-base/valibot';
 import {
   array,
   includes,
@@ -11,8 +12,8 @@ import {
   tuple,
   type InferOutput
 } from 'valibot';
+
 import { DirectLineActivityNodeSchema } from './DirectLineActivityNode';
-import freeze from './private/freeze';
 
 // TODO: [P*] When nodes are added to graph, check against this schema if it has @type of "Message".
 const MessageNodeSchema = pipe(

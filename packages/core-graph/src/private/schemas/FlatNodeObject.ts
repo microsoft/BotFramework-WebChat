@@ -1,10 +1,10 @@
+import { freeze } from '@msinternal/botframework-webchat-base/valibot';
 import { array, minLength, null_, objectWithRest, optional, pipe, string, union, type InferOutput } from 'valibot';
 
 import { IdentifierSchema } from './Identifier';
 import { JSONLiteralSchema } from './JSONLiteral';
 import { LiteralSchema } from './Literal';
 import { NodeReferenceSchema } from './NodeReference';
-import freeze from './private/freeze';
 
 const FlatNodeObjectPropertyValueSchema = union(
   [
