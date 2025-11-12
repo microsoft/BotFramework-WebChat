@@ -18,7 +18,7 @@ function nodeReferenceListToIdentifierSet(nodeReferences: readonly NodeReference
 // TODO: [P*] Review this auto-inversing middleware.
 const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
   ({ getState }) =>
-  () =>
+  next =>
   // "autoInversion" receives SlantNode instead of AnyNode because prior middleware already did the transformation.
   // @ts-expect-error
   (upsertingNodeMap: Map<Identifier, SlantNode>) => {
@@ -148,7 +148,7 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
       }
     }
 
-    return nextUpsertingNodeMap;
+    return next(nextUpsertingNodeMap);
   };
 
 export default autoInversion;
