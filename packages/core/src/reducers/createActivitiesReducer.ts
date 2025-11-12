@@ -63,7 +63,7 @@ function findByClientActivityID(clientActivityID: string): (activity: WebChatAct
  */
 function getSequenceIdOrDeriveFromTimestamp(
   activity: WebChatActivity,
-  ponyfill: GlobalScopePonyfill
+  ponyfill: Pick<GlobalScopePonyfill, 'Date'>
 ): number | undefined {
   const sequenceId = activity.channelData?.['webchat:sequence-id'];
 
@@ -156,10 +156,6 @@ function upsertActivityWithSort(
   const upsertingEntityPosition = upsertingActivity.channelData?.['webchat:entity-position'];
   const upsertingPartOf = upsertingActivity.channelData?.['webchat:entity-part-of'];
   const upsertingSequenceId = getSequenceIdOrDeriveFromTimestamp(upsertingActivity, ponyfill);
-
-  // TODO: [P2] Turn (activity) => boolean into comparer (x, y) => number.
-  //       It is not trivial to write in current form.
-  //       We can use comparer for insertion sort too, so let's rewrite in comparer form.
 
   // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
   // If the message does not have sequence ID, use these fallback values:
