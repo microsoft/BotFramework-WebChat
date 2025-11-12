@@ -1,3 +1,4 @@
+import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
 import {
   type LegacyActivityMiddleware,
@@ -42,7 +43,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNod
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
-import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import type StyleOptions from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
