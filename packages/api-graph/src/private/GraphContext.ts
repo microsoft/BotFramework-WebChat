@@ -1,12 +1,10 @@
 import { freeze } from '@msinternal/botframework-webchat-base/valibot';
 import type { WebChatActivity } from 'botframework-webchat-core';
-import { IdentifierSchema, SlantNodeSchema, type Identifier, type SlantNode } from 'botframework-webchat-core/graph';
 import { createContext, useContext } from 'react';
-import { array, custom, map, object, pipe, tuple } from 'valibot';
+import { array, custom, object, pipe, tuple } from 'valibot';
 
 const graphContextSchema = pipe(
   object({
-    nodeMap: pipe(map(IdentifierSchema, SlantNodeSchema), freeze()),
     orderedActivitiesState: pipe(tuple([pipe(array(custom<WebChatActivity>(() => true)), freeze())]), freeze())
   }),
   freeze()
@@ -16,7 +14,6 @@ const graphContextSchema = pipe(
 // type GraphContextType = InferOutput<typeof graphContextSchema>;
 
 type GraphContextType = {
-  readonly nodeMap: ReadonlyMap<Identifier, SlantNode>;
   readonly orderedActivitiesState: readonly [readonly WebChatActivity[]];
 };
 

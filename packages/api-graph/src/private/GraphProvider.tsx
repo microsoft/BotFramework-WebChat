@@ -1,17 +1,13 @@
 import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
-import {
-  createGraphFromStore,
-  isOfType,
-  type GraphSubscriber,
-  type Identifier,
-  type SlantNode
-} from 'botframework-webchat-core/graph';
+import { createGraphFromStore, isOfType, type GraphSubscriber, type Identifier } from 'botframework-webchat-core/graph';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { custom, function_, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
+
+const EMPTY_ARRAY = Object.freeze([]);
 
 const graphProviderPropsSchema = pipe(
   object({
@@ -30,10 +26,7 @@ function GraphProvider(props: GraphProviderProps) {
 
   const graph = useMemo(() => createGraphFromStore(store), [store]);
 
-  const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
-  const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(
-    Object.freeze([])
-  );
+  const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(EMPTY_ARRAY);
 
   useEffect(() => {
     // Sync between graph and `orderedActivities`.
@@ -77,8 +70,11 @@ function GraphProvider(props: GraphProviderProps) {
     // Activities queued before Web Chat mounted should be synchronized.
     handleChange({ upsertedNodeIdentifiers: new Set(graph.getState().keys()) });
 
-    return unsubscribe;
-  }, [graph, setNodeMap, setOrderedActivityNodes]);
+    return () => {
+      unsubscribe();
+      setOrderedActivityNodes(EMPTY_ARRAY);
+    };
+  }, [graph, setOrderedActivityNodes]);
 
   const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
     () =>
@@ -95,10 +91,9 @@ function GraphProvider(props: GraphProviderProps) {
   const context = useMemo<GraphContextType>(
     () =>
       parse(graphContextSchema, {
-        nodeMap,
         orderedActivitiesState
       }),
-    [nodeMap, orderedActivitiesState]
+    [orderedActivitiesState]
   );
 
   return <GraphContext.Provider value={context}>{children}</GraphContext.Provider>;
