@@ -28,7 +28,6 @@ import type {
 } from '../actions/postActivity';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../types/WebChatActivity';
-import compose, { type ComposeFn } from './private/compose';
 
 type ActivitiesAction =
   | DeleteActivityAction
@@ -345,40 +344,31 @@ export default function createActivitiesReducer(
             );
           }
 
-          const updateOldSendStatusToSent: ComposeFn<WebChatActivity> = activity =>
-            updateIn(
-              activity,
-              // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
-              // Please refer to #4362 for details. Remove on or after 2024-07-31.
-              ['channelData', 'state'],
-              () => SENT
-            );
+          // We will replace the outgoing activity with the version from the server
+          let activity = patchActivity(action.payload.activity, ponyfill);
 
-          const updateNewSendStatusToSent: ComposeFn<WebChatActivity> = activity =>
-            updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+          activity = updateIn(
+            activity,
+            // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+            // Please refer to #4362 for details. Remove on or after 2024-07-31.
+            ['channelData', 'state'],
+            () => SENT
+          );
 
-          const updatePermanentId: ComposeFn<WebChatActivity> = activity =>
-            updateIn(
-              activity,
-              ['channelData', 'webchat:internal:id'],
-              () => existingActivity.channelData['webchat:internal:id']
-            );
+          activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+
+          activity = updateIn(
+            activity,
+            ['channelData', 'webchat:internal:id'],
+            () => existingActivity.channelData['webchat:internal:id']
+          );
 
           // Keep existing position.
-          const updatePosition: ComposeFn<WebChatActivity> = activity =>
-            updateIn(
-              activity,
-              ['channelData', 'webchat:internal:position'],
-              () => existingActivity.channelData['webchat:internal:position']
-            );
-
-          // We will replace the activity with the version from the server
-          const activity = compose<WebChatActivity>(
-            updateOldSendStatusToSent,
-            updateNewSendStatusToSent,
-            updatePermanentId,
-            updatePosition
-          )(patchActivity(action.payload.activity, ponyfill));
+          activity = updateIn(
+            activity,
+            ['channelData', 'webchat:internal:position'],
+            () => existingActivity.channelData['webchat:internal:position']
+          );
 
           state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => activity);
         }
