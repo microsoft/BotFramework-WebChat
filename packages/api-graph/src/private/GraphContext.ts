@@ -1,16 +1,15 @@
+import { freeze } from '@msinternal/botframework-webchat-base/valibot';
 import type { WebChatActivity } from 'botframework-webchat-core';
 import { IdentifierSchema, SlantNodeSchema, type Identifier, type SlantNode } from 'botframework-webchat-core/graph';
 import { createContext, useContext } from 'react';
-import { array, custom, map, object, pipe, readonly, tuple } from 'valibot';
+import { array, custom, map, object, pipe, tuple } from 'valibot';
 
 const graphContextSchema = pipe(
   object({
-    // TODO: Maybe should use `freeze()` instead.
-    nodeMap: pipe(map(IdentifierSchema, SlantNodeSchema), readonly()),
-    // TODO: Maybe should use `freeze()` instead.
-    orderedActivitiesState: pipe(tuple([pipe(array(custom<WebChatActivity>(() => true)), readonly())]), readonly())
+    nodeMap: pipe(map(IdentifierSchema, SlantNodeSchema), freeze()),
+    orderedActivitiesState: pipe(tuple([pipe(array(custom<WebChatActivity>(() => true)), freeze())]), freeze())
   }),
-  readonly()
+  freeze()
 );
 
 // Because SlantNode need some special treatment around objectWithRest(), InferOutput<T> is not working here.

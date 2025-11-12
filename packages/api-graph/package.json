@@ -52,11 +52,13 @@
   },
   "pinDependencies": {},
   "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "botframework-webchat-core": "development"
   },
   "devDependencies": {
+    "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@testduet/given-when-then": "^0.1.1-main.28754e6",

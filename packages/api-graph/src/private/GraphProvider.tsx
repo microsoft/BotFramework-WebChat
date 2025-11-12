@@ -1,3 +1,4 @@
+import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
 import {
@@ -8,10 +9,9 @@ import {
   type SlantNode
 } from 'botframework-webchat-core/graph';
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { custom, function_, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, function_, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
-import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
-import GraphContext, { GraphContextType } from './GraphContext';
+import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
 
 const graphProviderPropsSchema = pipe(
   object({
@@ -31,17 +31,16 @@ function GraphProvider(props: GraphProviderProps) {
   const graph = useMemo(() => createGraphFromStore(store), [store]);
 
   const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
-  const [orderedActivities, setOrderedActivities] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
+  const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(
+    Object.freeze([])
+  );
 
   useEffect(() => {
-    // console.log('📰📰📰 GraphProvider.subscribe');
-
+    // Sync between graph and `orderedActivities`.
     const handleChange: GraphSubscriber = record => {
-      // console.log('📰📰📰 GraphProvider.handleChange', { record });
-
       const state = graph.getState();
 
-      setOrderedActivities(prevOrderedMessages => {
+      setOrderedActivityNodes(prevOrderedMessages => {
         let nextOrderedMessageMap: Map<Identifier, DirectLineActivityNode> | undefined;
 
         for (const id of record.upsertedNodeIdentifiers) {
@@ -74,32 +73,28 @@ function GraphProvider(props: GraphProviderProps) {
 
     const unsubscribe = graph.subscribe(handleChange);
 
-    // TODO: [P*] Should include everything in the graph.
+    // Triggers initial sync.
+    // Activities queued before Web Chat mounted should be synchronized.
     handleChange({ upsertedNodeIdentifiers: new Set(graph.getState().keys()) });
 
     return unsubscribe;
-  }, [graph, setNodeMap, setOrderedActivities]);
+  }, [graph, setNodeMap, setOrderedActivityNodes]);
 
   const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
     () =>
       Object.freeze([
         Object.freeze(
-          orderedActivities.map(
+          orderedActivityNodes.map(
             node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
           )
         )
       ] as const),
-    [orderedActivities]
+    [orderedActivityNodes]
   );
-
-  // useMemo(() => {
-  //   // eslint-disable-next-line no-console
-  //   console.log('🐛🐛🐛 GraphProvider', { orderedActivities });
-  // }, [orderedActivities]);
 
   const context = useMemo<GraphContextType>(
     () =>
-      Object.freeze({
+      parse(graphContextSchema, {
         nodeMap,
         orderedActivitiesState
       }),
