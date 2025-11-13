@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+      import { version } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
+          from: { role: 'bot' },
+          id: 'a-00001',
+          text: 'a-00001: Stream 1 revision 1 at t = 0',
+          timestamp: new Date(0).toISOString(),
+          type: 'typing'
+        });
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00001: Stream 1 revision 1 at t = 0'
+        ]);
+
+        await host.snapshot('local');
+
+        // A "Hello, World!" inserted between two thoughts.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          id: 'a-00002',
+          text: 'a-00002: Hello, World at t = 1',
+          timestamp: new Date(86_400_000).toISOString(),
+          type: 'message'
+        });
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00001: Stream 1 revision 1 at t = 0',
+          'a-00002: Hello, World at t = 1'
+        ]);
+
+        await host.snapshot('local');
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamId: 'a-00001',
+            streamSequence: 2,
+            streamType: 'streaming'
+          },
+          from: { role: 'bot' },
+          id: 'a-00003',
+          text: 'a-00003: Stream 1 revision 2 at t = 2',
+          timestamp: new Date(2 * 86_400_000).toISOString(),
+          type: 'typing'
+        });
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00003: Stream 1 revision 2 at t = 2',
+          'a-00002: Hello, World at t = 1'
+        ]);
+
+        await host.snapshot('local');
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
+          from: { role: 'bot' },
+          id: 'a-00004',
+          text: 'a-00004: Stream 2 revision 1 at t = 3',
+          timestamp: new Date(3 * 86_400_000).toISOString(),
+          type: 'typing'
+        });
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00003: Stream 1 revision 2 at t = 2',
+          'a-00002: Hello, World at t = 1',
+          'a-00004: Stream 2 revision 1 at t = 3'
+        ]);
+
+        await host.snapshot('local');
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamId: 'a-00004',
+            streamSequence: 2,
+            streamType: 'streaming'
+          },
+          from: { role: 'bot' },
+          id: 'a-00005',
+          text: 'a-00005: Stream 2 revision 2 at t = 0',
+          timestamp: new Date(0).toISOString(),
+          type: 'typing'
+        });
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00003: Stream 1 revision 2 at t = 2',
+          'a-00002: Hello, World at t = 1',
+          'a-00005: Stream 2 revision 2 at t = 0'
+        ]);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

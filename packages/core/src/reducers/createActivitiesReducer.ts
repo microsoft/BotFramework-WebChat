@@ -165,36 +165,40 @@ function upsertActivityWithSort(
   //    - If not available, it will fallback to `+new Date(timestamp)`
   //    - Outgoing activity will not have `timestamp` field
 
-  let indexToInsert = nextActivities.findIndex(activity => {
-    const { channelData = {} } = activity;
-    const currentEntityPosition = channelData['webchat:entity-position'];
-    const currentEntityPartOf = channelData['webchat:entity-part-of'];
+  let indexToInsert = -1;
 
-    const bothHavePosition = typeof currentEntityPosition === 'number' && typeof upsertingEntityPosition === 'number';
-    const bothArePartOf = typeof currentEntityPartOf === 'string' && currentEntityPartOf === upsertingPartOf;
+  if (typeof upsertingEntityPosition === 'number' && typeof upsertingPartOf === 'string') {
+    const activitiesOfSamePartGrouping = nextActivities.filter(
+      activity => activity.channelData['webchat:entity-part-of'] === upsertingPartOf
+    );
 
-    // For activities in the same creative work part, position is primary sort key
-    if (bothHavePosition && bothArePartOf) {
-      return currentEntityPosition > upsertingEntityPosition;
+    if (activitiesOfSamePartGrouping.length) {
+      const activityImmediateBeforeInsertion = activitiesOfSamePartGrouping.find(
+        activity => activity.channelData['webchat:entity-position'] > upsertingEntityPosition
+      );
+
+      indexToInsert = activityImmediateBeforeInsertion
+        ? nextActivities.indexOf(activityImmediateBeforeInsertion)
+        : nextActivities.indexOf(activitiesOfSamePartGrouping.at(-1)) + 1;
     }
+  }
 
-    return false;
-  });
+  if (!~indexToInsert && upsertingLivestreamingMetadata) {
+    const upsertingLivestreamingSessionId = upsertingLivestreamingMetadata.sessionId;
+    const upsertingLivestreamingSequenceNumber = upsertingLivestreamingMetadata.sequenceNumber;
+    const activitiesOfSameLivestreamSession = nextActivities.filter(
+      activity => getActivityLivestreamingMetadata(activity)?.sessionId === upsertingLivestreamingSessionId
+    );
 
-  if (!~indexToInsert) {
-    indexToInsert = nextActivities.findIndex(activity => {
-      const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
+    if (activitiesOfSameLivestreamSession.length) {
+      const activityImmediateBeforeInsertion = activitiesOfSameLivestreamSession.find(
+        activity => getActivityLivestreamingMetadata(activity).sequenceNumber > upsertingLivestreamingSequenceNumber
+      );
 
-      if (
-        upsertingLivestreamingMetadata &&
-        currentLivestreamingMetadata &&
-        upsertingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
-      ) {
-        return currentLivestreamingMetadata.sequenceNumber > upsertingLivestreamingMetadata.sequenceNumber;
-      }
-
-      return false;
-    });
+      indexToInsert = activityImmediateBeforeInsertion
+        ? nextActivities.indexOf(activityImmediateBeforeInsertion)
+        : nextActivities.indexOf(activitiesOfSameLivestreamSession.at(-1)) + 1;
+    }
   }
 
   // If the upserting activity does not have sequence ID or timestamp, always append it.
