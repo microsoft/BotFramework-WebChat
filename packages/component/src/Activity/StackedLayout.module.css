@@ -28,7 +28,7 @@
     margin-inline: var(--webchat__padding--regular);
   }
 
-  .stacked-layout__bubble > .stacked-layout__title:not(:only-child) {
+  .stacked-layout__bubble > .stacked-layout__title:not(:last-child) {
     margin-block-end: 0;
   }
 
@@ -103,20 +103,25 @@
   }
 
   .stacked-layout__message-status {
+    --webchat__component-icon--size: 19px;
+
     color: var(--webchat__color--subtle);
+    box-sizing: border-box;
     display: grid;
     font-size: 1.1em;
     grid-template-areas: 'message-status-icon';
-    margin-block: calc(var(--webchat__padding--regular) + 1px);
+    height: 1lh;
+    margin-block-start: var(--webchat__padding--regular);
     margin-inline-start: var(--webchat__padding--regular);
     place-self: start;
+    width: 1em;
+
+    &:has(+ :global(.webchat__text-content)) {
+      font-size: 1em;
+    }
 
     > * {
       grid-area: message-status-icon;
-    }
-
-    + :global(.webchat__text-content) {
-      transform: translateY(0.15em);
     }
   }
 
@@ -140,6 +145,11 @@
 
   .stacked-layout__bubble {
     display: grid;
+    grid-template: 'content' 1fr / 1fr;
+
+    > * {
+      grid-column: content;
+    }
 
     > .stacked-layout__message-status {
       grid-area: status;
@@ -148,7 +158,7 @@
     &:has(.stacked-layout__message-status) {
       grid-template:
         'status content'
-        'status content'
+        '. content'
         / min-content auto;
     }
   }
@@ -202,20 +212,16 @@
       }
     }
 
-    .stacked-layout__bubble {
-      grid-template: 'content' 1fr / 1fr;
-    }
-
     .stacked-layout__message-status {
       display: none;
     }
 
-    &:has(.stacked-layout__message-status--final),
-    &:has(.stacked-layout__message-status--incomplete) {
+    &:has(.stacked-layout__bubble .stacked-layout__message-status--final),
+    &:has(.stacked-layout__bubble .stacked-layout__message-status--incomplete) {
       .stacked-layout__bubble {
         grid-template:
           'status content'
-          'status content'
+          '. content'
           / min-content auto;
       }
 

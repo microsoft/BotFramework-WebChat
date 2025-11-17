@@ -2,4 +2,27 @@
   .part-grouping-activity__activities {
     padding-block: 0 var(--webchat__padding--regular);
   }
+
+  .part-grouping-activity__message-status {
+    color: currentColor;
+    margin-block: 0;
+    margin-inline-end: var(--webchat__padding--regular);
+    opacity: 1;
+    place-self: center;
+    visibility: unset;
+    transition:
+      all var(--webchat__transition-duration) var(--webchat__transition-easing),
+      visibility 0s linear 0s;
+  }
+
+  .part-grouping-activity__collapsible.part-grouping-activity__collapsible--open
+    .part-grouping-activity__message-status {
+    margin-inline: 0;
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    transition:
+      all var(--webchat__transition-duration) var(--webchat__transition-easing),
+      visibility 0s linear var(--webchat__transition-duration);
+  }
 }

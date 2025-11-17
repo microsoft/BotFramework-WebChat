@@ -65,6 +65,8 @@
   "CITATION_MODEL_DIALOG_ALT": "Citation",
   "_CITATION_MODEL_DIALOG_ALT.comment": "This is for screen reader. This is the title of a modal dialog showing citation. When end-user clicks on a citation marker in the bot response, this citation modal dialog will open and show citation related to the marker.",
   "CLOSE_BUTTON_ALT": "Close",
+  "COLLAPSIBLE_GROUPING_TITLE": "Thinking…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "This is shown when the bot is composing response messages in a group if no abstract is provided.",
   "COLLAPSE_BUTTON_LESS": "Show less",
   "COLLAPSE_BUTTON_LESS.comment": "This is the text of a chevron button to collapse group of messages. When end-user clicks on the button the messages group folds.",
   "COLLAPSE_BUTTON_MORE": "Show more",

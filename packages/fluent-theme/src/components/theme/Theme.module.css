@@ -206,6 +206,8 @@
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
     var(--webchat-spacingHorizontalMNudge);
+  --webchat__transition-duration: var(--webchat-durationNormal);
+  --webchat__transition-easing: var(--webchat-curveDecelerateMid);
   --webchat__border-animation--color-1: #464feb;
   --webchat__border-animation--color-2: #47cffa;
   --webchat__border-animation--color-3: #b47cf8;

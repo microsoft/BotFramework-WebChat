@@ -13,15 +13,14 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useUniqueId from '../hooks/internal/useUniqueId';
-import { ComponentIcon } from '../Icon';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
 import CodeBlockContent from './CodeBlockContent';
 import CollapsibleContent from './CollapsibleContent';
 import StackedLayoutMain from './StackedLayoutMain';
+import StackedLayoutMessageStatus from './StackedLayoutMessageStatus';
 import StackedLayoutRoot from './StackedLayoutRoot';
 import StackedLayoutStatus from './StackedLayoutStatus';
-import MessageStatusLoader from './private/MessageStatusLoader';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 
 import styles from './StackedLayout.module.css';
@@ -158,37 +157,12 @@ const StackedLayout = ({
 
   const showStatus = !!messageThing?.creativeWorkStatus || isInGroup;
 
-  const messageStatus = useMemo(
-    () =>
-      showStatus && (
-        <div
-          className={cx(classNames['stacked-layout__message-status'], {
-            [classNames['stacked-layout__message-status--unset']]: !messageThing?.creativeWorkStatus,
-            [classNames['stacked-layout__message-status--final']]: messageThing?.creativeWorkStatus === 'published',
-            [classNames['stacked-layout__message-status--incomplete']]:
-              messageThing?.creativeWorkStatus === 'incomplete'
-          })}
-        >
-          <ComponentIcon
-            appearance="text"
-            className={classNames['stacked-layout__message-status-unset-icon']}
-            icon="unchecked-circle"
-          />
-          <ComponentIcon
-            appearance="text"
-            className={classNames['stacked-layout__message-status-complete-icon']}
-            icon="checkmark-circle"
-          />
-          <MessageStatusLoader className={classNames['stacked-layout__message-status-loader']} />
-        </div>
-      ),
-    [classNames, messageThing?.creativeWorkStatus, showStatus]
-  );
-
   const renderMainBubbleContent = useCallback(
     (title = '', withStatus = true) => (
       <div className={classNames['stacked-layout__bubble']}>
-        {withStatus && messageStatus}
+        {withStatus && showStatus && (
+          <StackedLayoutMessageStatus creativeWorkStatus={messageThing?.creativeWorkStatus} />
+        )}
         {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
         {activityDisplayText &&
           renderAttachment({
@@ -200,7 +174,7 @@ const StackedLayout = ({
           })}
       </div>
     ),
-    [activity, activityDisplayText, classNames, messageStatus, renderAttachment]
+    [activity, activityDisplayText, classNames, messageThing?.creativeWorkStatus, renderAttachment, showStatus]
   );
 
   const attachmentChildren = useMemo(() => {
@@ -278,7 +252,7 @@ const StackedLayout = ({
   const renderCollapsibleBubbleContent = useCallback(
     (title = '') => (
       <div className={classNames['stacked-layout__bubble']}>
-        {messageStatus}
+        {showStatus && <StackedLayoutMessageStatus creativeWorkStatus={messageThing?.creativeWorkStatus} />}
         <CollapsibleContent
           summary={title}
           summaryClassName={cx(classNames['stacked-layout__title'], classNames['stacked-layout__title--collapsible'])}
@@ -287,7 +261,7 @@ const StackedLayout = ({
         </CollapsibleContent>
       </div>
     ),
-    [attachmentChildren, classNames, messageStatus]
+    [attachmentChildren, classNames, messageThing?.creativeWorkStatus, showStatus]
   );
 
   const renderBubbleContent = isCollapsible ? renderCollapsibleBubbleContent : renderMainBubbleContent;
