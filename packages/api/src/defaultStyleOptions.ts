@@ -26,6 +26,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   rootZIndex: 0, // "z-index" for the root container of Web Chat. This will form a new stacking context so "z-index" used in children won't pollute.
 
   transitionDuration: '0s',
+  transitionEasing: 'ease',
 
   // Avatar
   avatarBorderRadius: '50%',

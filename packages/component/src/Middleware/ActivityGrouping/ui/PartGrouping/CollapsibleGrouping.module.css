@@ -6,27 +6,33 @@
   font-family: var(--webchat__font--primary);
   font-style: normal;
   font-weight: 400;
+  gap: 0;
   max-width: var(--webchat__max-width--message-bubble);
   min-width: var(--webchat__min-width--message-bubble);
   position: relative;
+  transition: gap var(--webchat__transition-duration) var(--webchat__transition-easing);
 }
 
 :global(.webchat) .collapsible-grouping__header {
   align-items: center;
   display: flex;
-  gap: var(--webchat__padding--regular);
-  justify-content: space-between;
   padding: var(--webchat__padding--regular);
   position: relative;
 }
 
 :global(.webchat) .collapsible-grouping__title {
   font-size: 1.1em;
+  margin-inline-end: var(--webchat__padding--regular);
+}
+
+:global(.webchat) .collapsible-grouping__toggle {
+  flex: none;
+  margin-inline-start: auto;
 }
 
 :global(.webchat) .collapsible-grouping__chevron {
   order: -1;
-  transition: transform 0.2s ease;
+  transition: transform var(--webchat__transition-duration) var(--webchat__transition-easing);
 }
 
 :global(.webchat) .collapsible-grouping--open .collapsible-grouping__chevron {
@@ -35,19 +41,26 @@
 
 :global(.webchat) .collapsible-grouping__content {
   display: grid;
-  min-width: 0;
   height: 0;
-  overflow: clip;
   interpolate-size: allow-keywords;
+  min-width: 0;
+  opacity: 0;
+  overflow: clip;
   transition:
-    visibility 0s,
-    height 0.2s ease;
+    all var(--webchat__transition-duration) var(--webchat__transition-easing),
+    visibility 0s linear var(--webchat__transition-duration);
   visibility: hidden;
 }
 
 :global(.webchat) .collapsible-grouping__content--open {
   height: auto;
   margin: calc(var(--webchat__padding--regular) / -2);
+  opacity: 1;
   padding: calc(var(--webchat__padding--regular) / 2);
+  transition:
+    all var(--webchat__transition-duration) var(--webchat__transition-easing),
+    border-color var(--webchat__transition-duration) calc(var(--webchat__transition-duration) / 2)
+    var(--webchat__transition-easing),
+    visibility 0s linear 0s;
   visibility: unset;
 }

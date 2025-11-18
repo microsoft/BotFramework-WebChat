@@ -2,7 +2,8 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
+import React, { Fragment, memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
+import cx from 'classnames';
 import {
   array,
   custom,
@@ -17,6 +18,7 @@ import {
 } from 'valibot';
 
 import StackedLayoutMain from '../../../../../Activity/StackedLayoutMain';
+import StackedLayoutMessageStatus from '../../../../../Activity/StackedLayoutMessageStatus';
 import StackedLayoutRoot from '../../../../../Activity/StackedLayoutRoot';
 import StackedLayoutStatus from '../../../../../Activity/StackedLayoutStatus';
 import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
@@ -35,11 +37,12 @@ import {
 import { android } from '../../../../../Utils/detectBrowser';
 import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import CollapsibleGrouping from '../CollapsibleGrouping';
+import CollapsibleGroupingTitle from '../CollapsibleGroupingTitle';
 import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 
 import styles from './PartGroupingActivity.module.css';
 
-const { useAvatarForBot, useStyleOptions, useGetKeyByActivity } = hooks;
+const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
 const partGroupingActivityPropsSchema = pipe(
   object({
@@ -134,6 +137,7 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
 });
 
 function PartGroupingActivity(props: PartGroupingActivityProps) {
+  const localize = useLocalizer();
   const { activities, children } = validateProps(partGroupingActivityPropsSchema, props);
 
   const classNames = useStyles(styles);
@@ -162,7 +166,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const lastActivity = activities.at(-1);
 
   const currentMessage = useMemo(
-    () => messages.toReversed().find(message => message.creativeWorkStatus === 'incomplete') || lastMessage,
+    () => messages.toReversed().find(message => message.creativeWorkStatus === 'Incomplete') || lastMessage,
     [messages, lastMessage]
   );
 
@@ -175,6 +179,28 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [{ bubbleNubOffset }] = useStyleOptions();
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
+
+  const defaultWorkStatus = useMemo(
+    () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
+    [messages]
+  );
+
+  const groupHeader = useMemo(
+    () => (
+      <Fragment>
+        {defaultWorkStatus && (
+          <StackedLayoutMessageStatus
+            className={classNames['part-grouping-activity__message-status']}
+            creativeWorkStatus={currentMessage?.creativeWorkStatus ?? defaultWorkStatus}
+          />
+        )}
+        <CollapsibleGroupingTitle>
+          {currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')}
+        </CollapsibleGroupingTitle>
+      </Fragment>
+    ),
+    [classNames, currentMessage?.abstract, currentMessage?.creativeWorkStatus, defaultWorkStatus, localize]
+  );
 
   return (
     <FocusablePartGroupingActivity
@@ -189,7 +215,14 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         topCallout={topAlignedCallout}
       >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
-          <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={currentMessage?.abstract || ''}>
+          <CollapsibleGrouping
+            className={cx(classNames['part-grouping-activity__collapsible'], {
+              [classNames['part-grouping-activity__collapsible--open']]: isGroupOpen
+            })}
+            header={groupHeader}
+            isOpen={isGroupOpen}
+            onToggle={setIsGroupOpen}
+          >
             <TranscriptActivityList className={classNames['part-grouping-activity__activities']}>
               {children}
             </TranscriptActivityList>

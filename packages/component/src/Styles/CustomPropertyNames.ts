@@ -37,7 +37,8 @@ const CustomPropertyNames = Object.freeze({
   MinWidthMessageBubble: '--webchat__min-width--message-bubble',
   PaddingRegular: '--webchat__padding--regular',
   SizeAvatar: '--webchat__size--avatar',
-  TransitionDuration: '--webchat__transition-duration'
+  TransitionDuration: '--webchat__transition-duration',
+  TransitionEasing: '--webchat__transition-easing'
 }) satisfies Readonly<Record<string, `--webchat__${string}`>>;
 
 export default CustomPropertyNames;

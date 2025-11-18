@@ -33,6 +33,10 @@
   flex: auto;
 }
 
+:global(.webchat) .collapsible-content__chevron {
+  transition: transform var(--webchat__transition-duration) var(--webchat__transition-easing);
+}
+
 :global(.webchat) .collapsible-content__content {
   display: flex;
   flex-direction: column;

@@ -67,7 +67,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
       transcriptVisualKeyboardIndicatorColor,
       transcriptVisualKeyboardIndicatorStyle,
       transcriptVisualKeyboardIndicatorWidth,
-      transitionDuration
+      transitionDuration,
+      transitionEasing
     } = styleOptions;
 
     const randomClass = `w${uniqueId()}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
@@ -109,6 +110,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
+  ${CustomPropertyNames.TransitionEasing}: ${transitionEasing};
 }
 `;
     const [style] = makeCreateStyles(contents)(`component/CustomPropertiesContainer-${uniqueId()}`);

@@ -125,8 +125,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - The mode is suitable for providing chain-of-thought reasoning
    - Added visual indication of `creativeWorkStatus` property in `Message` entity:
       - `undefined` - no indicator is shown
-      - `'incomplete'` - show loader aside from the message
-      - `'published'` - show checkmark aside from the message
+      - `'Incomplete'` - show loader aside from the message
+      - `'Published'` - show checkmark aside from the message
    - Added a `position` property support for the `Message` entity
       - The `position` property takes precedence over existing sequence ID
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
@@ -145,8 +145,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Added target to Chrome 100 and re-enable Lightning CSS for ESM builds, by [@compulim](https://github.com/compulim) in PR [#5602](https://github.com/microsoft/BotFramework-WebChat/pull/5602)
 - Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 - Cleaned up `<ThemeProvider>` and various CSS related code, in PR [#5611](https://github.com/microsoft/BotFramework-WebChat/pull/5611), by [@compulim](https://github.com/compulim)
-- (Experimental) Reworked the copilot variant to align with the modern Copilot UX, in PR [#5630](https://github.com/microsoft/BotFramework-WebChat/pull/5630), by [@OEvgeny](https://github.com/OEvgeny)
+- (Experimental) Reworked the copilot variant to align with the modern Copilot UX, in PR [#5630](https://github.com/microsoft/BotFramework-WebChat/pull/5630), by [@OEvgeny](https://github.com/OEvgeny), in PR [#5634](https://github.com/microsoft/BotFramework-WebChat/pull/5634), by [@OEvgeny](https://github.com/OEvgeny)
    - The legacy design is temporarily available as `copilot-deprecated` for migration
+   - Added loading animation for `copilot`, `copilot-deprecated` and `fluent` variants
 - New JSON-LD graph backend, by [@compulim](https://github.com/compulim) in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622)
 
 ### Changed

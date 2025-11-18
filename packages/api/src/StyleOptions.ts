@@ -29,9 +29,14 @@ type StyleOptions = {
   paddingWide?: number;
 
   /**
-  Transition for Bubble, Carousel, and StackedLayout
+   * The duration to be used for transitions
    */
   transitionDuration?: string;
+
+  /**
+   * The easing function to be used for transitions
+   */
+  transitionEasing?: string;
 
   /**
    * Fonts
