@@ -201,7 +201,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #endregion
 
-  // #region Position map
+  // #region Sequence sorted activities
 
   let lastPosition = 0;
   const POSITION_INCREMENT = 1_000;
