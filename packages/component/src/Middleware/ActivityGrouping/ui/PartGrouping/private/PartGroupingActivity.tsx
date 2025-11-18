@@ -180,19 +180,24 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
 
+  const defaultWorkStatus = useMemo(
+    () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
+    [messages]
+  );
+
   const groupHeader = useMemo(
     () => (
       <Fragment>
         <StackedLayoutMessageStatus
           className={classNames['part-grouping-activity__message-status']}
-          creativeWorkStatus={currentMessage?.creativeWorkStatus ?? 'Incomplete'}
+          creativeWorkStatus={currentMessage?.creativeWorkStatus ?? defaultWorkStatus}
         />
         <CollapsibleGroupingTitle>
           {currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
       </Fragment>
     ),
-    [classNames, currentMessage, localize]
+    [classNames, currentMessage?.abstract, currentMessage?.creativeWorkStatus, defaultWorkStatus, localize]
   );
 
   return (
