@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+      import { fn, spyOn } from 'jest-mock';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+      import { version } from 'react';
+
+      const IGNORING_KEYWORDS = [
+        'Cannot update a component',
+        'Support for defaultProps',
+        'ReactDOM.render is no longer supported',
+        'To locate the bad setState()',
+        'has been deprecated, use `import {'
+      ];
+
+      spyOn(console, 'error').mockImplementation((...args) => {
+        const [message] = args;
+
+        if (typeof message === 'string' && IGNORING_KEYWORDS.some(keywords => message.includes(keywords))) {
+          return;
+        }
+
+        error(...args);
+      });
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' }
+            }
+          ],
+          from: { role: 'bot' },
+          id: 'a-00001',
+          text: 'Task 1 at t=0',
+          timestamp: new Date(0).toISOString(),
+          type: 'typing'
+        });
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamId: 'a-00001',
+            streamSequence: 2,
+            streamType: 'streaming'
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' }
+            }
+          ],
+          from: { role: 'bot' },
+          id: 'a-00002',
+          text: 'Task 1 at t=10',
+          timestamp: new Date(10).toISOString(),
+          type: 'typing'
+        });
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' }
+            }
+          ],
+          from: { role: 'bot' },
+          id: 'a-00003',
+          text: 'Task 2 at t=20',
+          timestamp: new Date(20).toISOString(),
+          type: 'message'
+        });
+
+        // expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['t=10']);
+
+        await host.snapshot('local');
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          id: 'a-00004',
+          text: 'Hello, World at t=5',
+          timestamp: new Date(5).toISOString()
+        });
+
+        console.log(store.getState().activities);
+      });
+    </script>
+  </body>
+</html>
