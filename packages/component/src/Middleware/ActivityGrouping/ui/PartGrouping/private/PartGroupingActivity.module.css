@@ -9,10 +9,10 @@
     margin-inline-end: var(--webchat__padding--regular);
     opacity: 1;
     place-self: center;
-    visibility: unset;
     transition:
       all var(--webchat__transition-duration) var(--webchat__transition-easing),
       visibility 0s linear 0s;
+    visibility: unset;
   }
 
   .part-grouping-activity__collapsible.part-grouping-activity__collapsible--open
@@ -20,9 +20,9 @@
     margin-inline: 0;
     opacity: 0;
     visibility: hidden;
-    width: 0;
     transition:
       all var(--webchat__transition-duration) var(--webchat__transition-easing),
       visibility 0s linear var(--webchat__transition-duration);
+    width: 0;
   }
 }

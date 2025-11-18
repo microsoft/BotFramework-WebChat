@@ -180,6 +180,21 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
 
+  const groupHeader = useMemo(
+    () => (
+      <Fragment>
+        <StackedLayoutMessageStatus
+          className={classNames['part-grouping-activity__message-status']}
+          creativeWorkStatus={currentMessage?.creativeWorkStatus ?? 'Incomplete'}
+        />
+        <CollapsibleGroupingTitle>
+          {currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')}
+        </CollapsibleGroupingTitle>
+      </Fragment>
+    ),
+    [classNames, currentMessage, localize]
+  );
+
   return (
     <FocusablePartGroupingActivity
       activity={firstActivity}
@@ -197,17 +212,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
             className={cx(classNames['part-grouping-activity__collapsible'], {
               [classNames['part-grouping-activity__collapsible--open']]: isGroupOpen
             })}
-            header={
-              <Fragment>
-                <StackedLayoutMessageStatus
-                  className={classNames['part-grouping-activity__message-status']}
-                  creativeWorkStatus={currentMessage?.creativeWorkStatus ?? 'Incomplete'}
-                />
-                <CollapsibleGroupingTitle>
-                  {currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')}
-                </CollapsibleGroupingTitle>
-              </Fragment>
-            }
+            header={groupHeader}
             isOpen={isGroupOpen}
             onToggle={setIsGroupOpen}
           >

@@ -105,8 +105,8 @@
   .stacked-layout__message-status {
     --webchat__component-icon--size: 19px;
 
-    color: var(--webchat__color--subtle);
     box-sizing: border-box;
+    color: var(--webchat__color--subtle);
     display: grid;
     font-size: 1.1em;
     grid-template-areas: 'message-status-icon';
@@ -139,7 +139,7 @@
     visibility: unset;
   }
 
-  .stacked-layout__message-status--final .stacked-layout__message-status-complete-icon {
+  .stacked-layout__message-status--published .stacked-layout__message-status-complete-icon {
     visibility: unset;
   }
 
@@ -216,8 +216,8 @@
       display: none;
     }
 
-    &:has(.stacked-layout__bubble .stacked-layout__message-status--final),
-    &:has(.stacked-layout__bubble .stacked-layout__message-status--incomplete) {
+    &:has(.stacked-layout__bubble .stacked-layout__message-status--incomplete),
+    &:has(.stacked-layout__bubble .stacked-layout__message-status--published) {
       .stacked-layout__bubble {
         grid-template:
           'status content'

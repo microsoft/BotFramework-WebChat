@@ -29,9 +29,9 @@ const StackedLayoutMessageStatus = (props: StackedLayoutMessageStatusProps) => {
       className={cx(
         classNames['stacked-layout__message-status'],
         {
-          [classNames['stacked-layout__message-status--unset']]: !creativeWorkStatus,
-          [classNames['stacked-layout__message-status--final']]: creativeWorkStatus === 'Published',
-          [classNames['stacked-layout__message-status--incomplete']]: creativeWorkStatus === 'Incomplete'
+          [classNames['stacked-layout__message-status--incomplete']]: creativeWorkStatus === 'Incomplete',
+          [classNames['stacked-layout__message-status--published']]: creativeWorkStatus === 'Published',
+          [classNames['stacked-layout__message-status--unset']]: !creativeWorkStatus
         },
         className
       )}
