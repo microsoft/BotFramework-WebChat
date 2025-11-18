@@ -3,6 +3,7 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import type {
+  Activity,
   ActivityInternalIdentifier,
   ActivityMapEntry,
   HowToGroupingIdentifier,
@@ -12,6 +13,16 @@ import type {
 import upsert, { INITIAL_STATE } from './upsert';
 
 type SingularOrPlural<T> = T | readonly T[];
+
+function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
+  return {
+    ...activity,
+    channelData: {
+      ...activity.channelData,
+      'webchat:internal:position': expectedPosition
+    } as any
+  };
+}
 
 function buildActivity(
   activity: { id: string; text: string; timestamp: string },
@@ -65,7 +76,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -104,7 +115,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
       ] satisfies SortedChatHistory);
     })
     .and('`sortedActivities` should match snapshot', (_, state) => {
-      expect(state).toHaveProperty('sortedActivities', [activity1]);
+      expect(state).toHaveProperty('sortedActivities', [activityToExpectation(activity1)]);
     })
     .when('upsert another activity into same group', (_, state) => upsert({ Date }, state, activity2))
     .then('should add to `activityMap`', (_, state) => {
@@ -113,7 +124,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -122,7 +133,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             'a-00002',
             {
-              activity: activity2,
+              activity: activityToExpectation(activity2),
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: 2_000,
               type: 'activity'
@@ -167,7 +178,10 @@ scenario('upserting plain activity in the same grouping', bdd => {
       ] satisfies SortedChatHistory);
     })
     .and('`sortedActivities` should match snapshot', (_, state) => {
-      expect(state).toHaveProperty('sortedActivities', [activity1, activity2]);
+      expect(state).toHaveProperty('sortedActivities', [
+        activityToExpectation(activity1),
+        activityToExpectation(activity2)
+      ]);
     })
     .when('the third activity is upserted', (_, state) => upsert({ Date }, state, activity3))
     .then('should add to `activityMap`', (_, state) => {
@@ -176,7 +190,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -185,7 +199,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             'a-00002',
             {
-              activity: activity2,
+              activity: activityToExpectation(activity2),
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: 2_000,
               type: 'activity'
@@ -194,7 +208,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             'a-00003',
             {
-              activity: activity3,
+              activity: activityToExpectation(activity3),
               activityInternalId: 'a-00003' as ActivityInternalIdentifier,
               logicalTimestamp: 3_000,
               type: 'activity'
@@ -245,7 +259,11 @@ scenario('upserting plain activity in the same grouping', bdd => {
       ] satisfies SortedChatHistory);
     })
     .and('`sortedActivities` should match snapshot', (_, state) => {
-      expect(state).toHaveProperty('sortedActivities', [activity1, activity3, activity2]);
+      expect(state).toHaveProperty('sortedActivities', [
+        activityToExpectation(activity1),
+        activityToExpectation(activity3),
+        activityToExpectation(activity2)
+      ]);
     });
 });
 
@@ -289,7 +307,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
       ]);
     })
     .and('`sortedActivities` should match snapshot', (_, state) => {
-      expect(state.sortedActivities).toEqual([activity1]);
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity1, 1_000)]);
     })
     .when('upsert another activity into same group with a former timestamp', (_, state) =>
       upsert({ Date }, state, activity2)
@@ -343,6 +361,9 @@ scenario('upserting plain activity in two different grouping', bdd => {
       ] satisfies SortedChatHistory);
     })
     .and('`sortedActivities` should match snapshot', (_, state) => {
-      expect(state.sortedActivities).toEqual([activity2, activity1]);
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity2, 1),
+        activityToExpectation(activity1, 1_000)
+      ]);
     });
 });

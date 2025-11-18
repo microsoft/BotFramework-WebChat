@@ -5,6 +5,16 @@ import upsert, { INITIAL_STATE } from './upsert';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import type { Activity, ActivityInternalIdentifier, ActivityMapEntry, SortedChatHistory } from './types';
 
+function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
+  return {
+    ...activity,
+    channelData: {
+      ...activity.channelData,
+      'webchat:internal:position': expectedPosition
+    } as any
+  };
+}
+
 scenario('upserting 2 activities with timestamps', bdd => {
   const activity1: Activity = {
     channelData: {
@@ -41,7 +51,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
         new Map(
           Object.entries({
             'a-00001': {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001',
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -60,7 +70,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
       ]);
     })
     .and('should match `sortedActivities` snapshot', (_, state) => {
-      expect(state).toHaveProperty('sortedActivities', [activity1]);
+      expect(state).toHaveProperty('sortedActivities', [activityToExpectation(activity1, 1_000)]);
     })
     .when('another activity is upserted', (_, state) => upsert({ Date }, state, activity2))
     .then('should have added activity to `activityMap`', (_, state) => {
@@ -72,7 +82,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
               activity: {
                 channelData: {
                   'webchat:internal:id': 'a-00001',
-                  'webchat:internal:position': 0,
+                  'webchat:internal:position': expect.any(Number),
                   'webchat:send-status': undefined
                 },
                 from: { id: 'bot', role: 'bot' },
@@ -89,7 +99,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
               activity: {
                 channelData: {
                   'webchat:internal:id': 'a-00002',
-                  'webchat:internal:position': 0,
+                  'webchat:internal:position': expect.any(Number),
                   'webchat:send-status': undefined
                 },
                 from: { id: 'bot', role: 'bot' },
@@ -121,7 +131,10 @@ scenario('upserting 2 activities with timestamps', bdd => {
       ]);
     })
     .and('should match `sortedActivities` snapshot', (_, state) => {
-      expect(state).toHaveProperty('sortedActivities', [activity2, activity1]);
+      expect(state).toHaveProperty('sortedActivities', [
+        activityToExpectation(activity2, 1),
+        activityToExpectation(activity1, 1_000)
+      ]);
     });
 });
 
@@ -189,7 +202,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -207,6 +220,9 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         }
       ] satisfies SortedChatHistory);
     })
+    .and('`sortedActivities` should match', (_, state) => {
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity1, 1_000)]);
+    })
     .when('upserting an activity with t=undefined', (_, state) => upsert({ Date }, state, activity2))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
@@ -214,7 +230,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -223,7 +239,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00002',
             {
-              activity: activity2,
+              activity: activityToExpectation(activity2),
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: undefined,
               type: 'activity'
@@ -246,6 +262,12 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         }
       ] satisfies SortedChatHistory);
     })
+    .and('`sortedActivities` should match', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity1, 1_000),
+        activityToExpectation(activity2, 2_000)
+      ]);
+    })
     .when('upserting an activity with t=2000ms', (_, state) => upsert({ Date }, state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
@@ -253,7 +275,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -262,7 +284,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00002',
             {
-              activity: activity2,
+              activity: activityToExpectation(activity2),
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: undefined,
               type: 'activity'
@@ -271,7 +293,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00003',
             {
-              activity: activity3,
+              activity: activityToExpectation(activity3),
               activityInternalId: 'a-00003' as ActivityInternalIdentifier,
               logicalTimestamp: 2_000,
               type: 'activity'
@@ -299,6 +321,13 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         }
       ] satisfies SortedChatHistory);
     })
+    .and('`sortedActivities` should match', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity1, 1_000),
+        activityToExpectation(activity2, 2_000),
+        activityToExpectation(activity3, 3_000)
+      ]);
+    })
     .when('upserting an activity with t=1500ms', (_, state) => upsert({ Date }, state, activity4))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
@@ -306,7 +335,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -315,7 +344,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00002',
             {
-              activity: activity2,
+              activity: activityToExpectation(activity2),
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: undefined,
               type: 'activity'
@@ -324,7 +353,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00003',
             {
-              activity: activity3,
+              activity: activityToExpectation(activity3),
               activityInternalId: 'a-00003' as ActivityInternalIdentifier,
               logicalTimestamp: 2_000,
               type: 'activity'
@@ -333,7 +362,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00004',
             {
-              activity: activity4,
+              activity: activityToExpectation(activity4),
               activityInternalId: 'a-00004' as ActivityInternalIdentifier,
               logicalTimestamp: 1_500,
               type: 'activity'
@@ -366,6 +395,14 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         }
       ] satisfies SortedChatHistory);
     })
+    .and('`sortedActivities` should match', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity1, 1_000),
+        activityToExpectation(activity2, 2_000),
+        activityToExpectation(activity4, 2_001),
+        activityToExpectation(activity3, 3_000)
+      ]);
+    })
     .when('upserting the t=undefined activity is updated with t=1750ms', (_, state) =>
       upsert({ Date }, state, activity2b)
     )
@@ -375,7 +412,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00001',
             {
-              activity: activity1,
+              activity: activityToExpectation(activity1),
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
@@ -384,7 +421,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00002',
             {
-              activity: activity2b,
+              activity: activityToExpectation(activity2b),
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: 1_750,
               type: 'activity'
@@ -393,7 +430,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00003',
             {
-              activity: activity3,
+              activity: activityToExpectation(activity3),
               activityInternalId: 'a-00003' as ActivityInternalIdentifier,
               logicalTimestamp: 2_000,
               type: 'activity'
@@ -402,7 +439,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           [
             'a-00004',
             {
-              activity: activity4,
+              activity: activityToExpectation(activity4),
               activityInternalId: 'a-00004' as ActivityInternalIdentifier,
               logicalTimestamp: 1_500,
               type: 'activity'
@@ -434,5 +471,13 @@ scenario('upserting activities which some with timestamp and some without', bdd 
           type: 'activity'
         }
       ] satisfies SortedChatHistory);
+    })
+    .and('`sortedActivities` should match', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity1, 1_000),
+        activityToExpectation(activity4, 2_001),
+        activityToExpectation(activity2b, 2_002),
+        activityToExpectation(activity3, 3_000)
+      ]);
     });
 });

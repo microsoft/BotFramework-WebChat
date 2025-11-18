@@ -1,18 +1,20 @@
-import getActivityLivestreamingMetadata from '../../utils/getActivityLivestreamingMetadata';
+/* eslint-disable complexity */
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
+import getActivityLivestreamingMetadata from '../../utils/getActivityLivestreamingMetadata';
 import getActivityInternalId from './private/getActivityInternalId';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
 import getPartGroupingMetadataMap from './private/getPartGroupingMetadataMap';
 import insertSorted from './private/insertSorted';
-import type {
-  Activity,
-  ActivityEntry,
-  HowToGroupingIdentifier,
-  HowToGroupingMapEntry,
-  LivestreamSessionIdentifier,
-  LivestreamSessionMapEntry,
-  SortedChatHistoryEntry,
-  State
+import {
+  type Activity,
+  type ActivityEntry,
+  type ActivityMapEntry,
+  type HowToGroupingIdentifier,
+  type HowToGroupingMapEntry,
+  type LivestreamSessionIdentifier,
+  type LivestreamSessionMapEntry,
+  type SortedChatHistoryEntry,
+  type State
 } from './types';
 
 const INITIAL_STATE = Object.freeze({
@@ -165,39 +167,94 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #region Sorted activities
 
-  const sortedActivities = Object.freeze(
-    Array.from<Activity>(
-      (function* () {
-        for (const sortedEntry of nextSortedChatHistoryList) {
-          if (sortedEntry.type === 'activity') {
-            // TODO: [P*] Instead of deferencing, use pointer instead.
-            yield nextActivityMap.get(sortedEntry.activityInternalId)!.activity;
-          } else if (sortedEntry.type === 'how to grouping') {
-            const howToGrouping = nextHowToGroupingMap.get(sortedEntry.howToGroupingId)!;
+  const nextSortedActivities = Array.from<Activity>(
+    (function* () {
+      for (const sortedEntry of nextSortedChatHistoryList) {
+        if (sortedEntry.type === 'activity') {
+          // TODO: [P*] Instead of deferencing, use pointer instead.
+          yield nextActivityMap.get(sortedEntry.activityInternalId)!.activity;
+        } else if (sortedEntry.type === 'how to grouping') {
+          const howToGrouping = nextHowToGroupingMap.get(sortedEntry.howToGroupingId)!;
 
-            for (const howToPartEntry of howToGrouping.partList) {
-              if (howToPartEntry.type === 'activity') {
-                yield nextActivityMap.get(howToPartEntry.activityInternalId)!.activity;
-              } else {
-                howToPartEntry.type satisfies 'livestream session';
+          for (const howToPartEntry of howToGrouping.partList) {
+            if (howToPartEntry.type === 'activity') {
+              yield nextActivityMap.get(howToPartEntry.activityInternalId)!.activity;
+            } else {
+              howToPartEntry.type satisfies 'livestream session';
 
-                for (const activityEntry of nextLivestreamSessionMap.get(howToPartEntry.livestreamSessionId)!
-                  .activities) {
-                  yield nextActivityMap.get(activityEntry.activityInternalId)!.activity;
-                }
+              for (const activityEntry of nextLivestreamSessionMap.get(howToPartEntry.livestreamSessionId)!
+                .activities) {
+                yield nextActivityMap.get(activityEntry.activityInternalId)!.activity;
               }
             }
-          } else {
-            sortedEntry.type satisfies 'livestream session';
+          }
+        } else {
+          sortedEntry.type satisfies 'livestream session';
 
-            for (const activityEntry of nextLivestreamSessionMap.get(sortedEntry.livestreamSessionId)!.activities) {
-              yield nextActivityMap.get(activityEntry.activityInternalId)!.activity;
-            }
+          for (const activityEntry of nextLivestreamSessionMap.get(sortedEntry.livestreamSessionId)!.activities) {
+            yield nextActivityMap.get(activityEntry.activityInternalId)!.activity;
           }
         }
-      })()
-    )
+      }
+    })()
   );
+
+  // #endregion
+
+  // #region Position map
+
+  let lastPosition = 0;
+  const POSITION_INCREMENT = 1_000;
+
+  for (
+    let index = 0, { length: nextSortedActivitiesLength } = nextSortedActivities;
+    index < nextSortedActivitiesLength;
+    index++
+  ) {
+    const currentActivity = nextSortedActivities[+index]!;
+    const currentActivityIdentifier = getActivityInternalId(currentActivity);
+    const hasNextSibling = index + 1 < nextSortedActivitiesLength;
+    const position = currentActivity.channelData['webchat:internal:position'];
+
+    let nextPosition: number;
+
+    if (typeof position === 'undefined' || position <= lastPosition) {
+      if (hasNextSibling) {
+        const nextSiblingPosition = nextSortedActivities[+index + 1]!.channelData['webchat:internal:position'];
+
+        nextPosition = lastPosition + 1;
+
+        if (nextPosition > nextSiblingPosition) {
+          nextPosition = lastPosition + POSITION_INCREMENT;
+        }
+      } else {
+        nextPosition = lastPosition + POSITION_INCREMENT;
+      }
+    } else {
+      nextPosition = position;
+    }
+
+    if (nextPosition !== position) {
+      const activityMapEntry = nextActivityMap.get(currentActivityIdentifier)!;
+
+      const nextActivityEntry: ActivityMapEntry = {
+        ...activityMapEntry,
+        activity: {
+          ...activityMapEntry.activity,
+          channelData: {
+            ...activityMapEntry.activity.channelData,
+            'webchat:internal:position': nextPosition
+          } as any
+        }
+      };
+
+      nextActivityMap.set(currentActivityIdentifier, nextActivityEntry);
+
+      nextSortedActivities[+index] = nextActivityEntry.activity;
+    }
+
+    lastPosition = nextPosition;
+  }
 
   // #endregion
 
@@ -205,7 +262,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     activityMap: nextActivityMap,
     howToGroupingMap: nextHowToGroupingMap,
     livestreamingSessionMap: nextLivestreamSessionMap,
-    sortedActivities,
+    sortedActivities: Object.freeze(nextSortedActivities),
     sortedChatHistoryList: nextSortedChatHistoryList
   } satisfies State);
 }
