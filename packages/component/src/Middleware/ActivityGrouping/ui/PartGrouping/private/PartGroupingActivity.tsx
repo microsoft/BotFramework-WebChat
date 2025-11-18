@@ -188,10 +188,12 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const groupHeader = useMemo(
     () => (
       <Fragment>
-        <StackedLayoutMessageStatus
-          className={classNames['part-grouping-activity__message-status']}
-          creativeWorkStatus={currentMessage?.creativeWorkStatus ?? defaultWorkStatus}
-        />
+        {defaultWorkStatus && (
+          <StackedLayoutMessageStatus
+            className={classNames['part-grouping-activity__message-status']}
+            creativeWorkStatus={currentMessage?.creativeWorkStatus ?? defaultWorkStatus}
+          />
+        )}
         <CollapsibleGroupingTitle>
           {currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
