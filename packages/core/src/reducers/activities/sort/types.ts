@@ -8,25 +8,25 @@ type HowToGroupingIdentifier = Tagged<string, 'how to grouping identifier'>;
 type LivestreamSessionIdentifier = Tagged<string, 'livestream session identifier'>;
 
 type HowToGroupingEntry = {
-  howToGroupingId: HowToGroupingIdentifier;
-  logicalTimestamp: number | undefined;
-  type: 'how to grouping';
+  readonly howToGroupingId: HowToGroupingIdentifier;
+  readonly logicalTimestamp: number | undefined;
+  readonly type: 'how to grouping';
 };
 
 type LivestreamSessionEntry = {
-  livestreamSessionId: LivestreamSessionIdentifier;
-  logicalTimestamp: number | undefined;
-  type: 'livestream session';
+  readonly livestreamSessionId: LivestreamSessionIdentifier;
+  readonly logicalTimestamp: number | undefined;
+  readonly type: 'livestream session';
 };
 
 type ActivityEntry = {
-  activityInternalId: ActivityInternalIdentifier;
-  logicalTimestamp: number | undefined;
-  type: 'activity';
+  readonly activityInternalId: ActivityInternalIdentifier;
+  readonly logicalTimestamp: number | undefined;
+  readonly type: 'activity';
 };
 
 type HowToGroupingMapPartEntry = (ActivityEntry | LivestreamSessionEntry) & {
-  position: number | undefined;
+  readonly position: number | undefined;
 };
 type HowToGroupingMapEntry = {
   readonly logicalTimestamp: number | undefined;
@@ -37,7 +37,7 @@ type HowToGroupingMap = ReadonlyMap<HowToGroupingIdentifier, HowToGroupingMapEnt
 type SortedChatHistoryEntry = ActivityEntry | LivestreamSessionEntry | HowToGroupingEntry;
 type SortedChatHistory = readonly SortedChatHistoryEntry[];
 
-type LivestreamSessionMapEntryActivityEntry = ActivityEntry & { sequenceNumber: number };
+type LivestreamSessionMapEntryActivityEntry = ActivityEntry & { readonly sequenceNumber: number };
 
 type LivestreamSessionMapEntry = {
   readonly activities: readonly LivestreamSessionMapEntryActivityEntry[];

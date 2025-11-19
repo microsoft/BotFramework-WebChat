@@ -34,12 +34,15 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const activityInternalId = getActivityInternalId(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
 
-  nextActivityMap.set(activityInternalId, {
-    activity,
+  nextActivityMap.set(
     activityInternalId,
-    logicalTimestamp,
-    type: 'activity'
-  });
+    Object.freeze({
+      activity,
+      activityInternalId,
+      logicalTimestamp,
+      type: 'activity'
+    })
+  );
 
   let sortedChatHistoryListEntry: SortedChatHistoryEntry = {
     activityInternalId,
@@ -57,18 +60,19 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const nextLivestreamingSession = nextLivestreamSessionMap.get(sessionId);
 
     const finalized =
-      (nextLivestreamingSession?.finalized ?? false) || activityLivestreamingMetadata.type === 'final activity';
+      (nextLivestreamingSession ? nextLivestreamingSession.finalized : false) ||
+      activityLivestreamingMetadata.type === 'final activity';
 
-    const nextLivestreamingSessionMapEntry = Object.freeze({
+    const nextLivestreamingSessionMapEntry = {
       activities: Object.freeze(
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
-          nextLivestreamingSession?.activities ?? [],
-          {
+          nextLivestreamingSession ? nextLivestreamingSession.activities : [],
+          Object.freeze({
             activityInternalId,
             logicalTimestamp,
             sequenceNumber: activityLivestreamingMetadata.sequenceNumber,
             type: 'activity'
-          },
+          }),
           ({ sequenceNumber: x }, { sequenceNumber: y }) =>
             typeof x === 'undefined' || typeof y === 'undefined'
               ? // eslint-disable-next-line no-magic-numbers
@@ -82,10 +86,9 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         : nextLivestreamingSession
           ? nextLivestreamingSession.logicalTimestamp
           : logicalTimestamp
-      // logicalTimestamp: nextLivestreamingSession?.logicalTimestamp ?? logicalTimestamp
-    } satisfies LivestreamSessionMapEntry);
+    } satisfies LivestreamSessionMapEntry;
 
-    nextLivestreamSessionMap.set(sessionId, nextLivestreamingSessionMapEntry);
+    nextLivestreamSessionMap.set(sessionId, Object.freeze(nextLivestreamingSessionMapEntry));
 
     sortedChatHistoryListEntry = {
       livestreamSessionId: sessionId,
@@ -106,7 +109,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const nextPartGroupingEntry: HowToGroupingMapEntry =
       nextHowToGroupingMap.get(howToGroupingId) ??
-      Object.freeze({ logicalTimestamp, partList: Object.freeze([]) } satisfies HowToGroupingMapEntry);
+      ({ logicalTimestamp, partList: Object.freeze([]) } satisfies HowToGroupingMapEntry);
 
     let nextPartList = Array.from(nextPartGroupingEntry.partList);
 
@@ -169,7 +172,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   nextSortedChatHistoryList = insertSorted(
     nextSortedChatHistoryList,
-    sortedChatHistoryListEntry,
+    Object.freeze(sortedChatHistoryListEntry),
     ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
       // eslint-disable-next-line no-magic-numbers
       typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y
@@ -249,10 +252,10 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     if (nextPosition !== position) {
       const activityMapEntry = nextActivityMap.get(currentActivityIdentifier)!;
 
-      // TODO: [P0] We should freeze the activity.
-      //       For backcompat, we can consider have a props that temporarily disable this behavior.
-      const nextActivityEntry: ActivityMapEntry = {
+      const nextActivityEntry: ActivityMapEntry = Object.freeze({
         ...activityMapEntry,
+        // TODO: [P0] We should freeze the activity.
+        //       For backcompat, we can consider have a props that temporarily disable this behavior.
         activity: {
           ...activityMapEntry.activity,
           channelData: {
@@ -260,7 +263,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
             'webchat:internal:position': nextPosition
           } as any
         }
-      };
+      });
 
       nextActivityMap.set(currentActivityIdentifier, nextActivityEntry);
 
