@@ -1,4 +1,4 @@
-import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import type { ActivityInternalIdentifier } from '../types';
 
 export default function getActivityInternalId(activity: WebChatActivity): ActivityInternalIdentifier {
