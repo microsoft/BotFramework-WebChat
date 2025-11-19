@@ -84,7 +84,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\" \"../core-graph/package.json\"",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../core-graph/package.json\"",
     "test:tsd": "tsd"
   },
   "engines": {
@@ -113,6 +113,7 @@
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-core-graph": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
+    "@testduet/given-when-then": "^0.1.1-main.28754e6",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "babel-plugin-istanbul": "^7.0.0",
