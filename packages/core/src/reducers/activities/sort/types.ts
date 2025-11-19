@@ -37,8 +37,10 @@ type HowToGroupingMap = ReadonlyMap<HowToGroupingIdentifier, HowToGroupingMapEnt
 type SortedChatHistoryEntry = ActivityEntry | LivestreamSessionEntry | HowToGroupingEntry;
 type SortedChatHistory = readonly SortedChatHistoryEntry[];
 
+type LivestreamSessionMapEntryActivityEntry = ActivityEntry & { sequenceNumber: number };
+
 type LivestreamSessionMapEntry = {
-  readonly activities: readonly ActivityEntry[];
+  readonly activities: readonly LivestreamSessionMapEntryActivityEntry[];
   readonly finalized: boolean;
   readonly logicalTimestamp: number | undefined;
 };
@@ -70,6 +72,7 @@ export {
   type LivestreamSessionIdentifier,
   type LivestreamSessionMap,
   type LivestreamSessionMapEntry,
+  type LivestreamSessionMapEntryActivityEntry,
   type SortedChatHistory,
   type SortedChatHistoryEntry,
   type State

@@ -7,12 +7,12 @@ import getPartGroupingMetadataMap from './private/getPartGroupingMetadataMap';
 import insertSorted from './private/insertSorted';
 import {
   type Activity,
-  type ActivityEntry,
   type ActivityMapEntry,
   type HowToGroupingIdentifier,
   type HowToGroupingMapEntry,
   type LivestreamSessionIdentifier,
   type LivestreamSessionMapEntry,
+  type LivestreamSessionMapEntryActivityEntry,
   type SortedChatHistoryEntry,
   type State
 } from './types';
@@ -61,14 +61,15 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const nextLivestreamingSessionMapEntry = Object.freeze({
       activities: Object.freeze(
-        insertSorted<ActivityEntry>(
+        insertSorted<LivestreamSessionMapEntryActivityEntry>(
           nextLivestreamingSession?.activities ?? [],
           {
             activityInternalId,
             logicalTimestamp,
+            sequenceNumber: activityLivestreamingMetadata.sequenceNumber,
             type: 'activity'
           },
-          ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
+          ({ sequenceNumber: x }, { sequenceNumber: y }) =>
             typeof x === 'undefined' || typeof y === 'undefined'
               ? // eslint-disable-next-line no-magic-numbers
                 -1
