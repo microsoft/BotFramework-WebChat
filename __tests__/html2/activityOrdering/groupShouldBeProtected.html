@@ -78,6 +78,10 @@
           type: 'typing'
         });
 
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['Task 1 at t=0']);
+
+        await host.snapshot('local');
+
         await directLine.emulateIncomingActivity({
           channelData: {
             streamId: 'a-00001',
@@ -100,6 +104,10 @@
           type: 'typing'
         });
 
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['Task 1 at t=10']);
+
+        await host.snapshot('local');
+
         await directLine.emulateIncomingActivity({
           entities: [
             {
@@ -117,7 +125,7 @@
           type: 'message'
         });
 
-        // expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['t=10']);
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['Task 1 at t=10', 'Task 2 at t=20']);
 
         await host.snapshot('local');
 
@@ -127,6 +135,10 @@
           text: 'Hello, World at t=5',
           timestamp: new Date(5).toISOString()
         });
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['Task 1 at t=10', 'Task 2 at t=20', 'Hello, World at t=5']);
+
+        await host.snapshot('local');
       });
     </script>
   </body>
