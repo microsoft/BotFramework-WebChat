@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
+import combineActivitiesReducer from './reducers/activities/combineActivitiesReducer';
 import connectivityStatus from './reducers/connectivityStatus';
-import createActivitiesReducer from './reducers/createActivitiesReducer';
 import createInternalReducer from './reducers/createInternalReducer';
 import createNotificationsReducer from './reducers/createNotificationsReducer';
 import createTypingReducer from './reducers/createTypingReducer';
@@ -21,23 +21,25 @@ import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginAct
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 export default function createReducer(ponyfill: GlobalScopePonyfill) {
-  return combineReducers({
-    activities: createActivitiesReducer(ponyfill),
-    connectivityStatus,
-    dictateInterims,
-    dictateState,
-    internal: createInternalReducer(ponyfill),
-    language,
-    notifications: createNotificationsReducer(ponyfill),
-    readyState,
-    referenceGrammarID,
-    sendBoxAttachments,
-    sendBoxValue,
-    sendTimeout,
-    sendTypingIndicator,
-    shouldSpeakIncomingActivity,
-    suggestedActions,
-    suggestedActionsOriginActivity,
-    typing: createTypingReducer(ponyfill)
-  });
+  return combineActivitiesReducer(
+    ponyfill,
+    combineReducers({
+      connectivityStatus,
+      dictateInterims,
+      dictateState,
+      internal: createInternalReducer(ponyfill),
+      language,
+      notifications: createNotificationsReducer(ponyfill),
+      readyState,
+      referenceGrammarID,
+      sendBoxAttachments,
+      sendBoxValue,
+      sendTimeout,
+      sendTypingIndicator,
+      shouldSpeakIncomingActivity,
+      suggestedActions,
+      suggestedActionsOriginActivity,
+      typing: createTypingReducer(ponyfill)
+    })
+  );
 }

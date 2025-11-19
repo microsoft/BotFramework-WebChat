@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
-import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
-import getActivityLivestreamingMetadata from '../../utils/getActivityLivestreamingMetadata';
+import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
+import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
 import getActivityInternalId from './private/getActivityInternalId';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
 import getPartGroupingMetadataMap from './private/getPartGroupingMetadataMap';
@@ -77,6 +77,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       ),
       finalized,
       logicalTimestamp: finalized ? logicalTimestamp : (nextLivestreamingSession?.logicalTimestamp ?? logicalTimestamp)
+      // logicalTimestamp: nextLivestreamingSession?.logicalTimestamp ?? logicalTimestamp
     } satisfies LivestreamSessionMapEntry);
 
     nextLivestreamSessionMap.set(sessionId, nextLivestreamingSessionMapEntry);
@@ -237,6 +238,8 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     if (nextPosition !== position) {
       const activityMapEntry = nextActivityMap.get(currentActivityIdentifier)!;
 
+      // TODO: [P0] We should freeze the activity.
+      //       For backcompat, we can consider have a props that temporarily disable this behavior.
       const nextActivityEntry: ActivityMapEntry = {
         ...activityMapEntry,
         activity: {
@@ -259,11 +262,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   // #endregion
 
   return Object.freeze({
-    activityMap: nextActivityMap,
-    howToGroupingMap: nextHowToGroupingMap,
-    livestreamingSessionMap: nextLivestreamSessionMap,
+    activityMap: Object.freeze(nextActivityMap),
+    howToGroupingMap: Object.freeze(nextHowToGroupingMap),
+    livestreamingSessionMap: Object.freeze(nextLivestreamSessionMap),
     sortedActivities: Object.freeze(nextSortedActivities),
-    sortedChatHistoryList: nextSortedChatHistoryList
+    sortedChatHistoryList: Object.freeze(nextSortedChatHistoryList)
   } satisfies State);
 }
 

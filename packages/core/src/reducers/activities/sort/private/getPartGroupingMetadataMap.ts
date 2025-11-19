@@ -1,7 +1,7 @@
 import { IdentifierSchema } from '@msinternal/botframework-webchat-core-graph';
 import { array, literal, number, object, safeParse, string, union } from 'valibot';
-import type { WebChatActivity } from '../../../types/WebChatActivity';
-import getOrgSchemaMessage from '../../../utils/getOrgSchemaMessage';
+import type { WebChatActivity } from '../../../../types/WebChatActivity';
+import getOrgSchemaMessage from '../../../../utils/getOrgSchemaMessage';
 
 // TODO: [P0] Need to fix `getOrgSchemaMessage` before we can move to `NodeReferenceSchema`.
 //       It is introducing new properties, should be relaxed.

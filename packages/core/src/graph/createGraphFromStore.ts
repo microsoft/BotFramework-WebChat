@@ -1,10 +1,7 @@
 import { SlantGraph, SlantNodeSchema } from '@msinternal/botframework-webchat-core-graph';
-import type { IterableElement } from 'type-fest';
 import { parse } from 'valibot';
 import type createStore from '../createStore';
-import type createActivitiesReducer from '../reducers/createActivitiesReducer';
-
-type Activity = IterableElement<ReturnType<ReturnType<typeof createActivitiesReducer>>>;
+import type { Activity } from '../reducers/activities/sort/types';
 
 function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph {
   const graph = new SlantGraph();
