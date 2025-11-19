@@ -25,6 +25,12 @@ const INITIAL_STATE = Object.freeze({
   sortedChatHistoryList: Object.freeze([])
 } satisfies State);
 
+// Question: Why insertion sort works but not quick sort?
+// Short answer: Arrival order matters.
+// Long answer:
+// - Update activity: when replacing an activity, and data from their previous revision still matters
+// - Duplicate timestamps: activities without timestamp is consider duplicate value and can't be sort deterministically
+
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   const nextActivityMap = new Map(state.activityMap);
   const nextLivestreamSessionMap = new Map(state.livestreamingSessionMap);
@@ -33,6 +39,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   const activityInternalId = getActivityInternalId(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
+  let shouldReusePosition = true;
 
   nextActivityMap.set(
     activityInternalId,
@@ -62,6 +69,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const finalized =
       (nextLivestreamingSession ? nextLivestreamingSession.finalized : false) ||
       activityLivestreamingMetadata.type === 'final activity';
+
+    // If livestream become finalized in this round, update the position once.
+    if (finalized && !nextLivestreamingSession?.finalized) {
+      shouldReusePosition = false;
+    }
 
     const nextLivestreamingSessionMapEntry = {
       activities: Object.freeze(
@@ -167,16 +179,20 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
           : // eslint-disable-next-line no-magic-numbers
             -1;
 
-  ~existingSortedChatHistoryListEntryIndex &&
-    nextSortedChatHistoryList.splice(existingSortedChatHistoryListEntryIndex, 1);
+  if (shouldReusePosition && ~existingSortedChatHistoryListEntryIndex) {
+    nextSortedChatHistoryList[+existingSortedChatHistoryListEntryIndex] = Object.freeze(sortedChatHistoryListEntry);
+  } else {
+    ~existingSortedChatHistoryListEntryIndex &&
+      nextSortedChatHistoryList.splice(existingSortedChatHistoryListEntryIndex, 1);
 
-  nextSortedChatHistoryList = insertSorted(
-    nextSortedChatHistoryList,
-    Object.freeze(sortedChatHistoryListEntry),
-    ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
-      // eslint-disable-next-line no-magic-numbers
-      typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y
-  );
+    nextSortedChatHistoryList = insertSorted(
+      nextSortedChatHistoryList,
+      Object.freeze(sortedChatHistoryListEntry),
+      ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
+        // eslint-disable-next-line no-magic-numbers
+        typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y
+    );
+  }
 
   // #endregion
 
