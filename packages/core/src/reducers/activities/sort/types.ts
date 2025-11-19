@@ -1,5 +1,5 @@
 import type { Tagged } from 'type-fest';
-import type { WebChatActivity } from '../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../types/WebChatActivity';
 
 type Activity = WebChatActivity;
 
@@ -25,7 +25,9 @@ type ActivityEntry = {
   type: 'activity';
 };
 
-type HowToGroupingMapPartEntry = (ActivityEntry | LivestreamSessionEntry) & { position: number };
+type HowToGroupingMapPartEntry = (ActivityEntry | LivestreamSessionEntry) & {
+  position: number | undefined;
+};
 type HowToGroupingMapEntry = {
   readonly logicalTimestamp: number | undefined;
   readonly partList: readonly HowToGroupingMapPartEntry[];

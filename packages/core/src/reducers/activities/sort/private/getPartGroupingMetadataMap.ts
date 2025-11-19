@@ -1,5 +1,5 @@
 import { IdentifierSchema } from '@msinternal/botframework-webchat-core-graph';
-import { array, literal, number, object, safeParse, string, union } from 'valibot';
+import { array, literal, number, object, optional, safeParse, string, union } from 'valibot';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import getOrgSchemaMessage from '../../../../utils/getOrgSchemaMessage';
 
@@ -10,14 +10,14 @@ const IsPartOfNodeReferenceSchema = object({ '@id': IdentifierSchema, '@type': s
 const MessageIsPartOfSchema = object({
   '@type': literal('Message'),
   isPartOf: union([IsPartOfNodeReferenceSchema, array(IsPartOfNodeReferenceSchema)]),
-  position: number()
+  position: optional(number())
 });
 
 export default function getPartGroupingMetadataMap(activity: WebChatActivity): ReadonlyMap<
   string,
   {
     readonly groupingId: string;
-    readonly position: number;
+    readonly position: number | undefined;
   }
 > {
   const metadataMap = new Map();

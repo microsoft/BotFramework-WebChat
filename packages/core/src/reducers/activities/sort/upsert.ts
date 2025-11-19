@@ -97,6 +97,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   if (howToGrouping) {
     const howToGroupingId = howToGrouping.groupingId as HowToGroupingIdentifier;
+    const { position: howToGroupingPosition } = howToGrouping;
 
     const nextPartGroupingEntry: HowToGroupingMapEntry =
       nextHowToGroupingMap.get(howToGroupingId) ??
@@ -104,13 +105,18 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     let nextPartList = Array.from(nextPartGroupingEntry.partList);
 
-    const existingPartEntryIndex = nextPartList.findIndex(entry => entry.position === howToGrouping.position);
+    const existingPartEntryIndex = activityLivestreamingMetadata
+      ? nextPartList.findIndex(
+          entry =>
+            entry.type === 'livestream session' && entry.livestreamSessionId === activityLivestreamingMetadata.sessionId
+        )
+      : nextPartList.findIndex(entry => entry.type === 'activity' && entry.activityInternalId === activityInternalId);
 
     ~existingPartEntryIndex && nextPartList.splice(existingPartEntryIndex, 1);
 
     nextPartList = insertSorted(
       nextPartList,
-      Object.freeze({ ...sortedChatHistoryListEntry, position: howToGrouping.position }),
+      Object.freeze({ ...sortedChatHistoryListEntry, position: howToGroupingPosition }),
       // eslint-disable-next-line no-magic-numbers
       ({ position: x }, { position: y }) => (typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y)
     );

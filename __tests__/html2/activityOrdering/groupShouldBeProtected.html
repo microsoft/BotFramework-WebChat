@@ -31,6 +31,8 @@
         'has been deprecated, use `import {'
       ];
 
+      const error = console.error.bind(console);
+
       spyOn(console, 'error').mockImplementation((...args) => {
         const [message] = args;
 
@@ -66,7 +68,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' }
+              isPartOf: { '@id': '_:c-00001', '@type': 'HowTo' }
             }
           ],
           from: { role: 'bot' },
@@ -88,7 +90,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' }
+              isPartOf: { '@id': '_:c-00001', '@type': 'HowTo' }
             }
           ],
           from: { role: 'bot' },
@@ -105,7 +107,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' }
+              isPartOf: { '@id': '_:c-00001', '@type': 'HowTo' }
             }
           ],
           from: { role: 'bot' },
@@ -125,8 +127,6 @@
           text: 'Hello, World at t=5',
           timestamp: new Date(5).toISOString()
         });
-
-        console.log(store.getState().activities);
       });
     </script>
   </body>
