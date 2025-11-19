@@ -77,7 +77,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         )
       ),
       finalized,
-      logicalTimestamp: finalized ? logicalTimestamp : (nextLivestreamingSession?.logicalTimestamp ?? logicalTimestamp)
+      logicalTimestamp: finalized
+        ? logicalTimestamp
+        : nextLivestreamingSession
+          ? nextLivestreamingSession.logicalTimestamp
+          : logicalTimestamp
       // logicalTimestamp: nextLivestreamingSession?.logicalTimestamp ?? logicalTimestamp
     } satisfies LivestreamSessionMapEntry);
 
