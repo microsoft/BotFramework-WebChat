@@ -64,9 +64,9 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   if (activityLivestreamingMetadata) {
     const sessionId = activityLivestreamingMetadata.sessionId as LivestreamSessionIdentifier;
 
-    const nextLivestreamingSession = nextLivestreamSessionMap.get(sessionId);
+    const livestreamSessionMapEntry = nextLivestreamSessionMap.get(sessionId);
 
-    const wasFinalized = nextLivestreamingSession ? nextLivestreamingSession.finalized : false;
+    const wasFinalized = livestreamSessionMapEntry ? livestreamSessionMapEntry.finalized : false;
 
     if (wasFinalized) {
       console.warn(
@@ -94,7 +94,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const nextLivestreamingSessionMapEntry = {
       activities: Object.freeze(
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
-          nextLivestreamingSession ? nextLivestreamingSession.activities : [],
+          livestreamSessionMapEntry ? livestreamSessionMapEntry.activities : [],
           Object.freeze({
             activityInternalId,
             logicalTimestamp,
@@ -109,11 +109,13 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         )
       ),
       finalized,
-      logicalTimestamp: finalized
-        ? logicalTimestamp
-        : nextLivestreamingSession
-          ? nextLivestreamingSession.logicalTimestamp
-          : logicalTimestamp
+      // Always update livestream timestamp.
+      logicalTimestamp
+      // logicalTimestamp: finalized
+      //   ? logicalTimestamp
+      //   : livestreamSessionMapEntry
+      //     ? livestreamSessionMapEntry.logicalTimestamp
+      //     : logicalTimestamp
     } satisfies LivestreamSessionMapEntry;
 
     nextLivestreamSessionMap.set(sessionId, Object.freeze(nextLivestreamingSessionMapEntry));
@@ -202,6 +204,15 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
             )
           : // eslint-disable-next-line no-magic-numbers
             -1;
+
+  if (
+    typeof sortedChatHistoryListEntry.logicalTimestamp !== 'undefined' &&
+    !activityLivestreamingMetadata &&
+    !howToGrouping
+  ) {
+    // Do not update position for livestream and part grouping.
+    shouldReusePosition = false;
+  }
 
   if (shouldReusePosition && ~existingSortedChatHistoryListEntryIndex) {
     nextSortedChatHistoryList[+existingSortedChatHistoryListEntryIndex] = Object.freeze(sortedChatHistoryListEntry);
