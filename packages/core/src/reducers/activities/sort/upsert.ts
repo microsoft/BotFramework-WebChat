@@ -70,8 +70,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       (nextLivestreamingSession ? nextLivestreamingSession.finalized : false) ||
       activityLivestreamingMetadata.type === 'final activity';
 
-    // If livestream become finalized in this round, update the position once.
-    if (finalized && !nextLivestreamingSession?.finalized) {
+    // If livestream become finalized in this round and it has timestamp, update the position.
+    // The livestream will only have its position updated twice in its lifetime:
+    // 1. When it is first inserted into chat history
+    // 2. When it become concluded and it has a timestamp
+    if (finalized && !nextLivestreamingSession?.finalized && typeof logicalTimestamp !== 'undefined') {
       shouldReusePosition = false;
     }
 
