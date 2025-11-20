@@ -66,9 +66,20 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const nextLivestreamingSession = nextLivestreamSessionMap.get(sessionId);
 
-    const finalized =
-      (nextLivestreamingSession ? nextLivestreamingSession.finalized : false) ||
-      activityLivestreamingMetadata.type === 'final activity';
+    const wasFinalized = nextLivestreamingSession ? nextLivestreamingSession.finalized : false;
+
+    if (wasFinalized) {
+      console.warn(
+        `botframework-webchat: Cannot update livestreaming session ${sessionId} because it has been concluded`
+      );
+
+      // This is a special case.
+      // In the future, we should revisit this and see if we should still process this activity or not.
+      // Related to /__tests__/html2/livestream/concludedLivestream.html.
+      return state;
+    }
+
+    const finalized = activityLivestreamingMetadata.type === 'final activity';
 
     // TODO: [P*] Remove this logic. We will not deal with the timestamp in finalized livestream activity.
 
