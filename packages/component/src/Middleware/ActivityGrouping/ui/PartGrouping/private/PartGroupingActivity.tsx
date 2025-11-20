@@ -37,11 +37,11 @@ import {
 import { android } from '../../../../../Utils/detectBrowser';
 import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import CollapsibleGrouping from '../CollapsibleGrouping';
+import CollapsibleGroupingList from '../CollapsibleGroupingList';
 import CollapsibleGroupingTitle from '../CollapsibleGroupingTitle';
 import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 
 import styles from './PartGroupingActivity.module.css';
-import CollapsibleGroupingList from '../CollapsibleGroupingList';
 
 const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
