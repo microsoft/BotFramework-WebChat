@@ -1,0 +1,1056 @@
+[
+  {
+    "id": "f4cde0be-2734-4c3c-b1cc-bca8cbff53cc",
+    "from": { "role": "user" },
+    "text": "What is Microsoft net profit margin for FY2024?",
+    "timestamp": "2025-11-10T15:00:00.000\u002B00:00",
+    "type": "message"
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988",
+    "type": "typing",
+    "text": "About",
+    "channelData": { "streamType": "streaming", "chunkType": "delta", "streamSequence": 1 },
+    "entities": [{ "streamType": "streaming", "streamSequence": 1, "type": "streaminfo", "properties": {} }]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-1",
+    "type": "typing",
+    "text": "36",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-2",
+    "type": "typing",
+    "text": "%",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 3
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 3,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-3",
+    "type": "typing",
+    "text": " for",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 4
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 4,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-4",
+    "type": "typing",
+    "text": " fiscal",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 5
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 5,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-5",
+    "type": "typing",
+    "text": " year",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 6
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 6,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-6",
+    "type": "typing",
+    "text": "202",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 7
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 7,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-7",
+    "type": "typing",
+    "text": "4",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 8
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 8,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-8",
+    "type": "typing",
+    "text": ".",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 9
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 9,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-9",
+    "type": "typing",
+    "text": " Calculation",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 10
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 10,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-10",
+    "type": "typing",
+    "text": ":",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 11
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 11,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-11",
+    "type": "typing",
+    "text": " $",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 12
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 12,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-12",
+    "type": "typing",
+    "text": "88",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 13
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 13,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-13",
+    "type": "typing",
+    "text": ".",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 14
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 14,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-14",
+    "type": "typing",
+    "text": "14",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 15
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 15,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-15",
+    "type": "typing",
+    "text": "B",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 16
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 16,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-16",
+    "type": "typing",
+    "text": " net",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 17
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 17,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-17",
+    "type": "typing",
+    "text": " income",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 18
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 18,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-18",
+    "type": "typing",
+    "text": " \u00F7",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 19
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 19,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-19",
+    "type": "typing",
+    "text": " $",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 20
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 20,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-20",
+    "type": "typing",
+    "text": "245",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 21
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 21,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-21",
+    "type": "typing",
+    "text": ".",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 22
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 22,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-22",
+    "type": "typing",
+    "text": "12",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 23
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 23,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-23",
+    "type": "typing",
+    "text": "B",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 24
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 24,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-24",
+    "type": "typing",
+    "text": " revenue",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 25
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 25,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-25",
+    "type": "typing",
+    "text": " =",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 26
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 26,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-26",
+    "type": "typing",
+    "text": " ~",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 27
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 27,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-27",
+    "type": "typing",
+    "text": "35",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 28
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 28,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-28",
+    "type": "typing",
+    "text": ".",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 29
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 29,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-29",
+    "type": "typing",
+    "text": "96",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 30
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 30,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-30",
+    "type": "typing",
+    "text": "%",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 31
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 31,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-31",
+    "type": "typing",
+    "text": " (",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 32
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 32,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-32",
+    "type": "typing",
+    "text": "f",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 33
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 33,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-33",
+    "type": "typing",
+    "text": "iscal",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 34
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 34,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-34",
+    "type": "typing",
+    "text": " year",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 35
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 35,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-35",
+    "type": "typing",
+    "text": " ended",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 36
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 36,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-36",
+    "type": "typing",
+    "text": " June",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 37
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 37,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-37",
+    "type": "typing",
+    "text": "30",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 38
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 38,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-38",
+    "type": "typing",
+    "text": ",",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 39
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 39,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-39",
+    "type": "typing",
+    "text": "202",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 40
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 40,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-40",
+    "type": "typing",
+    "text": "4",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 41
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 41,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-41",
+    "type": "typing",
+    "text": ").",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 42
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 42,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-42",
+    "type": "typing",
+    "text": "\uE200cite",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 43
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 43,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-43",
+    "type": "typing",
+    "text": "\uE202",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 44
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 44,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-44",
+    "type": "typing",
+    "text": "turn",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 45
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 45,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-45",
+    "type": "typing",
+    "text": "16",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 46
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 46,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-46",
+    "type": "typing",
+    "text": "search",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 47
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 47,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-47",
+    "type": "typing",
+    "text": "0",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 48
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 48,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a40f92d-7dab-4142-abf1-16928121d988-48",
+    "type": "typing",
+    "text": "\uE201",
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+      "chunkType": "delta",
+      "streamSequence": 49
+    },
+    "entities": [
+      {
+        "streamId": "7a40f92d-7dab-4142-abf1-16928121d988",
+        "streamType": "streaming",
+        "streamSequence": 49,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "type": "message",
+    "id": "c20913d8-c470-4016-9734-5a35f1ed2afb",
+    "timestamp": "2025-11-10T15:49:43.9255274\u002B00:00",
+    "channelId": "pva-studio",
+    "from": {
+      "id": "5e097f44-b99c-ec5c-a447-3aa25e858213/48193d0f-00bb-f011-bbd4-7ced8d3d7ce5",
+      "name": "cr24a_financialInsights",
+      "role": "bot"
+    },
+    "conversation": { "id": "c7d87cac-5267-4b25-8038-d04f2fe778b2" },
+    "recipient": {
+      "id": "e70e33c1-5aa7-4a4d-99d8-0bbc11586bd2",
+      "aadObjectId": "e70e33c1-5aa7-4a4d-99d8-0bbc11586bd2",
+      "role": "user"
+    },
+    "textFormat": "markdown",
+    "membersAdded": [],
+    "membersRemoved": [],
+    "reactionsAdded": [],
+    "reactionsRemoved": [],
+    "locale": "en-US",
+    "text": "About 36% for fiscal year 2024. Calculation: $88.14B net income \u00F7 $245.12B revenue = ~35.96% (fiscal year ended June 30, 2024). [1]\n\n[1]: https://www.sec.gov/Archives/edgar/data/789019/000095017024087835/msft-ex99_1.htm \u0022EX-99.1\u0022",
+    "inputHint": "acceptingInput",
+    "attachments": [],
+    "entities": [
+      {
+        "type": "https://schema.org/Message",
+        "citation": [
+          {
+            "appearance": {
+              "text": "\u0022EX-99.1\\nExhibit 99.1\\nMicrosoft Cloud Strength Drives Fourth Quarter Results\\nREDMOND, Wash. \u2014 July 30, 2024 \u2014 Microsoft Corp. today announced the following results for the quarter ended June 30, 2024, as compared to the corresponding period of last fiscal year:\\n\u2022\\nRevenue was $64.7 billion and increased 15% (up 16% in constant currency)\\n\u2022\\nOperating income was $27.9 billion and increased 15% (up 16% in constant currency)\\n\u2022\\nNet income was $22.0 billion and increased 10% (up 11% in constant currency)\\n\u2022\\nDiluted earnings per share was $2.95 and increased 10% (up 11% in constant currency)\\n\u201COur strong performance this fiscal year speaks both to our innovation and to the trust customers continue to place in Microsoft,\u201D said Satya Nadella, chairman and chief executive officer of Microsoft. \u201CAs a platform company, we are focused on meeting the mission-critical needs of our customers across our at-scale platforms today, while also ensuring we lead the AI era.\u201D\\n\u201CWe closed out our fiscal year with a solid quarter, highlighted by record bookings and Microsoft Cloud quarterly revenue of $36.8 billion, up 21% (up 22% in constant currency) year-over-year,\u201D said Amy Hood, executive vice president and chief financial officer of Microsoft.\\nBusiness Highlights\\nRevenue in Productivity and Business Processes was $20.3 billion and increased 11% (up 12% in constant currency), with the following business highlights:\\n\u2022\\nOffice Commercial products and cloud services revenue increased 12% (up 13% in constant currency) driven by Office 365 Commercial revenue growth of 13% (up 14% in constant currency)\\n\u2022\\nOffice Consumer products and cloud services revenue increased 3% (up 4% in constant currency) and Microsoft 365 Consumer subscribers grew to 82.5 million\\n\u2022\\nLinkedIn revenue increased 10% (up 9% in constant currency)\\n\u2022\\nDynamics products and cloud services revenue increased 16% driven by Dynamics 365 revenue growth of 19% (up 20% in constant currency)\\nRevenue in Intelligent Cloud was $28.5 billion and increased 19% (up 20% in constant currency), with the following business highlights:\\n\u2022\\nServer products and cloud services revenue increased 21% (up 22% in constant currency) driven by Azure and other cloud services revenue growth of 29% (up 30% in constant currency)\\nRevenue in More Personal Computing was $15.9 billion and increased 14% (up 15% in constant currency), with the following business highlights:\\n\u2022\\nWindows revenue increased 7% (up 8% in constant currency) with Windows OEM revenue growth of 4% and Windows Commercial products and cloud services revenue growth of 11% (up 12% in constant currency)\\n\u2022\\nDevices revenue decreased 11% (down 9% in constant currency)\\n\u2022\\nXbox content and services revenue increased 61% driven by 58 points of net impact from the Activision acquisition\\n\u2022\\nSearch and news advertising revenue excluding traffic acquisition costs increased 19%\\nMicrosoft returned $8.4 billion to shareholders in the form of share repurchases and dividends in the fourth quarter of fiscal year 2024.\\nFiscal Year 2024 Results\\nMicrosoft Corp. today announced the following results for the fiscal year ended June 30, 2024, as compared to the corresponding period of last fiscal year:\\n\u2022\\nRevenue was $245.1 billion and increased 16% (up 15% in constant currency)\\n\u2022\\nOperating income was $109.4 billion and increased 24%, and increased 22% non-GAAP (up 21% in constant currency)\\n\u2022\\nNet income was $88.1 billion and increased 22%, and increased 20% non-GAAP\\n\u2022\\nDiluted earnings per share was $11.80 and increased 22%, and increased 20% non-GAAP\\nThe following table reconciles our financial results for the fiscal year ended June 30, 2024, reported in accordance with generally accepted accounting principles (GAAP) to non-GAAP financial results. Additional information regarding our non-GAAP definition is provided below. All growth comparisons relate to the corresponding period in the last fiscal year.\\n\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nTwelve Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions, except per share amounts)\\n \\nRevenue\\n \\nOperating\\nIncome\\n \\nNet Income\\n \\nDiluted\\nEarnings\\nper Share\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$211,915\\n \\n$88,523\\n \\n$72,361\\n \\n$9.68\\nSeverance, hardware-related impairment, and lease consolidation costs\\n \\n-\\n \\n1,171\\n \\n946\\n \\n0.13\\n2023 As Adjusted (non-GAAP)\\n \\n$211,915\\n \\n$89,694\\n \\n$73,307\\n \\n$9.81\\n2024 As Reported (GAAP)\\n \\n$245,122\\n \\n$109,433\\n \\n$88,136\\n \\n$11.80\\nPercentage Change Y/Y (GAAP)\\n \\n16%\\n \\n24%\\n \\n22%\\n \\n22%\\nPercentage Change Y/Y Constant Currency\\n \\n15%\\n \\n23%\\n \\n21%\\n \\n21%\\nPercentage Change Y/Y (non-GAAP)\\n \\n16%\\n \\n22%\\n \\n20%\\n \\n20%\\nPercentage Change Y/Y (non-GAAP) Constant Currency\\n \\n15%\\n \\n21%\\n \\n20%\\n \\n20%\\nBusiness Outlook\\nMicrosoft will provide forward-looking guidance in connection with this quarterly earnings announcement on its earnings conference call and webcast.\\nQuarterly Highlights, Product Releases, and Enhancements\\nEvery quarter Microsoft delivers hundreds of products, either as new releases, services, or enhancements to current products and services. These releases are a result of significant research and development investments, made over multiple years, designed to help customers be more productive and secure and to deliver differentiated value across the cloud and the edge.\\nHere are the major product releases and other highlights for the quarter, organized by product categories, to help illustrate how we are accelerating innovation across our businesses while expanding our market opportunities.\\nEnvironmental, Social, and Governance (ESG)\\nTo learn more about Microsoft\u2019s corporate governance and our environmental and social practices, please visit our investor relations Board and ESG website and reporting at Microsoft.com/transparency.\\nWebcast Details\\nSatya Nadella, chairman and chief executive officer, Amy Hood, executive vice president and chief financial officer, Alice Jolla, chief accounting officer, Keith Dolliver, corporate secretary and deputy general counsel, and Brett Iversen, vice president of investor relations, will host a conference call and webcast at 2:30 p.m. Pacific time (5:30 p.m. Eastern time) today to discuss details of the company\u2019s performance for the quarter and certain forward-looking\\ninformation. The session may be accessed at http://www.microsoft.com/en-us/investor. The webcast will be available for replay through the close of business on July 30, 2025.\\nNon-GAAP Definition\\nQ2 charge. In the second quarter of fiscal year 2023, Microsoft recorded costs related to decisions announced on January 18th, 2023, including employee severance expenses, impairment charges resulting from changes to our hardware portfolio, and costs related to lease consolidation activities.\\nMicrosoft has provided non-GAAP financial measures related to the Q2 charge to aid investors in better understanding our performance. Microsoft believes these non-GAAP measures assist investors by providing additional insight into its operational performance and help clarify trends affecting its business. For comparability of reporting, management considers non-GAAP measures in conjunction with GAAP financial results in evaluating business performance. The non-GAAP financial measures presented in this release should not be considered as a substitute for, or superior to, the measures of financial performance prepared in accordance with GAAP.\\nConstant Currency\\nMicrosoft presents constant currency information to provide a framework for assessing how our underlying businesses performed excluding the effect of foreign currency rate fluctuations. To present this information, current and comparative prior period results for entities reporting in currencies other than United States dollars are converted into United States dollars using the average exchange rates from the comparative period rather than the actual exchange rates in effect during the respective periods. All growth comparisons relate to the corresponding period in the last fiscal year. Microsoft has provided this non-GAAP financial information to aid investors in better understanding our performance. The non-GAAP financial measures presented in this release should not be considered as a substitute for, or superior to, the measures of financial performance prepared in accordance with GAAP.\\nFinancial Performance Constant Currency Reconciliation\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nThree Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions, except per share amounts)\\n \\nRevenue\\n \\nOperating\\nIncome\\n \\nNet Income\\n \\nDiluted\\nEarnings\\nper Share\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$56,189\\n \\n$24,254\\n \\n$20,081\\n \\n$2.69\\n2024 As Reported (GAAP)\\n \\n$64,727\\n \\n$27,925\\n \\n$22,036\\n \\n$2.95\\nPercentage Change Y/Y (GAAP)\\n \\n15%\\n \\n15%\\n \\n10%\\n \\n10%\\nConstant Currency Impact\\n \\n$ (345)\\n \\n$ (218)\\n \\n$ (269)\\n \\n$ (0.04)\\nPercentage Change Y/Y Constant Currency\\n \\n16%\\n \\n16%\\n \\n11%\\n \\n11%\\n\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nTwelve Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions, except per share amounts)\\n \\nRevenue\\n \\nOperating\\nIncome\\n \\nNet Income\\n \\nDiluted\\nEarnings\\nper Share\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$211,915\\n \\n$88,523\\n \\n$72,361\\n \\n$9.68\\n2023 As Adjusted (non-GAAP)\\n \\n$211,915\\n \\n$89,694\\n \\n$73,307\\n \\n$9.81\\n2024 As Reported (GAAP)\\n \\n$245,122\\n \\n$109,433\\n \\n$88,136\\n \\n$11.80\\nPercentage Change Y/Y (GAAP)\\n \\n16%\\n \\n24%\\n \\n22%\\n \\n22%\\nPercentage Change Y/Y (non-GAAP)\\n \\n16%\\n \\n22%\\n \\n20%\\n \\n20%\\nConstant Currency Impact\\n \\n$900\\n \\n$717\\n \\n$312\\n \\n$0.04\\nPercentage Change Y/Y Constant Currency\\n \\n15%\\n \\n23%\\n \\n21%\\n \\n21%\\nPercentage Change Y/Y (non-GAAP) Constant Currency\\n \\n15%\\n \\n21%\\n \\n20%\\n \\n20%\\n\\nSegment Revenue Constant Currency Reconciliation\\n \\n \\n \\n \\n \\n \\n \\n \\n \\nThree Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions)\\n \\nProductivity and\\nBusiness Processes\\n \\nIntelligent Cloud\\n \\nMore Personal\\nComputing\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$18,291\\n \\n$23,993\\n \\n$13,905\\n2024 As Reported (GAAP)\\n \\n$20,317\\n \\n$28,515\\n \\n$15,895\\nPercentage Change Y/Y (GAAP)\\n \\n11%\\n \\n19%\\n \\n14%\\nConstant Currency Impact\\n \\n$ (106)\\n \\n$ (174)\\n \\n$ (65)\\nPercentage Change Y/Y Constant Currency\\n \\n12%\\n \\n20%\\n \\n15%\\nSelected Product and Service Revenue Constant Currency Reconciliation\\n \\n \\n \\n \\n \\n \\n \\n \\n \\nThree Months Ended June 30, 2024\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nPercentage Change Y/Y (GAAP)\\n \\nConstant Currency Impact\\n \\nPercentage Change Y/Y Constant Currency\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nMicrosoft Cloud\\n \\n21%\\n \\n1%\\n \\n22%\\nOffice Commercial products and cloud services\\n \\n12%\\n \\n1%\\n \\n13%\\nOffice 365 Commercial\\n \\n13%\\n \\n1%\\n \\n14%\\nOffice Consumer products and cloud services\\n \\n3%\\n \\n1%\\n \\n4%\\nLinkedIn\\n \\n10%\\n \\n(1)%\\n \\n9%\\nDynamics products and cloud services\\n \\n16%\\n \\n0%\\n \\n16%\\nDynamics 365\\n \\n19%\\n \\n1%\\n \\n20%\\nServer products and cloud services\\n \\n21%\\n \\n1%\\n \\n22%\\nAzure and other cloud services\\n \\n29%\\n \\n1%\\n \\n30%\\nWindows\\n \\n7%\\n \\n1%\\n \\n8%\\nWindows OEM\\n \\n4%\\n \\n0%\\n \\n4%\\nWindows Commercial products and cloud services\\n \\n11%\\n \\n1%\\n \\n12%\\nDevices\\n \\n(11)%\\n \\n2%\\n \\n(9)%\\nXbox content and services\\n \\n61%\\n \\n0%\\n \\n61%\\nSearch and news advertising excluding traffic acquisition costs\\n \\n19%\\n \\n0%\\n \\n19%\\n\\nAbout Microsoft\\nMicrosoft (Nasdaq \u201CMSFT\u201D @microsoft) creates platforms and tools powered by AI to deliver innovative solutions that meet the evolving needs of our customers. The technology company is committed to making AI available broadly and doing so responsibly, with a mission to empower every person and every organization on the planet to achieve more.\\nForward-Looking Statements\\nStatements in this release that are \u201Cforward-looking statements\u201D are based on current expectations and assumptions that are subject to risks and uncertainties. Actual results could differ materially because of factors such as:\\n\u2022\\nintense competition in all of our markets that may adversely affect our results of operations;\\n\u2022\\nfocus on cloud-based and AI services presenting execution and competitive risks;\\n\u2022\\nsignificant investments in products and services that may not achieve expected returns;\\n\u2022\\nacquisitions, joint ventures, and strategic alliances that may have an adverse effect on our business;\\n\u2022\\nimpairment of goodwill or amortizable intangible assets causing a significant charge to earnings;\\n\u2022\\ncyberattacks and security vulnerabilities that could lead to reduced revenue, increased costs, liability claims, or harm to our reputation or competitive position;\\n\u2022\\ndisclosure and misuse of personal data that could cause liability and harm to our reputation;\\n\u2022\\nthe possibility that we may not be able to protect information stored in our products and services from use by others;\\n\u2022\\nabuse of our advertising, professional, marketplace, or gaming platforms that may harm our reputation or user engagement;\\n\u2022\\nproducts and services, how they are used by customers, and how third-party products and services interact with them, presenting security, privacy, and execution risks;\\n\u2022\\nissues about the use of artificial intelligence in our offerings that may result in reputational or competitive harm, or legal liability;\\n\u2022\\nexcessive outages, data losses, and disruptions of our online services if we fail to maintain an adequate operations infrastructure;\\n\u2022\\nquality or supply problems;\\n\u2022\\ngovernment enforcement under competition laws and new market regulation may limit how we design and market our products;\\n\u2022\\npotential consequences of trade and anti-corruption laws;\\n\u2022\\npotential consequences of existing and increasing legal and regulatory requirements;\\n\u2022\\nlaws and regulations relating to the handling of personal data that may impede the adoption of our services or result in increased costs, legal claims, fines, or reputational damage;\\n\u2022\\nclaims against us that may result in adverse outcomes in legal disputes;\\n\u2022\\nuncertainties relating to our business with government customers;\\n\u2022\\nadditional tax liabilities;\\n\u2022\\nsustainability regulations and expectations that may expose us to increased costs and legal and reputational risk;\\n\u2022\\nan inability to protect and utilize our intellectual property may harm our business and operating results;\\n\u2022\\nclaims that Microsoft has infringed the intellectual property rights of others;\\n\u2022\\ndamage to our reputation or our brands that may harm our business and results of operations;\\n\u2022\\nadverse economic or market conditions that may harm our business;\\n\u2022\\ncatastrophic events or geo-political conditions, such as the COVID-19 pandemic, that may disrupt our business;\\n\u2022\\nexposure to increased economic and operational uncertainties from operating a global business, including the effects of foreign currency exchange and\\n\u2022\\nthe dependence of our business on our ability to attract and retain talented employees.\\nFor more information about risks and uncertainties associated with Microsoft\u2019s business, please refer to the \u201CManagement\u2019s Discussion and Analysis of Financial Condition and Results of Operations\u201D and \u201CRisk Factors\u201D sections of Microsoft\u2019s SEC filings, including, but not limited to, its annual report on Form 10-K and quarterly reports on Form 10-Q, copies of which may be obtained by contacting Microsoft\u2019s Investor Relations department at (800) 285-7772 or at Microsoft\u2019s Investor Relations website at http://www.microsoft.com/en-us/investor.\\nAll information in this release is as of June 30, 2024. The company undertakes no duty to update any forw",
+              "abstract": "EX-99.1",
+              "@type": "DigitalDocument",
+              "name": "EX-99.1",
+              "url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087835/msft-ex99_1.htm"
+            },
+            "position": 1,
+            "@type": "Claim",
+            "@id": "turn16search0"
+          }
+        ],
+        "@type": "Message",
+        "@id": "",
+        "additionalType": ["AIGeneratedContent"],
+        "@context": "https://schema.org"
+      },
+      {
+        "type": "https://schema.org/Claim",
+        "@id": "turn16search0",
+        "@type": "Claim",
+        "@context": "https://schema.org",
+        "text": "\u0022EX-99.1\\nExhibit 99.1\\nMicrosoft Cloud Strength Drives Fourth Quarter Results\\nREDMOND, Wash. \u2014 July 30, 2024 \u2014 Microsoft Corp. today announced the following results for the quarter ended June 30, 2024, as compared to the corresponding period of last fiscal year:\\n\u2022\\nRevenue was $64.7 billion and increased 15% (up 16% in constant currency)\\n\u2022\\nOperating income was $27.9 billion and increased 15% (up 16% in constant currency)\\n\u2022\\nNet income was $22.0 billion and increased 10% (up 11% in constant currency)\\n\u2022\\nDiluted earnings per share was $2.95 and increased 10% (up 11% in constant currency)\\n\u201COur strong performance this fiscal year speaks both to our innovation and to the trust customers continue to place in Microsoft,\u201D said Satya Nadella, chairman and chief executive officer of Microsoft. \u201CAs a platform company, we are focused on meeting the mission-critical needs of our customers across our at-scale platforms today, while also ensuring we lead the AI era.\u201D\\n\u201CWe closed out our fiscal year with a solid quarter, highlighted by record bookings and Microsoft Cloud quarterly revenue of $36.8 billion, up 21% (up 22% in constant currency) year-over-year,\u201D said Amy Hood, executive vice president and chief financial officer of Microsoft.\\nBusiness Highlights\\nRevenue in Productivity and Business Processes was $20.3 billion and increased 11% (up 12% in constant currency), with the following business highlights:\\n\u2022\\nOffice Commercial products and cloud services revenue increased 12% (up 13% in constant currency) driven by Office 365 Commercial revenue growth of 13% (up 14% in constant currency)\\n\u2022\\nOffice Consumer products and cloud services revenue increased 3% (up 4% in constant currency) and Microsoft 365 Consumer subscribers grew to 82.5 million\\n\u2022\\nLinkedIn revenue increased 10% (up 9% in constant currency)\\n\u2022\\nDynamics products and cloud services revenue increased 16% driven by Dynamics 365 revenue growth of 19% (up 20% in constant currency)\\nRevenue in Intelligent Cloud was $28.5 billion and increased 19% (up 20% in constant currency), with the following business highlights:\\n\u2022\\nServer products and cloud services revenue increased 21% (up 22% in constant currency) driven by Azure and other cloud services revenue growth of 29% (up 30% in constant currency)\\nRevenue in More Personal Computing was $15.9 billion and increased 14% (up 15% in constant currency), with the following business highlights:\\n\u2022\\nWindows revenue increased 7% (up 8% in constant currency) with Windows OEM revenue growth of 4% and Windows Commercial products and cloud services revenue growth of 11% (up 12% in constant currency)\\n\u2022\\nDevices revenue decreased 11% (down 9% in constant currency)\\n\u2022\\nXbox content and services revenue increased 61% driven by 58 points of net impact from the Activision acquisition\\n\u2022\\nSearch and news advertising revenue excluding traffic acquisition costs increased 19%\\nMicrosoft returned $8.4 billion to shareholders in the form of share repurchases and dividends in the fourth quarter of fiscal year 2024.\\nFiscal Year 2024 Results\\nMicrosoft Corp. today announced the following results for the fiscal year ended June 30, 2024, as compared to the corresponding period of last fiscal year:\\n\u2022\\nRevenue was $245.1 billion and increased 16% (up 15% in constant currency)\\n\u2022\\nOperating income was $109.4 billion and increased 24%, and increased 22% non-GAAP (up 21% in constant currency)\\n\u2022\\nNet income was $88.1 billion and increased 22%, and increased 20% non-GAAP\\n\u2022\\nDiluted earnings per share was $11.80 and increased 22%, and increased 20% non-GAAP\\nThe following table reconciles our financial results for the fiscal year ended June 30, 2024, reported in accordance with generally accepted accounting principles (GAAP) to non-GAAP financial results. Additional information regarding our non-GAAP definition is provided below. All growth comparisons relate to the corresponding period in the last fiscal year.\\n\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nTwelve Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions, except per share amounts)\\n \\nRevenue\\n \\nOperating\\nIncome\\n \\nNet Income\\n \\nDiluted\\nEarnings\\nper Share\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$211,915\\n \\n$88,523\\n \\n$72,361\\n \\n$9.68\\nSeverance, hardware-related impairment, and lease consolidation costs\\n \\n-\\n \\n1,171\\n \\n946\\n \\n0.13\\n2023 As Adjusted (non-GAAP)\\n \\n$211,915\\n \\n$89,694\\n \\n$73,307\\n \\n$9.81\\n2024 As Reported (GAAP)\\n \\n$245,122\\n \\n$109,433\\n \\n$88,136\\n \\n$11.80\\nPercentage Change Y/Y (GAAP)\\n \\n16%\\n \\n24%\\n \\n22%\\n \\n22%\\nPercentage Change Y/Y Constant Currency\\n \\n15%\\n \\n23%\\n \\n21%\\n \\n21%\\nPercentage Change Y/Y (non-GAAP)\\n \\n16%\\n \\n22%\\n \\n20%\\n \\n20%\\nPercentage Change Y/Y (non-GAAP) Constant Currency\\n \\n15%\\n \\n21%\\n \\n20%\\n \\n20%\\nBusiness Outlook\\nMicrosoft will provide forward-looking guidance in connection with this quarterly earnings announcement on its earnings conference call and webcast.\\nQuarterly Highlights, Product Releases, and Enhancements\\nEvery quarter Microsoft delivers hundreds of products, either as new releases, services, or enhancements to current products and services. These releases are a result of significant research and development investments, made over multiple years, designed to help customers be more productive and secure and to deliver differentiated value across the cloud and the edge.\\nHere are the major product releases and other highlights for the quarter, organized by product categories, to help illustrate how we are accelerating innovation across our businesses while expanding our market opportunities.\\nEnvironmental, Social, and Governance (ESG)\\nTo learn more about Microsoft\u2019s corporate governance and our environmental and social practices, please visit our investor relations Board and ESG website and reporting at Microsoft.com/transparency.\\nWebcast Details\\nSatya Nadella, chairman and chief executive officer, Amy Hood, executive vice president and chief financial officer, Alice Jolla, chief accounting officer, Keith Dolliver, corporate secretary and deputy general counsel, and Brett Iversen, vice president of investor relations, will host a conference call and webcast at 2:30 p.m. Pacific time (5:30 p.m. Eastern time) today to discuss details of the company\u2019s performance for the quarter and certain forward-looking\\ninformation. The session may be accessed at http://www.microsoft.com/en-us/investor. The webcast will be available for replay through the close of business on July 30, 2025.\\nNon-GAAP Definition\\nQ2 charge. In the second quarter of fiscal year 2023, Microsoft recorded costs related to decisions announced on January 18th, 2023, including employee severance expenses, impairment charges resulting from changes to our hardware portfolio, and costs related to lease consolidation activities.\\nMicrosoft has provided non-GAAP financial measures related to the Q2 charge to aid investors in better understanding our performance. Microsoft believes these non-GAAP measures assist investors by providing additional insight into its operational performance and help clarify trends affecting its business. For comparability of reporting, management considers non-GAAP measures in conjunction with GAAP financial results in evaluating business performance. The non-GAAP financial measures presented in this release should not be considered as a substitute for, or superior to, the measures of financial performance prepared in accordance with GAAP.\\nConstant Currency\\nMicrosoft presents constant currency information to provide a framework for assessing how our underlying businesses performed excluding the effect of foreign currency rate fluctuations. To present this information, current and comparative prior period results for entities reporting in currencies other than United States dollars are converted into United States dollars using the average exchange rates from the comparative period rather than the actual exchange rates in effect during the respective periods. All growth comparisons relate to the corresponding period in the last fiscal year. Microsoft has provided this non-GAAP financial information to aid investors in better understanding our performance. The non-GAAP financial measures presented in this release should not be considered as a substitute for, or superior to, the measures of financial performance prepared in accordance with GAAP.\\nFinancial Performance Constant Currency Reconciliation\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nThree Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions, except per share amounts)\\n \\nRevenue\\n \\nOperating\\nIncome\\n \\nNet Income\\n \\nDiluted\\nEarnings\\nper Share\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$56,189\\n \\n$24,254\\n \\n$20,081\\n \\n$2.69\\n2024 As Reported (GAAP)\\n \\n$64,727\\n \\n$27,925\\n \\n$22,036\\n \\n$2.95\\nPercentage Change Y/Y (GAAP)\\n \\n15%\\n \\n15%\\n \\n10%\\n \\n10%\\nConstant Currency Impact\\n \\n$ (345)\\n \\n$ (218)\\n \\n$ (269)\\n \\n$ (0.04)\\nPercentage Change Y/Y Constant Currency\\n \\n16%\\n \\n16%\\n \\n11%\\n \\n11%\\n\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nTwelve Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions, except per share amounts)\\n \\nRevenue\\n \\nOperating\\nIncome\\n \\nNet Income\\n \\nDiluted\\nEarnings\\nper Share\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$211,915\\n \\n$88,523\\n \\n$72,361\\n \\n$9.68\\n2023 As Adjusted (non-GAAP)\\n \\n$211,915\\n \\n$89,694\\n \\n$73,307\\n \\n$9.81\\n2024 As Reported (GAAP)\\n \\n$245,122\\n \\n$109,433\\n \\n$88,136\\n \\n$11.80\\nPercentage Change Y/Y (GAAP)\\n \\n16%\\n \\n24%\\n \\n22%\\n \\n22%\\nPercentage Change Y/Y (non-GAAP)\\n \\n16%\\n \\n22%\\n \\n20%\\n \\n20%\\nConstant Currency Impact\\n \\n$900\\n \\n$717\\n \\n$312\\n \\n$0.04\\nPercentage Change Y/Y Constant Currency\\n \\n15%\\n \\n23%\\n \\n21%\\n \\n21%\\nPercentage Change Y/Y (non-GAAP) Constant Currency\\n \\n15%\\n \\n21%\\n \\n20%\\n \\n20%\\n\\nSegment Revenue Constant Currency Reconciliation\\n \\n \\n \\n \\n \\n \\n \\n \\n \\nThree Months Ended June 30,\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n($ in millions)\\n \\nProductivity and\\nBusiness Processes\\n \\nIntelligent Cloud\\n \\nMore Personal\\nComputing\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n2023 As Reported (GAAP)\\n \\n$18,291\\n \\n$23,993\\n \\n$13,905\\n2024 As Reported (GAAP)\\n \\n$20,317\\n \\n$28,515\\n \\n$15,895\\nPercentage Change Y/Y (GAAP)\\n \\n11%\\n \\n19%\\n \\n14%\\nConstant Currency Impact\\n \\n$ (106)\\n \\n$ (174)\\n \\n$ (65)\\nPercentage Change Y/Y Constant Currency\\n \\n12%\\n \\n20%\\n \\n15%\\nSelected Product and Service Revenue Constant Currency Reconciliation\\n \\n \\n \\n \\n \\n \\n \\n \\n \\nThree Months Ended June 30, 2024\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nPercentage Change Y/Y (GAAP)\\n \\nConstant Currency Impact\\n \\nPercentage Change Y/Y Constant Currency\\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\n \\nMicrosoft Cloud\\n \\n21%\\n \\n1%\\n \\n22%\\nOffice Commercial products and cloud services\\n \\n12%\\n \\n1%\\n \\n13%\\nOffice 365 Commercial\\n \\n13%\\n \\n1%\\n \\n14%\\nOffice Consumer products and cloud services\\n \\n3%\\n \\n1%\\n \\n4%\\nLinkedIn\\n \\n10%\\n \\n(1)%\\n \\n9%\\nDynamics products and cloud services\\n \\n16%\\n \\n0%\\n \\n16%\\nDynamics 365\\n \\n19%\\n \\n1%\\n \\n20%\\nServer products and cloud services\\n \\n21%\\n \\n1%\\n \\n22%\\nAzure and other cloud services\\n \\n29%\\n \\n1%\\n \\n30%\\nWindows\\n \\n7%\\n \\n1%\\n \\n8%\\nWindows OEM\\n \\n4%\\n \\n0%\\n \\n4%\\nWindows Commercial products and cloud services\\n \\n11%\\n \\n1%\\n \\n12%\\nDevices\\n \\n(11)%\\n \\n2%\\n \\n(9)%\\nXbox content and services\\n \\n61%\\n \\n0%\\n \\n61%\\nSearch and news advertising excluding traffic acquisition costs\\n \\n19%\\n \\n0%\\n \\n19%\\n\\nAbout Microsoft\\nMicrosoft (Nasdaq \u201CMSFT\u201D @microsoft) creates platforms and tools powered by AI to deliver innovative solutions that meet the evolving needs of our customers. The technology company is committed to making AI available broadly and doing so responsibly, with a mission to empower every person and every organization on the planet to achieve more.\\nForward-Looking Statements\\nStatements in this release that are \u201Cforward-looking statements\u201D are based on current expectations and assumptions that are subject to risks and uncertainties. Actual results could differ materially because of factors such as:\\n\u2022\\nintense competition in all of our markets that may adversely affect our results of operations;\\n\u2022\\nfocus on cloud-based and AI services presenting execution and competitive risks;\\n\u2022\\nsignificant investments in products and services that may not achieve expected returns;\\n\u2022\\nacquisitions, joint ventures, and strategic alliances that may have an adverse effect on our business;\\n\u2022\\nimpairment of goodwill or amortizable intangible assets causing a significant charge to earnings;\\n\u2022\\ncyberattacks and security vulnerabilities that could lead to reduced revenue, increased costs, liability claims, or harm to our reputation or competitive position;\\n\u2022\\ndisclosure and misuse of personal data that could cause liability and harm to our reputation;\\n\u2022\\nthe possibility that we may not be able to protect information stored in our products and services from use by others;\\n\u2022\\nabuse of our advertising, professional, marketplace, or gaming platforms that may harm our reputation or user engagement;\\n\u2022\\nproducts and services, how they are used by customers, and how third-party products and services interact with them, presenting security, privacy, and execution risks;\\n\u2022\\nissues about the use of artificial intelligence in our offerings that may result in reputational or competitive harm, or legal liability;\\n\u2022\\nexcessive outages, data losses, and disruptions of our online services if we fail to maintain an adequate operations infrastructure;\\n\u2022\\nquality or supply problems;\\n\u2022\\ngovernment enforcement under competition laws and new market regulation may limit how we design and market our products;\\n\u2022\\npotential consequences of trade and anti-corruption laws;\\n\u2022\\npotential consequences of existing and increasing legal and regulatory requirements;\\n\u2022\\nlaws and regulations relating to the handling of personal data that may impede the adoption of our services or result in increased costs, legal claims, fines, or reputational damage;\\n\u2022\\nclaims against us that may result in adverse outcomes in legal disputes;\\n\u2022\\nuncertainties relating to our business with government customers;\\n\u2022\\nadditional tax liabilities;\\n\u2022\\nsustainability regulations and expectations that may expose us to increased costs and legal and reputational risk;\\n\u2022\\nan inability to protect and utilize our intellectual property may harm our business and operating results;\\n\u2022\\nclaims that Microsoft has infringed the intellectual property rights of others;\\n\u2022\\ndamage to our reputation or our brands that may harm our business and results of operations;\\n\u2022\\nadverse economic or market conditions that may harm our business;\\n\u2022\\ncatastrophic events or geo-political conditions, such as the COVID-19 pandemic, that may disrupt our business;\\n\u2022\\nexposure to increased economic and operational uncertainties from operating a global business, including the effects of foreign currency exchange and\\n\u2022\\nthe dependence of our business on our ability to attract and retain talented employees.\\nFor more information about risks and uncertainties associated with Microsoft\u2019s business, please refer to the \u201CManagement\u2019s Discussion and Analysis of Financial Condition and Results of Operations\u201D and \u201CRisk Factors\u201D sections of Microsoft\u2019s SEC filings, including, but not limited to, its annual report on Form 10-K and quarterly reports on Form 10-Q, copies of which may be obtained by contacting Microsoft\u2019s Investor Relations department at (800) 285-7772 or at Microsoft\u2019s Investor Relations website at http://www.microsoft.com/en-us/investor.\\nAll information in this release is as of June 30, 2024. The company undertakes no duty to update any forw",
+        "name": "EX-99.1"
+      },
+      {
+        "type": "thought",
+        "title": "XCalculating net profit margin",
+        "sequenceNumber": 0,
+        "status": "complete",
+        "text": "**Calculating net profit margin**\n\nI have results from the UniversalSearchTool that include SEC press release details about FY2024 revenue and net income. Based on the data, revenue is $245.122 billion, and net income is $88.136 billion. To find the net profit margin, I divide net income by revenue, which gives me approximately 36.0%. Since the user noted \u0022as of 2024\u0022 could be a bit ambiguous, I\u2019ll clarify it\u0027s FY2024. I\u2019ll reference the source as \u0022(website)\u0022."
+      },
+      {
+        "type": "thought",
+        "title": "XFormulating concise answer",
+        "sequenceNumber": 1,
+        "status": "complete",
+        "text": "**Formulating concise answer**\n\nI\u0027m preparing a concise response regarding Microsoft\u0027s FY2024 net profit margin, which is approximately 35.9%. This is calculated from net income of $88.14 billion divided by revenue of $245.12 billion. I\u0027ll mention that the fiscal year ended on June 30, 2024. Since the user asked \u0022as of 2024,\u0022 I\u2019ll specify it\u0027s FY2024. If they want further details, like quarterly data or trailing twelve months, I\u0027ll offer that as well."
+      },
+      { "streamId": "7a40f92d-7dab-4142-abf1-16928121d988", "streamType": "final", "type": "streaminfo" }
+    ],
+    "channelData": {
+      "feedbackLoop": { "type": "default" },
+      "streamType": "final",
+      "streamId": "7a40f92d-7dab-4142-abf1-16928121d988"
+    },
+    "replyToId": "f4cde0be-2734-4c3c-b1cc-bca8cbff53cc",
+    "listenFor": [],
+    "textHighlights": []
+  }
+]

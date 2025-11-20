@@ -304,6 +304,16 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #endregion
 
+  console.log(
+    Object.freeze({
+      activityMap: nextActivityMap,
+      howToGroupingMap: nextHowToGroupingMap,
+      livestreamingSessionMap: nextLivestreamSessionMap,
+      sortedActivities: nextSortedActivities,
+      sortedChatHistoryList: nextSortedChatHistoryList
+    })
+  );
+
   return Object.freeze({
     activityMap: Object.freeze(nextActivityMap),
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
