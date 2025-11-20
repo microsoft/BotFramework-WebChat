@@ -41,6 +41,7 @@ import CollapsibleGroupingTitle from '../CollapsibleGroupingTitle';
 import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 
 import styles from './PartGroupingActivity.module.css';
+import CollapsibleGroupingList from '../CollapsibleGroupingList';
 
 const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
@@ -166,7 +167,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const lastActivity = activities.at(-1);
 
   const currentMessage = useMemo(
-    () => messages.toReversed().find(message => message.creativeWorkStatus === 'Incomplete') || lastMessage,
+    () => messages.find(message => message.creativeWorkStatus === 'Incomplete') || lastMessage,
     [messages, lastMessage]
   );
 
@@ -185,21 +186,33 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
     [messages]
   );
 
+  const currentGroupStatus = currentMessage?.creativeWorkStatus || defaultWorkStatus;
+
+  /**
+   * The idea behind group header is that it displays the state of the entire group:
+   * - We start by determining if the group should display a status (i.e., if any message in the group has a creativeWorkStatus).
+   * - If there is a status to display we display it.
+   * - For the title we check if the current group status is 'Incomplete'.
+   * - If it is 'Incomplete', we show the abstract of the first message with 'Incomplete' status.
+   * - If not, we fall back to a default title.
+   */
   const groupHeader = useMemo(
     () => (
       <Fragment>
         {defaultWorkStatus && (
           <StackedLayoutMessageStatus
             className={classNames['part-grouping-activity__message-status']}
-            creativeWorkStatus={currentMessage?.creativeWorkStatus ?? defaultWorkStatus}
+            creativeWorkStatus={currentGroupStatus}
           />
         )}
         <CollapsibleGroupingTitle>
-          {currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')}
+          {currentGroupStatus === 'Incomplete'
+            ? currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
+            : localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
       </Fragment>
     ),
-    [classNames, currentMessage?.abstract, currentMessage?.creativeWorkStatus, defaultWorkStatus, localize]
+    [classNames, currentGroupStatus, currentMessage?.abstract, defaultWorkStatus, localize]
   );
 
   return (
@@ -223,9 +236,12 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
             isOpen={isGroupOpen}
             onToggle={setIsGroupOpen}
           >
-            <TranscriptActivityList className={classNames['part-grouping-activity__activities']}>
+            <CollapsibleGroupingList
+              className={classNames['part-grouping-activity__activities']}
+              tag={TranscriptActivityList}
+            >
               {children}
-            </TranscriptActivityList>
+            </CollapsibleGroupingList>
           </CollapsibleGrouping>
         </StackedLayoutMain>
         {renderActivityStatus && <StackedLayoutStatus>{renderActivityStatus({ hideTimestamp })}</StackedLayoutStatus>}
