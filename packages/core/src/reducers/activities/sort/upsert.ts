@@ -135,14 +135,20 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         )
       : nextPartList.findIndex(entry => entry.type === 'activity' && entry.activityInternalId === activityInternalId);
 
-    ~existingPartEntryIndex && nextPartList.splice(existingPartEntryIndex, 1);
+    const nextPartEntry = Object.freeze({ ...sortedChatHistoryListEntry, position: howToGroupingPosition });
 
-    nextPartList = insertSorted(
-      nextPartList,
-      Object.freeze({ ...sortedChatHistoryListEntry, position: howToGroupingPosition }),
-      // eslint-disable-next-line no-magic-numbers
-      ({ position: x }, { position: y }) => (typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y)
-    );
+    if (~existingPartEntryIndex && typeof howToGroupingPosition === 'undefined') {
+      nextPartList[+existingPartEntryIndex] = nextPartEntry;
+    } else {
+      ~existingPartEntryIndex && nextPartList.splice(existingPartEntryIndex, 1);
+
+      nextPartList = insertSorted(
+        nextPartList,
+        nextPartEntry,
+        // eslint-disable-next-line no-magic-numbers
+        ({ position: x }, { position: y }) => (typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y)
+      );
+    }
 
     nextHowToGroupingMap.set(
       howToGroupingId,
