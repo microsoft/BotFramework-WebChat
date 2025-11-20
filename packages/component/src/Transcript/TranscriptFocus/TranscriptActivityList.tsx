@@ -1,6 +1,6 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
-import React, { forwardRef, type HTMLAttributes } from 'react';
+import React, { forwardRef, memo, type HTMLAttributes } from 'react';
 
 import styles from './TranscriptFocus.module.css';
 
@@ -18,5 +18,5 @@ const TranscriptActivityList = forwardRef<HTMLDivElement, TranscriptActivityList
 
 TranscriptActivityList.displayName = 'TranscriptActivityList';
 
-export default TranscriptActivityList;
+export default memo(TranscriptActivityList);
 export { type TranscriptActivityListProps };

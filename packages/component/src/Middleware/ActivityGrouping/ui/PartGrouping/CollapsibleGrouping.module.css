@@ -64,3 +64,13 @@
     visibility 0s linear 0s;
   visibility: unset;
 }
+
+:global(.webchat) .collapsible-grouping__list {
+  display: grid;
+  gap: 0;
+  margin-block-end: calc(var(--webchat--collapsible-grouping__list--gap, var(--webchat__padding--regular)) * -1);
+
+  > * {
+    margin-block-end: var(--webchat--collapsible-grouping__list--gap, var(--webchat__padding--regular));
+  }
+}

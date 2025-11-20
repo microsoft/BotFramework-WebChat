@@ -339,7 +339,7 @@
   }
 
   :global(.stacked-layout .collapsible-grouping__content .part-grouping-activity__activities) {
-    gap: var(--webchat-spacingVerticalS);
+    --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalS);
     padding: var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalL);
   }
 
@@ -561,6 +561,7 @@
     --webchat-part-grouping__bubble--box-shadow: var(--webchat-shadow4);
 
     :global(.stacked-layout .transcript-focus-area__activity-list) {
+      --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalXS);
       padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
       gap: var(--webchat-spacingVerticalXS);
     }
@@ -739,7 +740,7 @@
     }
 
     :global(.stacked-layout .transcript-focus-area__activity-list) {
-      gap: var(--webchat-spacingVerticalL);
+      --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalL);
     }
 
     :global(.webchat__bubble:not(.webchat__bubble--from-user)::after) {
@@ -861,7 +862,7 @@
     }
 
     :global(.stacked-layout .transcript-focus-area__activity-list) {
-      gap: var(--webchat-spacingVerticalS);
+      --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalS);
       padding: var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalM);
     }
 
@@ -870,6 +871,73 @@
       padding-block: var(--webchat-spacingVerticalM);
       padding-inline: var(--webchat-spacingHorizontalL);
     }
+
+    :global(.collapsible-grouping__content) {
+      height: unset;
+      opacity: unset;
+      visibility: unset;
+    }
+
+    :global(.collapsible-grouping__list) > * {
+      interpolate-size: allow-keywords;
+      transition:
+        margin calc(var(--webchat__transition-duration) / 2) var(--webchat__transition-easing),
+        height calc(var(--webchat__transition-duration) / 2) var(--webchat__transition-easing);
+    }
+
+    :global(.collapsible-grouping__content--open .collapsible-grouping__list) > * {
+      /* We use animation so we can reset needed properties immediately upon switching classes */
+      animation: collapsible-grouping__fade-in var(--webchat__transition-duration)
+        calc(var(--webchat__transition-duration) / 4) var(--webchat__transition-easing) both;
+      height: auto;
+      transition:
+        margin var(--webchat__transition-duration) var(--webchat__transition-easing),
+        height var(--webchat__transition-duration) var(--webchat__transition-easing);
+    }
+
+    :global(.collapsible-grouping__content:not(.collapsible-grouping__content--open)) {
+      /* We use animation so we can reset needed properties immediately upon switching classes */
+      animation: collapsible-grouping__fade-in var(--webchat__transition-duration) var(--webchat__transition-duration)
+        var(--webchat__transition-easing) both;
+    }
+
+    :global(.collapsible-grouping__content:not(.collapsible-grouping__content--open) .collapsible-grouping__list) {
+      padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
+
+      > *:not(:has(:global(.stacked-layout__message-status--incomplete))) {
+        height: 0;
+        margin: 0;
+        visibility: hidden;
+        overflow: clip;
+      }
+
+      > *:has(:global(.stacked-layout__message-status--incomplete)) {
+        /* We use animation so we can reset needed properties immediately upon switching classes */
+        animation: collapsible-grouping__fade-in var(--webchat__transition-duration) var(--webchat__transition-duration)
+          var(--webchat__transition-easing) both;
+        pointer-events: none;
+
+        :global(.stacked-layout__message-status--incomplete),
+        :global(.collapsible-content__chevron) {
+          visibility: hidden;
+        }
+      }
+
+      &:has(:global(.stacked-layout__message-status--incomplete)) {
+        padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
+        transform: translate(-4px, -20px);
+        margin-block-end: calc(-20px - var(--webchat--collapsible-grouping__list--gap));
+      }
+    }
   }
   /* #endregion */
+}
+
+@keyframes collapsible-grouping__fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
