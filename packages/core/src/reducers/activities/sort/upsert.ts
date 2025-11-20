@@ -70,13 +70,15 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       (nextLivestreamingSession ? nextLivestreamingSession.finalized : false) ||
       activityLivestreamingMetadata.type === 'final activity';
 
+    // TODO: [P*] Remove this logic. We will not deal with the timestamp in finalized livestream activity.
+
     // If livestream become finalized in this round and it has timestamp, update the position.
     // The livestream will only have its position updated twice in its lifetime:
     // 1. When it is first inserted into chat history
     // 2. When it become concluded and it has a timestamp
-    if (finalized && !nextLivestreamingSession?.finalized && typeof logicalTimestamp !== 'undefined') {
-      shouldReusePosition = false;
-    }
+    // if (finalized && !nextLivestreamingSession?.finalized && typeof logicalTimestamp !== 'undefined') {
+    //   shouldReusePosition = false;
+    // }
 
     const nextLivestreamingSessionMapEntry = {
       activities: Object.freeze(
@@ -137,9 +139,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const nextPartEntry = Object.freeze({ ...sortedChatHistoryListEntry, position: howToGroupingPosition });
 
+    // If the upserting activity is position-less and an earlier revision is in the grouping, update the existing entry.
     if (~existingPartEntryIndex && typeof howToGroupingPosition === 'undefined') {
       nextPartList[+existingPartEntryIndex] = nextPartEntry;
     } else {
+      // The upserting activity has position, or it never exist in the grouping.
       ~existingPartEntryIndex && nextPartList.splice(existingPartEntryIndex, 1);
 
       nextPartList = insertSorted(
