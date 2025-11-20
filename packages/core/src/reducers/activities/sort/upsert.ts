@@ -235,7 +235,10 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   //   shouldSkipPositionalChange = false;
   // }
 
-  // if (!shouldSkipPositionalChange && ~existingSortedChatHistoryListEntryIndex) {
+  // if (
+  //   ~existingSortedChatHistoryListEntryIndex &&
+  //   state.activityMap.get(activityInternalId)?.logicalTimestamp === logicalTimestamp
+  // ) {
   //   nextSortedChatHistoryList[+existingSortedChatHistoryListEntryIndex] = Object.freeze(sortedChatHistoryListEntry);
   // } else {
   ~existingSortedChatHistoryListEntryIndex &&
@@ -244,9 +247,32 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   nextSortedChatHistoryList = insertSorted(
     nextSortedChatHistoryList,
     Object.freeze(sortedChatHistoryListEntry),
-    ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
+    (x, y) => {
+      // Compare logical timestamp if both have it.
+      // Otherwise, compare local timestamp if both have it.
+      // Otherwise, -1.
+      const xLogicalTimestamp = x.logicalTimestamp;
+      const yLogicalTimestamp = y.logicalTimestamp;
+
+      if (typeof xLogicalTimestamp !== 'undefined' && typeof yLogicalTimestamp !== 'undefined') {
+        return xLogicalTimestamp - yLogicalTimestamp;
+      }
+
+      if (x.type === 'activity' && y.type === 'activity') {
+        const xActivity = nextActivityMap.get(x.activityInternalId);
+        const yActivity = nextActivityMap.get(y.activityInternalId);
+
+        const xLocalTimestamp = xActivity?.activity.localTimestamp;
+        const yLocalTimestamp = yActivity?.activity.localTimestamp;
+
+        if (typeof xLocalTimestamp !== 'undefined' && typeof yLocalTimestamp !== 'undefined') {
+          return +new ponyfill.Date(xLocalTimestamp) - +new ponyfill.Date(yLocalTimestamp);
+        }
+      }
+
       // eslint-disable-next-line no-magic-numbers
-      typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y
+      return -1;
+    }
   );
   // }
 
@@ -347,15 +373,17 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #endregion
 
-  console.log(
-    Object.freeze({
-      activityMap: nextActivityMap,
-      howToGroupingMap: nextHowToGroupingMap,
-      livestreamingSessionMap: nextLivestreamSessionMap,
-      sortedActivities: nextSortedActivities,
-      sortedChatHistoryList: nextSortedChatHistoryList
-    })
-  );
+  // console.log(
+  //   activityInternalId,
+  //   Object.freeze({
+  //     activity,
+  //     activityMap: nextActivityMap,
+  //     howToGroupingMap: nextHowToGroupingMap,
+  //     livestreamingSessionMap: nextLivestreamSessionMap,
+  //     sortedActivities: nextSortedActivities,
+  //     sortedChatHistoryList: nextSortedChatHistoryList
+  //   })
+  // );
 
   return Object.freeze({
     activityMap: Object.freeze(nextActivityMap),
