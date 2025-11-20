@@ -17,6 +17,28 @@ import {
   type State
 } from './types';
 
+// Honoring timestamp or not:
+//
+// - Update activity
+//    - (Should honor) every changes
+// - Echo back activity
+//    - (Should honor) timestamp of echo back of outgoing message
+// - Livestream activity
+//    - (Should not honor) timestamp of revisions of livestream as it could "flash" them to the bottom
+//       - Should not update session timestamp
+//    - How:
+//       - If it's 1 or Nth revision, copy the timestamp from upserting activity into session
+//       - Otherwise, it's 2...N-1, don't copy the timestamp into session
+// - HowTo part grouping
+//    - (Should not honor) timestamp change via livestream as it could "flash" them to the bottom
+//       - Not honoring by copying the timestamp from livestream session
+//    - How: copy the timestamp from the upserting part (livestream or update) into part grouping
+//
+// Simplifying/concluding all rules:
+//
+// - Always copy timestamp, except when it's a livestream of 2...N-1 revision
+// - Part grouping timestamp is copied from upserting entry (either livestream session or activity)
+
 const INITIAL_STATE = Object.freeze({
   activityMap: Object.freeze(new Map()),
   livestreamingSessionMap: Object.freeze(new Map()),
@@ -39,7 +61,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   const activityInternalId = getActivityInternalId(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
-  let shouldReusePosition = true;
+  // let shouldSkipPositionalChange = false;
 
   nextActivityMap.set(
     activityInternalId,
@@ -90,6 +112,9 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     // if (finalized && !nextLivestreamingSession?.finalized && typeof logicalTimestamp !== 'undefined') {
     //   shouldReusePosition = false;
     // }
+    // if (!finalized && livestreamSessionMapEntry) {
+    //   shouldSkipPositionalChange = true;
+    // }
 
     const nextLivestreamingSessionMapEntry = {
       activities: Object.freeze(
@@ -109,13 +134,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         )
       ),
       finalized,
-      // Always update livestream timestamp.
-      logicalTimestamp
-      // logicalTimestamp: finalized
-      //   ? logicalTimestamp
-      //   : livestreamSessionMapEntry
-      //     ? livestreamSessionMapEntry.logicalTimestamp
-      //     : logicalTimestamp
+      // Update timestamp if:
+      // 1. Upserting activity is finalized
+      // 2. Upserting activity is the first in livestream
+      logicalTimestamp:
+        finalized || !livestreamSessionMapEntry ? logicalTimestamp : livestreamSessionMapEntry.logicalTimestamp
     } satisfies LivestreamSessionMapEntry;
 
     nextLivestreamSessionMap.set(sessionId, Object.freeze(nextLivestreamingSessionMapEntry));
@@ -137,11 +160,13 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const howToGroupingId = howToGrouping.groupingId as HowToGroupingIdentifier;
     const { position: howToGroupingPosition } = howToGrouping;
 
+    const partGroupingMapEntry = nextHowToGroupingMap.get(howToGroupingId);
+
     const nextPartGroupingEntry: HowToGroupingMapEntry =
       nextHowToGroupingMap.get(howToGroupingId) ??
       ({ logicalTimestamp, partList: Object.freeze([]) } satisfies HowToGroupingMapEntry);
 
-    let nextPartList = Array.from(nextPartGroupingEntry.partList);
+    let nextPartList = partGroupingMapEntry ? Array.from(partGroupingMapEntry.partList) : [];
 
     const existingPartEntryIndex = activityLivestreamingMetadata
       ? nextPartList.findIndex(
@@ -170,7 +195,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     nextHowToGroupingMap.set(
       howToGroupingId,
       Object.freeze({
-        ...nextPartGroupingEntry,
+        logicalTimestamp: sortedChatHistoryListEntry.logicalTimestamp,
         partList: Object.freeze(nextPartList)
       } satisfies HowToGroupingMapEntry)
     );
@@ -205,29 +230,25 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
           : // eslint-disable-next-line no-magic-numbers
             -1;
 
-  if (
-    typeof sortedChatHistoryListEntry.logicalTimestamp !== 'undefined' &&
-    !activityLivestreamingMetadata &&
-    !howToGrouping
-  ) {
-    // Do not update position for livestream and part grouping.
-    shouldReusePosition = false;
-  }
+  // if (typeof sortedChatHistoryListEntry.logicalTimestamp === 'undefined') {
+  //   // Do not update position if the upserting activity does not have timestamp.
+  //   shouldSkipPositionalChange = false;
+  // }
 
-  if (shouldReusePosition && ~existingSortedChatHistoryListEntryIndex) {
-    nextSortedChatHistoryList[+existingSortedChatHistoryListEntryIndex] = Object.freeze(sortedChatHistoryListEntry);
-  } else {
-    ~existingSortedChatHistoryListEntryIndex &&
-      nextSortedChatHistoryList.splice(existingSortedChatHistoryListEntryIndex, 1);
+  // if (!shouldSkipPositionalChange && ~existingSortedChatHistoryListEntryIndex) {
+  //   nextSortedChatHistoryList[+existingSortedChatHistoryListEntryIndex] = Object.freeze(sortedChatHistoryListEntry);
+  // } else {
+  ~existingSortedChatHistoryListEntryIndex &&
+    nextSortedChatHistoryList.splice(existingSortedChatHistoryListEntryIndex, 1);
 
-    nextSortedChatHistoryList = insertSorted(
-      nextSortedChatHistoryList,
-      Object.freeze(sortedChatHistoryListEntry),
-      ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
-        // eslint-disable-next-line no-magic-numbers
-        typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y
-    );
-  }
+  nextSortedChatHistoryList = insertSorted(
+    nextSortedChatHistoryList,
+    Object.freeze(sortedChatHistoryListEntry),
+    ({ logicalTimestamp: x }, { logicalTimestamp: y }) =>
+      // eslint-disable-next-line no-magic-numbers
+      typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y
+  );
+  // }
 
   // #endregion
 
