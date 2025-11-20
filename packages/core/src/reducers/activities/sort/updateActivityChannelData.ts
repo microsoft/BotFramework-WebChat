@@ -1,4 +1,5 @@
 import { check, parse, pipe, string, type GenericSchema } from 'valibot';
+import getActivityInternalId from './private/getActivityInternalId';
 import type { Activity, ActivityInternalIdentifier, ActivityMapEntry, State } from './types';
 
 const channelDataNameSchema: GenericSchema<
@@ -16,6 +17,18 @@ const channelDataNameSchema: GenericSchema<
   )
 );
 
+/**
+ * Updates activity channel data.
+ *
+ * Note: after channel data is updated, it will not update to a new position.
+ *       Do not use this function for updating channel data that would affect position, such as `streamSequence`.
+ *
+ * @param state
+ * @param activityInternalIdentifier
+ * @param name
+ * @param value
+ * @returns
+ */
 function updateActivityChannelDataInternalSkipNameCheck(
   state: State,
   activityInternalIdentifier: ActivityInternalIdentifier,
@@ -43,7 +56,25 @@ function updateActivityChannelDataInternalSkipNameCheck(
     Object.freeze({ ...activityEntry, activity: nextActivity } satisfies ActivityMapEntry)
   );
 
-  return Object.freeze({ ...state, activityMap: Object.freeze(nextActivityMap) } satisfies State);
+  const nextSortedActivities = Array.from(state.sortedActivities);
+
+  const existingActivityIndex = nextSortedActivities.findIndex(
+    activity => getActivityInternalId(activity) === activityInternalIdentifier
+  );
+
+  if (!~existingActivityIndex) {
+    throw new Error(
+      `botframework-webchat: no activity found in sortedActivities with internal ID ${activityInternalIdentifier}`
+    );
+  }
+
+  nextSortedActivities[+existingActivityIndex] = nextActivity;
+
+  return Object.freeze({
+    ...state,
+    activityMap: Object.freeze(nextActivityMap),
+    sortedActivities: Object.freeze(nextSortedActivities)
+  } satisfies State);
 }
 
 function updateActivityChannelData(
