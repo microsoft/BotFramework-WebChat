@@ -46,23 +46,6 @@
     import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
     import { waitFor } from '@testduet/wait-for';
 
-    async function openLastActivity() {
-      let summaries;
-      await waitFor(() => {
-        summaries = Array.from(document.querySelectorAll('summary.collapsible-content__summary'));
-        return summaries.length > 0;
-      }, 500);
-
-      summaries.at(-1).focus();
-      await host.sendKeys('ENTER');
-
-      await waitFor(() => {
-        return summaries.at(-1).getAttribute('aria-expanded') === 'true';
-      }, 500);
-
-      await pageConditions.scrollStabilized();
-    }
-
     run(async function () {
       const {
         WebChat: { FluentThemeProvider, ReactWebChat }
@@ -127,7 +110,7 @@
 
       // TODO: code block github theme triggers accessibility violation
       if (variant) {
-        window.checkAccessibility = async () => { }
+        window.checkAccessibility = async () => { };
       }
 
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
@@ -147,49 +130,6 @@
       );
 
       await pageConditions.uiConnected();
-
-      const CODE = `import numpy as np
-import matplotlib.pyplot as plt
-
-def plot_sine_waves():
-    """Create a beautiful visualization of sine waves with different frequencies."""
-    # Generate time points
-    t = np.linspace(0, 10, 1000)
-
-    # Create waves with different frequencies and phases
-    wave1 = np.sin(t)
-    wave2 = 0.5 * np.sin(2 * t + np.pi/4)
-    wave3 = 0.3 * np.sin(3 * t + np.pi/3)
-
-    # Combine waves
-    combined = wave1 + wave2 + wave3
-
-    # Create a stylish plot
-    plt.style.use('seaborn-darkgrid')
-    plt.figure(figsize=(12, 8))
-
-    # Plot individual waves
-    plt.plot(t, wave1, label='Primary Wave', alpha=0.5)
-    plt.plot(t, wave2, label='Second Harmonic', alpha=0.5)
-    plt.plot(t, wave3, label='Third Harmonic', alpha=0.5)
-
-    # Plot combined wave with a thicker line
-    plt.plot(t, combined, 'r-',
-            label='Combined Wave',
-            linewidth=2)
-
-    plt.title('Harmonic Wave Composition', fontsize=14)
-    plt.xlabel('Time', fontsize=12)
-    plt.ylabel('Amplitude', fontsize=12)
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-
-    # Show the plot
-    plt.tight_layout()
-    plt.show()
-
-# Generate the visualization
-plot_sine_waves()`;
 
       const graphSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg width="480" height="480" viewBox="-2 -2 4 4" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graph of x^2 + y^2 = 0 (single point at origin)">\n  <defs>\n    <marker id="arrow" viewBox="-3 -3 6 6" refX="0" refY="0" markerWidth="4" markerHeight="4" orient="auto">\n      <path d="M-3,-2 L 0,0 L -3,2" fill="none" stroke="#444" stroke-width="0.012"/>\n    </marker>\n    <style><![CDATA[\n      .axis   { stroke:#444; stroke-width:0.012; stroke-linecap:round; }\n      .tickMaj{ stroke:#666; stroke-width:0.008; stroke-linecap:round; }\n      .tickMin{ stroke:#666; stroke-width:0.007200000000000001; stroke-linecap:round; opacity:.75; }\n      .grid   { stroke:#ddd; stroke-width:0.006; }\n      .ring   { fill:#444; stroke: #000; stroke-width:0.01; fill-opacity:0.22; }\n      .label  { fill:#222; font-family:Inter, "Times New Roman", serif; font-size:0.14px; }\n      text    { dominant-baseline:alphabetic; }\n      svg     { shape-rendering:geometricPrecision; }\n    ]]></style>\n  </defs>\n\n  \x3C!-- Flip only geometry so Y points up -->\n  <g transform="scale(1,-1)">\n    \n    \x3C!-- Axes -->\n    <line x1="-2" y1="0" x2="1.94" y2="0" class="axis" marker-end="url(#arrow)"/>\n    <line x1="0" y1="-2" x2="0" y2="1.94" class="axis" marker-end="url(#arrow)"/>\n\n    \x3C!-- Ticks -->\n    <line x1="-2" y1="-0.06" x2="-2" y2="0.06" class="tickMaj"/><line x1="-1" y1="-0.06" x2="-1" y2="0.06" class="tickMaj"/><line x1="1" y1="-0.06" x2="1" y2="0.06" class="tickMaj"/><line x1="2" y1="-0.06" x2="2" y2="0.06" class="tickMaj"/><line x1="-0.06" y1="-2" x2="0.06" y2="-2" class="tickMaj"/><line x1="-0.06" y1="-1" x2="0.06" y2="-1" class="tickMaj"/><line x1="-0.06" y1="1" x2="0.06" y2="1" class="tickMaj"/><line x1="-0.06" y1="2" x2="0.06" y2="2" class="tickMaj"/>\n\n    \x3C!-- The solution: elegant dot + faint ring -->\n    <circle cx="0" cy="0" r="0.05" class="ring"/>\n  </g>\n\n  \x3C!-- Upright labels (SVG coords: +y is down) -->\n  <text x="1.88" y="0.16" class="label">x</text>\n  <text x="-0.12" y="-1.82" class="label">y</text>\n\n  \x3C!-- Numeric labels at ±1 -->\n  <text x="1"   y="0.16" class="label" text-anchor="middle">1</text>\n  <text x="-1"  y="0.16" class="label" text-anchor="middle">−1</text>\n  <text x="-0.14" y="-1" class="label" text-anchor="end">1</text>\n  <text x="-0.14" y="1" class="label" text-anchor="end">−1</text>\n\n  \x3C!-- Equation -->\n  <text x="-1.9" y="1.74" class="label" style="font-style:italic; font-size:0.18px;">x² + y² = 0</text>\n</svg>`)}`;
 
