@@ -86,8 +86,7 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
         const finalActivity = lastActivity?.sequenceNumber === Infinity ? lastActivity : undefined;
 
         const logicalTimestamp = finalActivity
-          ? // eslint-disable-next-line no-magic-numbers
-            finalActivity.logicalTimestamp
+          ? finalActivity.logicalTimestamp
           : nextActivities.at(0)?.logicalTimestamp;
 
         const nextLivestreamSessionMapEntry: LivestreamSessionMapEntry = {
