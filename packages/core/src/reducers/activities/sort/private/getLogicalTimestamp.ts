@@ -1,4 +1,4 @@
-import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
+import type { GlobalScopePonyfill } from '../../../../types/GlobalScopePonyfill';
 import type { Activity } from '../types';
 
 /**

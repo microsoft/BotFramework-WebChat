@@ -1,5 +1,5 @@
 import type sendBoxAttachments from '../../reducers/sendBoxAttachments';
-import type { State } from '../../reducers/sort/types';
+import type { State } from '../../reducers/activities/sort/types';
 import type { WebChatActivity } from '../WebChatActivity';
 import type { Notification } from './Notification';
 

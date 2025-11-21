@@ -1,7 +1,6 @@
 /* eslint-disable complexity */
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, -1] }] */
 
-// @ts-expect-error No @types/simple-update-in
 import updateIn from 'simple-update-in';
 import { v4 } from 'uuid';
 
