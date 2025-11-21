@@ -41,6 +41,7 @@ import {
 // - Part grouping timestamp is copied from upserting entry (either livestream session or activity)
 
 const INITIAL_STATE = Object.freeze({
+  activityIdToLocalIdMap: Object.freeze(new Map()),
   activityMap: Object.freeze(new Map()),
   livestreamSessionMap: Object.freeze(new Map()),
   howToGroupingMap: Object.freeze(new Map()),
@@ -55,6 +56,7 @@ const INITIAL_STATE = Object.freeze({
 // - Duplicate timestamps: activities without timestamp can't be sort deterministically with quick sort
 
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
+  const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
   const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
@@ -63,6 +65,10 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const activityLocalId = getActivityLocalId(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
   // let shouldSkipPositionalChange = false;
+
+  if (typeof activity.id !== 'undefined') {
+    nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
+  }
 
   nextActivityMap.set(
     activityLocalId,
@@ -332,6 +338,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   // );
 
   return Object.freeze({
+    activityIdToLocalIdMap: Object.freeze(nextActivityIdToLocalIdMap),
     activityMap: Object.freeze(nextActivityMap),
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
     livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),

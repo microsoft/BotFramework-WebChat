@@ -1,6 +1,8 @@
 import type { Activity, State } from '../types';
 
-export default function computeSortedActivities(temporalState: Omit<State, 'sortedActivities'>): Activity[] {
+export default function computeSortedActivities(
+  temporalState: Pick<State, 'activityMap' | 'howToGroupingMap' | 'livestreamSessionMap' | 'sortedChatHistoryList'>
+): Activity[] {
   const { activityMap, howToGroupingMap, livestreamSessionMap, sortedChatHistoryList } = temporalState;
 
   return Array.from<Activity>(

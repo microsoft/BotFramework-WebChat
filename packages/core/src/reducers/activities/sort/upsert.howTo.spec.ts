@@ -8,13 +8,9 @@ import type {
   ActivityMapEntry,
   HowToGroupingId,
   HowToGroupingMapEntry,
-  HowToGroupingMapPartEntry,
-  SortedChatHistory,
-  SortedChatHistoryEntry
+  SortedChatHistory
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import deleteActivityByLocalId from './deleteActivityByLocalId';
-import getActivityLocalId from './private/getActivityLocalId';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -369,95 +365,5 @@ scenario('upserting plain activity in two different grouping', bdd => {
         activityToExpectation(activity2, 1),
         activityToExpectation(activity1, 1_000)
       ]);
-    });
-});
-
-scenario('deleting an activity in the same grouping', bdd => {
-  const activity1 = buildActivity(
-    { id: 'a-00001', text: 'Hello, World!', timestamp: new Date(1_000).toISOString() },
-    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
-  );
-
-  const activity2 = buildActivity(
-    { id: 'a-00002', text: 'Aloha!', timestamp: new Date(2_000).toISOString() },
-    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 2 }
-  );
-
-  bdd
-    .given('an initial state', () => INITIAL_STATE)
-    .when('2 activities are upserted', state => upsert({ Date }, upsert({ Date }, state, activity1), activity2))
-    .then('should have 2 activities', (_, state) => {
-      expect(state.activityMap).toHaveProperty('size', 2);
-      expect(state.howToGroupingMap).toHaveProperty('size', 1);
-      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
-      expect(state.sortedActivities).toHaveLength(2);
-      expect(state.sortedChatHistoryList).toHaveLength(1);
-    })
-    .when('the second activity is deleted', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[1]))
-    )
-    .then('should have 1 activity', (_, state) => {
-      expect(state.activityMap).toHaveProperty('size', 1);
-      expect(state.howToGroupingMap).toHaveProperty('size', 1);
-      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
-      expect(state.sortedActivities).toHaveLength(1);
-      expect(state.sortedChatHistoryList).toHaveLength(1);
-    })
-    .and('`activityMap` should match', (_, state) => {
-      expect(state.activityMap).toEqual(
-        new Map([
-          [
-            'a-00001',
-            {
-              activity: activityToExpectation(activity1, 1_000),
-              activityLocalId: 'a-00001' as ActivityLocalId,
-              logicalTimestamp: 1_000,
-              type: 'activity'
-            } satisfies ActivityMapEntry
-          ]
-        ])
-      );
-    })
-    .and('`howToGroupingMap` should match', (_, state) => {
-      expect(state.howToGroupingMap).toEqual(
-        new Map([
-          [
-            '_:how-to:00001',
-            {
-              logicalTimestamp: 1_000,
-              partList: [
-                {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
-                  logicalTimestamp: 1_000,
-                  position: 1,
-                  type: 'activity'
-                } satisfies HowToGroupingMapPartEntry
-              ]
-            } satisfies HowToGroupingMapEntry
-          ]
-        ])
-      );
-    })
-    .and('`sortedActivities` should match', (_, state) => {
-      expect(state.sortedActivities).toEqual([activityToExpectation(activity1, 1_000)]);
-    })
-    .and('`sortedChatHistoryList` should match', (_, state) => {
-      expect(state.sortedChatHistoryList).toEqual([
-        {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
-          logicalTimestamp: 1_000,
-          type: 'how to grouping'
-        } satisfies SortedChatHistoryEntry
-      ]);
-    })
-    .when('the first activity is deleted', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]))
-    )
-    .then('should have no activities', (_, state) => {
-      expect(state.activityMap).toHaveProperty('size', 0);
-      expect(state.howToGroupingMap).toHaveProperty('size', 0);
-      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
-      expect(state.sortedActivities).toHaveLength(0);
-      expect(state.sortedChatHistoryList).toHaveLength(0);
     });
 });

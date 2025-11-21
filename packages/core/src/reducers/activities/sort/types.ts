@@ -50,6 +50,7 @@ type ActivityMapEntry = ActivityEntry & { readonly activity: Activity };
 type ActivityMap = ReadonlyMap<ActivityLocalId, ActivityMapEntry>;
 
 type State = {
+  readonly activityIdToLocalIdMap: Map<string, ActivityLocalId>;
   readonly activityMap: ActivityMap;
   readonly howToGroupingMap: HowToGroupingMap;
   readonly livestreamSessionMap: LivestreamSessionMap;
