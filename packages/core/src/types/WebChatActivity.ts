@@ -34,7 +34,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
      *
      * Note: if the activity is updated, this value will also be updated.
      */
-    'webchat:received-at'?: number;
+    'webchat:internal:received-at'?: number;
 
     // Chat adapter may send sequence ID to Web Chat to affect ordering.
     'webchat:sequence-id'?: number | undefined;

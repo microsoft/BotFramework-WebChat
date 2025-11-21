@@ -2,6 +2,7 @@
 import updateIn from 'simple-update-in';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
+import { setReceivedAtInActivity } from './sort/property/ReceivedAt';
 
 const DIRECT_LINE_PLACEHOLDER_URL =
   'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
@@ -30,7 +31,7 @@ export default function patchActivity(activity: WebChatActivity, { Date }: Globa
   });
 
   activity = updateIn(activity, ['channelData'], (channelData: any) => ({ ...channelData }));
-  activity = updateIn(activity, ['channelData', 'webchat:internal:received-at'], () => Date.now());
+  activity = setReceivedAtInActivity(activity, Date.now());
 
   return activity;
 }

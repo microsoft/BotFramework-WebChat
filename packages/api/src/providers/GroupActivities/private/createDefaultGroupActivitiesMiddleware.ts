@@ -2,6 +2,7 @@ import { getOrgSchemaMessage, type GlobalScopePonyfill, type WebChatActivity } f
 import { IdentifierSchema } from 'botframework-webchat-core/graph';
 import { safeParse } from 'valibot';
 
+import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity';
 import type GroupActivitiesMiddleware from '../../../types/GroupActivitiesMiddleware';
 import { type SendStatus } from '../../../types/SendStatus';
 
@@ -30,11 +31,7 @@ function bin<T>(items: readonly T[], grouping: (last: T, current: T) => boolean)
 
 function sending(activity: WebChatActivity): SendStatus | undefined {
   if (activity.from.role === 'user') {
-    const {
-      channelData: { 'webchat:send-status': sendStatus }
-    } = activity;
-
-    return sendStatus;
+    return querySendStatusFromOutgoingActivity(activity);
   }
 }
 

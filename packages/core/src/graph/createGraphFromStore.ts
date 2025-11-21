@@ -2,6 +2,7 @@ import { SlantGraph, SlantNodeSchema } from '@msinternal/botframework-webchat-co
 import { parse } from 'valibot';
 import type createStore from '../createStore';
 import type { Activity } from '../reducers/activities/sort/types';
+import { getLocalIdFromActivity, getPositionFromActivity } from '../activity';
 
 function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph {
   const graph = new SlantGraph();
@@ -50,8 +51,8 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
           from: { role }
         } = activity;
 
-        const permanentId = activity.channelData['webchat:internal:local-id'];
-        const position = activity.channelData['webchat:internal:position'];
+        const localId = getLocalIdFromActivity(activity);
+        const position = getPositionFromActivity(activity);
 
         // TODO: Should use Person and more specific than just "Others".
         const sender =
@@ -68,7 +69,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
           graph.upsert({
             '@context': 'https://schema.org',
 
-            '@id': `_:${permanentId}`,
+            '@id': `_:${localId}`,
             '@type': ['Message', `urn:microsoft:webchat:direct-line-activity`],
 
             encodingFormat:
@@ -93,7 +94,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
         } else if (typeof activity.type === 'string') {
           graph.upsert({
             '@context': 'https://schema.org',
-            '@id': `_:${permanentId}`,
+            '@id': `_:${localId}`,
             '@type': Object.freeze(['urn:microsoft:webchat:direct-line-activity']),
             identifier: activity.id && `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
             position,

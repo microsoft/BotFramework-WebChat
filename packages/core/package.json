@@ -15,6 +15,16 @@
         "default": "./dist/botframework-webchat-core.js"
       }
     },
+    "./activity": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.activity.d.mts",
+        "default": "./dist/botframework-webchat-core.activity.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.activity.d.ts",
+        "default": "./dist/botframework-webchat-core.activity.js"
+      }
+    },
     "./graph": {
       "import": {
         "types": "./dist/botframework-webchat-core.graph.d.mts",

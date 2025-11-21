@@ -1,4 +1,5 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import { queryReceivedAtFromActivity } from 'botframework-webchat-core/activity';
 import { iteratorFind } from 'iter-fest';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
@@ -50,7 +51,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
       }
 
       // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
-      const receivedAt = activity.channelData?.['webchat:internal:received-at'] ?? Date.now();
+      const receivedAt = queryReceivedAtFromActivity(activity) ?? Date.now();
 
       const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
       const typingState = new Map(prevTypingState);
