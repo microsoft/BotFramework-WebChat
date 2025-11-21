@@ -96,3 +96,47 @@ scenario('deleting activity', bdd => {
       ]);
     });
 });
+
+scenario('deleting an outgoing activity', bdd => {
+  const activity1: Activity = {
+    channelData: {
+      clientActivityID: 'caid-00001',
+      'webchat:internal:local-id': 'a-00001',
+      'webchat:internal:position': 0,
+      'webchat:send-status': 'sending'
+    } as any,
+    from: { id: 'user', role: 'user' },
+    id: 'a-00001',
+    text: 'Hello, World!',
+    timestamp: new Date(1_000).toISOString(),
+    type: 'message'
+  };
+
+  bdd
+    .given('an initial state', () => INITIAL_STATE)
+    .when('1 activity are upserted', state => upsert({ Date }, state, activity1))
+    .then('should have 1 activity', (_, state) => {
+      expect(state.activityIdToLocalIdMap).toHaveProperty('size', 1);
+      expect(state.activityMap).toHaveProperty('size', 1);
+      expect(state.clientActivityIdToLocalIdMap).toHaveProperty('size', 1);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(1);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .and('`clientActivityIdToLocalMap` should match', (_, state) => {
+      expect(state.clientActivityIdToLocalIdMap).toEqual(new Map([['caid-00001', 'a-00001']]));
+    })
+    .when('the first activity is deleted', (_, state) =>
+      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]!))
+    )
+    .then('should have no activities', (_, state) => {
+      expect(state.activityIdToLocalIdMap).toHaveProperty('size', 0);
+      expect(state.activityMap).toHaveProperty('size', 0);
+      expect(state.clientActivityIdToLocalIdMap).toHaveProperty('size', 0);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(0);
+      expect(state.sortedChatHistoryList).toHaveLength(0);
+    });
+});

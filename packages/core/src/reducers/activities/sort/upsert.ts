@@ -43,6 +43,7 @@ import {
 const INITIAL_STATE = Object.freeze({
   activityIdToLocalIdMap: Object.freeze(new Map()),
   activityMap: Object.freeze(new Map()),
+  clientActivityIdToLocalIdMap: Object.freeze(new Map()),
   livestreamSessionMap: Object.freeze(new Map()),
   howToGroupingMap: Object.freeze(new Map()),
   sortedActivities: Object.freeze([]),
@@ -58,6 +59,7 @@ const INITIAL_STATE = Object.freeze({
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
+  const nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
   const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
@@ -68,6 +70,12 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   if (typeof activity.id !== 'undefined') {
     nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
+  }
+
+  const { clientActivityID } = activity.channelData;
+
+  if (typeof clientActivityID !== 'undefined') {
+    nextClientActivityIdToLocalIdMap.set(clientActivityID, activityLocalId);
   }
 
   nextActivityMap.set(
@@ -340,6 +348,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   return Object.freeze({
     activityIdToLocalIdMap: Object.freeze(nextActivityIdToLocalIdMap),
     activityMap: Object.freeze(nextActivityMap),
+    clientActivityIdToLocalIdMap: Object.freeze(nextClientActivityIdToLocalIdMap),
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
     livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),
     sortedActivities: Object.freeze(nextSortedActivities),

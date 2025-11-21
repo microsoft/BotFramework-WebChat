@@ -5,6 +5,7 @@ import type { ActivityLocalId, LivestreamSessionMapEntry, State } from './types'
 export default function deleteActivityByLocalId(state: State, localId: ActivityLocalId): State {
   const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
+  const nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
@@ -16,6 +17,14 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
   for (const entry of nextActivityIdToLocalIdMap) {
     if (entry[1] === localId) {
       nextActivityIdToLocalIdMap.delete(entry[0]);
+
+      break;
+    }
+  }
+
+  for (const entry of nextClientActivityIdToLocalIdMap) {
+    if (entry[1] === localId) {
+      nextClientActivityIdToLocalIdMap.delete(entry[0]);
 
       break;
     }
@@ -159,6 +168,7 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
   return Object.freeze({
     activityIdToLocalIdMap: Object.freeze(nextActivityIdToLocalIdMap),
     activityMap: Object.freeze(nextActivityMap),
+    clientActivityIdToLocalIdMap: Object.freeze(nextClientActivityIdToLocalIdMap),
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
     livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),
     sortedActivities: Object.freeze(nextSortedActivities),
