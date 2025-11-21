@@ -226,8 +226,6 @@
       await pageConditions.numActivitiesShown(4);
       await host.snapshot('local');
 
-      return;
-
       // Test Case 3: Insertion after existing activities
       // When: adding an activity with position 5 (after existing position 4)
       directLine.emulateIncomingActivity(withPosition(activities.at(3), 5, 'five'));
