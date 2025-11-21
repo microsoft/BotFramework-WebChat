@@ -13,6 +13,8 @@ import {
   type SortedChatHistoryEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
+import deleteActivityByLocalId from './deleteActivityByLocalId';
+import getActivityLocalId from './private/getActivityLocalId';
 
 function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
   return {
@@ -418,5 +420,104 @@ scenario('upserting a livestream session', bdd => {
         activityToExpectation(activity2, 2_000),
         activityToExpectation(activity4, 3_000)
       ]);
+    });
+});
+
+scenario('deleting an activity', bdd => {
+  const activity1 = buildActivity({
+    channelData: {
+      streamSequence: 1,
+      streamType: 'streaming'
+    },
+    id: 'a-00001',
+    text: 'A quick',
+    timestamp: new Date(1_000).toISOString(),
+    type: 'typing'
+  });
+
+  const activity2 = buildActivity({
+    channelData: {
+      streamId: 'a-00001',
+      streamSequence: 2,
+      streamType: 'streaming'
+    },
+    id: 'a-00002',
+    text: 'A quick brown fox',
+    timestamp: new Date(2_000).toISOString(),
+    type: 'typing'
+  });
+
+  const activity3 = buildActivity({
+    channelData: {
+      streamId: 'a-00001',
+      streamType: 'final'
+    },
+    id: 'a-00003',
+    text: 'A quick brown fox jumped over the lazy dogs.',
+    timestamp: new Date(3_000).toISOString(),
+    type: 'message'
+  });
+
+  bdd
+    .given('an initial state', () => INITIAL_STATE)
+    .when('3 activities are upserted', state =>
+      upsert({ Date }, upsert({ Date }, upsert({ Date }, state, activity1), activity2), activity3)
+    )
+    .then('should have 3 activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 3);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 1);
+      expect(state.sortedActivities).toHaveLength(3);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .when('the last activity is delete', (_, state) =>
+      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[2]))
+    )
+    .then('should have 2 activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 2);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 1);
+      expect(state.sortedActivities).toHaveLength(2);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .and('`livestreamSessionMap` should match', (_, state) => {
+      expect(state.livestreamSessionMap).toEqual(
+        new Map([
+          [
+            'a-00001',
+            {
+              activities: [
+                {
+                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
+                  type: 'activity'
+                } satisfies LivestreamSessionMapEntryActivityEntry,
+                {
+                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  logicalTimestamp: 2_000,
+                  sequenceNumber: 2,
+                  type: 'activity'
+                } satisfies LivestreamSessionMapEntryActivityEntry
+              ],
+              finalized: false,
+              logicalTimestamp: 1_000
+            } satisfies LivestreamSessionMapEntry
+          ]
+        ])
+      );
+    })
+    .when('all activities are delete', (_, state) =>
+      deleteActivityByLocalId(
+        deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[1])),
+        getActivityLocalId(state.sortedActivities[0])
+      )
+    )
+    .then('should have no activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 0);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(0);
+      expect(state.sortedChatHistoryList).toHaveLength(0);
     });
 });

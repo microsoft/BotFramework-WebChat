@@ -1,6 +1,6 @@
 import computePartListTimestamp from './private/computePartListTimestamp';
 import computeSortedActivities from './private/computeSortedActivities';
-import type { ActivityLocalId, State } from './types';
+import type { ActivityLocalId, LivestreamSessionMapEntry, State } from './types';
 
 export default function deleteActivityByLocalId(state: State, localId: ActivityLocalId): State {
   const nextActivityMap = new Map(state.activityMap);
@@ -42,9 +42,52 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
         });
       } else {
         nextHowToGroupingMap.delete(howToGroupingId);
-        nextSortedChatHistoryList = nextSortedChatHistoryList.filter(
-          entry => !(entry.type === 'how to grouping' && entry.howToGroupingId === howToGroupingId)
+
+        const sortedChatHistoryListIndex = nextSortedChatHistoryList.findIndex(
+          entry => entry.type === 'how to grouping' && entry.howToGroupingId === howToGroupingId
         );
+
+        ~sortedChatHistoryListIndex && nextSortedChatHistoryList.splice(sortedChatHistoryListIndex, 1);
+      }
+    }
+  }
+
+  for (const [livestreamSessionId, livestreamSessionMapEntry] of nextLivestreamSessionMap) {
+    const activityIndex = livestreamSessionMapEntry.activities.findIndex(
+      activity => activity.activityLocalId === localId
+    );
+
+    if (~activityIndex) {
+      const nextActivities = Array.from(livestreamSessionMapEntry.activities);
+
+      nextActivities.splice(activityIndex, 1);
+
+      if (nextActivities.length) {
+        // eslint-disable-next-line no-magic-numbers
+        const lastActivity = nextActivities.at(-1);
+        const finalActivity = lastActivity?.sequenceNumber === Infinity ? lastActivity : undefined;
+
+        const logicalTimestamp = finalActivity
+          ? // eslint-disable-next-line no-magic-numbers
+            finalActivity.logicalTimestamp
+          : nextActivities.at(0)?.logicalTimestamp;
+
+        const nextLivestreamSessionMapEntry: LivestreamSessionMapEntry = {
+          ...livestreamSessionMapEntry,
+          activities: nextActivities,
+          finalized: !!finalActivity,
+          logicalTimestamp
+        };
+
+        nextLivestreamSessionMap.set(livestreamSessionId, nextLivestreamSessionMapEntry);
+      } else {
+        nextLivestreamSessionMap.delete(livestreamSessionId);
+
+        const sortedChatHistoryListIndex = nextSortedChatHistoryList.findIndex(
+          entry => entry.type === 'livestream session' && entry.livestreamSessionId === livestreamSessionId
+        );
+
+        ~sortedChatHistoryListIndex && nextSortedChatHistoryList.splice(sortedChatHistoryListIndex, 1);
       }
     }
   }
