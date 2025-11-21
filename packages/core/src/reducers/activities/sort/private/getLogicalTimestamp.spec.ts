@@ -11,7 +11,7 @@ scenario('get logical timestamp', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:id': 'a-00001',
+            'webchat:internal:local-id': 'a-00001',
             'webchat:internal:position': 1,
             'webchat:send-status': undefined
           },
@@ -31,7 +31,7 @@ scenario('get logical timestamp', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:id': 'a-00001',
+            'webchat:internal:local-id': 'a-00001',
             'webchat:internal:position': 1,
             'webchat:sequence-id': 123,
             'webchat:send-status': 'sent'

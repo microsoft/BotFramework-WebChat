@@ -4,9 +4,9 @@ import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type {
   Activity,
-  ActivityInternalIdentifier,
+  ActivityLocalId,
   ActivityMapEntry,
-  HowToGroupingIdentifier,
+  HowToGroupingId,
   HowToGroupingMapEntry,
   SortedChatHistory
 } from './types';
@@ -31,7 +31,7 @@ function buildActivity(
   const { id } = activity;
 
   return {
-    channelData: { 'webchat:internal:id': id, 'webchat:internal:position': 0, 'webchat:send-status': undefined },
+    channelData: { 'webchat:internal:local-id': id, 'webchat:internal:position': 0, 'webchat:send-status': undefined },
     ...(messageEntity
       ? {
           entities: [
@@ -77,7 +77,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -94,7 +94,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -108,7 +108,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('should appear in `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 1_000,
           type: 'how to grouping'
         }
@@ -125,7 +125,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -134,7 +134,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -151,13 +151,13 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 2_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
                 },
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   position: 3,
                   type: 'activity'
@@ -171,7 +171,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 2_000, // Should update to 2_000.
           type: 'how to grouping'
         }
@@ -191,7 +191,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -200,7 +200,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -209,7 +209,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00003',
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -226,19 +226,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 3_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
                 },
                 {
-                  activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   position: 2,
                   type: 'activity'
                 },
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   position: 3,
                   type: 'activity'
@@ -252,7 +252,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('should appear in `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 3_000, // Should not update to 3_000.
           type: 'how to grouping'
         }
@@ -290,7 +290,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -321,7 +321,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -335,7 +335,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 500,
               partList: [
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 500,
                   position: 1,
                   type: 'activity'
@@ -349,12 +349,12 @@ scenario('upserting plain activity in two different grouping', bdd => {
     .and('should appear in `sortedChatHistoryList` as a separate entry', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00002' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00002' as HowToGroupingId,
           logicalTimestamp: 500,
           type: 'how to grouping'
         },
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 1_000,
           type: 'how to grouping'
         }

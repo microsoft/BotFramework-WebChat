@@ -4,11 +4,11 @@ import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type {
   Activity,
-  ActivityInternalIdentifier,
+  ActivityLocalId,
   ActivityMapEntry,
-  HowToGroupingIdentifier,
+  HowToGroupingId,
   HowToGroupingMapEntry,
-  LivestreamSessionIdentifier,
+  LivestreamSessionId,
   LivestreamSessionMapEntry,
   LivestreamSessionMapEntryActivityEntry,
   SortedChatHistory
@@ -81,7 +81,7 @@ function buildActivity(
     from: { id: 'bot', role: 'bot' },
     ...activity,
     channelData: {
-      'webchat:internal:id': id,
+      'webchat:internal:local-id': id,
       'webchat:internal:position': 0,
       'webchat:send-status': undefined,
       ...activity.channelData
@@ -133,7 +133,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -150,7 +150,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+                  livestreamSessionId: 'a-00001' as LivestreamSessionId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'livestream session'
@@ -163,13 +163,13 @@ scenario('upserting plain activity in the same grouping', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
@@ -185,7 +185,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('should appear in `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 1_000,
           type: 'how to grouping'
         }
@@ -202,7 +202,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -211,7 +211,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -228,7 +228,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+                  livestreamSessionId: 'a-00001' as LivestreamSessionId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'livestream session'
@@ -241,19 +241,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
@@ -269,7 +269,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('should not modify `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 1_000,
           type: 'how to grouping'
         }
@@ -289,7 +289,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -298,7 +298,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -307,7 +307,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00003',
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -324,7 +324,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 3_000, // Should follow livestream session and update to 3_000.
               partList: [
                 {
-                  livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+                  livestreamSessionId: 'a-00001' as LivestreamSessionId,
                   logicalTimestamp: 3_000, // Livestream updated to 3_000.
                   position: 1,
                   type: 'livestream session'
@@ -337,25 +337,25 @@ scenario('upserting plain activity in the same grouping', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: Infinity,
                   type: 'activity'
@@ -371,7 +371,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
           logicalTimestamp: 3_000, // Update to 3_000 on finalize.
           type: 'how to grouping'
         }

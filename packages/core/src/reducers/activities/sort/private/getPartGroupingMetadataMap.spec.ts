@@ -11,7 +11,7 @@ scenario('getPartGroupingMetadataMap', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:id': 'a-00001',
+            'webchat:internal:local-id': 'a-00001',
             'webchat:internal:position': 0
           },
           entities: [

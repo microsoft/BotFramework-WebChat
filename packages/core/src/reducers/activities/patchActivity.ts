@@ -1,3 +1,4 @@
+// @ts-ignore No @types/simple-update-in
 import updateIn from 'simple-update-in';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';

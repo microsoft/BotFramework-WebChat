@@ -1,6 +1,6 @@
 import { check, parse, pipe, string, type GenericSchema } from 'valibot';
-import getActivityInternalId from './private/getActivityInternalId';
-import type { Activity, ActivityInternalIdentifier, ActivityMapEntry, State } from './types';
+import getActivityLocalId from './private/getActivityLocalId';
+import type { Activity, ActivityLocalId, ActivityMapEntry, State } from './types';
 
 const channelDataNameSchema: GenericSchema<
   Exclude<string, 'state' | 'streamId' | 'streamSequence' | 'streamType' | `webchat:${string}`>
@@ -24,22 +24,22 @@ const channelDataNameSchema: GenericSchema<
  *       Do not use this function for updating channel data that would affect position, such as `streamSequence`.
  *
  * @param state
- * @param activityInternalIdentifier
+ * @param activityLocalId
  * @param name
  * @param value
  * @returns
  */
 function updateActivityChannelDataInternalSkipNameCheck(
   state: State,
-  activityInternalIdentifier: ActivityInternalIdentifier,
+  activityLocalId: ActivityLocalId,
   name: string,
   // TODO: [P*] Should we check the validity of the value?
   value: unknown
 ): State {
-  const activityEntry = state.activityMap.get(activityInternalIdentifier);
+  const activityEntry = state.activityMap.get(activityLocalId);
 
   if (!activityEntry) {
-    throw new Error(`botframework-webchat: no activity found with internal ID ${activityInternalIdentifier}`);
+    throw new Error(`botframework-webchat: no activity found with internal ID ${activityLocalId}`);
   }
 
   // TODO: [P*] Should we freeze the activity?
@@ -52,20 +52,18 @@ function updateActivityChannelDataInternalSkipNameCheck(
   };
 
   const nextActivityMap = new Map(state.activityMap).set(
-    activityInternalIdentifier,
+    activityLocalId,
     Object.freeze({ ...activityEntry, activity: nextActivity } satisfies ActivityMapEntry)
   );
 
   const nextSortedActivities = Array.from(state.sortedActivities);
 
   const existingActivityIndex = nextSortedActivities.findIndex(
-    activity => getActivityInternalId(activity) === activityInternalIdentifier
+    activity => getActivityLocalId(activity) === activityLocalId
   );
 
   if (!~existingActivityIndex) {
-    throw new Error(
-      `botframework-webchat: no activity found in sortedActivities with internal ID ${activityInternalIdentifier}`
-    );
+    throw new Error(`botframework-webchat: no activity found in sortedActivities with internal ID ${activityLocalId}`);
   }
 
   nextSortedActivities[+existingActivityIndex] = nextActivity;
@@ -79,14 +77,14 @@ function updateActivityChannelDataInternalSkipNameCheck(
 
 function updateActivityChannelData(
   state: State,
-  activityInternalIdentifier: ActivityInternalIdentifier,
+  activityLocalId: ActivityLocalId,
   name: string,
   // TODO: [P*] Should we check the validity of the value?
   value: unknown
 ): State {
   return updateActivityChannelDataInternalSkipNameCheck(
     state,
-    activityInternalIdentifier,
+    activityLocalId,
     parse(channelDataNameSchema, name),
     value
   );

@@ -1,3 +1,10 @@
+// @ts-ignore No @types/core-js-pure
+import { default as toSpliced_ } from 'core-js-pure/features/array/to-spliced';
+
+function toSpliced<T>(array: readonly T[], start: number, deleteCount: number, ...items: T[]): T[] {
+  return toSpliced_(array, start, deleteCount, ...items);
+}
+
 /**
  * Inserts a single item into a sorted array.
  *
@@ -12,5 +19,5 @@ export default function insertSorted<T>(sortedArray: readonly T[], item: T, comp
   // TODO: Implements `binaryFindIndex()` for better performance.
   const indexToInsert = sortedArray.findIndex(i => compareFn(i, item) > 0);
 
-  return sortedArray.toSpliced(~indexToInsert ? indexToInsert : sortedArray.length, 0, item);
+  return toSpliced(sortedArray, ~indexToInsert ? indexToInsert : sortedArray.length, 0, item);
 }

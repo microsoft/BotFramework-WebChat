@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, -1] }] */
 
+// @ts-ignore No @types/simple-update-in
 import updateIn from 'simple-update-in';
 import { v4 } from 'uuid';
 
@@ -27,8 +28,8 @@ import type {
 } from '../../actions/postActivity';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import getPermaIdAByActivityId from './sort/getPermaIdByActivityId';
-import getPermaIdAByClientActivityId from './sort/getPermaIdByClientActivityId';
+import getLocalIdAByActivityId from './sort/getLocalIdByActivityId';
+import getLocalIdAByClientActivityId from './sort/getLocalIdByClientActivityId';
 import type { State } from './sort/types';
 import updateActivityChannelData, {
   updateActivityChannelDataInternalSkipNameCheck
@@ -67,7 +68,7 @@ function createGroupedActivitiesReducer(
         break;
 
       case MARK_ACTIVITY: {
-        const permaId = getPermaIdAByActivityId(state, action.payload.activityID);
+        const permaId = getLocalIdAByActivityId(state, action.payload.activityID);
 
         if (permaId) {
           state = updateActivityChannelData(state, permaId, action.payload.name, action.payload.value);
@@ -84,7 +85,7 @@ function createGroupedActivitiesReducer(
         activity = patchActivity(activity, ponyfill);
 
         // TODO: [P*] Use v6() with sequential so we can kind of sort over it.
-        activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
+        activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => v4());
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
@@ -96,7 +97,7 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_IMPEDED: {
-        const permaId = getPermaIdAByClientActivityId(state, action.meta.clientActivityID);
+        const permaId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         if (permaId) {
           state = updateActivityChannelDataInternalSkipNameCheck(
@@ -113,7 +114,7 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_REJECTED: {
-        const permaId = getPermaIdAByClientActivityId(state, action.meta.clientActivityID);
+        const permaId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         if (permaId) {
           state = updateActivityChannelDataInternalSkipNameCheck(state, permaId, 'state', SEND_FAILED);
@@ -124,7 +125,7 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_FULFILLED: {
-        const permaId = getPermaIdAByClientActivityId(state, action.meta.clientActivityID);
+        const permaId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         const existingActivity = permaId && state.activityMap.get(permaId)?.activity;
 
@@ -149,8 +150,8 @@ function createGroupedActivitiesReducer(
 
         activity = updateIn(
           activity,
-          ['channelData', 'webchat:internal:id'],
-          () => existingActivity.channelData['webchat:internal:id']
+          ['channelData', 'webchat:internal:local-id'],
+          () => existingActivity.channelData['webchat:internal:local-id']
         );
 
         // Keep existing position.
@@ -177,7 +178,7 @@ function createGroupedActivitiesReducer(
 
         // Clean internal properties if they were passed from chat adapter.
         // These properties should not be passed from external systems.
-        activity = updateIn(activity, ['channelData', 'webchat:internal:id']);
+        activity = updateIn(activity, ['channelData', 'webchat:internal:local-id']);
         activity = updateIn(activity, ['channelData', 'webchat:internal:position']);
         activity = updateIn(activity, ['channelData', 'webchat:send-status']);
 
@@ -218,16 +219,16 @@ function createGroupedActivitiesReducer(
 
           if (existingActivity) {
             const {
-              channelData: { 'webchat:internal:id': permanentId, 'webchat:send-status': sendStatus }
+              channelData: { 'webchat:internal:local-id': permanentId, 'webchat:send-status': sendStatus }
             } = existingActivity;
 
-            activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => permanentId);
+            activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => permanentId);
 
             if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
               activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
             }
           } else {
-            activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
+            activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => v4());
 
             // If there are no existing activity, probably this activity is restored from chat history.
             // All outgoing activities restored from service means they arrived at the service successfully.
@@ -250,17 +251,17 @@ function createGroupedActivitiesReducer(
           }
 
           // TODO: [P*] Should find using permanent ID.
-          const permaId = getPermaIdAByActivityId(state, activity.id!);
+          const permaId = getLocalIdAByActivityId(state, activity.id!);
           const existingActivityEntry = permaId && state.activityMap.get(permaId);
 
           if (existingActivityEntry) {
             activity = updateIn(
               activity,
-              ['channelData', 'webchat:internal:id'],
-              () => existingActivityEntry.activity.channelData['webchat:internal:id']
+              ['channelData', 'webchat:internal:local-id'],
+              () => existingActivityEntry.activity.channelData['webchat:internal:local-id']
             );
           } else {
-            activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
+            activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => v4());
           }
         }
 

@@ -1,15 +1,15 @@
 /* eslint-disable complexity */
 import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
-import getActivityInternalId from './private/getActivityInternalId';
+import getActivityLocalId from './private/getActivityLocalId';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
 import getPartGroupingMetadataMap from './private/getPartGroupingMetadataMap';
 import insertSorted from './private/insertSorted';
 import {
   type Activity,
   type ActivityMapEntry,
-  type HowToGroupingIdentifier,
-  type LivestreamSessionIdentifier,
+  type HowToGroupingId,
+  type LivestreamSessionId,
   type LivestreamSessionMapEntry,
   type LivestreamSessionMapEntryActivityEntry,
   type SortedChatHistoryEntry,
@@ -58,7 +58,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
 
-  const activityInternalId = getActivityInternalId(activity);
+  const activityInternalId = getActivityLocalId(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
   // let shouldSkipPositionalChange = false;
 
@@ -83,7 +83,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
   if (activityLivestreamingMetadata) {
-    const sessionId = activityLivestreamingMetadata.sessionId as LivestreamSessionIdentifier;
+    const sessionId = activityLivestreamingMetadata.sessionId as LivestreamSessionId;
 
     const livestreamSessionMapEntry = nextLivestreamSessionMap.get(sessionId);
 
@@ -142,7 +142,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const howToGrouping = getPartGroupingMetadataMap(activity).get('HowTo');
 
   if (howToGrouping) {
-    const howToGroupingId = howToGrouping.groupingId as HowToGroupingIdentifier;
+    const howToGroupingId = howToGrouping.groupingId as HowToGroupingId;
     const { position: howToGroupingPosition } = howToGrouping;
 
     const partGroupingMapEntry = nextHowToGroupingMap.get(howToGroupingId);
@@ -257,7 +257,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     (function* () {
       for (const sortedEntry of nextSortedChatHistoryList) {
         if (sortedEntry.type === 'activity') {
-          // TODO: [P*] Instead of deferencing, use pointer instead.
+          // TODO: [P*] Instead of deferencing using internal ID, use pointer instead.
           yield nextActivityMap.get(sortedEntry.activityInternalId)!.activity;
         } else if (sortedEntry.type === 'how to grouping') {
           const howToGrouping = nextHowToGroupingMap.get(sortedEntry.howToGroupingId)!;
@@ -298,7 +298,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     index++
   ) {
     const currentActivity = nextSortedActivities[+index]!;
-    const currentActivityIdentifier = getActivityInternalId(currentActivity);
+    const currentActivityId = getActivityLocalId(currentActivity);
     const hasNextSibling = index + 1 < nextSortedActivitiesLength;
     const position = currentActivity.channelData['webchat:internal:position'];
 
@@ -321,7 +321,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     }
 
     if (nextPosition !== position) {
-      const activityMapEntry = nextActivityMap.get(currentActivityIdentifier)!;
+      const activityMapEntry = nextActivityMap.get(currentActivityId)!;
 
       const nextActivityEntry: ActivityMapEntry = Object.freeze({
         ...activityMapEntry,
@@ -336,7 +336,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         }
       });
 
-      nextActivityMap.set(currentActivityIdentifier, nextActivityEntry);
+      nextActivityMap.set(currentActivityId, nextActivityEntry);
 
       nextSortedActivities[+index] = nextActivityEntry.activity;
     }

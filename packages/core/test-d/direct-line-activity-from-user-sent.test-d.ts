@@ -5,7 +5,7 @@ import { type WebChatActivity } from '../src/index';
 // All activities which are "sent", must be from server.
 expectAssignable<WebChatActivity>({
   channelData: {
-    'webchat:internal:id': 'a-00001',
+    'webchat:internal:local-id': 'a-00001',
     'webchat:internal:position': 0,
     'webchat:send-status': 'sent',
     'webchat:sequence-id': 0

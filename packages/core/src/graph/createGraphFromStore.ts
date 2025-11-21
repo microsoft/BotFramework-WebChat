@@ -50,7 +50,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
           from: { role }
         } = activity;
 
-        const permanentId = activity.channelData['webchat:internal:id'];
+        const permanentId = activity.channelData['webchat:internal:local-id'];
         const position = activity.channelData['webchat:internal:position'];
 
         // TODO: Should use Person and more specific than just "Others".

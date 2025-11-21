@@ -4,9 +4,9 @@ import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import {
   type Activity,
-  type ActivityInternalIdentifier,
+  type ActivityLocalId,
   type ActivityMapEntry,
-  type LivestreamSessionIdentifier,
+  type LivestreamSessionId,
   type LivestreamSessionMapEntry,
   type LivestreamSessionMapEntryActivityEntry,
   type SortedChatHistory,
@@ -64,7 +64,7 @@ function buildActivity(
     from: { id: 'bot', role: 'bot' },
     ...activity,
     channelData: {
-      'webchat:internal:id': id,
+      'webchat:internal:local-id': id,
       'webchat:internal:position': 0,
       'webchat:send-status': undefined,
       ...activity.channelData
@@ -124,12 +124,12 @@ scenario('upserting a livestreaming session', bdd => {
     .when('upserted', state => upsert({ Date }, state, activity1))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityInternalIdentifier, ActivityMapEntry>([
+        new Map<ActivityLocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityInternalIdentifier,
+            'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -139,13 +139,13 @@ scenario('upserting a livestreaming session', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
@@ -161,7 +161,7 @@ scenario('upserting a livestreaming session', bdd => {
     .and('should have added to `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+          livestreamSessionId: 'a-00001' as LivestreamSessionId,
           logicalTimestamp: 1_000,
           type: 'livestream session'
         }
@@ -173,21 +173,21 @@ scenario('upserting a livestreaming session', bdd => {
     .when('the second activity is upserted', (_, state) => upsert({ Date }, state, activity2))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityInternalIdentifier, ActivityMapEntry>([
+        new Map<ActivityLocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityInternalIdentifier,
+            'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             } satisfies ActivityMapEntry
           ],
           [
-            'a-00002' as ActivityInternalIdentifier,
+            'a-00002' as ActivityLocalId,
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -197,19 +197,19 @@ scenario('upserting a livestreaming session', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
@@ -225,7 +225,7 @@ scenario('upserting a livestreaming session', bdd => {
     .and('should not modify `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+          livestreamSessionId: 'a-00001' as LivestreamSessionId,
           logicalTimestamp: 1_000,
           type: 'livestream session'
         } satisfies SortedChatHistoryEntry
@@ -240,30 +240,30 @@ scenario('upserting a livestreaming session', bdd => {
     .when('the third activity is upserted', (_, state) => upsert({ Date }, state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityInternalIdentifier, ActivityMapEntry>([
+        new Map<ActivityLocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityInternalIdentifier,
+            'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003' as ActivityInternalIdentifier,
+            'a-00003' as ActivityLocalId,
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as ActivityInternalIdentifier,
+            'a-00002' as ActivityLocalId,
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -273,25 +273,25 @@ scenario('upserting a livestreaming session', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
@@ -307,7 +307,7 @@ scenario('upserting a livestreaming session', bdd => {
     .and('should update `sortedChatHistoryList` with updated timestamp', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+          livestreamSessionId: 'a-00001' as LivestreamSessionId,
           logicalTimestamp: 1_000,
           type: 'livestream session'
         } satisfies SortedChatHistoryEntry
@@ -323,39 +323,39 @@ scenario('upserting a livestreaming session', bdd => {
     .when('the fourth and final activity is upserted', (_, state) => upsert({ Date }, state, activity4))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityInternalIdentifier, ActivityMapEntry>([
+        new Map<ActivityLocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityInternalIdentifier,
+            'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003' as ActivityInternalIdentifier,
+            'a-00003' as ActivityLocalId,
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as ActivityInternalIdentifier,
+            'a-00002' as ActivityLocalId,
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
           ],
           [
-            'a-00004' as ActivityInternalIdentifier,
+            'a-00004' as ActivityLocalId,
             {
               activity: activityToExpectation(activity4),
-              activityInternalId: 'a-00004' as ActivityInternalIdentifier,
+              activityInternalId: 'a-00004' as ActivityLocalId,
               logicalTimestamp: 4_000,
               type: 'activity'
             }
@@ -365,31 +365,31 @@ scenario('upserting a livestreaming session', bdd => {
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
       expect(state.livestreamingSessionMap).toEqual(
-        new Map<LivestreamSessionIdentifier, LivestreamSessionMapEntry>([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001' as LivestreamSessionIdentifier,
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00003' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00004' as ActivityInternalIdentifier,
+                  activityInternalId: 'a-00004' as ActivityLocalId,
                   logicalTimestamp: 4_000,
                   sequenceNumber: Infinity,
                   type: 'activity'
@@ -405,7 +405,7 @@ scenario('upserting a livestreaming session', bdd => {
     .and('should update `sortedChatHistoryList` with updated timestamp', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
+          livestreamSessionId: 'a-00001' as LivestreamSessionId,
           logicalTimestamp: 4_000,
           type: 'livestream session'
         } satisfies SortedChatHistoryEntry
