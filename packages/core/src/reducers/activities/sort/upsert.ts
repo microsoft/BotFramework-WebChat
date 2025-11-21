@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
+import computePartListTimestamp from './private/computePartListTimestamp';
 import computeSortedActivities from './private/computeSortedActivities';
 import getActivityLocalId from './private/getActivityLocalId';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
@@ -175,11 +176,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     }
 
     const nextPartGroupingEntry = {
-      logicalTimestamp: nextPartList.reduce<number | undefined>(
-        (max, { logicalTimestamp }) =>
-          typeof logicalTimestamp === 'undefined' ? max : Math.max(max ?? -Infinity, logicalTimestamp),
-        undefined
-      ),
+      logicalTimestamp: computePartListTimestamp(nextPartList),
       partList: Object.freeze(nextPartList)
     };
 
