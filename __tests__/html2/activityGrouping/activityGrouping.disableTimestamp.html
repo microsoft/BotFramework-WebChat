@@ -54,6 +54,9 @@
           )
         ).resolveAll();
 
+        // TODO: [P*] We may not this one if we can compare via perma ID.
+        clock.tick(1000);
+
         const { resolveAll: resolveAll1 } = await directLine.emulateOutgoingActivity(
           'Elit adipisicing laborum sit anim.'
         );
