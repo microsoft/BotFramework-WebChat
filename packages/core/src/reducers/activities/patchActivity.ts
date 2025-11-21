@@ -2,7 +2,6 @@
 import updateIn from 'simple-update-in';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import getOrgSchemaMessage from '../../utils/getOrgSchemaMessage';
 
 const DIRECT_LINE_PLACEHOLDER_URL =
   'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
@@ -31,22 +30,7 @@ export default function patchActivity(activity: WebChatActivity, { Date }: Globa
   });
 
   activity = updateIn(activity, ['channelData'], (channelData: any) => ({ ...channelData }));
-
   activity = updateIn(activity, ['channelData', 'webchat:internal:received-at'], () => Date.now());
-
-  // TODO: [P*] Move all patching logics here.
-
-  const messageEntity = getOrgSchemaMessage(activity.entities ?? []);
-  const entityPosition = messageEntity?.position;
-  const entityPartOf = messageEntity?.isPartOf?.['@id'];
-
-  if (typeof entityPosition === 'number') {
-    activity = updateIn(activity, ['channelData', 'webchat:entity-position'], () => entityPosition);
-  }
-
-  if (typeof entityPartOf === 'string') {
-    activity = updateIn(activity, ['channelData', 'webchat:entity-part-of'], () => entityPartOf);
-  }
 
   return activity;
 }

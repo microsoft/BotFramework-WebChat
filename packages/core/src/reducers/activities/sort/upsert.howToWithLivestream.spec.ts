@@ -162,7 +162,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,
@@ -240,7 +240,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,
@@ -336,7 +336,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,

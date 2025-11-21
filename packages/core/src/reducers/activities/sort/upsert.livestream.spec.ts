@@ -72,7 +72,7 @@ function buildActivity(
   } as any;
 }
 
-scenario('upserting a livestreaming session', bdd => {
+scenario('upserting a livestream session', bdd => {
   const activity1 = buildActivity({
     channelData: {
       streamSequence: 1,
@@ -138,7 +138,7 @@ scenario('upserting a livestreaming session', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,
@@ -196,7 +196,7 @@ scenario('upserting a livestreaming session', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,
@@ -272,7 +272,7 @@ scenario('upserting a livestreaming session', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,
@@ -364,7 +364,7 @@ scenario('upserting a livestreaming session', bdd => {
       );
     })
     .and('should have added to `livestreamSessions`', (_, state) => {
-      expect(state.livestreamingSessionMap).toEqual(
+      expect(state.livestreamSessionMap).toEqual(
         new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
             'a-00001' as LivestreamSessionId,

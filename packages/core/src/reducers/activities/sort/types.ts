@@ -52,7 +52,7 @@ type ActivityMap = ReadonlyMap<ActivityLocalId, ActivityMapEntry>;
 type State = {
   readonly activityMap: ActivityMap;
   readonly howToGroupingMap: HowToGroupingMap;
-  readonly livestreamingSessionMap: LivestreamSessionMap;
+  readonly livestreamSessionMap: LivestreamSessionMap;
   readonly sortedChatHistoryList: SortedChatHistory;
   readonly sortedActivities: readonly Activity[];
 };

@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
+import computeSortedActivities from './private/computeSortedActivities';
 import getActivityLocalId from './private/getActivityLocalId';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
 import getPartGroupingMetadataMap from './private/getPartGroupingMetadataMap';
@@ -40,7 +41,7 @@ import {
 
 const INITIAL_STATE = Object.freeze({
   activityMap: Object.freeze(new Map()),
-  livestreamingSessionMap: Object.freeze(new Map()),
+  livestreamSessionMap: Object.freeze(new Map()),
   howToGroupingMap: Object.freeze(new Map()),
   sortedActivities: Object.freeze([]),
   sortedChatHistoryList: Object.freeze([])
@@ -54,7 +55,7 @@ const INITIAL_STATE = Object.freeze({
 
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   const nextActivityMap = new Map(state.activityMap);
-  const nextLivestreamSessionMap = new Map(state.livestreamingSessionMap);
+  const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
 
@@ -102,7 +103,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const finalized = activityLivestreamingMetadata.type === 'final activity';
 
-    const nextLivestreamingSessionMapEntry = {
+    const nextLivestreamSessionMapEntry = {
       activities: Object.freeze(
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
           livestreamSessionMapEntry ? livestreamSessionMapEntry.activities : [],
@@ -126,11 +127,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         finalized || !livestreamSessionMapEntry ? logicalTimestamp : livestreamSessionMapEntry.logicalTimestamp
     } satisfies LivestreamSessionMapEntry;
 
-    nextLivestreamSessionMap.set(sessionId, Object.freeze(nextLivestreamingSessionMapEntry));
+    nextLivestreamSessionMap.set(sessionId, Object.freeze(nextLivestreamSessionMapEntry));
 
     sortedChatHistoryListEntry = {
       livestreamSessionId: sessionId,
-      logicalTimestamp: nextLivestreamingSessionMapEntry.logicalTimestamp,
+      logicalTimestamp: nextLivestreamSessionMapEntry.logicalTimestamp,
       type: 'livestream session'
     };
   }
@@ -253,37 +254,12 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #region Sorted activities
 
-  const nextSortedActivities = Array.from<Activity>(
-    (function* () {
-      for (const sortedEntry of nextSortedChatHistoryList) {
-        if (sortedEntry.type === 'activity') {
-          // TODO: [P*] Instead of deferencing using internal ID, use pointer instead.
-          yield nextActivityMap.get(sortedEntry.activityInternalId)!.activity;
-        } else if (sortedEntry.type === 'how to grouping') {
-          const howToGrouping = nextHowToGroupingMap.get(sortedEntry.howToGroupingId)!;
-
-          for (const howToPartEntry of howToGrouping.partList) {
-            if (howToPartEntry.type === 'activity') {
-              yield nextActivityMap.get(howToPartEntry.activityInternalId)!.activity;
-            } else {
-              howToPartEntry.type satisfies 'livestream session';
-
-              for (const activityEntry of nextLivestreamSessionMap.get(howToPartEntry.livestreamSessionId)!
-                .activities) {
-                yield nextActivityMap.get(activityEntry.activityInternalId)!.activity;
-              }
-            }
-          }
-        } else {
-          sortedEntry.type satisfies 'livestream session';
-
-          for (const activityEntry of nextLivestreamSessionMap.get(sortedEntry.livestreamSessionId)!.activities) {
-            yield nextActivityMap.get(activityEntry.activityInternalId)!.activity;
-          }
-        }
-      }
-    })()
-  );
+  const nextSortedActivities = computeSortedActivities({
+    activityMap: nextActivityMap,
+    howToGroupingMap: nextHowToGroupingMap,
+    livestreamSessionMap: nextLivestreamSessionMap,
+    sortedChatHistoryList: nextSortedChatHistoryList
+  });
 
   // #endregion
 
@@ -352,7 +328,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   //     activity,
   //     activityMap: nextActivityMap,
   //     howToGroupingMap: nextHowToGroupingMap,
-  //     livestreamingSessionMap: nextLivestreamSessionMap,
+  //     livestreamSessionMap: nextLivestreamSessionMap,
   //     sortedActivities: nextSortedActivities,
   //     sortedChatHistoryList: nextSortedChatHistoryList
   //   })
@@ -361,7 +337,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   return Object.freeze({
     activityMap: Object.freeze(nextActivityMap),
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
-    livestreamingSessionMap: Object.freeze(nextLivestreamSessionMap),
+    livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),
     sortedActivities: Object.freeze(nextSortedActivities),
     sortedChatHistoryList: Object.freeze(nextSortedChatHistoryList)
   } satisfies State);

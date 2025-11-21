@@ -1,9 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import upsert, { INITIAL_STATE } from './upsert';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
-import type { Activity, ActivityLocalId, ActivityMapEntry, SortedChatHistory } from './types';
+import deleteActivityByLocalId from './deleteActivityByLocalId';
+import type { Activity, ActivityLocalId, ActivityMapEntry, SortedChatHistory, SortedChatHistoryEntry } from './types';
+import upsert, { INITIAL_STATE } from './upsert';
+import getActivityLocalId from './private/getActivityLocalId';
 
 function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
   return {
@@ -173,7 +175,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     },
     from: { id: 'bot', role: 'bot' },
     id: 'a-00003',
-    text: 't=2000ms',
+    text: 't=2_000ms',
     timestamp: new Date(2_000).toISOString(),
     type: 'message'
   };
@@ -268,7 +270,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         activityToExpectation(activity2, 2_000)
       ]);
     })
-    .when('upserting an activity with t=2000ms', (_, state) => upsert({ Date }, state, activity3))
+    .when('upserting an activity with t=2_000ms', (_, state) => upsert({ Date }, state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<string, ActivityMapEntry>([
@@ -478,6 +480,82 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         activityToExpectation(activity4, 2_001),
         activityToExpectation(activity2b, 2_002),
         activityToExpectation(activity3, 3_000)
+      ]);
+    });
+});
+
+scenario('deleting activity', bdd => {
+  const activity1: Activity = {
+    channelData: {
+      'webchat:internal:local-id': 'a-00001',
+      'webchat:internal:position': 0,
+      'webchat:send-status': undefined
+    },
+    from: { id: 'bot', role: 'bot' },
+    id: 'a-00001',
+    text: 'Hello, World!',
+    timestamp: new Date(1_000).toISOString(),
+    type: 'message'
+  };
+
+  const activity2: Activity = {
+    channelData: {
+      'webchat:internal:local-id': 'a-00002',
+      'webchat:internal:position': 0,
+      'webchat:send-status': undefined
+    },
+    from: { id: 'bot', role: 'bot' },
+    id: 'a-00002',
+    text: 'Aloha!',
+    timestamp: new Date(2_000).toISOString(),
+    type: 'message'
+  };
+
+  bdd
+    .given('an initial state', () => INITIAL_STATE)
+    .when('2 activities are upserted', state => upsert({ Date }, upsert({ Date }, state, activity1), activity2))
+    .then('should have 2 activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 2);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(2);
+      expect(state.sortedChatHistoryList).toHaveLength(2);
+    })
+    .when('the first activity is deleted', (_, state) =>
+      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]!))
+    )
+    .then('should have 1 activity', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 1);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(1);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .and('`activityMap` should match', (_, state) => {
+      expect(state.activityMap).toEqual(
+        new Map([
+          [
+            'a-00002',
+            {
+              activity: activityToExpectation(activity2, 2_000),
+              activityInternalId: 'a-00002' as ActivityLocalId,
+              logicalTimestamp: 2_000,
+              type: 'activity'
+            } satisfies ActivityMapEntry
+          ]
+        ])
+      );
+    })
+    .and('`sortedActivities` should match', (_, state) => {
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity2, 2_000)]);
+    })
+    .and('`sortedChatHistoryList` should match', (_, state) => {
+      expect(state.sortedChatHistoryList).toEqual([
+        {
+          activityInternalId: 'a-00002' as ActivityLocalId,
+          logicalTimestamp: 2_000,
+          type: 'activity'
+        } satisfies SortedChatHistoryEntry
       ]);
     });
 });
