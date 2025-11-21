@@ -5,9 +5,9 @@ export default function getLocalIdAByClientActivityId(
   state: State,
   clientActivityId: string
 ): ActivityLocalId | undefined {
-  for (const [permaId, entry] of state.activityMap.entries()) {
+  for (const [localId, entry] of state.activityMap.entries()) {
     if (entry.activity.channelData.clientActivityID === clientActivityId) {
-      return permaId;
+      return localId;
     }
   }
 

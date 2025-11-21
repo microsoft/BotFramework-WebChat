@@ -68,10 +68,10 @@ function createGroupedActivitiesReducer(
         break;
 
       case MARK_ACTIVITY: {
-        const permaId = getLocalIdAByActivityId(state, action.payload.activityID);
+        const localId = getLocalIdAByActivityId(state, action.payload.activityID);
 
-        if (permaId) {
-          state = updateActivityChannelData(state, permaId, action.payload.name, action.payload.value);
+        if (localId) {
+          state = updateActivityChannelData(state, localId, action.payload.name, action.payload.value);
         }
 
         break;
@@ -97,12 +97,12 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_IMPEDED: {
-        const permaId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
+        const localId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
-        if (permaId) {
+        if (localId) {
           state = updateActivityChannelDataInternalSkipNameCheck(
             state,
-            permaId,
+            localId,
             // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
             // Please refer to #4362 for details. Remove on or after 2024-07-31.
             'state',
@@ -114,20 +114,20 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_REJECTED: {
-        const permaId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
+        const localId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
-        if (permaId) {
-          state = updateActivityChannelDataInternalSkipNameCheck(state, permaId, 'state', SEND_FAILED);
-          state = updateActivityChannelDataInternalSkipNameCheck(state, permaId, 'webchat:send-status', SEND_FAILED);
+        if (localId) {
+          state = updateActivityChannelDataInternalSkipNameCheck(state, localId, 'state', SEND_FAILED);
+          state = updateActivityChannelDataInternalSkipNameCheck(state, localId, 'webchat:send-status', SEND_FAILED);
         }
 
         break;
       }
 
       case POST_ACTIVITY_FULFILLED: {
-        const permaId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
+        const localId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
-        const existingActivity = permaId && state.activityMap.get(permaId)?.activity;
+        const existingActivity = localId && state.activityMap.get(localId)?.activity;
 
         if (!existingActivity) {
           throw new Error(
@@ -251,8 +251,8 @@ function createGroupedActivitiesReducer(
           }
 
           // TODO: [P*] Should find using permanent ID.
-          const permaId = getLocalIdAByActivityId(state, activity.id!);
-          const existingActivityEntry = permaId && state.activityMap.get(permaId);
+          const localId = getLocalIdAByActivityId(state, activity.id!);
+          const existingActivityEntry = localId && state.activityMap.get(localId);
 
           if (existingActivityEntry) {
             activity = updateIn(
