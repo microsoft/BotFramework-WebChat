@@ -50,8 +50,8 @@ const INITIAL_STATE = Object.freeze({
 // Question: Why insertion sort works but not quick sort?
 // Short answer: Arrival order matters.
 // Long answer:
-// - Update activity: when replacing an activity, and data from their previous revision still matters
-// - Duplicate timestamps: activities without timestamp is consider duplicate value and can't be sort deterministically
+// - Update activity: when replacing an activity, data from their previous revision matters
+// - Duplicate timestamps: activities without timestamp can't be sort deterministically with quick sort
 
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   const nextActivityMap = new Map(state.activityMap);
@@ -103,19 +103,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const finalized = activityLivestreamingMetadata.type === 'final activity';
 
-    // TODO: [P*] Remove this logic. We will not deal with the timestamp in finalized livestream activity.
-
-    // If livestream become finalized in this round and it has timestamp, update the position.
-    // The livestream will only have its position updated twice in its lifetime:
-    // 1. When it is first inserted into chat history
-    // 2. When it become concluded and it has a timestamp
-    // if (finalized && !nextLivestreamingSession?.finalized && typeof logicalTimestamp !== 'undefined') {
-    //   shouldReusePosition = false;
-    // }
-    // if (!finalized && livestreamSessionMapEntry) {
-    //   shouldSkipPositionalChange = true;
-    // }
-
     const nextLivestreamingSessionMapEntry = {
       activities: Object.freeze(
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
@@ -134,9 +121,8 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         )
       ),
       finalized,
-      // Update timestamp if:
-      // 1. Upserting activity is finalized
-      // 2. Upserting activity is the first in livestream
+      // Update timestamp if the upserting activity is the first or last in the livestream session.
+      // We don't update timestamp for 2...N-1, because it would cause too much flickering.
       logicalTimestamp:
         finalized || !livestreamSessionMapEntry ? logicalTimestamp : livestreamSessionMapEntry.logicalTimestamp
     } satisfies LivestreamSessionMapEntry;
@@ -230,17 +216,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
           : // eslint-disable-next-line no-magic-numbers
             -1;
 
-  // if (typeof sortedChatHistoryListEntry.logicalTimestamp === 'undefined') {
-  //   // Do not update position if the upserting activity does not have timestamp.
-  //   shouldSkipPositionalChange = false;
-  // }
-
-  // if (
-  //   ~existingSortedChatHistoryListEntryIndex &&
-  //   state.activityMap.get(activityInternalId)?.logicalTimestamp === logicalTimestamp
-  // ) {
-  //   nextSortedChatHistoryList[+existingSortedChatHistoryListEntryIndex] = Object.freeze(sortedChatHistoryListEntry);
-  // } else {
   ~existingSortedChatHistoryListEntryIndex &&
     nextSortedChatHistoryList.splice(existingSortedChatHistoryListEntryIndex, 1);
 
