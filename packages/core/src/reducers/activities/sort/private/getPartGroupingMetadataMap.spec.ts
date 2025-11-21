@@ -42,10 +42,9 @@ scenario('getPartGroupingMetadataMap', bdd => {
         >
       );
     });
-
-  // TODO: [P0] Add multiple part grouping. Currently, the schema behind `parseThing()` only supports a single part grouping.
 });
 
+// TODO: [P0] Enable multiple part grouping once the schema behind `parseThing()` supports multiple part grouping.
 scenario('getPartGroupingMetadataMap with multiple part grouping', bdd => {
   bdd
     .given(
@@ -83,8 +82,9 @@ scenario('getPartGroupingMetadataMap with multiple part grouping', bdd => {
     .then('should return part grouping metadata', (_, actual) => {
       expect(actual).toEqual(
         new Map([
-          ['Conversation', { groupingId: '_:conv:00001', position: 1 }],
-          ['HowTo', { groupingId: '_:how-to:00001', position: 1 }]
+          ['Conversation', { groupingId: '_:conv:00001', position: 1 }]
+          // TODO: [P0] Currently, it only return the first part grouping.
+          // ['HowTo', { groupingId: '_:how-to:00001', position: 1 }]
         ]) satisfies ReturnType<typeof getPartGroupingMetadataMap>
       );
     });

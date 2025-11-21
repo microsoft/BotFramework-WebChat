@@ -2,9 +2,10 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
+import deleteActivityByLocalId from './deleteActivityByLocalId';
+import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
 import type {
   Activity,
-  ActivityLocalId,
   ActivityMapEntry,
   HowToGroupingId,
   HowToGroupingMapEntry,
@@ -12,8 +13,6 @@ import type {
   SortedChatHistoryEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import deleteActivityByLocalId from './deleteActivityByLocalId';
-import getActivityLocalId from './private/getActivityLocalId';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -76,7 +75,7 @@ scenario('deleting an activity in the same grouping', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .when('the second activity is deleted', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[1]))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[1]))
     )
     .then('should have 1 activity', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 1);
@@ -92,7 +91,7 @@ scenario('deleting an activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1, 1_000),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -109,7 +108,7 @@ scenario('deleting an activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -133,7 +132,7 @@ scenario('deleting an activity in the same grouping', bdd => {
       ]);
     })
     .when('the first activity is deleted', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]))
     )
     .then('should have no activities', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 0);

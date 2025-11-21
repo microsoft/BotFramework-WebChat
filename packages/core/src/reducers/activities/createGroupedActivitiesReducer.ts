@@ -28,15 +28,18 @@ import type {
 } from '../../actions/postActivity';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import getLocalIdAByActivityId from './sort/getLocalIdByActivityId';
-import getLocalIdAByClientActivityId from './sort/getLocalIdByClientActivityId';
+import patchActivity from './patchActivity';
+import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
+import { generateLocalId, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
+import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
+import { querySendStatusFromOutgoingActivity, setSendStatusInOutgoingActivity } from './sort/property/SendStatus';
+import queryLocalIdAByActivityId from './sort/queryLocalIdByActivityId';
+import queryLocalIdAByClientActivityId from './sort/queryLocalIdByClientActivityId';
 import type { State } from './sort/types';
 import updateActivityChannelData, {
   updateActivityChannelDataInternalSkipNameCheck
 } from './sort/updateActivityChannelData';
 import upsert, { INITIAL_STATE } from './sort/upsert';
-import patchActivity from './patchActivity';
-import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 
 type GroupedActivitiesAction =
   | DeleteActivityAction
@@ -64,7 +67,7 @@ function createGroupedActivitiesReducer(
   ): GroupedActivitiesState {
     switch (action.type) {
       case DELETE_ACTIVITY: {
-        const localId = getLocalIdAByActivityId(state, action.payload.activityID);
+        const localId = queryLocalIdAByActivityId(state, action.payload.activityID);
 
         if (localId) {
           state = deleteActivityByLocalId(state, localId);
@@ -74,7 +77,7 @@ function createGroupedActivitiesReducer(
       }
 
       case MARK_ACTIVITY: {
-        const localId = getLocalIdAByActivityId(state, action.payload.activityID);
+        const localId = queryLocalIdAByActivityId(state, action.payload.activityID);
 
         if (localId) {
           state = updateActivityChannelData(state, localId, action.payload.name, action.payload.value);
@@ -91,11 +94,11 @@ function createGroupedActivitiesReducer(
         activity = patchActivity(activity, ponyfill);
 
         // TODO: [P*] Use v6() with sequential so we can kind of sort over it.
-        activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => v4());
+        activity = setLocalIdInActivity(activity, generateLocalId());
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
-        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENDING);
+        activity = setSendStatusInOutgoingActivity(activity, SENDING);
 
         state = upsert(ponyfill, state, activity);
 
@@ -103,7 +106,7 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_IMPEDED: {
-        const localId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
+        const localId = queryLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         if (localId) {
           state = updateActivityChannelDataInternalSkipNameCheck(
@@ -120,7 +123,7 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_REJECTED: {
-        const localId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
+        const localId = queryLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         if (localId) {
           state = updateActivityChannelDataInternalSkipNameCheck(state, localId, 'state', SEND_FAILED);
@@ -131,7 +134,7 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_FULFILLED: {
-        const localId = getLocalIdAByClientActivityId(state, action.meta.clientActivityID);
+        const localId = queryLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         const existingActivity = localId && state.activityMap.get(localId)?.activity;
 
@@ -152,20 +155,11 @@ function createGroupedActivitiesReducer(
           () => SENT
         );
 
-        activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
-
-        activity = updateIn(
-          activity,
-          ['channelData', 'webchat:internal:local-id'],
-          () => existingActivity.channelData['webchat:internal:local-id']
-        );
+        activity = setSendStatusInOutgoingActivity(activity, SENT);
+        activity = setLocalIdInActivity(activity, localId);
 
         // Keep existing position.
-        activity = updateIn(
-          activity,
-          ['channelData', 'webchat:internal:position'],
-          () => existingActivity.channelData['webchat:internal:position']
-        );
+        activity = setPositionInActivity(activity, getPositionFromActivity(existingActivity));
 
         // Compare the INCOMING_ACTIVITY below:
         // - POST_ACTIVITY_FULFILLED will mark send status as SENT
@@ -184,9 +178,9 @@ function createGroupedActivitiesReducer(
 
         // Clean internal properties if they were passed from chat adapter.
         // These properties should not be passed from external systems.
-        activity = updateIn(activity, ['channelData', 'webchat:internal:local-id']);
-        activity = updateIn(activity, ['channelData', 'webchat:internal:position']);
-        activity = updateIn(activity, ['channelData', 'webchat:send-status']);
+        activity = setLocalIdInActivity(activity, undefined);
+        activity = setPositionInActivity(activity, undefined);
+        activity = setSendStatusInOutgoingActivity(activity, undefined);
 
         // If the incoming activity is an echo back, we should keep the existing `channelData['webchat:send-status']` field.
         //
@@ -217,29 +211,28 @@ function createGroupedActivitiesReducer(
           const { id } = activity;
           const clientActivityID = getClientActivityID(activity);
 
-          // TODO: [P*] Should find using permanent ID.
-          const existingActivity = state.sortedActivities.find(
-            activity =>
-              (clientActivityID && getClientActivityID(activity) === clientActivityID) || (id && activity.id === id)
-          );
+          const existingLocalId = clientActivityID
+            ? queryLocalIdAByClientActivityId(state, clientActivityID)
+            : id
+              ? queryLocalIdAByActivityId(state, id)
+              : undefined;
+          const existingActivity = existingLocalId && state.activityMap.get(existingLocalId)?.activity;
 
           if (existingActivity) {
-            const {
-              channelData: { 'webchat:internal:local-id': permanentId, 'webchat:send-status': sendStatus }
-            } = existingActivity;
+            activity = setLocalIdInActivity(activity, getLocalIdFromActivity(existingActivity));
 
-            activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => permanentId);
+            const existingSendStatus = querySendStatusFromOutgoingActivity(existingActivity);
 
-            if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
-              activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
+            if (typeof existingSendStatus !== 'undefined') {
+              activity = setSendStatusInOutgoingActivity(activity, existingSendStatus);
             }
           } else {
-            activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => v4());
+            activity = setLocalIdInActivity(activity, generateLocalId());
 
             // If there are no existing activity, probably this activity is restored from chat history.
             // All outgoing activities restored from service means they arrived at the service successfully.
             // Thus, we are marking them as "sent".
-            activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+            activity = setSendStatusInOutgoingActivity(activity, SENT);
           }
         } else {
           if (!activity.id) {
@@ -256,19 +249,10 @@ function createGroupedActivitiesReducer(
             activity = updateIn(activity, ['id'], () => newActivityId);
           }
 
-          // TODO: [P*] Should find using permanent ID.
-          const localId = getLocalIdAByActivityId(state, activity.id!);
-          const existingActivityEntry = localId && state.activityMap.get(localId);
-
-          if (existingActivityEntry) {
-            activity = updateIn(
-              activity,
-              ['channelData', 'webchat:internal:local-id'],
-              () => existingActivityEntry.activity.channelData['webchat:internal:local-id']
-            );
-          } else {
-            activity = updateIn(activity, ['channelData', 'webchat:internal:local-id'], () => v4());
-          }
+          activity = setLocalIdInActivity(
+            activity,
+            queryLocalIdAByActivityId(state, activity.id!) || generateLocalId()
+          );
         }
 
         state = upsert(ponyfill, state, activity);

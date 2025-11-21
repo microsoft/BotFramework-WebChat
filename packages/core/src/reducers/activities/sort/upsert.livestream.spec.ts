@@ -4,7 +4,6 @@ import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import {
   type Activity,
-  type ActivityLocalId,
   type ActivityMapEntry,
   type LivestreamSessionId,
   type LivestreamSessionMapEntry,
@@ -13,6 +12,7 @@ import {
   type SortedChatHistoryEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
+import type { LocalId } from './property/LocalId';
 
 function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
   return {
@@ -124,12 +124,12 @@ scenario('upserting a livestream session', bdd => {
     .when('upserted', state => upsert({ Date }, state, activity1))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityLocalId, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityLocalId,
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -145,7 +145,7 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
@@ -173,21 +173,21 @@ scenario('upserting a livestream session', bdd => {
     .when('the second activity is upserted', (_, state) => upsert({ Date }, state, activity2))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityLocalId, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityLocalId,
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             } satisfies ActivityMapEntry
           ],
           [
-            'a-00002' as ActivityLocalId,
+            'a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as LocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -203,13 +203,13 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as LocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
@@ -240,30 +240,30 @@ scenario('upserting a livestream session', bdd => {
     .when('the third activity is upserted', (_, state) => upsert({ Date }, state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityLocalId, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityLocalId,
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003' as ActivityLocalId,
+            'a-00003' as LocalId,
             {
               activity: activityToExpectation(activity3),
-              activityLocalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as ActivityLocalId,
+            'a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as LocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -279,19 +279,19 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00003' as ActivityLocalId,
+                  activityLocalId: 'a-00003' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as LocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
@@ -323,39 +323,39 @@ scenario('upserting a livestream session', bdd => {
     .when('the fourth and final activity is upserted', (_, state) => upsert({ Date }, state, activity4))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<ActivityLocalId, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as ActivityLocalId,
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003' as ActivityLocalId,
+            'a-00003' as LocalId,
             {
               activity: activityToExpectation(activity3),
-              activityLocalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as ActivityLocalId,
+            'a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as LocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
           ],
           [
-            'a-00004' as ActivityLocalId,
+            'a-00004' as LocalId,
             {
               activity: activityToExpectation(activity4),
-              activityLocalId: 'a-00004' as ActivityLocalId,
+              activityLocalId: 'a-00004' as LocalId,
               logicalTimestamp: 4_000,
               type: 'activity'
             }
@@ -371,25 +371,25 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00003' as ActivityLocalId,
+                  activityLocalId: 'a-00003' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as LocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00004' as ActivityLocalId,
+                  activityLocalId: 'a-00004' as LocalId,
                   logicalTimestamp: 4_000,
                   sequenceNumber: Infinity,
                   type: 'activity'

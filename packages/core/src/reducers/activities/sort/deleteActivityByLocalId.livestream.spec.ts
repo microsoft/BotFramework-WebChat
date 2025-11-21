@@ -2,14 +2,10 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
-import {
-  type ActivityLocalId,
-  type LivestreamSessionMapEntry,
-  type LivestreamSessionMapEntryActivityEntry
-} from './types';
+import { type LivestreamSessionMapEntry, type LivestreamSessionMapEntryActivityEntry } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
-import getActivityLocalId from './private/getActivityLocalId';
+import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
 
 function buildActivity(
   activity:
@@ -107,7 +103,7 @@ scenario('deleting an activity', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .when('the last activity is delete', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[2]))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[2]))
     )
     .then('should have 2 activities', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 2);
@@ -124,13 +120,13 @@ scenario('deleting an activity', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
@@ -145,8 +141,8 @@ scenario('deleting an activity', bdd => {
     })
     .when('all activities are delete', (_, state) =>
       deleteActivityByLocalId(
-        deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[1])),
-        getActivityLocalId(state.sortedActivities[0])
+        deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[1])),
+        getLocalIdFromActivity(state.sortedActivities[0])
       )
     )
     .then('should have no activities', (_, state) => {

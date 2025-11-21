@@ -4,7 +4,6 @@ import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type {
   Activity,
-  ActivityLocalId,
   ActivityMapEntry,
   HowToGroupingId,
   HowToGroupingMapEntry,
@@ -14,6 +13,7 @@ import type {
   SortedChatHistory
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
+import type { LocalId } from './property/LocalId';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -128,12 +128,12 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .when('the first activity is upserted', state => upsert({ Date }, state, activity1))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<string, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001',
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -143,9 +143,9 @@ scenario('upserting plain activity in the same grouping', bdd => {
     })
     .and('should have added a new part grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
-        new Map<string, HowToGroupingMapEntry>([
+        new Map<HowToGroupingId, HowToGroupingMapEntry>([
           [
-            '_:how-to:00001',
+            '_:how-to:00001' as HowToGroupingId,
             {
               logicalTimestamp: 1_000,
               partList: [
@@ -169,7 +169,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
@@ -197,21 +197,21 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .when('the second activity is upserted', (_, state) => upsert({ Date }, state, activity2))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<string, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001',
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002',
+            'a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -221,9 +221,9 @@ scenario('upserting plain activity in the same grouping', bdd => {
     })
     .and('should not modify new part grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
-        new Map<string, HowToGroupingMapEntry>([
+        new Map<HowToGroupingId, HowToGroupingMapEntry>([
           [
-            '_:how-to:00001',
+            '_:how-to:00001' as HowToGroupingId,
             {
               logicalTimestamp: 1_000,
               partList: [
@@ -247,13 +247,13 @@ scenario('upserting plain activity in the same grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
@@ -284,30 +284,30 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .when('the third activity is upserted', (_, state) => upsert({ Date }, state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map<string, ActivityMapEntry>([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001',
+            'a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002',
+            'a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003',
+            'a-00003' as LocalId,
             {
               activity: activityToExpectation(activity3),
-              activityLocalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as LocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -317,9 +317,9 @@ scenario('upserting plain activity in the same grouping', bdd => {
     })
     .and('should not modify new part grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
-        new Map<string, HowToGroupingMapEntry>([
+        new Map<HowToGroupingId, HowToGroupingMapEntry>([
           [
-            '_:how-to:00001',
+            '_:how-to:00001' as HowToGroupingId,
             {
               logicalTimestamp: 3_000, // Should follow livestream session and update to 3_000.
               partList: [
@@ -343,19 +343,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00003' as ActivityLocalId,
+                  activityLocalId: 'a-00003' as LocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: Infinity,
                   type: 'activity'

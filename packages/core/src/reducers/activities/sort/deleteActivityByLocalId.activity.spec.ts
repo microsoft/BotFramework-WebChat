@@ -2,9 +2,9 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
-import type { Activity, ActivityLocalId, ActivityMapEntry, SortedChatHistoryEntry } from './types';
+import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
+import type { Activity, ActivityMapEntry, SortedChatHistoryEntry } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import getActivityLocalId from './private/getActivityLocalId';
 
 function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
   return {
@@ -55,7 +55,7 @@ scenario('deleting activity', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(2);
     })
     .when('the first activity is deleted', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]!))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]!))
     )
     .then('should have 1 activity', (_, state) => {
       expect(state.activityIdToLocalIdMap).toHaveProperty('size', 1);
@@ -75,7 +75,7 @@ scenario('deleting activity', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2, 2_000),
-              activityLocalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -89,7 +89,7 @@ scenario('deleting activity', bdd => {
     .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityLocalId: 'a-00002' as ActivityLocalId,
+          activityLocalId: 'a-00002' as LocalId,
           logicalTimestamp: 2_000,
           type: 'activity'
         } satisfies SortedChatHistoryEntry
@@ -128,7 +128,7 @@ scenario('deleting an outgoing activity', bdd => {
       expect(state.clientActivityIdToLocalIdMap).toEqual(new Map([['caid-00001', 'a-00001']]));
     })
     .when('the first activity is deleted', (_, state) =>
-      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]!))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]!))
     )
     .then('should have no activities', (_, state) => {
       expect(state.activityIdToLocalIdMap).toHaveProperty('size', 0);

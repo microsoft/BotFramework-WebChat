@@ -1,6 +1,6 @@
 import { check, parse, pipe, string, type GenericSchema } from 'valibot';
-import getActivityLocalId from './private/getActivityLocalId';
-import type { Activity, ActivityLocalId, ActivityMapEntry, State } from './types';
+import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
+import type { Activity, ActivityMapEntry, State } from './types';
 
 const channelDataNameSchema: GenericSchema<
   Exclude<string, 'state' | 'streamId' | 'streamSequence' | 'streamType' | `webchat:${string}`>
@@ -31,7 +31,7 @@ const channelDataNameSchema: GenericSchema<
  */
 function updateActivityChannelDataInternalSkipNameCheck(
   state: State,
-  activityLocalId: ActivityLocalId,
+  activityLocalId: LocalId,
   name: string,
   // TODO: [P*] Should we check the validity of the value?
   value: unknown
@@ -42,7 +42,7 @@ function updateActivityChannelDataInternalSkipNameCheck(
     throw new Error(`botframework-webchat: no activity found with internal ID ${activityLocalId}`);
   }
 
-  // TODO: [P*] Should we freeze the activity?
+  // TODO: [P0] We will freeze activity in future.
   const nextActivity: Activity = {
     ...activityEntry.activity,
     channelData: {
@@ -59,7 +59,7 @@ function updateActivityChannelDataInternalSkipNameCheck(
   const nextSortedActivities = Array.from(state.sortedActivities);
 
   const existingActivityIndex = nextSortedActivities.findIndex(
-    activity => getActivityLocalId(activity) === activityLocalId
+    activity => getLocalIdFromActivity(activity) === activityLocalId
   );
 
   if (!~existingActivityIndex) {
@@ -77,7 +77,7 @@ function updateActivityChannelDataInternalSkipNameCheck(
 
 function updateActivityChannelData(
   state: State,
-  activityLocalId: ActivityLocalId,
+  activityLocalId: LocalId,
   name: string,
   // TODO: [P*] Should we check the validity of the value?
   value: unknown

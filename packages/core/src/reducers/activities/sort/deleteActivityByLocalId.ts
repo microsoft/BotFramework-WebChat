@@ -1,8 +1,9 @@
 import computePartListTimestamp from './private/computePartListTimestamp';
 import computeSortedActivities from './private/computeSortedActivities';
-import type { ActivityLocalId, LivestreamSessionMapEntry, State } from './types';
+import type { LocalId } from './property/LocalId';
+import type { LivestreamSessionMapEntry, State } from './types';
 
-export default function deleteActivityByLocalId(state: State, localId: ActivityLocalId): State {
+export default function deleteActivityByLocalId(state: State, localId: LocalId): State {
   const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
   const nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);

@@ -1,9 +1,9 @@
 import type { Tagged } from 'type-fest';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { LocalId } from './property/LocalId';
 
 type Activity = WebChatActivity;
 
-type ActivityLocalId = Tagged<string, 'activity local id'>;
 type HowToGroupingId = Tagged<string, 'how to grouping id'>;
 type LivestreamSessionId = Tagged<string, 'livestream session id'>;
 
@@ -20,7 +20,7 @@ type LivestreamSessionEntry = {
 };
 
 type ActivityEntry = {
-  readonly activityLocalId: ActivityLocalId;
+  readonly activityLocalId: LocalId;
   readonly logicalTimestamp: number | undefined;
   readonly type: 'activity';
 };
@@ -47,12 +47,12 @@ type LivestreamSessionMapEntry = {
 type LivestreamSessionMap = ReadonlyMap<LivestreamSessionId, LivestreamSessionMapEntry>;
 
 type ActivityMapEntry = ActivityEntry & { readonly activity: Activity };
-type ActivityMap = ReadonlyMap<ActivityLocalId, ActivityMapEntry>;
+type ActivityMap = ReadonlyMap<LocalId, ActivityMapEntry>;
 
 type State = {
-  readonly activityIdToLocalIdMap: Map<string, ActivityLocalId>;
+  readonly activityIdToLocalIdMap: Map<string, LocalId>;
   readonly activityMap: ActivityMap;
-  readonly clientActivityIdToLocalIdMap: Map<string, ActivityLocalId>;
+  readonly clientActivityIdToLocalIdMap: Map<string, LocalId>;
   readonly howToGroupingMap: HowToGroupingMap;
   readonly livestreamSessionMap: LivestreamSessionMap;
   readonly sortedChatHistoryList: SortedChatHistory;
@@ -62,7 +62,6 @@ type State = {
 export {
   type Activity,
   type ActivityEntry,
-  type ActivityLocalId,
   type ActivityMap,
   type ActivityMapEntry,
   type HowToGroupingEntry,

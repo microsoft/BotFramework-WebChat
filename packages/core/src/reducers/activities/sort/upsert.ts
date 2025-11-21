@@ -3,10 +3,11 @@ import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
 import computePartListTimestamp from './private/computePartListTimestamp';
 import computeSortedActivities from './private/computeSortedActivities';
-import getActivityLocalId from './private/getActivityLocalId';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
 import getPartGroupingMetadataMap from './private/getPartGroupingMetadataMap';
 import insertSorted from './private/insertSorted';
+import { getLocalIdFromActivity } from './property/LocalId';
+import { queryPositionFromActivity, setPositionInActivity } from './property/Position';
 import {
   type Activity,
   type ActivityMapEntry,
@@ -64,7 +65,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
 
-  const activityLocalId = getActivityLocalId(activity);
+  const activityLocalId = getLocalIdFromActivity(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
   // let shouldSkipPositionalChange = false;
 
@@ -174,7 +175,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const nextPartEntry = Object.freeze({ ...sortedChatHistoryListEntry, position: howToGroupingPosition });
 
-    // If the upserting activity is position-less and an earlier revision is in the grouping, update the existing entry.
+    // If the upserting activity is position-less and an earlier revision is in the grouping, update the existing entry instead of splice/insert.
     if (~existingPartEntryIndex && typeof howToGroupingPosition === 'undefined') {
       nextPartList[+existingPartEntryIndex] = nextPartEntry;
     } else {
@@ -285,19 +286,19 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     index++
   ) {
     const currentActivity = nextSortedActivities[+index]!;
-    const currentActivityId = getActivityLocalId(currentActivity);
+    const currentActivityId = getLocalIdFromActivity(currentActivity);
     const hasNextSibling = index + 1 < nextSortedActivitiesLength;
-    const position = currentActivity.channelData['webchat:internal:position'];
+    const position = queryPositionFromActivity(currentActivity);
 
     let nextPosition: number;
 
     if (typeof position === 'undefined' || position <= lastPosition) {
       if (hasNextSibling) {
-        const nextSiblingPosition = nextSortedActivities[+index + 1]!.channelData['webchat:internal:position'];
+        const nextSiblingPosition = queryPositionFromActivity(nextSortedActivities[+index + 1]!);
 
         nextPosition = lastPosition + 1;
 
-        if (nextPosition > nextSiblingPosition) {
+        if (typeof nextSiblingPosition === 'undefined' || nextPosition > nextSiblingPosition) {
           nextPosition = lastPosition + POSITION_INCREMENT;
         }
       } else {
@@ -314,13 +315,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         ...activityMapEntry,
         // TODO: [P0] We should freeze the activity.
         //       For backcompat, we can consider have a props that temporarily disable this behavior.
-        activity: {
-          ...activityMapEntry.activity,
-          channelData: {
-            ...activityMapEntry.activity.channelData,
-            'webchat:internal:position': nextPosition
-          } as any
-        }
+        activity: setPositionInActivity(activityMapEntry.activity, nextPosition)
       });
 
       nextActivityMap.set(currentActivityId, nextActivityEntry);
