@@ -29,17 +29,17 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     // Web Chat ordering sequence, must be computed before inserting into Redux.
     'webchat:internal:position': number;
 
+    /**
+     * Time when the activity appear in chat history.
+     *
+     * Note: if the activity is updated, this value will also be updated.
+     */
+    'webchat:received-at'?: number;
+
     // Chat adapter may send sequence ID to Web Chat to affect ordering.
     'webchat:sequence-id'?: number | undefined;
 
     webChat?: {
-      /**
-       * Time when the activity appear in chat history.
-       *
-       * Note: if the activity is updated, this value will also be updated.
-       */
-      receivedAt?: number;
-
       /**
        * Per-activity style options.
        *

@@ -31,7 +31,10 @@ export default function patchActivity(activity: WebChatActivity, { Date }: Globa
   });
 
   activity = updateIn(activity, ['channelData'], (channelData: any) => ({ ...channelData }));
-  activity = updateIn(activity, ['channelData', 'webChat', 'receivedAt'], () => Date.now());
+
+  activity = updateIn(activity, ['channelData', 'webchat:internal:received-at'], () => Date.now());
+
+  // TODO: [P*] Move all patching logics here.
 
   const messageEntity = getOrgSchemaMessage(activity.entities ?? []);
   const entityPosition = messageEntity?.position;

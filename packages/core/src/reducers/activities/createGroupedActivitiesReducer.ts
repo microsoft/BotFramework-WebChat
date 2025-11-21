@@ -15,7 +15,6 @@ import {
   POST_ACTIVITY_REJECTED
 } from '../../actions/postActivity';
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
-import getOrgSchemaMessage from '../../utils/getOrgSchemaMessage';
 
 import type { Reducer } from 'redux';
 import type { DeleteActivityAction } from '../../actions/deleteActivity';
@@ -36,6 +35,7 @@ import updateActivityChannelData, {
   updateActivityChannelDataInternalSkipNameCheck
 } from './sort/updateActivityChannelData';
 import upsert, { INITIAL_STATE } from './sort/upsert';
+import patchActivity from './patchActivity';
 
 type GroupedActivitiesAction =
   | DeleteActivityAction
@@ -49,47 +49,9 @@ type GroupedActivitiesAction =
 type GroupedActivitiesState = State;
 
 const DEFAULT_STATE: GroupedActivitiesState = INITIAL_STATE;
-const DIRECT_LINE_PLACEHOLDER_URL =
-  'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png';
 
 function getClientActivityID(activity: WebChatActivity): string | undefined {
   return activity.channelData?.clientActivityID;
-}
-
-function patchActivity(activity: WebChatActivity, { Date }: GlobalScopePonyfill): WebChatActivity {
-  // Direct Line channel will return a placeholder image for the user-uploaded image.
-  // As observed, the URL for the placeholder image is https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png.
-  // To make our code simpler, we are removing the value if "contentUrl" is pointing to a placeholder image.
-
-  // TODO: [P2] #2869 This "contentURL" removal code should be moved to DirectLineJS adapter.
-
-  // Also, if the "contentURL" starts with "blob:", this means the user is uploading a file (the URL is constructed by URL.createObjectURL)
-  // Although the copy/reference of the file is temporary in-memory, to make the UX consistent across page refresh, we do not allow the user to re-download the file either.
-
-  activity = updateIn(activity, ['attachments', () => true, 'contentUrl'], (contentUrl: string) => {
-    if (contentUrl !== DIRECT_LINE_PLACEHOLDER_URL && !/^blob:/iu.test(contentUrl)) {
-      return contentUrl;
-    }
-
-    return undefined;
-  });
-
-  activity = updateIn(activity, ['channelData'], (channelData: any) => ({ ...channelData }));
-  activity = updateIn(activity, ['channelData', 'webChat', 'receivedAt'], () => Date.now());
-
-  const messageEntity = getOrgSchemaMessage(activity.entities ?? []);
-  const entityPosition = messageEntity?.position;
-  const entityPartOf = messageEntity?.isPartOf?.['@id'];
-
-  if (typeof entityPosition === 'number') {
-    activity = updateIn(activity, ['channelData', 'webchat:entity-position'], () => entityPosition);
-  }
-
-  if (typeof entityPartOf === 'string') {
-    activity = updateIn(activity, ['channelData', 'webchat:entity-part-of'], () => entityPartOf);
-  }
-
-  return activity;
 }
 
 function createGroupedActivitiesReducer(
@@ -120,6 +82,9 @@ function createGroupedActivitiesReducer(
           payload: { activity }
         } = action;
 
+        activity = patchActivity(activity, ponyfill);
+
+        // TODO: [P*] Use v6() with sequential so we can kind of sort over it.
         activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
@@ -208,6 +173,8 @@ function createGroupedActivitiesReducer(
         let {
           payload: { activity }
         } = action;
+
+        activity = patchActivity(activity, ponyfill);
 
         // Clean internal properties if they were passed from chat adapter.
         // These properties should not be passed from external systems.

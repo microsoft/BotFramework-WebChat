@@ -50,7 +50,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
       }
 
       // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
-      const receivedAt = activity.channelData?.webChat?.receivedAt || Date.now();
+      const receivedAt = activity.channelData?.['webchat:internal:received-at'] ?? Date.now();
 
       const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
       const typingState = new Map(prevTypingState);
@@ -74,7 +74,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
           mutableEntry.livestreamActivities.set(
             sessionId,
             Object.freeze({
-              firstReceivedAt: Date.now(),
+              firstReceivedAt: mutableEntry.livestreamActivities.get(sessionId)?.firstReceivedAt || receivedAt,
               ...mutableEntry.livestreamActivities.get(sessionId),
               activity,
               contentful: livestreamingMetadata.type !== 'contentless',
@@ -88,7 +88,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
         mutableEntry.typingIndicator = Object.freeze({
           activity,
           duration: numberWithInfinity(activity.channelData.webChat?.styleOptions?.typingAnimationDuration),
-          firstReceivedAt: mutableEntry.typingIndicator?.firstReceivedAt || Date.now(),
+          firstReceivedAt: mutableEntry.typingIndicator?.firstReceivedAt || receivedAt,
           lastReceivedAt: receivedAt
         });
       }

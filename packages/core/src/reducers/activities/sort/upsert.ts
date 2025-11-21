@@ -374,7 +374,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   // #endregion
 
   // console.log(
-  //   activityInternalId,
+  //   `${activityInternalId}\n${activity.text}`,
   //   Object.freeze({
   //     activity,
   //     activityMap: nextActivityMap,
