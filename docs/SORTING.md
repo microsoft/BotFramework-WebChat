@@ -15,7 +15,7 @@ Before sorting, activities are grouped as a unit:
 
 ## How activities are being sorted?
 
-Short answer: activities are sorted by logical timestamp.
+Short answer: activities are sorted by logical timestamp on insertion.
 
 Long answer:
 
