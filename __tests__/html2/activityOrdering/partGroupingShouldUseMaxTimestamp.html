@@ -125,18 +125,29 @@
           type: 'message'
         });
 
-        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['Task 1 at t=10', 'Task 2 at t=20']);
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'Task 1 at t=10',
+          'Task 2 at t=20'
+        ]);
 
         await host.snapshot('local');
 
         await directLine.emulateIncomingActivity({
           from: { role: 'bot' },
           id: 'a-00004',
-          text: 'Hello, World at t=5',
-          timestamp: new Date(5).toISOString()
+          text: 'Hello, World at t=15',
+          timestamp: new Date(15).toISOString()
         });
 
-        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual(['Task 1 at t=10', 'Task 2 at t=20', 'Hello, World at t=5']);
+        // Part grouping timestamp is t=20 (max of all parts.)
+        // "Hello, World" is t=15.
+        // Thus, "Hello, World" appear before part grouping.
+
+        expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'Hello, World at t=15',
+          'Task 1 at t=10',
+          'Task 2 at t=20'
+        ]);
 
         await host.snapshot('local');
       });
