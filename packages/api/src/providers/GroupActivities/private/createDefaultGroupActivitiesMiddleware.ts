@@ -1,4 +1,6 @@
 import { getOrgSchemaMessage, type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
+import { IdentifierSchema } from 'botframework-webchat-core/graph';
+import { safeParse } from 'valibot';
 
 import type GroupActivitiesMiddleware from '../../../types/GroupActivitiesMiddleware';
 import { type SendStatus } from '../../../types/SendStatus';
@@ -94,13 +96,19 @@ export default function createDefaultGroupActivitiesMiddleware({
         ? next =>
             ({ activities }) => {
               const messages = activities.map(activity => [getOrgSchemaMessage(activity.entities), activity] as const);
+
               return {
                 ...next({ activities }),
-                part: bin(
-                  messages,
-                  ([last], [current]) =>
-                    typeof last?.isPartOf?.['@id'] === 'string' && last.isPartOf['@id'] === current?.isPartOf?.['@id']
-                ).map(bin => bin.map(([, activity]) => activity))
+                part: bin(messages, ([last], [current]) => {
+                  const lastPartIdResult = safeParse(IdentifierSchema, last?.isPartOf?.['@id']);
+                  const currentPartIdResult = safeParse(IdentifierSchema, current?.isPartOf?.['@id']);
+
+                  return (
+                    lastPartIdResult.success &&
+                    currentPartIdResult.success &&
+                    lastPartIdResult.output === currentPartIdResult.output
+                  );
+                }).map(bin => bin.map(([, activity]) => activity))
               };
             }
         : undefined

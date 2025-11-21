@@ -1,5 +1,6 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
-import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { IdentifierSchema } from 'botframework-webchat-core/graph';
 import React, { Fragment, memo, useMemo } from 'react';
 import {
   array,
@@ -42,15 +43,14 @@ function PartGrouping(props: PartGroupingProps) {
         (
           activities
             .toReversed()
-            .find(
-              activity => 'streamType' in activity.channelData && activity.channelData.streamType === 'informative'
-            ) || lastActivity
+            .find(activity => getActivityLivestreamingMetadata(activity)?.type === 'informative message') ||
+          lastActivity
         )?.entities
       ),
     [activities, lastActivity]
   );
 
-  const isGroup = activities.length > 1 || !!lastMessage?.isPartOf?.['@id'];
+  const isGroup = activities.length > 1 || safeParse(IdentifierSchema, lastMessage?.isPartOf?.['@id']).success;
 
   return isGroup ? (
     <PartGroupingActivity activities={activities}>{children}</PartGroupingActivity>
