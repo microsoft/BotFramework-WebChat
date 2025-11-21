@@ -80,6 +80,28 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
         };
 
         nextLivestreamSessionMap.set(livestreamSessionId, nextLivestreamSessionMapEntry);
+
+        for (const [howToGroupingId, entry] of nextHowToGroupingMap) {
+          let changed = false;
+
+          const nextPartList = entry.partList.map(part => {
+            if (part.type === 'livestream session' && part.livestreamSessionId === livestreamSessionId) {
+              changed = true;
+
+              return { ...part, logicalTimestamp };
+            }
+
+            return part;
+          });
+
+          if (changed) {
+            nextHowToGroupingMap.set(howToGroupingId, {
+              ...entry,
+              logicalTimestamp: computePartListTimestamp(nextPartList),
+              partList: nextPartList
+            });
+          }
+        }
       } else {
         nextLivestreamSessionMap.delete(livestreamSessionId);
 
@@ -88,6 +110,24 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
         );
 
         ~sortedChatHistoryListIndex && nextSortedChatHistoryList.splice(sortedChatHistoryListIndex, 1);
+
+        for (const [howToGroupingId, entry] of nextHowToGroupingMap) {
+          const partIndex = entry.partList.findIndex(
+            part => part.type === 'livestream session' && part.livestreamSessionId === livestreamSessionId
+          );
+
+          if (~partIndex) {
+            const nextPartList = Array.from(entry.partList);
+
+            nextPartList.splice(partIndex, 1);
+
+            nextHowToGroupingMap.set(howToGroupingId, {
+              ...entry,
+              logicalTimestamp: computePartListTimestamp(nextPartList),
+              partList: nextPartList
+            });
+          }
+        }
       }
     }
   }

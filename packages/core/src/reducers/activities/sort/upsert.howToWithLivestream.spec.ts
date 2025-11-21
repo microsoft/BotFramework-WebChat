@@ -8,12 +8,15 @@ import type {
   ActivityMapEntry,
   HowToGroupingId,
   HowToGroupingMapEntry,
+  HowToGroupingMapPartEntry,
   LivestreamSessionId,
   LivestreamSessionMapEntry,
   LivestreamSessionMapEntryActivityEntry,
   SortedChatHistory
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
+import deleteActivityByLocalId from './deleteActivityByLocalId';
+import getActivityLocalId from './private/getActivityLocalId';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -383,5 +386,174 @@ scenario('upserting plain activity in the same grouping', bdd => {
         activityToExpectation(activity2, 2_000),
         activityToExpectation(activity3, 3_000)
       ]);
+    });
+});
+
+scenario('delete livestream activities in part grouping', bdd => {
+  const activity1 = buildActivity(
+    {
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
+      text: 'A quick',
+      timestamp: new Date(1_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity2 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'A quick brown fox',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity3 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamType: 'final' },
+      id: 'a-00003',
+      text: 'A quick brown fox jumped over the lazy dogs.',
+      timestamp: new Date(3_000).toISOString(),
+      type: 'message'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity4 = buildActivity(
+    {
+      channelData: undefined,
+      id: 'a-00004',
+      text: 'Hello, World!',
+      timestamp: new Date(4_000).toISOString(),
+      type: 'message'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 2 }
+  );
+
+  bdd
+    .given('an initial state', () => INITIAL_STATE)
+    .when('4 activities are upserted', state =>
+      upsert(
+        { Date },
+        upsert({ Date }, upsert({ Date }, upsert({ Date }, state, activity1), activity2), activity3),
+        activity4
+      )
+    )
+    .then('should have 4 activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 4);
+      expect(state.howToGroupingMap).toHaveProperty('size', 1);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 1);
+      expect(state.sortedActivities).toHaveLength(4);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .when('the last livestream activity is delete', (_, state) =>
+      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[2]))
+    )
+    .then('should have 3 activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 3);
+      expect(state.howToGroupingMap).toHaveProperty('size', 1);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 1);
+      expect(state.sortedActivities).toHaveLength(3);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .and('`livestreamSessionMap` should match', (_, state) => {
+      expect(state.livestreamSessionMap).toEqual(
+        new Map([
+          [
+            'a-00001',
+            {
+              activities: [
+                {
+                  activityLocalId: 'a-00001' as ActivityLocalId,
+                  logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
+                  type: 'activity'
+                } satisfies LivestreamSessionMapEntryActivityEntry,
+                {
+                  activityLocalId: 'a-00002' as ActivityLocalId,
+                  logicalTimestamp: 2_000,
+                  sequenceNumber: 2,
+                  type: 'activity'
+                } satisfies LivestreamSessionMapEntryActivityEntry
+              ],
+              finalized: false,
+              logicalTimestamp: 1_000
+            } satisfies LivestreamSessionMapEntry
+          ]
+        ])
+      );
+    })
+    .and('`howToGroupingMap` should match', (_, state) => {
+      expect(state.howToGroupingMap).toEqual(
+        new Map([
+          [
+            '_:how-to:00001',
+            {
+              logicalTimestamp: 4_000,
+              partList: [
+                {
+                  livestreamSessionId: 'a-00001' as LivestreamSessionId,
+                  logicalTimestamp: 1_000,
+                  position: 1,
+                  type: 'livestream session'
+                } satisfies HowToGroupingMapPartEntry,
+                {
+                  activityLocalId: 'a-00004' as ActivityLocalId,
+                  logicalTimestamp: 4_000,
+                  position: 2,
+                  type: 'activity'
+                } satisfies HowToGroupingMapPartEntry
+              ]
+            } satisfies HowToGroupingMapEntry
+          ]
+        ])
+      );
+    })
+    .when('all livestream activities are delete', (_, state) =>
+      deleteActivityByLocalId(
+        deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[1])),
+        getActivityLocalId(state.sortedActivities[0])
+      )
+    )
+    .then('should have 1 activity', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 1);
+      expect(state.howToGroupingMap).toHaveProperty('size', 1);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(1);
+      expect(state.sortedChatHistoryList).toHaveLength(1);
+    })
+    .and('`howToGroupingMap` should match', (_, state) => {
+      expect(state.howToGroupingMap).toEqual(
+        new Map([
+          [
+            '_:how-to:00001',
+            {
+              logicalTimestamp: 4_000,
+              partList: [
+                {
+                  activityLocalId: 'a-00004' as ActivityLocalId,
+                  logicalTimestamp: 4_000,
+                  position: 2,
+                  type: 'activity'
+                } satisfies HowToGroupingMapPartEntry
+              ]
+            } satisfies HowToGroupingMapEntry
+          ]
+        ])
+      );
+    })
+    .when('all activities are delete', (_, state) =>
+      deleteActivityByLocalId(state, getActivityLocalId(state.sortedActivities[0]))
+    )
+    .then('should have no activities', (_, state) => {
+      expect(state.activityMap).toHaveProperty('size', 0);
+      expect(state.howToGroupingMap).toHaveProperty('size', 0);
+      expect(state.livestreamSessionMap).toHaveProperty('size', 0);
+      expect(state.sortedActivities).toHaveLength(0);
+      expect(state.sortedChatHistoryList).toHaveLength(0);
     });
 });
