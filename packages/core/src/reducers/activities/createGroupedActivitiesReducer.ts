@@ -36,6 +36,7 @@ import updateActivityChannelData, {
 } from './sort/updateActivityChannelData';
 import upsert, { INITIAL_STATE } from './sort/upsert';
 import patchActivity from './patchActivity';
+import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 
 type GroupedActivitiesAction =
   | DeleteActivityAction
@@ -62,10 +63,15 @@ function createGroupedActivitiesReducer(
     action: GroupedActivitiesAction
   ): GroupedActivitiesState {
     switch (action.type) {
-      case DELETE_ACTIVITY:
-        // TODO: [P*] Brew this.
-        // state = updateIn(state, [({ id }: WebChatActivity) => id === action.payload.activityID]);
+      case DELETE_ACTIVITY: {
+        const localId = getLocalIdAByActivityId(state, action.payload.activityID);
+
+        if (localId) {
+          state = deleteActivityByLocalId(state, localId);
+        }
+
         break;
+      }
 
       case MARK_ACTIVITY: {
         const localId = getLocalIdAByActivityId(state, action.payload.activityID);
