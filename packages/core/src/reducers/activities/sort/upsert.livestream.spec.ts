@@ -129,7 +129,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -145,7 +145,7 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
@@ -178,7 +178,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -187,7 +187,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00002' as ActivityLocalId,
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -203,13 +203,13 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
@@ -245,7 +245,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -254,7 +254,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00003' as ActivityLocalId,
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -263,7 +263,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00002' as ActivityLocalId,
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -279,19 +279,19 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00003' as ActivityLocalId,
+                  activityLocalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
@@ -328,7 +328,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00001' as ActivityLocalId,
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -337,7 +337,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00003' as ActivityLocalId,
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -346,7 +346,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00002' as ActivityLocalId,
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -355,7 +355,7 @@ scenario('upserting a livestream session', bdd => {
             'a-00004' as ActivityLocalId,
             {
               activity: activityToExpectation(activity4),
-              activityInternalId: 'a-00004' as ActivityLocalId,
+              activityLocalId: 'a-00004' as ActivityLocalId,
               logicalTimestamp: 4_000,
               type: 'activity'
             }
@@ -371,25 +371,25 @@ scenario('upserting a livestream session', bdd => {
             {
               activities: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00003' as ActivityLocalId,
+                  activityLocalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: 3,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityInternalId: 'a-00004' as ActivityLocalId,
+                  activityLocalId: 'a-00004' as ActivityLocalId,
                   logicalTimestamp: 4_000,
                   sequenceNumber: Infinity,
                   type: 'activity'

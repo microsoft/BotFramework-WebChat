@@ -54,7 +54,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
           Object.entries({
             'a-00001': {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001',
+              activityLocalId: 'a-00001',
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -65,7 +65,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
     .and('should have added activity to `sortedChatHistoryList`', (_, state) => {
       expect(state).toHaveProperty('sortedChatHistoryList', [
         {
-          activityInternalId: 'a-00001',
+          activityLocalId: 'a-00001',
           logicalTimestamp: 1_000,
           type: 'activity'
         }
@@ -93,7 +93,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
                 timestamp: new Date(1_000).toISOString(),
                 type: 'message'
               },
-              activityInternalId: 'a-00001',
+              activityLocalId: 'a-00001',
               logicalTimestamp: 1_000,
               type: 'activity'
             },
@@ -110,7 +110,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
                 timestamp: new Date(500).toISOString(),
                 type: 'message'
               },
-              activityInternalId: 'a-00002',
+              activityLocalId: 'a-00002',
               logicalTimestamp: 500,
               type: 'activity'
             }
@@ -121,12 +121,12 @@ scenario('upserting 2 activities with timestamps', bdd => {
     .and('should have added activity to `sortedChatHistoryList`', (_, state) => {
       expect(state).toHaveProperty('sortedChatHistoryList', [
         {
-          activityInternalId: 'a-00002',
+          activityLocalId: 'a-00002',
           logicalTimestamp: 500,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00001',
+          activityLocalId: 'a-00001',
           logicalTimestamp: 1_000,
           type: 'activity'
         }
@@ -205,7 +205,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -216,7 +216,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     .and('should have added to `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityInternalId: 'a-00001' as ActivityLocalId,
+          activityLocalId: 'a-00001' as ActivityLocalId,
           logicalTimestamp: 1_000,
           type: 'activity'
         }
@@ -233,7 +233,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -242,7 +242,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: undefined,
               type: 'activity'
             }
@@ -253,12 +253,12 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     .and('should have added to `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityInternalId: 'a-00001' as ActivityLocalId,
+          activityLocalId: 'a-00001' as ActivityLocalId,
           logicalTimestamp: 1_000,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00002' as ActivityLocalId,
+          activityLocalId: 'a-00002' as ActivityLocalId,
           logicalTimestamp: undefined,
           type: 'activity'
         }
@@ -278,7 +278,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -287,7 +287,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: undefined,
               type: 'activity'
             }
@@ -296,7 +296,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00003',
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -307,17 +307,17 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     .and('should have added to `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityInternalId: 'a-00001' as ActivityLocalId,
+          activityLocalId: 'a-00001' as ActivityLocalId,
           logicalTimestamp: 1_000,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00002' as ActivityLocalId,
+          activityLocalId: 'a-00002' as ActivityLocalId,
           logicalTimestamp: undefined,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00003' as ActivityLocalId,
+          activityLocalId: 'a-00003' as ActivityLocalId,
           logicalTimestamp: 2_000,
           type: 'activity'
         }
@@ -338,7 +338,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -347,7 +347,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: undefined,
               type: 'activity'
             }
@@ -356,7 +356,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00003',
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -365,7 +365,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00004',
             {
               activity: activityToExpectation(activity4),
-              activityInternalId: 'a-00004' as ActivityLocalId,
+              activityLocalId: 'a-00004' as ActivityLocalId,
               logicalTimestamp: 1_500,
               type: 'activity'
             }
@@ -376,22 +376,22 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     .and('should have added to `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityInternalId: 'a-00001' as ActivityLocalId,
+          activityLocalId: 'a-00001' as ActivityLocalId,
           logicalTimestamp: 1_000,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00002' as ActivityLocalId,
+          activityLocalId: 'a-00002' as ActivityLocalId,
           logicalTimestamp: undefined,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00004' as ActivityLocalId,
+          activityLocalId: 'a-00004' as ActivityLocalId,
           logicalTimestamp: 1_500,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00003' as ActivityLocalId,
+          activityLocalId: 'a-00003' as ActivityLocalId,
           logicalTimestamp: 2_000,
           type: 'activity'
         }
@@ -415,7 +415,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -424,7 +424,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00002',
             {
               activity: activityToExpectation(activity2b),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 1_750,
               type: 'activity'
             }
@@ -433,7 +433,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00003',
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -442,7 +442,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
             'a-00004',
             {
               activity: activityToExpectation(activity4),
-              activityInternalId: 'a-00004' as ActivityLocalId,
+              activityLocalId: 'a-00004' as ActivityLocalId,
               logicalTimestamp: 1_500,
               type: 'activity'
             }
@@ -453,22 +453,22 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     .and('should have added to `sortedChatHistoryList`', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityInternalId: 'a-00001' as ActivityLocalId,
+          activityLocalId: 'a-00001' as ActivityLocalId,
           logicalTimestamp: 1_000,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00004' as ActivityLocalId,
+          activityLocalId: 'a-00004' as ActivityLocalId,
           logicalTimestamp: 1_500,
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00002' as ActivityLocalId,
+          activityLocalId: 'a-00002' as ActivityLocalId,
           logicalTimestamp: 1_750, // Update activity is moved here.
           type: 'activity'
         },
         {
-          activityInternalId: 'a-00003' as ActivityLocalId,
+          activityLocalId: 'a-00003' as ActivityLocalId,
           logicalTimestamp: 2_000,
           type: 'activity'
         }
@@ -538,7 +538,7 @@ scenario('deleting activity', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2, 2_000),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -552,7 +552,7 @@ scenario('deleting activity', bdd => {
     .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityInternalId: 'a-00002' as ActivityLocalId,
+          activityLocalId: 'a-00002' as ActivityLocalId,
           logicalTimestamp: 2_000,
           type: 'activity'
         } satisfies SortedChatHistoryEntry

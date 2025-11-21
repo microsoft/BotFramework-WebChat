@@ -77,7 +77,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -94,7 +94,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -125,7 +125,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -134,7 +134,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -151,13 +151,13 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 2_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
                 },
                 {
-                  activityInternalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   position: 3,
                   type: 'activity'
@@ -191,7 +191,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1),
-              activityInternalId: 'a-00001' as ActivityLocalId,
+              activityLocalId: 'a-00001' as ActivityLocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -200,7 +200,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00002',
             {
               activity: activityToExpectation(activity2),
-              activityInternalId: 'a-00002' as ActivityLocalId,
+              activityLocalId: 'a-00002' as ActivityLocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -209,7 +209,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             'a-00003',
             {
               activity: activityToExpectation(activity3),
-              activityInternalId: 'a-00003' as ActivityLocalId,
+              activityLocalId: 'a-00003' as ActivityLocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -226,19 +226,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 3_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
                 },
                 {
-                  activityInternalId: 'a-00003' as ActivityLocalId,
+                  activityLocalId: 'a-00003' as ActivityLocalId,
                   logicalTimestamp: 3_000,
                   position: 2,
                   type: 'activity'
                 },
                 {
-                  activityInternalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 2_000,
                   position: 3,
                   type: 'activity'
@@ -290,7 +290,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -321,7 +321,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityInternalId: 'a-00001' as ActivityLocalId,
+                  activityLocalId: 'a-00001' as ActivityLocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -335,7 +335,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 500,
               partList: [
                 {
-                  activityInternalId: 'a-00002' as ActivityLocalId,
+                  activityLocalId: 'a-00002' as ActivityLocalId,
                   logicalTimestamp: 500,
                   position: 1,
                   type: 'activity'

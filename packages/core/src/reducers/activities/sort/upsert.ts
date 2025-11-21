@@ -59,22 +59,22 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
 
-  const activityInternalId = getActivityLocalId(activity);
+  const activityLocalId = getActivityLocalId(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
   // let shouldSkipPositionalChange = false;
 
   nextActivityMap.set(
-    activityInternalId,
+    activityLocalId,
     Object.freeze({
       activity,
-      activityInternalId,
+      activityLocalId,
       logicalTimestamp,
       type: 'activity'
     })
   );
 
   let sortedChatHistoryListEntry: SortedChatHistoryEntry = {
-    activityInternalId,
+    activityLocalId,
     logicalTimestamp,
     type: 'activity'
   };
@@ -108,7 +108,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
           livestreamSessionMapEntry ? livestreamSessionMapEntry.activities : [],
           Object.freeze({
-            activityInternalId,
+            activityLocalId,
             logicalTimestamp,
             sequenceNumber: activityLivestreamingMetadata.sequenceNumber,
             type: 'activity'
@@ -155,7 +155,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
           entry =>
             entry.type === 'livestream session' && entry.livestreamSessionId === activityLivestreamingMetadata.sessionId
         )
-      : nextPartList.findIndex(entry => entry.type === 'activity' && entry.activityInternalId === activityInternalId);
+      : nextPartList.findIndex(entry => entry.type === 'activity' && entry.activityLocalId === activityLocalId);
 
     const nextPartEntry = Object.freeze({ ...sortedChatHistoryListEntry, position: howToGroupingPosition });
 
@@ -210,7 +210,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
           )
         : sortedChatHistoryListEntry.type === 'activity'
           ? nextSortedChatHistoryList.findIndex(
-              entry => entry.type === 'activity' && entry.activityInternalId === activityInternalId
+              entry => entry.type === 'activity' && entry.activityLocalId === activityLocalId
             )
           : // eslint-disable-next-line no-magic-numbers
             -1;
@@ -233,8 +233,8 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       }
 
       if (x.type === 'activity' && y.type === 'activity') {
-        const xActivity = nextActivityMap.get(x.activityInternalId);
-        const yActivity = nextActivityMap.get(y.activityInternalId);
+        const xActivity = nextActivityMap.get(x.activityLocalId);
+        const yActivity = nextActivityMap.get(y.activityLocalId);
 
         const xLocalTimestamp = xActivity?.activity.localTimestamp;
         const yLocalTimestamp = yActivity?.activity.localTimestamp;
@@ -323,7 +323,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   // #endregion
 
   // console.log(
-  //   `${activityInternalId}\n${activity.text}`,
+  //   `${activityLocalId}\n${activity.text}`,
   //   Object.freeze({
   //     activity,
   //     activityMap: nextActivityMap,

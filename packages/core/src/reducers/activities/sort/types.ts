@@ -20,7 +20,7 @@ type LivestreamSessionEntry = {
 };
 
 type ActivityEntry = {
-  readonly activityInternalId: ActivityLocalId;
+  readonly activityLocalId: ActivityLocalId;
   readonly logicalTimestamp: number | undefined;
   readonly type: 'activity';
 };

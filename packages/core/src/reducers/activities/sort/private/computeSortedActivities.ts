@@ -8,18 +8,18 @@ export default function computeSortedActivities(temporalState: Omit<State, 'sort
       for (const sortedEntry of sortedChatHistoryList) {
         if (sortedEntry.type === 'activity') {
           // TODO: [P*] Instead of deferencing using internal ID, use pointer instead.
-          yield activityMap.get(sortedEntry.activityInternalId)!.activity;
+          yield activityMap.get(sortedEntry.activityLocalId)!.activity;
         } else if (sortedEntry.type === 'how to grouping') {
           const howToGrouping = howToGroupingMap.get(sortedEntry.howToGroupingId)!;
 
           for (const howToPartEntry of howToGrouping.partList) {
             if (howToPartEntry.type === 'activity') {
-              yield activityMap.get(howToPartEntry.activityInternalId)!.activity;
+              yield activityMap.get(howToPartEntry.activityLocalId)!.activity;
             } else {
               howToPartEntry.type satisfies 'livestream session';
 
               for (const activityEntry of livestreamSessionMap.get(howToPartEntry.livestreamSessionId)!.activities) {
-                yield activityMap.get(activityEntry.activityInternalId)!.activity;
+                yield activityMap.get(activityEntry.activityLocalId)!.activity;
               }
             }
           }
@@ -27,7 +27,7 @@ export default function computeSortedActivities(temporalState: Omit<State, 'sort
           sortedEntry.type satisfies 'livestream session';
 
           for (const activityEntry of livestreamSessionMap.get(sortedEntry.livestreamSessionId)!.activities) {
-            yield activityMap.get(activityEntry.activityInternalId)!.activity;
+            yield activityMap.get(activityEntry.activityLocalId)!.activity;
           }
         }
       }

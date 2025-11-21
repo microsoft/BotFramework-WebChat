@@ -12,7 +12,7 @@ export default function deleteActivityByLocalId(state: State, localId: ActivityL
   }
 
   nextSortedChatHistoryList = nextSortedChatHistoryList.filter(entry => {
-    if (entry.type === 'activity' && entry.activityInternalId === localId) {
+    if (entry.type === 'activity' && entry.activityLocalId === localId) {
       return false;
     }
 
