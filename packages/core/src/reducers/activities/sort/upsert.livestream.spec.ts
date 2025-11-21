@@ -1,13 +1,14 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../types/WebChatActivity';
 import {
   type Activity,
   type ActivityInternalIdentifier,
   type ActivityMapEntry,
   type LivestreamSessionIdentifier,
   type LivestreamSessionMapEntry,
+  type LivestreamSessionMapEntryActivityEntry,
   type SortedChatHistory,
   type SortedChatHistoryEntry
 } from './types';
@@ -146,8 +147,9 @@ scenario('upserting a livestreaming session', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: false,
               logicalTimestamp: 1_000
@@ -179,7 +181,7 @@ scenario('upserting a livestreaming session', bdd => {
               activityInternalId: 'a-00001' as ActivityInternalIdentifier,
               logicalTimestamp: 1_000,
               type: 'activity'
-            }
+            } satisfies ActivityMapEntry
           ],
           [
             'a-00002' as ActivityInternalIdentifier,
@@ -188,7 +190,7 @@ scenario('upserting a livestreaming session', bdd => {
               activityInternalId: 'a-00002' as ActivityInternalIdentifier,
               logicalTimestamp: 3_000,
               type: 'activity'
-            }
+            } satisfies ActivityMapEntry
           ]
         ])
       );
@@ -203,13 +205,15 @@ scenario('upserting a livestreaming session', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00002' as ActivityInternalIdentifier,
                   logicalTimestamp: 3_000,
+                  sequenceNumber: 3,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: false,
               logicalTimestamp: 1_000
@@ -277,18 +281,21 @@ scenario('upserting a livestreaming session', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00003' as ActivityInternalIdentifier,
                   logicalTimestamp: 2_000,
+                  sequenceNumber: 2,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00002' as ActivityInternalIdentifier,
                   logicalTimestamp: 3_000,
+                  sequenceNumber: 3,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: false,
               logicalTimestamp: 1_000
@@ -366,23 +373,27 @@ scenario('upserting a livestreaming session', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00003' as ActivityInternalIdentifier,
                   logicalTimestamp: 2_000,
+                  sequenceNumber: 2,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00002' as ActivityInternalIdentifier,
                   logicalTimestamp: 3_000,
+                  sequenceNumber: 3,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00004' as ActivityInternalIdentifier,
                   logicalTimestamp: 4_000,
+                  sequenceNumber: Infinity,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: true,
               logicalTimestamp: 4_000

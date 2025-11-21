@@ -9,7 +9,6 @@ import {
   type Activity,
   type ActivityMapEntry,
   type HowToGroupingIdentifier,
-  type HowToGroupingMapEntry,
   type LivestreamSessionIdentifier,
   type LivestreamSessionMapEntry,
   type LivestreamSessionMapEntryActivityEntry,
@@ -148,10 +147,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
     const partGroupingMapEntry = nextHowToGroupingMap.get(howToGroupingId);
 
-    const nextPartGroupingEntry: HowToGroupingMapEntry =
-      nextHowToGroupingMap.get(howToGroupingId) ??
-      ({ logicalTimestamp, partList: Object.freeze([]) } satisfies HowToGroupingMapEntry);
-
     let nextPartList = partGroupingMapEntry ? Array.from(partGroupingMapEntry.partList) : [];
 
     const existingPartEntryIndex = activityLivestreamingMetadata
@@ -178,13 +173,16 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       );
     }
 
-    nextHowToGroupingMap.set(
-      howToGroupingId,
-      Object.freeze({
-        logicalTimestamp: sortedChatHistoryListEntry.logicalTimestamp,
-        partList: Object.freeze(nextPartList)
-      } satisfies HowToGroupingMapEntry)
-    );
+    const nextPartGroupingEntry = {
+      logicalTimestamp: nextPartList.reduce<number | undefined>(
+        (max, { logicalTimestamp }) =>
+          typeof logicalTimestamp === 'undefined' ? max : Math.max(max ?? -Infinity, logicalTimestamp),
+        undefined
+      ),
+      partList: Object.freeze(nextPartList)
+    };
+
+    nextHowToGroupingMap.set(howToGroupingId, Object.freeze(nextPartGroupingEntry));
 
     sortedChatHistoryListEntry = {
       howToGroupingId,

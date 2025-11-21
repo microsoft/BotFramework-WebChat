@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type {
   Activity,
   ActivityInternalIdentifier,
@@ -10,6 +10,7 @@ import type {
   HowToGroupingMapEntry,
   LivestreamSessionIdentifier,
   LivestreamSessionMapEntry,
+  LivestreamSessionMapEntryActivityEntry,
   SortedChatHistory
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
@@ -170,8 +171,9 @@ scenario('upserting plain activity in the same grouping', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: false,
               logicalTimestamp: 1_000
@@ -247,13 +249,15 @@ scenario('upserting plain activity in the same grouping', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00002' as ActivityInternalIdentifier,
                   logicalTimestamp: 2_000,
+                  sequenceNumber: 2,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: false,
               logicalTimestamp: 1_000
@@ -317,7 +321,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             '_:how-to:00001',
             {
-              logicalTimestamp: 1_000, // Should kept as 1_000, once HowTo is constructed, the timestamp never change.
+              logicalTimestamp: 3_000, // Should follow livestream session and update to 3_000.
               partList: [
                 {
                   livestreamSessionId: 'a-00001' as LivestreamSessionIdentifier,
@@ -341,18 +345,21 @@ scenario('upserting plain activity in the same grouping', bdd => {
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
                   logicalTimestamp: 1_000,
+                  sequenceNumber: 1,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00002' as ActivityInternalIdentifier,
                   logicalTimestamp: 2_000,
+                  sequenceNumber: 2,
                   type: 'activity'
-                },
+                } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
                   activityInternalId: 'a-00003' as ActivityInternalIdentifier,
                   logicalTimestamp: 3_000,
+                  sequenceNumber: Infinity,
                   type: 'activity'
-                }
+                } satisfies LivestreamSessionMapEntryActivityEntry
               ],
               finalized: true,
               logicalTimestamp: 3_000
@@ -361,16 +368,16 @@ scenario('upserting plain activity in the same grouping', bdd => {
         ])
       );
     })
-    .and('should not modify `sortedChatHistoryList`', (_, state) => {
+    .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
           howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
-          logicalTimestamp: 1_000,
+          logicalTimestamp: 3_000, // Update to 3_000 on finalize.
           type: 'how to grouping'
         }
       ] satisfies SortedChatHistory);
     })
-    .and('`sortedActivities` should match snapshot', (_, state) => {
+    .and('`sortedActivities` should match', (_, state) => {
       expect(state.sortedActivities).toEqual([
         activityToExpectation(activity1, 1_000),
         activityToExpectation(activity2, 2_000),

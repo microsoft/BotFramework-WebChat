@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import getLogicalTimestamp from './getLogicalTimestamp';
 
 scenario('get logical timestamp', bdd => {

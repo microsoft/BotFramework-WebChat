@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type {
   Activity,
   ActivityInternalIdentifier,
@@ -148,7 +148,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             '_:how-to:00001',
             {
-              logicalTimestamp: 1_000,
+              logicalTimestamp: 2_000,
               partList: [
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
@@ -168,16 +168,16 @@ scenario('upserting plain activity in the same grouping', bdd => {
         ])
       );
     })
-    .and('should appear in `sortedChatHistoryList`', (_, state) => {
+    .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
           howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
-          logicalTimestamp: 1_000, // Should not update to 2_000.
+          logicalTimestamp: 2_000, // Should update to 2_000.
           type: 'how to grouping'
         }
       ] satisfies SortedChatHistory);
     })
-    .and('`sortedActivities` should match snapshot', (_, state) => {
+    .and('`sortedActivities` should match', (_, state) => {
       expect(state).toHaveProperty('sortedActivities', [
         activityToExpectation(activity1),
         activityToExpectation(activity2)
@@ -223,7 +223,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
           [
             '_:how-to:00001',
             {
-              logicalTimestamp: 1_000,
+              logicalTimestamp: 3_000,
               partList: [
                 {
                   activityInternalId: 'a-00001' as ActivityInternalIdentifier,
@@ -253,7 +253,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.sortedChatHistoryList).toEqual([
         {
           howToGroupingId: '_:how-to:00001' as HowToGroupingIdentifier,
-          logicalTimestamp: 1_000, // Should not update to 2_000.
+          logicalTimestamp: 3_000, // Should not update to 3_000.
           type: 'how to grouping'
         }
       ] satisfies SortedChatHistory);

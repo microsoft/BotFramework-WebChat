@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import getPartGroupingMetadataMap from './getPartGroupingMetadataMap';
 
 scenario('getPartGroupingMetadataMap', bdd => {
@@ -36,7 +36,11 @@ scenario('getPartGroupingMetadataMap', bdd => {
     )
     .when('getPartGroupingMetadataMap() is called', activity => getPartGroupingMetadataMap(activity))
     .then('should return part grouping metadata', (_, actual) => {
-      expect(actual).toEqual(new Map([['HowTo', { partGroupingId: '_:c-00001', position: 1 }]]));
+      expect(actual).toEqual(
+        new Map([['HowTo', { groupingId: '_:c-00001', position: 1 }]]) satisfies ReturnType<
+          typeof getPartGroupingMetadataMap
+        >
+      );
     });
 
   // TODO: [P0] Add multiple part grouping. Currently, the schema behind `parseThing()` only supports a single part grouping.
