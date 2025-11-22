@@ -2,11 +2,11 @@ import type { Tagged } from 'type-fest';
 import { v4 } from 'uuid';
 import { object, parse, pipe, transform, type InferOutput } from 'valibot';
 import type { Activity } from '../types';
-import { BlankNodeIdentifierSchema, type BlankNodeIdentifier } from '@msinternal/botframework-webchat-core-graph';
+import { IdentifierSchema, type Identifier } from '@msinternal/botframework-webchat-core-graph';
 
 const LocalIdSchema = pipe(
-  BlankNodeIdentifierSchema,
-  transform(value => value as Tagged<BlankNodeIdentifier, 'local id'>)
+  IdentifierSchema,
+  transform(value => value as Tagged<Identifier, 'local id'>)
 );
 
 type LocalId = InferOutput<typeof LocalIdSchema>;

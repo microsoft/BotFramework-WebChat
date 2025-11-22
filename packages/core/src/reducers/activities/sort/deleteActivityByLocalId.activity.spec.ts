@@ -19,7 +19,7 @@ function activityToExpectation(activity: Activity, expectedPosition: number = ex
 scenario('deleting activity', bdd => {
   const activity1: Activity = {
     channelData: {
-      'webchat:internal:local-id': 'a-00001',
+      'webchat:internal:local-id': '_:a-00001' as LocalId,
       'webchat:internal:position': 0,
       'webchat:send-status': undefined
     },
@@ -32,7 +32,7 @@ scenario('deleting activity', bdd => {
 
   const activity2: Activity = {
     channelData: {
-      'webchat:internal:local-id': 'a-00002',
+      'webchat:internal:local-id': '_:a-00002' as LocalId,
       'webchat:internal:position': 0,
       'webchat:send-status': undefined
     },
@@ -66,16 +66,16 @@ scenario('deleting activity', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .and('`activityIdToLocalIdMap` should match', (_, state) => {
-      expect(state.activityIdToLocalIdMap).toEqual(new Map([['a-00002', 'a-00002']]));
+      expect(state.activityIdToLocalIdMap).toEqual(new Map([['a-00002', '_:a-00002']]));
     })
     .and('`activityMap` should match', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map([
           [
-            'a-00002',
+            '_:a-00002',
             {
               activity: activityToExpectation(activity2, 2_000),
-              activityLocalId: 'a-00002' as LocalId,
+              activityLocalId: '_:a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -89,7 +89,7 @@ scenario('deleting activity', bdd => {
     .and('`sortedChatHistoryList` should match', (_, state) => {
       expect(state.sortedChatHistoryList).toEqual([
         {
-          activityLocalId: 'a-00002' as LocalId,
+          activityLocalId: '_:a-00002' as LocalId,
           logicalTimestamp: 2_000,
           type: 'activity'
         } satisfies SortedChatHistoryEntry
@@ -101,7 +101,7 @@ scenario('deleting an outgoing activity', bdd => {
   const activity1: Activity = {
     channelData: {
       clientActivityID: 'caid-00001',
-      'webchat:internal:local-id': 'a-00001',
+      'webchat:internal:local-id': '_:a-00001' as LocalId,
       'webchat:internal:position': 0,
       'webchat:send-status': 'sending'
     } as any,
@@ -125,7 +125,7 @@ scenario('deleting an outgoing activity', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .and('`clientActivityIdToLocalMap` should match', (_, state) => {
-      expect(state.clientActivityIdToLocalIdMap).toEqual(new Map([['caid-00001', 'a-00001']]));
+      expect(state.clientActivityIdToLocalIdMap).toEqual(new Map([['caid-00001', '_:a-00001']]));
     })
     .when('the first activity is deleted', (_, state) =>
       deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]!))

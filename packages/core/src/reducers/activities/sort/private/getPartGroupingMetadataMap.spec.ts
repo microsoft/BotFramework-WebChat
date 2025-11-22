@@ -3,6 +3,7 @@
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import getPartGroupingMetadataMap from './getPartGroupingMetadataMap';
+import type { LocalId } from '../property/LocalId';
 
 scenario('getPartGroupingMetadataMap', bdd => {
   bdd
@@ -11,7 +12,7 @@ scenario('getPartGroupingMetadataMap', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:local-id': 'a-00001',
+            'webchat:internal:local-id': '_:a-00001' as LocalId,
             'webchat:internal:position': 0
           },
           entities: [
@@ -52,7 +53,7 @@ scenario('getPartGroupingMetadataMap with multiple part grouping', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:local-id': 'a-00001',
+            'webchat:internal:local-id': '_:a-00001' as LocalId,
             'webchat:internal:position': 0
           },
           entities: [

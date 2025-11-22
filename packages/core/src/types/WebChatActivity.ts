@@ -7,6 +7,7 @@
 //    - However, we do not expect the server to return "localTimestamp" as they may not have capability to store this information
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
+import type { LocalId } from '../activity';
 import type { AnyAnd } from './AnyAnd';
 // import type { AsEntity, Thing } from './external/OrgSchema/Thing';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
@@ -24,7 +25,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     clientActivityID?: string;
 
     // Web Chat local ID.
-    'webchat:internal:local-id': string;
+    'webchat:internal:local-id': LocalId;
 
     // Web Chat ordering sequence, must be computed before inserting into Redux.
     'webchat:internal:position': number;

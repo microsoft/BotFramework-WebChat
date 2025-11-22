@@ -1,9 +1,10 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
+import { parse } from 'valibot';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
-import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
+import { getLocalIdFromActivity, LocalIdSchema, type LocalId } from './property/LocalId';
 import type {
   HowToGroupingMapEntry,
   HowToGroupingMapPartEntry,
@@ -69,7 +70,7 @@ function buildActivity(
     from: { id: 'bot', role: 'bot' },
     ...activity,
     channelData: {
-      'webchat:internal:local-id': id,
+      'webchat:internal:local-id': parse(LocalIdSchema, `_:${id}`),
       'webchat:internal:position': 0,
       'webchat:send-status': undefined,
       ...activity.channelData
@@ -156,13 +157,13 @@ scenario('delete livestream activities in part grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
@@ -190,7 +191,7 @@ scenario('delete livestream activities in part grouping', bdd => {
                   type: 'livestream session'
                 } satisfies HowToGroupingMapPartEntry,
                 {
-                  activityLocalId: 'a-00004' as LocalId,
+                  activityLocalId: '_:a-00004' as LocalId,
                   logicalTimestamp: 4_000,
                   position: 2,
                   type: 'activity'
@@ -223,7 +224,7 @@ scenario('delete livestream activities in part grouping', bdd => {
               logicalTimestamp: 4_000,
               partList: [
                 {
-                  activityLocalId: 'a-00004' as LocalId,
+                  activityLocalId: '_:a-00004' as LocalId,
                   logicalTimestamp: 4_000,
                   position: 2,
                   type: 'activity'

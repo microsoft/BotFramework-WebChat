@@ -4,6 +4,7 @@
 
 import { render, type RenderResult } from '@testing-library/react';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import type { LocalId } from 'botframework-webchat-core/activity';
 import React, { type ComponentType } from 'react';
 import { type useActivities as UseActivitiesType } from '../../../hooks';
 import type UseReduceActivitiesType from './useReduceActivities';
@@ -12,7 +13,7 @@ type UseReduceActivitiesFn = Parameters<typeof UseReduceActivitiesType>[0];
 
 const ACTIVITY_TEMPLATE = {
   channelData: {
-    'webchat:internal:local-id': 'a-00001',
+    'webchat:internal:local-id': '_:a-00001' as LocalId,
     'webchat:internal:position': 0,
     'webchat:sequence-id': 0,
     'webchat:send-status': undefined

@@ -13,7 +13,8 @@ import type {
   SortedChatHistory
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import type { LocalId } from './property/LocalId';
+import { LocalIdSchema, type LocalId } from './property/LocalId';
+import { parse } from 'valibot';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -81,7 +82,7 @@ function buildActivity(
     from: { id: 'bot', role: 'bot' },
     ...activity,
     channelData: {
-      'webchat:internal:local-id': id,
+      'webchat:internal:local-id': parse(LocalIdSchema, `_:${id}`),
       'webchat:internal:position': 0,
       'webchat:send-status': undefined,
       ...activity.channelData
@@ -130,10 +131,10 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as LocalId,
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -169,7 +170,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
@@ -199,19 +200,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as LocalId,
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as LocalId,
+            '_:a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as LocalId,
+              activityLocalId: '_:a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -247,13 +248,13 @@ scenario('upserting plain activity in the same grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
@@ -286,28 +287,28 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as LocalId,
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as LocalId,
+            '_:a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as LocalId,
+              activityLocalId: '_:a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003' as LocalId,
+            '_:a-00003' as LocalId,
             {
               activity: activityToExpectation(activity3),
-              activityLocalId: 'a-00003' as LocalId,
+              activityLocalId: '_:a-00003' as LocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -343,19 +344,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00003' as LocalId,
+                  activityLocalId: '_:a-00003' as LocalId,
                   logicalTimestamp: 3_000,
                   sequenceNumber: Infinity,
                   type: 'activity'

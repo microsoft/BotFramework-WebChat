@@ -1,11 +1,12 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
+import { parse } from 'valibot';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
+import deleteActivityByLocalId from './deleteActivityByLocalId';
+import { getLocalIdFromActivity, LocalIdSchema, type LocalId } from './property/LocalId';
 import { type LivestreamSessionMapEntry, type LivestreamSessionMapEntryActivityEntry } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import deleteActivityByLocalId from './deleteActivityByLocalId';
-import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
 
 function buildActivity(
   activity:
@@ -47,7 +48,7 @@ function buildActivity(
     from: { id: 'bot', role: 'bot' },
     ...activity,
     channelData: {
-      'webchat:internal:local-id': id,
+      'webchat:internal:local-id': parse(LocalIdSchema, `_:${id}`),
       'webchat:internal:position': 0,
       'webchat:send-status': undefined,
       ...activity.channelData
@@ -120,13 +121,13 @@ scenario('deleting an activity', bdd => {
             {
               activities: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
                 } satisfies LivestreamSessionMapEntryActivityEntry,
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'

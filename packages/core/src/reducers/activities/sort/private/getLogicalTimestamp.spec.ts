@@ -2,6 +2,7 @@
 
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
+import type { LocalId } from '../property/LocalId';
 import getLogicalTimestamp from './getLogicalTimestamp';
 
 scenario('get logical timestamp', bdd => {
@@ -11,7 +12,7 @@ scenario('get logical timestamp', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:local-id': 'a-00001',
+            'webchat:internal:local-id': '_:a-00001' as LocalId,
             'webchat:internal:position': 1,
             'webchat:send-status': undefined
           },
@@ -31,7 +32,7 @@ scenario('get logical timestamp', bdd => {
       () =>
         ({
           channelData: {
-            'webchat:internal:local-id': 'a-00001',
+            'webchat:internal:local-id': '_:a-00001' as LocalId,
             'webchat:internal:position': 1,
             'webchat:sequence-id': 123,
             'webchat:send-status': 'sent'

@@ -3,7 +3,7 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
-import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
+import { getLocalIdFromActivity, LocalIdSchema, type LocalId } from './property/LocalId';
 import type {
   Activity,
   ActivityMapEntry,
@@ -13,6 +13,7 @@ import type {
   SortedChatHistoryEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
+import { parse } from 'valibot';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -33,7 +34,11 @@ function buildActivity(
   const { id } = activity;
 
   return {
-    channelData: { 'webchat:internal:local-id': id, 'webchat:internal:position': 0, 'webchat:send-status': undefined },
+    channelData: {
+      'webchat:internal:local-id': parse(LocalIdSchema, `_:${id}`),
+      'webchat:internal:position': 0,
+      'webchat:send-status': undefined
+    },
     ...(messageEntity
       ? {
           entities: [
@@ -91,7 +96,7 @@ scenario('deleting an activity in the same grouping', bdd => {
             'a-00001',
             {
               activity: activityToExpectation(activity1, 1_000),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             } satisfies ActivityMapEntry
@@ -108,7 +113,7 @@ scenario('deleting an activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'

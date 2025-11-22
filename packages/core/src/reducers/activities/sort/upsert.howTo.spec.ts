@@ -4,7 +4,8 @@ import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type { Activity, ActivityMapEntry, HowToGroupingId, HowToGroupingMapEntry, SortedChatHistory } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import type { LocalId } from './property/LocalId';
+import { LocalIdSchema, type LocalId } from './property/LocalId';
+import { parse } from 'valibot';
 
 type SingularOrPlural<T> = T | readonly T[];
 
@@ -25,7 +26,11 @@ function buildActivity(
   const { id } = activity;
 
   return {
-    channelData: { 'webchat:internal:local-id': id, 'webchat:internal:position': 0, 'webchat:send-status': undefined },
+    channelData: {
+      'webchat:internal:local-id': parse(LocalIdSchema, `_:${id}`),
+      'webchat:internal:position': 0,
+      'webchat:send-status': undefined
+    },
     ...(messageEntity
       ? {
           entities: [
@@ -68,10 +73,10 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as LocalId,
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
@@ -88,7 +93,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -116,19 +121,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as LocalId,
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as LocalId,
+            '_:a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as LocalId,
+              activityLocalId: '_:a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
@@ -145,13 +150,13 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 2_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
                 },
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   position: 3,
                   type: 'activity'
@@ -182,28 +187,28 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001' as LocalId,
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1),
-              activityLocalId: 'a-00001' as LocalId,
+              activityLocalId: '_:a-00001' as LocalId,
               logicalTimestamp: 1_000,
               type: 'activity'
             }
           ],
           [
-            'a-00002' as LocalId,
+            '_:a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2),
-              activityLocalId: 'a-00002' as LocalId,
+              activityLocalId: '_:a-00002' as LocalId,
               logicalTimestamp: 2_000,
               type: 'activity'
             }
           ],
           [
-            'a-00003' as LocalId,
+            '_:a-00003' as LocalId,
             {
               activity: activityToExpectation(activity3),
-              activityLocalId: 'a-00003' as LocalId,
+              activityLocalId: '_:a-00003' as LocalId,
               logicalTimestamp: 3_000,
               type: 'activity'
             }
@@ -220,19 +225,19 @@ scenario('upserting plain activity in the same grouping', bdd => {
               logicalTimestamp: 3_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
                 },
                 {
-                  activityLocalId: 'a-00003' as LocalId,
+                  activityLocalId: '_:a-00003' as LocalId,
                   logicalTimestamp: 3_000,
                   position: 2,
                   type: 'activity'
                 },
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   position: 3,
                   type: 'activity'
@@ -284,7 +289,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -315,7 +320,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 1_000,
               partList: [
                 {
-                  activityLocalId: 'a-00001' as LocalId,
+                  activityLocalId: '_:a-00001' as LocalId,
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
@@ -329,7 +334,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
               logicalTimestamp: 500,
               partList: [
                 {
-                  activityLocalId: 'a-00002' as LocalId,
+                  activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 500,
                   position: 1,
                   type: 'activity'
