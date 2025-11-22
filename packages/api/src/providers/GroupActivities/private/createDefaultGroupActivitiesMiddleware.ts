@@ -29,7 +29,7 @@ function bin<T>(items: readonly T[], grouping: (last: T, current: T) => boolean)
   return Object.freeze(bins);
 }
 
-function sending(activity: WebChatActivity): SendStatus | undefined {
+function isSending(activity: WebChatActivity): SendStatus | undefined {
   if (activity.from.role === 'user') {
     return querySendStatusFromOutgoingActivity(activity);
   }
@@ -41,7 +41,7 @@ function createShouldGroupTimestamp(groupTimestamp: boolean | number, { Date }: 
       // Hide timestamp for all activities.
       return true;
     } else if (activityX && activityY) {
-      if (sending(activityX) !== sending(activityY)) {
+      if (isSending(activityX) !== isSending(activityY)) {
         return false;
       }
 

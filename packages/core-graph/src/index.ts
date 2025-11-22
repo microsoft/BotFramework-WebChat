@@ -7,6 +7,11 @@ export {
   type ReadableGraph,
   type WritableGraph
 } from './private/Graph2';
+export {
+  BlankNodeIdentifierSchema,
+  isBlankNodeIdentifier,
+  type BlankNodeIdentifier
+} from './private/schemas/BlankNodeIdentifier';
 export { SlantNodeSchema, type SlantNode } from './private/schemas/colorNode';
 export {
   DirectLineActivityNodeSchema,

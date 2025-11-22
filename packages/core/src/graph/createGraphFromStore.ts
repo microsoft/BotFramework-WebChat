@@ -69,7 +69,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
           graph.upsert({
             '@context': 'https://schema.org',
 
-            '@id': `_:${localId}`,
+            '@id': localId,
             '@type': ['Message', `urn:microsoft:webchat:direct-line-activity`],
 
             encodingFormat:
@@ -94,7 +94,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
         } else if (typeof activity.type === 'string') {
           graph.upsert({
             '@context': 'https://schema.org',
-            '@id': `_:${localId}`,
+            '@id': localId,
             '@type': Object.freeze(['urn:microsoft:webchat:direct-line-activity']),
             identifier: activity.id && `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
             position,

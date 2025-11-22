@@ -328,18 +328,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #endregion
 
-  // console.log(
-  //   `${activityLocalId}\n${activity.text}`,
-  //   Object.freeze({
-  //     activity,
-  //     activityMap: nextActivityMap,
-  //     howToGroupingMap: nextHowToGroupingMap,
-  //     livestreamSessionMap: nextLivestreamSessionMap,
-  //     sortedActivities: nextSortedActivities,
-  //     sortedChatHistoryList: nextSortedChatHistoryList
-  //   })
-  // );
-
   return Object.freeze({
     activityIdToLocalIdMap: Object.freeze(nextActivityIdToLocalIdMap),
     activityMap: Object.freeze(nextActivityMap),

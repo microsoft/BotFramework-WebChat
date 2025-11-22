@@ -75,7 +75,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
           mutableEntry.livestreamActivities.set(
             sessionId,
             Object.freeze({
-              firstReceivedAt: mutableEntry.livestreamActivities.get(sessionId)?.firstReceivedAt || receivedAt,
+              firstReceivedAt: mutableEntry.livestreamActivities.get(sessionId)?.firstReceivedAt ?? receivedAt,
               ...mutableEntry.livestreamActivities.get(sessionId),
               activity,
               contentful: livestreamingMetadata.type !== 'contentless',
@@ -89,7 +89,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
         mutableEntry.typingIndicator = Object.freeze({
           activity,
           duration: numberWithInfinity(activity.channelData.webChat?.styleOptions?.typingAnimationDuration),
-          firstReceivedAt: mutableEntry.typingIndicator?.firstReceivedAt || receivedAt,
+          firstReceivedAt: mutableEntry.typingIndicator?.firstReceivedAt ?? receivedAt,
           lastReceivedAt: receivedAt
         });
       }

@@ -1,11 +1,12 @@
 import type { Tagged } from 'type-fest';
 import { v4 } from 'uuid';
-import { object, parse, pipe, string, transform, type InferOutput } from 'valibot';
+import { object, parse, pipe, transform, type InferOutput } from 'valibot';
 import type { Activity } from '../types';
+import { BlankNodeIdentifierSchema, type BlankNodeIdentifier } from '@msinternal/botframework-webchat-core-graph';
 
 const LocalIdSchema = pipe(
-  string('Local ID must be a string'),
-  transform(value => value as Tagged<string, 'local id'>)
+  BlankNodeIdentifierSchema,
+  transform(value => value as Tagged<BlankNodeIdentifier, 'local id'>)
 );
 
 type LocalId = InferOutput<typeof LocalIdSchema>;
@@ -35,8 +36,9 @@ function setLocalIdInActivity(activity: Readonly<Activity>, value: LocalId | und
   };
 }
 
+// TODO: [P1] We can use a UUID v6 (reorder). Then, we can drop `receivedAt`.
 function generateLocalId(): LocalId {
-  return v4() as LocalId;
+  return parse(LocalIdSchema, `_:${v4()}`);
 }
 
 export { generateLocalId, getLocalIdFromActivity, LocalIdSchema, setLocalIdInActivity, type LocalId };
