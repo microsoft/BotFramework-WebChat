@@ -10,7 +10,6 @@ import type {
   ActivityMapEntry,
   HowToGroupingId,
   HowToGroupingMapEntry,
-  HowToGroupingMapPartEntry,
   SortedChatHistoryEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
