@@ -41,4 +41,14 @@ function generateLocalId(): LocalId {
   return parse(LocalIdSchema, `_:${v4()}`);
 }
 
-export { generateLocalId, getLocalIdFromActivity, LocalIdSchema, setLocalIdInActivity, type LocalId };
+function generateLocalIdInActivity(activity: Readonly<Activity>): Activity {
+  if (getLocalIdFromActivity(activity)) {
+    throw new Error(
+      'botframework-webchat: Cannot generate a new local ID for activity because the activity already has a local ID'
+    );
+  }
+
+  return setLocalIdInActivity(activity, generateLocalId());
+}
+
+export { generateLocalIdInActivity, getLocalIdFromActivity, LocalIdSchema, setLocalIdInActivity, type LocalId };

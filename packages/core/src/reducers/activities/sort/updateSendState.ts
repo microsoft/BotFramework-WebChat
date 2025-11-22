@@ -2,6 +2,13 @@ import type { LocalId } from './property/LocalId';
 import type { State } from './types';
 import { updateActivityChannelDataInternalSkipNameCheck } from './updateActivityChannelData';
 
+/**
+ * @deprecated Channel data update is obsoleted, re-upsert instead.
+ * @param state
+ * @param activityLocalId
+ * @param sendState
+ * @returns
+ */
 export default function updateSendState(
   state: State,
   activityLocalId: LocalId,

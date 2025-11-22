@@ -67,7 +67,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   const activityLocalId = getLocalIdFromActivity(activity);
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
-  // let shouldSkipPositionalChange = false;
 
   if (typeof activity.id !== 'undefined') {
     nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
@@ -112,7 +111,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       );
 
       // This is a special case.
-      // In the future, we should revisit this and see if we should still process this activity or not.
+      // In the future, we should revisit this and see how we should process this activity (or drop it.)
       // Related to /__tests__/html2/livestream/concludedLivestream.html.
       return state;
     }
@@ -314,7 +313,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       const nextActivityEntry: ActivityMapEntry = Object.freeze({
         ...activityMapEntry,
         // TODO: [P0] We should freeze the activity.
-        //       For backcompat, we can consider have a props that temporarily disable this behavior.
+        //       For backcompat, we should consider have a props that temporarily disable this behavior.
         activity: setPositionInActivity(activityMapEntry.activity, nextPosition)
       });
 

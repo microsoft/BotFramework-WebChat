@@ -30,7 +30,7 @@ import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
-import { generateLocalId, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
+import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
 import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
 import { querySendStatusFromOutgoingActivity, setSendStatusInOutgoingActivity } from './sort/property/SendStatus';
 import queryLocalIdAByActivityId from './sort/queryLocalIdByActivityId';
@@ -67,6 +67,10 @@ function createGroupedActivitiesReducer(
   ): GroupedActivitiesState {
     switch (action.type) {
       case DELETE_ACTIVITY: {
+        console.warn(
+          'botframework-webchat: Delete activity is being deprecated, please build your own chat adapter instead.'
+        );
+
         const localId = queryLocalIdAByActivityId(state, action.payload.activityID);
 
         if (localId) {
@@ -77,6 +81,8 @@ function createGroupedActivitiesReducer(
       }
 
       case MARK_ACTIVITY: {
+        // We need to deprecate this, however, it is currently using by speech.
+
         const localId = queryLocalIdAByActivityId(state, action.payload.activityID);
 
         if (localId) {
@@ -93,8 +99,7 @@ function createGroupedActivitiesReducer(
 
         activity = patchActivity(activity, ponyfill);
 
-        // TODO: [P*] Use v6() with sequential so we can kind of sort over it.
-        activity = setLocalIdInActivity(activity, generateLocalId());
+        activity = generateLocalIdInActivity(activity);
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
         activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
@@ -227,7 +232,7 @@ function createGroupedActivitiesReducer(
               activity = setSendStatusInOutgoingActivity(activity, existingSendStatus);
             }
           } else {
-            activity = setLocalIdInActivity(activity, generateLocalId());
+            activity = generateLocalIdInActivity(activity);
 
             // If there are no existing activity, probably this activity is restored from chat history.
             // All outgoing activities restored from service means they arrived at the service successfully.
@@ -235,24 +240,29 @@ function createGroupedActivitiesReducer(
             activity = setSendStatusInOutgoingActivity(activity, SENT);
           }
         } else {
-          if (!activity.id) {
-            const newActivityId = v4();
+          let { id } = activity;
+
+          if (!id) {
+            id = v4();
 
             console.warn(
               'botframework-webchat: Incoming activity must have "id" field set, assigning a random value as ID',
               {
                 activity,
-                newActivityId
+                newActivityId: id
               }
             );
 
-            activity = updateIn(activity, ['id'], () => newActivityId);
+            activity = updateIn(activity, ['id'], () => id);
           }
 
-          activity = setLocalIdInActivity(
-            activity,
-            queryLocalIdAByActivityId(state, activity.id!) || generateLocalId()
-          );
+          const existingLocalId = queryLocalIdAByActivityId(state, id);
+
+          if (existingLocalId) {
+            activity = setLocalIdInActivity(activity, existingLocalId);
+          } else {
+            activity = generateLocalIdInActivity(activity);
+          }
         }
 
         state = upsert(ponyfill, state, activity);

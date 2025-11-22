@@ -44,7 +44,7 @@ export default function combineActivitiesReducer<M>(
       !Object.is(state.groupedActivities, nextGroupedActivities) ||
       existingStateEntries.length !== nextStateEntries.length ||
       existingStateEntries.some(
-        // Allowlisting forbidden property names.
+        // Denylisting forbidden property names.
         // eslint-disable-next-line security/detect-object-injection
         ([key, value]) => !Object.is(value, isForbiddenPropertyName(key) ? undefined : (nextState as any)[key])
       );

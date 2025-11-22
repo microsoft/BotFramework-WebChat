@@ -33,7 +33,6 @@ function updateActivityChannelDataInternalSkipNameCheck(
   state: State,
   activityLocalId: LocalId,
   name: string,
-  // TODO: [P*] Should we check the validity of the value?
   value: unknown
 ): State {
   const activityEntry = state.activityMap.get(activityLocalId);
@@ -75,13 +74,21 @@ function updateActivityChannelDataInternalSkipNameCheck(
   } satisfies State);
 }
 
-function updateActivityChannelData(
-  state: State,
-  activityLocalId: LocalId,
-  name: string,
-  // TODO: [P*] Should we check the validity of the value?
-  value: unknown
-): State {
+/**
+ * Update activity channel data.
+ *
+ * @deprecated Channel data update is being deprecated, please use a custom state management solution instead.
+ * @param state
+ * @param activityLocalId
+ * @param name
+ * @param value
+ * @returns
+ */
+function updateActivityChannelData(state: State, activityLocalId: LocalId, name: string, value: unknown): State {
+  if (name.startsWith('webchat:')) {
+    throw new Error('botframework-webchat: custom channel data name must not use prefix "webchat:"');
+  }
+
   return updateActivityChannelDataInternalSkipNameCheck(
     state,
     activityLocalId,
