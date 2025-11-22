@@ -7,7 +7,7 @@
 //    - However, we do not expect the server to return "localTimestamp" as they may not have capability to store this information
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
-import type { LocalId } from '../activity';
+import type { LocalId } from '../activity/index';
 import type { AnyAnd } from './AnyAnd';
 // import type { AsEntity, Thing } from './external/OrgSchema/Thing';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
