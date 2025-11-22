@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
+import { parse } from 'valibot';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
 import { getLocalIdFromActivity, LocalIdSchema, type LocalId } from './property/LocalId';
@@ -13,7 +14,6 @@ import type {
   SortedChatHistoryEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
-import { parse } from 'valibot';
 
 type SingularOrPlural<T> = T | readonly T[];
 
