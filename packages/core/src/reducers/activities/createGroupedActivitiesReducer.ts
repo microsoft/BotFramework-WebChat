@@ -32,6 +32,7 @@ import patchActivity from './patchActivity';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
 import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
+import { setReceivedAtInActivity } from './sort/property/ReceivedAt';
 import { querySendStatusFromOutgoingActivity, setSendStatusInOutgoingActivity } from './sort/property/SendStatus';
 import queryLocalIdAByActivityId from './sort/queryLocalIdByActivityId';
 import queryLocalIdAByClientActivityId from './sort/queryLocalIdByClientActivityId';
@@ -97,8 +98,7 @@ function createGroupedActivitiesReducer(
           payload: { activity }
         } = action;
 
-        activity = patchActivity(activity, ponyfill);
-
+        activity = setReceivedAtInActivity(activity, ponyfill.Date.now());
         activity = generateLocalIdInActivity(activity);
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
         // Please refer to #4362 for details. Remove on or after 2024-07-31.
