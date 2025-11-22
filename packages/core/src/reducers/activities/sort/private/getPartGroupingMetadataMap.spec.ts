@@ -2,8 +2,8 @@
 
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
-import getPartGroupingMetadataMap from './getPartGroupingMetadataMap';
 import type { LocalId } from '../property/LocalId';
+import getPartGroupingMetadataMap, { type PartGroupingMetadataMapEntry } from './getPartGroupingMetadataMap';
 
 scenario('getPartGroupingMetadataMap', bdd => {
   bdd
@@ -38,9 +38,9 @@ scenario('getPartGroupingMetadataMap', bdd => {
     .when('getPartGroupingMetadataMap() is called', activity => getPartGroupingMetadataMap(activity))
     .then('should return part grouping metadata', (_, actual) => {
       expect(actual).toEqual(
-        new Map([['HowTo', { groupingId: '_:c-00001', position: 1 }]]) satisfies ReturnType<
-          typeof getPartGroupingMetadataMap
-        >
+        new Map<string, PartGroupingMetadataMapEntry>([
+          ['HowTo', { groupingId: '_:c-00001', position: 1 }]
+        ]) satisfies ReturnType<typeof getPartGroupingMetadataMap>
       );
     });
 });
@@ -82,7 +82,7 @@ scenario('getPartGroupingMetadataMap with multiple part grouping', bdd => {
     .when('getPartGroupingMetadataMap() is called', activity => getPartGroupingMetadataMap(activity))
     .then('should return part grouping metadata', (_, actual) => {
       expect(actual).toEqual(
-        new Map([
+        new Map<string, PartGroupingMetadataMapEntry>([
           ['Conversation', { groupingId: '_:conv:00001', position: 1 }]
           // TODO: [P0] Currently, it only return the first part grouping.
           // ['HowTo', { groupingId: '_:how-to:00001', position: 1 }]

@@ -5,12 +5,12 @@ import { parse } from 'valibot';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
 import { getLocalIdFromActivity, LocalIdSchema, type LocalId } from './property/LocalId';
-import type {
-  HowToGroupingMapEntry,
-  HowToGroupingMapPartEntry,
-  LivestreamSessionId,
-  LivestreamSessionMapEntry,
-  LivestreamSessionMapEntryActivityEntry
+import {
+  HowToGroupingId,
+  type HowToGroupingMapEntry,
+  type LivestreamSessionId,
+  type LivestreamSessionMapEntry,
+  type LivestreamSessionMapEntryActivityEntry
 } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
 
@@ -151,9 +151,9 @@ scenario('delete livestream activities in part grouping', bdd => {
     })
     .and('`livestreamSessionMap` should match', (_, state) => {
       expect(state.livestreamSessionMap).toEqual(
-        new Map([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001',
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
@@ -171,16 +171,16 @@ scenario('delete livestream activities in part grouping', bdd => {
               ],
               finalized: false,
               logicalTimestamp: 1_000
-            } satisfies LivestreamSessionMapEntry
+            }
           ]
         ])
       );
     })
     .and('`howToGroupingMap` should match', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
-        new Map([
+        new Map<HowToGroupingId, HowToGroupingMapEntry>([
           [
-            '_:how-to:00001',
+            '_:how-to:00001' as HowToGroupingId,
             {
               logicalTimestamp: 4_000,
               partList: [
@@ -189,15 +189,15 @@ scenario('delete livestream activities in part grouping', bdd => {
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'livestream session'
-                } satisfies HowToGroupingMapPartEntry,
+                },
                 {
                   activityLocalId: '_:a-00004' as LocalId,
                   logicalTimestamp: 4_000,
                   position: 2,
                   type: 'activity'
-                } satisfies HowToGroupingMapPartEntry
+                }
               ]
-            } satisfies HowToGroupingMapEntry
+            }
           ]
         ])
       );
@@ -217,9 +217,9 @@ scenario('delete livestream activities in part grouping', bdd => {
     })
     .and('`howToGroupingMap` should match', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
-        new Map([
+        new Map<HowToGroupingId, HowToGroupingMapEntry>([
           [
-            '_:how-to:00001',
+            '_:how-to:00001' as HowToGroupingId,
             {
               logicalTimestamp: 4_000,
               partList: [
@@ -228,9 +228,9 @@ scenario('delete livestream activities in part grouping', bdd => {
                   logicalTimestamp: 4_000,
                   position: 2,
                   type: 'activity'
-                } satisfies HowToGroupingMapPartEntry
+                }
               ]
-            } satisfies HowToGroupingMapEntry
+            }
           ]
         ])
       );

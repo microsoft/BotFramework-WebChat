@@ -106,9 +106,9 @@ scenario('deleting an activity in the same grouping', bdd => {
     })
     .and('`howToGroupingMap` should match', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
-        new Map([
+        new Map<HowToGroupingId, HowToGroupingMapEntry>([
           [
-            '_:how-to:00001',
+            '_:how-to:00001' as HowToGroupingId,
             {
               logicalTimestamp: 1_000,
               partList: [
@@ -117,9 +117,9 @@ scenario('deleting an activity in the same grouping', bdd => {
                   logicalTimestamp: 1_000,
                   position: 1,
                   type: 'activity'
-                } satisfies HowToGroupingMapPartEntry
+                }
               ]
-            } satisfies HowToGroupingMapEntry
+            }
           ]
         ])
       );

@@ -13,14 +13,13 @@ const MessageIsPartOfSchema = object({
   position: optional(number())
 });
 
-export default function getPartGroupingMetadataMap(activity: WebChatActivity): ReadonlyMap<
-  string,
-  {
-    readonly groupingId: string;
-    readonly position: number | undefined;
-  }
-> {
-  const metadataMap = new Map();
+type PartGroupingMetadataMapEntry = {
+  readonly groupingId: string;
+  readonly position: number | undefined;
+};
+
+function getPartGroupingMetadataMap(activity: WebChatActivity): ReadonlyMap<string, PartGroupingMetadataMapEntry> {
+  const metadataMap = new Map<string, PartGroupingMetadataMapEntry>();
 
   const message = getOrgSchemaMessage(activity.entities || []);
 
@@ -45,3 +44,6 @@ export default function getPartGroupingMetadataMap(activity: WebChatActivity): R
 
   return metadataMap;
 }
+
+export default getPartGroupingMetadataMap;
+export type { PartGroupingMetadataMapEntry };

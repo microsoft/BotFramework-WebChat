@@ -80,9 +80,9 @@ scenario('upserting 2 activities with timestamps', bdd => {
     .when('another activity is upserted', (_, state) => upsert({ Date }, state, activity2))
     .then('`activityIdToLocalIdMap` should match', (_, state) => {
       expect(state.activityIdToLocalIdMap).toEqual(
-        new Map([
-          ['a-00001', '_:a-00001'],
-          ['a-00002', '_:a-00002']
+        new Map<string, LocalId>([
+          ['a-00001', '_:a-00001' as LocalId],
+          ['a-00002', '_:a-00002' as LocalId]
         ])
       );
     })

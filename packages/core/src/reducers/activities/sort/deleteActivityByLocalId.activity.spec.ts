@@ -3,7 +3,7 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
 import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
-import type { Activity, ActivityMapEntry, SortedChatHistoryEntry } from './types';
+import { type Activity, type ActivityMapEntry, type SortedChatHistoryEntry } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
 
 function activityToExpectation(activity: Activity, expectedPosition: number = expect.any(Number) as any): Activity {
@@ -66,13 +66,13 @@ scenario('deleting activity', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .and('`activityIdToLocalIdMap` should match', (_, state) => {
-      expect(state.activityIdToLocalIdMap).toEqual(new Map([['a-00002', '_:a-00002']]));
+      expect(state.activityIdToLocalIdMap).toEqual(new Map<string, LocalId>([['a-00002', '_:a-00002' as LocalId]]));
     })
     .and('`activityMap` should match', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            '_:a-00002',
+            '_:a-00002' as LocalId,
             {
               activity: activityToExpectation(activity2, 2_000),
               activityLocalId: '_:a-00002' as LocalId,
@@ -125,7 +125,9 @@ scenario('deleting an outgoing activity', bdd => {
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .and('`clientActivityIdToLocalMap` should match', (_, state) => {
-      expect(state.clientActivityIdToLocalIdMap).toEqual(new Map([['caid-00001', '_:a-00001']]));
+      expect(state.clientActivityIdToLocalIdMap).toEqual(
+        new Map<string, LocalId>([['caid-00001', '_:a-00001' as LocalId]])
+      );
     })
     .when('the first activity is deleted', (_, state) =>
       deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]!))

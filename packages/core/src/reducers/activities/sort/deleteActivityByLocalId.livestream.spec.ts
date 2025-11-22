@@ -5,7 +5,7 @@ import { parse } from 'valibot';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
 import { getLocalIdFromActivity, LocalIdSchema, type LocalId } from './property/LocalId';
-import { type LivestreamSessionMapEntry, type LivestreamSessionMapEntryActivityEntry } from './types';
+import { LivestreamSessionId, type LivestreamSessionMapEntry } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
 
 function buildActivity(
@@ -115,9 +115,9 @@ scenario('deleting an activity', bdd => {
     })
     .and('`livestreamSessionMap` should match', (_, state) => {
       expect(state.livestreamSessionMap).toEqual(
-        new Map([
+        new Map<LivestreamSessionId, LivestreamSessionMapEntry>([
           [
-            'a-00001',
+            'a-00001' as LivestreamSessionId,
             {
               activities: [
                 {
@@ -125,17 +125,17 @@ scenario('deleting an activity', bdd => {
                   logicalTimestamp: 1_000,
                   sequenceNumber: 1,
                   type: 'activity'
-                } satisfies LivestreamSessionMapEntryActivityEntry,
+                },
                 {
                   activityLocalId: '_:a-00002' as LocalId,
                   logicalTimestamp: 2_000,
                   sequenceNumber: 2,
                   type: 'activity'
-                } satisfies LivestreamSessionMapEntryActivityEntry
+                }
               ],
               finalized: false,
               logicalTimestamp: 1_000
-            } satisfies LivestreamSessionMapEntry
+            }
           ]
         ])
       );
