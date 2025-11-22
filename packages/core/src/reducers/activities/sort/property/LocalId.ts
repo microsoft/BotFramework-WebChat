@@ -1,8 +1,8 @@
+import { IdentifierSchema, type Identifier } from '@msinternal/botframework-webchat-core-graph';
 import type { Tagged } from 'type-fest';
 import { v4 } from 'uuid';
-import { object, parse, pipe, transform, type InferOutput } from 'valibot';
+import { object, parse, pipe, safeParse, transform, type InferOutput } from 'valibot';
 import type { Activity } from '../types';
-import { IdentifierSchema, type Identifier } from '@msinternal/botframework-webchat-core-graph';
 
 const LocalIdSchema = pipe(
   IdentifierSchema,
@@ -19,6 +19,12 @@ const ActivityWithLocalIdSchema = object({
 
 function getLocalIdFromActivity(activity: Readonly<Activity>): LocalId {
   return parse(ActivityWithLocalIdSchema, activity).channelData['webchat:internal:local-id'];
+}
+
+function queryLocalIdFromActivity(activity: Readonly<Activity>): LocalId | undefined {
+  const result = safeParse(ActivityWithLocalIdSchema, activity);
+
+  return result.success ? result.output.channelData['webchat:internal:local-id'] : undefined;
 }
 
 function setLocalIdInActivity(activity: Readonly<Activity>, value: LocalId | undefined): Activity {
@@ -42,7 +48,7 @@ function generateLocalId(): LocalId {
 }
 
 function generateLocalIdInActivity(activity: Readonly<Activity>): Activity {
-  if (getLocalIdFromActivity(activity)) {
+  if (queryLocalIdFromActivity(activity)) {
     throw new Error(
       'botframework-webchat: Cannot generate a new local ID for activity because the activity already has a local ID'
     );
