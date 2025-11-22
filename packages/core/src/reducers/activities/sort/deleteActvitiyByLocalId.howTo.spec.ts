@@ -91,9 +91,9 @@ scenario('deleting an activity in the same grouping', bdd => {
     })
     .and('`activityMap` should match', (_, state) => {
       expect(state.activityMap).toEqual(
-        new Map([
+        new Map<LocalId, ActivityMapEntry>([
           [
-            'a-00001',
+            '_:a-00001' as LocalId,
             {
               activity: activityToExpectation(activity1, 1_000),
               activityLocalId: '_:a-00001' as LocalId,
