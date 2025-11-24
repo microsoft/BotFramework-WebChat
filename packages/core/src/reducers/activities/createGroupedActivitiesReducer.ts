@@ -98,6 +98,16 @@ function createGroupedActivitiesReducer(
           payload: { activity }
         } = action;
 
+        // Patch activity so the outgoing blob: URL is not re-downloadable.
+        // Related to /__tests__/html2/accessibility/liveRegion/attachment/file.
+
+        // Why not re-downloadable?
+        // - When the activity echo back, the URL will be dummy (not downloadable)
+        // - Outgoing -> echo back, the UI will be "downloadable" and flash to "not downloadable" in a short amount of time
+
+        // TODO: [P0] Consider modify attachment middleware so all outgoing activity is not downloadable.
+
+        activity = patchActivity(activity, ponyfill);
         activity = setReceivedAtInActivity(activity, ponyfill.Date.now());
         activity = generateLocalIdInActivity(activity);
         // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
