@@ -111,7 +111,9 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       );
 
       // This is a special case.
-      // In the future, we should revisit this and see how we should process this activity (or drop it.)
+      // TODO: [P1] Revisit this and see how we should process activity after the livestream is finalized.
+      //            1. Received a previous-and-valid revision while the livestream is finalized (probably should keep to maintain history)
+      //            2. Received a final activity while the livestream is already finalized (probably drop due to bad packet)
       // Related to /__tests__/html2/livestream/concludedLivestream.html.
       return state;
     }
