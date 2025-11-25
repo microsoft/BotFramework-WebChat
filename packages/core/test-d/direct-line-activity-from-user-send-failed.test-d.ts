@@ -1,11 +1,12 @@
 import { expectAssignable } from 'tsd';
 
+import type { LocalId } from '../src/activity';
 import { type WebChatActivity } from '../src/index';
 
 // All activities that failed to send, are activities that never reach the server (a.k.a. activity-in-transit).
 expectAssignable<WebChatActivity>({
   channelData: {
-    'webchat:internal:id': 'a-00001',
+    'webchat:internal:local-id': '_:a-00001' as LocalId,
     'webchat:internal:position': 0,
     'webchat:send-status': 'send failed',
     'webchat:sequence-id': 0

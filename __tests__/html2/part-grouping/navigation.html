@@ -127,10 +127,10 @@
 
         // Setup: Send all activities.
         directLine.emulateIncomingActivity(createActivity('activity-1', 'Activity 1'));
-        directLine.emulateIncomingActivity(createActivity('g1-activity-1', 'Group 1, Activity 1', 'g-00001'));
-        directLine.emulateIncomingActivity(createActivity('g1-activity-2', 'Group 1, Activity 2', 'g-00001'));
-        directLine.emulateIncomingActivity(createActivity('g2-activity-1', 'Group 2, Activity 1', 'g-00002'));
-        directLine.emulateIncomingActivity(createActivity('g2-activity-2', 'Group 2, Activity 2', 'g-00002'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-1', 'Group 1, Activity 1', '_:g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-2', 'Group 1, Activity 2', '_:g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-1', 'Group 2, Activity 1', '_:g-00002'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-2', 'Group 2, Activity 2', '_:g-00002'));
         directLine.emulateIncomingActivity(createActivity('activity-2', 'Activity 2'));
 
         await pageConditions.numActivitiesShown(7);

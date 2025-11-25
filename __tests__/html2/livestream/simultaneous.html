@@ -239,19 +239,19 @@
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty(
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Falsches Üben von Xylophonmusik');
+        expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
           'A quick brown fox jumped over the lazy dogs.'
         );
-        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Falsches Üben von Xylophonmusik');
         expect(pageElements.typingIndicator()).toBeFalsy();
         await host.snapshot('local');
 
         // THEN: Should have 3 activity keys.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 'a-00002']],
-          [thirdActivityKey, ['t-10001', 't-10002']]
+          [thirdActivityKey, ['t-10001', 't-10002']],
+          [secondActivityKey, ['t-00001', 't-00002', 'a-00002']]
         ]);
 
         // ---

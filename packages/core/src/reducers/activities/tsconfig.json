@@ -1,0 +1,4 @@
+{
+  "exclude": ["**/*.spec.*", "**/*.test.*"],
+  "extends": "@msinternal/botframework-webchat-tsconfig/current"
+}

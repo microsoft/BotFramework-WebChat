@@ -1,5 +1,8 @@
 import { getOrgSchemaMessage, type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
+import { IdentifierSchema } from 'botframework-webchat-core/graph';
+import { safeParse } from 'valibot';
 
+import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity';
 import type GroupActivitiesMiddleware from '../../../types/GroupActivitiesMiddleware';
 import { type SendStatus } from '../../../types/SendStatus';
 
@@ -26,13 +29,9 @@ function bin<T>(items: readonly T[], grouping: (last: T, current: T) => boolean)
   return Object.freeze(bins);
 }
 
-function sending(activity: WebChatActivity): SendStatus | undefined {
+function isSending(activity: WebChatActivity): SendStatus | undefined {
   if (activity.from.role === 'user') {
-    const {
-      channelData: { 'webchat:send-status': sendStatus }
-    } = activity;
-
-    return sendStatus;
+    return querySendStatusFromOutgoingActivity(activity);
   }
 }
 
@@ -42,7 +41,7 @@ function createShouldGroupTimestamp(groupTimestamp: boolean | number, { Date }: 
       // Hide timestamp for all activities.
       return true;
     } else if (activityX && activityY) {
-      if (sending(activityX) !== sending(activityY)) {
+      if (isSending(activityX) !== isSending(activityY)) {
         return false;
       }
 
@@ -94,13 +93,19 @@ export default function createDefaultGroupActivitiesMiddleware({
         ? next =>
             ({ activities }) => {
               const messages = activities.map(activity => [getOrgSchemaMessage(activity.entities), activity] as const);
+
               return {
                 ...next({ activities }),
-                part: bin(
-                  messages,
-                  ([last], [current]) =>
-                    typeof last?.isPartOf?.['@id'] === 'string' && last.isPartOf['@id'] === current?.isPartOf?.['@id']
-                ).map(bin => bin.map(([, activity]) => activity))
+                part: bin(messages, ([last], [current]) => {
+                  const lastPartIdResult = safeParse(IdentifierSchema, last?.isPartOf?.['@id']);
+                  const currentPartIdResult = safeParse(IdentifierSchema, current?.isPartOf?.['@id']);
+
+                  return (
+                    lastPartIdResult.success &&
+                    currentPartIdResult.success &&
+                    lastPartIdResult.output === currentPartIdResult.output
+                  );
+                }).map(bin => bin.map(([, activity]) => activity))
               };
             }
         : undefined

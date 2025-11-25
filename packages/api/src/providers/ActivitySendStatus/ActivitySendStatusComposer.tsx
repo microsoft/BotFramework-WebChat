@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
+import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity';
 
 import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
@@ -43,8 +44,10 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
 
             if (key) {
               const {
-                channelData: { state, 'webchat:send-status': sendStatus }
+                channelData: { state }
               } = activity;
+
+              const sendStatus = querySendStatusFromOutgoingActivity(activity);
 
               // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
               // Please refer to #4362 for details. Remove on or after 2024-07-31.

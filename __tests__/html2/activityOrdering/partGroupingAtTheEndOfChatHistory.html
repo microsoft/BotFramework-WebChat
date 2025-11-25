@@ -42,7 +42,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' },
+              isPartOf: { '@id': '_:c-00001', '@type': 'HowTo' },
               position: 1
             }
           ],
@@ -83,7 +83,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00001', '@type': 'HowTo' },
+              isPartOf: { '@id': '_:c-00001', '@type': 'HowTo' },
               position: 2
             }
           ],
@@ -95,9 +95,9 @@
         });
 
         expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00002: Hello, World at t = 1',
           'a-00001: Chain 1 thought 1 at t = 0',
-          'a-00003: Chain 1 thought 2 at t = 2',
-          'a-00002: Hello, World at t = 1'
+          'a-00003: Chain 1 thought 2 at t = 2'
         ]);
 
         await host.snapshot('local');
@@ -109,7 +109,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00002', '@type': 'HowTo' },
+              isPartOf: { '@id': '_:c-00002', '@type': 'HowTo' },
               position: 1
             }
           ],
@@ -121,9 +121,9 @@
         });
 
         expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00002: Hello, World at t = 1',
           'a-00001: Chain 1 thought 1 at t = 0',
           'a-00003: Chain 1 thought 2 at t = 2',
-          'a-00002: Hello, World at t = 1',
           'a-00004: Chain 2 thought 1 at t = 3'
         ]);
 
@@ -136,7 +136,7 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              isPartOf: { '@id': 'c-00002', '@type': 'HowTo' },
+              isPartOf: { '@id': '_:c-00002', '@type': 'HowTo' },
               position: 2
             }
           ],
@@ -144,15 +144,16 @@
           id: 'a-00005',
           text: 'a-00005: Chain 2 thought 2 at t = 0',
           // Intentionally roll back the date.
-          // It should be grouped and not appear before "Hello, World!'
+          // It should be grouped but not appear before "Hello, World!"
+          // This is because the part grouping timestamp is max of all parts, i.e. 3 * 86_400_000.
           timestamp: new Date(0).toISOString(),
           type: 'message'
         });
 
         expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+          'a-00002: Hello, World at t = 1',
           'a-00001: Chain 1 thought 1 at t = 0',
           'a-00003: Chain 1 thought 2 at t = 2',
-          'a-00002: Hello, World at t = 1',
           'a-00004: Chain 2 thought 1 at t = 3',
           'a-00005: Chain 2 thought 2 at t = 0'
         ]);

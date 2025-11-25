@@ -14,15 +14,19 @@ function getCategory(
 ) {
   return minimatch(path, '*/packages/test/**')
     ? 'test'
-    : minimatch(path, '*/packages/**/src/**/*')
-      ? 'production'
-      : minimatch(path, '**/*.md')
-        ? 'doc'
-        : minimatch(path, '*/__tests__/**/*')
-          ? 'test'
-          : minimatch(path, '**/package-lock.json')
-            ? 'generated'
-            : 'others';
+    : minimatch(path, '**/*.spec.*')
+      ? 'test'
+      : minimatch(path, '**/*.test.*')
+        ? 'test'
+        : minimatch(path, '*/packages/**/src/**/*')
+          ? 'production'
+          : minimatch(path, '**/*.md')
+            ? 'doc'
+            : minimatch(path, '*/__tests__/**/*')
+              ? 'test'
+              : minimatch(path, '**/package-lock.json')
+                ? 'generated'
+                : 'others';
 }
 
 function toIntegerOrFixed(

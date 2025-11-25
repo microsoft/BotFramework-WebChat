@@ -233,11 +233,11 @@
         );
         expect(pageElements.activityContents()[1]).toHaveProperty(
           'textContent',
-          'A quick brown fox jumped over the lazy dogs.'
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
         );
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
+          'A quick brown fox jumped over the lazy dogs.'
         );
         expect(pageElements.typingIndicator()).toBeFalsy();
         await host.snapshot('local');
@@ -245,8 +245,8 @@
         // THEN: Should have 3 activity keys.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']],
-          [thirdActivityKey, ['a-00003']]
+          [thirdActivityKey, ['a-00003']],
+          [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']]
         ]);
       });
     </script>

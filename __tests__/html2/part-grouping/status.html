@@ -144,7 +144,7 @@
           name: 'Research',
         },
         isPartOf: {
-          '@id': 'h-00001',
+          '@id': '_:h-00001',
           '@type': 'HowTo',
         }
       };
@@ -220,7 +220,9 @@
       directLine.emulateIncomingActivity(withModifiers(activities.at(3), { position: 4, status: undefined, abstract: 'four' }));
       directLine.emulateIncomingActivity(withModifiers(activities.at(4), { position: 5, status: undefined, abstract: 'five' }));
       await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
 
+      // Become 1-5-2-3-4.
       directLine.emulateIncomingActivity(withModifiers(activities.at(4), { position: 1, status: 'Incomplete', abstract: 'five moved to one and in progress' }));
 
       // Then: show the activity moved to the new position with a loading indicator
@@ -232,6 +234,7 @@
       directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'Incomplete', abstract: 'four in progress' }));
       await host.snapshot('local');
 
+      // Become 5-2-3-4-1.
       directLine.emulateIncomingActivity(withModifiers(activities.at(0), { position: 3, status: 'Incomplete', abstract: 'one (was done) moved to three and in progress' }));
 
       // Then: show the new item inserted with a loading indicator, and the other items shifted

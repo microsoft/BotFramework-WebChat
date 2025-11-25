@@ -7,6 +7,7 @@
 //    - However, we do not expect the server to return "localTimestamp" as they may not have capability to store this information
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
+import type { LocalId } from '../activity/index';
 import type { AnyAnd } from './AnyAnd';
 // import type { AsEntity, Thing } from './external/OrgSchema/Thing';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
@@ -23,23 +24,23 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     // TODO: [P2] #3953 Rename to "webchat:client-activity-id".
     clientActivityID?: string;
 
-    // Web Chat semi-permanent ID.
-    'webchat:internal:id': string;
+    // Web Chat local ID.
+    'webchat:internal:local-id': LocalId;
 
     // Web Chat ordering sequence, must be computed before inserting into Redux.
     'webchat:internal:position': number;
+
+    /**
+     * Time when the activity appear in chat history.
+     *
+     * Note: if the activity is updated, this value will also be updated.
+     */
+    'webchat:internal:received-at'?: number;
 
     // Chat adapter may send sequence ID to Web Chat to affect ordering.
     'webchat:sequence-id'?: number | undefined;
 
     webChat?: {
-      /**
-       * Time when the activity appear in chat history.
-       *
-       * Note: if the activity is updated, this value will also be updated.
-       */
-      receivedAt?: number;
-
       /**
        * Per-activity style options.
        *
