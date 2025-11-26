@@ -11,7 +11,7 @@
         padding: 4px;
       }
 
-      .chat-message__is-active {
+      .chat-history:focus .chat-message__is-active {
         outline: dashed 2px black;
       }
     </style>
@@ -36,6 +36,15 @@
       import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
       import { createRoot } from 'react-dom/client';
 
+      const FOCUSABLE_SELECTOR_QUERY = [
+        'a[href]',
+        'button:not([disabled])',
+        'textarea:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+      ].join(',');
+
       function usePrevious(value) {
         const previousRef = useRef();
 
@@ -46,12 +55,71 @@
         return previousRef.current;
       }
 
-      function ChatMessage({ abstract, activeMode, children, index, onLeave }) {
+      // TODO: Use our own implementation of <FocusTrap>, we have better UX:
+      //       - Save last focus
+      //       - When an element become non-focusable
+      //       However, this implementation is better at:
+      //       - Handle "inert" attribute
+      //       - Handle invisible element (element without `offsetParent`)
+      function FocusTrap({ children, onLeave }) {
+        const onLeaveRef = useRefFrom(onLeave);
+        const rootRef = useRef();
+
+        const handleKeyDown = useCallback(
+          event => {
+            const container = rootRef.current;
+
+            if (!container) {
+              return;
+            }
+
+            if (event.key === 'Tab') {
+              const focusables = Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
+                element => !element.closest('[inert]') && element.offsetParent
+              );
+
+              if (focusables.length === 0) {
+                return;
+              }
+
+              const firstElement = focusables[0];
+              const lastElement = focusables.at(-1);
+
+              if (event.shiftKey && document.activeElement === firstElement) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                lastElement.focus();
+              } else if (!event.shiftKey && document.activeElement === lastElement) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                firstElement.focus();
+              }
+            } else if (event.key === 'Escape') {
+              event.stopPropagation();
+
+              onLeaveRef.current?.();
+            }
+          },
+          [onLeaveRef]
+        );
+
+        return (
+          <div className="focus-trap" onKeyDown={handleKeyDown} ref={rootRef}>
+            {children}
+          </div>
+        );
+      }
+
+      function ChatMessage({ abstract, activeMode, children, index, onLeave, onRequestFocus }) {
         const bodyRef = useRef();
         const bodyId = useMemo(() => crypto.randomUUID(), []);
         const contentId = useMemo(() => crypto.randomUUID(), []);
         const headerId = useMemo(() => crypto.randomUUID(), []);
+        const indexRef = useRefFrom(index);
         const onLeaveRef = useRefFrom(onLeave);
+        const onRequestFocusRef = useRefFrom(onRequestFocus);
 
         const isFocused = activeMode === 'focus';
         const wasFocused = usePrevious(isFocused);
@@ -80,27 +148,38 @@
           }
         }, [becomingFocused]);
 
+        const handleHeaderClick = useCallback(
+          event => onRequestFocusRef.current?.(indexRef.current),
+          [indexRef, onRequestFocusRef]
+        );
+
         return (
           <article
             aria-labelledby={headerId}
             className={cx('chat-message', { 'chat-message__is-active': activeMode === 'active' })}
             id={`chat-message__index-${index}`}
           >
-            <h4 className="chat-message__header" id={headerId}>
+            <h4
+              className="chat-message__header"
+              id={headerId}
+              // Narrator UX: in scan mode, when user press ENTER, we will get onClick and we can use it to focus into the message.
+              //              However, this item should be hidden as we want to prevent mouse clicks.
+              onClick={handleHeaderClick}
+            >
               {abstract}
             </h4>
             <div
               aria-labelledby={contentId} // Narrator: without aria-labelledby, after pressing ENTER and focus on this element, Narrator will say nothing.
               className="chat-message__body"
               id={bodyId}
-              inert={!isFocused}
+              inert={!isFocused} // Required: if the element is not focused, its contents should not be tabbable.
               onKeyDown={handleKeyDown}
               ref={bodyRef}
               role={isFocused ? 'document' : undefined} // As instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
               tabindex={isFocused ? -1 : undefined} // As instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
             >
               <div className="chat-message__content" id={contentId} role="none">
-                {children}
+                <FocusTrap onLeave={onLeave}>{children}</FocusTrap>
               </div>
             </div>
           </article>
@@ -128,6 +207,8 @@
 
               setIsFocused(true);
             } else if (event.key === 'Escape') {
+              setIsFocused(false);
+
               onLeaveRef.current?.();
             }
           },
@@ -136,8 +217,17 @@
 
         const handleMessageLeave = useCallback(() => {
           rootRef.current?.focus();
+
           setIsFocused(false);
         }, [rootRef, setIsFocused]);
+
+        const handleMessageRequestFocus = useCallback(
+          index => {
+            setActiveMessageIndex(index);
+            setIsFocused(true);
+          },
+          [setActiveMessageIndex, setIsFocused]
+        );
 
         return (
           <div
@@ -157,6 +247,7 @@
                 activeMode={activeMessageIndex === 0 ? (isFocused ? 'focus' : 'active') : undefined}
                 index={0}
                 onLeave={activeMessageIndex === 0 ? handleMessageLeave : undefined}
+                onRequestFocus={handleMessageRequestFocus}
               >
                 <p>Hello, World!</p>
                 <p>
@@ -168,6 +259,7 @@
                 activeMode={activeMessageIndex === 1 ? (isFocused ? 'focus' : 'active') : undefined}
                 index={1}
                 onLeave={activeMessageIndex === 1 ? handleMessageLeave : undefined}
+                onRequestFocus={handleMessageRequestFocus}
               >
                 <p>Aloha!</p>
               </ChatMessage>
