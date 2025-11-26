@@ -275,7 +275,7 @@
             role="group" // Required: aria-activedescendant is only available for role="group".
             tabindex="0" // Required: container of the active descendant must be focusable.
           >
-            <div
+            <section
               className="chat-history__body"
               role="feed" // Required: we are using role="feed/article" to represent the chat thread.
             >
@@ -300,7 +300,7 @@
               >
                 <p>Aloha!</p>
               </ChatMessage>
-            </div>
+            </section>
           </div>
         );
       }
