@@ -213,7 +213,7 @@
               role={isFocused ? 'document' : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
               tabindex={isFocused ? -1 : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
             >
-              <div className="chat-message__content" id={contentId} role="none">
+              <div className="chat-message__content" id={contentId}>
                 <FocusTrap onLeave={onLeave}>{children}</FocusTrap>
               </div>
             </div>
