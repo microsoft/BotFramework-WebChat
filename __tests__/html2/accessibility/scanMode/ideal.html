@@ -191,8 +191,8 @@
         );
 
         return (
-          <article
-            aria-labelledby={headerId}
+          <article // Required: children of role="feed" must be role="article".
+            aria-labelledby={headerId} // Required: we just want screen reader to narrate header. Without this, it will narrate the whole content.
             className={cx('chat-message', { 'chat-message__is-active': activeMode === 'active' })}
             id={`chat-message__index-${index}`}
           >
@@ -206,14 +206,14 @@
               {abstract}
             </h4>
             <div
-              aria-labelledby={contentId} // Narrator: without aria-labelledby, after pressing ENTER and focus on this element, Narrator will say nothing.
+              aria-labelledby={contentId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Narrator will say nothing.
               className="chat-message__body"
               id={bodyId}
               inert={!isFocused} // Required: if the element is not focused, its contents should not be tabbable.
               onKeyDown={handleKeyDown}
               ref={bodyRef}
-              role={isFocused ? 'document' : undefined} // As instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
-              tabindex={isFocused ? -1 : undefined} // As instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
+              role={isFocused ? 'document' : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
+              tabindex={isFocused ? -1 : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
             >
               <div className="chat-message__content" id={contentId} role="none">
                 <FocusTrap onLeave={onLeave}>{children}</FocusTrap>
@@ -244,6 +244,7 @@
 
               setIsFocused(true);
             } else if (event.key === 'Escape') {
+              // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
               setIsFocused(false);
 
               onLeaveRef.current?.();
@@ -280,7 +281,7 @@
               role="feed" // Required: we are using role="feed/article" to represent the chat thread.
             >
               <ChatMessage
-                abstract="Bot said: Hello, World!" // Matter of taste: this is for screen reader user pressing H key to quickly jump between messages.
+                abstract="Bot said: Hello, World!" // Matter of taste on how to abstract the text: this is for screen reader user pressing H key to quickly jump between messages.
                 activeMode={activeMessageIndex === 0 ? (isFocused ? 'focus' : 'active') : undefined}
                 index={0}
                 onLeave={activeMessageIndex === 0 ? handleMessageLeave : undefined}
