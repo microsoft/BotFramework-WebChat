@@ -151,7 +151,6 @@
 
       function ChatMessage({ abstract, activeMode, children, index, onLeave, onRequestFocus }) {
         const bodyRef = useRef();
-        const bodyId = useMemo(() => crypto.randomUUID(), []);
         const contentId = useMemo(() => crypto.randomUUID(), []);
         const headerId = useMemo(() => crypto.randomUUID(), []);
         const indexRef = useRefFrom(index);
@@ -208,7 +207,6 @@
             <div
               aria-labelledby={contentId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Narrator will say nothing.
               className="chat-message__body"
-              id={bodyId}
               inert={!isFocused} // Required: if the element is not focused, its contents should not be tabbable.
               onKeyDown={handleKeyDown}
               ref={bodyRef}
