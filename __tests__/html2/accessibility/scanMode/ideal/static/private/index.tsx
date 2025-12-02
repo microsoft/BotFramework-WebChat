@@ -63,7 +63,7 @@ function FocusTrap({ children, onEscapeKeyDown }) {
           element => !element.closest('[inert]') && element.offsetParent
         );
 
-        if (focusables.length === 0) {
+        if (!focusables.length) {
           return;
         }
 
@@ -134,6 +134,17 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
         event.stopPropagation();
 
         onLeaveRef.current?.();
+      } else if (event.key === 'Tab' && event.target === bodyRef.current) {
+        // Special case: regardless if the content is interactive or not, trap the TAB key.
+
+        // TODO: Can we make this simpler? Says, if we merge <div data-testid="chat message body"> with <FocusTrap>, will it makes this simpler?
+        const focusables = Array.from<HTMLElement>(bodyRef.current?.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
+          element => !element.closest('[inert]') && element.offsetParent
+        );
+
+        if (!focusables.length) {
+          event.preventDefault();
+        }
       }
     },
     [onLeaveRef]
@@ -246,8 +257,6 @@ function ChatHistory({ onLeave }) {
           messagesRef.at(activeMessageIndex === Infinity ? -1 : activeMessageIndex).current?.focus();
         } else if (event.key === 'Escape') {
           // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
-          // setIsMessageFocused(false);
-
           onLeaveRef.current?.();
         } else if (event.key === 'Tab') {
           // When tabbing out of chat history, skip all message bodies.
