@@ -106,7 +106,7 @@ function FocusRedirector({ redirectRef }) {
   return <div className="focus-redirector" onFocus={handleFocus} tabIndex={0} />;
 }
 
-function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave, ref }) {
+function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLeave, ref }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const contentId = useMemo(() => crypto.randomUUID(), []);
   const headerId = useMemo(() => crypto.randomUUID(), []);
@@ -172,7 +172,7 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
 
   const handleRootClick = useCallback(
     event => onActiveRef.current?.(indexRef.current, isElementFocusable(event.target) ? 'content' : 'container'),
-    [onActiveRef, indexRef]
+    [indexRef, onActiveRef]
   );
 
   return (
@@ -180,7 +180,7 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
       aria-labelledby={headerId} // Required: we just want screen reader to narrate header. Without this, it will narrate the whole content.
       className={cx('chat-message', { 'chat-message__is-active': activeMode })}
       data-testid="chat message"
-      id={`chat-message__index--${index}`}
+      id={id}
       onClick={handleRootClick}
       ref={rootRef}
     >
@@ -308,6 +308,7 @@ function ChatHistory({ onLeave }) {
             <ChatMessage
               abstract={message.abstract}
               activeMode={isActive ? 'active' : undefined}
+              id={`chat-message__index--${index}`}
               index={index}
               onActive={handleMessageActive}
               onLeave={isActive ? handleMessageLeave : undefined}

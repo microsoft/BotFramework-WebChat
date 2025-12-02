@@ -35,13 +35,16 @@ async function render() {
 
   document.body.append(scriptElement);
 
-  await waitFor(() => {
-    const textAreaElement = document.querySelector('textarea');
+  await waitFor(
+    () => {
+      const textAreaElement = document.querySelector('textarea');
 
-    if (!textAreaElement) {
-      throw new Error('No <textarea> element');
-    }
-  });
+      if (!textAreaElement) {
+        throw new Error('No <textarea> element');
+      }
+    },
+    { timeout: 2000 }
+  );
 }
 
 const systemUnderTest = {
