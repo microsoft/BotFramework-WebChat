@@ -22,16 +22,16 @@ async function render() {
     }
   };
 
-  const ret = transform({ filename: '/index.tsx', code, importMap });
+  const transformed = transform({ filename: '/index.tsx', code, importMap });
 
   const decoder = new TextDecoder();
 
-  const transformedCode = decoder.decode(ret.code);
+  const transformedCode = decoder.decode(transformed.code);
 
   const scriptElement = document.createElement('script');
 
-  scriptElement.textContent = transformedCode;
   scriptElement.setAttribute('type', 'module');
+  scriptElement.textContent = transformedCode;
 
   document.body.append(scriptElement);
 

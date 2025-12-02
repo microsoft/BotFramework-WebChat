@@ -5,12 +5,12 @@ import { useRefFrom } from 'https://esm.sh/use-ref-from';
 // @ts-ignore
 import { useStateWithRef } from 'https://esm.sh/use-state-with-ref';
 import {
-  Dispatch,
+  type Dispatch,
   forwardRef,
-  MutableRefObject,
-  SetStateAction,
+  type KeyboardEventHandler,
+  type RefObject,
+  type SetStateAction,
   useCallback,
-  useEffect,
   useImperativeHandle,
   useMemo,
   useRef
@@ -20,9 +20,15 @@ import { createRoot } from 'react-dom/client';
 
 // Notes:
 // 1. We cannot use `inert` because it would block mouse clicks as well as TAB.
-//    - However, we can use it for temporarily (split second) things
+//    - However, we can use it for temporarily (split second) things.
+// 2. Opinion: `stopPropagation` vs. `preventDefault`.
+//    The content may not know they are not inside a container, thus, they may not use `stopPropagation` to prevent ancestor from grabbing the event.
+//    Instead, content may continue to use `preventDefault` to stop ancestors from knowing the event.
+//    Thus, we should use `defaultPrevented` to check if we should handle the event from the content or not.
 
-const CHAT_MESSAGES = [
+type ChatMessageAPI = { readonly focusContent: () => void };
+
+const CHAT_MESSAGES = Object.freeze([
   {
     abstract: 'Bot said: Hello, World!',
     children: (
@@ -79,7 +85,7 @@ const CHAT_MESSAGES = [
       </form>
     )
   }
-];
+]);
 
 const FOCUSABLE_SELECTOR_QUERY = [
   'a[href]',
@@ -107,11 +113,12 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
   const indexRef = useRefFrom(index);
   const onActiveRef = useRefFrom(onActive);
   const onLeaveRef = useRefFrom(onLeave);
+  const rootRef = useRef<HTMLDivElement>();
 
   useImperativeHandle(
     ref,
     () => ({
-      focus() {
+      focusContent() {
         bodyRef.current?.setAttribute('tabindex', '-1');
         bodyRef.current?.focus();
       }
@@ -119,11 +126,13 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
     [bodyRef]
   );
 
+  // Revert the change after blur.
   const handleContentBlur = useCallback(() => {
     bodyRef.current?.removeAttribute('role');
     bodyRef.current?.removeAttribute('tabindex');
   }, [bodyRef]);
 
+  // Required: this is from C+AI accessibility team, on pressing ENTER, the content should be role="document" and focus(), and focus() requires tabIndex={-1}.
   const handleContentFocus = useCallback(() => {
     bodyRef.current?.setAttribute('role', 'document');
     bodyRef.current?.setAttribute('tabindex', '-1'); // TODO: Do we still need this?
@@ -131,14 +140,22 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
     onActiveRef.current?.(indexRef.current, 'content');
   }, [bodyRef, onActiveRef]);
 
-  const handleKeyDown = useCallback(
+  const handleHeaderClick = useCallback(() => bodyRef.current?.focus(), [bodyRef]);
+
+  const handleKeyDown = useCallback<KeyboardEventHandler<unknown>>(
     event => {
       if (event.key === 'Escape') {
-        event.stopPropagation();
+        // Regardless of where the focus is inside the content, when ESCAPE key is pressed, send the focus back to chat history.
+        // If ESCAPE key need to be handled by the content, it should call event.preventDefault().
+        // Opinion: preventDefault() is preferred over stopPropagation() because the content may not know there are inside another container.
+        if (!event.defaultPrevented) {
+          event.preventDefault();
 
-        onLeaveRef.current?.();
+          onLeaveRef.current?.();
+        }
       } else if (event.key === 'Tab' && event.target === bodyRef.current) {
-        // Special case: regardless if the content is interactive or not, trap the TAB key.
+        // Special case: if the content is non-interactive, after focusing on the message body, pressing the TAB key should not send the focus to next message.
+        // In other words, we should trap the TAB key.
 
         // TODO: Can we make this simpler? Says, if we merge <div data-testid="chat message body"> with <FocusTrap>, will it makes this simpler?
         const focusables = Array.from<HTMLElement>(bodyRef.current?.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
@@ -153,27 +170,10 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
     [onLeaveRef]
   );
 
-  const handleHeaderClick = useCallback(() => {
-    bodyRef.current?.focus();
-  }, [bodyRef]);
-
   const handleRootClick = useCallback(
-    event => {
-      onActiveRef.current?.(indexRef.current, isElementFocusable(event.target) ? 'content' : 'container');
-    },
-    [indexRef, onActiveRef]
+    event => onActiveRef.current?.(indexRef.current, isElementFocusable(event.target) ? 'content' : 'container'),
+    [onActiveRef, indexRef]
   );
-
-  const rootRef = useRef<HTMLDivElement>();
-  const [isFocused, setIsFocused, isFocusedRef] = useStateWithRef(false);
-
-  useEffect(() => {
-    if (document.activeElement && rootRef.current?.contains(document.activeElement)) {
-      setIsFocused(true);
-    } else {
-      setIsFocused(false);
-    }
-  }, [isFocusedRef, rootRef, setIsFocused]);
 
   return (
     <article // Required: children of role="feed" must be role="article".
@@ -201,8 +201,6 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
         onFocus={handleContentFocus}
         onKeyDown={handleKeyDown}
         ref={bodyRef}
-        role={isFocused ? 'document' : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
-        tabIndex={isFocused ? -1 : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
       >
         <div className="chat-message__content" id={contentId}>
           <focus-trap onescapekeydown={onLeave}>{children}</focus-trap>
@@ -216,11 +214,11 @@ function ChatHistory({ onLeave }) {
   const [activeMessageIndex, setActiveMessageIndexRaw, activeMessageIndexRef] = useStateWithRef<number>(Infinity);
   const [_isMessageFocused, setIsMessageFocused, isMessageFocusedRef] = useStateWithRef(false);
   const bodyRef = useRef<HTMLDivElement>();
-  const message0Ref = useRef<HTMLElement>();
-  const message1Ref = useRef<HTMLElement>();
-  const message2Ref = useRef<HTMLElement>();
-  const messagesRef = useMemo<MutableRefObject<HTMLElement>[]>(
-    () => [message0Ref, message1Ref, message2Ref],
+  const message0Ref = useRef<ChatMessageAPI>();
+  const message1Ref = useRef<ChatMessageAPI>();
+  const message2Ref = useRef<ChatMessageAPI>();
+  const messagesRef = useMemo<readonly RefObject<ChatMessageAPI>[]>(
+    () => Object.freeze([message0Ref, message1Ref, message2Ref]),
     [message0Ref, message1Ref, message2Ref]
   );
   const onLeaveRef = useRefFrom(onLeave);
@@ -255,10 +253,12 @@ function ChatHistory({ onLeave }) {
 
           const { current: activeMessageIndex } = activeMessageIndexRef;
 
-          messagesRef.at(activeMessageIndex === Infinity ? -1 : activeMessageIndex).current?.focus();
+          messagesRef.at(activeMessageIndex === Infinity ? -1 : activeMessageIndex).current?.focusContent();
         } else if (event.key === 'Escape') {
-          // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
-          onLeaveRef.current?.();
+          if (!event.defaultPrevented) {
+            // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
+            onLeaveRef.current?.();
+          }
         } else if (event.key === 'Tab') {
           // When tabbing out of chat history, skip all message bodies.
           bodyRef.current?.setAttribute('inert', 'inert');
