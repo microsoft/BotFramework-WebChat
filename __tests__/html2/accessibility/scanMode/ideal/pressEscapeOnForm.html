@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from './static/index.js';
+
+      run(
+        async function () {
+          await render();
+
+          systemUnderTest.addressFormTextBox.focus();
+
+          await host.sendKeys('ESCAPE');
+
+          // THEN: Should focus on the chat history.
+          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
+
+          // THEN: The last message should be active.
+          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
+
+          // THEN: The last message should be the active descendant.
+          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
+
+          // THEN: The chat message body should not have role="document" because the content is not focused.
+          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).not.toBe('document');
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

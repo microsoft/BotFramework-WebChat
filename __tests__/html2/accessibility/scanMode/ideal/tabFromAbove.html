@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .first-button {
+        left: 0;
+        position: absolute;
+        top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="first-button" data-testid="first button" type="button">Button before &lt;main&gt;</button>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from './static/index.js';
+
+      run(
+        async function () {
+          await render();
+
+          // GIVEN: Send the focus to the page.
+          document.querySelector('[data-testid="first button"]').focus();
+
+          await host.sendTab(1);
+
+          // THEN: Should focus on the chat history.
+          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
+
+          // THEN: The last chat message should be marked as active.
+          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
+
+          // THEN: The last chat message should be the active descendant.
+          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
+
+          // THEN: The chat message body should not have role="document" because the content is not focused.
+          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).not.toBe('document');
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

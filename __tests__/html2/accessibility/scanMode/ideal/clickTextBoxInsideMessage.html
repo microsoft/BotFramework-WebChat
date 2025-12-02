@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from './static/index.js';
+
+      run(
+        async function () {
+          await render();
+
+          await host.click(systemUnderTest.addressFormTextBox);
+
+          // The message is non-interactive, it should be focusing on chat history while setting active descendant to the chat message.
+
+          // THEN: Should focus on the text box inside the chat message.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormTextBox);
+
+          // THEN: The chat message containing the focused text box should be marked as active.
+          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
+
+          // THEN: The chat message containing the focused text box should be the active descendant of the chat history.
+          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
+
+          // THEN: The chat message body should have role="document" because one of its content is focused.
+          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).toBe('document');
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
