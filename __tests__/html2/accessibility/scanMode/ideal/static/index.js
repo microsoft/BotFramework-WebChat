@@ -1,5 +1,6 @@
 import init, { transform } from 'https://esm.sh/@esm.sh/tsx';
 import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+import './private/FocusTrap.js';
 
 async function render() {
   await init();

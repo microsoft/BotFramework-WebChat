@@ -20,6 +20,66 @@ import { createRoot } from 'react-dom/client';
 
 // Notes:
 // 1. We cannot use `inert` because it would block mouse clicks as well as TAB.
+//    - However, we can use it for temporarily (split second) things
+
+const CHAT_MESSAGES = [
+  {
+    abstract: 'Bot said: Hello, World!',
+    children: (
+      <>
+        <p>Hello, World!</p>
+        <p>
+          Click <a href="https://bing.com/">this link</a> for more details.
+        </p>
+      </>
+    )
+  },
+  {
+    abstract: 'You said: Aloha!',
+    children: <p>Aloha!</p>
+  },
+  {
+    abstract: 'Bot said: Where should we ship it to?',
+    children: (
+      <form data-testid="address form" onSubmit={event => event.preventDefault()}>
+        <p>Where should we ship it to?</p>
+        <div>
+          <label>
+            Street address
+            <div>
+              <input data-testid="street address textbox" placeholder="Street address" type="text" />
+            </div>
+          </label>
+        </div>
+        <div>
+          <label>
+            City
+            <div>
+              <input placeholder="City" type="text" />
+            </div>
+          </label>
+        </div>
+        <div>
+          <label>
+            State
+            <div>
+              <select placeholder="State">
+                <option>California</option>
+                <option>Oregon</option>
+                <option>Washington</option>
+              </select>
+            </div>
+          </label>
+        </div>
+        <div>
+          <button data-testid="address form submit button" type="submit">
+            Submit
+          </button>
+        </div>
+      </form>
+    )
+  }
+];
 
 const FOCUSABLE_SELECTOR_QUERY = [
   'a[href]',
@@ -38,63 +98,6 @@ function FocusRedirector({ redirectRef }) {
   const handleFocus = useCallback(() => redirectRef.current?.focus(), [redirectRef]);
 
   return <div className="focus-redirector" onFocus={handleFocus} tabIndex={0} />;
-}
-
-// TODO: Use our own implementation of <FocusTrap>, we have better UX:
-//       - Save last focus
-//       - When an element become non-focusable
-//       However, this implementation is better at:
-//       - Handle "inert" attribute
-//       - Handle invisible element (element without `offsetParent`)
-function FocusTrap({ children, onEscapeKeyDown }) {
-  const onEscapeKeyDownRef = useRefFrom(onEscapeKeyDown);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  const handleKeyDown = useCallback(
-    event => {
-      const container = rootRef.current;
-
-      if (!container) {
-        return;
-      }
-
-      if (event.key === 'Tab') {
-        const focusables = Array.from<HTMLElement>(container.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
-          element => !element.closest('[inert]') && element.offsetParent
-        );
-
-        if (!focusables.length) {
-          return;
-        }
-
-        const firstElement = focusables[0];
-        const lastElement = focusables.at(-1);
-
-        if (event.shiftKey && document.activeElement === firstElement) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          lastElement.focus();
-        } else if (!event.shiftKey && document.activeElement === lastElement) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          firstElement.focus();
-        }
-      } else if (event.key === 'Escape') {
-        event.stopPropagation();
-
-        onEscapeKeyDownRef.current?.();
-      }
-    },
-    [onEscapeKeyDownRef]
-  );
-
-  return (
-    <div className="focus-trap" onKeyDown={handleKeyDown} ref={rootRef}>
-      {children}
-    </div>
-  );
 }
 
 function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave, ref }) {
@@ -202,7 +205,7 @@ function ChatMessage({ abstract, activeMode, children, index, onActive, onLeave,
         tabIndex={isFocused ? -1 : undefined} // Required: as instructed by C+AI accessibility team: after pressing ENTER, add role="document" and focus on the element, screen reader should change to scan/browse mode.
       >
         <div className="chat-message__content" id={contentId}>
-          <FocusTrap onEscapeKeyDown={onLeave}>{children}</FocusTrap>
+          <focus-trap onescapekeydown={onLeave}>{children}</focus-trap>
         </div>
       </div>
     </article>
@@ -235,8 +238,6 @@ function ChatHistory({ onLeave }) {
     },
     [setActiveMessageIndexRaw]
   );
-
-  const handleAddressFormSubmit = useCallback(event => event.preventDefault(), []);
 
   const handleKeyDown = useCallback(
     event => {
@@ -273,6 +274,8 @@ function ChatHistory({ onLeave }) {
     (index, where) => {
       setActiveMessageIndex(index);
 
+      // If the message content is focused (e.g. text box inside the message), don't send the focus to chat history.
+      // Otherwise, send the focus to chat history and use active descendant to mark the message as active.
       where !== 'content' && rootRef.current?.focus();
     },
     [rootRef, setActiveMessageIndex, setIsMessageFocused]
@@ -297,74 +300,23 @@ function ChatHistory({ onLeave }) {
         ref={bodyRef}
         role="feed" // Required: we are using role="feed/article" to represent the chat thread.
       >
-        <ChatMessage
-          abstract="Bot said: Hello, World!" // Matter of taste on how to abstract the text: this is for screen reader user pressing H key to quickly jump between messages.
-          activeMode={activeMessageIndex === 0 ? 'active' : undefined}
-          index={0}
-          onActive={handleMessageActive}
-          onLeave={activeMessageIndex === 0 ? handleMessageLeave : undefined}
-          ref={message0Ref}
-        >
-          <p>Hello, World!</p>
-          <p>
-            Click <a href="https://bing.com/">this link</a> for more details.
-          </p>
-        </ChatMessage>
-        <ChatMessage
-          abstract="You said: Aloha!"
-          activeMode={activeMessageIndex === 1 ? 'active' : undefined}
-          index={1}
-          onActive={handleMessageActive}
-          onLeave={activeMessageIndex === 1 ? handleMessageLeave : undefined}
-          ref={message1Ref}
-        >
-          <p>Aloha!</p>
-        </ChatMessage>
-        <ChatMessage
-          abstract="Bot said: Where should we ship it to?"
-          activeMode={activeMessageIndex === Infinity ? 'active' : undefined}
-          index={2}
-          onActive={handleMessageActive}
-          onLeave={activeMessageIndex === Infinity ? handleMessageLeave : undefined}
-          ref={message2Ref}
-        >
-          <form data-testid="address form" onSubmit={handleAddressFormSubmit}>
-            <p>Where should we ship it to?</p>
-            <div>
-              <label>
-                Street address
-                <div>
-                  <input data-testid="street address textbox" placeholder="Street address" type="text" />
-                </div>
-              </label>
-            </div>
-            <div>
-              <label>
-                City
-                <div>
-                  <input placeholder="City" type="text" />
-                </div>
-              </label>
-            </div>
-            <div>
-              <label>
-                State
-                <div>
-                  <select placeholder="State">
-                    <option>California</option>
-                    <option>Oregon</option>
-                    <option>Washington</option>
-                  </select>
-                </div>
-              </label>
-            </div>
-            <div>
-              <button data-testid="address form submit button" type="submit">
-                Submit
-              </button>
-            </div>
-          </form>
-        </ChatMessage>
+        {CHAT_MESSAGES.map((message, index) => {
+          const isActive =
+            activeMessageIndex === Infinity ? index === CHAT_MESSAGES.length - 1 : activeMessageIndex === index;
+
+          return (
+            <ChatMessage
+              abstract={message.abstract}
+              activeMode={isActive ? 'active' : undefined}
+              index={index}
+              onActive={handleMessageActive}
+              onLeave={isActive ? handleMessageLeave : undefined}
+              ref={messagesRef.at(index)}
+            >
+              {message.children}
+            </ChatMessage>
+          );
+        })}
         <FocusRedirector redirectRef={rootRef} />
       </section>
     </div>

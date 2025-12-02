@@ -100,6 +100,7 @@ overrides:
         jsx: true
 
     rules:
+      '@typescript-eslint/no-namespace': off
       '@typescript-eslint/no-require-imports': off
       'react/forbid-elements': off
       no-console: off
