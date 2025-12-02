@@ -3,7 +3,6 @@ import cx from 'classnames';
 // @ts-ignore
 import { useRefFrom } from 'https://esm.sh/use-ref-from';
 // @ts-ignore
-import { useStateWithRef } from 'https://esm.sh/use-state-with-ref';
 import {
   type Dispatch,
   forwardRef,
@@ -13,7 +12,8 @@ import {
   useCallback,
   useImperativeHandle,
   useMemo,
-  useRef
+  useRef,
+  useState
 } from 'react';
 // @ts-ignore
 import { createRoot } from 'react-dom/client';
@@ -38,11 +38,13 @@ const CHAT_MESSAGES = Object.freeze([
           Click <a href="https://bing.com/">this link</a> for more details.
         </p>
       </>
-    )
+    ),
+    id: 'a-00001'
   },
   {
     abstract: 'You said: Aloha!',
-    children: <p>Aloha!</p>
+    children: <p>Aloha!</p>,
+    id: 'a-00002'
   },
   {
     abstract: 'Bot said: Where should we ship it to?',
@@ -83,7 +85,8 @@ const CHAT_MESSAGES = Object.freeze([
           </button>
         </div>
       </form>
-    )
+    ),
+    id: 'a-00003'
   }
 ]);
 
@@ -106,11 +109,11 @@ function FocusRedirector({ redirectRef }) {
   return <div className="focus-redirector" onFocus={handleFocus} tabIndex={0} />;
 }
 
-function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLeave, ref }) {
+function ChatMessage({ abstract, activeMode, children, id, messageId, onActive, onLeave, ref }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const contentId = useMemo(() => crypto.randomUUID(), []);
   const headerId = useMemo(() => crypto.randomUUID(), []);
-  const indexRef = useRefFrom(index);
+  const messageIdRef = useRefFrom(messageId);
   const onActiveRef = useRefFrom(onActive);
   const onLeaveRef = useRefFrom(onLeave);
   const rootRef = useRef<HTMLDivElement>();
@@ -137,8 +140,8 @@ function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLe
     bodyRef.current?.setAttribute('role', 'document');
     bodyRef.current?.setAttribute('tabindex', '-1'); // TODO: Do we still need this?
 
-    onActiveRef.current?.(indexRef.current, 'content');
-  }, [bodyRef, onActiveRef]);
+    onActiveRef.current?.(messageIdRef.current, 'content');
+  }, [bodyRef, messageIdRef, onActiveRef]);
 
   const handleHeaderClick = useCallback(() => bodyRef.current?.focus(), [bodyRef]);
 
@@ -170,9 +173,11 @@ function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLe
     [onLeaveRef]
   );
 
+  // This `onActive` is emitted on click, could fire multiple rounds even the message is already active.
+  // TODO: Find ways to reduce emitting `onActive` when the message is already active.
   const handleRootClick = useCallback(
-    event => onActiveRef.current?.(indexRef.current, isElementFocusable(event.target) ? 'content' : 'container'),
-    [indexRef, onActiveRef]
+    event => onActiveRef.current?.(messageIdRef.current, isElementFocusable(event.target) ? 'content' : 'container'),
+    [messageIdRef, onActiveRef]
   );
 
   return (
@@ -187,8 +192,8 @@ function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLe
       <h4
         className="chat-message__header"
         id={headerId}
-        // Narrator UX: in scan mode, when user press ENTER, we will get onClick and we can use it to focus into the message.
-        //              However, this item should be hidden as we want to prevent mouse clicks.
+        // Windows Narrator: In scan mode, when user press ENTER, we will get onClick and we can use it to focus into the message.
+        //                   However, this item should be hidden as we want to prevent mouse clicks.
         onClick={handleHeaderClick}
       >
         {abstract}
@@ -197,9 +202,9 @@ function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLe
         aria-labelledby={contentId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Narrator will say nothing.
         className="chat-message__body"
         data-testid="chat message body"
-        onBlur={handleContentBlur}
-        onFocus={handleContentFocus}
-        onKeyDown={handleKeyDown}
+        onBlur={handleContentBlur} // Required: revert role="document" and tabIndex="-1" when content is blurred.
+        onFocus={handleContentFocus} // Required: set role="document" and tabIndex="-1" when content is focused.
+        onKeyDown={handleKeyDown} // Required: pressing ESCAPE key should send the focus back to chat history.
         ref={bodyRef}
       >
         <div className="chat-message__content" id={contentId}>
@@ -211,30 +216,54 @@ function ChatMessage({ abstract, activeMode, children, id, index, onActive, onLe
 }
 
 function ChatHistory({ onLeave }) {
-  const [activeMessageIndex, setActiveMessageIndexRaw, activeMessageIndexRef] = useStateWithRef<number>(Infinity);
-  const [_isMessageFocused, setIsMessageFocused, isMessageFocusedRef] = useStateWithRef(false);
+  const [rawActiveMessageId, setRawActiveMessageId] = useState<string | undefined>(undefined);
   const bodyRef = useRef<HTMLDivElement>();
-  const message0Ref = useRef<ChatMessageAPI>();
-  const message1Ref = useRef<ChatMessageAPI>();
-  const message2Ref = useRef<ChatMessageAPI>();
-  const messagesRef = useMemo<readonly RefObject<ChatMessageAPI>[]>(
-    () => Object.freeze([message0Ref, message1Ref, message2Ref]),
-    [message0Ref, message1Ref, message2Ref]
+  const messageAPI0Ref = useRef<ChatMessageAPI>();
+  const messageAPI1Ref = useRef<ChatMessageAPI>();
+  const messageAPI2Ref = useRef<ChatMessageAPI>();
+  const messageAPIsRef = useMemo<readonly RefObject<ChatMessageAPI>[]>(
+    () => Object.freeze([messageAPI0Ref, messageAPI1Ref, messageAPI2Ref]),
+    [messageAPI0Ref, messageAPI1Ref, messageAPI2Ref]
   );
   const onLeaveRef = useRefFrom(onLeave);
   const rootRef = useRef<HTMLDivElement>();
 
-  const setActiveMessageIndex = useCallback<Dispatch<SetStateAction<number>>>(
-    nextActiveMessageIndex => {
-      setActiveMessageIndexRaw(activeMessageIndex => {
-        if (typeof nextActiveMessageIndex === 'function') {
-          nextActiveMessageIndex = nextActiveMessageIndex(activeMessageIndex);
+  const activeMessageId = useMemo(() => rawActiveMessageId || CHAT_MESSAGES.at(-1)?.id, [rawActiveMessageId]);
+
+  const activeMessageIndexRef = useRefFrom(
+    useMemo(() => CHAT_MESSAGES.findIndex(({ id }) => id === activeMessageId), [activeMessageId])
+  );
+
+  const setActiveMessageId = useCallback<Dispatch<SetStateAction<string>>>(
+    nextActiveMessageId => {
+      setRawActiveMessageId(activeMessageId => {
+        if (typeof nextActiveMessageId === 'function') {
+          nextActiveMessageId = nextActiveMessageId(activeMessageId);
         }
 
-        return nextActiveMessageIndex >= messagesRef.length - 1 ? Infinity : nextActiveMessageIndex;
+        return nextActiveMessageId === CHAT_MESSAGES.at(-1)?.id ? undefined : nextActiveMessageId;
       });
     },
-    [setActiveMessageIndexRaw]
+    [setRawActiveMessageId]
+  );
+
+  const setActiveMessageIndex = useCallback<Dispatch<SetStateAction<number>>>(
+    nextActiveMessageIndex => {
+      setActiveMessageId(activeMessageId => {
+        const index = activeMessageId
+          ? CHAT_MESSAGES.findIndex(message => message.id === activeMessageId)
+          : CHAT_MESSAGES.length - 1;
+
+        if (typeof nextActiveMessageIndex === 'function') {
+          nextActiveMessageIndex = nextActiveMessageIndex(index);
+        }
+
+        nextActiveMessageIndex = Math.max(0, Math.min(CHAT_MESSAGES.length - 1, nextActiveMessageIndex));
+
+        return CHAT_MESSAGES.at(nextActiveMessageIndex)?.id;
+      });
+    },
+    [setActiveMessageId]
   );
 
   const handleKeyDown = useCallback(
@@ -243,17 +272,15 @@ function ChatHistory({ onLeave }) {
         if (event.key === 'ArrowUp') {
           event.stopPropagation();
 
-          setActiveMessageIndex(index => Math.max(0, (index === Infinity ? messagesRef.length - 1 : index) - 1));
+          setActiveMessageIndex(index => index - 1);
         } else if (event.key === 'ArrowDown') {
           event.stopPropagation();
 
-          setActiveMessageIndex(index => Math.min(messagesRef.length - 1, index + 1));
+          setActiveMessageIndex(index => index + 1);
         } else if (event.key === 'Enter') {
           event.stopPropagation();
 
-          const { current: activeMessageIndex } = activeMessageIndexRef;
-
-          messagesRef.at(activeMessageIndex === Infinity ? -1 : activeMessageIndex).current?.focusContent();
+          messageAPIsRef.at(activeMessageIndexRef.current).current?.focusContent();
         } else if (event.key === 'Escape') {
           if (!event.defaultPrevented) {
             // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
@@ -267,27 +294,27 @@ function ChatHistory({ onLeave }) {
         }
       }
     },
-    [activeMessageIndexRef, isMessageFocusedRef, messagesRef, onLeaveRef, setActiveMessageIndex, setIsMessageFocused]
+    [activeMessageIndexRef, bodyRef, messageAPIsRef, onLeaveRef, setActiveMessageIndex]
   );
 
   const handleMessageActive = useCallback(
-    (index, where) => {
-      setActiveMessageIndex(index);
+    (id, where) => {
+      setActiveMessageId(id);
 
-      // If the message content is focused (e.g. text box inside the message), don't send the focus to chat history.
+      // If the message content is focused (e.g. focusing on text box inside the message), don't send the focus to chat history.
       // Otherwise, send the focus to chat history and use active descendant to mark the message as active.
       where !== 'content' && rootRef.current?.focus();
     },
-    [rootRef, setActiveMessageIndex, setIsMessageFocused]
+    [rootRef, setActiveMessageId]
   );
 
-  const handleMessageLeave = useCallback(() => {
-    rootRef.current?.focus();
-  }, [rootRef, setIsMessageFocused]);
+  // If ESCAPE key is pressed on the message, the <ChatMessage> will emit `onLeave` event.
+  // We should send the focus to chat history.
+  const handleMessageLeave = useCallback(() => rootRef.current?.focus(), [rootRef]);
 
   return (
     <div
-      aria-activedescendant={`chat-message__index--${activeMessageIndex === Infinity ? messagesRef.length - 1 : activeMessageIndex}`} // Matter of taste: we are using active descendant to control focus, instead of roving tab index.
+      aria-activedescendant={activeMessageId ? `chat__message-id--${activeMessageId}` : undefined} // Matter of taste: we are using active descendant to control focus, instead of roving tab index.
       className="chat-history"
       data-testid="chat history"
       onKeyDown={handleKeyDown}
@@ -301,18 +328,17 @@ function ChatHistory({ onLeave }) {
         role="feed" // Required: we are using role="feed/article" to represent the chat thread.
       >
         {CHAT_MESSAGES.map((message, index) => {
-          const isActive =
-            activeMessageIndex === Infinity ? index === CHAT_MESSAGES.length - 1 : activeMessageIndex === index;
+          const isActive = activeMessageId === message.id;
 
           return (
             <ChatMessage
               abstract={message.abstract}
               activeMode={isActive ? 'active' : undefined}
-              id={`chat-message__index--${index}`}
-              index={index}
+              id={`chat__message-id--${message.id}`}
+              messageId={message.id}
               onActive={handleMessageActive}
               onLeave={isActive ? handleMessageLeave : undefined}
-              ref={messagesRef.at(index)}
+              ref={messageAPIsRef.at(index)}
             >
               {message.children}
             </ChatMessage>
