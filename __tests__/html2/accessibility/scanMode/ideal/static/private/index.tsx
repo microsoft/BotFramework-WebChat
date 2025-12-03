@@ -7,6 +7,8 @@ import {
   type Dispatch,
   forwardRef,
   type KeyboardEventHandler,
+  type MutableRefObject,
+  type ReactNode,
   type RefObject,
   type SetStateAction,
   useCallback,
@@ -27,8 +29,13 @@ import { createRoot } from 'react-dom/client';
 //    Thus, we should use `defaultPrevented` to check if we should handle the event from the content or not.
 
 type ChatMessageAPI = { readonly focusContent: () => void };
+type Message = {
+  readonly abstract: string;
+  readonly children: ReactNode | undefined;
+  readonly id: string;
+};
 
-const CHAT_MESSAGES = Object.freeze([
+const CHAT_MESSAGES: readonly Message[] = Object.freeze([
   {
     abstract: 'Bot said: Hello, World!',
     children: (
@@ -215,55 +222,83 @@ function ChatMessage({ abstract, activeMode, children, id, messageId, onActive, 
   );
 }
 
-function ChatHistory({ onLeave }) {
-  const [rawActiveMessageId, setRawActiveMessageId] = useState<string | undefined>(undefined);
-  const bodyRef = useRef<HTMLDivElement>();
-  const messageAPI0Ref = useRef<ChatMessageAPI>();
-  const messageAPI1Ref = useRef<ChatMessageAPI>();
-  const messageAPI2Ref = useRef<ChatMessageAPI>();
-  const messageAPIsRef = useMemo<readonly RefObject<ChatMessageAPI>[]>(
-    () => Object.freeze([messageAPI0Ref, messageAPI1Ref, messageAPI2Ref]),
-    [messageAPI0Ref, messageAPI1Ref, messageAPI2Ref]
+type UseRefAsStateSetterInit = { readonly shouldRenderOnChange: boolean };
+
+function useRefAsState<T>(
+  initialValue: T | (() => T)
+): readonly [RefObject<T> & { current: T }, (value: SetStateAction<T>, init: UseRefAsStateSetterInit) => void] {
+  const [, forceRender] = useState<object>();
+  const ref = useRef(typeof initialValue === 'function' ? (initialValue as () => T)() : initialValue);
+
+  const setState = useCallback(
+    (value: SetStateAction<T>, init: UseRefAsStateSetterInit): void => {
+      const nextValue = typeof value === 'function' ? (value as (prevState: T) => T)(ref.current) : value;
+
+      if (!Object.is(ref.current, nextValue)) {
+        ref.current = nextValue;
+
+        init.shouldRenderOnChange && forceRender({});
+      }
+    },
+    [forceRender, ref]
   );
+
+  return [ref, setState];
+}
+
+function ChatHistory({ messages, onLeave }: { readonly messages: readonly Message[]; readonly onLeave: () => void }) {
+  const [rawActiveMessageIdRef, setRawActiveMessageId] = useRefAsState<string | undefined>(undefined);
+  const bodyRef = useRef<HTMLDivElement>();
+  const messageAPIMapRef = useRef<Map<string, MutableRefObject<ChatMessageAPI>>>(new Map());
+  const messagesRef = useRefFrom(messages);
   const onLeaveRef = useRefFrom(onLeave);
   const rootRef = useRef<HTMLDivElement>();
 
-  const activeMessageId = useMemo(() => rawActiveMessageId || CHAT_MESSAGES.at(-1)?.id, [rawActiveMessageId]);
+  // Explicitly move the focus when: "messages" props changed while the chat history is not focused.
+  useMemo(() => {
+    const { activeElement } = document;
+    const { current: root } = rootRef;
 
-  const activeMessageIndexRef = useRefFrom(
-    useMemo(() => CHAT_MESSAGES.findIndex(({ id }) => id === activeMessageId), [activeMessageId])
-  );
+    if (!(Object.is(root, activeElement) || root?.contains(activeElement))) {
+      setRawActiveMessageId(messages.at(-1)?.id, { shouldRenderOnChange: false });
+    }
+
+    const nextMessageIds = new Set(messages.map(({ id }) => id));
+    const messageIds = new Set(messageAPIMapRef.current.keys());
+
+    for (const id of nextMessageIds.difference(messageIds)) {
+      messageAPIMapRef.current.set(id, { current: undefined });
+    }
+
+    for (const id of messageIds.difference(nextMessageIds)) {
+      messageAPIMapRef.current.delete(id);
+    }
+  }, [messageAPIMapRef, messages, rootRef]);
+
+  const activeMessageId = rawActiveMessageIdRef.current || messages.at(-1)?.id;
 
   const setActiveMessageId = useCallback<Dispatch<SetStateAction<string>>>(
-    nextActiveMessageId => {
-      setRawActiveMessageId(activeMessageId => {
-        if (typeof nextActiveMessageId === 'function') {
-          nextActiveMessageId = nextActiveMessageId(activeMessageId);
-        }
-
-        return nextActiveMessageId === CHAT_MESSAGES.at(-1)?.id ? undefined : nextActiveMessageId;
-      });
-    },
-    [setRawActiveMessageId]
+    nextActiveMessageId => setRawActiveMessageId(nextActiveMessageId, { shouldRenderOnChange: true }),
+    [messagesRef, setRawActiveMessageId]
   );
 
   const setActiveMessageIndex = useCallback<Dispatch<SetStateAction<number>>>(
     nextActiveMessageIndex => {
       setActiveMessageId(activeMessageId => {
         const index = activeMessageId
-          ? CHAT_MESSAGES.findIndex(message => message.id === activeMessageId)
-          : CHAT_MESSAGES.length - 1;
+          ? messagesRef.current?.findIndex(message => message.id === activeMessageId)
+          : messagesRef.current?.length - 1;
 
         if (typeof nextActiveMessageIndex === 'function') {
           nextActiveMessageIndex = nextActiveMessageIndex(index);
         }
 
-        nextActiveMessageIndex = Math.max(0, Math.min(CHAT_MESSAGES.length - 1, nextActiveMessageIndex));
+        nextActiveMessageIndex = Math.max(0, Math.min(messagesRef.current?.length - 1, nextActiveMessageIndex));
 
-        return CHAT_MESSAGES.at(nextActiveMessageIndex)?.id;
+        return messagesRef.current?.at(nextActiveMessageIndex)?.id;
       });
     },
-    [setActiveMessageId]
+    [messagesRef, setActiveMessageId]
   );
 
   const handleKeyDown = useCallback(
@@ -280,7 +315,7 @@ function ChatHistory({ onLeave }) {
         } else if (event.key === 'Enter') {
           event.stopPropagation();
 
-          messageAPIsRef.at(activeMessageIndexRef.current).current?.focusContent();
+          messageAPIMapRef.current.get(rawActiveMessageIdRef.current).current?.focusContent();
         } else if (event.key === 'Escape') {
           if (!event.defaultPrevented) {
             // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
@@ -288,13 +323,13 @@ function ChatHistory({ onLeave }) {
           }
         } else if (event.key === 'Tab') {
           // When tabbing out of chat history, skip all message bodies.
-          bodyRef.current?.setAttribute('inert', 'inert');
+          bodyRef.current?.setAttribute('inert', '');
 
           requestAnimationFrame(() => bodyRef.current?.removeAttribute('inert'));
         }
       }
     },
-    [activeMessageIndexRef, bodyRef, messageAPIsRef, onLeaveRef, setActiveMessageIndex]
+    [bodyRef, messageAPIMapRef, onLeaveRef, rawActiveMessageIdRef, setActiveMessageIndex]
   );
 
   const handleMessageActive = useCallback(
@@ -327,7 +362,7 @@ function ChatHistory({ onLeave }) {
         ref={bodyRef}
         role="feed" // Required: we are using role="feed/article" to represent the chat thread.
       >
-        {CHAT_MESSAGES.map((message, index) => {
+        {messages.map(message => {
           const isActive = activeMessageId === message.id;
 
           return (
@@ -338,7 +373,7 @@ function ChatHistory({ onLeave }) {
               messageId={message.id}
               onActive={handleMessageActive}
               onLeave={isActive ? handleMessageLeave : undefined}
-              ref={messageAPIsRef.at(index)}
+              ref={messageAPIMapRef.current.get(message.id)}
             >
               {message.children}
             </ChatMessage>
@@ -368,7 +403,7 @@ const SendBox = forwardRef<HTMLTextAreaElement>(function SendBox(_, ref) {
   );
 });
 
-function ChatApp() {
+function ChatApp({ messages }) {
   const sendBoxRef = useRef<HTMLTextAreaElement>();
 
   const handleChatHistoryLeave = useCallback(() => sendBoxRef.current?.focus(), [sendBoxRef]);
@@ -379,12 +414,28 @@ function ChatApp() {
       data-testid="chat app"
       role="application" // Required: role="document" will only work when its container has role="application".
     >
-      <ChatHistory onLeave={handleChatHistoryLeave} />
+      <ChatHistory messages={messages} onLeave={handleChatHistoryLeave} />
       <SendBox ref={sendBoxRef} />
     </div>
   );
 }
 
 const mainElement = document.querySelector('main');
+const root = mainElement && createRoot(mainElement);
 
-mainElement && createRoot(mainElement).render(<ChatApp />);
+root.render(<ChatApp messages={CHAT_MESSAGES} />);
+
+window.addEventListener('addmessage', () => {
+  root.render(
+    <ChatApp
+      messages={Object.freeze([
+        ...CHAT_MESSAGES,
+        {
+          abstract: 'Bot said: Thank you.',
+          children: <p>Thank you.</p>,
+          id: 'a-00004'
+        }
+      ])}
+    />
+  );
+});
