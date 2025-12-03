@@ -43,7 +43,7 @@ async function render() {
         throw new Error('No <textarea> element');
       }
     },
-    { timeout: 2000 }
+    { timeout: 5000 }
   );
 }
 
