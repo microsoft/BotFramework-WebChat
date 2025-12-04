@@ -167,6 +167,38 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
     onFocusRef.current?.(messageIdRef.current);
   }, [messageIdRef, onFocusRef]);
 
+  // This is for screen reader only. The header should be visually sized 0px x 0px and it should not be clickable by mouse or keyboard.
+  // Windows Narrator quirks: In scan mode, press H key to put virtual cursor on the header, then press ENTER key.
+  //                          It should fire header.onClick. However, fire root.onClick instead and never header.onClick.
+  //                          We are not sure why it happens this way, even we set <header tabIndex={0}>, it still fire root.onClick.
+  const handleHeaderClick = useCallback(
+    event => {
+      // Don't leak the event to root.onClick.
+      event.stopPropagation();
+
+      focusBody();
+    },
+    [focusBody]
+  );
+
+  // This is for mouse click and Windows Narrator scan mode click.
+  const handleRootClick = useCallback<MouseEventHandler<HTMLDivElement>>(() => {
+    // Windows Narrator: When pressing "H" key to focus on the header and press ENTER, it fire <ChatMessage.root>.onClick, instead of <ChatMessage.header>.onClick.
+    //                   Thus, we need to focusBody() instead of focusRoot().
+    const { activeElement } = document;
+
+    // If the body is already focused, for example, the <input> inside the body is focused.
+    // We should not send the focus back to the body as it would blur <input>.
+    if (!(activeElement === bodyRef.current || bodyRef.current?.contains(activeElement))) {
+      focusBody();
+    }
+  }, [bodyRef, focusBody]);
+
+  const handleRootFocus = useCallback(() => {
+    // Windows Narrator: when pressing H key to jump across messages, it automatically fire <ChatMessage.root>.onFocus automatically.
+    onFocusRef.current?.(messageIdRef.current);
+  }, [onFocusRef, messageIdRef]);
+
   const handleRootKeyDown = useCallback<KeyboardEventHandler<unknown>>(
     event => {
       if (event.key === 'Escape' && event.target === bodyRef.current) {
@@ -200,38 +232,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
     [bodyRef, focusBody, focusRoot]
   );
 
-  // This is for screen reader only. The header should be visually sized 0px x 0px and it should not be clickable by mouse or keyboard.
-  // Windows Narrator quirks: In scan mode, press H key to put virtual cursor on the header, then press ENTER key.
-  //                          It should fire header.onClick. However, fire root.onClick instead and never header.onClick.
-  //                          We are not sure why it happens this way, even we set <header tabIndex={0}>, it still fire root.onClick.
-  const handleHeaderClick = useCallback(
-    event => {
-      // Don't leak the event to root.onClick.
-      event.stopPropagation();
-
-      focusBody();
-    },
-    [focusBody]
-  );
-
-  // This is for mouse click and Windows Narrator scan mode click.
-  const handleRootClick = useCallback<MouseEventHandler<HTMLDivElement>>(() => {
-    // Windows Narrator: When pressing "H" key to focus on the header and press ENTER, it fire <ChatMessage.root>.onClick, instead of <ChatMessage.header>.onClick.
-    //                   Thus, we need to focusBody() instead of focusRoot().
-    const { activeElement } = document;
-
-    // If the body is already focused, for example, the <input> inside the body is focused.
-    // We should not send the focus back to the body as it would blur <input>.
-    if (!(activeElement === bodyRef.current || bodyRef.current?.contains(activeElement))) {
-      focusBody();
-    }
-  }, [bodyRef, focusBody]);
-
-  const handleRootFocus = useCallback(() => {
-    // Windows Narrator: when pressing H key to jump across messages, it automatically fire <ChatMessage.root>.onFocus automatically.
-    onFocusRef.current?.(messageIdRef.current);
-  }, [onFocusRef, messageIdRef]);
-
   useImperativeHandle(ref, () => Object.freeze({ focus: focusRoot, id }), [focusRoot, id]);
 
   return (
@@ -256,12 +256,12 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
       <h1 className="chat-message__header" id={headerId} onClick={handleHeaderClick} tabIndex={-1}>
         {abstract}
       </h1>
-      <div // This element serve almost one purpose, manually focusable on this. Set tabIndex={-1} then call focus(). Perhaps, we can componentize it out.
+      <div // This element serve almost a single purpose, ability to programmatically focus on this element. I.e. set tabIndex={-1} then call focus(), revert on blur. Perhaps, we can componentize it out.
         aria-labelledby={bodyId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Windows Narrator will say nothing.
         className="chat-message__body"
         data-testid="chat message body"
         onBlur={handleBodyBlur} // Required: revert tabIndex="-1" when body is blurred.
-        onFocus={handleBodyFocus} // Required: notify chat history this message is being focused.
+        onFocus={handleBodyFocus} // Required: notify chat history that this message is being focused.
         ref={bodyRef}
       >
         <focus-trap id={bodyId} onescapekeydown={focusRoot}>
