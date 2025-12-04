@@ -263,6 +263,8 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
 }
 
 function ChatHistory({ messages, onLeave }: { readonly messages: readonly Message[]; readonly onLeave: () => void }) {
+  // Message ID is the source-of-truth of what message is focused.
+  // - We tried ChatMessage API ref, however, it is only available after rendering, i.e. useEffect, not great.
   const [focusedMessageIdRef, setFocusedMessageIDRef] = useRefAsState<string | undefined>(undefined);
   const messageAPIMapRef = useRef<Map<string, MutableRefObject<ChatMessageAPI | undefined>>>(new Map());
   const messagesRef = useRefFrom(messages);
@@ -354,7 +356,7 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
         }
       }
     },
-    [focusMessageByIndex, focusedMessageIdRef, messageAPIMapRef, onLeaveRef, rootRef]
+    [focusMessageByIndex, onLeaveRef, rootRef]
   );
 
   const handleMessageFocus = useCallback(
