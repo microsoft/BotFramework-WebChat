@@ -3,7 +3,6 @@
 import { useRefFrom } from 'https://esm.sh/use-ref-from';
 // @ts-ignore
 import {
-  type Dispatch,
   forwardRef,
   type KeyboardEventHandler,
   MouseEventHandler,
@@ -284,8 +283,8 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
       // - Assume all 3 messages are interactive and the 2nd message was last focused
       //     - When TAB from above, it would land on the interactive content in 1st message, we need to use sentinel to mark things as inert momentarily
       //     - When TAB from below, it would land on the interactive content in 3rd message, we also need to use sentinel
-      // Either direction, when we are focusing from outside, we need to use sentinel.
-      // Roving tab index is not useful for "saving what was last focused." We need to use sentinel anyway.
+      // Either direction, when we are focusing from outside, we need to skip messages other than the focused one. We are using focus sentinels instead.
+      // At the end of the day, roving tab index is not useful for "restoring what was last focused." We will use focus sentinels.
       // Therefore, we set all tabIndex={0} for simplicity.
       tabIndex={0}
     >
