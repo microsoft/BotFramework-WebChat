@@ -214,11 +214,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
       } else if (event.key === 'Enter' && event.target === rootRef.current) {
         focusBody();
       } else if (event.key === 'Tab' && event.target === bodyRef.current) {
-        // Opinionated special case: pressing SHIFT-TAB when the content is focused, will send focus back to the message root.
-        if (event.shiftKey) {
-          return;
-        }
-
         // Special case: if the content is non-interactive, after focusing on the message body, pressing the TAB key should not send the focus to next message.
         // In other words, we should trap the TAB key.
         const focusables = Array.from<HTMLElement>(bodyRef.current?.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
@@ -226,6 +221,12 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
         );
 
         if (!focusables.length) {
+          event.preventDefault();
+        } else if (event.shiftKey) {
+          // Special case: If the content is interactive, press SHIFT-TAB key should send the focus to the last focusable inside the focus trap.
+          //               So both TAB and SHIFT-TAB on the message body will send the focus inside the focus trap.
+          focusables.at(-1)?.focus();
+
           event.preventDefault();
         }
       }

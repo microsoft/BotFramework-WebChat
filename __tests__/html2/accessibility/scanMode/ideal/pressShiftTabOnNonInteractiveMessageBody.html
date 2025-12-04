@@ -22,9 +22,8 @@
           // WHEN: SHIFT-TAB key is pressed.
           await host.sendShiftTab();
 
-          // THEN: The second message (not body) should be focused.
-          //       This could be relaxed. As long as the focus is on the second message or second message body, it is fine.
-          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
+          // THEN: The second message body should kept the focus.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
         },
         { skipCheckAccessibility: true }
       );
