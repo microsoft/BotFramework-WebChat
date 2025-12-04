@@ -30,8 +30,15 @@ import { createRoot } from 'react-dom/client';
 //    Instead, content may continue to use `preventDefault` to stop ancestors from knowing the event.
 //    Thus, we should use `defaultPrevented` to check if we should handle the event from the content or not.
 // 3. Roving tab index is simpler than active descendant
-//    - One less DOM element (active descendant requires role="group" while we also need role="feed/article")
-//    - CSS styling can simply use `:focus` and `:focus-within`
+//    - One less DOM element (active descendant requires role="group" while we also need role="feed/article").
+//    - CSS styling can simply use `:focus` and `:focus-within`.
+// 4. We are using focus sentinels to fake roving tab index
+//    - When TAB from outside, all messages except the focused one need to be skipped. This is not trivial.
+//       - To achieve this, we need `onKeyDown` watching incoming event.key === 'Tab', when it happen, momentarily add `inert` attribute to all messages except the focused
+//       - We cannot have `inert` all the time because it intefere with mouse clicks
+//       - The `onKeyDown` need to be set outside of chat history, which is not trivial.
+//    - Instead of using singular tabIndex={0}, we remember which message was focused, then the sentinels will directly focus on them.
+//       - This is like roving tab index, but the last focused is remembered in code, than remembered via the singular tabIndex={0}.
 
 type ChatMessageAPI = {
   /** When called, focus on the message. */
@@ -167,12 +174,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
     bodyRef.current?.removeAttribute('tabindex');
   }, [bodyRef]);
 
-  const handleBodyFocus = useCallback(() => {
-    // As the message body is already focused, we have already set tabIndex={-1} somewhere.
-    // We just need to notify chat history we are being focused.
-    onFocusRef.current?.(messageIdRef.current);
-  }, [messageIdRef, onFocusRef]);
-
   const handleBodyKeyDown = useCallback<KeyboardEventHandler<unknown>>(
     event => {
       if (event.defaultPrevented) {
@@ -237,6 +238,8 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
     }
   }, [bodyRef, focusBody]);
 
+  // Notify chat history this message is being focused. So focus sentinels will land on this message later.
+  // This is actually roving tab index without using tabIndex={0}.
   const handleRootFocus = useCallback(() => {
     // Windows Narrator: when pressing H key to jump across messages, it automatically fire <ChatMessage.root>.onFocus automatically.
     onFocusRef.current?.(messageIdRef.current);
@@ -294,7 +297,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
         className="chat-message__body"
         data-testid="chat message body"
         onBlur={handleBodyBlur} // Required: revert tabIndex="-1" when body is blurred.
-        onFocus={handleBodyFocus} // Required: notify chat history that this message is being focused.
         onKeyDown={handleBodyKeyDown}
         ref={bodyRef}
       >
@@ -338,31 +340,23 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
     }
   }, [focusedMessageIdRef, messageAPIMapRef, messages, rootRef]);
 
-  const focusMessageByIndex = useCallback<Dispatch<SetStateAction<number>>>(
-    nextFocusedMessageIndex => {
-      if (typeof nextFocusedMessageIndex === 'function') {
-        let focusedMessageIndex: number;
+  const jumpToRelativeMessage = useCallback(
+    (messageId, relativePosition) => {
+      const index = messagesRef.current?.findIndex(({ id }) => id === messageId);
 
-        if (focusedMessageIdRef.current) {
-          const { current: focusedMessageId } = focusedMessageIdRef;
-
-          focusedMessageIndex = messagesRef.current?.findIndex(({ id }) => id === focusedMessageId);
-        } else {
-          focusedMessageIndex = messagesRef.length - 1;
-        }
-
-        nextFocusedMessageIndex = nextFocusedMessageIndex(focusedMessageIndex);
+      if (!~index) {
+        return;
       }
 
-      nextFocusedMessageIndex = Math.max(0, Math.min(messagesRef.current.length - 1, nextFocusedMessageIndex));
+      const nextIndex = Math.max(0, Math.min(messagesRef.current.length - 1, index + relativePosition));
 
-      const focusedMessageId = messagesRef.current?.at(nextFocusedMessageIndex)?.id;
+      const nextFocusedMessageId = messagesRef.current?.at(nextIndex)?.id;
 
-      setFocusedMessageIDRef(focusedMessageId, { shouldRenderOnChange: false });
+      setFocusedMessageIDRef(nextFocusedMessageId, { shouldRenderOnChange: false });
 
-      messageAPIMapRef.current.get(focusedMessageId)?.current?.focus();
+      messageAPIMapRef.current.get(nextFocusedMessageId)?.current?.focus();
     },
-    [focusedMessageIdRef, messageAPIMapRef, messagesRef, setFocusedMessageIDRef]
+    [messageAPIMapRef, messagesRef, setFocusedMessageIDRef]
   );
 
   const handleFocusSentinelFocus = useCallback(() => {
@@ -371,15 +365,22 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
     focusedMessageId && messageAPIMapRef.current.get(focusedMessageId)?.current?.focus();
   }, [focusedMessageIdRef, messageAPIMapRef]);
 
-  // Q: Why not capturing via up/down arrow key?
-  // A: If the message is focused by mouse click, we still need to capture what is focused.
+  // Remember what message is being focused, we need this for TAB-ing from outside (i.e. focus sentinels.)
+  // This function is hot path. If the message contains multiple <input>, switching <input> will send them here.
   const handleMessageFocus = useCallback(
     id => setFocusedMessageIDRef(id, { shouldRenderOnChange: false }),
     [setFocusedMessageIDRef]
   );
 
-  const handleMessageJumpToNext = useCallback(() => focusMessageByIndex(index => index + 1), [focusMessageByIndex]);
-  const handleMessageJumpToPrevious = useCallback(() => focusMessageByIndex(index => index - 1), [focusMessageByIndex]);
+  const handleMessageJumpToNext = useCallback(
+    messageId => jumpToRelativeMessage(messageId, 1),
+    [jumpToRelativeMessage]
+  );
+
+  const handleMessageJumpToPrevious = useCallback(
+    messageId => jumpToRelativeMessage(messageId, -1),
+    [jumpToRelativeMessage]
+  );
 
   const handleMessageLeave = useCallback(
     (_, by) => {
