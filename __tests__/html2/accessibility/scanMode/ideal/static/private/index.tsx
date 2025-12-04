@@ -145,7 +145,7 @@ const CHAT_MESSAGES: readonly Message[] = Object.freeze([
     id: 'a-00002'
   },
   {
-    abstract: 'Bot said: Where should we ship it to?',
+    abstract: 'Bot said: Where should we ship it to? Has an attachment.',
     children: (
       <>
         <p>Where should we ship it to?</p>
