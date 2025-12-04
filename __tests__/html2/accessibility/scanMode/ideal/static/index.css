@@ -2,7 +2,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.chat-history__body {
+.chat-history {
   display: flex;
   flex-direction: column;
   gap: 12px;

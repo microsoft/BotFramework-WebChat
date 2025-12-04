@@ -27,11 +27,11 @@ import { createRoot } from 'react-dom/client';
 //    Instead, content may continue to use `preventDefault` to stop ancestors from knowing the event.
 //    Thus, we should use `defaultPrevented` to check if we should handle the event from the content or not.
 // 3. Roving tab index is simpler than active descendant
-//    - CSS styling can simply use `:focus`
+//    - One less DOM element (active descendant requires role="group" while we also need role="feed/article")
+//    - CSS styling can simply use `:focus` and `:focus-within`
 
 type ChatMessageAPI = {
-  readonly focusContent: () => void;
-  readonly focusRoot: () => void;
+  readonly focus: () => void;
   readonly id: string;
 };
 
@@ -154,8 +154,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
     rootRef.current?.focus();
   }, [rootRef]);
 
-  useImperativeHandle(ref, () => Object.freeze({ focusContent, focusRoot, id }), [focusContent, focusRoot, id]);
-
   // Revert the change after blur.
   const handleContentBlur = useCallback(() => {
     bodyRef.current?.removeAttribute('tabindex');
@@ -167,7 +165,7 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
     onFocusRef.current?.(messageIdRef.current, 'content');
   }, [messageIdRef, onFocusRef]);
 
-  const handleContentKeyDown = useCallback<KeyboardEventHandler<unknown>>(
+  const handleRootKeyDown = useCallback<KeyboardEventHandler<unknown>>(
     event => {
       if (event.key === 'Escape') {
         // Regardless of where the focus is inside the content, when ESCAPE key is pressed, send the focus back to chat history.
@@ -178,6 +176,8 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
 
           focusRoot();
         }
+      } else if (event.key === 'Enter' && event.target === rootRef.current) {
+        focusContent();
       } else if (event.key === 'Tab' && event.target === bodyRef.current) {
         // Special case: if the content is non-interactive, after focusing on the message body, pressing the TAB key should not send the focus to next message.
         // In other words, we should trap the TAB key.
@@ -192,7 +192,7 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
         }
       }
     },
-    [bodyRef, focusRoot]
+    [bodyRef, focusContent, focusRoot]
   );
 
   // This is for screen reader. The header should be sized 0x0 and not clickable by mouse or keyboard.
@@ -204,9 +204,9 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
       // Don't leak the event to root.onClick.
       event.stopPropagation();
 
-      ref.current.focusContent();
+      focusContent();
     },
-    [ref]
+    [focusContent]
   );
 
   // This is for mouse click and Windows Narrator scan mode click.
@@ -227,6 +227,8 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
     onFocusRef.current?.(messageIdRef.current);
   }, [onFocusRef, messageIdRef]);
 
+  useImperativeHandle(ref, () => Object.freeze({ focus: focusRoot, id }), [focusRoot, id]);
+
   return (
     <article // Required: children of role="feed" must be role="article".
       aria-labelledby={headerId} // Required: we just want screen reader to narrate header. Without this, it will narrate the whole content.
@@ -235,9 +237,10 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
       id={id}
       onClick={handleRootClick}
       onFocus={handleRootFocus}
+      onKeyDown={handleRootKeyDown} // Required: pressing ESCAPE key should send the focus back to chat history.
       ref={rootRef}
     >
-      <h1 className="chat-message__header" id={headerId} onClick={handleHeaderClick} tabIndex={0}>
+      <h1 className="chat-message__header" id={headerId} onClick={handleHeaderClick} tabIndex={-1}>
         {abstract}
       </h1>
       <div
@@ -246,7 +249,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
         data-testid="chat message body"
         onBlur={handleContentBlur} // Required: revert tabIndex="-1" when content is blurred.
         onFocus={handleContentFocus} // Required: notify chat history this message is focused.
-        onKeyDown={handleContentKeyDown} // Required: pressing ESCAPE key should send the focus back to chat history.
         ref={bodyRef}
       >
         {/* Can we simplify the structure below? */}
@@ -260,7 +262,6 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
 
 function ChatHistory({ messages, onLeave }: { readonly messages: readonly Message[]; readonly onLeave: () => void }) {
   const [focusedMessageIdRef, setFocusedMessageIDRef] = useRefAsState<string | undefined>(undefined);
-  const bodyRef = useRef<HTMLDivElement>(null);
   const messageAPIMapRef = useRef<Map<string, MutableRefObject<ChatMessageAPI | undefined>>>(new Map());
   const messagesRef = useRefFrom(messages);
   const onLeaveRef = useRefFrom(onLeave);
@@ -310,7 +311,7 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
 
       setFocusedMessageIDRef(focusedMessageId, { shouldRenderOnChange: false });
 
-      messageAPIMapRef.current.get(focusedMessageId)?.current?.focusRoot();
+      messageAPIMapRef.current.get(focusedMessageId)?.current?.focus();
     },
     [focusedMessageIdRef, messageAPIMapRef, messagesRef, setFocusedMessageIDRef]
   );
@@ -318,7 +319,7 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
   const handleFocusSentinelFocus = useCallback(() => {
     const { current: focusedMessageId } = focusedMessageIdRef;
 
-    focusedMessageId && messageAPIMapRef.current.get(focusedMessageId)?.current?.focusRoot();
+    focusedMessageId && messageAPIMapRef.current.get(focusedMessageId)?.current?.focus();
   }, [focusedMessageIdRef, messageAPIMapRef]);
 
   const handleKeyDown = useCallback(
@@ -327,7 +328,7 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
         return;
       }
 
-      const isFocusingOnMessageRoot = document.activeElement?.parentElement === bodyRef.current;
+      const isFocusingOnMessageRoot = document.activeElement?.parentElement === rootRef.current;
 
       if (isFocusingOnMessageRoot) {
         if (event.key === 'ArrowUp') {
@@ -338,12 +339,6 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
           event.stopPropagation();
 
           focusMessageByIndex(index => index + 1);
-        } else if (event.key === 'Enter') {
-          event.stopPropagation();
-
-          const { current: focusedMessageId } = focusedMessageIdRef;
-
-          focusedMessageId && messageAPIMapRef.current.get(focusedMessageId)?.current?.focusContent();
         } else if (event.key === 'Escape') {
           if (!event.defaultPrevented) {
             // We like this, when pressing ESCAPE key on chat history, send the focus to send box.
@@ -351,13 +346,13 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
           }
         } else if (event.key === 'Tab') {
           // When tabbing out of chat history, skip all message bodies.
-          bodyRef.current?.setAttribute('inert', '');
+          rootRef.current?.setAttribute('inert', '');
 
-          requestAnimationFrame(() => bodyRef.current?.removeAttribute('inert'));
+          requestAnimationFrame(() => rootRef.current?.removeAttribute('inert'));
         }
       }
     },
-    [bodyRef, messageAPIMapRef, onLeaveRef, focusMessageByIndex, focusedMessageIdRef]
+    [focusMessageByIndex, focusedMessageIdRef, messageAPIMapRef, onLeaveRef, rootRef]
   );
 
   const handleMessageFocus = useCallback(
@@ -366,28 +361,27 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
   );
 
   return (
-    <div className="chat-history" data-testid="chat history" ref={rootRef}>
-      <section
-        className="chat-history__body"
-        onKeyDown={handleKeyDown}
-        ref={bodyRef}
-        role="feed" // Required: we are using role="feed/article" to represent the chat thread.
-      >
-        <div className="focus-sentinel" onFocus={handleFocusSentinelFocus} role="none" tabIndex={0} />
-        {messages.map(message => (
-          <ChatMessage
-            abstract={message.abstract}
-            id={`chat__message-id--${message.id}`}
-            messageId={message.id}
-            onFocus={handleMessageFocus}
-            ref={messageAPIMapRef.current.get(message.id)}
-          >
-            {message.children}
-          </ChatMessage>
-        ))}
-        <div className="focus-sentinel" onFocus={handleFocusSentinelFocus} role="none" tabIndex={0} />
-      </section>
-    </div>
+    <section
+      className="chat-history"
+      data-testid="chat history"
+      onKeyDown={handleKeyDown}
+      ref={rootRef}
+      role="feed" // Required: we are using role="feed/article" to represent the chat thread.
+    >
+      <div className="focus-sentinel" onFocus={handleFocusSentinelFocus} role="none" tabIndex={0} />
+      {messages.map(message => (
+        <ChatMessage
+          abstract={message.abstract}
+          id={`chat__message-id--${message.id}`}
+          messageId={message.id}
+          onFocus={handleMessageFocus}
+          ref={messageAPIMapRef.current.get(message.id)}
+        >
+          {message.children}
+        </ChatMessage>
+      ))}
+      <div className="focus-sentinel" onFocus={handleFocusSentinelFocus} role="none" tabIndex={0} />
+    </section>
   );
 }
 
