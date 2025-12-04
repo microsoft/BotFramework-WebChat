@@ -333,7 +333,13 @@ function ChatMessage({ abstract, children, messageId, onFocus, onJumpToNext, onJ
       // Therefore, we set all tabIndex={0} for simplicity.
       tabIndex={0}
     >
-      <h1 className="chat-message__header" id={headerId} onClick={handleHeaderClick} tabIndex={-1}>
+      <h1
+        className="chat-message__header"
+        id={headerId}
+        onClick={handleHeaderClick}
+        // Windows Narrator quirks: All scan mode mode item must have tabIndex. Otherwise it may send the focus to document.body.
+        tabIndex={-1}
+      >
         {abstract}
       </h1>
       <div
