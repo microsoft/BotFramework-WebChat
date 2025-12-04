@@ -294,7 +294,9 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
       <h1 className="chat-message__header" id={headerId} onClick={handleHeaderClick} tabIndex={-1}>
         {abstract}
       </h1>
-      <div // This element serve almost a single purpose, ability to programmatically focus on this element. I.e. set tabIndex={-1} then call focus(), revert on blur. Perhaps, we can componentize it out.
+      <div
+        // This element serve a single purpose, ability to programmatically focus on this element. I.e. set tabIndex={-1} then call focus(), revert on blur.
+        // Perhaps, we can componentize it out as <ManualFocusable> component.
         aria-labelledby={bodyId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Windows Narrator will say nothing.
         className="chat-message__body"
         data-testid="chat message body"
