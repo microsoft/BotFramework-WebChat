@@ -29,17 +29,8 @@
 
           await host.sendTab(1);
 
-          // THEN: Should focus on the chat history.
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-
-          // THEN: The last chat message should be marked as active.
-          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
-
-          // THEN: The last chat message should be the active descendant.
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
-
-          // THEN: The chat message body should not have role="document" because the content is not focused.
-          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).not.toBe('document');
+          // THEN: The last message should be focused.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
         },
         { skipCheckAccessibility: true }
       );

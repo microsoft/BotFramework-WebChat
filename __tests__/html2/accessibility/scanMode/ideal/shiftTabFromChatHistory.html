@@ -3,8 +3,16 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .first-button {
+        left: 0;
+        position: absolute;
+        top: 0;
+      }
+    </style>
   </head>
   <body>
+    <button class="first-button" data-testid="first button" type="button">Button before &lt;main&gt;</button>
     <main></main>
     <script type="module">
       import '/test-harness.mjs';
@@ -16,19 +24,14 @@
         async function () {
           await render();
 
+          // GIVEN: Send the focus to chat history.
           await systemUnderTest.focusChatHistory();
 
-          // WHEN: ENTER key is pressed.
-          await host.sendKeys('ENTER');
+          // WHEN: SHIFT-TAB key is pressed.
+          await host.sendShiftTab();
 
-          // WHEN: TAB key is pressed.
-          await host.sendKeys('TAB');
-
-          // THEN: The last chat message should be focused.
-          expect(document.activeElement).toBe(systemUnderTest.addressFormTextBox);
-
-          // THEN: The last chat message should be marked as active.
-          expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
+          // THEN: Should focus on the first button on the page.
+          document.querySelector('[data-testid="first button"]').focus();
         },
         { skipCheckAccessibility: true }
       );

@@ -15,12 +15,13 @@
 
       import { render, systemUnderTest } from './static/index.js';
 
-      run(
-        async function () {
-          await render();
-        },
-        { skipCheckAccessibility: true }
-      );
+      await render();
+      // run(
+      //   async function () {
+      //     await render();
+      //   },
+      //   { skipCheckAccessibility: true }
+      // );
 
       window.addEventListener('keydown', event => {
         if (event.altKey && (event.key === 'A' || event.key === 'a')) {

@@ -10,41 +10,41 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
       import { render, systemUnderTest } from './static/index.js';
 
       run(
         async function () {
           await render();
 
-          systemUnderTest.chatHistory.focus();
+          await systemUnderTest.focusChatHistory();
 
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
-
-          await host.sendKeys('ARROW_UP');
-
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[1]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
 
           await host.sendKeys('ARROW_UP');
 
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[0]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
 
           await host.sendKeys('ARROW_UP');
 
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[0]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[0]);
+
+          await host.sendKeys('ARROW_UP');
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[0]);
 
           await host.sendKeys('ARROW_DOWN');
 
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[1]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
 
           await host.sendKeys('ARROW_DOWN');
 
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
 
           await host.sendKeys('ARROW_DOWN');
 
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
         },
         { skipCheckAccessibility: true }
       );

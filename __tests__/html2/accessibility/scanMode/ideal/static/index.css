@@ -9,9 +9,22 @@ body {
   padding: 6px;
 }
 
-/* Can we eliminate .chat-history:focus? It doesn't follow BEM. */
-.chat-history:focus .chat-message__is-active {
+*:focus {
+  background-color: yellow !important;
+}
+
+.chat-history:focus-within {
+  outline: solid 2px black;
+  outline-offset: 2px;
+}
+
+.chat-message:focus {
   outline: dashed 2px black;
+  outline-offset: 2px;
+}
+
+.chat-message:focus-within {
+  outline: dotted 2px black;
   outline-offset: 2px;
 }
 
@@ -49,8 +62,8 @@ body {
   margin: 6px;
 }
 
-.focus-redirector {
-  /* Cannot use display: contents because it would not mark the element as focusable. */
+.focus-sentinel {
+  /* Cannot use display: contents because it would mark the element as non-focusable. */
   clip: rect(0, 0, 0, 0);
   height: 1px;
   overflow: hidden;

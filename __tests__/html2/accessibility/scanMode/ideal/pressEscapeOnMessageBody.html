@@ -16,19 +16,18 @@
         async function () {
           await render();
 
-          systemUnderTest.chatHistory.focus();
+          await systemUnderTest.focusChatHistory();
+
+          // WHEN: ENTER key is pressed.
           await host.sendKeys('ENTER');
 
+          // THEN: The message body of the last message should be focused.
           expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
-          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
 
           await host.sendKeys('ESCAPE');
 
-          // THEN: Should move the focus back to chat history.
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
+          // THEN: The last message should be focused, instead of message body.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
         },
         { skipCheckAccessibility: true }
       );

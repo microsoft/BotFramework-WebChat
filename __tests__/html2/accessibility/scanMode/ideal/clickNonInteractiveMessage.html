@@ -16,21 +16,11 @@
         async function () {
           await render();
 
+          // WHEN: Click on the second chat message.
           await host.click(systemUnderTest.chatMessages[1]);
 
-          // The message is non-interactive, it should be focusing on chat history while setting active descendant to the chat message.
-
-          // THEN: Should focus on the chat history.
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-
-          // THEN: The focused chat message should be marked as active.
-          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[1]);
-
-          // THEN: The focused chat message should be the active descendant of the chat history.
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[1]);
-
-          // THEN: The chat message body should NOT have role="document" because its content is NOT focused.
-          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).not.toBe('document');
+          // THEN: Should focus on the second chat message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
         },
         { skipCheckAccessibility: true }
       );

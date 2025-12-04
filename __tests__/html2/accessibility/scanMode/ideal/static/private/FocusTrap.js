@@ -31,30 +31,32 @@ class FocusTrap extends HTMLElement {
 
   handleKeyDown(event) {
     if (event.key === 'Tab') {
-      const focusables = Array.from(this.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
-        element => !element.closest('[inert]') && element.offsetParent
-      );
+      /** @type {HTMLElement[]} */
+      const focusables = Array.from(this.querySelectorAll(FOCUSABLE_SELECTOR_QUERY));
+      const nonInertFocusables = focusables.filter(element => !element.closest('[inert]') && element.offsetParent);
 
-      if (!focusables.length) {
+      if (!nonInertFocusables.length) {
         return;
       }
 
-      const [firstElement] = focusables;
-      const lastElement = focusables.at(-1);
+      const [firstElement] = nonInertFocusables;
+      const lastElement = nonInertFocusables.at(-1);
 
       if (event.shiftKey && document.activeElement === firstElement) {
         event.preventDefault();
         event.stopPropagation();
 
-        lastElement.focus();
+        lastElement?.focus();
       } else if (!event.shiftKey && document.activeElement === lastElement) {
         event.preventDefault();
         event.stopPropagation();
 
-        firstElement.focus();
+        firstElement?.focus();
       }
     } else if (event.key === 'Escape') {
       event.stopPropagation();
+
+      console.log('<focus-trap> onescapekeydown');
 
       this.dispatchEvent(new CustomEvent('escapekeydown', { bubbles: true }));
     }

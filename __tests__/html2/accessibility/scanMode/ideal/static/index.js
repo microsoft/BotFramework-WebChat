@@ -1,4 +1,6 @@
+// @ts-ignore
 import init, { transform } from 'https://esm.sh/@esm.sh/tsx';
+// @ts-ignore
 import { waitFor } from 'https://esm.sh/@testduet/wait-for';
 import './private/FocusTrap.js';
 
@@ -48,31 +50,6 @@ async function render() {
 }
 
 const systemUnderTest = {
-  get activeChatMessage() {
-    const activeChatMessages = document.querySelectorAll('.chat-message__is-active[data-testid="chat message"]');
-
-    if (activeChatMessages.length > 1) {
-      throw new Error('ASSERTION: should not have more than one chat message is active');
-    }
-
-    return activeChatMessages[0];
-  },
-  get activeChatMessageBody() {
-    const activeChatMessageBodies = document.querySelectorAll(
-      '.chat-message__is-active[data-testid="chat message"] [data-testid="chat message body"]'
-    );
-
-    if (activeChatMessageBodies.length > 1) {
-      throw new Error('ASSERTION: should not have more than one chat message is active');
-    }
-
-    return activeChatMessageBodies[0];
-  },
-  get activeDescendant() {
-    return document.getElementById(
-      document.querySelector('[data-testid="chat history"]').getAttribute('aria-activedescendant')
-    );
-  },
   get chatHistory() {
     return document.querySelector('[data-testid="chat history"]');
   },
@@ -93,6 +70,16 @@ const systemUnderTest = {
   },
   get sendBoxTextBox() {
     return document.querySelector('[data-testid="send box text box"]');
+  },
+  async focusChatHistory() {
+    /** @type {HTMLElement | null} */
+    const textBox = document.querySelector('[data-testid="send box text box"]');
+
+    textBox?.focus();
+
+    // @ts-ignore
+    // eslint-disable-next-line no-undef
+    await host.sendShiftTab();
   }
 };
 

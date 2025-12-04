@@ -3,5 +3,6 @@
     "jsx": "react-jsx",
     "noImplicitAny": false,
     "target": "esnext"
-  }
+  },
+  "extends": "@msinternal/botframework-webchat-tsconfig/current"
 }

@@ -23,13 +23,7 @@
           systemUnderTest.addressFormSubmitButton.focus();
 
           // THEN: The chat message containing the focused button should be marked as active.
-          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
-
-          // THEN: The chat message containing the focused button should be the active descendant.
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
-
-          // THEN: The chat message body should have role="document" because one of its content is focused.
-          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).toBe('document');
+          expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
 
           await host.sendKeys('ENTER');
 
@@ -39,13 +33,7 @@
           expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
 
           // THEN: The chat message should still be marked as active.
-          expect(systemUnderTest.activeChatMessage).toBe(systemUnderTest.chatMessages[2]);
-
-          // THEN: The active descendant should be kept the same.
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[2]);
-
-          // THEN: The chat message body should have role="document" because one of its content is focused.
-          expect(systemUnderTest.activeChatMessageBody.getAttribute('role')).toBe('document');
+          expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
         },
         { skipCheckAccessibility: true }
       );

@@ -16,11 +16,10 @@
         async function () {
           await render();
 
-          systemUnderTest.chatHistory.focus();
+          await systemUnderTest.focusChatHistory();
           await host.sendKeys('ARROW_UP');
 
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[1]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
 
           await host.sendTab();
 
@@ -28,8 +27,7 @@
 
           await host.sendShiftTab();
 
-          expect(document.activeElement).toBe(systemUnderTest.chatHistory);
-          expect(systemUnderTest.activeDescendant).toBe(systemUnderTest.chatMessages[1]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
         },
         { skipCheckAccessibility: true }
       );
