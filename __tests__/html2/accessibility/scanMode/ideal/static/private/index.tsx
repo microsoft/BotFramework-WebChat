@@ -11,6 +11,7 @@ import {
   type RefObject,
   type SetStateAction,
   useCallback,
+  useId,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -141,8 +142,8 @@ function useRefAsState<T>(
 
 function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const bodyId = useMemo(() => crypto.randomUUID(), []);
-  const headerId = useMemo(() => crypto.randomUUID(), []);
+  const bodyId = useId();
+  const headerId = useId();
   const messageIdRef = useRefFrom(messageId);
   const onFocusRef = useRefFrom(onFocus);
   const rootRef = useRef<HTMLDivElement>(null);
