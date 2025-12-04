@@ -320,7 +320,7 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
     const { current: root } = rootRef;
 
     // Explicitly move the focus to newly added message when "messages" props changed while the chat history is not focused.
-    if (!(Object.is(root, activeElement) || root?.contains(activeElement))) {
+    if (!root?.contains(activeElement)) {
       focusedMessageIdRef.current = messages.at(-1)?.id;
     }
 
