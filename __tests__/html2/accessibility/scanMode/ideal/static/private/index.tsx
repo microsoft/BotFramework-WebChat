@@ -256,9 +256,9 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
         } else if (event.key === 'Tab') {
           onLeaveRef.current?.(messageIdRef.current, 'tab');
         } else if (event.key === 'ArrowUp') {
-          onJumpToPreviousRef.current?.();
+          onJumpToPreviousRef.current?.(messageIdRef.current);
         } else if (event.key === 'ArrowDown') {
-          onJumpToNextRef.current?.();
+          onJumpToNextRef.current?.(messageIdRef.current);
         }
       }
     },
@@ -307,8 +307,9 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
 }
 
 function ChatHistory({ messages, onLeave }: { readonly messages: readonly Message[]; readonly onLeave: () => void }) {
-  // Message ID is the source-of-truth of what message is focused.
-  // - We tried ChatMessage API ref, however, it is only available after rendering, i.e. useEffect, not great.
+  // Message ID is the source-of-truth of the focused message.
+  // - We tried using SoT of ChatMessage API ref, however, it is only available after rendering, i.e. useEffect, not great.
+  // - We tried using SoT of message index, it cannot survive message insertions.
   const [focusedMessageIdRef, setFocusedMessageIDRef] = useRefAsState<string | undefined>(undefined);
   const messageAPIMapRef = useRef<Map<string, MutableRefObject<ChatMessageAPI | undefined>>>(new Map());
   const messagesRef = useRefFrom(messages);
@@ -377,25 +378,19 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
     [setFocusedMessageIDRef]
   );
 
-  const handleMessageJumpToNext = useCallback(() => {
-    focusMessageByIndex(index => index + 1);
-  }, [focusMessageByIndex]);
-
-  const handleMessageJumpToPrevious = useCallback(() => {
-    focusMessageByIndex(index => index - 1);
-  }, [focusMessageByIndex]);
+  const handleMessageJumpToNext = useCallback(() => focusMessageByIndex(index => index + 1), [focusMessageByIndex]);
+  const handleMessageJumpToPrevious = useCallback(() => focusMessageByIndex(index => index - 1), [focusMessageByIndex]);
 
   const handleMessageLeave = useCallback(
     (_, by) => {
       if (by === 'tab') {
-        // When tabbing out of chat history, skip all message bodies.
+        // When tabbing out of chat history, skip all message bodies so TAB naturally land to the next focusable.
         rootRef.current?.setAttribute('inert', '');
 
         requestAnimationFrame(() => rootRef.current?.removeAttribute('inert'));
       } else {
+        // When ESCAPE key is pressed on the message, jump to send box.
         by satisfies 'escape';
-
-        // Jump to send box.
         onLeaveRef.current?.();
       }
     },
