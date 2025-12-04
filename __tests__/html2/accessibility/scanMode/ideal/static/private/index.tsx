@@ -45,6 +45,7 @@ type Message = {
 
 const CHAT_MESSAGES: readonly Message[] = Object.freeze([
   {
+    // "abstract" can be built using a new "activity abstract middleware". Not sure if we should support React elements or just plain text.
     abstract: 'Bot said: Hello, World!',
     children: (
       <>
@@ -140,31 +141,30 @@ function useRefAsState<T>(
 
 function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const contentId = useMemo(() => crypto.randomUUID(), []);
+  const bodyId = useMemo(() => crypto.randomUUID(), []);
   const headerId = useMemo(() => crypto.randomUUID(), []);
   const messageIdRef = useRefFrom(messageId);
   const onFocusRef = useRefFrom(onFocus);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const focusContent = useCallback(() => {
+  const focusBody = useCallback(() => {
     bodyRef.current?.setAttribute('tabindex', '-1');
     bodyRef.current?.focus();
   }, [bodyRef]);
 
   const focusRoot = useCallback(() => {
-    rootRef.current?.setAttribute('tabindex', '0');
     rootRef.current?.focus();
   }, [rootRef]);
 
   // Revert the change after blur.
-  const handleContentBlur = useCallback(() => {
+  const handleBodyBlur = useCallback(() => {
     bodyRef.current?.removeAttribute('tabindex');
   }, [bodyRef]);
 
-  const handleContentFocus = useCallback(() => {
-    // As the message content is already focused, we have already set tabIndex={-1} somewhere.
+  const handleBodyFocus = useCallback(() => {
+    // As the message body is already focused, we have already set tabIndex={-1} somewhere.
     // We just need to notify chat history we are being focused.
-    onFocusRef.current?.(messageIdRef.current, 'content');
+    onFocusRef.current?.(messageIdRef.current);
   }, [messageIdRef, onFocusRef]);
 
   const handleRootKeyDown = useCallback<KeyboardEventHandler<unknown>>(
@@ -179,12 +179,15 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
           focusRoot();
         }
       } else if (event.key === 'Enter' && event.target === rootRef.current) {
-        focusContent();
+        focusBody();
       } else if (event.key === 'Tab' && event.target === bodyRef.current) {
+        // Opinionated special case: pressing SHIFT-TAB when the content is focused, will send focus back to the message root.
+        if (event.shiftKey) {
+          return;
+        }
+
         // Special case: if the content is non-interactive, after focusing on the message body, pressing the TAB key should not send the focus to next message.
         // In other words, we should trap the TAB key.
-
-        // TODO: Can we make this simpler? Says, if we merge <div data-testid="chat message body"> with <FocusTrap>, will it makes this simpler?
         const focusables = Array.from<HTMLElement>(bodyRef.current?.querySelectorAll(FOCUSABLE_SELECTOR_QUERY)).filter(
           element => !element.closest('[inert]') && element.offsetParent
         );
@@ -194,7 +197,7 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
         }
       }
     },
-    [bodyRef, focusContent, focusRoot]
+    [bodyRef, focusBody, focusRoot]
   );
 
   // This is for screen reader only. The header should be visually sized 0px x 0px and it should not be clickable by mouse or keyboard.
@@ -206,23 +209,23 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
       // Don't leak the event to root.onClick.
       event.stopPropagation();
 
-      focusContent();
+      focusBody();
     },
-    [focusContent]
+    [focusBody]
   );
 
   // This is for mouse click and Windows Narrator scan mode click.
   const handleRootClick = useCallback<MouseEventHandler<HTMLDivElement>>(() => {
     // Windows Narrator: When pressing "H" key to focus on the header and press ENTER, it fire <ChatMessage.root>.onClick, instead of <ChatMessage.header>.onClick.
-    //                   Thus, we need to focusContent() instead of focusRoot().
+    //                   Thus, we need to focusBody() instead of focusRoot().
     const { activeElement } = document;
 
-    // If the content is already focused, for example, the <input> inside the content is focused.
+    // If the body is already focused, for example, the <input> inside the body is focused.
     // We should not send the focus back to the body as it would blur <input>.
     if (!(activeElement === bodyRef.current || bodyRef.current?.contains(activeElement))) {
-      focusContent();
+      focusBody();
     }
-  }, [bodyRef, focusContent]);
+  }, [bodyRef, focusBody]);
 
   const handleRootFocus = useCallback(() => {
     // Windows Narrator: when pressing H key to jump across messages, it automatically fire <ChatMessage.root>.onFocus automatically.
@@ -239,24 +242,31 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
       id={id}
       onClick={handleRootClick}
       onFocus={handleRootFocus}
-      onKeyDown={handleRootKeyDown} // Required: pressing ESCAPE key should send the focus back to chat history.
+      onKeyDown={handleRootKeyDown}
       ref={rootRef}
+      // We don't exactly need roving tab index:
+      // - Assume all 3 messages are interactive and the 2nd message was last focused
+      //     - When TAB from above, it would land on the interactive content in 1st message, we need to use sentinel to mark things as inert momentarily
+      //     - When TAB from below, it would land on the interactive content in 3rd message, we also need to use sentinel
+      // Either direction, when we are focusing from outside, we need to use sentinel.
+      // Roving tab index is not useful for "saving what was last focused." We need to use sentinel anyway.
+      // Therefore, we set all tabIndex={0} for simplicity.
+      tabIndex={0}
     >
       <h1 className="chat-message__header" id={headerId} onClick={handleHeaderClick} tabIndex={-1}>
         {abstract}
       </h1>
-      <div
-        aria-labelledby={contentId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Windows Narrator will say nothing.
+      <div // This element serve almost one purpose, manually focusable on this. Set tabIndex={-1} then call focus(). Perhaps, we can componentize it out.
+        aria-labelledby={bodyId} // Narrator quirks: without aria-labelledby, after pressing ENTER and focus on this element, Windows Narrator will say nothing.
         className="chat-message__body"
         data-testid="chat message body"
-        onBlur={handleContentBlur} // Required: revert tabIndex="-1" when content is blurred.
-        onFocus={handleContentFocus} // Required: notify chat history this message is focused.
+        onBlur={handleBodyBlur} // Required: revert tabIndex="-1" when body is blurred.
+        onFocus={handleBodyFocus} // Required: notify chat history this message is being focused.
         ref={bodyRef}
       >
-        {/* Can we simplify the structure below? Maybe build a <focusable-focus-trap>. */}
-        <div className="chat-message__content" id={contentId}>
-          <focus-trap onescapekeydown={focusRoot}>{children}</focus-trap>
-        </div>
+        <focus-trap id={bodyId} onescapekeydown={focusRoot}>
+          {children}
+        </focus-trap>
       </div>
     </article>
   );
@@ -332,6 +342,9 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
         return;
       }
 
+      // We need to differentiate if the <article> is focused, or its descendant is focused.
+      // We only handle key down on the <article>.
+      // We could move the onKeyDown logics to <ChatMessage>, but it may not simplify stuff.
       const isFocusingOnMessageRoot = document.activeElement?.parentElement === rootRef.current;
 
       if (isFocusingOnMessageRoot) {
@@ -359,6 +372,8 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
     [focusMessageByIndex, onLeaveRef, rootRef]
   );
 
+  // Q: Why not capturing via up/down arrow key?
+  // A: If the message is focused by mouse click, we still need to capture what is focused.
   const handleMessageFocus = useCallback(
     id => setFocusedMessageIDRef(id, { shouldRenderOnChange: false }),
     [setFocusedMessageIDRef]
