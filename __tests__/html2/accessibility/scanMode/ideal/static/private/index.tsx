@@ -169,7 +169,7 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
 
   const handleRootKeyDown = useCallback<KeyboardEventHandler<unknown>>(
     event => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && event.target === bodyRef.current) {
         // Regardless of where the focus is inside the content, when ESCAPE key is pressed, send the focus back to chat history.
         // If ESCAPE key need to be handled by the content, it should call event.preventDefault().
         // Opinion: preventDefault() is preferred over stopPropagation() because the content may not know there are inside another container.
@@ -253,7 +253,7 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
         onFocus={handleContentFocus} // Required: notify chat history this message is focused.
         ref={bodyRef}
       >
-        {/* Can we simplify the structure below? */}
+        {/* Can we simplify the structure below? Maybe build a <focusable-focus-trap>. */}
         <div className="chat-message__content" id={contentId}>
           <focus-trap onescapekeydown={focusRoot}>{children}</focus-trap>
         </div>
