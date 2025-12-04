@@ -73,3 +73,10 @@ body {
   white-space: nowrap;
   width: 1px;
 }
+
+.ac-adaptiveCard {
+  /* background-color: #f7f7f7 !important; */
+  border: solid 1px #f0f0f0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-top: .5em;
+}

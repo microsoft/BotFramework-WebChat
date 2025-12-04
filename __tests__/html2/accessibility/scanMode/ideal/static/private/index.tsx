@@ -1,5 +1,7 @@
 /* eslint-disable complexity */
 // @ts-ignore
+import { AdaptiveCard, GlobalSettings, HostConfig } from 'https://esm.sh/adaptivecards';
+// @ts-ignore
 import { useRefFrom } from 'https://esm.sh/use-ref-from';
 // @ts-ignore
 import {
@@ -11,6 +13,7 @@ import {
   type RefObject,
   type SetStateAction,
   useCallback,
+  useEffect,
   // @ts-ignore
   useId,
   useImperativeHandle,
@@ -52,6 +55,76 @@ type Message = {
   readonly id: string;
 };
 
+const ADAPTIVE_CARD_JSON = {
+  type: 'AdaptiveCard',
+  version: '1.5',
+
+  body: [
+    {
+      type: 'Input.Text',
+      label: 'Street address'
+    },
+    {
+      type: 'Input.Text',
+      label: 'City'
+    },
+    {
+      type: 'Input.ChoiceSet',
+      label: 'State',
+      choices: [
+        { title: 'California', value: 'CA' },
+        { title: 'Oregon', value: 'OR' },
+        { title: 'Washington', value: 'WA' }
+      ],
+      style: 'compact'
+    }
+  ],
+  actions: [
+    {
+      type: 'Action.Submit',
+      title: 'Submit'
+    }
+  ]
+};
+
+function AddressForm() {
+  const ref = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = useCallback(event => {
+    event.preventDefault();
+  }, []);
+
+  useEffect(() => {
+    const adaptiveCard = new AdaptiveCard();
+
+    adaptiveCard.hostConfig = new HostConfig({ containerStyles: { default: { backgroundColor: '#f7f7f7' } } });
+    adaptiveCard.onExecuteAction = () => {
+      ref.current?.closest('form')?.requestSubmit();
+    };
+
+    adaptiveCard.parse(ADAPTIVE_CARD_JSON);
+
+    GlobalSettings.setTabIndexAtCardRoot = false;
+
+    const element = adaptiveCard.render();
+
+    element.querySelector('.ac-textInput').dataset.testid = 'street address textbox';
+    element.querySelector('.ac-pushButton').dataset.testid = 'address form submit button';
+
+    ref.current?.appendChild(element);
+  }, [ref]);
+
+  return <form data-testid="address form" ref={ref} onSubmit={handleSubmit} />;
+}
+
+function Attachment({ children }) {
+  return (
+    <div role="group">
+      <div>{children}</div>
+    </div>
+  );
+}
+
 const CHAT_MESSAGES: readonly Message[] = Object.freeze([
   {
     // "abstract" can be built using a new "activity abstract middleware". Not sure if we should support React elements or just plain text.
@@ -74,42 +147,12 @@ const CHAT_MESSAGES: readonly Message[] = Object.freeze([
   {
     abstract: 'Bot said: Where should we ship it to?',
     children: (
-      <form data-testid="address form" onSubmit={event => event.preventDefault()}>
+      <>
         <p>Where should we ship it to?</p>
-        <div>
-          <label>
-            Street address
-            <div>
-              <input data-testid="street address textbox" type="text" />
-            </div>
-          </label>
-        </div>
-        <div>
-          <label>
-            City
-            <div>
-              <input type="text" />
-            </div>
-          </label>
-        </div>
-        <div>
-          <label>
-            State
-            <div>
-              <select>
-                <option>California</option>
-                <option>Oregon</option>
-                <option>Washington</option>
-              </select>
-            </div>
-          </label>
-        </div>
-        <div>
-          <button data-testid="address form submit button" type="submit">
-            Submit
-          </button>
-        </div>
-      </form>
+        <Attachment>
+          <AddressForm />
+        </Attachment>
+      </>
     ),
     id: 'a-00003'
   }
