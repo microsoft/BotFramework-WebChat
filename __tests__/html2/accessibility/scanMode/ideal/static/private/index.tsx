@@ -148,6 +148,9 @@ function useRefAsState<T>(
   return [ref, setState];
 }
 
+// We have onJumpToNext, onJumpToPrevious, onLeave here, instead of capturing `onKeyDown(ArrowUp/ArrowDown/Tab/Escape)` at chat history.
+// This will make the code simpler. And there are only 1 component to look at when diagnosing key down issues.
+// It will make <ChatMessage> more complex. But the <ChatHistory> become very simple then.
 function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext, onJumpToPrevious, onLeave, ref }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const bodyId = useId();
