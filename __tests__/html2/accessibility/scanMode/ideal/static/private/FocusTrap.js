@@ -56,8 +56,6 @@ class FocusTrap extends HTMLElement {
     } else if (event.key === 'Escape') {
       event.stopPropagation();
 
-      console.log('<focus-trap> onescapekeydown');
-
       this.dispatchEvent(new CustomEvent('escapekeydown', { bubbles: true }));
     }
   }
