@@ -194,7 +194,7 @@ function useRefAsState<T>(
 // We have onJumpToNext, onJumpToPrevious, onLeave here, instead of capturing `onKeyDown(ArrowUp/ArrowDown/Tab/Escape)` at chat history.
 // This will make the code simpler. And there are only 1 component to look at when diagnosing key down issues.
 // It will make <ChatMessage> more complex. But the <ChatHistory> become very simple then.
-function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext, onJumpToPrevious, onLeave, ref }) {
+function ChatMessage({ abstract, children, messageId, onFocus, onJumpToNext, onJumpToPrevious, onLeave, ref }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const bodyId = useId();
   const headerId = useId();
@@ -313,14 +313,13 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, onJumpToNext,
     [focusBody, onJumpToNextRef, onJumpToPreviousRef, onLeaveRef]
   );
 
-  useImperativeHandle(ref, () => Object.freeze({ focus: focusRoot, id }), [focusRoot, id]);
+  useImperativeHandle(ref, () => Object.freeze({ focus: focusRoot }), [focusRoot]);
 
   return (
     <article // Required: children of role="feed" must be role="article".
       aria-labelledby={headerId} // Required: we just want screen reader to narrate header. Without this, it will narrate the whole content.
       className="chat-message"
       data-testid="chat message"
-      id={id}
       onClick={handleRootClick}
       onFocus={handleRootFocus}
       onKeyDown={handleRootKeyDown}
@@ -456,7 +455,6 @@ function ChatHistory({ messages, onLeave }: { readonly messages: readonly Messag
       {messages.map(message => (
         <ChatMessage
           abstract={message.abstract}
-          id={`chat__message-id--${message.id}`}
           messageId={message.id}
           onFocus={handleMessageFocus}
           onJumpToNext={handleMessageJumpToNext}
