@@ -31,7 +31,9 @@ import { createRoot } from 'react-dom/client';
 //    - CSS styling can simply use `:focus` and `:focus-within`
 
 type ChatMessageAPI = {
+  /** When called, focus on the message. */
   readonly focus: () => void;
+  /** ID of the message. */
   readonly id: string;
 };
 
@@ -195,10 +197,10 @@ function ChatMessage({ abstract, children, id, messageId, onFocus, ref }) {
     [bodyRef, focusContent, focusRoot]
   );
 
-  // This is for screen reader. The header should be sized 0x0 and not clickable by mouse or keyboard.
-  // Windows Narrator quirks: In scan mode, press H key to put virtual cursor on the header, then press ENTER key, it will NOT fire header.onclick.
-  //                          Instead, it will fire root.onclick.
-  //                          We are not sure why it happens this way, even we set <header tabIndex={0}>, it still fire root.onclick.
+  // This is for screen reader only. The header should be visually sized 0px x 0px and it should not be clickable by mouse or keyboard.
+  // Windows Narrator quirks: In scan mode, press H key to put virtual cursor on the header, then press ENTER key.
+  //                          It should fire header.onClick. However, fire root.onClick instead and never header.onClick.
+  //                          We are not sure why it happens this way, even we set <header tabIndex={0}>, it still fire root.onClick.
   const handleHeaderClick = useCallback(
     event => {
       // Don't leak the event to root.onClick.
