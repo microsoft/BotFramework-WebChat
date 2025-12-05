@@ -385,7 +385,7 @@ function ChatMessage({
 
   return (
     <article // Required: children of role="feed" must be role="article".
-      aria-labelledby={headerId} // Required: we just want screen reader to narrate header. Without this, it will narrate the whole content.
+      aria-labelledby={interactMode === 2 ? bodyId : headerId} // Required: we just want screen reader to narrate header. Without this, it will narrate the whole content.
       className="chat-message"
       data-testid="chat message"
       onClick={handleRootClick}
