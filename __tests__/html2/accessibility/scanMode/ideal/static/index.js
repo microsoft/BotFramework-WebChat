@@ -4,7 +4,11 @@ import init, { transform } from 'https://esm.sh/@esm.sh/tsx';
 import { waitFor } from 'https://esm.sh/@testduet/wait-for';
 import './private/FocusTrap.js';
 
-async function render() {
+async function render({ interactMode } = { interactMode: 1 }) {
+  if (!location.hash.startsWith('#mode=')) {
+    location.replace(`#mode=${interactMode ?? 1}`);
+  }
+
   await init();
 
   const res = await fetch(new URL('private/index.tsx', import.meta.url));

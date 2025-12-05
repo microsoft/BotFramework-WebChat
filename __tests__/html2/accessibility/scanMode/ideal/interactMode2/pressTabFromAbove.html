@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
       .first-button {
         left: 0;
@@ -18,20 +18,20 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { render, systemUnderTest } from './static/index.js';
+      import { render, systemUnderTest } from '../static/index.js';
 
       run(
         async function () {
-          await render();
+          await render({ interactMode: 2 });
 
-          // GIVEN: Send the focus to chat history.
-          await systemUnderTest.focusChatHistory();
-
-          // WHEN: SHIFT-TAB key is pressed.
-          await host.sendShiftTab();
-
-          // THEN: Should focus on the first button on the page.
+          // GIVEN: Send the focus to the button before the UI.
           document.querySelector('[data-testid="first button"]').focus();
+
+          // WHEN: TAB key is pressed.
+          await host.sendTab();
+
+          // THEN: The last message should be focused.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
         },
         { skipCheckAccessibility: true }
       );

@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main></main>
@@ -10,7 +10,7 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { render, systemUnderTest } from './static/index.js';
+      import { render, systemUnderTest } from '../static/index.js';
 
       run(
         async function () {
@@ -23,6 +23,18 @@
 
           // THEN: The message body of the last chat message should be focused.
           expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
+
+          // WHEN: SHIFT-TAB key is pressed.
+          await host.sendShiftTab();
+
+          // THEN: The submit button should be focused.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
+
+          // WHEN: SHIFT-TAB key is pressed 3 times.
+          await host.sendShiftTab(3);
+
+          // THEN: The submit button should be focused.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormTextBox);
         },
         { skipCheckAccessibility: true }
       );

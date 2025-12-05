@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main></main>
@@ -10,19 +10,21 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { render, systemUnderTest } from './static/index.js';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+      import { render, systemUnderTest } from '../static/index.js';
 
       run(
         async function () {
-          await render();
+          await render({ interactMode: 2 });
 
+          // WHEN: Click on the second message.
           await host.click(systemUnderTest.addressFormTextBox);
 
-          // THEN: Should focus on the text box inside the chat message.
+          // THEN: Should focus on the text box.
           expect(document.activeElement).toBe(systemUnderTest.addressFormTextBox);
 
           // THEN: The chat message containing the focused text box should be marked as active.
-          expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
+          expect(systemUnderTest.chatMessageBodies[2].matches(':focus-within')).toBe(true);
         },
         { skipCheckAccessibility: true }
       );

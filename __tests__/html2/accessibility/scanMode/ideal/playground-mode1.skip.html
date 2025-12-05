@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div>
+      <main></main>
+      <footer>Press <kbd>ALT</kbd> + <kbd>A</kbd> to add a message.</footer>
+    </div>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from './static/index.js';
+
+      await render();
+
+      window.addEventListener('keydown', event => {
+        if (event.altKey && (event.key === 'A' || event.key === 'a')) {
+          window.dispatchEvent(new CustomEvent('addmessage'));
+        }
+      });
+    </script>
+  </body>
+</html>

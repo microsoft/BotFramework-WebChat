@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main></main>
@@ -10,17 +10,18 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { render, systemUnderTest } from './static/index.js';
+      import { render, systemUnderTest } from '../static/index.js';
 
       run(
         async function () {
           await render();
 
-          // WHEN: Click on the second chat message.
-          await host.click(systemUnderTest.chatMessages[1]);
+          systemUnderTest.addressFormTextBox.focus();
 
-          // THEN: Should focus on the second chat message.
-          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
+          await host.sendKeys('ESCAPE');
+
+          // THEN: Should focus on the last message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
         },
         { skipCheckAccessibility: true }
       );

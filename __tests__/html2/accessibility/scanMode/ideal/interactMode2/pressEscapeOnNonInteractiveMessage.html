@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main></main>
@@ -10,24 +10,23 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { render, systemUnderTest } from './static/index.js';
+      import { render, systemUnderTest } from '../static/index.js';
 
       run(
         async function () {
-          await render();
+          await render({ interactMode: 2 });
 
           await systemUnderTest.focusChatHistory();
+
           await host.sendKeys('ARROW_UP');
 
-          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
 
-          await host.sendTab();
+          // WHEN: ESCAPE key is pressed.
+          await host.sendKeys('ESCAPE');
 
+          // THEN: Should focus on the send box.
           expect(document.activeElement).toBe(systemUnderTest.sendBoxTextBox);
-
-          await host.sendShiftTab();
-
-          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
         },
         { skipCheckAccessibility: true }
       );

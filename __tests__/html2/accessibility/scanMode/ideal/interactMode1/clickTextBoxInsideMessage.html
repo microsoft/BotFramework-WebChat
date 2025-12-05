@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main></main>
@@ -10,24 +10,18 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { render, systemUnderTest } from './static/index.js';
+      import { render, systemUnderTest } from '../static/index.js';
 
       run(
         async function () {
           await render();
 
-          await systemUnderTest.focusChatHistory();
+          await host.click(systemUnderTest.addressFormTextBox);
 
-          // WHEN: ENTER key is pressed.
-          await host.sendKeys('ENTER');
-
-          // WHEN: TAB key is pressed.
-          await host.sendTab();
-
-          // THEN: The text box in the last message should be focused.
+          // THEN: Should focus on the text box inside the chat message.
           expect(document.activeElement).toBe(systemUnderTest.addressFormTextBox);
 
-          // THEN: The last chat message should be marked as active.
+          // THEN: The chat message containing the focused text box should be marked as active.
           expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
         },
         { skipCheckAccessibility: true }
