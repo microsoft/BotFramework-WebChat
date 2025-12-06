@@ -719,8 +719,3 @@ window.addEventListener('addmessage', () => {
     />
   );
 });
-
-// Think about... send box is like a message bubble.
-
-// TODO: Up arrow from send box to go into the last message in the chat history
-// TODO: Down arrow from the last message go into the send box.
