@@ -3,9 +3,17 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link href="./static/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .first-button {
+        left: 0;
+        position: absolute;
+        top: 0;
+      }
+    </style>
   </head>
   <body>
     <div>
+      <button class="first-button" data-testid="first button" type="button">Button before &lt;main&gt;</button>
       <main></main>
       <footer>Press <kbd>ALT</kbd> + <kbd>A</kbd> to add a message.</footer>
     </div>
