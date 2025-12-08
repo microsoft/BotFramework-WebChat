@@ -10,7 +10,7 @@ import {
 } from 'botframework-webchat/decorator';
 import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
 import React, { memo, useMemo } from 'react';
-import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { custom, object, optional, pipe, readonly, string, type InferOutput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
@@ -34,7 +34,7 @@ const fluentThemeProviderPropsSchema = pipe(
   readonly()
 );
 
-type FluentThemeProviderProps = InferInput<typeof fluentThemeProviderPropsSchema>;
+type FluentThemeProviderProps = InferOutput<typeof fluentThemeProviderPropsSchema>;
 
 const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
   () =>

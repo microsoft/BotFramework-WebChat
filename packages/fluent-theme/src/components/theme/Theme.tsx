@@ -1,7 +1,7 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import cx from 'classnames';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, type InferOutput } from 'valibot';
 import { useStyles, useVariantClassName } from '../../styles';
 import styles from './Theme.module.css';
 
@@ -14,7 +14,7 @@ const themePropsSchema = pipe(
   readonly()
 );
 
-type ThemeProps = InferInput<typeof themePropsSchema>;
+type ThemeProps = InferOutput<typeof themePropsSchema>;
 
 function Theme(props: ThemeProps) {
   const { children } = validateProps(themePropsSchema, props);

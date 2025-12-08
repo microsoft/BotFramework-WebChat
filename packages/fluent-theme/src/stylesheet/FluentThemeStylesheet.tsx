@@ -3,7 +3,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat/hook';
 import { InjectStyleElements } from 'botframework-webchat/internal';
 import React, { memo, type FunctionComponent } from 'react';
-import { never, object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
+import { never, object, optional, pipe, readonly, string, undefinedable, type InferOutput } from 'valibot';
 
 import createFluentThemeStyleElements from './createFluentThemeStyleElements';
 
@@ -15,7 +15,7 @@ const fluentThemeStylesheetPropsSchema = pipe(
   readonly()
 );
 
-type FluentThemeStylesheetProps = InferInput<typeof fluentThemeStylesheetPropsSchema>;
+type FluentThemeStylesheetProps = InferOutput<typeof fluentThemeStylesheetPropsSchema>;
 
 const styleElements = createFluentThemeStyleElements('fluent-theme');
 

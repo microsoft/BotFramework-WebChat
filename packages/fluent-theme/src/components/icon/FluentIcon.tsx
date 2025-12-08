@@ -3,7 +3,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { createIconComponent } from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
-import { object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string, union, type InferOutput } from 'valibot';
 
 import styles from './FluentIcon.module.css';
 
@@ -15,7 +15,7 @@ const baseFluentIconPropsSchema = pipe(
   readonly()
 );
 
-function BaseFluentIcon(props: InferInput<typeof baseFluentIconPropsSchema>) {
+function BaseFluentIcon(props: InferOutput<typeof baseFluentIconPropsSchema>) {
   const { className } = validateProps(baseFluentIconPropsSchema, props);
 
   const classNames = useStyles(styles);
@@ -39,7 +39,7 @@ FluentIcon.displayName = 'FluentIcon';
 
 const fluentIconPropsSchema = pipe(union([baseFluentIconPropsSchema, modifierPropsSchema]), readonly());
 
-type FluentIconProps = InferInput<typeof fluentIconPropsSchema>;
+type FluentIconProps = InferOutput<typeof fluentIconPropsSchema>;
 
 export default memo(FluentIcon);
 export { fluentIconPropsSchema, type FluentIconProps };

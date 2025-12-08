@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat';
 import { type WebChatActivity } from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { custom, object, optional, pipe, readonly, safeParse, string, type InferOutput } from 'valibot';
 
 import { useStyles } from '../../styles';
 import styles from './CopilotMessageHeader.module.css';
@@ -21,7 +21,7 @@ const copilotMessageHeaderPropsSchema = pipe(
   readonly()
 );
 
-type CopilotMessageHeaderProps = InferInput<typeof copilotMessageHeaderPropsSchema>;
+type CopilotMessageHeaderProps = InferOutput<typeof copilotMessageHeaderPropsSchema>;
 
 function CopilotMessageHeader(props: CopilotMessageHeaderProps) {
   const { activity, className } = validateProps(copilotMessageHeaderPropsSchema, props);

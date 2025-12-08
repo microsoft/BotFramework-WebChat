@@ -2,7 +2,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { Fragment, memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferOutput } from 'valibot';
 
 import { useVariantClassName } from '../../styles';
 import SlidingDots from '../assets/SlidingDots';
@@ -17,7 +17,7 @@ const fluentActivityLoaderPropsSchema = pipe(
   readonly()
 );
 
-type FluentActivityLoaderProps = InferInput<typeof fluentActivityLoaderPropsSchema>;
+type FluentActivityLoaderProps = InferOutput<typeof fluentActivityLoaderPropsSchema>;
 
 function FluentActivityLoader(props: FluentActivityLoaderProps) {
   const { children, className, showLoader } = validateProps(fluentActivityLoaderPropsSchema, props);
