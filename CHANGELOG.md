@@ -333,6 +333,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Removed
 
+- Removed `copilot-deprecated` variant from Fluent theme, in PR [#5644](https://github.com/microsoft/BotFramework-WebChat/pull/5644), by [@OEvgeny](https://github.com/OEvgeny)
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
