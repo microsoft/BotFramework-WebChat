@@ -380,6 +380,15 @@
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 }
+
+/* Transcript focused content copilot variant */
+:global(.webchat-fluent).theme.variant-copilot
+  :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
+  :global(.collapsible-grouping)::after {
+    inset: -4px;
+  }
+}
+
 /* Transcript filer in copilot variant */
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__filler) {
   /* No filler unless pre-chat activity, see next rule */
