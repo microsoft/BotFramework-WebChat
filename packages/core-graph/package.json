@@ -43,11 +43,11 @@
     "bump:peer": "../../scripts/npm/bump-peer.sh",
     "bump:prod": "../../scripts/npm/bump-prod.sh",
     "eslint": "npm run precommit",
-    "postversion": "node ../../scripts/npm/postversion.sh",
+    "postversion": "../../scripts/npm/postversion.sh",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "preversion": "node ../../scripts/npm/preversion.sh",
+    "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\""
   },
   "pinDependencies": {
