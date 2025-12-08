@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import { literal, union, type InferOutput } from 'valibot';
 import createComposer from './createComposer';
 
-const variantNameSchema = union([literal(''), literal('copilot'), literal('copilot-deprecated'), literal('fluent')]);
+const variantNameSchema = union([literal(''), literal('copilot'), literal('fluent')]);
 
 type VariantName = InferOutput<typeof variantNameSchema>;
 

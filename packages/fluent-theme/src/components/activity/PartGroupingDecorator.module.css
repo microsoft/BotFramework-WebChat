@@ -296,16 +296,6 @@
   /* #endregion */
 
   /* #region Header & collapsible grouping */
-  .part-grouping-decorator__header {
-    padding-block: var(--webchat-spacingVerticalS);
-  }
-
-  &.part-grouping-decorator--from-bot:has(.part-grouping-decorator__header)
-    + .part-grouping-decorator--from-bot:has(.part-grouping-decorator__header)
-    .part-grouping-decorator__header {
-    display: none;
-  }
-
   :global(.stacked-layout .collapsible-grouping__header) {
     justify-content: flex-start;
     min-width: 0;
@@ -612,9 +602,8 @@
   }
   /* #endregion */
 
-  /* #region Variant: copilot, copilot-deprecated */
-  &.variant-copilot,
-  &.variant-copilot-deprecated {
+  /* #region Variant: copilot */
+  &.variant-copilot {
     --webchat-part-grouping__message-status--space-block: var(--webchat-spacingVerticalNone);
 
     position: relative;
@@ -624,7 +613,6 @@
     }
 
     &.part-grouping-decorator--from-bot {
-      --webchat-part-grouping__bubble--background-color: transparent;
       --webchat-part-grouping__bubble--border-radius: var(--webchat-borderRadius2XLarge);
       --webchat-part-grouping__bubble--space-block: var(--webchat-spacingVerticalNone);
       --webchat-part-grouping__bubble--space-inline: var(--webchat-spacingHorizontalNone);
@@ -721,37 +709,9 @@
       max-width: unset;
     }
   }
-  /* #endregion */
 
-  /* #region Variant: copilot-deprecated */
-  &.variant-copilot-deprecated {
-    padding-inline-start: var(--webchat-spacingHorizontalMNudge);
+  /* TODO: converge the two .variant-copilot selectors into one removing overlapping styles. Last style wins. */
 
-    :global(.collapsible-grouping) {
-      margin-inline-end: var(--webchat-spacingHorizontalXXL);
-    }
-
-    &.part-grouping-decorator--from-bot :global(.webchat__bubble__content) {
-      box-sizing: content-box;
-      margin-block: calc(var(--webchat-spacingVerticalS) * -1);
-      margin-inline: calc(var(--webchat-spacingHorizontalS) * -1);
-      padding-block: var(--webchat-spacingVerticalS);
-      padding-inline: var(--webchat-spacingHorizontalS);
-    }
-
-    :global(.stacked-layout .transcript-focus-area__activity-list) {
-      --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalL);
-    }
-
-    :global(.webchat__bubble:not(.webchat__bubble--from-user)::after) {
-      margin-block: var(--webchat-spacingVerticalXS);
-      outline-offset: 5px;
-      --webchat-part-grouping__bubble--border-radius: calc(var(--webchat-borderRadius2XLarge) - 8px);
-    }
-  }
-  /* #endregion */
-
-  /* #region Variant: copilot */
   &.variant-copilot {
     padding-inline-start: var(--webchat-spacingHorizontalSNudge);
 
