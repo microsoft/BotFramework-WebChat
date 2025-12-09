@@ -283,6 +283,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added internal package `@msinternal/botframework-webchat-tsconfig` to centralize TypeScript configuration files, in PR [#5539](https://github.com/microsoft/BotFramework-WebChat/pull/5539), by [@compulim](https://github.com/compulim)
 - Bumped `react-chain-of-responsibility` to `0.4.2` version, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5620](https://github.com/microsoft/BotFramework-WebChat/pull/5620), in PR [#5624](https://github.com/microsoft/BotFramework-WebChat/pull/5624)
 - Bumped Chrome in Docker to 141 from 110, in PR [#5619](https://github.com/microsoft/BotFramework-WebChat/pull/5619), by [@compulim](https://github.com/compulim)
+- Bumped to [`valibot@1.2.0`](https://npmjs.com/package/valibot/v/1.2.0), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
