@@ -25,11 +25,11 @@
 
         await pageObjects.focusSendBoxTextBox();
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         WebChat.renderWebChat({ ...baseProps, disabled: true }, webChatElement);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         // Focusing on the transcript, then press ENTER on the hero card. It should not change focus away from transcript because the card is disabled.
         await host.sendShiftTab(2);
@@ -37,7 +37,7 @@
 
         expect(document.activeElement === pageElements.transcript()).toBe(true);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

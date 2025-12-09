@@ -47,7 +47,7 @@
         await pageConditions.numActivitiesShown(1);
 
         // THEN: Should render the message with 2 buttons.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Focusing on the "Hello, World!" button.
         pageElements.sendBoxTextBox().focus();
@@ -56,7 +56,7 @@
         await host.sendKeys('ENTER');
 
         // THEN: Should focus on the "Hello, World!" button.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: The "Hello, World!" button is disabled via tabIndex.
         render(() => next => (...args) => {
@@ -83,14 +83,14 @@
 
         // THEN: Should focus on the "Aloha!" button.
         expect(document.activeElement.textContent).toBe('Aloha!');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: TAB key is pressed again.
         await host.sendTab();
 
         // THEN: Should continue to focus on the "Aloha!" button.
         expect(document.activeElement.textContent).toBe('Aloha!');
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

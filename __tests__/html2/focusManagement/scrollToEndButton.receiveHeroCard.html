@@ -36,7 +36,7 @@
 
         // SETUP: Scroll to bottom minus 10px.
         await pageObjects.scrollToTop(-10);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // SETUP: Receive a new card, so the "New messages" button is shown.
         await pageObjects.sendMessageViaCode('herocard qna 1');
@@ -49,7 +49,7 @@
         // THEN: The focus should land on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: ENTER key is pressed on the "New messages" button.
         await host.sendKeys('ENTER');
@@ -63,7 +63,7 @@
         // THEN: It should focus on the first unread activity.
         expect(pageElements.focusedActivity()).toBe(pageElements.activities()[2]);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

@@ -72,7 +72,7 @@
         expect(components[3].className).toContain(classes.customComponent);
         expect(components[4].className).toContain(classes.transcript);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

@@ -24,17 +24,34 @@
         );
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+
+        await pageObjects.sendMessageViaSendBox('herocard');
         await pageConditions.minNumActivitiesShown(2);
-        await pageConditions.suggestedActionsShown();
-        await pageObjects.clickNthSuggestedAction(1);
-        await pageConditions.allOutgoingActivitiesSent();
-        await pageConditions.minNumActivitiesShown(4);
+        await pageConditions.scrollToBottomCompleted();
 
-        // After clicking on any suggested actions, it should focus back on the type focus sink.
-        expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
+        // Waiting for scroll-to-end panel to detect unsticky.
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        await host.snapshot();
+        await pageObjects.scrollToTop();
+
+        await host.snapshot('local');
+
+        await pageObjects.sendMessageViaCode('echo Hello, World!');
+
+        await pageConditions.minNumActivitiesShown(5);
+
+        await pageObjects.focusScrollToEndButton();
+
+        await host.snapshot('local');
+
+        await pageObjects.clickScrollToEndButton();
+
+        await pageConditions.scrollToBottomCompleted();
+
+        // After clicking on "New messages" button, it should focus on the transcript and the next unread activity.
+        expect(document.activeElement === pageElements.transcript()).toBe(true);
+
+        await host.snapshot('local');
       });
     </script>
   </body>

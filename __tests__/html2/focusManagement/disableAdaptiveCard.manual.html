@@ -30,7 +30,7 @@
 
         firstInput.focus();
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         WebChat.renderWebChat({ ...baseProps, disabled: true }, webChatElement);
 
@@ -44,11 +44,11 @@
         expect(isFirstInputReadOnly).toBe(true);
         expect(isFocusingFirstInput).toBe(true);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         await host.sendKeys('ESCAPE');
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         expect(document.activeElement).toBe(pageElements.transcript());
       });

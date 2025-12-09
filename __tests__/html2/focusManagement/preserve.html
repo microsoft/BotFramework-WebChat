@@ -70,26 +70,26 @@
         await host.sendKeys('TAB', 'ARROW_UP', 'ENTER', 'TAB', 'ENTER');
 
         // THEN: Should render additional buttons.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: ESCAPE key is pressed.
         await host.sendKeys('ESCAPE');
 
         // THEN: Should focus over the activity.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: ENTER key is pressed.
         await host.sendKeys('ENTER');
 
         // THEN: Should focus the same "Show card" button.
-        await host.snapshot();
+        await host.snapshot('local');
         const showCardButton = document.activeElement;
 
         // WHEN: TAB is pressed 2 times.
         await host.sendKeys('TAB', 'TAB');
 
         // THEN: Should focus the last card button.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: ESCAPE key is pressed followed by clicking on the "Show card" button.
         await host.sendKeys('ESCAPE');
@@ -99,25 +99,25 @@
         await host.sendKeys('A');
 
         // THEN: Should focus the last focused card button (via mouse).
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: TAB is pressed.
         await host.sendKeys('TAB');
 
         // THEN: Should focus the first available card button (loop).
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: TAB then ESCAPE followed by ARROW_DOWN and ENTER.
         await host.sendKeys('TAB', 'ESCAPE', 'ARROW_DOWN', 'ENTER');
 
         // THEN: Should focus the next activity card.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Focus into the first activity.
         await host.sendKeys('ESCAPE', 'ARROW_UP', 'ENTER');
 
         // THEN: Should focus the last focused button.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

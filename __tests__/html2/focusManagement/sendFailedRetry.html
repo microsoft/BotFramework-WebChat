@@ -83,7 +83,7 @@
           // THEN: The focus should focus be on the send box.
           expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
-          await host.snapshot();
+          await host.snapshot('local');
         },
         // Ignoring errors thrown as "artificial error".
         { ignoreErrors: true }

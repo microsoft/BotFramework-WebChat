@@ -73,7 +73,7 @@
         firstButton.focus();
 
         // THEN: It should show a focus indicator around the first button.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: The first button is clicked.
         await firstButton.click();
@@ -88,7 +88,7 @@
         expect(secondButton.getAttribute('aria-disabled')).toBe('true');
 
         // THEN: The second button should be grayed out.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: The first button should still be kept as focused.
         expect(document.activeElement).toBe(firstButton);
@@ -103,7 +103,7 @@
         expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
 
         // THEN: It should focus on the transcript with the first hero card selected.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: ENTER key is pressed. It should not focus in the activity because the activity no longer contains any interactive elements.
         //       All buttons in the activity is now disabled.
@@ -116,7 +116,7 @@
         expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
 
         // THEN: It should focus on the transcript with the first hero card selected.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Using arrow keys to move to the second hero card, then focus and press on the first button.
         await host.sendKeys('ARROW_DOWN', 'ARROW_DOWN', 'ENTER', 'ENTER');
@@ -128,7 +128,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should submit the hero card and scroll to the bottom.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

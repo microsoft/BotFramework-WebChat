@@ -30,7 +30,7 @@
         // After sending the message, it should focus back on the type focus sink.
         expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
