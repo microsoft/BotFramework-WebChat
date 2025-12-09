@@ -40,7 +40,7 @@
 
         // We should not delay the first activity, as the first activity always has a "replyToId" pointing to missing activity.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot();
+        await host.snapshot('local');
 
         directLine.activityDeferredObservable.next({
           from: { role: 'bot' },
@@ -54,7 +54,7 @@
         // As activity "0.0" is considered to be lost in time ("1.0" is already on the screen),
         // the new activity should show up immediately.
         // There should be 2 activities shown on the screen.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
