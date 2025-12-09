@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        WebChat: {
+          Components: { HeroCardContent },
+          hooks: { useActivities }
+        }
+      } = window;
+
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+
+        const AutoDisableHeroCardContent = ({ activity, attachment }) => {
+          const [activities] = useActivities();
+          const messageActivities = activities.filter(activity => activity.type === 'message');
+          const isMostRecentMessageActivity = messageActivities.pop() === activity;
+
+          return (
+            <HeroCardContent
+              actionPerformedClassName="card__action--performed"
+              content={attachment.content}
+              disabled={!isMostRecentMessageActivity}
+            />
+          );
+        };
+
+        WebChat.renderWebChat(
+          {
+            attachmentMiddleware:
+              () =>
+              next =>
+              (...args) => {
+                const [{ activity, attachment }] = args;
+                const { activities } = store.getState();
+                const messageActivities = activities.filter(activity => activity.type === 'message');
+                const mostRecent = messageActivities.pop() === activity;
+
+                if (attachment.contentType === 'application/vnd.microsoft.card.hero') {
+                  return <AutoDisableHeroCardContent activity={activity} attachment={attachment} />;
+                }
+
+                return next(...args);
+              },
+            directLine,
+            store,
+            styleOptions: { subtle: '#666' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('herocard qna 1', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        const [firstButton, secondButton] = document.querySelectorAll('.ac-adaptiveCard button');
+
+        // WHEN: The first button is focused.
+        firstButton.focus();
+
+        // THEN: It should show a focus indicator around the first button.
+        await host.snapshot('local');
+
+        // WHEN: The first button is clicked.
+        await firstButton.click();
+
+        // THEN: It should show 4 activities.
+        await pageConditions.minNumActivitiesShown(4);
+
+        // THEN: It should scroll to the bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: The second button should be disabled.
+        expect(secondButton.getAttribute('aria-disabled')).toBe('true');
+
+        // THEN: The second button should be grayed out.
+        await host.snapshot('local');
+
+        // THEN: The first button should still be kept as focused.
+        expect(document.activeElement).toBe(firstButton);
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: It should focus on the transcript.
+        expect(document.activeElement).toBe(pageElements.transcript());
+
+        // THEN: It should keep the hero card activity active.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+
+        // THEN: It should focus on the transcript with the first hero card selected.
+        await host.snapshot('local');
+
+        // WHEN: ENTER key is pressed. It should not focus in the activity because the activity no longer contains any interactive elements.
+        //       All buttons in the activity is now disabled.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should keep the focus on the transcript.
+        expect(document.activeElement).toBe(pageElements.transcript());
+
+        // THEN: It should keep the hero card activity active.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+
+        // THEN: It should focus on the transcript with the first hero card selected.
+        await host.snapshot('local');
+
+        // WHEN: Using arrow keys to move to the second hero card, then focus and press on the first button.
+        await host.sendKeys('ARROW_DOWN', 'ARROW_DOWN', 'ENTER', 'ENTER');
+
+        // THEN: It should submit the hero card and receives a response.
+        await pageConditions.minNumActivitiesShown(6);
+
+        // THEN: It should scroll to the bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should submit the hero card and scroll to the bottom.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

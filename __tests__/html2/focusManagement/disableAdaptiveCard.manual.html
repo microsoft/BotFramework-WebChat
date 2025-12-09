@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const baseProps = { directLine, store, styleOptions: { subtle: '#666' } };
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(baseProps, webChatElement);
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.scrollToTop();
+
+        const firstInput = pageElements.activities()[1].querySelector('input');
+
+        firstInput.focus();
+
+        await host.snapshot('local');
+
+        WebChat.renderWebChat({ ...baseProps, disabled: true }, webChatElement);
+
+        // It takes a frame for React to disable the UI.
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // After disabling the Adaptive Card, the focus should still be on the input, but read only.
+        const isFirstInputReadOnly = firstInput.hasAttribute('readonly');
+        const isFocusingFirstInput = document.activeElement === firstInput;
+
+        expect(isFirstInputReadOnly).toBe(true);
+        expect(isFocusingFirstInput).toBe(true);
+
+        await host.snapshot('local');
+
+        await host.sendKeys('ESCAPE');
+
+        await host.snapshot('local');
+
+        expect(document.activeElement).toBe(pageElements.transcript());
+      });
+    </script>
+  </body>
+</html>

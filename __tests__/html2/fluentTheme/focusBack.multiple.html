@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      #webchat {
+        display: flex;
+        width: 720px;
+      }
+      #webchat > * {
+        flex-basis: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat">
+      <div id="webchat1"></div>
+      <div id="webchat2"></div>
+    </main>
+    <script type="text/babel">
+      run(
+        async function () {
+          const {
+            React,
+            ReactDOM: { render },
+            WebChat: { FluentThemeProvider, ReactWebChat }
+          } = window; // Imports in UMD fashion.
+
+          await host.windowSize(720, 640, document.getElementById('webchat'));
+
+          const createWebChat = (id) => {
+            const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+            const App = () => (
+              <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideTelephoneKeypadButton: false }} />
+            );
+
+            render(
+              <FluentThemeProvider>
+                <App />
+              </FluentThemeProvider>,
+              document.getElementById(id)
+            );
+
+            return { directLine, store };
+          };
+
+          const webChat1 = createWebChat('webchat1');
+          const webChat2 = createWebChat('webchat2');
+
+          await pageConditions.uiConnected();
+
+          // Test WebChat 1
+          await webChat1.directLine.emulateIncomingActivity(
+            'WebChat 1: Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+          );
+
+          await pageConditions.numActivitiesShown(1);
+
+          document.querySelector(`#webchat1 [data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+
+          // WHEN: SHIFT-TAB key is pressed on WebChat 1.
+          await host.sendShiftTab();
+
+          // THEN: Should focus on the chat history of WebChat 1.
+          await host.snapshot('local');
+
+          // WHEN: A key is pressed on WebChat 1.
+          await host.sendKeys('WebChat 1: The quick brown fox jumps over the lazy dog');
+
+          // THEN: Should focus on the SendBox of WebChat 1
+          await host.snapshot('local');
+
+          await (await webChat1.directLine.actPostActivity(() => host.sendKeys('\n'))).resolveAll();
+
+          // THEN: Should send the activity in WebChat 1.
+          await pageConditions.numActivitiesShown(2);
+          await pageConditions.allOutgoingActivitiesSent();
+          await host.snapshot('local');
+
+          // Test WebChat 2
+          await webChat2.directLine.emulateIncomingActivity(
+            'WebChat 2: Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+          );
+
+          document.querySelector(`#webchat2 [data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+
+          // WHEN: SHIFT-TAB key is pressed on WebChat 2.
+          await host.sendShiftTab();
+
+          // THEN: Should focus on the chat history of WebChat 2.
+          await host.snapshot('local');
+
+          // WHEN: A key is pressed on WebChat 2.
+          await host.sendKeys('WebChat 2: The quick brown fox jumps over the lazy dog');
+
+          // THEN: Should focus on the SendBox of WebChat 2
+          await host.snapshot('local');
+
+          await (await webChat2.directLine.actPostActivity(() => host.sendKeys('\n'))).resolveAll();
+
+          // THEN: Should send the activity in WebChat 2.
+          await pageConditions.allOutgoingActivitiesSent();
+          await host.snapshot('local');
+        },
+        // TODO: unskip and try ShadowDOM when we get support
+        { skipCheckAccessibility: true }
+      );
+      // TODO: unskip and try ShadowDOM when we get support
+      // TODO: fix checkAccessibility throws even if skipped
+      window.checkAccessibility = async () => {}
+    </script>
+  </body>
+</html>
