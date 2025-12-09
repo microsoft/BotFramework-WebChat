@@ -330,6 +330,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed `botframework-webchat/decorator` import in legacy CommonJS environments, in [#5616](https://github.com/microsoft/BotFramework-WebChat/pull/5616), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed `npm start` for efficiency and reliability, in PR [#5621](https://github.com/microsoft/BotFramework-WebChat/pull/5621) and [#5629](https://github.com/microsoft/BotFramework-WebChat/pull/5629), by [@compulim](https://github.com/compulim)
 - Fixed activity sorting introduced in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622), part grouping, and livestreaming, by [@compulim](https://github.com/compulim) in PR [#5635](https://github.com/microsoft/BotFramework-WebChat/pull/5635)
+- Fixed Content Security Policy documentation and sample in PR, by [@compulim](https://github.com/compulim) in PR [#5648](https://github.com/microsoft/BotFramework-WebChat/pull/5648)
+   - Added `img-src data:`, required for icons
 
 ### Removed
 
