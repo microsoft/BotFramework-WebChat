@@ -64,7 +64,7 @@
         });
 
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot();
+        await host.snapshot('local');
 
         const attachments = [
           {
@@ -107,7 +107,7 @@
         await pageConditions.numActivitiesShown(1);
 
         // THEN: Should render the activity.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
