@@ -39,13 +39,13 @@
         await pageConditions.numActivitiesShown(2);
 
         // THEN: It should show "Just now".
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: 5.5 minutes passed.
         clock.tick(330000); // t = 5.5 minutes
 
         // THEN: It should show "5 minutes ago".
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

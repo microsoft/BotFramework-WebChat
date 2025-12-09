@@ -39,7 +39,7 @@
           pageElements.activityStatuses().map(element => element.querySelector('[aria-hidden="true"]')?.textContent)
         ).toEqual(['Just now', undefined, 'Just now']);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: `styleOptions.groupTimestamp` is set to 0, which means, every activity is on its own group.
         renderWebChat({ styleOptions: { groupTimestamp: 0 } });
@@ -49,7 +49,7 @@
           pageElements.activityStatuses().map(element => element.querySelector('[aria-hidden="true"]')?.textContent)
         ).toEqual(['Just now', 'Just now', 'Just now']);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: `styleOptions.groupTimestamp` is set to false, which means, timestamp is disabled.
         renderWebChat({ styleOptions: { groupTimestamp: false } });
@@ -59,7 +59,7 @@
           pageElements.activityStatuses().map(element => element.querySelector('[aria-hidden="true"]')?.textContent)
         ).toEqual([undefined, undefined, undefined]);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

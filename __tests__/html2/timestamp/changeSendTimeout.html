@@ -72,7 +72,7 @@
         );
 
         // THEN: The screen should show "Send failed. Retry."
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: The send timeout is changed to 10 seconds.
         updateProps(props => updateIn(props, ['styleOptions', 'sendTimeout'], () => 10000));
@@ -85,7 +85,7 @@
         );
 
         // THEN: The screen should show "Sending."
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: After 5 seconds.
         clock.tick(5000);
@@ -98,7 +98,7 @@
         );
 
         // THEN: The screen should show "Send failed. Retry."
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

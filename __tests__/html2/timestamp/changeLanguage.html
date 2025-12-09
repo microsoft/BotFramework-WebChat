@@ -58,7 +58,7 @@
         await pageConditions.minNumActivitiesShown(3);
 
         // THEN: There should be 3 activities in total: 1 from user, followed by 2 from the bot.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Language is set to "zh-HK".
         renderWebChat({ locale: 'zh-HK' });
@@ -67,7 +67,7 @@
         await languageBecome('zh-HK');
 
         // THEN: All texts should be in Chinese (Traditional).
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Language is set to "yue".
         renderWebChat({ locale: 'yue' });
@@ -76,7 +76,7 @@
         await languageBecome('yue');
 
         // THEN: All texts should be in Chinese (Yue).
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
