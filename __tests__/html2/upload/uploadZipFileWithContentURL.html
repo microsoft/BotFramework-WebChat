@@ -20,7 +20,7 @@
                   Object.assign({}, activity, {
                     attachments: (activity.attachments || []).map(attachment =>
                       Object.assign({}, attachment, {
-                        contentUrl: undefined
+                        contentUrl: 'https://example.org/'
                       })
                     )
                   })
@@ -57,12 +57,15 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         const [firstActivity, secondActivity] = pageElements.activities();
 
-        expect(firstActivity.querySelector('a')).toBeFalsy();
-        expect(secondActivity.querySelector('a')).toBeFalsy();
+        expect(firstActivity.querySelector('a[target="_blank"]').getAttribute('href')).toEqual('https://example.org/');
+        expect(firstActivity.querySelector('a[target="_blank"]').getAttribute('download')).toEqual('empty.zip');
+
+        expect(secondActivity.querySelector('a[target="_blank"]').getAttribute('href')).toEqual('https://example.org/');
+        expect(secondActivity.querySelector('a[target="_blank"]').getAttribute('download')).toEqual('empty.zip');
       });
     </script>
   </body>

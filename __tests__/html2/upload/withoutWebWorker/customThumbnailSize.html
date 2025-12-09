@@ -13,13 +13,17 @@
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
+        window.Worker = undefined;
+
         WebChat.renderWebChat(
           {
             directLine,
             store,
             styleOptions: {
-              enableUploadThumbnail: false,
-              sendAttachmentOn: 'attach'
+              sendAttachmentOn: 'attach',
+              uploadThumbnailContentType: 'image/png',
+              uploadThumbnailHeight: 60,
+              uploadThumbnailWidth: 120
             }
           },
           document.getElementById('webchat')
@@ -33,7 +37,7 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

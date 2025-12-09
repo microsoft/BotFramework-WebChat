@@ -18,8 +18,7 @@
             directLine,
             store,
             styleOptions: {
-              sendAttachmentOn: 'attach',
-              uploadThumbnailQuality: 0.1
+              sendAttachmentOn: 'attach'
             }
           },
           document.getElementById('webchat')
@@ -27,13 +26,13 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.uploadFile('seaofthieves.jpg');
+        await pageObjects.uploadFile('empty.zip');
         await pageConditions.allOutgoingActivitiesSent();
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

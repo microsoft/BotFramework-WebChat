@@ -20,10 +20,7 @@
             directLine,
             store,
             styleOptions: {
-              sendAttachmentOn: 'attach',
-              uploadThumbnailContentType: 'image/png',
-              uploadThumbnailHeight: 60,
-              uploadThumbnailWidth: 120
+              sendAttachmentOn: 'attach'
             }
           },
           document.getElementById('webchat')
@@ -37,7 +34,7 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

@@ -13,15 +13,12 @@
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
-        window.Worker = undefined;
-
         WebChat.renderWebChat(
           {
             directLine,
             store,
             styleOptions: {
-              sendAttachmentOn: 'attach',
-              uploadThumbnailQuality: 0.1
+              sendAttachmentOn: 'attach'
             }
           },
           document.getElementById('webchat')
@@ -29,13 +26,13 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.uploadFile('seaofthieves.jpg');
+        await pageObjects.uploadFile('empty.txt');
         await pageConditions.allOutgoingActivitiesSent();
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
