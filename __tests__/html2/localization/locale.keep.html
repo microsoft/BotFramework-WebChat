@@ -41,7 +41,7 @@
         await pageConditions.uiConnected();
 
         // Verify the send box placeholder text has a trailing question mark.
-        await host.snapshot();
+        await host.snapshot('local');
 
         await pageObjects.sendMessageViaSendBox('dump-activity', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);

@@ -62,7 +62,7 @@
           await pageConditions.numActivitiesShown(2);
           await pageConditions.allOutgoingActivitiesSent();
 
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { ignoreErrors: 'artificial error' }
       );
