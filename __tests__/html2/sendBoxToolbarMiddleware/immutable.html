@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      :focus {
+        background-color: Yellow;
+        outline: dashed 2px Red;
+        outline-offset: -6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: {
+            hooks: { useSendMessage }
+          }
+        } = window;
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const CustomSendBoxToolbar = () => {
+          const sendMessage = useSendMessage();
+
+          return React.createElement(
+            'button',
+            { onClick: () => sendMessage('Hello, World!'), type: 'button' },
+            'Hello'
+          );
+        };
+
+        const sendBoxToolbarMiddleware = [() => next => request => CustomSendBoxToolbar];
+
+        const render = bubbleBackground =>
+          WebChat.renderWebChat(
+            { directLine, store, sendBoxToolbarMiddleware, styleOptions: { bubbleBackground } },
+            document.getElementById('webchat')
+          );
+
+        render('#fee');
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Consectetur ut veniam est veniam eu eu commodo.');
+
+        // WHEN: Focus on the custom send box toolbar.
+        pageElements.sendBoxTextBox().focus();
+        await host.sendShiftTab();
+
+        // THEN: Should render the custom send box toolbar.
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
+
+        sendBoxToolbarMiddleware.pop();
+
+        render('#efe');
+
+        await directLine.emulateIncomingActivity(
+          'Proident ut ea consectetur fugiat amet in laborum culpa quis velit incididunt.'
+        );
+
+        // THEN: Should not change the send box toolbar and continue to focus on the custom send box toolbar.
+        await pageConditions.numActivitiesShown(2);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

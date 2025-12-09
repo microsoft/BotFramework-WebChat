@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        // GIVEN: On mobile device
+        await host.sendDevToolsCommand('Emulation.setTouchEmulationEnabled', {
+          enabled: true,
+          configuration: 'mobile'
+        });
+
+        const directLine = testHelpers.createDirectLineWithTranscript(
+          testHelpers.transcriptNavigation.generateTranscript()
+        );
+        const store = testHelpers.createStore();
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+
+        // WHEN: Typing text on mobile
+        await host.sendKeys('A quick brown fox jumped over the lazy dog.');
+
+        // THEN: Increases font-size to prevent zoom-in action
+        await host.snapshot('local');
+
+        // WHEN: Removing focus from the text box
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).blur();
+
+        // THEN: Decreases font-size back
+        await host.snapshot('local');
+
+        await host.sendDevToolsCommand('Emulation.setTouchEmulationEnabled', {
+          enabled: false,
+          configuration: 'desktop'
+        });
+      });
+    </script>
+  </body>
+</html>

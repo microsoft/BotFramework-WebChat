@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      :focus {
+        background-color: cyan !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat(
+          {
+            activityMiddleware: testHelpers.createRunHookActivityMiddleware(),
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // Since the keyboard is controlled by the browser and OS, we cannot test if the keyboard activated or not.
+        // This is our best-effort to check if focus is being set correctly or not.
+        await pageObjects.runHook(({ useFocus }) => Promise.resolve(useFocus()).then(focus => focus('sendBoxWithoutKeyboard')));
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.20.4/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"
+    ></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <style>
+      body {
+        overflow: hidden;
+      }
+      #webchat {
+        overflow-y: auto;
+      }
+      pre {
+        padding-inline: 8px;
+        font-size: 12px;
+      }
+      small {
+        padding-inline: 8px;
+      }
+      svg {
+        margin-inline: 8px;
+      }
+      .wrap {
+        position: relative;
+      }
+      .wrap > button {
+        position: absolute;
+        top: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <main id="webchat"></main>
+      <button onclick="handleBuildGraphClick()">Show render stats</button>
+    </div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactDOM: { render },
+        React: { Profiler },
+        WebChat: {
+          Components: { BasicTranscript, Composer },
+          createDirectLine
+        }
+      } = window;
+
+      const BATCH_SIZE = 20;
+
+      const timesEnhancerCalled = new Map();
+      const timesHandlerCalled = new Map();
+
+      let activitiesCount = 0;
+
+      const commits = new Map();
+      function handleRender(id, renderPhase, actualDuration, baseDuration, startTime, commitTime) {
+        const commit = commits.get(commitTime) ?? {};
+        commit.activitiesCount = document.querySelectorAll('.webchat__bubble__content').length;
+        commit.commit = commitTime;
+        commit[`${id} ${renderPhase} actual`] ??= 0;
+        commit[`${id} ${renderPhase} actual`] += actualDuration;
+        commit[`${id} ${renderPhase} count`] ??= 0;
+        commit[`${id} ${renderPhase} count`] += 1;
+        commit[`${id} ${renderPhase} avg`] =
+          commit[`${id} ${renderPhase} actual`] / commit[`${id} ${renderPhase} count`];
+        commits.set(commitTime, commit);
+      }
+
+      function activityRendered() {
+        return next =>
+          (...args) => {
+            const [{ activity }] = args;
+            const renderActivity = next(...args);
+
+            timesEnhancerCalled.set(activity.id, (timesEnhancerCalled.get(activity.id) ?? 0) + 1);
+
+            return (...args) => {
+              timesHandlerCalled.set(activity.id, (timesHandlerCalled.get(activity.id) ?? 0) + 1);
+
+              return (
+                <>
+                  <Profiler id="Activity" onRender={handleRender}>
+                    {renderActivity.call ? renderActivity(...args) : renderActivity}
+                  </Profiler>
+                  <small>
+                    {' '}
+                    Enhancer called {timesEnhancerCalled.get(activity.id)} times and handler called{' '}
+                    {timesHandlerCalled.get(activity.id)} times
+                  </small>
+                </>
+              );
+            };
+          };
+      }
+
+      const createActivity = (timestamp = new Date().toISOString(), nextIndex = activitiesCount++) => ({
+        id: `activity-${nextIndex}`,
+        text: `Message ${nextIndex}.`,
+        textFormat: 'plain',
+        type: 'message',
+        timestamp
+      });
+
+      async function postMessagesBatch(directLine) {
+        const promises = [];
+        const timestamp = new Date().toISOString();
+        for (let index = 0; index < BATCH_SIZE; index++) {
+          promises.push(
+            // Plain text message isolate dependencies on Markdown.
+            directLine.emulateIncomingActivity(createActivity(timestamp), { skipWait: true })
+          );
+        }
+
+        await Promise.all(promises);
+        await pageConditions.numActivitiesShown(activitiesCount);
+      }
+
+      const testComplete = Promise.withResolvers();
+
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          render(
+            <Composer activityMiddleware={activityRendered} directLine={directLine} store={store}>
+              <pre></pre>
+              <Profiler id="Transcript" onRender={handleRender}>
+                <BasicTranscript />
+              </Profiler>
+            </Composer>,
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          // WHEN: Adding 100 activities.
+          await postMessagesBatch(directLine);
+          await postMessagesBatch(directLine);
+          await postMessagesBatch(directLine);
+          await postMessagesBatch(directLine);
+          await postMessagesBatch(directLine);
+
+          const data = [];
+          for (const entry of commits.values()) {
+            const {
+              commit,
+              'Transcript nested-update actual': transcriptNestedUpdate = 0,
+              'Transcript update actual': transcriptUpdate = 0,
+              'Activity update actual': activityUpdate = 0,
+              'Activity mount actual': acivityMount = 0,
+              activitiesCount
+            } = entry;
+            if (acivityMount || transcriptNestedUpdate || transcriptUpdate || activityUpdate) {
+              data.push({
+                index: data.length,
+                commit,
+                activityUpdate,
+                acivityMount,
+                transcriptNestedUpdate,
+                transcriptUpdate,
+                activitiesCount
+              });
+            }
+          }
+
+          const activityTimes = data
+            .map(({ acivityMount, activityUpdate, activitiesCount }) => ({
+              time: acivityMount + activityUpdate,
+              count: activitiesCount
+            }))
+            .filter(({ time }) => time);
+          const activityTimesSorted = activityTimes.sort(({ time: a }, { time: b }) => (a > b ? 1 : a < b ? -1 : 0));
+          const excludedTimes = [].concat(
+            activityTimesSorted.slice(0, 5),
+            activityTimesSorted.slice(activityTimesSorted.length - 5)
+          );
+          const activityTimesNorm = activityTimes.filter(v => !excludedTimes.includes(v));
+
+          displayResults(activityTimesNorm);
+
+          setTimeout(() => testComplete.resolve({ data, activityTimesNorm }));
+
+          await host.snapshot('local');
+        },
+        { ignoreErrors: true }
+      );
+
+      function displayResults(activityTimesNorm, pretty = true) {
+        const prettyBool = condition => {
+          if (pretty) return condition()[0] ? '✅' : '❌';
+          let m = condition.toString().match(/\[(.+),\s*(.*)\]/u);
+          let c = condition();
+          return `${c[0]}\n    ${m[1]}\n    ${m[2]} = ${c[1]}`;
+        };
+        const covariance = ss.sampleCovariance(
+          activityTimesNorm.map(({ time }) => time),
+          activityTimesNorm.map(({ count }) => count)
+        );
+        const linearRegression = ss.linearRegression(activityTimesNorm.map(({ time }, i) => [i, time]));
+        const results = document.querySelector('pre');
+
+        results.innerText = `Render results:
+Activities rendered:\t\t\t ${activitiesCount}
+Render data samples:\t\t\t  ${activityTimesNorm.length}
+Render time grows slow:\t\t\t  ${prettyBool(() => [linearRegression.m < 0.5, linearRegression.m])}
+Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, covariance])}
+`;
+        expect(linearRegression.m).toBeLessThan(0.5);
+        expect(covariance).toBeLessThan(50);
+      }
+
+      async function handleBuildGraphClick() {
+        const { data, activityTimesNorm } = await testComplete.promise;
+        buildGraph(data, activityTimesNorm);
+      }
+
+      function buildGraph(data, activityTimesNorm) {
+        displayResults(activityTimesNorm, false);
+        const width = 928;
+        const height = 500;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 30;
+
+        const x = d3
+          .scaleLinear()
+          .domain(d3.extent(data, d => d.index))
+          .range([marginLeft, width - marginRight]);
+
+        const y = d3
+          .scaleLinear()
+          .domain([
+            0,
+            d3.max(data, d => Math.max(d.activityUpdate, d.transcriptNestedUpdate, d.transcriptUpdate, activitiesCount))
+          ])
+          .nice()
+          .range([height - marginBottom, marginTop]);
+
+        // Create the horizontal axis generator, called at startup and when zooming.
+        const xAxis = (g, x) =>
+          g.call(
+            d3
+              .axisBottom(x)
+              .ticks(width / 80)
+              .tickSizeOuter(0)
+          );
+
+        // The area generators, called at startup and when zooming.
+        const areaTNU = (data, x) =>
+          d3
+            .area()
+            .curve(d3.curveStepAfter)
+            .x(d => x(d.index))
+            .y0(y(0))
+            .y1(d => y(d.transcriptNestedUpdate))(data);
+
+        const areaTU = (data, x) =>
+          d3
+            .area()
+            .curve(d3.curveStepAfter)
+            .x(d => x(d.index))
+            .y0(y(0))
+            .y1(d => y(d.transcriptUpdate))(data);
+
+        const areaAU = (data, x) =>
+          d3
+            .area()
+            .curve(d3.curveStepAfter)
+            .x(d => x(d.index))
+            .y0(y(0))
+            .y1(d => y(d.activityUpdate))(data);
+
+        const areaAM = (data, x) =>
+          d3
+            .area()
+            .curve(d3.curveStepAfter)
+            .x(d => x(d.index))
+            .y0(y(0))
+            .y1(d => y(d.acivityMount + d.activityUpdate))(data);
+
+        const areaAC = (data, x) =>
+          d3
+            .area()
+            .curve(d3.curveStepAfter)
+            .x(d => x(d.index))
+            .y0(y(0))
+            .y1(d => y(d.activitiesCount))(data);
+
+        // Create the zoom behavior.
+        const zoom = d3
+          .zoom()
+          .scaleExtent([1, 32])
+          .extent([
+            [marginLeft, 0],
+            [width - marginRight, height]
+          ])
+          .translateExtent([
+            [marginLeft, -Infinity],
+            [width - marginRight, Infinity]
+          ])
+          .on('zoom', zoomed);
+
+        // Create the SVG container.
+        const svg = d3
+          .create('svg')
+          .attr('viewBox', [0, 0, width, height])
+          .attr('width', width)
+          .attr('height', height)
+          .attr('style', 'max-width: 100%; height: auto;');
+
+        const clip = {
+          id: 'clip-path-1',
+          toString() {
+            return `url(#${this.id})`;
+          }
+        };
+
+        svg
+          .append('clipPath')
+          .attr('id', clip.id)
+          .append('rect')
+          .attr('x', marginLeft)
+          .attr('y', marginTop)
+          .attr('width', width - marginLeft - marginRight)
+          .attr('height', height - marginTop - marginBottom);
+
+        // Create area paths.
+        const pathTNU = svg
+          .append('path')
+          .attr('clip-path', clip)
+          .attr('fill', 'SteelBlue')
+          .attr('d', areaTNU(data, x));
+
+        const pathTU = svg
+          .append('path')
+          .attr('clip-path', clip)
+          .attr('fill', 'LightSteelBlue')
+          .attr('d', areaTU(data, x));
+
+        const pathAM = svg
+          .append('path')
+          .attr('clip-path', clip)
+          .attr('fill', 'LavenderBlush')
+          .attr('stroke', 'LightPink')
+          .attr('stroke-width', '1')
+          .attr('d', areaAM(data, x));
+
+        const pathAU = svg.append('path').attr('clip-path', clip).attr('fill', 'LightPink').attr('d', areaAU(data, x));
+
+        const pathAC = svg
+          .append('path')
+          .attr('clip-path', clip)
+          .attr('stroke', 'Coral')
+          .attr('stroke-width', '2')
+          .attr('fill', 'none')
+          .attr('d', areaAC(data, x));
+
+        // Append the horizontal axis.
+        const gx = svg
+          .append('g')
+          .attr('transform', `translate(0,${height - marginBottom})`)
+          .call(xAxis, x);
+
+        // Append the vertical axis.
+        svg
+          .append('g')
+          .attr('transform', `translate(${marginLeft},0)`)
+          .call(d3.axisLeft(y).ticks(null, 's'))
+          .call(g => g.select('.domain').remove())
+          .call(g =>
+            g
+              .select('.tick:last-of-type text')
+              .clone()
+              .attr('x', 3)
+              .attr('text-anchor', 'start')
+              .attr('font-weight', 'bold')
+              .text('ms / activities')
+          );
+
+        // When zooming, redraw all areas and the x axis.
+        function zoomed(event) {
+          const xz = event.transform.rescaleX(x);
+          pathTNU.attr('d', areaTNU(data, xz));
+          pathTU.attr('d', areaTU(data, xz));
+          pathAU.attr('d', areaAU(data, xz));
+          pathAM.attr('d', areaAM(data, xz));
+          pathAC.attr('d', areaAC(data, xz));
+          gx.call(xAxis, xz);
+        }
+
+        // Initial zoom.
+        svg
+          .call(zoom)
+          .transition()
+          .duration(750)
+          .call(zoom.scaleTo, 4, [x(200), 0]);
+
+        // Legend
+        svg.append('circle').attr('cx', 80).attr('cy', 50).attr('r', 6).style('fill', 'SteelBlue');
+        svg
+          .append('text')
+          .attr('x', 95)
+          .attr('y', 52)
+          .text('Transcript nested-update ms')
+          .style('font-size', '15px')
+          .attr('alignment-baseline', 'middle');
+        svg.append('circle').attr('cx', 80).attr('cy', 70).attr('r', 6).style('fill', 'LightSteelBlue');
+        svg
+          .append('text')
+          .attr('x', 95)
+          .attr('y', 72)
+          .text('Transcript update ms')
+          .style('font-size', '15px')
+          .attr('alignment-baseline', 'middle');
+        svg.append('circle').attr('cx', 80).attr('cy', 90).attr('r', 6).style('fill', 'LightPink');
+        svg
+          .append('text')
+          .attr('x', 95)
+          .attr('y', 92)
+          .text('Activity update ms')
+          .style('font-size', '15px')
+          .attr('alignment-baseline', 'middle');
+        svg
+          .append('circle')
+          .attr('cx', 80)
+          .attr('cy', 110)
+          .attr('r', 6)
+          .attr('fill', 'LavenderBlush')
+          .attr('strokeWidth', '1')
+          .style('stroke', 'LightPink');
+        svg
+          .append('text')
+          .attr('x', 95)
+          .attr('y', 112)
+          .text('Activity mount ms')
+          .style('font-size', '15px')
+          .attr('alignment-baseline', 'middle');
+        svg
+          .append('circle')
+          .attr('cx', 80)
+          .attr('cy', 130)
+          .attr('r', 6)
+          .attr('fill', 'none')
+          .attr('strokeWidth', '2')
+          .style('stroke', 'Coral');
+        svg
+          .append('text')
+          .attr('x', 95)
+          .attr('y', 132)
+          .text('Activities shown count')
+          .style('font-size', '15px')
+          .attr('alignment-baseline', 'middle');
+
+        document.body.appendChild(svg.node());
+      }
+    </script>
+  </body>
+</html>
