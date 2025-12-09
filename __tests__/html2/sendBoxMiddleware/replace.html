@@ -12,16 +12,23 @@
     <script>
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const CustomSendBox = () => React.createElement('div', {}, 'Placeholder for customized send box.');
 
-        WebChat.renderWebChat({ directLine, store, sendBoxToolbarMiddleware: [0] }, document.getElementById('webchat'));
+        WebChat.renderWebChat(
+          { directLine, store, sendBoxMiddleware: [() => next => request => CustomSendBox] },
+          document.getElementById('webchat')
+        );
 
         await pageConditions.uiConnected();
 
-        // THEN: It should warn about the invalid middleware.
-        await pageConditions.warnMessageLogged('must be an array of function');
+        await directLine.emulateIncomingActivity(
+          'Culpa qui aliqua officia pariatur sit commodo in occaecat deserunt excepteur ad irure.'
+        );
 
-        // THEN: It should render the default send box.
-        await host.snapshot();
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should render the custom send box.
+        await host.snapshot('local');
       });
     </script>
   </body>

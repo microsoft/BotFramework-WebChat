@@ -12,22 +12,9 @@
     <script>
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
-        const Border = ({ children }) =>
-          React.createElement('div', { style: { outline: 'solid 2px Red', outlineOffset: -2 } }, children);
 
         WebChat.renderWebChat(
-          {
-            directLine,
-            store,
-            sendBoxMiddleware: [
-              () => next => request => {
-                const NextComponent = next(request);
-
-                return props =>
-                  React.createElement(Border, {}, NextComponent ? React.createElement(NextComponent, props) : false);
-              }
-            ]
-          },
+          { directLine, store, sendBoxMiddleware: [() => () => () => false] },
           document.getElementById('webchat')
         );
 
@@ -39,8 +26,8 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: Should render a border around the default send box.
-        await host.snapshot();
+        // THEN: Should hide the default send box.
+        await host.snapshot('local');
       });
     </script>
   </body>

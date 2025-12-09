@@ -38,7 +38,7 @@
 
         // THEN: Should render the custom send box toolbar.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: The "Hello" button is clicked.
         pageElements.sendBoxTextBox().focus();
@@ -47,7 +47,7 @@
 
         // THEN: Should send a "Hello, World!" messaeg.
         await pageConditions.numActivitiesShown(2);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

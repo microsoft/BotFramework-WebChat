@@ -11,23 +11,29 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
+        const {
+          WebChat: {
+            hooks: { useSendMessage }
+          }
+        } = window;
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         WebChat.renderWebChat(
-          { directLine, store, sendBoxMiddleware: [() => () => () => false] },
+          {
+            directLine,
+            store,
+            sendBoxToolbarMiddleware: [() => next => request => false]
+          },
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity(
-          'Culpa qui aliqua officia pariatur sit commodo in occaecat deserunt excepteur ad irure.'
-        );
+        await directLine.emulateIncomingActivity('Consectetur ut veniam est veniam eu eu commodo.');
 
+        // THEN: Should not render the upload button.
         await pageConditions.numActivitiesShown(1);
-
-        // THEN: Should hide the default send box.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

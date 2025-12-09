@@ -11,20 +11,15 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const {
-          WebChat: {
-            hooks: { useSendMessage }
-          }
-        } = window;
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const Border = ({ children }) =>
-          React.createElement('div', { style: { display: 'flex', outline: 'dashed 2px Red', outlineOffset: -4 } }, children);
+          React.createElement('div', { style: { outline: 'solid 2px Red', outlineOffset: -2 } }, children);
 
         WebChat.renderWebChat(
           {
             directLine,
             store,
-            sendBoxToolbarMiddleware: [
+            sendBoxMiddleware: [
               () => next => request => {
                 const NextComponent = next(request);
 
@@ -38,11 +33,14 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity('Consectetur ut veniam est veniam eu eu commodo.');
+        await directLine.emulateIncomingActivity(
+          'Culpa qui aliqua officia pariatur sit commodo in occaecat deserunt excepteur ad irure.'
+        );
 
-        // THEN: Should render a border around the upload button.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot();
+
+        // THEN: Should render a border around the default send box.
+        await host.snapshot('local');
       });
     </script>
   </body>

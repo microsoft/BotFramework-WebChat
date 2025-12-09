@@ -17,12 +17,21 @@
           }
         } = window;
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const Border = ({ children }) =>
+          React.createElement('div', { style: { display: 'flex', outline: 'dashed 2px Red', outlineOffset: -4 } }, children);
 
         WebChat.renderWebChat(
           {
             directLine,
             store,
-            sendBoxToolbarMiddleware: [() => next => request => false]
+            sendBoxToolbarMiddleware: [
+              () => next => request => {
+                const NextComponent = next(request);
+
+                return props =>
+                  React.createElement(Border, {}, NextComponent ? React.createElement(NextComponent, props) : false);
+              }
+            ]
           },
           document.getElementById('webchat')
         );
@@ -31,9 +40,9 @@
 
         await directLine.emulateIncomingActivity('Consectetur ut veniam est veniam eu eu commodo.');
 
-        // THEN: Should not render the upload button.
+        // THEN: Should render a border around the upload button.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

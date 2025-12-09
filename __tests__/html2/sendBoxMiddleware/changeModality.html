@@ -118,13 +118,13 @@
         await pageConditions.numActivitiesShown(1);
 
         // THEN: Should render a border around the default send box.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Send a message.
         await (await directLine.emulateOutgoingActivity('Hello, World!')).resolveAll();
 
         // THEN: Should not render a border around the default send box because the last message is not from bot.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Received a message from bot with inputHint of "ignoring".
         await directLine.emulateIncomingActivity({
@@ -134,7 +134,7 @@
         });
 
         // THEN: Should hide the send box because it changed to a different set of middleware.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

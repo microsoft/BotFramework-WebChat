@@ -54,7 +54,7 @@
 
         // THEN: Should render the custom send box toolbar.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot();
+        await host.snapshot('local');
 
         sendBoxToolbarMiddleware.pop();
 
@@ -66,7 +66,7 @@
 
         // THEN: Should not change the send box toolbar and continue to focus on the custom send box toolbar.
         await pageConditions.numActivitiesShown(2);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
