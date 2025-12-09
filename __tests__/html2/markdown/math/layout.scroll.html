@@ -115,7 +115,7 @@
         document.querySelector(`#webchat [data-testid="${testIds.sendBoxTextBox}"]`).focus();
 
         await host.sendShiftTab(
-          ['copilot', 'copilot-deprecated', 'fluent'].includes(searchParams.get('variant')) ? 2 : 3
+          ['copilot', 'fluent'].includes(searchParams.get('variant')) ? 2 : 3
         );
         await host.sendKeys('ENTER');
 
