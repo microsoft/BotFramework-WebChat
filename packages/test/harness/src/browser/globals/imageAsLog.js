@@ -1,6 +1,13 @@
-async function getBlobURL(base64) {
-  const res = await fetch(`data:image/png;base64,${base64}`);
-  const blob = await res.blob();
+function getBlobURL(base64) {
+  const byteString = atob(base64);
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+
+  for (let index = 0; index < byteString.length; index++) {
+    uint8Array[+index] = byteString.charCodeAt(index);
+  }
+
+  const blob = new Blob([uint8Array], { type: 'image/png' });
 
   return URL.createObjectURL(blob);
 }
@@ -17,7 +24,7 @@ function getImageSize(url) {
 }
 
 async function imageAsLog(base64, scale = 1) {
-  const url = await getBlobURL(base64);
+  const url = getBlobURL(base64);
   const { height, width } = await getImageSize(url);
 
   const scaledHeight = height * scale;
