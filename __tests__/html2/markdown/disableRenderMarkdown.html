@@ -35,7 +35,7 @@
         await pageConditions.minNumActivitiesShown(1);
 
         // The snapshot should render the text as-is, without using Markdown renderer.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

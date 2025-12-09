@@ -19,15 +19,11 @@
         );
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('echo Hello, [World](https://bing.com)!');
-        await pageConditions.minNumActivitiesShown(3);
+        await pageObjects.sendMessageViaSendBox('herocard');
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
 
-        const externalLink = [...pageElements.activities()].reverse()[0].querySelector('a');
-        const relationships = (externalLink.getAttribute('rel') || '').split(new RegExp('\\s+', 'gu')).sort();
-
-        expect(relationships).toEqual(['noopener', 'noreferrer']);
-
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

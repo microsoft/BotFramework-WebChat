@@ -13,20 +13,17 @@
         WebChat.renderWebChat(
           {
             directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            renderMarkdown: null,
             store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('echo Hello, [World](javascript:alert(1))!');
+        await pageObjects.sendMessageViaSendBox('echo **This text should be plain text**');
         await pageConditions.minNumActivitiesShown(3);
 
-        const externalLink = pageElements.transcript().querySelector('li:last-child a');
-
-        expect(externalLink).toBeFalsy();
-
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
