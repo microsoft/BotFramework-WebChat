@@ -31,13 +31,13 @@
 
         await pageConditions.uiConnected();
         await pageObjects.typeInSendBox('Hello');
-        await pageObjects.runHook(({ useTextBoxSubmit }) => useTextBoxSubmit()('sendBoxWithoutKeyboard'));
+        await pageObjects.runHook(({ useTextBoxSubmit }) => useTextBoxSubmit()('sendBox'));
         await pageConditions.allOutgoingActivitiesSent();
 
         // When using runHookActivityMiddleware, an additional hidden activity will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
         await pageConditions.minNumActivitiesShown(3);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

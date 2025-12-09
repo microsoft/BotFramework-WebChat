@@ -3,6 +3,7 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -16,28 +17,29 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const store = testHelpers.createStore();
-
-        WebChat.renderWebChat(
+        const renderWebChatWithHook = testHelpers.createRenderWebChatWithHook(
           {
-            activityMiddleware: testHelpers.createRunHookActivityMiddleware(),
-            directLine,
-            store,
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore(),
             styleOptions: { subtle: '#666' }
           },
           document.getElementById('webchat')
         );
 
+        // GIVEN: "Hello" is typed in the send box.
+        await renderWebChatWithHook();
+
         await pageConditions.uiConnected();
         await pageObjects.typeInSendBox('Hello');
-        await pageObjects.runHook(({ useTextBoxSubmit }) => useTextBoxSubmit()('sendBox'));
+
+        // WHEN: The callback of "useTextBoxSubmit()" hook is being called with argument of "main".
+        await renderWebChatWithHook(() => window.WebChat.hooks.useTextBoxSubmit()('main'));
+
+        // THEN: It should send the "Hello" to the bot and receive a responding activity.
         await pageConditions.allOutgoingActivitiesSent();
+        await pageConditions.minNumActivitiesShown(2);
 
-        // When using runHookActivityMiddleware, an additional hidden activity will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
-        await pageConditions.minNumActivitiesShown(3);
-
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
