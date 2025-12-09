@@ -189,7 +189,7 @@
 
           setTimeout(() => testComplete.resolve({ data, activityTimesNorm }));
 
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { ignoreErrors: true }
       );

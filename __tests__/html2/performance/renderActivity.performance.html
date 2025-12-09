@@ -118,7 +118,7 @@
         expect(timesHandlerCalled.get('activity-8')).toBe(activity9Renders + 1);
         // THEN: Should render the updated 9th activity.
         pageElements.focusedActivity().scrollIntoView();
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
