@@ -82,7 +82,7 @@
           expectWidthHeight(landscapeImage, 338, 240);
           expectWidthHeight(portraitImage, 338, 240);
 
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { expectDeprecations: true }
       );
