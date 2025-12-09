@@ -10,10 +10,7 @@
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       body {
-        align-items: initial;
         background-color: #f7f7f7;
-        display: initial;
-        justify-content: initial;
       }
 
       #webchat {
@@ -23,12 +20,6 @@
         min-width: 360px;
       }
 
-      .form-input {
-        left: 1px;
-        position: absolute;
-        top: 1px;
-      }
-
       :focus {
         background-color: gold !important;
       }
@@ -36,11 +27,6 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <div aria-label="form" role="contentinfo">
-      <label aria-label="this box is outside" class="form-input">
-        <input accesskey="S" type="text" value="This box is outside" />
-      </label>
-    </div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useEffect },
@@ -55,10 +41,7 @@
       run(async function () {
         const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
-        const styleOptions = {
-          internalLiveRegionFadeAfter: 60000,
-          subtle: 'Black'
-        };
+        const styleOptions = { subtle: 'Black' };
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
@@ -73,13 +56,20 @@
           return false;
         };
 
-        render(
-          <Composer directLine={directLine} store={store} styleOptions={styleOptions}>
-            <BasicWebChat />
-            <SendOnConnect />
-          </Composer>,
-          document.getElementById('webchat')
-        );
+        function renderWebChat(props) {
+          return new Promise(resolve => {
+            render(
+              <Composer directLine={directLine} store={store} styleOptions={styleOptions} {...props}>
+                <BasicWebChat />
+                <SendOnConnect />
+              </Composer>,
+              document.getElementById('webchat'),
+              resolve
+            );
+          });
+        }
+
+        await renderWebChat({ suggestedActionsAccessKey: false });
 
         await pageConditions.uiConnected();
         await pageConditions.minNumActivitiesShown(2);
@@ -95,43 +85,28 @@
           'connecting',
           'You said:\nsuggested-actions',
           'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
-          'Message has suggested actions. Press Alt Shift A to select them.'
+          'Message has suggested actions. Press shift tab 2 to 3 times to select them.'
         ]);
 
         expect(document.querySelector('.webchat__suggested-actions').getAttribute('aria-label')).toBe(
           'Suggested actions'
         );
 
-        expect(
-          [].map.call(document.querySelectorAll('[aria-keyshortcuts]'), element =>
-            element.getAttribute('aria-keyshortcuts')
-          )
-        ).toEqual(new Array(6).fill('Alt+Shift+A'));
+        expect(document.querySelectorAll('[aria-keyshortcuts]')).toHaveProperty('length', 0);
+
+        // Change access key on-the-fly.
+
+        await renderWebChat({ suggestedActionsAccessKey: 'Z z' });
 
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.
         await pageObjects.focusTranscript();
 
-        await host.snapshot();
+        await host.snapshot('local');
 
-        await host.sendAccessKey('A');
+        await host.sendAccessKey('Z');
 
-        await host.snapshot();
-
-        await host.sendAccessKey('A');
-
-        // We need to wait for flipper button animation to complete.
-        await testHelpers.sleep(1000);
-
-        await host.snapshot();
-
-        // This will send the focus to a control outside of Web Chat.
-        await host.sendAccessKey('S');
-
-        // We need to wait for flipper button animation to complete.
-        await testHelpers.sleep(1000);
-
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
