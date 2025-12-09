@@ -57,7 +57,7 @@
         await pageConditions.numActivitiesShown(2);
 
         // THEN: It should show 1 outgoing message, and 1 incoming message.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: A "carousel" message is being sent.
         await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
@@ -72,7 +72,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should show 3 messages: 2 outgoing messages and 1 incoming message (carousel).
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
