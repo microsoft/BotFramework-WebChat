@@ -97,7 +97,7 @@
         );
 
         // EXPECT: The button should show on upper left corner.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // SETUP: Scroll to top, the button should know it is not at bottom.
         await pageObjects.scrollToTop();
@@ -110,7 +110,7 @@
         );
 
         // EXPECT: The button should show on upper left corner.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // SETUP: Click the button, it should scroll to the bottom.
         await host.click(document.getElementsByClassName('my-scroll-to-end-button')[0]);
@@ -126,14 +126,14 @@
         );
 
         // EXPECT: The button should show on upper left corner.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // SETUP: Switch back to the default button with "any" behavior.
         render({ styleOptions: { scrollToEndButtonBehavior: 'any' } });
         await pageObjects.scrollToTop();
 
         // EXPECT: The default button should show up.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

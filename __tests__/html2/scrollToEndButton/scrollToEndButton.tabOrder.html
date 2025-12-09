@@ -56,7 +56,7 @@
         // After pressing TAB from transcript, it should focus on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
