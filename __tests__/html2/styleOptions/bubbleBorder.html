@@ -59,7 +59,7 @@
         await pageConditions.minNumActivitiesShown(3);
 
         // THEN: Should show custom border styles.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

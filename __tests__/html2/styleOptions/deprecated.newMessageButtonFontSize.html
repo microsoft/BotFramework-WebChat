@@ -43,7 +43,7 @@
           await pageConditions.scrollToEndButtonShown();
 
           // EXPECT: Should show a "More messages" button with enlarged font.
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { expectDeprecations: true }
       );

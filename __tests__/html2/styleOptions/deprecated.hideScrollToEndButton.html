@@ -53,14 +53,14 @@
 
           // EXPECT: The button should not show up.
           await pageConditions.scrollToEndButtonHidden();
-          await host.snapshot();
+          await host.snapshot('local');
 
           // SETUP: With default options, the button should show up.
           render();
 
           // EXPECT: The button should show up.
           await pageConditions.scrollToEndButtonShown();
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { expectDeprecations: true }
       );
