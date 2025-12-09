@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              citation: [
+                {
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    url: 'https://example.com/1/',
+                    usageInfo: {
+                      '@id': '_:1',
+                      '@type': 'CreativeWork',
+                      description:
+                        'Nisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.',
+                      keywords: ['encrypted-content'],
+                      name: 'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat',
+                      pattern: {
+                        '@type': 'DefinedTerm',
+                        inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+                        name: 'color',
+                        termCode: 'orange'
+                      }
+                    }
+                  },
+                  position: 1
+                },
+                {
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    text: 'Incididunt amet dolore anim commodo fugiat occaecat elit nulla do consequat. Quis incididunt occaecat labore adipisicing. Cillum sunt velit consequat irure ipsum ullamco sint ea aute. Sunt et eu ut enim aliqua cupidatat non adipisicing dolore commodo dolor magna enim. Commodo reprehenderit excepteur ad nostrud ex id aliquip deserunt eiusmod. Esse non labore nulla voluptate.',
+                    usageInfo: {
+                      '@type': 'CreativeWork',
+                      name: 'Velit exercitation',
+                      pattern: {
+                        '@type': 'DefinedTerm',
+                        inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+                        name: 'color',
+                        termCode: 'Yellow'
+                      }
+                    }
+                  },
+                  position: 3
+                },
+                {
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    text: atob(
+                      'IyMgSGVhZGVyCjxwPlRoaXMgaXMgc29tZSB0ZXh0IHdpdGggYSA8YSBocmVmPSJodHRwOi8vZXhhbXBsZS5jb20iIHRpdGxlPSJldmVuIGhhY2tlcnMgcmVzcGVjdCBhMTF5Ij5saW5rIGluIGl0PC9hPi4gQWxzbyA8c3Ryb25nPnNvbWUgdGV4dDwvc3Ryb25nPiA8ZW0+d2l0aCBmb3JtYXR0aW5nPC9lbT4uPC9wPgo8dWw+CjxsaT5Vbm9yZGVyZWQ8L2xpPgo8bGk+bGlzdDwvbGk+CjxsaT5pdGVtczwvbGk+CjwvdWw+CjxvbD4KPGxpPk9yZGVyZWQ8L2xpPgo8bGk+bGlzdDwvbGk+CjxsaT5pdGVtczwvbGk+Cjwvb2w+Cjx1bD4KPGxpPkJlbG93IGFyZSBzb21lIHVuc2FmZSB0aGluZ3MgdGhhdCBzaG91bGQgZ2V0IHNhbml0aXplZDoKPGxpPjxzY3JpcHQ+VGhpcyBpc24ndCBhbGxvd2VkITwvc2NyaXB0Pgo8bGk+PGltZyBzcmM9IiIgYWx0PSJJIGFtIGEgZHVtbXkgaW1hZ2UgdHJ5aW5nIHRvIGhhY2sgeW91IiBvbmVycm9yPWFsZXJ0KDEpIC8+CjxsaT48c3ZnIGFyaWEtbGFiZWw9Im1hbGljaW91cyBzdmcgaGVyZSI+PGcvb25sb2FkPWFsZXJ0KDIpLy88cD4KPGxpPjxwPmFiYzxpZnJhbWUvL3NyYz1qQXZhJlRhYjtzY3JpcHQ6YWxlcnQoMyk+ZGVmPC9wPgo8bGk+PG1hdGg+PG1pLy94bGluazpocmVmPSJkYXRhOngsPHNjcmlwdD5hbGVydCg0KTwvc2NyaXB0Pgo8bGk+CjwvdWw+'
+                    )
+                  },
+                  position: 4
+                }
+              ],
+              type: 'https://schema.org/Message',
+              usageInfo: { '@id': '_:1' }
+            }
+          ],
+          text: 'Ipsum[1] dolore[2] cupidatat[3] magna[4] consectetur[5] do tempor est excepteur.\n\n[1]: https://example.com/1/ "Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat"\n[2]: https://example.com/2/ "Laboris cupidatat voluptate"\n[3]: _:3 "Velit nulla culpa eu ea consectetur consectetur dolore velit"\n[4]: _:4 "Adipisicing enim nulla"\n[5]: https://example.com/5',
+          type: 'message'
+        });
+
+        const [firstActivityElement] = pageElements.activities();
+
+        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+
+        expect(linkDefinitions).toHaveProperty('length', 5);
+
+        linkDefinitions[3].querySelector('button').click();
+
+        const link = document.querySelector('dialog [href="http://example.com"]');
+        const linkImage = link.querySelector('.webchat__render-markdown__external-link-icon');
+
+        expect(link.getAttribute('aria-label')).toBe('link in it Opens in a new window; external.');
+        expect(link.getAttribute('target')).toBe('_blank');
+        expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+        expect(linkImage.title).toBe('Opens in a new window; external.');
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
