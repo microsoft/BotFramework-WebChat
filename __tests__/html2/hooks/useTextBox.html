@@ -61,7 +61,7 @@
 
         await pageObjects.scrollToTop();
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         await renderWithFunction(() => {
           const [_, setTextBoxValue] = useTextBoxValue();
@@ -79,7 +79,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         await pageConditions.scrollToEndButtonHidden();
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

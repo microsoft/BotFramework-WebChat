@@ -133,18 +133,18 @@
 
         // "12" should appears right above the send box.
         await renderWithFunction(() => useScrollTo()({ activityID: '12' }));
-        await host.snapshot();
+        await host.snapshot('local');
 
         // When on top, it should always return the first activity in the transcript.
         await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }));
         await new Promise(resolve => setTimeout(resolve, 200)); // Wait until "scroll" event
         expect(lastScrollPosition).toHaveProperty('activityID', '0');
         expect(lastScrollPosition).toHaveProperty('scrollTop', 0);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // Since "19" is a super-long activity, it should appears on the top of the page.
         await renderWithFunction(() => useScrollTo()({ activityID: '19' }));
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

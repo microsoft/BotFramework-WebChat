@@ -69,7 +69,7 @@
         await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
