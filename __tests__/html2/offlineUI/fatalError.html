@@ -53,7 +53,7 @@
 
           // THEN: SAGA_ERROR will cancel all sagas, thus, `activity.channelState['webchat:send-status']` will become `"send failed"`.
           //       As a result, the timestamp on the screenshot should become "Send failed, retry."
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { ignoreErrors: true }
       );

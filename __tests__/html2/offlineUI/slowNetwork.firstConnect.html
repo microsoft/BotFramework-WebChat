@@ -65,17 +65,17 @@
 
         await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING');
         await pageConditions.connectivityStatusShown(/taking longer than usual/iu);
-        await host.snapshot();
+        await host.snapshot('local');
 
         updateProps(props => updateIn(props, ['styleOptions', 'slowConnectionAfter'], () => 20000));
 
         await pageConditions.connectivityStatusShown(/connecting/iu);
-        await host.snapshot();
+        await host.snapshot('local');
 
         clock.tick(5000);
 
         await pageConditions.connectivityStatusShown(/taking longer than usual/iu);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

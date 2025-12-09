@@ -47,7 +47,7 @@
         await pageConditions.webChatRendered();
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
