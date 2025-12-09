@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .avatar-box {
+        border: solid 2px #ccc;
+        margin-bottom: 2px;
+        padding: 2px;
+        width: 40px;
+      }
+
+      .custom-avatar {
+        align-items: center;
+        background-color: #e00;
+        border-radius: 4px;
+        color: White;
+        display: flex;
+        height: 40px;
+        justify-content: center;
+        width: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactDOM: { render },
+        WebChat: {
+          Components: { Composer },
+          hooks: { useActivities, useCreateAvatarRenderer }
+        }
+      } = window;
+
+      run(async function () {
+        const RenderAvatarTest = ({ activity }) => {
+          const createAvatarRenderer = useCreateAvatarRenderer();
+          const renderAvatar = createAvatarRenderer({ activity });
+
+          return renderAvatar ? renderAvatar() : 'false';
+        };
+
+        const Test = () => {
+          const [activities] = useActivities();
+
+          return (
+            <React.Fragment>
+              {activities.map(activity => (
+                <div className="avatar-box" key={activity.id}>
+                  <RenderAvatarTest activity={activity} />
+                </div>
+              ))}
+              {!!activities.length && <div className="done" />}
+            </React.Fragment>
+          );
+        };
+
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            from: { role: 'bot' },
+            id: '1.0',
+            text: 'Irure officia aliqua incididunt do deserunt dolor dolor labore qui nulla.',
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            from: { role: 'user' },
+            id: '2.0',
+            text: 'Et elit non ea amet nostrud elit qui elit.',
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            from: { role: 'bot' },
+            id: '3.0',
+            text: 'Sit sit aliquip ipsum sit do ullamco non tempor velit qui irure cillum veniam labore.',
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            from: { role: 'user' },
+            id: '4.0',
+            text: 'Esse culpa tempor deserunt aute nisi ullamco laboris ullamco aute irure sunt tempor occaecat do.',
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            from: { role: 'bot' },
+            id: '5.0',
+            text: 'Commodo quis pariatur nostrud eu ea ullamco voluptate ea.',
+            timestamp: 0,
+            type: 'message'
+          }
+        ]);
+
+        const avatarMiddleware = () => next => (...args) => {
+          const [
+            {
+              activity: { id },
+              styleOptions: { botAvatarInitials, userAvatarInitials }
+            }
+          ] = args;
+
+          if (id === '3.0') {
+            return () => <div className="custom-avatar">{botAvatarInitials}</div>;
+          } else if (id === '4.0') {
+            return () => <div className="custom-avatar">{userAvatarInitials}</div>;
+          } else if (id === '5.0') {
+            return false;
+          }
+
+          return next(...args);
+        };
+
+        const store = testHelpers.createStore();
+
+        const styleOptions = {
+          botAvatarInitials: 'Bot',
+          userAvatarInitials: 'You'
+        };
+
+        render(
+          <Composer
+            avatarMiddleware={avatarMiddleware}
+            directLine={directLine}
+            store={store}
+            styleOptions={styleOptions}
+          >
+            <Test />
+          </Composer>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

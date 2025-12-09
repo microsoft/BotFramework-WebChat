@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: 'Ipsum[Abc] dolore[DEF] cupidatat[xyz] magna consectetur do tempor est excepteur.\n\n[Abc]: https://example.com/1/ "Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat"\n[DEF]: https://example.com/2/ "Laboris cupidatat voluptate"\n[xyz]: https://example.com/3/ "Velit nulla culpa eu ea consectetur consectetur dolore velit"',
+          type: 'message'
+        });
+
+        await host.snapshot('local');
+
+        const [firstActivityElement] = pageElements.activities();
+
+        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+
+        expect(linkDefinitions).toHaveProperty('length', 3);
+
+        expect(linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(
+          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat');
+
+        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(
+          linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Laboris cupidatat voluptate');
+        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+
+        expect(linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(
+          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Velit nulla culpa eu ea consectetur consectetur dolore velit');
+
+        expect(
+          [].map.call(
+            firstActivityElement.querySelectorAll('.webchat__link-definitions__badge'),
+            ({ textContent }) => textContent
+          )
+        ).toEqual(['Abc', 'DEF', 'xyz']);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .sendbox-variant-1 .webchat-fluent .sendbox__sendbox {
+        grid-template:
+          [telephone-keypad-start] "text-area controls" [attachment-bar telephone-keypad-end]
+          / [telephone-keypad text-area attachment-bar] 3fr [controls] 1fr;
+      }
+      .sendbox-variant-1 .webchat-fluent .sendbox__toolbar {
+        place-self: end;
+      }
+
+      .sendbox-variant-2 .webchat-fluent .sendbox__sendbox {
+        grid-template: [telephone-keypad-start] "text-area"
+          [attachment-bar telephone-keypad-end]
+          "controls" /
+          [telephone-keypad text-area attachment-bar controls] 1fr;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const main = document.getElementById('webchat');
+        const App = () => <ReactWebChat directLine={directLine} store={store} styleOptions={{ maxMessageLength: null }} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        main.setAttribute('class', 'sendbox-variant-1');
+
+        await directLine.emulateIncomingActivity(
+          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+        );
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should render the new design 1.
+        await host.snapshot('local');
+
+        await pageObjects.uploadFile('seaofthieves.jpg');
+
+        // THEN: Should render attached file.
+        await host.snapshot('local');
+
+        main.setAttribute('class', 'sendbox-variant-2');
+
+        // THEN: Should render the new design 2.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

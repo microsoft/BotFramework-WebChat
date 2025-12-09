@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          [
+            {
+              from: { role: 'bot' },
+              id: '1.0',
+              text: 'In irure voluptate consequat ad.',
+              timestamp: 0,
+              type: 'message'
+            }
+          ],
+          {
+            ponyfill: clock
+          }
+        );
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(1000);
+
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
+
+        directLine.activityDeferredObservable.next({
+          from: { role: 'bot' },
+          id: '2.0',
+          replyToId: '0.0',
+          text: 'Ullamco aliqua dolore eiusmod nostrud elit.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        // The second activity should not show up yet.
+        await host.snapshot('local');
+
+        clock.tick(2000);
+
+        directLine.activityDeferredObservable.next({
+          from: { role: 'bot' },
+          id: '2.1',
+          replyToId: '0.0',
+          text: 'Velit fugiat mollit laboris elit cillum voluptate aliqua nulla officia anim voluptate dolor anim et.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        // The second and third activity should not show up yet.
+        await host.snapshot('local');
+
+        clock.tick(3000);
+
+        // The second and third activity should show up together now.
+        await host.snapshot('local');
+
+        clock.tick(1000);
+
+        directLine.activityDeferredObservable.next({
+          from: { role: 'bot' },
+          id: '3.0',
+          replyToId: '0.0',
+          text: 'Ut sint enim officia laboris nostrud ut aute quis ea fugiat dolore duis eu.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        // The third activity should show up immediately, as "0.0" is considered as lost (by "1.0"), we should not wait for it to comes up.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

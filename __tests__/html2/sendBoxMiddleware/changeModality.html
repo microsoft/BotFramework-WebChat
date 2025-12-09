@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          React: { createContext, useContext, useMemo, useState },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            hooks: { useActivities }
+          }
+        } = window; // Imports in UMD fashion.
+
+        const AppContext = createContext({ showBorder: false });
+
+        const Border = ({ children }) => {
+          const { showBorder } = useContext(AppContext);
+
+          return (
+            <div
+              style={{
+                outlineColor: 'Red',
+                outlineOffset: -2,
+                outlineStyle: 'dashed',
+                outlineWidth: showBorder ? 2 : 0
+              }}
+            >
+              {children}
+            </div>
+          );
+        };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const OnActivity = () => {
+          const [activities] = useActivities();
+          const { setEndOfConversation, setShowBorder } = useContext(AppContext);
+
+          const lastActivity = activities[activities.length - 1];
+
+          useMemo(
+            () => setEndOfConversation(lastActivity?.inputHint === 'ignoring'),
+            [lastActivity, setEndOfConversation]
+          );
+
+          useMemo(() => setShowBorder(lastActivity?.from.role === 'bot'), [lastActivity, setShowBorder]);
+
+          return false;
+        };
+
+        const App = () => {
+          const [showBorder, setShowBorder] = useState(false);
+          const [endOfConversation, setEndOfConversation] = useState(false);
+          const context = useMemo(
+            () => ({ endOfConversation, setEndOfConversation, setShowBorder, showBorder }),
+            [endOfConversation, setEndOfConversation, setShowBorder, showBorder]
+          );
+
+          const attentionMiddleware = useMemo(
+            () =>
+              Object.freeze([
+                () => next => request => {
+                  const NextComponent = next(request);
+
+                  return props => (
+                    <Border>
+                      <NextComponent {...props} />
+                    </Border>
+                  );
+                }
+              ]),
+            []
+          );
+
+          const endOfConversationMiddleware = useMemo(
+            () => Object.freeze([() => () => () => () => <div>Thank you. You can close the chat now.</div>]),
+            []
+          );
+
+          const sendBoxMiddleware = useMemo(
+            () => (endOfConversation ? endOfConversationMiddleware : attentionMiddleware),
+            [attentionMiddleware, endOfConversation, endOfConversationMiddleware]
+          );
+
+          return (
+            <AppContext.Provider value={context}>
+              <Composer directLine={directLine} store={store} sendBoxMiddleware={sendBoxMiddleware}>
+                <OnActivity />
+                <BasicWebChat />
+              </Composer>
+            </AppContext.Provider>
+          );
+        };
+
+        render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // SCENARIO: If the last message is from bot, show a border around the send box.
+
+        // WHEN: Received a message from bot.
+        await directLine.emulateIncomingActivity(
+          'Culpa qui aliqua officia pariatur sit commodo in occaecat deserunt excepteur ad irure.'
+        );
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should render a border around the default send box.
+        await host.snapshot('local');
+
+        // WHEN: Send a message.
+        await (await directLine.emulateOutgoingActivity('Hello, World!')).resolveAll();
+
+        // THEN: Should not render a border around the default send box because the last message is not from bot.
+        await host.snapshot('local');
+
+        // WHEN: Received a message from bot with inputHint of "ignoring".
+        await directLine.emulateIncomingActivity({
+          inputHint: 'ignoring',
+          text: 'Irure incididunt excepteur incididunt sunt occaecat excepteur.',
+          type: 'message'
+        });
+
+        // THEN: Should hide the send box because it changed to a different set of middleware.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

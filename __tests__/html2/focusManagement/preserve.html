@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          WebChat
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        const attachments = [
+          {
+            content: {
+              type: 'AdaptiveCard',
+              $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+              version: '1.5',
+              actions: [
+                { type: 'Action.Submit', title: 'Button 1' },
+                {
+                  type: 'Action.ShowCard',
+                  title: 'Show card',
+                  card: {
+                    type: 'AdaptiveCard',
+                    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                    version: '1.5',
+                    actions: [
+                      { type: 'Action.Submit', title: 'Button 2' },
+                      { type: 'Action.Submit', title: 'Button 3' }
+                    ]
+                  }
+                }
+              ]
+            },
+            contentType: 'application/vnd.microsoft.card.adaptive'
+          }
+        ];
+
+        await directLine.emulateIncomingActivity({
+          attachments,
+          id: 'a-00001',
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments,
+          id: 'a-00002',
+          text: 'Aloha!',
+          type: 'message'
+        });
+        await pageConditions.numActivitiesShown(2);
+
+        // WHEN: The "Show card" button in the first card is tapped.
+        await host.sendKeys('TAB', 'ARROW_UP', 'ENTER', 'TAB', 'ENTER');
+
+        // THEN: Should render additional buttons.
+        await host.snapshot('local');
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Should focus over the activity.
+        await host.snapshot('local');
+
+        // WHEN: ENTER key is pressed.
+        await host.sendKeys('ENTER');
+
+        // THEN: Should focus the same "Show card" button.
+        await host.snapshot('local');
+        const showCardButton = document.activeElement;
+
+        // WHEN: TAB is pressed 2 times.
+        await host.sendKeys('TAB', 'TAB');
+
+        // THEN: Should focus the last card button.
+        await host.snapshot('local');
+
+        // WHEN: ESCAPE key is pressed followed by clicking on the "Show card" button.
+        await host.sendKeys('ESCAPE');
+        host.click(showCardButton);
+
+        // WHEN: Typing "A" when the "Show card" button is focused.
+        await host.sendKeys('A');
+
+        // THEN: Should focus the last focused card button (via mouse).
+        await host.snapshot('local');
+
+        // WHEN: TAB is pressed.
+        await host.sendKeys('TAB');
+
+        // THEN: Should focus the first available card button (loop).
+        await host.snapshot('local');
+
+        // WHEN: TAB then ESCAPE followed by ARROW_DOWN and ENTER.
+        await host.sendKeys('TAB', 'ESCAPE', 'ARROW_DOWN', 'ENTER');
+
+        // THEN: Should focus the next activity card.
+        await host.snapshot('local');
+
+        // WHEN: Focus into the first activity.
+        await host.sendKeys('ESCAPE', 'ARROW_UP', 'ENTER');
+
+        // THEN: Should focus the last focused button.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
