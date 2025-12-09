@@ -4,9 +4,7 @@ import cx from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';
 
-import useVariants from '../../private/useVariants';
 import { useStyles, useVariantClassName } from '../../styles';
-import CopilotMessageHeader from './CopilotMessageHeader';
 
 import styles from './PartGroupingDecorator.module.css';
 
@@ -29,7 +27,6 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
     activities: [activity, ...restActivities]
   } = validateProps(partGroupingDecoratorPropsSchema, props);
 
-  const variants = useVariants();
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(styles);
 
@@ -41,8 +38,6 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
 
   const isFromUser = activity?.from?.role === 'user';
   const isFromBot = activity?.from?.role === 'bot';
-
-  const shouldRenderHeader = variants.includes('copilot-deprecated') && activity?.from?.role === 'bot';
 
   return (
     <div
@@ -56,9 +51,6 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
         variantClassName
       )}
     >
-      {shouldRenderHeader && (
-        <CopilotMessageHeader activity={activity} className={classNames['part-grouping-decorator__header']} />
-      )}
       <PartGrouping {...props} />
     </div>
   );

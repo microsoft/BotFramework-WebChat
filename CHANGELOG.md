@@ -146,8 +146,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 - Cleaned up `<ThemeProvider>` and various CSS related code, in PR [#5611](https://github.com/microsoft/BotFramework-WebChat/pull/5611), by [@compulim](https://github.com/compulim)
 - (Experimental) Reworked the copilot variant to align with the modern Copilot UX, in PR [#5630](https://github.com/microsoft/BotFramework-WebChat/pull/5630), by [@OEvgeny](https://github.com/OEvgeny), in PR [#5634](https://github.com/microsoft/BotFramework-WebChat/pull/5634), by [@OEvgeny](https://github.com/OEvgeny)
-   - The legacy design is temporarily available as `copilot-deprecated` for migration
-   - Added loading animation for `copilot`, `copilot-deprecated` and `fluent` variants
+   - Added loading animation for `copilot`, and `fluent` variants
 - New JSON-LD graph backend, by [@compulim](https://github.com/compulim) in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622)
 
 ### Changed
@@ -336,6 +335,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Removed
 
+- Removed `copilot-deprecated` variant from Fluent theme, in PR [#5644](https://github.com/microsoft/BotFramework-WebChat/pull/5644), by [@OEvgeny](https://github.com/OEvgeny)
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
