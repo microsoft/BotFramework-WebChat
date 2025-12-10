@@ -273,7 +273,7 @@
       run(async function () {
         await pageConditions.uiConnected();
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         if (initialPreset === 'carousel' && !initialFewerItems) {
           // In carousel mode, take extra screenshots at the far side of the carousel.
@@ -291,7 +291,7 @@
           // We need to wait for the scroll animation to complete before taking a screenshot.
           await testHelpers.sleep(1000);
 
-          await host.snapshot();
+          await host.snapshot('local');
 
           // We need to scroll it back, otherwise, we will not be able to click the first button.
           document.querySelector('.react-film__filmstrip').scrollLeft = scrollLeftOrigin;
@@ -304,14 +304,14 @@
 
           scrollable.scrollTop = scrollable.scrollHeight - scrollable.offsetHeight;
 
-          await host.snapshot();
+          await host.snapshot('local');
         }
 
         // Test clicking the button only if they are not disabled.
         if (!/-disabled$/iu.test(initialPreset)) {
           await pageObjects.clickNthSuggestedAction(1);
           await pageConditions.numActivitiesShown(2);
-          await host.snapshot();
+          await host.snapshot('local');
         }
       });
     </script>
