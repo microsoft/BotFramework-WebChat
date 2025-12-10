@@ -13,19 +13,19 @@
   "rewrites": [
     {
       "source": "/assets/custom-element/:name.ce",
-      "destination": "__tests__/html2/assets/custom-element/:name.ce.html"
+      "destination": "__tests__/assets/custom-element/:name.ce.html"
     },
     {
       "source": "/assets/:filename",
-      "destination": "__tests__/html2/assets/:filename"
+      "destination": "__tests__/assets/:filename"
     },
     {
       "source": "/assets/:path/:filename",
-      "destination": "__tests__/html2/assets/:path/:filename"
+      "destination": "__tests__/assets/:path/:filename"
     },
     {
       "source": "/assets/transcripts/:filename",
-      "destination": "__tests__/html2/assets/transcripts/:filename"
+      "destination": "__tests__/assets/transcripts/:filename"
     },
     {
       "source": "/__dist__/botframework-webchat-debug-theme.development.js",
