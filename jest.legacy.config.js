@@ -74,10 +74,7 @@ module.exports = {
     '/lib/',
     '/node_modules/',
     '/static/',
-    '<rootDir>/__tests__/html/.*?(\\.html)',
-    '<rootDir>/__tests__/html/__dist__',
-    '<rootDir>/__tests__/html/__jest__',
-    '<rootDir>/__tests__/html/assets',
+    '<rootDir>/__tests__/assets/',
     '<rootDir>/__tests__/html2/', // Will be tested by jest.html2.config.js.
     '<rootDir>/__tests__/setup/',
     '<rootDir>/packages/bundle/__tests__/types/__typescript__/',
@@ -87,7 +84,6 @@ module.exports = {
     '<rootDir>/samples/'
   ],
   transform: {
-    '[\\/]__tests__[\\/]html[\\/]': '<rootDir>/babel-passthru-transformer.js',
     '\\.m?[jt]sx?$': '<rootDir>/babel-jest-config.js'
   },
   transformIgnorePatterns: [
