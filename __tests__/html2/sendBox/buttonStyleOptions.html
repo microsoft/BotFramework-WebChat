@@ -60,14 +60,14 @@
         // GIVEN: Web Chat is rendered with no activities and focus is on the send box.
         await pageConditions.uiConnected();
         await pageObjects.focusSendBoxTextBox();
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Web Chat is disabled
         render({ disabled: true });
         await pageConditions.uiConnected();
 
         // THEN: Send box buttons should be disabled.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press TAB to focus on the send button.
         render();
@@ -75,19 +75,19 @@
         await host.sendTab();
 
         // THEN: A focus-visible border should surround the send button.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Hover mouse on the send button.
         await host.hover(pageElements.sendButton());
 
         // THEN: Both focus-visible border and shaded background should appear behind the send button.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press-and-hold the send button.
         await host.pressAndHold(pageElements.sendButton());
 
         // THEN: Both focus-visible border and shaded background should appear.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
