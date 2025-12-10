@@ -191,14 +191,14 @@
         await pageConditions.numActivitiesShown(1);
 
         // THEN: It should shown suggested actions.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Web Chat is disabled.
         await renderWebChat({ disabled: true });
         await pageConditions.uiConnected();
 
         // THEN: It should gray out all suggested actions.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Using TAB key to focus on the first suggested action button.
         await renderWebChat();
@@ -207,25 +207,25 @@
         await host.sendTab(3);
 
         // THEN: It should show an inset border on the first suggested action button (:focus-visible).
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Hovering on a :focus-visible.
         await host.hover(pageElements.suggestedActions()[0]);
 
         // THEN: It should show both an inset border and shaded background.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Hovering on a button without :focus-visible.
         await host.hover(pageElements.suggestedActions()[1]);
 
         // THEN: It should show a shaded background.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press-and-hold a button.
         await host.pressAndHold(pageElements.suggestedActions()[1]);
 
         // THEN: It should show a darker shaded background and focus should change to second button.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
