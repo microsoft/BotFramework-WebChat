@@ -41,7 +41,7 @@ services:
       dockerfile: testharness2.dockerfile
     stop_grace_period: 0s
     volumes:
-      - ./__tests__/html/:/var/web/__tests__/html/
+      - ./__tests__/assets/:/var/web/__tests__/assets/
       - ./__tests__/html2/:/var/web/__tests__/html2/
       - ./packages/bundle/dist/:/var/web/packages/bundle/dist/
       - ./packages/bundle/static/:/var/web/packages/bundle/static/

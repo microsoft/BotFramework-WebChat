@@ -13,19 +13,19 @@
   "rewrites": [
     {
       "source": "/assets/custom-element/:name.ce",
-      "destination": "__tests__/html/assets/custom-element/:name.ce.html"
+      "destination": "__tests__/assets/custom-element/:name.ce.html"
     },
     {
       "source": "/assets/:filename",
-      "destination": "__tests__/html/assets/:filename"
+      "destination": "__tests__/assets/:filename"
     },
     {
       "source": "/assets/:path/:filename",
-      "destination": "__tests__/html/assets/:path/:filename"
+      "destination": "__tests__/assets/:path/:filename"
     },
     {
       "source": "/assets/transcripts/:filename",
-      "destination": "__tests__/html/assets/transcripts/:filename"
+      "destination": "__tests__/assets/transcripts/:filename"
     },
     {
       "source": "/__dist__/botframework-webchat-debug-theme.development.js",
@@ -132,16 +132,8 @@
       "destination": "packages/test/page-object/dist/test-page-object.mjs.map"
     },
     {
-      "source": "/:page.css",
-      "destination": "__tests__/html/:page.css"
-    },
-    {
-      "source": "/:page",
-      "destination": "__tests__/html/:page.html"
-    },
-    {
       "source": "/",
-      "destination": "__tests__/html"
+      "destination": "__tests__/html2"
     }
   ],
   "unlisted": [
