@@ -18,10 +18,10 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
 
-      // TODO: This is for `testHelpers.createStore` only, should find ways to eliminate this line.
-      window.WebChat = { createStoreWithOptions };
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
 
       run(async function () {
         renderWebChat(

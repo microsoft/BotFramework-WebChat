@@ -18,14 +18,14 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
 
       const {
         testHelpers: { createDirectLineEmulator }
       } = window;
 
-      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
-      window.WebChat = { createStoreWithOptions };
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
 
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
