@@ -11,25 +11,19 @@
     <script type="importmap">
       {
         "imports": {
-          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
           "jest-mock": "https://esm.sh/jest-mock",
-          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+          "react-dictate-button": "https://esm.sh/react-dictate-button",
+          "react-dictate-button/": "https://esm.sh/react-dictate-button/"
         }
       }
     </script>
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
       import { fn, spyOn } from 'jest-mock';
-      import {
-        SpeechGrammarList,
-        SpeechRecognition,
-        SpeechRecognitionAlternative,
-        SpeechRecognitionErrorEvent,
-        SpeechRecognitionEvent,
-        SpeechRecognitionResult,
-        SpeechRecognitionResultList
-      } from 'react-dictate-button/internal';
-      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+      import { SpeechGrammarList, SpeechRecognition } from 'react-dictate-button/internal';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from '../js/index.js';
+      import { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill } from '../js/speechPageObjects.js';
 
       const {
         testHelpers: { createDirectLineEmulator },
@@ -38,21 +32,7 @@
 
       run(async function () {
         const speechSynthesis = new SpeechSynthesis();
-        const ponyfill = {
-          SpeechGrammarList,
-          SpeechRecognition: fn().mockImplementation(() => {
-            const speechRecognition = new SpeechRecognition();
-
-            spyOn(speechRecognition, 'abort');
-            spyOn(speechRecognition, 'start');
-
-            return speechRecognition;
-          }),
-          speechSynthesis,
-          SpeechSynthesisUtterance
-        };
-
-        spyOn(speechSynthesis, 'speak');
+        const ponyfill = createWebSpeechPonyfill();
 
         const { directLine, store } = createDirectLineEmulator();
 
@@ -67,42 +47,16 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
-        await pageObjects.clickMicrophoneButton();
-        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
-        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
-        );
+        const { resolveAll } = await directLine.actPostActivity(async () => {
+          await actRecognizeOnce(ponyfill, 'Hello, World!', async () => {
+            // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+            await actSpeakOnce(ponyfill, async () => {
+              await pageObjects.clickMicrophoneButton();
+            });
+          });
+        });
 
-        // THEN: Should construct the SpeechRecognition() instance and call start().
-        await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1));
-
-        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
-
-        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
-
-        // WHEN: Recognition started and "Hello, World!" finalized result is dispatched.
-        await (
-          await directLine.actPostActivity(async () => {
-            speechRecognition1.dispatchEvent(new Event('start'));
-            speechRecognition1.dispatchEvent(new Event('audiostart'));
-            speechRecognition1.dispatchEvent(new Event('soundstart'));
-            speechRecognition1.dispatchEvent(new Event('speechstart'));
-
-            speechRecognition1.dispatchEvent(
-              new SpeechRecognitionEvent('result', {
-                results: new SpeechRecognitionResultList(
-                  SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0.9, 'Hello, World!'))
-                )
-              })
-            );
-
-            speechRecognition1.dispatchEvent(new Event('speechend'));
-            speechRecognition1.dispatchEvent(new Event('soundend'));
-            speechRecognition1.dispatchEvent(new Event('audioend'));
-            speechRecognition1.dispatchEvent(new Event('end'));
-          })
-        ).resolveAll();
+        await resolveAll();
 
         // THEN: Should have send the activity.
         await pageConditions.numActivitiesShown(1);
@@ -111,35 +65,21 @@
         // THEN: Send box go back to input mode.
         expect(pageElements.sendBoxTextBox()).toBeTruthy();
 
-        // WHEN: Bot replied with "acceptingInput".
-        await directLine.emulateIncomingActivity({
-          inputHint: 'acceptingInput',
-          text: 'Aloha!',
-          type: 'message'
+        const spoken = await actSpeakOnce(ponyfill, async () => {
+          // WHEN: Bot replied with "acceptingInput".
+          await directLine.emulateIncomingActivity({
+            inputHint: 'acceptingInput',
+            text: 'Aloha!',
+            type: 'message'
+          });
         });
+
+        // THEN: Should call SpeechSynthesis.speak().
+        expect(spoken).toHaveProperty('text', 'Aloha!');
 
         // THEN: Should send a message and the reply from the bot.
         await pageConditions.numActivitiesShown(2);
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
-
-        // THEN: Should call SpeechSynthesis.speak().
-        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
-        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
-        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
-
-        expect(speechSynthesis).toHaveProperty('paused', false);
-        expect(speechSynthesis).toHaveProperty('pending', false);
-        expect(speechSynthesis).toHaveProperty('speaking', true);
-
-        // WHEN: After synthesis completed.
-        speechSynthesis.speak.mock.calls[1][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[1] })
-        );
-
-        // THEN: SpeechSynthesis.speaking should become false.
-        expect(speechSynthesis).toHaveProperty('paused', false);
-        expect(speechSynthesis).toHaveProperty('pending', false);
-        expect(speechSynthesis).toHaveProperty('speaking', false);
 
         // THEN: Should keep in text input mode.
         expect(pageElements.sendBoxTextBox()).toBeTruthy();
