@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -23,6 +23,7 @@
           document.getElementById('webchat')
         );
 
+        // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
         await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(3);
