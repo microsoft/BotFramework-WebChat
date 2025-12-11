@@ -215,7 +215,7 @@ async function sendMessageViaMicrophone(speechPonyfill, text) {
     speechPonyfill.speechSynthesis
       ? () =>
           // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
-          actSpeak(speechPonyfill, clickMicrophoneButton)
+          actSpeakOnce(speechPonyfill, clickMicrophoneButton)
       : clickMicrophoneButton,
     text
   );
