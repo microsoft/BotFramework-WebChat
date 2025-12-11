@@ -34,11 +34,14 @@
         const speechSynthesis = new SpeechSynthesis();
         const ponyfill = createWebSpeechPonyfill();
 
+        spyOn(ponyfill.speechSynthesis, 'cancel');
+
         const { directLine, store } = createDirectLineEmulator();
 
         renderWebChat(
           {
             directLine,
+            locale: 'yue',
             store,
             webSpeechPonyfillFactory: () => ponyfill
           },
@@ -47,46 +50,23 @@
 
         await pageConditions.uiConnected();
 
-        const { resolveAll } = await directLine.actPostActivity(async () => {
-          await actRecognizeOnce(
+        const { resolveAll } = await directLine.actPostActivity(() =>
+          actRecognizeOnce(
             ponyfill,
             async () => {
               // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
               await actSpeakOnce(ponyfill, async () => {
-                await pageObjects.clickMicrophoneButton();
+                await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxMicrophoneButton}"]`));
               });
             },
-            ({ recognize }) => recognize('Hello, World!')
-          );
-        });
+            'Hello, World!'
+          )
+        );
 
         await resolveAll();
 
-        // THEN: Should have send the activity.
-        await pageConditions.numActivitiesShown(1);
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!');
-
-        // THEN: Send box go back to input mode.
-        expect(pageElements.sendBoxTextBox()).toBeTruthy();
-
-        const spoken = await actSpeakOnce(ponyfill, async () => {
-          // WHEN: Bot replied with "acceptingInput".
-          await directLine.emulateIncomingActivity({
-            inputHint: 'acceptingInput',
-            text: 'Aloha!',
-            type: 'message'
-          });
-        });
-
-        // THEN: Should call SpeechSynthesis.speak().
-        expect(spoken).toHaveProperty('text', 'Aloha!');
-
-        // THEN: Should send a message and the reply from the bot.
-        await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
-
-        // THEN: Should keep in text input mode.
-        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+        expect(ponyfill.SpeechRecognition.mock.results[0].value.lang);
+        expect(ponyfill.SpeechRecognition).toHaveNthReturnedWith(1, expect.objectContaining({ lang: 'zh-HK' }));
       });
     </script>
   </body>

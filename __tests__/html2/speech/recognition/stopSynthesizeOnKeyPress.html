@@ -34,6 +34,8 @@
         const speechSynthesis = new SpeechSynthesis();
         const ponyfill = createWebSpeechPonyfill();
 
+        spyOn(ponyfill.speechSynthesis, 'cancel');
+
         const { directLine, store } = createDirectLineEmulator();
 
         renderWebChat(
@@ -56,37 +58,41 @@
                 await pageObjects.clickMicrophoneButton();
               });
             },
-            ({ recognize }) => recognize('Hello, World!')
+            'hint accepting'
           );
         });
 
         await resolveAll();
 
+        expect(ponyfill.speechSynthesis.cancel).toHaveBeenCalledTimes(0);
+
         // THEN: Should have send the activity.
         await pageConditions.numActivitiesShown(1);
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!');
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'hint accepting');
 
         // THEN: Send box go back to input mode.
         expect(pageElements.sendBoxTextBox()).toBeTruthy();
 
-        const spoken = await actSpeakOnce(ponyfill, async () => {
-          // WHEN: Bot replied with "acceptingInput".
-          await directLine.emulateIncomingActivity({
-            inputHint: 'acceptingInput',
-            text: 'Aloha!',
-            type: 'message'
-          });
-        });
+        const spoken = await actSpeakOnce(
+          ponyfill,
+          async () => {
+            // WHEN: Bot replied with "acceptingInput".
+            await directLine.emulateIncomingActivity({
+              inputHint: 'acceptingInput',
+              text: '`{ inputHint: "acceptingInput" }`',
+              type: 'message'
+            });
+          },
+          () =>
+            // WHEN: Type "Aloha!" in send box while synthesizing.
+            pageObjects.typeInSendBox('Aloha!')
+        );
 
-        // THEN: Should call SpeechSynthesis.speak().
-        expect(spoken).toHaveProperty('text', 'Aloha!');
+        expect(ponyfill.speechSynthesis.cancel).toHaveBeenCalledTimes(1);
 
-        // THEN: Should send a message and the reply from the bot.
-        await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
+        const microphoneButton = pageElements.microphoneButton();
 
-        // THEN: Should keep in text input mode.
-        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+        expect(microphoneButton.classList.contains('webchat__microphone-button--dictating')).toBe(false);
       });
     </script>
   </body>

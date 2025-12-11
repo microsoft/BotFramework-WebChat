@@ -1,17 +1,22 @@
+/* eslint-disable no-empty-function */
 /* eslint-env browser */
 
 import {
   SpeechGrammarList,
   SpeechRecognition,
   SpeechRecognitionAlternative,
+  SpeechRecognitionErrorEvent,
   SpeechRecognitionEvent,
   SpeechRecognitionResult,
   SpeechRecognitionResultList
 } from 'react-dictate-button/internal';
 import { fn, spyOn } from 'jest-mock';
+import SpeechSynthesis from './MockedSpeechSynthesis.js';
 import SpeechSynthesisEvent from './MockedSpeechSynthesisEvent.js';
 
 function createWebSpeechPonyfill() {
+  const speechSynthesis = new SpeechSynthesis();
+
   return {
     SpeechGrammarList,
     SpeechRecognition: fn().mockImplementation(() => new SpeechRecognition()),
@@ -20,11 +25,17 @@ function createWebSpeechPonyfill() {
   };
 }
 
-async function actSpeakOnce({ speechSynthesis }, actor) {
+async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
   let lastUtterance;
 
-  spyOn(speechSynthesis, 'speak').mockImplementationOnce(utterance => {
+  const originalSpeak = speechSynthesis.speak.bind(speechSynthesis);
+
+  spyOn(speechSynthesis, 'speak').mockImplementationOnce(async utterance => {
     lastUtterance = utterance;
+
+    originalSpeak(utterance);
+
+    await speakActor?.(utterance);
 
     utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
   });
@@ -34,37 +45,127 @@ async function actSpeakOnce({ speechSynthesis }, actor) {
   return lastUtterance;
 }
 
-async function actRecognizeOnce(ponyfill, text, actor) {
-  const OriginalSpeechRecognition = ponyfill.SpeechRecognition;
+function actRecognizeOnce(ponyfill, actor, recognizeActor) {
+  // eslint-disable-next-line no-async-promise-executor
+  return new Promise(async resolve => {
+    const OriginalSpeechRecognition = ponyfill.SpeechRecognition;
 
-  spyOn(ponyfill, 'SpeechRecognition').mockImplementationOnce(() => {
-    const speechRecognition = new OriginalSpeechRecognition();
+    spyOn(ponyfill, 'SpeechRecognition').mockImplementationOnce(() => {
+      const speechRecognition = new OriginalSpeechRecognition();
 
-    spyOn(speechRecognition, 'abort');
-    spyOn(speechRecognition, 'start').mockImplementationOnce(() => {
-      speechRecognition.dispatchEvent(new Event('start'));
-      speechRecognition.dispatchEvent(new Event('audiostart'));
-      speechRecognition.dispatchEvent(new Event('soundstart'));
-      speechRecognition.dispatchEvent(new Event('speechstart'));
+      let started = false;
+      let audioStarted = false;
+      let soundStarted = false;
+      let speechStarted = false;
 
-      speechRecognition.dispatchEvent(
-        new SpeechRecognitionEvent('result', {
-          results: new SpeechRecognitionResultList(
-            SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(1.0, text))
-          )
-        })
-      );
+      const end = () => {
+        started && speechRecognition.dispatchEvent(new Event('end'));
+        started = false;
+      };
 
-      speechRecognition.dispatchEvent(new Event('speechend'));
-      speechRecognition.dispatchEvent(new Event('soundend'));
-      speechRecognition.dispatchEvent(new Event('audioend'));
-      speechRecognition.dispatchEvent(new Event('end'));
+      const audioEnd = () => {
+        audioStarted && speechRecognition.dispatchEvent(new Event('audioend'));
+        audioStarted = false;
+      };
+
+      const soundEnd = () => {
+        soundStarted && speechRecognition.dispatchEvent(new Event('soundend'));
+        soundStarted = false;
+      };
+
+      const speechEnd = () => {
+        speechStarted && speechRecognition.dispatchEvent(new Event('speechend'));
+        speechStarted = false;
+      };
+
+      const start = () => {
+        started || speechRecognition.dispatchEvent(new Event('start'));
+        started = true;
+      };
+
+      const audioStart = () => {
+        audioStarted || speechRecognition.dispatchEvent(new Event('audiostart'));
+        audioStarted = true;
+      };
+
+      const soundStart = () => {
+        soundStarted || speechRecognition.dispatchEvent(new Event('soundstart'));
+        soundStarted = true;
+      };
+
+      const speechStart = () => {
+        speechStarted || speechRecognition.dispatchEvent(new Event('speechstart'));
+        speechStarted = true;
+      };
+
+      const error = reason => {
+        speechRecognition.dispatchEvent(new SpeechRecognitionErrorEvent('error', { error: reason }));
+        started = true;
+      };
+
+      const result = text => {
+        speechRecognition.dispatchEvent(
+          new SpeechRecognitionEvent('result', {
+            results: new SpeechRecognitionResultList(
+              new SpeechRecognitionResult(new SpeechRecognitionAlternative(1.0, text))
+            )
+          })
+        );
+      };
+
+      const finalizedResult = text => {
+        speechRecognition.dispatchEvent(
+          new SpeechRecognitionEvent('result', {
+            results: new SpeechRecognitionResultList(
+              SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(1.0, text))
+            )
+          })
+        );
+      };
+
+      spyOn(speechRecognition, 'abort').mockImplementationOnce(() => {
+        speechEnd();
+        soundEnd();
+        audioEnd();
+        error('aborted');
+        end();
+      });
+
+      spyOn(speechRecognition, 'start').mockImplementationOnce(async () => {
+        if (typeof recognizeActor === 'string') {
+          start();
+          audioStart();
+          soundStart();
+          speechStart();
+          finalizedResult(recognizeActor);
+          speechEnd();
+          soundEnd();
+          audioEnd();
+          end();
+        } else {
+          await recognizeActor?.({
+            start,
+            audioStart,
+            soundStart,
+            speechStart,
+            speechEnd,
+            soundEnd,
+            audioEnd,
+            error,
+            end,
+            result,
+            finalizedResult
+          });
+        }
+
+        resolve();
+      });
+
+      return speechRecognition;
     });
 
-    return speechRecognition;
+    await actor();
   });
-
-  await actor();
 }
 
 export { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill };

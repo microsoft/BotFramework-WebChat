@@ -1,4 +1,4 @@
-import { EventTargetProperties } from 'https://unpkg.com/event-target-properties@latest/dist/event-target-properties.mjs';
+import { EventTargetProperties } from 'https://esm.sh/event-target-properties';
 import SpeechSynthesisEvent from './MockedSpeechSynthesisEvent.js';
 
 export default class SpeechSynthesis extends EventTarget {

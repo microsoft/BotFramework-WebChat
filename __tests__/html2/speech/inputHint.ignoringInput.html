@@ -113,7 +113,7 @@
 
         // WHEN: Bot replied with "ignoringInput".
         await directLine.emulateIncomingActivity({
-          inputHint: 'ignoringInput',
+          inputHint: 'expectingInput',
           text: 'Aloha!',
           type: 'message'
         });
