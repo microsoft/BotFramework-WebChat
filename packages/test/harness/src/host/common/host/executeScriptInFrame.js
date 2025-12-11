@@ -8,12 +8,6 @@ module.exports = webDriver =>
 
     await webDriver.switchTo().frame(element);
 
-    // TODO: [P2] Workaround the bug or bump selenium-webdriver
-    //            selenium-webdriver has a bug that frame switching is not complete until 2 seconds later.
-    //            There is currently no workaround other than sleeping.
-
-    // await new Promise(resolve => setTimeout(resolve, 2500));
-
     await webDriver.wait(
       new Condition('until switched to IFRAME', async webDriver => {
         // We only have #document and cannot send WebElement from other frames (it would crash silently.)
