@@ -13,6 +13,8 @@ import {
 import { fn, spyOn } from 'jest-mock';
 import SpeechSynthesis from './MockedSpeechSynthesis.js';
 import SpeechSynthesisEvent from './MockedSpeechSynthesisEvent.js';
+import SpeechSynthesisUtterance from './MockedSpeechSynthesisUtterance.js';
+import SpeechSynthesisVoice from './MockedSpeechSynthesisVoice.js';
 
 function createWebSpeechPonyfill() {
   const speechSynthesis = new SpeechSynthesis();
@@ -21,7 +23,8 @@ function createWebSpeechPonyfill() {
     SpeechGrammarList,
     SpeechRecognition: fn().mockImplementation(() => new SpeechRecognition()),
     speechSynthesis,
-    SpeechSynthesisUtterance
+    SpeechSynthesisUtterance,
+    SpeechSynthesisVoice
   };
 }
 
@@ -168,4 +171,17 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
   });
 }
 
-export { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill };
+async function sendMessageViaMicrophone(speechPonyfill, text) {
+  await actRecognizeOnce(
+    speechPonyfill,
+    async () => {
+      // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+      await actSpeakOnce(speechPonyfill, async () => {
+        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxMicrophoneButton}"]`));
+      });
+    },
+    text
+  );
+}
+
+export { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill, sendMessageViaMicrophone };
