@@ -22,8 +22,8 @@
       import { waitFor } from '@testduet/wait-for';
       import { fn, spyOn } from 'jest-mock';
       import { SpeechGrammarList, SpeechRecognition } from 'react-dictate-button/internal';
-      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from '../js/index.js';
-      import { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill } from '../js/speechPageObjects.js';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+      import { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill } from './js/speechPageObjects.js';
 
       const {
         testHelpers: { createDirectLineEmulator },
@@ -56,7 +56,7 @@
                 await pageObjects.clickMicrophoneButton();
               });
             },
-            ({ recognize }) => recognize('Hello, World!')
+            'Hello, World!'
           );
         });
 

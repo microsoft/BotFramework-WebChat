@@ -207,14 +207,16 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
 }
 
 async function sendMessageViaMicrophone(speechPonyfill, text) {
+  const clickMicrophoneButton = () =>
+    host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxMicrophoneButton}"]`));
+
   await actRecognizeOnce(
     speechPonyfill,
-    async () => {
-      // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
-      await actSpeakOnce(speechPonyfill, async () => {
-        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxMicrophoneButton}"]`));
-      });
-    },
+    speechPonyfill.speechSynthesis
+      ? () =>
+          // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+          actSpeak(speechPonyfill, () => clickMicrophoneButton)
+      : clickMicrophoneButton,
     text
   );
 }
