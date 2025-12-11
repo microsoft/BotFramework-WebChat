@@ -12,6 +12,7 @@ import {
 } from 'react-dictate-button/internal';
 import { fn, spyOn } from 'jest-mock';
 import SpeechSynthesis from './MockedSpeechSynthesis.js';
+import SpeechSynthesisErrorEvent from './MockedSpeechSynthesisErrorEvent.js';
 import SpeechSynthesisEvent from './MockedSpeechSynthesisEvent.js';
 import SpeechSynthesisUtterance from './MockedSpeechSynthesisUtterance.js';
 import SpeechSynthesisVoice from './MockedSpeechSynthesisVoice.js';
@@ -21,22 +22,32 @@ function createWebSpeechPonyfill() {
 
   return {
     SpeechGrammarList,
-    SpeechRecognition: fn().mockImplementation(() => new SpeechRecognition()),
+    SpeechRecognition: fn().mockImplementation(() => {
+      const speechRecognition = new SpeechRecognition();
+
+      spyOn(speechRecognition, 'abort');
+      spyOn(speechRecognition, 'start');
+
+      return speechRecognition;
+    }),
     speechSynthesis,
+    SpeechSynthesisErrorEvent,
+    SpeechSynthesisEvent,
     SpeechSynthesisUtterance,
     SpeechSynthesisVoice
   };
 }
 
+/**
+ * @deprecated
+ */
 async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
   let lastUtterance;
-
-  const originalSpeak = speechSynthesis.speak.bind(speechSynthesis);
 
   spyOn(speechSynthesis, 'speak').mockImplementationOnce(async utterance => {
     lastUtterance = utterance;
 
-    originalSpeak(utterance);
+    utterance.dispatchEvent(new SpeechSynthesisEvent('start', { utterance }));
 
     await speakActor?.(utterance);
 
@@ -46,6 +57,30 @@ async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
   await actor();
 
   return lastUtterance;
+}
+
+async function actSpeak({ speechSynthesis }, actor, speakActor) {
+  const utterances = [];
+
+  spyOn(speechSynthesis, 'speak').mockImplementation(async utterance => {
+    utterances.push(utterance);
+
+    utterance.dispatchEvent(new SpeechSynthesisEvent('start', { utterance }));
+
+    try {
+      await speakActor?.(utterance);
+    } catch (error) {
+      utterance.dispatchEvent(new SpeechSynthesisErrorEvent('error', { error, utterance }));
+
+      return;
+    }
+
+    utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
+  });
+
+  await actor();
+
+  return Object.freeze(utterances);
 }
 
 function actRecognizeOnce(ponyfill, actor, recognizeActor) {
@@ -184,4 +219,4 @@ async function sendMessageViaMicrophone(speechPonyfill, text) {
   );
 }
 
-export { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill, sendMessageViaMicrophone };
+export { actRecognizeOnce, actSpeak, actSpeakOnce, createWebSpeechPonyfill, sendMessageViaMicrophone };
