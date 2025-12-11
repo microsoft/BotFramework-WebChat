@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -18,28 +18,19 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
-      import { createElement, Fragment } from 'react';
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
 
       const {
-        testHelpers: {
-          createDirectLineEmulator,
-          createStore,
-          token: { fetchDirectLineToken }
-        }
+        testHelpers: { createDirectLineEmulator }
       } = window;
 
       // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
       window.WebChat = { createStoreWithOptions };
 
       run(async function () {
-        renderWebChat(
-          {
-            directLine: createDirectLine({ token: await fetchDirectLineToken() }),
-            store: createStore()
-          },
-          document.getElementById('webchat')
-        );
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
       });
