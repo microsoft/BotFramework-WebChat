@@ -377,7 +377,12 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       event => {
         const { altKey, ctrlKey, key, metaKey, target } = event;
 
-        if (altKey || (ctrlKey && key !== 'v') || metaKey || (!inputtableKey(key) && key !== 'Backspace')) {
+        if (
+          altKey ||
+          (ctrlKey && key !== 'v' && key !== 'V') ||
+          metaKey ||
+          (!inputtableKey(key) && key !== 'Backspace')
+        ) {
           // Ignore if one of the utility key (except SHIFT) is pressed
           // E.g. CTRL-C on a link in one of the message should not jump to chat box
           // E.g. "A" or "Backspace" should jump to chat box

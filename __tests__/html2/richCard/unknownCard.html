@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('card unknown');
+
+        await pageConditions.numActivitiesShown(2);
+
+        // The typing activity sent from the bot should not trigger timeout.
+        const logs = await host.getLogs();
+
+        expect(
+          logs.find(
+            ({ level: { name_ }, message }) =>
+              name_ === 'WARNING' && ~message.indexOf('No renderer for attachment for screen reader of type')
+          )
+        ).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>

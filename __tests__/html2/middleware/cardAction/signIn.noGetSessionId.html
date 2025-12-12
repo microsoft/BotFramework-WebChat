@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(
+        async function () {
+          const directLine = createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+
+          directLine.getSessionId = undefined;
+
+          renderWebChat(
+            {
+              cardActionMiddleware:
+                ({ dispatch }) =>
+                next =>
+                ({ cardAction, getSignInUrl }) => {
+                  if (cardAction.type === 'signin') {
+                    Promise.resolve(getSignInUrl()).then(url => {
+                      pageObjects.sendMessageViaSendBox(`Signing into ${new URL(url).host}`);
+                    });
+                  } else {
+                    return next(cardAction);
+                  }
+                },
+              directLine,
+              store: testHelpers.createStore()
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+          await pageObjects.sendMessageViaSendBox('oauth');
+
+          await pageConditions.numActivitiesShown(2);
+
+          const openUrlButton = document.querySelector('.webchat__bubble__content button');
+
+          await host.click(openUrlButton);
+          await pageConditions.numActivitiesShown(4);
+          await pageConditions.allOutgoingActivitiesSent();
+
+          // When the "Sign in" button is clicked, the focus move to it, need to blur it.
+          document.activeElement?.blur();
+
+          await host.snapshot('local');
+
+          await expect(host.getLogs()).resolves.toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                level: expect.objectContaining({ name_: 'WARNING' }),
+                message: expect.stringContaining(
+                  'botframework-webchat: OAuth is not supported on this Direct Line adapter.'
+                )
+              })
+            ])
+          );
+        },
+        {
+          // The sign-in card return 403 as we didn't configure it properly. It is expected.
+          ignoreErrors: true
+        }
+      );
+    </script>
+  </body>
+</html>

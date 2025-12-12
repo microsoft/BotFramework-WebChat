@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { Observable } from 'https://esm.sh/iter-fest';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const clock = lolex.createClock();
+        const directLine = {
+          activity$: new Observable(() => {}),
+          connectionStatus$: new Observable(observer => {
+            observer.next(0);
+            observer.next(1);
+            observer.next(4);
+          })
+        };
+
+        const store = testHelpers.createStore();
+
+        renderWebChat(
+          {
+            directLine,
+            locale: 'ar-EG',
+            ponyfill: clock,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await waitFor(() => expect(store.getState().connectivityStatus).toBe('error'));
+
+        clock.tick(600);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

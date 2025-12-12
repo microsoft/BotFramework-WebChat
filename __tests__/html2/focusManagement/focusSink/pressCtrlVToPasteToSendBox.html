@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .copy-bin {
+        left: 0;
+        position: absolute;
+        top: 0;
+      }
+
+      .copy-bin__label {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="copy-bin" role="complementary">
+      <label class="copy-bin__label">
+        Copy bin
+        <textarea data-testid="copy bin textbox">Hello, World!</textarea>
+      </label>
+    </div>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        renderWebChat(
+          {
+            directLine: createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        document.querySelector('[data-testid="copy bin textbox"]').focus();
+        await host.sendKeys('+CONTROL', 'A', 'C', '-CONTROL');
+
+        navigator.clipboard.writeText('Hello, World!');
+
+        await host.click(pageElements.transcript());
+        expect(document.activeElement).toBe(pageElements.transcript());
+
+        if (new URLSearchParams(location.search).has('with-caps-lock')) {
+          await host.sendKeys('+CONTROL', 'V', '-CONTROL');
+        } else {
+          await host.sendKeys('+CONTROL', 'v', '-CONTROL');
+        }
+
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        expect(pageElements.sendBoxTextBox().value).toBe('Hello, World!');
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

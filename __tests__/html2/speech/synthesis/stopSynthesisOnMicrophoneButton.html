@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button": "https://esm.sh/react-dictate-button",
+          "react-dictate-button/": "https://esm.sh/react-dictate-button/"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import { SpeechGrammarList, SpeechRecognition } from 'react-dictate-button/internal';
+      import {
+        actRecognizeOnce,
+        actSpeak,
+        createWebSpeechPonyfill,
+        sendMessageViaMicrophone
+      } from '../js/speechPageObjects.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { renderWebChat, testIds }
+      } = window;
+
+      run(
+        async function () {
+          const ponyfill = createWebSpeechPonyfill();
+
+          const { directLine, store } = createDirectLineEmulator();
+
+          renderWebChat(
+            {
+              directLine,
+              store,
+              webSpeechPonyfillFactory: () => ponyfill
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          const { resolveAll } = await directLine.actPostActivity(() =>
+            sendMessageViaMicrophone(ponyfill, 'Hello, World!')
+          );
+
+          await resolveAll();
+
+          await actRecognizeOnce(
+            ponyfill,
+            async () => {
+              await actSpeak(ponyfill, async () => {
+                await directLine.emulateIncomingActivity({
+                  inputHint: 'expectingInput',
+                  text: 'Unknown command: `Hello, World!`.\n\nType `help` to learn more.',
+                  type: 'message'
+                });
+
+                await pageConditions.numActivitiesShown(2);
+              });
+            },
+            async dispatcher => {
+              dispatcher.start();
+              dispatcher.audioStart();
+              dispatcher.soundStart();
+              dispatcher.speechStart();
+
+              await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxMicrophoneButton}"]`));
+            }
+          );
+
+          expect(ponyfill.SpeechRecognition.mock.results.at(-1).value.abort).toHaveBeenCalledTimes(1);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

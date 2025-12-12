@@ -1,5 +1,6 @@
-import { EventTargetProperties } from 'https://unpkg.com/event-target-properties@latest/dist/event-target-properties.mjs';
+import { EventTargetProperties } from 'https://esm.sh/event-target-properties';
 import SpeechSynthesisEvent from './MockedSpeechSynthesisEvent.js';
+import SpeechSynthesisVoice from './MockedSpeechSynthesisVoice.js';
 
 export default class SpeechSynthesis extends EventTarget {
   constructor() {
@@ -52,7 +53,22 @@ export default class SpeechSynthesis extends EventTarget {
   }
 
   getVoices() {
-    return [];
+    return Object.freeze([
+      SpeechSynthesisVoice.from({
+        default: true,
+        lang: 'en-US',
+        localService: true,
+        name: 'Mock Voice (en-US)',
+        voiceURI: 'mock://web-speech/voice/en-US'
+      }),
+      SpeechSynthesisVoice.from({
+        default: false,
+        lang: 'zh-YUE',
+        localService: true,
+        name: 'Mock Voice (zh-YUE)',
+        voiceURI: 'mock://web-speech/voice/zh-YUE'
+      })
+    ]);
   }
 
   pause() {

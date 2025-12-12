@@ -26,6 +26,7 @@ const iconButtonPropsSchema = pipe(
     alt: optional(string()),
     children: optional(reactNode()),
     className: optional(string()),
+    'data-testid': optional(string()),
     disabled: optional(boolean()),
     onClick: optional(custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success))
   }),
@@ -35,7 +36,14 @@ const iconButtonPropsSchema = pipe(
 type IconButtonProps = InferInput<typeof iconButtonPropsSchema>;
 
 function IconButton(props: IconButtonProps) {
-  const { alt, children, className, disabled, onClick } = validateProps(iconButtonPropsSchema, props);
+  const {
+    alt,
+    children,
+    className,
+    'data-testid': dataTestid,
+    disabled,
+    onClick
+  } = validateProps(iconButtonPropsSchema, props);
 
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
@@ -54,6 +62,7 @@ function IconButton(props: IconButtonProps) {
         },
         className
       )}
+      data-testid={dataTestid}
       disabled={disabled}
       onClick={disabled ? undefined : onClick}
       ref={buttonRef}

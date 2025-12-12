@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button": "https://esm.sh/react-dictate-button",
+          "react-dictate-button/": "https://esm.sh/react-dictate-button/"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import { SpeechGrammarList, SpeechRecognition } from 'react-dictate-button/internal';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from '../js/index.js';
+      import { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill } from '../js/speechPageObjects.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { renderWebChat, testIds }
+      } = window;
+
+      run(async function () {
+        const speechSynthesis = new SpeechSynthesis();
+        const ponyfill = createWebSpeechPonyfill();
+
+        spyOn(ponyfill.speechSynthesis, 'cancel');
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            webSpeechPonyfillFactory: () => ponyfill
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await actRecognizeOnce(
+          ponyfill,
+          async () => {
+            // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+            await actSpeakOnce(ponyfill, async () => {
+              await host.click(pageElements.microphoneButton());
+            });
+          },
+          async dispatcher => {
+            dispatcher.start();
+            dispatcher.audioStart();
+
+            await host.click(pageElements.microphoneButton());
+          }
+        );
+
+        const microphoneButton = pageElements.microphoneButton();
+
+        expect(microphoneButton.classList.contains('webchat__microphone-button--dictating')).toBe(false);
+        expect(pageElements.sendBoxTextBox()).toHaveProperty('value', '');
+        expect(pageElements.activities()).toHaveLength(0);
+      });
+    </script>
+  </body>
+</html>
