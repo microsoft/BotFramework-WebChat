@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(
+        async function () {
+          renderWebChat(
+            {
+              directLine: createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+              locale: 'ar-EG',
+              store: testHelpers.createStore(),
+              styleOptions: {
+                botAvatarInitials: 'WC',
+                userAvatarInitials: 'WW'
+              }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+          await pageObjects.sendMessageViaSendBox('arabic carousel');
+
+          await pageConditions.minNumActivitiesShown(2);
+          await pageConditions.allImagesLoaded();
+          await pageConditions.allOutgoingActivitiesSent();
+
+          await host.snapshot('local', {
+            // TODO: Fix alt-text in MockBot.
+            skipCheckAccessibility: true
+          });
+        },
+        {
+          // TODO: Fix alt-text in MockBot.
+          skipCheckAccessibility: true
+        }
+      );
+    </script>
+  </body>
+</html>

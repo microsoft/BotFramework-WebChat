@@ -11,6 +11,7 @@ export default function createHost() {
     done: () => {},
     dragAndHold: () => {},
     error: () => {},
+    executeScriptInFrame: () => {},
     getLogs: () => {},
     hover: () => {},
     moveTo: () => {},

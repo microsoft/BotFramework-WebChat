@@ -14,6 +14,7 @@ import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import { useLiveRegion } from '../providers/LiveRegionTwin';
 import { ComponentIcon } from '../Icon';
 import IconButton from './IconButton';
+import testIds from '../testIds';
 
 const { DictateState } = Constants;
 
@@ -141,6 +142,7 @@ const MicrophoneButton = ({ className }: MicrophoneButtonProps) => {
       <IconButton
         alt={localize('TEXT_INPUT_SPEAK_BUTTON_ALT')}
         className="webchat__microphone-button__button"
+        data-testid={testIds.sendBoxMicrophoneButton}
         disabled={disabled}
         onClick={click}
       >
