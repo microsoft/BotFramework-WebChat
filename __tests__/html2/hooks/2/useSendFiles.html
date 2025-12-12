@@ -21,25 +21,20 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createDirectLine, createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
       import { useSendFiles } from 'botframework-webchat/hook';
       import createRenderHook from '/assets/esm/createRenderHook.js';
 
-      const {
-        createStore,
-        token: { fetchDirectLineToken }
-      } = window.testHelpers;
+      const { createDirectLineEmulator } = window.testHelpers;
 
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(
         async function () {
+          const { directLine, store } = createDirectLineEmulator();
           const renderHook = createRenderHook(
             document.getElementById('webchat'),
-            {
-              directLine: createDirectLine({ token: await fetchDirectLineToken() }),
-              store: createStore()
-            },
+            { directLine, store },
             { renderWebChat: true }
           );
 
@@ -53,7 +48,28 @@
           blob1.name = 'index.png';
           blob2.name = 'index2.png';
 
-          sendFiles([blob1, blob2]);
+          const { resolveAll } = await directLine.actPostActivity(() => sendFiles([blob1, blob2]));
+
+          await resolveAll();
+
+          await directLine.emulateIncomingActivity({
+            type: 'message',
+            text: 'You have uploaded:',
+            attachments: [
+              {
+                contentType: 'application/octet-stream',
+                contentUrl:
+                  'https://directline.botframework.com/attachments/4muFGIKLEupI6epNKGtA8c-us/0000000/0/index.png?t=eyJhbGciOiJSUzI1NiIsImtpZCI6IlZuek84ZUJrbFJoSGNCR0c5THZjMUEyaXlYdyIsIng1dCI6IlZuek84ZUJrbFJoSGNCR0c5THZjMUEyaXlYdyIsInR5cCI6IkpXVCJ9.eyJib3QiOiJoYXdvLW1vY2tib3Q0LW1vY2stYm90LWJvdCIsInNpdGUiOiJFNHV0OEVNaGNONFBjSU5PRmJjMzhQSW42clJiVEdKeDZpTURSVE16MEh1VmtDU2ZLU0lLSlFRSjk5QkxBQzRmMWNNQUFyb2hBQUFCQVpCU3FZZHAiLCJjb252IjoiNG11RkdJS0xFdXBJNmVwTktHdEE4Yy11cy0wMDAwMDAwIiwibmJmIjoxNzY1NTI4ODk4LCJleHAiOjE3NjU1MzA2OTgsImlzcyI6Imh0dHBzOi8vZGlyZWN0bGluZS5ib3RmcmFtZXdvcmsuY29tLyIsImF1ZCI6Imh0dHBzOi8vZGlyZWN0bGluZS5ib3RmcmFtZXdvcmsuY29tLyJ9.nyMXSYh2xAFhyS55kACAjkmVBVvtLPFRIX3wCVhDr9hiqQqExFxOhvJCpDqkzZlIf0ZH47yBBRzUVjTeTWgbaVX_tB-eaIBUWaeYD3ArAaZ_fw3AurfE2f8FHIW31l7qoGvytXQ7EeqzWSG90kw-LUSMuRjz4_LWx2ZOhgEkdA2kw0KuCcnMA-lCEvKiH8AT3bkYpJSafd9nAappox8SjtwmFzuADYa69ej5CNQlRabI3TorU52N8PGWfNCoSWKrEzlOVibEP9or_eRDsX1Del7yEdab3Hu706P88ZDiofka3bY7JSsDRqo6ERyZIzkwyW-yGP79P_TTuEvafXzr3g',
+                name: 'index.png'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl:
+                  'https://directline.botframework.com/attachments/4muFGIKLEupI6epNKGtA8c-us/0000000/1/index2.png?t=eyJhbGciOiJSUzI1NiIsImtpZCI6IlZuek84ZUJrbFJoSGNCR0c5THZjMUEyaXlYdyIsIng1dCI6IlZuek84ZUJrbFJoSGNCR0c5THZjMUEyaXlYdyIsInR5cCI6IkpXVCJ9.eyJib3QiOiJoYXdvLW1vY2tib3Q0LW1vY2stYm90LWJvdCIsInNpdGUiOiJFNHV0OEVNaGNONFBjSU5PRmJjMzhQSW42clJiVEdKeDZpTURSVE16MEh1VmtDU2ZLU0lLSlFRSjk5QkxBQzRmMWNNQUFyb2hBQUFCQVpCU3FZZHAiLCJjb252IjoiNG11RkdJS0xFdXBJNmVwTktHdEE4Yy11cy0wMDAwMDAwIiwibmJmIjoxNzY1NTI4ODk4LCJleHAiOjE3NjU1MzA2OTgsImlzcyI6Imh0dHBzOi8vZGlyZWN0bGluZS5ib3RmcmFtZXdvcmsuY29tLyIsImF1ZCI6Imh0dHBzOi8vZGlyZWN0bGluZS5ib3RmcmFtZXdvcmsuY29tLyJ9.nyMXSYh2xAFhyS55kACAjkmVBVvtLPFRIX3wCVhDr9hiqQqExFxOhvJCpDqkzZlIf0ZH47yBBRzUVjTeTWgbaVX_tB-eaIBUWaeYD3ArAaZ_fw3AurfE2f8FHIW31l7qoGvytXQ7EeqzWSG90kw-LUSMuRjz4_LWx2ZOhgEkdA2kw0KuCcnMA-lCEvKiH8AT3bkYpJSafd9nAappox8SjtwmFzuADYa69ej5CNQlRabI3TorU52N8PGWfNCoSWKrEzlOVibEP9or_eRDsX1Del7yEdab3Hu706P88ZDiofka3bY7JSsDRqo6ERyZIzkwyW-yGP79P_TTuEvafXzr3g',
+                name: 'index2.png'
+              }
+            ]
+          });
 
           await host.snapshot('local');
         },
