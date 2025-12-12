@@ -13,14 +13,14 @@ const extractTitle = htmlPath => {
 
 module.exports = {
   process: (_, sourcePath) => {
-    const html = relative(__dirname, sourcePath);
+    const html = relative(resolve(__dirname, '../'), sourcePath);
     const shouldSkip = sourcePath.endsWith('.skip.html');
     const title = extractTitle(sourcePath);
 
     return {
       code: `
       describe(${JSON.stringify(title)}, () => {
-        test${shouldSkip ? '.skip' : ''}(${JSON.stringify(relative(resolve(__dirname, '../../../'), html))}, () =>
+        test${shouldSkip ? '.skip' : ''}(${JSON.stringify(relative(resolve(__dirname, '../../../../'), html))}, () =>
           runHTML(${JSON.stringify(`/__tests__/html2/${html}`)}));
       });
       `
