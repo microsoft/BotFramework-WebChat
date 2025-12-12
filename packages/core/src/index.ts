@@ -81,6 +81,7 @@ import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSc
 import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
+import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 
 const Constants = { ActivityClientState, DictateState };
 
@@ -96,6 +97,7 @@ export {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
   isForbiddenPropertyName,
+  isVoiceActivity,
   markActivity,
   onErrorResumeNext,
   parseAction,
