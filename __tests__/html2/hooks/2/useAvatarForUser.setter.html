@@ -31,10 +31,7 @@
 
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
-        const renderHook = createRenderHook(document.getElementById('webchat'), {
-          directLine,
-          store
-        });
+        const renderHook = createRenderHook(document.getElementById('webchat'), { directLine, store });
 
         const userAvatarState = await renderHook(() => useAvatarForUser());
 
