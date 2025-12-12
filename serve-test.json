@@ -24,6 +24,10 @@
       "destination": "__tests__/assets/:path/:filename"
     },
     {
+      "source": "/assets/:path1/:path2/:filename",
+      "destination": "__tests__/assets/:path1/:path2/:filename"
+    },
+    {
       "source": "/assets/transcripts/:filename",
       "destination": "__tests__/assets/transcripts/:filename"
     },
