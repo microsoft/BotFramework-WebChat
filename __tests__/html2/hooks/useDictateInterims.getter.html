@@ -64,6 +64,8 @@
         const [dictateInterims] = await renderHook(() => useDictateInterims());
 
         expect(dictateInterims).toEqual(['Hello']);
+
+        await host.snapshot('local');
       });
     </script>
   </body>
