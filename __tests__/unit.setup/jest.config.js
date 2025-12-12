@@ -1,11 +1,6 @@
 const { defaults } = require('jest-config');
 
 const TRANSFORM_IGNORE_PACKAGES = [
-  // 'botframework-webchat-api',
-  // 'botframework-webchat-component',
-  // 'botframework-webchat-core',
-  // 'botframework-webchat',
-
   // General
   'merge-refs',
   'mime',
@@ -45,10 +40,10 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'micromark',
   'unist-util-stringify-position',
 
-  // Related to Speech SDK.
+  // Related to Speech SDK
   'microsoft-cognitiveservices-speech-sdk',
 
-  // Related to Adaptive Cards.
+  // Related to Adaptive Cards
   'dom7',
   'ssr-window',
   'swiper'
@@ -63,10 +58,9 @@ module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'mjs', 'ts', 'tsx'],
   rootDir: '../../packages/',
   setupFilesAfterEnv: [
-    '<rootDir>/../__tests__/setup.unit/setupCryptoGetRandomValues.js',
-    '<rootDir>/../__tests__/setup.unit/setupCryptoRandomUUID.js',
-    '<rootDir>/../__tests__/setup.unit/setupTestNightly.js',
-    '<rootDir>/../__tests__/setup.unit/setupTimeout.js'
+    '<rootDir>/../__tests__/unit.setup/setupFiles/setupCrypto.js',
+    '<rootDir>/../__tests__/unit.setup/setupFiles/setupTestNightly.js',
+    '<rootDir>/../__tests__/unit.setup/setupFiles/setupTimeout.js'
   ],
   testMatch: ['**/?(*.)+(spec|test).?([mc])[jt]s?(x)'],
   testPathIgnorePatterns: [
@@ -83,7 +77,6 @@ module.exports = {
     '\\.m?[jt]sx?$': [
       'babel-jest',
       {
-        plugins: ['@babel/plugin-transform-runtime'],
         presets: [
           [
             '@babel/preset-env',
@@ -103,6 +96,9 @@ module.exports = {
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
     `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/'),
+
+    // Do not transform /__tests__/unit.setup for speeding up.
+    '<rootDir>/../__tests__/unit.setup/',
 
     // Do not transform anything under /test/*/(dist|lib).
     '/packages/(?:test/)?\\w+/(?:lib/|dist/.+?\\.js$|\\w+\\.js)'

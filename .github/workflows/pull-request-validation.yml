@@ -145,6 +145,7 @@ jobs:
           --forceExit \
           --logHeapUsage \
           --runInBand \
+          --silent \
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
@@ -154,7 +155,7 @@ jobs:
           ls -laR .
 
           mv lcov.info lcov-unit.info
-          mv result.trx result-unit.trx
+        # mv result.trx result-unit.trx
         working-directory: ./coverage
 
       - if: always()
@@ -164,7 +165,7 @@ jobs:
           name: test-result-unit
           path: |
             ./coverage/lcov-*.info
-            ./coverage/result-*.trx
+          # ./coverage/result-*.trx
 
   type-definitions-test:
     name: Type definitions test
@@ -255,7 +256,8 @@ jobs:
             --forceExit \
             --logHeapUsage \
             --runInBand \
-            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
+            --silent
         timeout-minutes: 10
 
       - if: always()
@@ -268,7 +270,7 @@ jobs:
           ls -laR .
 
           mv lcov.info lcov-${{ matrix.shard-index }}.info
-          mv result.trx result-${{ matrix.shard-index }}.trx
+        # mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
 
       - if: always()
@@ -278,7 +280,7 @@ jobs:
           name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/lcov-*.info
-            ./coverage/result-*.trx
+          # ./coverage/result-*.trx
 
       - if: failure()
         name: Upload test snapshot diffs

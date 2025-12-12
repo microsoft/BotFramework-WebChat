@@ -167,7 +167,7 @@
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
-    "test": "jest --watch"
+    "test": "jest"
   },
   "pinDependencies": {
     "@testing-library/react": [

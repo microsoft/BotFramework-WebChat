@@ -1,6 +1,6 @@
 # Setting to a different base image to secure your container supply chain.
 ARG REGISTRY=docker.io
-ARG BASE_IMAGE=$REGISTRY/node:18-alpine
+ARG BASE_IMAGE=$REGISTRY/node:22-alpine
 
 FROM $BASE_IMAGE
 
