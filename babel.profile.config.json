@@ -1,4 +1,0 @@
-{
-  "plugins": ["babel-plugin-istanbul"],
-  "presets": ["@babel/preset-typescript", "@babel/preset-react"]
-}

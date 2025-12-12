@@ -1,7 +1,5 @@
 import { transformFileAsync } from '@babel/core';
 import { OnLoadArgs, OnLoadOptions, OnLoadResult, Plugin } from 'esbuild';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
 
 export type Predicate = (args: OnLoadArgs) => boolean;
 
@@ -23,7 +21,8 @@ export const babelPlugin = ({ filter, loader, name, predicate = defaultPredicate
       }
 
       const result = await transformFileAsync(args.path, {
-        configFile: join(fileURLToPath(import.meta.url), '../babel.profile.config.json'),
+        plugins: ['babel-plugin-istanbul'],
+        presets: ['@babel/preset-typescript', '@babel/preset-react'],
         rootMode: 'root',
         sourceFileName: args.path
       });
