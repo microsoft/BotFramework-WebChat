@@ -27,9 +27,11 @@
 
         await pageConditions.numActivitiesShown(2);
         await pageConditions.allImagesLoaded();
+        await pageConditions.scrollStabilized();
 
         // To submit the input form, the number field is mandatory.
-        document.querySelector('.ac-adaptiveCard input[type="number"]').value = '1';
+        document.querySelector('.ac-adaptiveCard input[type="number"]').focus();
+        host.sendKeys('1');
 
         // Click "Submit" button should change the button color
         await host.click(document.querySelector('.ac-actionSet button:nth-of-type(2)'));
