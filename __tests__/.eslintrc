@@ -1,8 +1,0 @@
-globals:
-  runHTMLTest: readonly
-ignorePatterns:
-- "**/*.js"
-- "**/*.ts"
-- "**/*.tsx"
-- "!/html/__jest__/*.js"
-- "!/setup/*.js"

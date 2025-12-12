@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 // Adopted from https://stackoverflow.com/questions/56261381/how-do-i-set-a-timezone-in-my-jest-config.
 const { TestEnvironment } = require('jest-environment-node');
 

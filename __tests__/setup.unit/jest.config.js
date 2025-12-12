@@ -1,15 +1,21 @@
 const { defaults } = require('jest-config');
 
 const TRANSFORM_IGNORE_PACKAGES = [
-  'botframework-webchat-api',
-  'botframework-webchat-component',
-  'botframework-webchat-core',
-  'botframework-webchat',
+  // 'botframework-webchat-api',
+  // 'botframework-webchat-component',
+  // 'botframework-webchat-core',
+  // 'botframework-webchat',
+
+  // General
+  'merge-refs',
+  'mime',
+  'uuid',
+
+  // Related to micromark
   'character-entities',
   'decode-named-character-reference',
   'mdast-util-from-markdown',
   'mdast-util-to-string',
-  'merge-refs',
   'micromark-core-commonmark',
   'micromark-extension-gfm',
   'micromark-extension-gfm-autolink-literal',
@@ -37,9 +43,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'micromark-util-sanitize-uri',
   'micromark-util-subtokenize',
   'micromark',
-  'mime',
   'unist-util-stringify-position',
-  'uuid',
 
   // Related to Speech SDK.
   'microsoft-cognitiveservices-speech-sdk',
@@ -51,47 +55,56 @@ const TRANSFORM_IGNORE_PACKAGES = [
 ];
 
 module.exports = {
-  displayName: { color: 'yellow', name: 'legacy' },
+  displayName: { color: 'yellow', name: 'unit' },
   globals: {
     npm_package_version: '0.0.0-0.jest'
   },
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'mjs', 'ts', 'tsx'],
-  rootDir: './',
+  rootDir: '../../packages/',
   setupFilesAfterEnv: [
-    '<rootDir>/__tests__/setup/setupDotEnv.js',
-    '<rootDir>/__tests__/setup/setupGlobalAgent.js',
-    '<rootDir>/__tests__/setup/preSetupTestFramework.js',
-    '<rootDir>/__tests__/setup/setupCryptoGetRandomValues.js',
-    '<rootDir>/__tests__/setup/setupCryptoRandomUUID.js',
-    '<rootDir>/__tests__/setup/setupImageSnapshot.js',
-    '<rootDir>/__tests__/setup/setupTestNightly.js',
-    '<rootDir>/__tests__/setup/setupTimeout.js'
+    '<rootDir>/../__tests__/setup.unit/setupCryptoGetRandomValues.js',
+    '<rootDir>/../__tests__/setup.unit/setupCryptoRandomUUID.js',
+    '<rootDir>/../__tests__/setup.unit/setupTestNightly.js',
+    '<rootDir>/../__tests__/setup.unit/setupTimeout.js'
   ],
-  testMatch: ['**/__tests__/**/*.?([mc])[jt]s?(x)', '**/?(*.)+(spec|test).?([mc])[jt]s?(x)'],
+  testMatch: ['**/?(*.)+(spec|test).?([mc])[jt]s?(x)'],
   testPathIgnorePatterns: [
     '/dist/',
     '/lib/',
     '/node_modules/',
     '/static/',
-    '<rootDir>/__tests__/assets/',
-    '<rootDir>/__tests__/html2/', // Will be tested by jest.html2.config.js.
-    '<rootDir>/__tests__/setup/',
-    '<rootDir>/packages/bundle/__tests__/types/__typescript__/',
-    '<rootDir>/packages/core/__tests__/types/__typescript__/',
-    '<rootDir>/packages/directlinespeech/__tests__/utilities/',
-    '<rootDir>/packages/playground/',
-    '<rootDir>/samples/'
+    '<rootDir>/bundle/__tests__/types/__typescript__/',
+    '<rootDir>/core/__tests__/types/__typescript__/',
+    '<rootDir>/directlinespeech/__tests__/utilities/',
+    '<rootDir>/playground/'
   ],
   transform: {
-    '\\.m?[jt]sx?$': '<rootDir>/babel-jest-config.js'
+    '\\.m?[jt]sx?$': [
+      'babel-jest',
+      {
+        plugins: ['@babel/plugin-transform-runtime'],
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              modules: 'commonjs'
+            }
+          ],
+          '@babel/preset-typescript',
+          '@babel/preset-react'
+        ]
+      }
+    ]
   },
   transformIgnorePatterns: [
     // jest-environment-jsdom import packages as browser.
     // Packages, such as "uuid", export itself for browser as ES5 + ESM.
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
     `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
-    '/packages/(?:test/)?\\w+/(?:lib/|dist/.+?\\.js$|\\w+\\.js)',
-    ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
+    ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/'),
+
+    // Do not transform anything under /test/*/(dist|lib).
+    '/packages/(?:test/)?\\w+/(?:lib/|dist/.+?\\.js$|\\w+\\.js)'
   ]
 };

@@ -1,5 +1,5 @@
 /**
- * @jest-environment ../../../__tests__/setup/jestNodeEnvironmentWithTimezone.js
+ * @jest-environment ../../../__tests__/setup.unit/JestNodeEnvironmentWithTimezone.js
  * @timezone America/St_Johns
  */
 
