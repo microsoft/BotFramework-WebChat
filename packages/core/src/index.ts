@@ -42,6 +42,7 @@ import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
+import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 
 export {
   CLEAR_SUGGESTED_ACTIONS,
@@ -81,7 +82,6 @@ import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSc
 import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
-import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 
 const Constants = { ActivityClientState, DictateState };
 
