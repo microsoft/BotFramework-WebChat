@@ -22,7 +22,7 @@
       import '/test-page-object.mjs';
 
       import { createDirectLine, createStoreWithOptions, testIds } from 'botframework-webchat';
-      import { useSendFiles } from 'botframework-webchat/hook';
+      import { useSendPostBack } from 'botframework-webchat/hook';
       import createRenderHook from '/assets/esm/createRenderHook.js';
 
       const {
@@ -40,19 +40,13 @@
             { renderWebChat: true }
           );
 
-          const sendFiles = await renderHook(() => useSendFiles());
+          const sendPostBack = await renderHook(() => useSendPostBack());
 
           await pageConditions.uiConnected();
 
-          const blob1 = new Blob([new ArrayBuffer(1024)]);
-          const blob2 = new Blob([new ArrayBuffer(1024)]);
+          sendPostBack({ hello: 'World!' });
 
-          blob1.name = 'index.png';
-          blob2.name = 'index2.png';
-
-          sendFiles([blob1, blob2]);
-
-          await pageConditions.numActivitiesShown(2);
+          await pageConditions.numActivitiesShown(1);
 
           await host.snapshot('local');
         },

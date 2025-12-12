@@ -21,20 +21,22 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { createDirectLine, createStoreWithOptions, testIds } from 'botframework-webchat';
       import { useSendMessage } from 'botframework-webchat/hook';
       import createRenderHook from '/assets/esm/createRenderHook.js';
 
-      const { createDirectLineEmulator } = window.testHelpers;
+      const {
+        createStore,
+        token: { fetchDirectLineToken }
+      } = window.testHelpers;
 
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(
         async function () {
-          const { directLine, store } = createDirectLineEmulator();
           const renderHook = createRenderHook(
             document.getElementById('webchat'),
-            { directLine, store },
+            { directLine: createDirectLine({ token: await fetchDirectLineToken() }), store: createStore() },
             { renderWebChat: true }
           );
 
@@ -42,11 +44,7 @@
 
           await pageConditions.uiConnected();
 
-          const { resolveAll } = await directLine.actPostActivity(() => sendMessage('Hello, World!'));
-
-          await resolveAll();
-
-          await directLine.emulateIncomingActivity('Unknown command: `Hello, World!`.\n\nType `help` to learn more.');
+          sendMessage('Hello, World!');
 
           await pageConditions.numActivitiesShown(2);
 
