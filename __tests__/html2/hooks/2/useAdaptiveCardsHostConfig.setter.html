@@ -22,7 +22,7 @@
       import '/test-page-object.mjs';
 
       import { createStoreWithOptions, testIds } from 'botframework-webchat';
-      import { useActivities } from 'botframework-webchat/hook';
+      import { useAdaptiveCardsHostConfig } from 'botframework-webchat/hook';
       import createRenderHook from '/assets/esm/createRenderHook.js';
 
       const { createDirectLineEmulator } = window.testHelpers;
@@ -31,11 +31,14 @@
 
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
-        const renderHook = createRenderHook(document.getElementById('webchat'), { directLine, store });
+        const renderHook = createRenderHook(document.getElementById('webchat'), {
+          directLine,
+          store
+        });
 
-        const activitiesState = await renderHook(() => useActivities());
+        const adaptiveCardsHostConfigState = await renderHook(() => useAdaptiveCardsHostConfig());
 
-        expect(activitiesState).toEqual([[]]);
+        expect(adaptiveCardsHostConfigState).toEqual([expect.objectContaining({})]);
       });
     </script>
   </body>

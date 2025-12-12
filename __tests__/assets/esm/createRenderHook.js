@@ -11,7 +11,8 @@ function RunFunction({ fn }) {
 export default function createRenderHook(
   /** @type {HTMLElement} */
   element,
-  { directLine, renderWebChat, store }
+  props,
+  { renderWebChat } = {}
 ) {
   const root = createRoot(element);
 
@@ -20,7 +21,7 @@ export default function createRenderHook(
       root.render(
         createElement(
           Composer,
-          { directLine, store },
+          props,
           ...[
             ...(renderWebChat ? [createElement(BasicWebChat)] : []),
             createElement(RunFunction, { fn: () => resolve(fn?.()), key: Date.now() })
