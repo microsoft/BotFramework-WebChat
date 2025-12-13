@@ -1,5 +1,5 @@
 /**
- * @jest-environment ../../../__tests__/setup/jestNodeEnvironmentWithTimezone.js
+ * @jest-environment ../../../__tests__/unit.setup/JestNodeEnvironmentWithTimeZone.js
  * @timezone Etc/UTC
  */
 

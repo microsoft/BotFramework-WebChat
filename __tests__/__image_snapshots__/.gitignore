@@ -1,3 +1,0 @@
-# Ignore baseline images from local build because they "Works on my machine <TM>"
-/chrome-local
-chromedriver.exe

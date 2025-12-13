@@ -344,6 +344,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is being deprecated and will be removed on or after 2022-07-22, in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/issues/4362), by [@compulim](https://github.com/compulim)
    - Completed deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
+- Removed legacy test harness, in PR [#5655](https://github.com/microsoft/BotFramework-WebChat/issues/5655), by [@compulim](https://github.com/compulim)
+   - All tests are now either using `html2` test harness or simple unit tests
+   - Legacy and `html` (html1) test harness are all migrated to `html2`
 
 ### Samples
 
