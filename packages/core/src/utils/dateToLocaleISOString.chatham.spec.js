@@ -1,5 +1,5 @@
 /**
- * @jest-environment ../../../__tests__/unit.setup/JestNodeEnvironmentWithTimezone.js
+ * @jest-environment ../../../__tests__/unit.setup/JestNodeEnvironmentWithTimeZone.js
  * @timezone Pacific/Chatham
  */
 

@@ -7,7 +7,7 @@ const { TestEnvironment } = require('jest-environment-node');
  * Timezone-aware Jest environment. Supports `@timezone` JSDoc
  * pragma within test suites to set timezone.
  */
-module.exports = class TimezoneAwareNodeEnvironment extends TestEnvironment {
+module.exports = class JestNodeEnvironmentWithTimeZone extends TestEnvironment {
   constructor(config, context) {
     // Allow test suites to change timezone, even if TZ is passed in a script.
     // Falls back to existing TZ environment variable or UTC if no timezone is specified.

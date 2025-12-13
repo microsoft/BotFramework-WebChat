@@ -97,9 +97,6 @@ module.exports = {
     `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/'),
 
-    // Do not transform /__tests__/unit.setup for speeding up.
-    '<rootDir>/../__tests__/unit.setup/',
-
     // Do not transform anything under /test/*/(dist|lib).
     '/packages/(?:test/)?\\w+/(?:lib/|dist/.+?\\.js$|\\w+\\.js)'
   ]

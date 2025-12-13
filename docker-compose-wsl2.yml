@@ -5,7 +5,6 @@ services:
     image: selenium/node-chrome:141.0
     depends_on:
       - selenium-hub
-      # - webchat
       - webchat2
     environment:
       SE_EVENT_BUS_HOST: selenium-hub
@@ -24,14 +23,6 @@ services:
       GRID_TIMEOUT: '300'
     ports:
       - '4444:4444'
-
-  # webchat:
-  #   build:
-  #     context: ./
-  #     dockerfile: testharness.dockerfile
-  #   ports:
-  #     - '5080:80'
-  #   stop_grace_period: 0s
 
   webchat2:
     build:
