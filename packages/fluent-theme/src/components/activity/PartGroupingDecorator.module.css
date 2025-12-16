@@ -633,6 +633,12 @@
       :global(.webchat__bubble) {
         position: static;
         width: var(--webchat-part-grouping__bubble--max-width);
+
+        :global(.webchat__bubble__content .webchat__adaptive-card-renderer > .ac-adaptiveCard) {
+          font-family: var(--webchat-fontFamilyBase);
+          /* Remove double padding for adaptive cards inside bubble */
+          padding: unset !important;
+        }
       }
 
       &:not(.part-grouping-decorator--group) {
