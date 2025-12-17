@@ -44,7 +44,7 @@ function useActivitiesForDevelopment(): readonly [readonly WebChatActivity[]] {
     for (let index = 0; index < activitiesFromGraph.length; index++) {
       if (!Object.is(activitiesFromGraph.at(index), activitiesFromRedux.at(index))) {
         throw new Error(
-          `botframework-webchat-internal: Activities from graph and Redux are of different at index ${index}`,
+          `botframework-webchat-internal: Activities from graph and Redux are different at index ${index}`,
           {
             cause: {
               activitiesFromGraph,
