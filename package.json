@@ -57,7 +57,6 @@
     "audit-all": "find -name package-lock.json | xargs dirname | xargs -I {} sh -c 'cd {} && npm audit'",
     "biome": "biome check ./packages",
     "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html2/",
-    "browser:watch": "node-dev --no-notify --respawn ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html2/",
     "build": "npm run build:production && npm run build:html2-samples",
     "build:html2-samples": "cd __tests__/html2/samples/ && esbuild --bundle --format=esm --outbase=. --outdir=./dist/ --minify **/*.tsx --splitting",
     "build:production": "npm run build --if-present --workspaces",
@@ -168,7 +167,7 @@
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
-    "test": "jest --watch"
+    "test": "jest"
   },
   "pinDependencies": {
     "@testing-library/react": [
@@ -257,8 +256,6 @@
     "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-image-snapshot": "^6.5.1",
-    "jest-junit": "^16.0.0",
-    "jest-trx-results-processor": "^3.0.2",
     "lint-staged": "^16.1.2",
     "lolex": "^6.0.0",
     "minimatch": "^10.0.3",

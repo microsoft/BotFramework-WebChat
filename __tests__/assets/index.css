@@ -30,3 +30,12 @@ body.jest textarea,
 body.jest [contenteditable] {
   caret-color: Transparent;
 }
+
+input::grammar-error,
+input::spelling-error,
+textarea::grammar-error,
+textarea::spelling-error,
+[contenteditable]::grammar-error,
+[contenteditable]::spelling-error {
+  text-decoration: none;
+}

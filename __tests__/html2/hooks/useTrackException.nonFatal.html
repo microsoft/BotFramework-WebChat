@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { useTrackDimension, useTrackException } from 'botframework-webchat/hook';
+      import { fn } from 'jest-mock';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const onTelemetry = fn();
+        const renderHook = createRenderHook(document.getElementById('webchat'), {
+          directLine,
+          onTelemetry,
+          store
+        });
+
+        await renderHook();
+
+        await pageConditions.uiConnected();
+
+        const trackException = await renderHook(() => useTrackException());
+        const error = new Error('non-fatal error');
+
+        trackException(error, false);
+
+        expect(onTelemetry).toHaveBeenCalledWith(
+          expect.objectContaining({
+            dimensions: {
+              'capability:downscaleImage:workerType': 'web worker',
+              'capability:renderer': 'html',
+              'prop:locale': 'en-US',
+              'prop:speechRecognition': 'false',
+              'prop:speechSynthesis': 'false'
+            },
+            error,
+            fatal: false,
+            type: 'exception'
+          })
+        );
+      });
+    </script>
+  </body>
+</html>

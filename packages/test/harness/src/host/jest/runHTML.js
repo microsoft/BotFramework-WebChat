@@ -48,7 +48,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
   const webDriver = (global.webDriver = await allocateWebDriver(options));
 
   try {
-    const absoluteURL = new URL(url, 'https://webchat2/__tests__/html/');
+    const absoluteURL = new URL(url, 'https://webchat2/__tests__/html2/');
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 

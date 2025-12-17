@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { useLocalizer } from 'botframework-webchat/hook';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const renderHook = createRenderHook(document.getElementById('webchat'), {
+          directLine,
+          locale: 'yue',
+          store
+        });
+
+        const localize = await renderHook(() => useLocalizer({ plural: true }));
+
+        expect(
+          localize(
+            {
+              two: 'TOAST_ACCORDION_TWO',
+              few: 'TOAST_ACCORDION_FEW',
+              many: 'TOAST_ACCORDION_MANY',
+              other: 'TOAST_ACCORDION_OTHER'
+            },
+            2
+          )
+        ).toBe('2 項通知：襟呢度睇詳情');
+      });
+    </script>
+  </body>
+</html>

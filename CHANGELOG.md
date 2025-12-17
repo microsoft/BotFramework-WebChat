@@ -145,7 +145,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Added target to Chrome 100 and re-enable Lightning CSS for ESM builds, by [@compulim](https://github.com/compulim) in PR [#5602](https://github.com/microsoft/BotFramework-WebChat/pull/5602)
 - Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 - Cleaned up `<ThemeProvider>` and various CSS related code, in PR [#5611](https://github.com/microsoft/BotFramework-WebChat/pull/5611), by [@compulim](https://github.com/compulim)
-- (Experimental) Reworked the copilot variant to align with the modern Copilot UX, in PR [#5630](https://github.com/microsoft/BotFramework-WebChat/pull/5630), by [@OEvgeny](https://github.com/OEvgeny), in PR [#5634](https://github.com/microsoft/BotFramework-WebChat/pull/5634), by [@OEvgeny](https://github.com/OEvgeny)
+- (Experimental) Reworked the copilot variant to align with the modern Copilot UX, in PR [#5630](https://github.com/microsoft/BotFramework-WebChat/pull/5630), by [@OEvgeny](https://github.com/OEvgeny), in PR [#5634](https://github.com/microsoft/BotFramework-WebChat/pull/5634), by [@OEvgeny](https://github.com/OEvgeny), in PR [#5656](https://github.com/microsoft/BotFramework-WebChat/pull/5656), by [@OEvgeny](https://github.com/OEvgeny)
    - Added loading animation for `copilot`, and `fluent` variants
 - New JSON-LD graph backend, by [@compulim](https://github.com/compulim) in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622)
 
@@ -344,6 +344,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is being deprecated and will be removed on or after 2022-07-22, in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/issues/4362), by [@compulim](https://github.com/compulim)
    - Completed deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
+- Removed legacy test harness, in PR [#5655](https://github.com/microsoft/BotFramework-WebChat/issues/5655), by [@compulim](https://github.com/compulim)
+   - All tests are now either using `html2` test harness or simple unit tests
+   - Legacy and `html` (html1) test harness are all migrated to `html2`
 
 ### Samples
 
