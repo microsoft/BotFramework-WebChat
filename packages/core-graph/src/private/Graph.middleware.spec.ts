@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { iteratorFilter, iteratorMap } from 'iter-fest';
 import { fn } from 'jest-mock';
-import Graph from './Graph2';
+import Graph from './Graph';
 import type { Identifier } from './schemas/Identifier';
 import './schemas/private/expectExtendValibot';
 import './schemas/private/expectIsFrozen';

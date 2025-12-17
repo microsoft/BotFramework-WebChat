@@ -1,5 +1,5 @@
 import { assert, type BaseSchema } from 'valibot';
-import { type GraphMiddleware } from '../../Graph2';
+import { type GraphMiddleware } from '../../Graph';
 import { SlantNodeSchema, type SlantNode } from '../../schemas/colorNode';
 import { DirectLineActivityNodeSchema } from '../../schemas/DirectLineActivityNode';
 import isOfType from '../../schemas/isOfType';
