@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import Graph from './Graph2';
+import Graph from './Graph';
 import './schemas/private/expectExtendValibot';
 import './schemas/private/expectIsFrozen';
 import type { Identifier } from './schemas/Identifier';

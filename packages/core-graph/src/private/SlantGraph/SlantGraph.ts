@@ -1,4 +1,4 @@
-import Graph from '../Graph2';
+import Graph from '../Graph';
 import { type SlantNode } from '../schemas/colorNode';
 import type { Identifier } from '../schemas/Identifier';
 import assertSlantNode from './private/assertSlantNode';

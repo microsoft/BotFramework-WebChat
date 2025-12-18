@@ -1,6 +1,6 @@
 // @ts-expect-error No @types/core-js-pure.
 import difference from 'core-js-pure/features/set/difference';
-import { type GraphMiddleware } from '../../Graph2';
+import { type GraphMiddleware } from '../../Graph';
 import { type SlantNode } from '../../schemas/colorNode';
 import type { Identifier } from '../../schemas/Identifier';
 import { type NodeReference } from '../../schemas/NodeReference';

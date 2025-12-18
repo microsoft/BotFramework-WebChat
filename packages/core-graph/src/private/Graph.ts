@@ -33,7 +33,7 @@ type WritableGraph<TInput extends GraphNode, TOutput extends GraphNode> = {
 const requestSchema = pipe(
   map(IdentifierSchema, object({ '@id': IdentifierSchema })),
   check(
-    // TODO: Iterator.every is since iOS 18.4, we still need to use ponyfill for now.
+    // TODO: [P4] Iterator.every is since iOS 18.4, we still need to use ponyfill until we drop support of iOS 18.4.
     value => iteratorEvery(value.entries(), ([key, node]) => key === node['@id']),
     'Key returned in Map must match `@id` in value'
   )
@@ -49,7 +49,7 @@ const middlewareValidator: GraphMiddleware<any, any> = () => next => request => 
   return Object.freeze(result);
 };
 
-class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> implements ReadableGraph<TInput, TOutput> {
+class Graph<TInput extends GraphNode, TOutput extends GraphNode = TInput> implements ReadableGraph<TInput, TOutput> {
   #busy = false;
   #middleware: GraphMiddleware<TInput, TOutput>;
   #state: GraphState<TOutput> = Object.freeze(new Map());
@@ -139,7 +139,7 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
   }
 }
 
-export default Graph2;
+export default Graph;
 export {
   type GraphMiddleware,
   type GraphNode,

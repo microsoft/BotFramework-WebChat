@@ -1,4 +1,4 @@
-import { type GraphMiddleware } from '../../Graph2';
+import { type GraphMiddleware } from '../../Graph';
 import { type SlantNode } from '../../schemas/colorNode';
 import type { Identifier } from '../../schemas/Identifier';
 import type { AnyNode } from '../SlantGraph';

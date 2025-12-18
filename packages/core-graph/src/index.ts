@@ -6,7 +6,7 @@ export {
   type GraphSubscriberRecord,
   type ReadableGraph,
   type WritableGraph
-} from './private/Graph2';
+} from './private/Graph';
 export { SlantNodeSchema, type SlantNode } from './private/schemas/colorNode';
 export {
   DirectLineActivityNodeSchema,
