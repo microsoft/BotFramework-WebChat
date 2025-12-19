@@ -49,6 +49,10 @@
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../tsconfig/package.json\""
   },
   "pinDependencies": {
+    "@types/jest": [
+      "29",
+      "pinned jest@29"
+    ],
     "@types/react": [
       "16.8",
       "react@16.8.6 is our baseline"
@@ -59,7 +63,7 @@
   },
   "devDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/jest": "^30.0.0",
+    "@types/jest": "^29.5.14",
     "@types/react": "^16.8.25",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
