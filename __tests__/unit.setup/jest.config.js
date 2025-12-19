@@ -44,6 +44,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'microsoft-cognitiveservices-speech-sdk',
 
   // Related to Adaptive Cards
+  'adaptivecards',
   'swiper'
 ];
 
