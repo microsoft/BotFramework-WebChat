@@ -118,6 +118,13 @@ rules:
     - warn
     - additionalHooks: ^(useLiveRegion|useMemoized|use(\w+)Updater)$
 
+  # The rule is preventing read access to refs inside the render loop.
+  # For optimization, we are heavy on ref usage.
+  react-hooks/refs: off
+
+  # This rule does not understand validateProps and falsely claim validateProps is causing mutations.
+  react-hooks/preserve-manual-memoization: off
+
   # Conflicts with Adaptive Card schema.
   # react/forbid-prop-types: error
 

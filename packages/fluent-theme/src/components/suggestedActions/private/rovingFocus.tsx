@@ -159,8 +159,6 @@ function RovingFocusProvider(
 
   const value = useMemo<RovingFocusContextType>(
     () =>
-      // itemRefsRef is accessed in a callback, it should not be accessed in render.
-      // eslint-disable-next-line react-hooks/refs
       Object.freeze({
         itemEffector
       }),
