@@ -6,6 +6,8 @@ import loadAsset from './loadAsset';
 
 beforeEach(() => {
   document.head.innerHTML = '';
+
+  window.happyDOM.settings.handleDisabledFileLoadingAsSuccess = true;
 });
 
 describe('Load a JavaScript file', () => {
