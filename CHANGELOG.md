@@ -171,6 +171,7 @@ Breaking changes in this release:
       - [`@babel/runtime@7.28.4`](https://npmjs.com/package/@babel/runtime/v/7.28.4)
       - [`@emotion/css@11.13.5`](https://npmjs.com/package/@emotion/css/v/11.13.5)
       - [`@redux-devtools/extension@3.3.0`](https://npmjs.com/package/@redux-devtools/extension/v/3.3.0)
+      - [`adaptivecards@3.0.5`](https://npmjs.com/package/adaptivecards/v/3.0.5)
       - [`botframework-directlinejs@0.15.6`](https://npmjs.com/package/botframework-directlinejs/v/0.15.6)
       - [`core-js@3.47.0`](https://npmjs.com/package/core-js/v/3.47.0)
       - [`core-js-pure@3.47.0`](https://npmjs.com/package/core-js-pure/v/3.47.0)
