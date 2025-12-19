@@ -101,6 +101,10 @@
     "node": ">=12.0.0"
   },
   "pinDependencies": {
+    "@types/uuid": [
+      "8",
+      "uuid@9 emit non-ES5 build because of default parameters"
+    ],
     "uuid": [
       "8",
       "uuid@9 emit non-ES5 build because of default parameters"
@@ -122,6 +126,7 @@
     "@testduet/given-when-then": "^0.1.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.3",
+    "@types/uuid": "^8.3.4",
     "babel-plugin-istanbul": "^7.0.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.6",
