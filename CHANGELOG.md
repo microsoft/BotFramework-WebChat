@@ -6,13 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 Note:
+
 - Web developers are advised to use [`~` (tilde range)](https://github.com/npm/node-semver?tab=readme-ov-file#tilde-ranges-123-12-1) to select minor versions, which contains new features and/or fixes. Use [`^` (caret range)](https://github.com/npm/node-semver?tab=readme-ov-file#caret-ranges-123-025-004) to select major versions, which may contains breaking changes
 
 Legends:
+
 - 💥 are breaking changes
 - 🐛 are known issues
-- 🏫 are samples
 - 🧪 are experimental changes
+- 🏫 are samples
 
 ## [Unreleased]
 
