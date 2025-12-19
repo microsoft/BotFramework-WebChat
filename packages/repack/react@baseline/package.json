@@ -24,6 +24,10 @@
     "start": "../../../scripts/npm/notify-build.sh \"src\" \"../object-assign/package.json\""
   },
   "pinDependencies": {
+    "@types/react": [
+      "16.8",
+      "Bump React manually"
+    ],
     "react": [
       "16.8.6",
       "Bump React manually"
@@ -34,7 +38,7 @@
   },
   "devDependencies": {
     "@msinternal/object-assign": "0.0.0-0",
-    "@types/react": "^19.2.7",
+    "@types/react": "^16.8.25",
     "esbuild": "^0.27.2"
   },
   "dependencies": {
