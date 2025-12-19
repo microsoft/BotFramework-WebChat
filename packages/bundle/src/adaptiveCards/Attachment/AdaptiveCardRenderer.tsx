@@ -210,6 +210,8 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   ]);
 
   useMemo(() => {
+    // Intentionally modifying the `onExecuteAction` because the API design of Adaptive Cards.
+    // eslint-disable-next-line react-hooks/immutability
     adaptiveCard.onExecuteAction = handleExecuteAction;
   }, [adaptiveCard, handleExecuteAction]);
 
