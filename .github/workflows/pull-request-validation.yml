@@ -22,7 +22,7 @@ defaults:
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
-  node-version: 22
+  node-version: 24
 
 permissions:
   contents: read
