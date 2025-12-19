@@ -166,12 +166,13 @@ Breaking changes in this release:
 - Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
 - Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
    - Reworked, enabled in Web Chat, in PR [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502), by [@OEvgeny](https://github.com/OEvgeny)
-- Bumped dependencies, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), PR [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), PR [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427), PR [#5476](https://github.com/microsoft/BotFramework-WebChat/pull/5476), PR [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516), PR [#5529](https://github.com/microsoft/BotFramework-WebChat/pull/5529), PR [#5532](https://github.com/microsoft/BotFramework-WebChat/pull/5532), and PR [#5659](https://github.com/microsoft/BotFramework-WebChat/pull/5659)
+- Bumped dependencies, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), PR [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), PR [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427), PR [#5476](https://github.com/microsoft/BotFramework-WebChat/pull/5476), PR [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516), PR [#5529](https://github.com/microsoft/BotFramework-WebChat/pull/5529), PR [#5532](https://github.com/microsoft/BotFramework-WebChat/pull/5532), and PR [#5659](https://github.com/microsoft/BotFramework-WebChat/pull/5659), by [@OEvgeny](https://github.com/OEvgeny) in PR [#5662](https://github.com/microsoft/BotFramework-WebChat/pull/5662)
    - Production dependencies
       - [`@babel/runtime@7.28.4`](https://npmjs.com/package/@babel/runtime/v/7.28.4)
       - [`@emotion/css@11.13.5`](https://npmjs.com/package/@emotion/css/v/11.13.5)
       - [`@redux-devtools/extension@3.3.0`](https://npmjs.com/package/@redux-devtools/extension/v/3.3.0)
       - [`botframework-directlinejs@0.15.6`](https://npmjs.com/package/botframework-directlinejs/v/0.15.6)
+      - [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6)
       - [`core-js@3.47.0`](https://npmjs.com/package/core-js/v/3.47.0)
       - [`core-js-pure@3.47.0`](https://npmjs.com/package/core-js-pure/v/3.47.0)
       - [`event-as-promise@2.0.0`](https://npmjs.com/package/event-as-promise/v/2.0.0)
@@ -304,6 +305,7 @@ Breaking changes in this release:
 - Bumped `react-chain-of-responsibility` to `0.4.2` version, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5620](https://github.com/microsoft/BotFramework-WebChat/pull/5620), in PR [#5624](https://github.com/microsoft/BotFramework-WebChat/pull/5624)
 - Bumped Chrome in Docker to 141 from 110, in PR [#5619](https://github.com/microsoft/BotFramework-WebChat/pull/5619), by [@compulim](https://github.com/compulim)
 - Bumped to [`valibot@1.2.0`](https://npmjs.com/package/valibot/v/1.2.0), in PR [#5650](https://github.com/microsoft/BotFramework-WebChat/pull/5650), by [@compulim](https://github.com/compulim)
+- Pinned to [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6), by [@OEvgeny](https://github.com/OEvgeny) in PR [#5662](https://github.com/microsoft/BotFramework-WebChat/pull/5662)
 
 ### Deprecated
 
