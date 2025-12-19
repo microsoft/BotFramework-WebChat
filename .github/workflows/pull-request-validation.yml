@@ -229,7 +229,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Run docker compose build
-        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com
 
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
