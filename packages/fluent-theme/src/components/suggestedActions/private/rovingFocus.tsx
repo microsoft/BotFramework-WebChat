@@ -158,10 +158,9 @@ function RovingFocusProvider(
   );
 
   const value = useMemo<RovingFocusContextType>(
-    () =>
-      Object.freeze({
-        itemEffector
-      }),
+    () => ({
+      itemEffector
+    }),
     [itemEffector]
   );
 
