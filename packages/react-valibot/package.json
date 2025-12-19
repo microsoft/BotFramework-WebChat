@@ -63,7 +63,7 @@
   "devDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/jest": "^30.0.0",
-    "tsup": "^8.5.0",
+    "tsup": "^8.5.1",
     "typescript": "~5.8.3"
   },
   "peerDependencies": {

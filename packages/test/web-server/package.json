@@ -30,12 +30,11 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "tsup": "^8.5.0",
+    "tsup": "^8.5.1",
     "typescript": "~5.8.3"
   },
   "dependencies": {
-    "selfsigned": "3.0.1",
+    "selfsigned": "5.2.0",
     "serve-handler": "6.1.6"
-  },
-  "peerDependencies": {}
+  }
 }

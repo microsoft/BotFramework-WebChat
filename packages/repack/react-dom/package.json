@@ -36,8 +36,8 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "@types/react-dom": "^18.3.7",
-    "esbuild": "^0.25.10"
+    "@types/react-dom": "~18.3",
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "react-dom": "18.3.1"
