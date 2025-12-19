@@ -72,19 +72,14 @@
   "localDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "development"
   },
-  "pinDependencies": {
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
-    ]
-  },
+  "pinDependencies": {},
   "devDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/node": "^24.1.0",
-    "core-js-pure": "^3.44.0",
-    "cross-env": "^10.0.0",
-    "type-fest": "^4.41.0",
-    "typescript": "~5.8.3"
+    "@types/node": "^25.0.3",
+    "core-js-pure": "^3.47.0",
+    "cross-env": "^10.1.0",
+    "type-fest": "^5.3.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "valibot": "1.2.0"

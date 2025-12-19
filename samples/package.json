@@ -14,9 +14,9 @@
     "./06.recomposing-ui/e.extending-ui"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --if-present --workspaces",
     "bump": "npm run bump:workspaces && npm run bump:non-workspaces",
     "bump:non-workspaces": "find . -name package.json -not -path \"./package.json\" -and -not -path \"*/node_modules/*\" -not -path \"*/07.advanced-web-chat-apps/*\" $(jq -r '.workspaces | map(\"-and -not -path \" + . + \"/package.json\") | join(\" \")' ./package.json) | xargs dirname | xargs -I {} sh -c 'cd {} && npm run bump'",
-    "bump:workspaces": "npm run bump --workspaces"
+    "bump:workspaces": "npm run bump --if-present --workspaces"
   }
 }

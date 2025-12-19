@@ -24,6 +24,10 @@
     "start": "../../../scripts/npm/notify-build.sh \"src\" \"../object-assign/package.json\""
   },
   "pinDependencies": {
+    "@types/react-dom": [
+      "16",
+      "Bump React manually"
+    ],
     "react-dom": [
       "16.8.6",
       "Bump React manually"
@@ -35,7 +39,7 @@
   "devDependencies": {
     "@msinternal/object-assign": "0.0.0-0",
     "@types/react-dom": "^16.9.25",
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "react-dom": "16.8.6"

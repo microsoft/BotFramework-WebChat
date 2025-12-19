@@ -38,7 +38,7 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "microsoft-cognitiveservices-speech-sdk": "1.17.0"

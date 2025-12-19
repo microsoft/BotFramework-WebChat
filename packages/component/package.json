@@ -96,6 +96,10 @@
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../styles/package.json\" \"../api/package.json\""
   },
   "pinDependencies": {
+    "@types/jest": [
+      "29",
+      "pinned jest@29"
+    ],
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
@@ -113,10 +117,6 @@
     ],
     "react-scroll-to-bottom": [
       "main"
-    ],
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "localDependencies": {
@@ -129,25 +129,26 @@
     "botframework-webchat-core": "production"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/dom-speech-recognition": "^0.0.6",
-    "@types/jest": "^30.0.0",
+    "@types/dom-speech-recognition": "^0.0.7",
+    "@types/jest": "^29.5.14",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^24.1.0",
-    "babel-plugin-istanbul": "^7.0.0",
+    "@types/node": "^25.0.3",
+    "@types/react": "^16.14.68",
+    "babel-plugin-istanbul": "^7.0.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "core-js": "^3.44.0",
-    "cross-env": "^10.0.0",
-    "type-fest": "^4.41.0",
-    "typescript": "~5.8.3"
+    "core-js": "^3.47.0",
+    "cross-env": "^10.1.0",
+    "type-fest": "^5.3.1",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@emotion/css": "11.13.5",
@@ -174,13 +175,12 @@
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-propagate": "0.2.1",
-    "use-reduce-memo": "^0.1.0-main.1384637",
+    "use-reduce-memo": "0.1.0",
     "use-ref-from": "0.1.0",
     "use-state-with-ref": "0.1.0",
     "valibot": "1.2.0"
   },
   "peerDependencies": {
-    "@types/react": "^16.14.65",
     "react": ">= 16.8.6",
     "react-dom": ">= 16.8.6"
   }

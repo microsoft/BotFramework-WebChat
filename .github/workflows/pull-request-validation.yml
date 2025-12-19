@@ -22,7 +22,7 @@ defaults:
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
-  node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
+  node-version: 24
 
 permissions:
   contents: read
@@ -229,7 +229,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Run docker compose build
-        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com
 
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2

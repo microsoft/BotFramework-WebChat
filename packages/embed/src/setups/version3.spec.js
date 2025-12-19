@@ -7,6 +7,8 @@ import setupVersion3, { getBingSpeechToken } from './version3';
 
 beforeEach(() => {
   delete window.BotChat;
+
+  window.happyDOM.settings.handleDisabledFileLoadingAsSuccess = true;
 });
 
 test('Load Web Chat v3 without a speech token', async () => {

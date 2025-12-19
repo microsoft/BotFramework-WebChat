@@ -24,6 +24,10 @@
     "start": "../../../scripts/npm/notify-build.sh \"src\""
   },
   "pinDependencies": {
+    "@types/react-is": [
+      "16",
+      "Bump with React"
+    ],
     "react-is": [
       "16.13.1",
       "Bump with React"
@@ -32,7 +36,7 @@
   "localDependencies": {},
   "devDependencies": {
     "@types/react-is": "^16.7.5",
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "react-is": "16.13.1"

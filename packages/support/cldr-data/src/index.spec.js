@@ -1,5 +1,5 @@
-// "cldr-data" depends on "read-pkg-up" which must be run in ESM.
-// "read-pkg-up" is required because we are using Lerna to run the install script for "cldr-data", instead of running via "npm install".
+// "cldr-data" depends on "read-package-up" which must be run in ESM.
+// "read-package-up" is required because we are using Lerna to run the install script for "cldr-data", instead of running via "npm install".
 //
 // Although Jest can run ESM experimentally, when enabled, it will run everything in ESM.
 //

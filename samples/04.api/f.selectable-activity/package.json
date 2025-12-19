@@ -33,6 +33,6 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "esbuild": "^0.25.8"
+    "esbuild": "^0.27.2"
   }
 }

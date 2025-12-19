@@ -49,12 +49,13 @@
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../tsconfig/package.json\""
   },
   "pinDependencies": {
-    "@types/react": [
-      "16"
+    "@types/jest": [
+      "29",
+      "pinned jest@29"
     ],
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
     ]
   },
   "localDependencies": {
@@ -62,12 +63,12 @@
   },
   "devDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/jest": "^30.0.0",
-    "tsup": "^8.5.0",
-    "typescript": "~5.8.3"
+    "@types/jest": "^29.5.14",
+    "@types/react": "^16.14.68",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@types/react": "^16.14.65",
     "react": ">= 16.8.6",
     "valibot": "1.2.0"
   }

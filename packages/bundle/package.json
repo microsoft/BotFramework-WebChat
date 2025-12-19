@@ -126,6 +126,14 @@
       "16",
       "react@16.8.6 is our baseline"
     ],
+    "@types/react-dom": [
+      "16",
+      "react-dom@16.8.6 is our baseline"
+    ],
+    "@types/uuid": [
+      "8",
+      "uuid@9 emit non-ES5 build because of default parameters"
+    ],
     "adaptivecards": [
       "3.0.2",
       "needs to bump manually"
@@ -137,10 +145,6 @@
     "swiper": [
       "^8.2.6",
       "required by Adaptive Cards but they forget to include in adaptivecards@3.0.2"
-    ],
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ],
     "uuid": [
       "8",
@@ -171,11 +175,11 @@
     "botframework-webchat-core": "production"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.0",
-    "@babel/plugin-transform-runtime": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
+    "@babel/core": "^7.28.5",
+    "@babel/plugin-transform-runtime": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@msinternal/adaptivecards": "0.0.0-0",
     "@msinternal/base64-js": "0.0.0-0",
     "@msinternal/botframework-directlinejs": "0.0.0-0",
@@ -193,22 +197,24 @@
     "@msinternal/react-dom-umd": "0.0.0-0",
     "@msinternal/react-is": "0.0.0-0",
     "@msinternal/react-umd": "0.0.0-0",
-    "@types/dom-speech-recognition": "^0.0.6",
+    "@types/dom-speech-recognition": "^0.0.7",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^24.1.0",
-    "@types/uuid": "^10.0.0",
-    "babel-plugin-istanbul": "^7.0.0",
+    "@types/node": "^25.0.3",
+    "@types/react": "^16.14.68",
+    "@types/react-dom": "^16.9.25",
+    "@types/uuid": "^8.3.4",
+    "babel-plugin-istanbul": "^7.0.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "cross-env": "^10.0.0",
-    "esbuild": "^0.25.8",
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.27.2",
     "micromark-util-types": "^2.0.2",
-    "read-pkg": "^9.0.1",
-    "tsd": "^0.32.0",
-    "type-fest": "^4.41.0",
-    "typescript": "~5.8.3"
+    "read-pkg": "^10.0.0",
+    "tsd": "^0.33.0",
+    "type-fest": "^5.3.1",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@babel/runtime": "7.28.2",
+    "@babel/runtime": "7.28.4",
     "adaptivecards": "3.0.2",
     "botframework-directlinejs": "0.15.6",
     "botframework-directlinespeech-sdk": "0.0.0-0",
@@ -216,15 +222,15 @@
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.5.1",
-    "core-js": "3.44.0",
-    "katex": "0.16.22",
+    "core-js": "3.47.0",
+    "katex": "0.16.27",
     "math-random": "2.0.1",
     "mdast-util-from-markdown": "2.0.2",
     "memoize-one": "6.0.0",
     "micromark": "4.0.2",
     "micromark-extension-gfm": "3.0.0",
     "micromark-util-character": "2.1.1",
-    "micromark-util-sanitize-uri": "^2.0.1",
+    "micromark-util-sanitize-uri": "2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
@@ -239,7 +245,6 @@
     "whatwg-fetch": "3.6.20"
   },
   "peerDependencies": {
-    "@types/react": "^16.14.65",
     "react": ">= 16.8.6",
     "react-chain-of-responsibility": "0.4.2",
     "react-dom": ">= 16.8.6"

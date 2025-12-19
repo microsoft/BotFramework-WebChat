@@ -111,6 +111,8 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
     const hasWidgets = !!tabbableElements(bodyRef.current).length;
 
     interactiveTypeRef.current !== hasWidgets &&
+      // TODO: [P2] Intentionally set the state, we will visit it later.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInteractiveType(hasLinks ? InteractiveType.LINK : hasWidgets ? InteractiveType.WIDGET : false);
   }, [bodyRef, interactiveTypeRef, setInteractiveType]);
 

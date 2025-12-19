@@ -14,7 +14,7 @@ let coverage, parentPackage, peerPackages, srcUrl;
 import { fileURLToPath } from 'url';
 import { promisify } from 'util';
 import { readPackage } from 'read-pkg';
-import { readPackageUp } from 'read-pkg-up';
+import { readPackageUp } from 'read-package-up';
 import child_process from 'child_process';
 // False alarm.
 // eslint-disable-next-line node/no-missing-import

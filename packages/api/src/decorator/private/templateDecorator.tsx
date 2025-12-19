@@ -62,6 +62,9 @@ export default function templateDecorator<
   function Chain(props: P) {
     const buildMiddleware = useBuildComponentCallback();
     const Proxy = useMemo(() => buildMiddleware(undefined, { fallbackComponent: FinalComponent }), [buildMiddleware]);
+
+    // <Proxy> is middleware component and is static.
+    // eslint-disable-next-line react-hooks/static-components
     return Proxy && <Proxy {...props} />;
   }
 

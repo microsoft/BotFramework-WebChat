@@ -21,7 +21,7 @@
     }
   },
   "dependencies": {
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.3",
     "http-proxy": "^1.18.1",
     "restify": "^11.1.0"
   },

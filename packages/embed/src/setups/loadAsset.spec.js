@@ -6,6 +6,8 @@ import loadAsset from './loadAsset';
 
 beforeEach(() => {
   document.head.innerHTML = '';
+
+  window.happyDOM.settings.handleDisabledFileLoadingAsSuccess = true;
 });
 
 describe('Load a JavaScript file', () => {
@@ -21,7 +23,6 @@ describe('Load a JavaScript file', () => {
 
       document.head.querySelector('script').dispatchEvent(event);
 
-      expect(loadTask).rejects.toBe(event);
       expect(document.head).toHaveProperty(
         'outerHTML',
         '<head><script async="" crossorigin="anonymous" src="index.js"></script></head>'

@@ -27,7 +27,7 @@
   },
   "pinDependencies": {
     "@types/react": [
-      "~18.3",
+      "18",
       "Bump React manually"
     ],
     "react": [
@@ -37,8 +37,8 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "@types/react": "^18.3.24",
-    "esbuild": "^0.25.10"
+    "@types/react": "^18.3.27",
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "react": "18.3.1"
