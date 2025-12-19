@@ -118,7 +118,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../repack/adaptivecards/package.json\" \"../repack/base64-js/package.json\" \"../repack/botframework-directlinejs/package.json\" \"../isomorphic-react/package.json\" \"../isomorphic-react-dom/package.json\" \"../repack/microsoft-cognitiveservices-speech-sdk/package.json\" \"../repack/react/package.json\" \"../repack/react@baseline/package.json\" \"../repack/react-dom/package.json\" \"../repack/react-dom@baseline/package.json\" \"../repack/react-dom@umd/package.json\" \"../repack/react-is/package.json\" \"../repack/react@umd/package.json\" \"../directlinespeech/package.json\" \"../component/package.json\"",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../repack/adaptivecards/package.json\" \"../repack/base64-js/package.json\" \"../repack/botframework-directlinejs/package.json\" \"../isomorphic-react/package.json\" \"../isomorphic-react-dom/package.json\" \"../repack/microsoft-cognitiveservices-speech-sdk/package.json\" \"../repack/react/package.json\" \"../repack/react@baseline/package.json\" \"../repack/react-dom/package.json\" \"../repack/react-dom@baseline/package.json\" \"../repack/react-dom@umd/package.json\" \"../repack/react-is/package.json\" \"../repack/react@umd/package.json\" \"../component/package.json\"",
     "test:tsd": "tsd"
   },
   "pinDependencies": {
@@ -149,6 +149,10 @@
     "uuid": [
       "8",
       "uuid@9 emit non-ES5 build because of default parameters"
+    ],
+    "botframework-directlinespeech-sdk": [
+      "4.18.1-main.20251208.8ccadd6",
+      "pinned temporarily due to missing access rights"
     ]
   },
   "localDependencies": {
@@ -169,7 +173,6 @@
     "@msinternal/react-dom-umd": "development",
     "@msinternal/react-is": "development",
     "@msinternal/react-umd": "development",
-    "botframework-directlinespeech-sdk": "production",
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production",
     "botframework-webchat-core": "production"
@@ -217,7 +220,7 @@
     "@babel/runtime": "7.28.4",
     "adaptivecards": "3.0.5",
     "botframework-directlinejs": "0.15.6",
-    "botframework-directlinespeech-sdk": "0.0.0-0",
+    "botframework-directlinespeech-sdk": "4.18.1-main.20251208.8ccadd6",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
