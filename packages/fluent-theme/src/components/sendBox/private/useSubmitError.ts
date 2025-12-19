@@ -51,6 +51,8 @@ const useSubmitError = ({
   }, [submitErrorRef]);
 
   return useMemo<Readonly<[string | undefined, () => typeof submitErrorRef.current]>>(
+    // Despite refs shouldn't be accessed during rendering, it is accessing using the `error` state.
+    // eslint-disable-next-line react-hooks/refs
     () => Object.freeze([error && errorMessageStringMap.get(error), commitLatestError]),
     [error, errorMessageStringMap, commitLatestError]
   );
