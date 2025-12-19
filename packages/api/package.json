@@ -103,10 +103,6 @@
     "react-redux": [
       "7",
       "react-redux@>7 requires newer version of React"
-    ],
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "localDependencies": {
@@ -144,7 +140,7 @@
     "iana-tz-data": "^2019.1.0",
     "nodemon": "^3.1.11",
     "type-fest": "^5.3.1",
-    "typescript": "~5.8.3"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",

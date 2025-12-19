@@ -113,10 +113,6 @@
     ],
     "react-scroll-to-bottom": [
       "main"
-    ],
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "localDependencies": {
@@ -147,7 +143,7 @@
     "core-js": "^3.47.0",
     "cross-env": "^10.1.0",
     "type-fest": "^5.3.1",
-    "typescript": "~5.8.3"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@emotion/css": "11.13.5",

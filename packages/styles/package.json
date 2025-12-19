@@ -72,12 +72,7 @@
     "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\""
   },
-  "pinDependencies": {
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
-    ]
-  },
+  "pinDependencies": {},
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-tsconfig": "development"
@@ -91,7 +86,7 @@
     "esbuild": "^0.27.2",
     "tsup": "^8.5.1",
     "type-fest": "^5.3.1",
-    "typescript": "~5.8.3"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"

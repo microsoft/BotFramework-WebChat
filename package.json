@@ -213,10 +213,6 @@
     "strip-ansi": [
       "6",
       "strip-ansi@7 dropped support of CommonJS"
-    ],
-    "typescript": [
-      "~5.8.3",
-      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "devDependencies": {
@@ -271,7 +267,7 @@
     "simple-git": "^3.30.0",
     "strip-ansi": "^6.0.1",
     "tsup": "^8.5.1",
-    "typescript": "~5.8.3",
+    "typescript": "^5.9.3",
     "unplugin-lightningcss": "^0.4.3"
   },
   "dependencies": {
