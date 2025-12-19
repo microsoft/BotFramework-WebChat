@@ -52,7 +52,7 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
-    await webDriver.get(absoluteURL);
+    await webDriver.get(absoluteURL.href);
 
     global.__operation__ = 'setting class name for body element';
 
