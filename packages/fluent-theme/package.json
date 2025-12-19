@@ -65,7 +65,7 @@
   },
   "pinDependencies": {
     "@types/react": [
-      "16.8",
+      "16",
       "react@16.8.6 is our baseline"
     ]
   },
@@ -79,7 +79,7 @@
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/math-random": "^1.0.2",
     "@types/node": "^25.0.3",
-    "@types/react": "^16.8.25",
+    "@types/react": "^16.14.68",
     "concurrently": "^9.2.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"

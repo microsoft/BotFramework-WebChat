@@ -123,11 +123,11 @@
   },
   "pinDependencies": {
     "@types/react": [
-      "16.8",
+      "16",
       "react@16.8.6 is our baseline"
     ],
     "@types/react-dom": [
-      "16.8",
+      "16",
       "react-dom@16.8.6 is our baseline"
     ],
     "@types/uuid": [
@@ -200,8 +200,8 @@
     "@types/dom-speech-recognition": "^0.0.7",
     "@types/mdast": "^4.0.4",
     "@types/node": "^25.0.3",
-    "@types/react": "^16.8.25",
-    "@types/react-dom": "^16.8.5",
+    "@types/react": "^16.14.68",
+    "@types/react-dom": "^16.9.25",
     "@types/uuid": "^8.3.4",
     "babel-plugin-istanbul": "^7.0.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",

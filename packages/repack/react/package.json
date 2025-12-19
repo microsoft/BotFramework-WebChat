@@ -27,7 +27,7 @@
   },
   "pinDependencies": {
     "@types/react": [
-      "18.3",
+      "18",
       "Bump React manually"
     ],
     "react": [

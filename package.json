@@ -179,11 +179,11 @@
       "pinned jest@29"
     ],
     "@types/react": [
-      "16.8",
+      "16",
       "react@16.8.6 is our baseline"
     ],
     "@types/react-dom": [
-      "16.8",
+      "16",
       "react@16.8.6 is our baseline"
     ],
     "babel-jest": [
@@ -225,8 +225,8 @@
     "@happy-dom/jest-environment": "^20.0.11",
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^29.5.14",
-    "@types/react": "^16.8.25",
-    "@types/react-dom": "^16.8.5",
+    "@types/react": "^16.14.68",
+    "@types/react-dom": "^16.9.25",
     "@types/semver": "^7.7.1",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@typescript-eslint/parser": "^8.50.0",

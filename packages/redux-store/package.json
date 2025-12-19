@@ -49,7 +49,7 @@
   },
   "pinDependencies": {
     "@types/react": [
-      "16.8",
+      "16",
       "react@16.8.6 is our baseline"
     ]
   },
@@ -61,7 +61,7 @@
   "devDependencies": {
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/react": "^16.8.25",
+    "@types/react": "^16.14.68",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },

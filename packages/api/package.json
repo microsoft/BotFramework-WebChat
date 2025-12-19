@@ -101,7 +101,7 @@
       "pinned jest@29"
     ],
     "@types/react": [
-      "16.8",
+      "16",
       "react@16.8.6 is our baseline"
     ],
     "react-redux": [
@@ -136,7 +136,7 @@
     "@types/dom-speech-recognition": "^0.0.7",
     "@types/jest": "^29.5.14",
     "@types/node": "^25.0.3",
-    "@types/react": "^16.8.25",
+    "@types/react": "^16.14.68",
     "babel-plugin-istanbul": "^7.0.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "core-js": "^3.47.0",
