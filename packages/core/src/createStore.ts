@@ -109,20 +109,20 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
       (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
   };
 
-  const nativeAPI = createNativeAPI();
+  const internalNativeAPI = createNativeAPI();
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
   const store = createReduxStore(
-    createReducer(ponyfill, nativeAPI),
+    createReducer(ponyfill, internalNativeAPI),
     initialState || {},
     options.devTools ? composeWithDevTools(enhancer) : enhancer
   );
 
-  // TODO: [P1] We should hide the native API in store, until we are ready to expose it in custom elements or React hook.
-  store['nativeAPI'] = nativeAPI;
-  nativeAPI.UNSAFE_extendsDebugContext('activities', () => store.getState().activities);
+  // TODO: [P1] We should hide the internal native API in store, until we are ready to expose it in custom elements or React hook.
+  store['internalNativeAPI'] = internalNativeAPI;
+  internalNativeAPI.UNSAFE_extendsDebugContext('activities', () => store.getState().activities);
 
   sagaMiddleware.run(createSagas({ ponyfill }));
 

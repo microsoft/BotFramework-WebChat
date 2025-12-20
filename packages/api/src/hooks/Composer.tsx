@@ -748,7 +748,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <NativeAPIComposer nativeAPI={memoizedStore['nativeAPI']}>
+    <NativeAPIComposer internalNativeAPI={memoizedStore['internalNativeAPI']}>
       <Provider context={WebChatReduxContext} store={memoizedStore}>
         <ReduxStoreComposer store={memoizedStore}>
           <GraphProvider store={memoizedStore}>
