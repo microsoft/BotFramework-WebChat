@@ -11,8 +11,8 @@ declare const process: {
 const SHOULD_LOCKDOWN = process.env.NODE_ENV === 'production';
 
 interface NativeAPI {
-  debugger(): void;
   get breakpoint(): NativeAPIBreakpoint;
+  get debugger(): void;
   get eventTarget(): NativeAPIEventTarget;
 }
 
@@ -41,11 +41,13 @@ class InternalNativeAPI implements NativeAPI {
     return this.#breakpoint;
   }
 
-  debugger() {
+  get debugger() {
     const __DEBUG_CONTEXT__ = this.#breakpointDebugContext;
 
     // eslint-disable-next-line no-debugger
     debugger;
+
+    return undefined;
   }
 
   get eventTarget(): NativeAPIEventTarget {
@@ -56,15 +58,23 @@ class InternalNativeAPI implements NativeAPI {
     const breakpoint = this.#breakpoint;
     const eventTarget = this.#eventTarget;
 
-    return Object.freeze({
-      get breakpoint() {
-        return breakpoint;
-      },
-      debugger: () => this.debugger(),
-      get eventTarget() {
-        return eventTarget;
-      }
-    });
+    return Object.freeze(
+      Object.defineProperty(
+        {
+          get breakpoint() {
+            return breakpoint;
+          },
+          get eventTarget() {
+            return eventTarget;
+          }
+        } satisfies Omit<NativeAPI, 'debugger'> as NativeAPI,
+        'debugger',
+        {
+          configurable: false,
+          get: () => this.debugger
+        }
+      )
+    );
   };
 
   UNSAFE_callBreakpoint: NativeAPIBreakpoint;
