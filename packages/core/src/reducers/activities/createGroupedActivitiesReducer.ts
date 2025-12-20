@@ -26,7 +26,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../../actions/postActivity';
-import { IncomingActivityEvent, type NativeAPI } from '../../nativeAPI/createNativeAPI';
+import { IncomingActivityEvent, type InternalNativeAPI } from '../../nativeAPI/index';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
@@ -62,7 +62,7 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 
 function createGroupedActivitiesReducer(
   ponyfill: GlobalScopePonyfill,
-  nativeAPI: NativeAPI
+  internalNativeAPI: InternalNativeAPI
 ): Reducer<GroupedActivitiesState, GroupedActivitiesAction> {
   return function activities(
     state: GroupedActivitiesState = DEFAULT_STATE,
@@ -192,8 +192,10 @@ function createGroupedActivitiesReducer(
         } = action;
 
         // We cannot call breakpoint inside Redux because DebugContext cannot call getState().
-        ponyfill.setTimeout(nativeAPI.UNSAFE_callBreakpoint.incomingActivity, 0);
-        nativeAPI.eventTarget.dispatchEvent(new IncomingActivityEvent('incomingactivity', { detail: { activity } }));
+        ponyfill.setTimeout(internalNativeAPI.UNSAFE_callBreakpoint.incomingActivity, 0);
+        internalNativeAPI.eventTarget.dispatchEvent(
+          new IncomingActivityEvent('incomingactivity', { detail: { activity } })
+        );
 
         activity = patchActivity(activity, ponyfill);
 
@@ -291,7 +293,7 @@ function createGroupedActivitiesReducer(
     }
 
     // We cannot call breakpoint inside Redux because DebugContext cannot call getState().
-    ponyfill.setTimeout(nativeAPI.UNSAFE_callBreakpoint.activitiesChange, 0);
+    ponyfill.setTimeout(internalNativeAPI.UNSAFE_callBreakpoint.activitiesChange, 0);
 
     return state;
   };

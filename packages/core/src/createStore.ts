@@ -1,13 +1,13 @@
-import { applyMiddleware, createStore as createReduxStore, type Store } from 'redux';
 import { composeWithDevTools } from '@redux-devtools/extension';
+import { applyMiddleware, createStore as createReduxStore, type Store } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
+import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
 import createSagas from './createSagas';
-import sagaError from './actions/sagaError';
+import { createNativeAPI } from './nativeAPI/index';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import createNativeAPI from './nativeAPI/createNativeAPI';
 
 type CreateStoreOptions = {
   /**

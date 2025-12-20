@@ -1,7 +1,7 @@
-import NativeAPI from './NativeAPI';
+import InternalNativeAPI from './InternalNativeAPI';
 
-function createNativeAPI(): NativeAPI {
-  return new NativeAPI();
+function createNativeAPI(): InternalNativeAPI {
+  return new InternalNativeAPI();
 }
 
 export default createNativeAPI;

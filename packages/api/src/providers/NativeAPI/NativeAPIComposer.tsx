@@ -1,5 +1,5 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { NativeAPI } from 'botframework-webchat-core';
+import { InternalNativeAPI } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { instance, object, optional, pipe, readonly, type InferOutput } from 'valibot';
 import NativeAPIContext, { NativeAPIContextType } from './private/NativeAPIContext';
@@ -7,7 +7,7 @@ import NativeAPIContext, { NativeAPIContextType } from './private/NativeAPIConte
 const nativeAPIComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    nativeAPI: instance(NativeAPI)
+    internalNativeAPI: instance(InternalNativeAPI)
   }),
   readonly()
 );
@@ -15,11 +15,20 @@ const nativeAPIComposerPropsSchema = pipe(
 type NativeAPIComposerProps = InferOutput<typeof nativeAPIComposerPropsSchema>;
 
 function NativeAPIComposer(props: NativeAPIComposerProps) {
-  const { children, nativeAPI } = validateProps(nativeAPIComposerPropsSchema, props);
+  const { children, internalNativeAPI } = validateProps(nativeAPIComposerPropsSchema, props);
 
   const context = useMemo<NativeAPIContextType>(
-    () => Object.freeze({ nativeAPIState: Object.freeze([nativeAPI] as const) }),
-    [nativeAPI]
+    () =>
+      Object.freeze({
+        internalNativeAPIState: Object.freeze([internalNativeAPI] as const),
+        nativeAPIState: Object.freeze([
+          Object.freeze({
+            breakpoint: internalNativeAPI.breakpoint,
+            eventTarget: internalNativeAPI.eventTarget
+          })
+        ] as const)
+      }),
+    [internalNativeAPI]
   );
 
   return <NativeAPIContext.Provider value={context}>{children}</NativeAPIContext.Provider>;

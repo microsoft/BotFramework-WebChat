@@ -12,7 +12,12 @@ declare const process: {
 
 const SHOULD_LOCKDOWN = process.env.NODE_ENV === 'production';
 
-class NativeAPI {
+interface NativeAPI {
+  get breakpoint(): NativeAPIBreakpoint;
+  get eventTarget(): NativeAPIEventTarget;
+}
+
+class InternalNativeAPI implements NativeAPI {
   constructor() {
     this.UNSAFE_callBreakpoint = {} as NativeAPIBreakpoint;
 
@@ -53,4 +58,5 @@ class NativeAPI {
   }
 }
 
-export default NativeAPI;
+export default InternalNativeAPI;
+export { NativeAPI };

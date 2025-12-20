@@ -58,11 +58,12 @@ export {
 } from './actions/setSuggestedActions';
 
 export {
+  InternalNativeAPI,
   NativeAPI,
   type NativeAPIBreakpoint,
-  type NativeAPIDebugContext,
+  type NativeAPIBreakpointDebugContext,
   type NativeAPIEventTarget
-} from './nativeAPI/createNativeAPI';
+} from './nativeAPI/index';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { SendBoxAttachment } from './types/SendBoxAttachment';

@@ -1,7 +1,8 @@
-import type { NativeAPI } from 'botframework-webchat-core';
+import type { InternalNativeAPI, NativeAPI } from 'botframework-webchat-core';
 import { createContext, useContext } from 'react';
 
 type NativeAPIContextType = {
+  readonly internalNativeAPIState: readonly [InternalNativeAPI];
   readonly nativeAPIState: readonly [NativeAPI];
 };
 

@@ -1,4 +1,5 @@
 import type { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducersMapObject } from 'redux';
+import type { InternalNativeAPI } from '../../nativeAPI/index';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import isForbiddenPropertyName from '../../utils/isForbiddenPropertyName';
@@ -6,8 +7,6 @@ import createGroupedActivitiesReducer, {
   type GroupedActivitiesAction,
   type GroupedActivitiesState
 } from './createGroupedActivitiesReducer';
-
-import type { NativeAPI } from '../../nativeAPI/createNativeAPI';
 
 type ActivitiesState = {
   activities: readonly WebChatActivity[];
@@ -23,13 +22,13 @@ type ActivitiesState = {
  */
 export default function combineActivitiesReducer<M>(
   ponyfill: GlobalScopePonyfill,
-  nativeAPI: NativeAPI,
+  internalNativeAPI: InternalNativeAPI,
   existingSlicedReducer: ReturnType<typeof combineReducers<M>>
 ): Reducer<StateFromReducersMapObject<M> & ActivitiesState, ActionFromReducersMapObject<M> & GroupedActivitiesAction> {
   type ExistingState = StateFromReducersMapObject<M>;
   type ExistingAction = ActionFromReducersMapObject<M>;
 
-  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, nativeAPI);
+  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, internalNativeAPI);
 
   return function (
     state: (ExistingState & ActivitiesState) | undefined,
