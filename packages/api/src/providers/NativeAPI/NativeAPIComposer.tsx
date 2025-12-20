@@ -21,12 +21,7 @@ function NativeAPIComposer(props: NativeAPIComposerProps) {
     () =>
       Object.freeze({
         internalNativeAPIState: Object.freeze([internalNativeAPI] as const),
-        nativeAPIState: Object.freeze([
-          Object.freeze({
-            breakpoint: internalNativeAPI.breakpoint,
-            eventTarget: internalNativeAPI.eventTarget
-          })
-        ] as const)
+        nativeAPIState: Object.freeze([internalNativeAPI.toNativeAPI()] as const)
       }),
     [internalNativeAPI]
   );

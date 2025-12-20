@@ -191,8 +191,9 @@ function createGroupedActivitiesReducer(
           payload: { activity }
         } = action;
 
-        // We cannot call breakpoint inside Redux because DebugContext cannot call getState().
-        ponyfill.setTimeout(internalNativeAPI.UNSAFE_callBreakpoint.incomingActivity, 0);
+        // We cannot call breakpoint inside Redux because DebugContext cannot call getState(), need setTimeout.
+        ponyfill.requestIdleCallback?.(internalNativeAPI.UNSAFE_callBreakpoint.incomingActivity);
+
         internalNativeAPI.eventTarget.dispatchEvent(
           new IncomingActivityEvent('incomingactivity', { detail: { activity } })
         );
@@ -291,9 +292,6 @@ function createGroupedActivitiesReducer(
       default:
         break;
     }
-
-    // We cannot call breakpoint inside Redux because DebugContext cannot call getState().
-    ponyfill.setTimeout(internalNativeAPI.UNSAFE_callBreakpoint.activitiesChange, 0);
 
     return state;
   };

@@ -1,6 +1,6 @@
 import type { ArrayElement } from 'type-fest';
 
-const BREAKPOINT_NAMES = Object.freeze(['activitiesChange', 'incomingActivity'] as const);
+const BREAKPOINT_NAMES = Object.freeze(['incomingActivity'] as const);
 
 // #region Types assertion
 let ACTUAL_BREAKPOINT_NAMES: keyof NativeAPIBreakpoint;
@@ -11,13 +11,6 @@ BREAKPOINT_NAMES.at(0) satisfies typeof ACTUAL_BREAKPOINT_NAMES;
 
 /* eslint-disable class-methods-use-this, @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars */
 class NativeAPIBreakpoint {
-  /**
-   * Will be called whenever activities has changed.
-   *
-   * This includes both incoming and outgoing activities.
-   */
-  activitiesChange(__DEBUG_CONTEXT__) {}
-
   /**
    * Will be called when an incoming activity is received.
    */
