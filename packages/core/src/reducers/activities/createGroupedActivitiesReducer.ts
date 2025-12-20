@@ -26,6 +26,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../../actions/postActivity';
+import { IncomingActivityEvent, type NativeAPI } from '../../nativeAPI/createNativeAPI';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
@@ -60,7 +61,8 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 }
 
 function createGroupedActivitiesReducer(
-  ponyfill: GlobalScopePonyfill
+  ponyfill: GlobalScopePonyfill,
+  nativeAPI: NativeAPI
 ): Reducer<GroupedActivitiesState, GroupedActivitiesAction> {
   return function activities(
     state: GroupedActivitiesState = DEFAULT_STATE,
@@ -189,6 +191,10 @@ function createGroupedActivitiesReducer(
           payload: { activity }
         } = action;
 
+        // We cannot call breakpoint inside Redux because DebugContext cannot call getState().
+        ponyfill.setTimeout(nativeAPI.UNSAFE_callBreakpoint.incomingActivity, 0);
+        nativeAPI.eventTarget.dispatchEvent(new IncomingActivityEvent('incomingactivity', { detail: { activity } }));
+
         activity = patchActivity(activity, ponyfill);
 
         // Clean internal properties if they were passed from chat adapter.
@@ -283,6 +289,9 @@ function createGroupedActivitiesReducer(
       default:
         break;
     }
+
+    // We cannot call breakpoint inside Redux because DebugContext cannot call getState().
+    ponyfill.setTimeout(nativeAPI.UNSAFE_callBreakpoint.activitiesChange, 0);
 
     return state;
   };

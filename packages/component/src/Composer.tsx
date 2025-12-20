@@ -14,7 +14,7 @@ import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
@@ -56,6 +56,7 @@ import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
+import { useNativeAPI } from 'botframework-webchat-api/hook';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
 
@@ -85,7 +86,9 @@ const ROOT_STYLE = {
 
 const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const [nativeAPI] = useNativeAPI();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
 
   const dictationOnError = useCallback(
@@ -103,10 +106,25 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
     [trackException]
   );
 
+  useEffect(() => {
+    const { current } = rootRef;
+
+    if (current) {
+      current['webChat'] = nativeAPI;
+    }
+
+    return () => {
+      if (current) {
+        delete current['webChat'];
+      }
+    };
+  }, [nativeAPI]);
+
   return (
     <CSSCustomPropertiesContainer
       className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}
       nonce={nonce}
+      ref={rootRef}
     >
       <CustomElementsComposer>
         <FocusSendBoxScope>

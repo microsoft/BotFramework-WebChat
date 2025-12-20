@@ -38,6 +38,7 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
+  useNativeAPI,
   useNotifications,
   usePerformCardAction,
   usePonyfill,

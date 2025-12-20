@@ -17,6 +17,8 @@ import shareObservable from './shareObservable';
 import sleep from './sleep';
 import stringToArrayBuffer from './stringToArrayBuffer';
 
+export { default as hideKnownError } from './hideKnownError';
+
 export {
   accessibility,
   activityGrouping,

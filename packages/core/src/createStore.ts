@@ -7,6 +7,7 @@ import createSagas from './createSagas';
 import sagaError from './actions/sagaError';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import createNativeAPI from './nativeAPI/createNativeAPI';
 
 type CreateStoreOptions = {
   /**
@@ -108,14 +109,20 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
       (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
   };
 
+  const nativeAPI = createNativeAPI();
+
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
   const store = createReduxStore(
-    createReducer(ponyfill),
+    createReducer(ponyfill, nativeAPI),
     initialState || {},
     options.devTools ? composeWithDevTools(enhancer) : enhancer
   );
+
+  // TODO: [P1] We should hide the native API in store, until we are ready to expose it in custom elements or React hook.
+  store['nativeAPI'] = nativeAPI;
+  nativeAPI.UNSAFE_extendsDebugContext('activities', () => store.getState().activities);
 
   sagaMiddleware.run(createSagas({ ponyfill }));
 

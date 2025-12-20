@@ -7,6 +7,8 @@ import createGroupedActivitiesReducer, {
   type GroupedActivitiesState
 } from './createGroupedActivitiesReducer';
 
+import type { NativeAPI } from '../../nativeAPI/createNativeAPI';
+
 type ActivitiesState = {
   activities: readonly WebChatActivity[];
   groupedActivities: GroupedActivitiesState;
@@ -21,12 +23,13 @@ type ActivitiesState = {
  */
 export default function combineActivitiesReducer<M>(
   ponyfill: GlobalScopePonyfill,
+  nativeAPI: NativeAPI,
   existingSlicedReducer: ReturnType<typeof combineReducers<M>>
 ): Reducer<StateFromReducersMapObject<M> & ActivitiesState, ActionFromReducersMapObject<M> & GroupedActivitiesAction> {
   type ExistingState = StateFromReducersMapObject<M>;
   type ExistingAction = ActionFromReducersMapObject<M>;
 
-  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill);
+  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, nativeAPI);
 
   return function (
     state: (ExistingState & ActivitiesState) | undefined,

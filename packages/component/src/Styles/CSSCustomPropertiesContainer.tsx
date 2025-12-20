@@ -4,7 +4,7 @@ import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
 import classNames from 'classnames';
 import random from 'math-random';
-import React, { memo, useMemo } from 'react';
+import React, { forwardRef, memo, useMemo, type Ref } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 import CustomPropertyNames from './CustomPropertyNames';
 
@@ -27,7 +27,7 @@ function uniqueId() {
   return Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36);
 }
 
-function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
+function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: Ref<HTMLDivElement>) {
   const { children, className, nonce } = validateProps(customPropertiesContainerPropsSchema, props);
 
   const [styleOptions] = useStyleOptions();
@@ -119,7 +119,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
   }, [styleOptions]);
 
   return (
-    <div className={classNames(className, classNameState[0])}>
+    <div className={classNames(className, classNameState[0])} ref={ref}>
       <InjectStyleElements at={styleOptions.stylesRoot} nonce={nonce} styleElements={styleElements} />
       {children}
     </div>
@@ -128,4 +128,4 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
 
 CustomPropertiesContainer.displayName = 'CustomPropertiesContainer';
 
-export default memo(CustomPropertiesContainer);
+export default memo(forwardRef<HTMLDivElement, CustomPropertiesContainerProps>(CustomPropertiesContainer));

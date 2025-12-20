@@ -94,6 +94,7 @@ import useStyleOptions from './useStyleOptions';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
+import NativeAPIComposer from '../providers/NativeAPI/NativeAPIComposer';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -747,17 +748,19 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ReduxStoreComposer store={memoizedStore}>
-        <GraphProvider store={memoizedStore}>
-          <ActivityKeyerComposer>
-            <ActivityAcknowledgementComposer>
-              <ComposerCore onTelemetry={onTelemetry} {...props} />
-            </ActivityAcknowledgementComposer>
-          </ActivityKeyerComposer>
-        </GraphProvider>
-      </ReduxStoreComposer>
-    </Provider>
+    <NativeAPIComposer nativeAPI={memoizedStore['nativeAPI']}>
+      <Provider context={WebChatReduxContext} store={memoizedStore}>
+        <ReduxStoreComposer store={memoizedStore}>
+          <GraphProvider store={memoizedStore}>
+            <ActivityKeyerComposer>
+              <ActivityAcknowledgementComposer>
+                <ComposerCore onTelemetry={onTelemetry} {...props} />
+              </ActivityAcknowledgementComposer>
+            </ActivityKeyerComposer>
+          </GraphProvider>
+        </ReduxStoreComposer>
+      </Provider>
+    </NativeAPIComposer>
   );
 };
 
