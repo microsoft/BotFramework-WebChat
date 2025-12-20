@@ -1,9 +1,7 @@
-import { spyOn } from 'https://esm.sh/jest-mock';
-
 export default function hideKnownError() {
   const consoleError = console.error.bind(console);
 
-  spyOn(console, 'error').mockImplementation((...args) => {
+  console.error = (...args) => {
     const [message] = args;
 
     if (
@@ -19,5 +17,5 @@ export default function hideKnownError() {
     ) {
       consoleError(...args);
     }
-  });
+  };
 }
