@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file */
-
 import NativeAPIBreakpoint, { BREAKPOINT_NAMES } from './NativeAPIBreakpoint';
 import type { NativeAPIBreakpointDebugContext } from './NativeAPIBreakpointDebugContext';
 import NativeAPIEventTarget from './NativeAPIEventTarget';
