@@ -60,6 +60,7 @@ import ActivityListenerComposer from '../providers/ActivityListener/ActivityList
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
+import DebugAPIComposer from '../providers/DebugAPI/DebugAPIComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer';
@@ -94,7 +95,6 @@ import useStyleOptions from './useStyleOptions';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
-import NativeAPIComposer from '../providers/NativeAPI/NativeAPIComposer';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -748,7 +748,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <NativeAPIComposer internalNativeAPI={memoizedStore['internalNativeAPI']}>
+    <DebugAPIComposer rootDebugAPI={memoizedStore['debugAPI']}>
       <Provider context={WebChatReduxContext} store={memoizedStore}>
         <ReduxStoreComposer store={memoizedStore}>
           <GraphProvider store={memoizedStore}>
@@ -760,7 +760,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
           </GraphProvider>
         </ReduxStoreComposer>
       </Provider>
-    </NativeAPIComposer>
+    </DebugAPIComposer>
   );
 };
 

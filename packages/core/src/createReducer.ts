@@ -18,13 +18,13 @@ import shouldSpeakIncomingActivity from './reducers/shouldSpeakIncomingActivity'
 import suggestedActions from './reducers/suggestedActions';
 import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginActivity';
 
-import type { InternalNativeAPI } from './nativeAPI/index';
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { RootPrivateDebugAPI } from './types/RootDebugAPI';
 
-export default function createReducer(ponyfill: GlobalScopePonyfill, internalNativeAPI: InternalNativeAPI) {
+export default function createReducer(ponyfill: GlobalScopePonyfill, rootPrivateDebugAPI: RootPrivateDebugAPI) {
   return combineActivitiesReducer(
     ponyfill,
-    internalNativeAPI,
+    rootPrivateDebugAPI,
     combineReducers({
       connectivityStatus,
       dictateInterims,

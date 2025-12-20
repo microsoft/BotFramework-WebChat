@@ -5,9 +5,9 @@ import createSagaMiddleware from 'redux-saga';
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
 import createSagas from './createSagas';
-import { createNativeAPI } from './nativeAPI/index';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import { createPrivateDebugAPI } from '@msinternal/botframework-webchat-core-debug-api';
 
 type CreateStoreOptions = {
   /**
@@ -109,20 +109,23 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
       (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
   };
 
-  const internalNativeAPI = createNativeAPI();
+  const rootPrivateDebugAPI = createPrivateDebugAPI<'incomingActivity', { readonly activities: readonly any[] }>([
+    'incomingActivity'
+  ]);
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
   const store = createReduxStore(
-    createReducer(ponyfill, internalNativeAPI),
+    createReducer(ponyfill, rootPrivateDebugAPI),
     initialState || {},
     options.devTools ? composeWithDevTools(enhancer) : enhancer
   );
 
-  // TODO: [P1] We should hide the internal native API in store, until we are ready to expose it in custom elements or React hook.
-  store['internalNativeAPI'] = internalNativeAPI;
-  internalNativeAPI.UNSAFE_extendsDebugContext('activities', () => store.getState().activities);
+  rootPrivateDebugAPI.UNSAFE_extendsDebugContextOnce('activities', () => store.getState().activities);
+
+  // TODO: [P1] When we redesign the store and chat adapter, we should have the Native API stored somewhere else.
+  store['debugAPI'] = rootPrivateDebugAPI.toPublic();
 
   sagaMiddleware.run(createSagas({ ponyfill }));
 

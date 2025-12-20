@@ -57,14 +57,6 @@ export {
   type SetSuggestedActionsAction
 } from './actions/setSuggestedActions';
 
-export {
-  InternalNativeAPI,
-  NativeAPI,
-  type NativeAPIBreakpoint,
-  type NativeAPIBreakpointDebugContext,
-  type NativeAPIEventTarget
-} from './nativeAPI/index';
-
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { SendBoxAttachment } from './types/SendBoxAttachment';
 import type { WebChatActivity } from './types/WebChatActivity';

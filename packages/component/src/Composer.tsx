@@ -9,6 +9,7 @@ import {
   type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import { useRootDebugAPI } from 'botframework-webchat-api/hook';
 import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
@@ -56,7 +57,6 @@ import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
-import { useNativeAPI } from 'botframework-webchat-api/hook';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
 
@@ -86,7 +86,7 @@ const ROOT_STYLE = {
 
 const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
-  const [nativeAPI] = useNativeAPI();
+  const [rootDebugAPI] = useRootDebugAPI();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
@@ -110,7 +110,7 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
     const { current } = rootRef;
 
     if (current) {
-      current['webChat'] = nativeAPI;
+      current['webChat'] = rootDebugAPI;
     }
 
     return () => {
@@ -118,7 +118,7 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
         delete current['webChat'];
       }
     };
-  }, [nativeAPI]);
+  }, [rootDebugAPI]);
 
   return (
     <CSSCustomPropertiesContainer

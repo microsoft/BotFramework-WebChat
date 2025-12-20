@@ -4,3 +4,5 @@ export {
   setRawStateActionSchema,
   type SetRawStateAction
 } from './actions/setRawState';
+
+export { type RootDebugAPI } from '../types/RootDebugAPI';

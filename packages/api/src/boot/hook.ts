@@ -38,7 +38,6 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
-  useNativeAPI,
   useNotifications,
   usePerformCardAction,
   usePonyfill,
@@ -48,6 +47,7 @@ export {
   useRenderAttachment,
   useRenderToast,
   useRenderTypingIndicator,
+  useRootDebugAPI,
   useSendBoxAttachments,
   useSendBoxValue,
   useSendEvent,
@@ -76,3 +76,5 @@ export {
   useUsername,
   useVoiceSelector
 } from '../hooks/index';
+
+export type { RootDebugAPI } from '../hooks/index';
