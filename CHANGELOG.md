@@ -143,6 +143,9 @@ Breaking changes in this release:
    - Added loading animation for `copilot`, and `fluent` variants
 - New JSON-LD graph backend, by [@compulim](https://github.com/compulim) in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622)
    - Cleanup, by [@compulim](https://github.com/compulim) in PR [#5657](https://github.com/microsoft/BotFramework-WebChat/pull/5657)
+- New debug API, by [@compulim](https://github.com/compulim) in PR [#5663](https://github.com/microsoft/BotFramework-WebChat/pull/5663)
+   - Debug into element: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.debugger`
+   - Breakpoint: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.breakpoint.incomingActivity`
 
 ### Changed
 
