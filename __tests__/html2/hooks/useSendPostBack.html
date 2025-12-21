@@ -47,6 +47,7 @@
           sendPostBack({ hello: 'World!' });
 
           await pageConditions.numActivitiesShown(1);
+          await pageConditions.allOutgoingActivitiesSent();
 
           await host.snapshot('local');
         },
