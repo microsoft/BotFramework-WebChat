@@ -70,6 +70,7 @@ class PrivateDebugAPI<
   toPublic(): DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>> {
     const breakpoint = this.#breakpoint;
     const getDebugger = () => {
+      // @ts-expect-error Unused variable for debugging.
       const __DEBUG_CONTEXT__ = this.#breakpointDebugContext;
 
       // eslint-disable-next-line no-debugger
