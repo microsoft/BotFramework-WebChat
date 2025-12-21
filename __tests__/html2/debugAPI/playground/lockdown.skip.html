@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { fn, spyOn } from 'https://esm.sh/jest-mock';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      testHelpers.hideKnownError();
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, role: 'complementary', store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        const rootElement = document.querySelector('#webchat > *');
+
+        const originalDebugger = rootElement.webChat.debugger;
+        const originalIncomingActivity = rootElement.webChat.breakpoint.incomingActivity;
+
+        // Scenario 1.
+        // If locked down, should fail with:
+        // "Cannot assign to read only property 'incomingActivity' of object '#<Object>'"
+        const scenario1 = () => spyOn(rootElement.webChat.breakpoint, 'incomingActivity');
+
+        expect(scenario1).toThrow("Cannot assign to read only property 'incomingActivity' of object '#<Object>'");
+        expect(rootElement.webChat.breakpoint.incomingActivity).toBe(originalIncomingActivity);
+
+        // Scenario 2.
+        // If locked down, the breakpoint object should be frozen.
+        // There are not errors thrown, the value is kept the same.
+        const scenario2 = () => {
+          rootElement.webChat = { breakpoint: { incomingActivity: 123 } };
+        };
+
+        expect(typeof rootElement.webChat.breakpoint.incomingActivity).not.toBe(123);
+        expect(rootElement.webChat.breakpoint.incomingActivity).toBe(originalIncomingActivity);
+
+        // Scenario 3.
+        // If locked down, the debugger object should be frozen.
+        const scenario3 = () => {
+          Object.defineProperty(rootElement.webChat, 'debugger', {
+            get() {
+              return 123;
+            }
+          });
+        };
+
+        expect(scenario3).toThrow("Cannot redefine property: debugger");
+        expect(rootElement.webChat.debugger).toBe(originalDebugger);
+      });
+    </script>
+  </body>
+</html>

@@ -43,7 +43,8 @@ class PrivateDebugAPI<
     // 🔒 We must make sure JS code cannot intercept the call to any breakpoint functions.
 
     // TODO: [P1] Lockdown cannot be tested automatically. Any code changed below must be tested manually.
-    //       How to test manually: set `SHOULD_LOCKDOWN = true`, run the same test, it should fail.
+    //       How to test manually: set `SHOULD_LOCKDOWN = true`, run the same test, it should fail with:
+    //       "Cannot assign to read only property 'incomingActivity' of object '#<Object>'"
     for (const name of breakpointNames) {
       // eslint-disable-next-line security/detect-object-injection
       breakpoint[name] = BREAKPOINT_FUNCTION;
@@ -58,10 +59,13 @@ class PrivateDebugAPI<
             breakpoint[name]({ ...this.#breakpointDebugContext }, ...args);
     }
 
-    SHOULD_LOCKDOWN && Object.freeze(breakpoint);
-
     this.#breakpoint = breakpoint;
     this.UNSAFE_callBreakpoint = Object.freeze(UNSAFE_callBreakpoint);
+
+    if (SHOULD_LOCKDOWN) {
+      Object.freeze(breakpoint);
+      Object.freeze(this);
+    }
   }
 
   #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;

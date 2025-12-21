@@ -109,16 +109,21 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
       (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
   };
 
+  // We are doing lazy init and cyclic dependencies.
+  // eslint-disable-next-line prefer-const
+  let store: Store | undefined;
+
   const rootPrivateDebugAPI = createPrivateDebugAPI(['incomingActivity'], {
     // We can guarantee `store` is not accessed before it is defined few lines below.
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    activities: () => store.getState().activities
+    activities: () => store?.getState().activities
   });
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
-  const store = createReduxStore(
+
+  store = createReduxStore(
     createReducer(ponyfill, rootPrivateDebugAPI),
     initialState || {},
     options.devTools ? composeWithDevTools(enhancer) : enhancer

@@ -5,5 +5,6 @@ declare const process: {
 };
 
 const SHOULD_LOCKDOWN = process.env.NODE_ENV === 'production';
+// const SHOULD_LOCKDOWN = true;
 
 export { SHOULD_LOCKDOWN };
