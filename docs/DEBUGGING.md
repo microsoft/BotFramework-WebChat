@@ -6,10 +6,10 @@ Web Chat supports debugging through F12 DevTools.
 
 The following table list HTML elements that support debugging.
 
-| Component      | CSS selector | Description                                |
-| -------------- | ------------ | ------------------------------------------ |
-| Root container | `.webchat`   | Contains data about the whole conversation |
-| Activity       | `article`    | Contains data about the specific activity  |
+| Component                                                             | Description                                |
+| --------------------------------------------------------------------- | ------------------------------------------ |
+| Root container<br />`<div class="webchat">`                           | Contains data about the whole conversation |
+| Activity<br />`<article class="webchat__basic-transcript__activity">` | Contains data about the specific activity  |
 
 To select the component, use the DevTools Element panel and click on the corresponding element.
 
@@ -33,10 +33,10 @@ Then, it should break into the debugger.
 
 Use DevTools Console `debug()` to attach a debugger to specific breakpoint function.
 
-| Component      | CSS selector | Breakpoint         | Description              |
-| -------------- | ------------ | ------------------ | ------------------------ |
-| Root container | `.webchat`   | `incomingActivity` | When an activity arrive  |
-| Activity row   | `article`    | `render`           | When the activity render |
+| Component      | Breakpoint         | Arguments                | Description              |
+| -------------- | ------------------ | ------------------------ | ------------------------ |
+| Root container | `incomingActivity` | `{ activity: Activity }` | When an activity arrive  |
+| Activity       | `render`           |                          | When the activity render |
 
 To break when an activity arrive:
 
@@ -47,16 +47,16 @@ To break when an activity arrive:
 
 When an activity arrive, it will automatically break into the debugger.
 
-When using breakpoints, debugger may provide additional diagnostic data related to the triggering scenario.
+When breakpoints are used, the debugger may offer extra diagnostic information relevant to the triggering event, available as function arguments.
 
 ### Debug context
 
-While in the debugger, the `__DEBUG_CONTEXT__` variable contains various data useful for diagnostic purpose.
+While in the debugger, the `__DEBUG_CONTEXT__` variable (first argument) contains various data useful for diagnostic purpose.
 
-| Component      | CSS selector | Debug context | Description                      |
-| -------------- | ------------ | ------------- | -------------------------------- |
-| Root container | `.webchat`   | `activities`  | All messages in the chat history |
-| Activity row   | `article`    | `activity`    | The current message              |
+| Component      | Debug context                | Description                      |
+| -------------- | ---------------------------- | -------------------------------- |
+| Root container | `{ activities: Activity[] }` | All messages in the chat history |
+| Activity       | `{ activity: Activity }`     | The current message              |
 
 ## Recipes
 
