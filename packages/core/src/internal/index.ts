@@ -7,4 +7,4 @@ export {
 
 export { type RootDebugAPI } from '../types/RootDebugAPI';
 
-export { createPrivateDebugAPI, type DebugAPI } from '@msinternal/botframework-webchat-core-debug-api';
+export { createPrivateDebugAPI, type DebugAPIType } from '@msinternal/botframework-webchat-core-debug-api';

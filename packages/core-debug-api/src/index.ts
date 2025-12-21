@@ -1,9 +1,9 @@
 export { default as createPrivateDebugAPI } from './createPrivateDebugAPI';
 export {
   type BreakpointObject,
-  type DebugAPI,
+  type DebugAPIType,
   type InferBreakpointName,
   type InferContext,
   type InferPublic,
-  type PrivateDebugAPI
+  type PrivateDebugAPIType
 } from './types';
