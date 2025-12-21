@@ -11,6 +11,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
 import useActivityAccessibleName from './useActivityAccessibleName';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 import type { WebChatActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
@@ -21,6 +22,16 @@ import {
   TranscriptFocusContentOverlay,
   TranscriptFocusIndicator
 } from './TranscriptFocus';
+
+const ROOT_STYLE = {
+  color: 'transparent',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  top: 0,
+  whiteSpace: 'nowrap',
+  width: 1
+};
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -41,7 +52,9 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
   const acknowledged = useGetHasAcknowledgedByActivityKey()(activityKey);
   const activityKeyRef = useRefFrom<string>(activityKey);
   const descendantId = useGetDescendantIdByActivityKey()(activityKey);
+
   const descendantLabelId = `webchat__basic-transcript__active-descendant-label--${activityKey}`;
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const isActiveDescendant = descendantId === activeDescendantId;
   const read = readActivityKeys.includes(activityKey);
@@ -152,7 +165,10 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
             id={descendantId}
             role="article"
           >
-            <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
+
+            <h6 className={rootClassName} id={descendantLabelId}>
+              {accessibleName}
+            </h6>
           </TranscriptFocusContentActiveDescendant>
         )}
         <TranscriptFocusIndicator type="content" />
