@@ -91,8 +91,8 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const prevArticleRef = useRef<HTMLElement>(null);
 
-  const debugPrivateAPI = useMemo(() =>
-    createPrivateDebugAPI(['render'], { activity: () => activityRef.current }),
+  const debugPrivateAPI = useMemo(
+    () => createPrivateDebugAPI(['render'], { activity: () => activityRef.current }),
     [activityRef]
   );
 
