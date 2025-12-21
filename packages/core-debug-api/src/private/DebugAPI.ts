@@ -4,14 +4,14 @@ class DebugAPI<TBreakpointName extends string, TContext extends object> implemen
   TBreakpointName,
   TContext
 > {
-  constructor(breakpoint: BreakpointObject<string, TContext>, context: TContext) {
+  constructor(breakpoint: BreakpointObject<TBreakpointName, TContext>, context: TContext) {
     this.#breakpoint = breakpoint;
     this.#context = context;
 
     Object.freeze(this);
   }
 
-  #breakpoint: BreakpointObject<string, TContext>;
+  #breakpoint: BreakpointObject<TBreakpointName, TContext>;
   #context: TContext;
 
   get breakpoint() {
