@@ -115,12 +115,10 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
 
   const rootPrivateDebugAPI = createPrivateDebugAPI(['incomingActivity'], {
     // We can guarantee `store` is not accessed before it is defined few lines below.
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     activities: () => store?.getState().activities
   });
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
 
   store = createReduxStore(
