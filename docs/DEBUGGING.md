@@ -74,7 +74,7 @@ $('.webchat').webChat.debugger;
 $$('article').at(-1).webChat.debugger;
 ```
 
-Note: `$$()` will select all elements and put them in an array, while `$()` select the first occurrence.
+Note: `$$()` will select all elements and put them into an array, while `$()` only select the first occurrence.
 
 ### Break into debugger when an activity arrive
 
