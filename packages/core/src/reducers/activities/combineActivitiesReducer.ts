@@ -1,12 +1,12 @@
+import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 import type { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducersMapObject } from 'redux';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
+import type { RootPrivateDebugAPI } from '../../types/RootDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import isForbiddenPropertyName from '../../utils/isForbiddenPropertyName';
 import createGroupedActivitiesReducer, {
   type GroupedActivitiesAction,
   type GroupedActivitiesState
 } from './createGroupedActivitiesReducer';
-import type { RootPrivateDebugAPI } from '../../types/RootDebugAPI';
 
 type ActivitiesState = {
   activities: readonly WebChatActivity[];

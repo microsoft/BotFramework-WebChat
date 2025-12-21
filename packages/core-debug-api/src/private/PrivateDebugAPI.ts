@@ -1,3 +1,4 @@
+import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 import type { BaseContextGetters, BreakpointObject, ContextOfGetters, PrivateDebugAPIType } from '../types';
 import { SHOULD_LOCKDOWN } from './constants';
 import DebugAPI from './DebugAPI';
@@ -41,10 +42,13 @@ class PrivateDebugAPI<
     //       How to test manually: set `SHOULD_LOCKDOWN = true`, run the same test, it should fail with:
     //       "Cannot assign to read only property 'incomingActivity' of object '#<Object>'"
     for (const name of breakpointNames) {
-      // eslint-disable-next-line security/detect-object-injection
-      breakpoint[name] = BREAKPOINT_FUNCTION;
+      if (isForbiddenPropertyName(name)) {
+        continue;
+      }
 
-      // Must be from one of our hardcoded strings.
+      // eslint-disable-next-line security/detect-object-injection
+      breakpoint[name] = BREAKPOINT_FUNCTION.bind(this);
+
       // eslint-disable-next-line security/detect-object-injection
       UNSAFE_callBreakpoint[name] = SHOULD_LOCKDOWN
         ? // eslint-disable-next-line security/detect-object-injection
@@ -66,16 +70,16 @@ class PrivateDebugAPI<
   #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;
   #context: ContextOfGetters<TContextGetters>;
 
+  // eslint-disable-next-line class-methods-use-this
+  get '~types'() {
+    return Object.freeze({ public: undefined }) as any;
+  }
+
   toPublic() {
     return new DebugAPI(this.#breakpoint, this.#context);
   }
 
   UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
-
-  // eslint-disable-next-line class-methods-use-this
-  get '~types'() {
-    return Object.freeze({ public: undefined }) as any;
-  }
 }
 
 export default PrivateDebugAPI;

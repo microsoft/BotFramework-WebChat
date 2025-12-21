@@ -1,4 +1,4 @@
-import isForbiddenPropertyName from '../utils/isForbiddenPropertyName';
+import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 
 export default function combineSelectors<
   TState extends { [key: string]: unknown },

@@ -1,4 +1,3 @@
-import { withResolvers, type PromiseWithResolvers } from '@msinternal/botframework-webchat-base/utils';
 import connect from './actions/connect';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
@@ -39,9 +38,14 @@ import { parseThing } from './types/external/OrgSchema/Thing';
 import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
 import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
-import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
+
+export {
+  isForbiddenPropertyName,
+  withResolvers,
+  type PromiseWithResolvers
+} from '@msinternal/botframework-webchat-base/utils';
 
 export {
   CLEAR_SUGGESTED_ACTIONS,
@@ -95,7 +99,6 @@ export {
   emitTypingIndicator,
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
-  isForbiddenPropertyName,
   markActivity,
   onErrorResumeNext,
   parseAction,
@@ -124,8 +127,7 @@ export {
   startSpeakingActivity,
   stopDictate,
   stopSpeakingActivity,
-  submitSendBox,
-  withResolvers
+  submitSendBox
 };
 
 export type {
@@ -152,7 +154,6 @@ export type {
   OrgSchemaProject,
   OrgSchemaThing,
   OrgSchemaUserReview,
-  PromiseWithResolvers,
   SendBoxAttachment,
   WebChatActivity
 };
