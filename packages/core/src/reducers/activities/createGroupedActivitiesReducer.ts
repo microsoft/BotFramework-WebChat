@@ -192,7 +192,7 @@ function createGroupedActivitiesReducer(
         } = action;
 
         // We cannot call breakpoint inside Redux because DebugContext cannot call getState(), need setTimeout.
-        ponyfill.requestIdleCallback?.(() => rootPrivateDebugAPI.UNSAFE_callBreakpoint.incomingActivity());
+        ponyfill.requestIdleCallback?.(() => rootPrivateDebugAPI.UNSAFE_callBreakpoint.incomingActivity({ activity }));
 
         activity = patchActivity(activity, ponyfill);
 

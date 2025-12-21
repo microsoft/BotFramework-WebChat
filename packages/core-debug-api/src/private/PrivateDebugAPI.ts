@@ -32,8 +32,8 @@ class PrivateDebugAPI<
 
     this.UNSAFE_callBreakpoint = {} as typeof this.UNSAFE_callBreakpoint;
 
-    const breakpoint = {} as Record<TBreakpointName, (__DEBUG_CONTEXT__: TContext) => void>;
-    const UNSAFE_callBreakpoint = {} as Record<TBreakpointName, () => void>;
+    const breakpoint = {} as Record<TBreakpointName, (__DEBUG_CONTEXT__: TContext, ...args: any[]) => void>;
+    const UNSAFE_callBreakpoint = {} as Record<TBreakpointName, (...args: any[]) => void>;
 
     // Design of lockdown:
     // - Modifying `this.breakpoint` object will not trick our `this.UNSAFE_callBreakpoint()` to trigger the new code path
@@ -43,7 +43,7 @@ class PrivateDebugAPI<
     // 🔒 We must make sure JS code cannot intercept the call to any breakpoint functions.
 
     // TODO: [P1] Lockdown cannot be tested automatically. Any code changed below must be tested manually.
-    //       How to test manually: run `NODE_ENV=production npm run build`, run the same test, it should fail.
+    //       How to test manually: set `SHOULD_LOCKDOWN = true`, run the same test, it should fail.
     for (const name of breakpointNames) {
       // eslint-disable-next-line security/detect-object-injection
       breakpoint[name] = BREAKPOINT_FUNCTION;
@@ -52,17 +52,16 @@ class PrivateDebugAPI<
       // eslint-disable-next-line security/detect-object-injection
       UNSAFE_callBreakpoint[name] = SHOULD_LOCKDOWN
         ? // eslint-disable-next-line security/detect-object-injection
-          breakpoint[name].bind(this, Object.freeze({ ...this.#breakpointDebugContext }))
-        : () =>
+          breakpoint[name].bind(this, { ...this.#breakpointDebugContext })
+        : (...args: any[]) =>
             // eslint-disable-next-line security/detect-object-injection
-            breakpoint[name](Object.freeze({ ...this.#breakpointDebugContext }));
+            breakpoint[name]({ ...this.#breakpointDebugContext }, ...args);
     }
 
     SHOULD_LOCKDOWN && Object.freeze(breakpoint);
-    Object.freeze(UNSAFE_callBreakpoint);
 
     this.#breakpoint = breakpoint;
-    this.UNSAFE_callBreakpoint = UNSAFE_callBreakpoint;
+    this.UNSAFE_callBreakpoint = Object.freeze(UNSAFE_callBreakpoint);
   }
 
   #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;
@@ -92,7 +91,7 @@ class PrivateDebugAPI<
     });
   }
 
-  UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, () => void>>;
+  UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
 
   // eslint-disable-next-line class-methods-use-this
   get '~types'() {

@@ -56,9 +56,33 @@
 
         expect(rootElement.webChat.breakpoint.incomingActivity).toHaveBeenCalledTimes(1);
 
-        expect(rootElement.webChat.breakpoint.incomingActivity).toHaveBeenNthCalledWith(1, {
-          activities: [
-            {
+        expect(rootElement.webChat.breakpoint.incomingActivity).toHaveBeenNthCalledWith(
+          1,
+          {
+            activities: [
+              {
+                channelData: {
+                  'webchat:internal:received-at': expect.any(Number),
+                  'webchat:internal:local-id': expect.any(String),
+                  'webchat:internal:position': 1000
+                },
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
+                id: expect.any(String),
+                text: 'Hello, World!',
+                timestamp: expect.any(String),
+                type: 'message'
+              }
+            ]
+          },
+          {
+            activity: {
+              channelData: {
+                'webchat:internal:received-at': expect.any(Number),
+                'webchat:internal:local-id': expect.any(String)
+              },
               from: {
                 id: 'bot',
                 role: 'bot'
@@ -66,15 +90,10 @@
               id: expect.any(String),
               text: 'Hello, World!',
               timestamp: expect.any(String),
-              type: 'message',
-              channelData: {
-                'webchat:internal:received-at': expect.any(Number),
-                'webchat:internal:local-id': expect.any(String),
-                'webchat:internal:position': 1000
-              }
+              type: 'message'
             }
-          ]
-        });
+          }
+        );
 
         rootElement.webChat.breakpoint.incomingActivity.mockRestore();
       });

@@ -2,7 +2,7 @@ type BaseContextGetters = { readonly [key: string]: () => unknown };
 type ContextOfGetters<T extends BaseContextGetters> = { [K in keyof T]: ReturnType<T[K]> };
 
 type BreakpointObject<TName extends string, TContext extends object> = Readonly<
-  Record<TName, (__DEBUG_CONTEXT__: TContext) => void>
+  Record<TName, (__DEBUG_CONTEXT__: TContext, ...args: any[]) => void>
 >;
 
 interface DebugAPI<TBreakpointName extends string, TContext extends object> {
@@ -37,7 +37,7 @@ interface PrivateDebugAPI<TBreakpointName extends string, TContextGetters extend
   /**
    * Triggers a breakpoint function.
    */
-  get UNSAFE_callBreakpoint(): Readonly<Record<TBreakpointName, () => void>>;
+  get UNSAFE_callBreakpoint(): Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
 
   get '~types'(): {
     breakpointName: TBreakpointName;
