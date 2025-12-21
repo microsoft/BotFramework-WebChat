@@ -75,6 +75,7 @@ class PrivateDebugAPI<TBreakpointName extends string, TContext extends object> i
 
   UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, () => void>>;
 
+  // TODO: [P*] Fold this back to constructor.
   UNSAFE_extendsDebugContextOnce(name: keyof TContext, getter: () => TContext[typeof name]) {
     Object.defineProperty(this.#breakpointDebugContext, name, {
       configurable: false,

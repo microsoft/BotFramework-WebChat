@@ -21,6 +21,7 @@ import {
   TranscriptFocusContentOverlay,
   TranscriptFocusIndicator
 } from './TranscriptFocus';
+import { createActivityPrivateDebugAPI } from '../ActivityDebug';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -29,6 +30,7 @@ type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
 const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
+  const activityRef = useRefFrom(activity);
   const bodyRef = useRef<HTMLDivElement>();
   const focusByActivityKey = useFocusByActivityKey();
   const getKeyByActivity = useGetKeyByActivity();
@@ -89,14 +91,26 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const prevArticleRef = useRef<HTMLElement>(null);
 
+  const debugPrivateAPI = useMemo(() => {
+    const privateDebugAPI = createActivityPrivateDebugAPI();
+
+    privateDebugAPI.UNSAFE_extendsDebugContextOnce('activity', () => activityRef.current);
+
+    return privateDebugAPI;
+  }, [activityRef]);
+
+  const debugAPI = useMemo(() => debugPrivateAPI.toPublic(), [debugPrivateAPI]);
+
   const wrappedRef = useCallback(
     (el: HTMLElement | null) => {
       if (prevArticleRef.current) {
         prevArticleRef.current.removeEventListener('formdata', handleFormData);
+        prevArticleRef.current['webChat'] = undefined;
       }
 
       if (el) {
         el.addEventListener('formdata', handleFormData);
+        el['webChat'] = debugAPI;
       }
 
       prevArticleRef.current = el;
@@ -109,8 +123,10 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         }
       }
     },
-    [handleFormData, ref]
+    [debugAPI, handleFormData, ref]
   );
+
+  debugPrivateAPI.UNSAFE_callBreakpoint.render();
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.

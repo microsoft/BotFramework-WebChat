@@ -40,6 +40,16 @@
 
         const rootElement = document.querySelector('#webchat > *');
 
+        // THEN: Make sure we are exposing the public version.
+        expect('breakpoint' in rootElement.webChat).toBe(true);
+        expect('debugger' in rootElement.webChat).toBe(true);
+
+        // THEN: Make sure we are not exposing the private version.
+        expect('~types' in rootElement.webChat).toBe(false);
+        expect('toPublic' in rootElement.webChat).toBe(false);
+        expect('UNSAFE_callBreakpoint' in rootElement.webChat).toBe(false);
+        expect('UNSAFE_extendsDebugContextOnce' in rootElement.webChat).toBe(false);
+
         spyOn(rootElement.webChat.breakpoint, 'incomingActivity');
 
         await directLine.emulateIncomingActivity('Hello, World!');
