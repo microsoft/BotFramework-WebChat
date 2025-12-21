@@ -1,15 +1,15 @@
 # Debugging
 
-Web Chat supports debugging through F12 DevTools.
+Web Chat supports debugging through the JavaScript debugger in the browser DevTools.
 
 ## HTML elements
 
 The following table list HTML elements that support debugging.
 
-| Component                                                             | Description                                |
-| --------------------------------------------------------------------- | ------------------------------------------ |
-| Root container<br />`<div class="webchat">`                           | Contains data about the whole conversation |
-| Activity<br />`<article class="webchat__basic-transcript__activity">` | Contains data about the specific activity  |
+| Component                                                             | Description                                    |
+| --------------------------------------------------------------------- | ---------------------------------------------- |
+| Root container<br />`<div class="webchat">`                           | Diagnose the whole conversation and UI session |
+| Activity<br />`<article class="webchat__basic-transcript__activity">` | Diagnose the specific activity                 |
 
 To select the component, use the DevTools Element panel and click on the corresponding element.
 
@@ -38,7 +38,7 @@ Use DevTools Console `debug()` to attach a debugger to specific breakpoint funct
 | Root container | `incomingActivity` | `{ activity: Activity }` | When an activity arrive  |
 | Activity       | `render`           |                          | When the activity render |
 
-To break when an activity arrive:
+To break into the debugger when an activity arrives:
 
 1. Press <kbd>F12</kbd> to open Chrome DevTools
 2. In the Elements pane, click on the Web Chat root container to break into
@@ -51,7 +51,7 @@ When breakpoints are used, the debugger may offer extra diagnostic information r
 
 ### Debug context
 
-While in the debugger, the `__DEBUG_CONTEXT__` variable (first argument) contains various data useful for diagnostic purpose.
+While in the debugger, the `__DEBUG_CONTEXT__` variable contains various data useful for diagnostic purpose.
 
 | Component      | Debug context                | Description                      |
 | -------------- | ---------------------------- | -------------------------------- |
@@ -59,6 +59,8 @@ While in the debugger, the `__DEBUG_CONTEXT__` variable (first argument) contain
 | Activity       | `{ activity: Activity }`     | The current message              |
 
 ## Recipes
+
+This section provides practical examples for common debugging scenarios.
 
 ### Break into debugger of the first instance of Web Chat on the page
 
