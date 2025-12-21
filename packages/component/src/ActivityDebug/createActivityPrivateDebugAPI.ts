@@ -1,8 +1,7 @@
 import { createPrivateDebugAPI } from 'botframework-webchat-core/internal';
-import type { ActivityDebugContext } from './ActivityDebugContext';
 
-function createActivityPrivateDebugAPI() {
-  return createPrivateDebugAPI<'render', ActivityDebugContext>(['render']);
+function createActivityPrivateDebugAPI(getActivity: () => object) {
+  return createPrivateDebugAPI(['render'], { activity: getActivity });
 }
 
 export default createActivityPrivateDebugAPI;

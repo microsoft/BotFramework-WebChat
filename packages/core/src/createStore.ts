@@ -109,9 +109,11 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
       (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
   };
 
-  const rootPrivateDebugAPI = createPrivateDebugAPI<'incomingActivity', { readonly activities: readonly any[] }>([
-    'incomingActivity'
-  ]);
+  const rootPrivateDebugAPI = createPrivateDebugAPI(['incomingActivity'], {
+    // We can guarantee `store` is not accessed before it is defined few lines below.
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    activities: () => store.getState().activities
+  });
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -122,11 +124,10 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
     options.devTools ? composeWithDevTools(enhancer) : enhancer
   );
 
-  rootPrivateDebugAPI.UNSAFE_extendsDebugContextOnce('activities', () => store.getState().activities);
-
-  // TODO: [P1] When we redesign the store and chat adapter, we should have the Native API stored somewhere else.
+  // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
   store['debugAPI'] = rootPrivateDebugAPI.toPublic();
 
+  // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
   sagaMiddleware.run(createSagas({ ponyfill }));
 
   return store;

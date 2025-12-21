@@ -1,3 +1,6 @@
+type BaseContextGetters = { readonly [key: string]: () => unknown };
+type ContextOfGetters<T extends BaseContextGetters> = { [K in keyof T]: ReturnType<T[K]> };
+
 type BreakpointObject<TName extends string, TContext extends object> = Readonly<
   Record<TName, (__DEBUG_CONTEXT__: TContext) => void>
 >;
@@ -25,26 +28,21 @@ interface DebugAPI<TBreakpointName extends string, TContext extends object> {
 /**
  * 🔒 This object must not be passed outside for external consumption.
  */
-interface PrivateDebugAPI<TBreakpointName extends string, TContext extends object> {
+interface PrivateDebugAPI<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
   /**
    * Creates a public version of Debug API for external consumption.
    */
-  toPublic(): DebugAPI<TBreakpointName, TContext>;
+  toPublic(): DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>>;
 
   /**
    * Triggers a breakpoint function.
    */
   get UNSAFE_callBreakpoint(): Readonly<Record<TBreakpointName, () => void>>;
 
-  /**
-   * Extends debug context with new getter property.
-   */
-  UNSAFE_extendsDebugContextOnce(name: keyof TContext, getter: () => TContext[typeof name]): void;
-
   get '~types'(): {
     breakpointName: TBreakpointName;
-    context: TContext;
-    public: DebugAPI<TBreakpointName, TContext>;
+    context: ContextOfGetters<TContextGetters>;
+    public: DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>>;
   };
 }
 
@@ -52,4 +50,13 @@ type InferBreakpointName<T extends PrivateDebugAPI<any, any>> = T['~types']['bre
 type InferContext<T extends PrivateDebugAPI<any, any>> = T['~types']['context'];
 type InferPublic<T extends PrivateDebugAPI<any, any>> = T['~types']['public'];
 
-export type { BreakpointObject, DebugAPI, InferBreakpointName, InferContext, InferPublic, PrivateDebugAPI };
+export type {
+  BaseContextGetters,
+  BreakpointObject,
+  ContextOfGetters,
+  DebugAPI,
+  InferBreakpointName,
+  InferContext,
+  InferPublic,
+  PrivateDebugAPI
+};

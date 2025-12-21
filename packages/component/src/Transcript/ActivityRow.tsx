@@ -15,13 +15,13 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import type { WebChatActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { createActivityPrivateDebugAPI } from '../ActivityDebug';
 import {
   TranscriptFocusContent,
   TranscriptFocusContentActiveDescendant,
   TranscriptFocusContentOverlay,
   TranscriptFocusIndicator
 } from './TranscriptFocus';
-import { createActivityPrivateDebugAPI } from '../ActivityDebug';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -91,13 +91,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const prevArticleRef = useRef<HTMLElement>(null);
 
-  const debugPrivateAPI = useMemo(() => {
-    const privateDebugAPI = createActivityPrivateDebugAPI();
-
-    privateDebugAPI.UNSAFE_extendsDebugContextOnce('activity', () => activityRef.current);
-
-    return privateDebugAPI;
-  }, [activityRef]);
+  const debugPrivateAPI = useMemo(() => createActivityPrivateDebugAPI(() => activityRef.current), [activityRef]);
 
   const debugAPI = useMemo(() => debugPrivateAPI.toPublic(), [debugPrivateAPI]);
 

@@ -1,16 +1,35 @@
-import type { BreakpointObject, DebugAPI, PrivateDebugAPI as PrivateDebugAPIType } from '../types';
+import type {
+  BaseContextGetters,
+  BreakpointObject,
+  ContextOfGetters,
+  DebugAPI,
+  PrivateDebugAPI as PrivateDebugAPIType
+} from '../types';
 import { SHOULD_LOCKDOWN } from './constants';
 
 // 🔒 This function must be left empty.
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
 const BREAKPOINT_FUNCTION = <T>(__DEBUG_CONTEXT__: T) => {};
 
-class PrivateDebugAPI<TBreakpointName extends string, TContext extends object> implements PrivateDebugAPIType<
-  TBreakpointName,
-  TContext
-> {
-  constructor(breakpointNames: readonly TBreakpointName[]) {
+class PrivateDebugAPI<
+  TBreakpointName extends string,
+  TContextGetters extends BaseContextGetters
+> implements PrivateDebugAPIType<TBreakpointName, TContextGetters> {
+  constructor(breakpointNames: readonly TBreakpointName[], contextGetters: TContextGetters) {
+    type TContext = { [K in keyof TContextGetters]: ReturnType<TContextGetters[K]> };
+
     this.#breakpointDebugContext = {} satisfies Partial<TContext> as TContext;
+
+    for (const [name, getter] of Object.entries(contextGetters)) {
+      Object.defineProperty(this.#breakpointDebugContext, name, {
+        configurable: false,
+        enumerable: true,
+        get() {
+          return getter();
+        }
+      });
+    }
+
     this.UNSAFE_callBreakpoint = {} as typeof this.UNSAFE_callBreakpoint;
 
     const breakpoint = {} as Record<TBreakpointName, (__DEBUG_CONTEXT__: TContext) => void>;
@@ -46,10 +65,10 @@ class PrivateDebugAPI<TBreakpointName extends string, TContext extends object> i
     this.UNSAFE_callBreakpoint = UNSAFE_callBreakpoint;
   }
 
-  #breakpoint: BreakpointObject<TBreakpointName, TContext>;
-  #breakpointDebugContext: TContext;
+  #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;
+  #breakpointDebugContext: ContextOfGetters<TContextGetters>;
 
-  toPublic(): DebugAPI<TBreakpointName, TContext> {
+  toPublic(): DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>> {
     const breakpoint = this.#breakpoint;
     const getDebugger = () => {
       const __DEBUG_CONTEXT__ = this.#breakpointDebugContext;
@@ -74,17 +93,6 @@ class PrivateDebugAPI<TBreakpointName extends string, TContext extends object> i
   }
 
   UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, () => void>>;
-
-  // TODO: [P*] Fold this back to constructor.
-  UNSAFE_extendsDebugContextOnce(name: keyof TContext, getter: () => TContext[typeof name]) {
-    Object.defineProperty(this.#breakpointDebugContext, name, {
-      configurable: false,
-      enumerable: true,
-      get() {
-        return getter();
-      }
-    });
-  }
 
   // eslint-disable-next-line class-methods-use-this
   get '~types'() {
