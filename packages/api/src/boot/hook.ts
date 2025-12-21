@@ -76,5 +76,3 @@ export {
   useUsername,
   useVoiceSelector
 } from '../hooks/index';
-
-export type { RootDebugAPI } from '../hooks/index';
