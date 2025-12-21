@@ -5,7 +5,7 @@ type BreakpointObject<TName extends string, TContext extends object> = Readonly<
   Record<TName, (__DEBUG_CONTEXT__: TContext, ...args: any[]) => void>
 >;
 
-interface DebugAPI<TBreakpointName extends string, TContext extends object> {
+interface DebugAPIType<TBreakpointName extends string, TContext extends object> {
   /**
    * 🚨 This is strictly for debugging only.
    *
@@ -28,11 +28,11 @@ interface DebugAPI<TBreakpointName extends string, TContext extends object> {
 /**
  * 🔒 This object must not be passed outside for external consumption.
  */
-interface PrivateDebugAPI<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
+interface PrivateDebugAPIType<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
   /**
    * Creates a public version of Debug API for external consumption.
    */
-  toPublic(): DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>>;
+  toPublic(): DebugAPIType<TBreakpointName, ContextOfGetters<TContextGetters>>;
 
   /**
    * Triggers a breakpoint function.
@@ -42,21 +42,21 @@ interface PrivateDebugAPI<TBreakpointName extends string, TContextGetters extend
   get '~types'(): {
     breakpointName: TBreakpointName;
     context: ContextOfGetters<TContextGetters>;
-    public: DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>>;
+    public: DebugAPIType<TBreakpointName, ContextOfGetters<TContextGetters>>;
   };
 }
 
-type InferBreakpointName<T extends PrivateDebugAPI<any, any>> = T['~types']['breakpointName'];
-type InferContext<T extends PrivateDebugAPI<any, any>> = T['~types']['context'];
-type InferPublic<T extends PrivateDebugAPI<any, any>> = T['~types']['public'];
+type InferBreakpointName<T extends PrivateDebugAPIType<any, any>> = T['~types']['breakpointName'];
+type InferContext<T extends PrivateDebugAPIType<any, any>> = T['~types']['context'];
+type InferPublic<T extends PrivateDebugAPIType<any, any>> = T['~types']['public'];
 
 export type {
   BaseContextGetters,
   BreakpointObject,
   ContextOfGetters,
-  DebugAPI,
+  DebugAPIType,
   InferBreakpointName,
   InferContext,
   InferPublic,
-  PrivateDebugAPI
+  PrivateDebugAPIType
 };

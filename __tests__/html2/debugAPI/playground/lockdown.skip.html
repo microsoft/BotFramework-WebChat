@@ -71,7 +71,7 @@
           });
         };
 
-        expect(scenario3).toThrow("Cannot redefine property: debugger");
+        expect(scenario3).toThrow('Cannot define property debugger, object is not extensible');
         expect(rootElement.webChat.debugger).toBe(originalDebugger);
       });
     </script>

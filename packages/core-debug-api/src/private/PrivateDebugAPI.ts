@@ -1,11 +1,6 @@
-import type {
-  BaseContextGetters,
-  BreakpointObject,
-  ContextOfGetters,
-  DebugAPI,
-  PrivateDebugAPI as PrivateDebugAPIType
-} from '../types';
+import type { BaseContextGetters, BreakpointObject, ContextOfGetters, PrivateDebugAPIType } from '../types';
 import { SHOULD_LOCKDOWN } from './constants';
+import DebugAPI from './DebugAPI';
 
 // 🔒 This function must be left empty.
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
@@ -18,10 +13,10 @@ class PrivateDebugAPI<
   constructor(breakpointNames: readonly TBreakpointName[], contextGetters: TContextGetters) {
     type TContext = { [K in keyof TContextGetters]: ReturnType<TContextGetters[K]> };
 
-    this.#breakpointDebugContext = {} satisfies Partial<TContext> as TContext;
+    this.#context = {} satisfies Partial<TContext> as TContext;
 
     for (const [name, getter] of Object.entries(contextGetters)) {
-      Object.defineProperty(this.#breakpointDebugContext, name, {
+      Object.defineProperty(this.#context, name, {
         configurable: false,
         enumerable: true,
         get() {
@@ -53,10 +48,10 @@ class PrivateDebugAPI<
       // eslint-disable-next-line security/detect-object-injection
       UNSAFE_callBreakpoint[name] = SHOULD_LOCKDOWN
         ? // eslint-disable-next-line security/detect-object-injection
-          breakpoint[name].bind(this, { ...this.#breakpointDebugContext })
+          breakpoint[name].bind(this, { ...this.#context })
         : (...args: any[]) =>
             // eslint-disable-next-line security/detect-object-injection
-            breakpoint[name]({ ...this.#breakpointDebugContext }, ...args);
+            breakpoint[name]({ ...this.#context }, ...args);
     }
 
     this.#breakpoint = breakpoint;
@@ -69,31 +64,10 @@ class PrivateDebugAPI<
   }
 
   #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;
-  #breakpointDebugContext: ContextOfGetters<TContextGetters>;
+  #context: ContextOfGetters<TContextGetters>;
 
-  toPublic(): DebugAPI<TBreakpointName, ContextOfGetters<TContextGetters>> {
-    const breakpoint = this.#breakpoint;
-    const getDebugger = () => {
-      // @ts-expect-error Unused variable for debugging.
-      const __DEBUG_CONTEXT__ = this.#breakpointDebugContext;
-
-      // eslint-disable-next-line no-debugger
-      debugger;
-
-      return undefined;
-    };
-
-    return Object.freeze({
-      // 🔒 We must make sure JS code cannot intercept the call to any breakpoint functions.
-      get breakpoint() {
-        return breakpoint;
-      },
-      // 🔒 We must make sure JS code cannot intercept the call to debugger getter.
-      // TODO: [P1] We need manual testing for "debugger" syntax.
-      get debugger() {
-        return getDebugger();
-      }
-    });
+  toPublic() {
+    return new DebugAPI(this.#breakpoint, this.#context);
   }
 
   UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
@@ -105,4 +79,3 @@ class PrivateDebugAPI<
 }
 
 export default PrivateDebugAPI;
-export { DebugAPI as NativeAPI };
