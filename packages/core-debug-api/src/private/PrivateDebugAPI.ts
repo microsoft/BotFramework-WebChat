@@ -1,4 +1,3 @@
-import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 import type { BaseContextGetters, BreakpointObject, ContextOfGetters, PrivateDebugAPIType } from '../types';
 import { SHOULD_LOCKDOWN } from './constants';
 import DebugAPI from './DebugAPI';
@@ -14,7 +13,7 @@ class PrivateDebugAPI<
   constructor(breakpointNames: readonly TBreakpointName[], contextGetters: TContextGetters) {
     type TContext = { [K in keyof TContextGetters]: ReturnType<TContextGetters[K]> };
 
-    this.#context = {} satisfies Partial<TContext> as TContext;
+    this.#context = Object.create(null) satisfies Partial<TContext> as TContext;
 
     for (const [name, getter] of Object.entries(contextGetters)) {
       Object.defineProperty(this.#context, name, {
@@ -26,10 +25,11 @@ class PrivateDebugAPI<
       });
     }
 
-    this.UNSAFE_callBreakpoint = {} as typeof this.UNSAFE_callBreakpoint;
-
-    const breakpoint = {} as Record<TBreakpointName, (__DEBUG_CONTEXT__: TContext, ...args: any[]) => void>;
-    const UNSAFE_callBreakpoint = {} as Record<TBreakpointName, (...args: any[]) => void>;
+    const breakpoint = Object.create(null) as Record<
+      TBreakpointName,
+      (__DEBUG_CONTEXT__: TContext, ...args: any[]) => void
+    >;
+    const UNSAFE_callBreakpoint = Object.create(null) as Record<TBreakpointName, (...args: any[]) => void>;
 
     // Design of lockdown:
     // - Modifying `this.breakpoint` object will not trick our `this.UNSAFE_callBreakpoint()` to trigger the new code path
@@ -42,18 +42,18 @@ class PrivateDebugAPI<
     //       How to test manually: set `SHOULD_LOCKDOWN = true`, run the same test, it should fail with:
     //       "Cannot assign to read only property 'incomingActivity' of object '#<Object>'"
     for (const name of breakpointNames) {
-      if (isForbiddenPropertyName(name)) {
-        continue;
-      }
-
+      // breakpoint is created by Object.create(null).
       // eslint-disable-next-line security/detect-object-injection
       breakpoint[name] = BREAKPOINT_FUNCTION.bind(this);
 
+      // UNSAFE_callBreakpoint is created by Object.create(null).
       // eslint-disable-next-line security/detect-object-injection
       UNSAFE_callBreakpoint[name] = SHOULD_LOCKDOWN
-        ? // eslint-disable-next-line security/detect-object-injection
+        ? // breakpoint is created by Object.create(null).
+          // eslint-disable-next-line security/detect-object-injection
           breakpoint[name].bind(this, { ...this.#context })
         : (...args: any[]) =>
+            // breakpoint is created by Object.create(null).
             // eslint-disable-next-line security/detect-object-injection
             breakpoint[name]({ ...this.#context }, ...args);
     }
