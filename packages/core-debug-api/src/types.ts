@@ -26,7 +26,11 @@ interface DebugAPIType<TBreakpointName extends string, TContext extends object> 
 }
 
 /**
- * 🔒 This object must not be passed outside for external consumption.
+ * This is the triggering side of the debugging API.
+ *
+ * This object should be kept inside the code that need to be debugged.
+ *
+ * For public consumption, call `toPublic()` to create an object for receiving side.
  */
 interface PrivateDebugAPIType<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
   /**
