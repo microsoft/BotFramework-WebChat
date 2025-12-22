@@ -42,6 +42,7 @@ import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
+import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 
 export {
   CLEAR_SUGGESTED_ACTIONS,
@@ -96,6 +97,7 @@ export {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
   isForbiddenPropertyName,
+  isVoiceActivity,
   markActivity,
   onErrorResumeNext,
   parseAction,
