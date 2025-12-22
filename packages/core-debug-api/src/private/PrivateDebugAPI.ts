@@ -70,11 +70,6 @@ class PrivateDebugAPI<
   #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;
   #context: ContextOfGetters<TContextGetters>;
 
-  // eslint-disable-next-line class-methods-use-this
-  get '~types'() {
-    return Object.freeze({ public: undefined }) as any;
-  }
-
   toPublic() {
     return new DebugAPI(this.#breakpoint, this.#context);
   }

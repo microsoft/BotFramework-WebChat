@@ -42,25 +42,6 @@ interface PrivateDebugAPIType<TBreakpointName extends string, TContextGetters ex
    * Triggers a breakpoint function.
    */
   get UNSAFE_callBreakpoint(): Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
-
-  get '~types'(): {
-    breakpointName: TBreakpointName;
-    context: ContextOfGetters<TContextGetters>;
-    public: DebugAPIType<TBreakpointName, ContextOfGetters<TContextGetters>>;
-  };
 }
 
-type InferBreakpointName<T extends PrivateDebugAPIType<any, any>> = T['~types']['breakpointName'];
-type InferContext<T extends PrivateDebugAPIType<any, any>> = T['~types']['context'];
-type InferPublic<T extends PrivateDebugAPIType<any, any>> = T['~types']['public'];
-
-export type {
-  BaseContextGetters,
-  BreakpointObject,
-  ContextOfGetters,
-  DebugAPIType,
-  InferBreakpointName,
-  InferContext,
-  InferPublic,
-  PrivateDebugAPIType
-};
+export type { BaseContextGetters, BreakpointObject, ContextOfGetters, DebugAPIType, PrivateDebugAPIType };
