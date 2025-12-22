@@ -4,7 +4,7 @@ Web Chat supports debugging through the JavaScript debugger in the browser DevTo
 
 ## HTML elements
 
-The following table list HTML elements that support debugging.
+The following table lists HTML elements that support debugging.
 
 | Component                                                             | Description                                    |
 | --------------------------------------------------------------------- | ---------------------------------------------- |
