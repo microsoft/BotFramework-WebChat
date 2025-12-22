@@ -19,9 +19,9 @@ import suggestedActions from './reducers/suggestedActions';
 import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginActivity';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import type { RootPrivateDebugAPI } from './types/RootDebugAPI';
+import type { RestrictedRootDebugAPI } from './types/RootDebugAPI';
 
-export default function createReducer(ponyfill: GlobalScopePonyfill, rootPrivateDebugAPI: RootPrivateDebugAPI) {
+export default function createReducer(ponyfill: GlobalScopePonyfill, rootPrivateDebugAPI: RestrictedRootDebugAPI) {
   return combineActivitiesReducer(
     ponyfill,
     rootPrivateDebugAPI,

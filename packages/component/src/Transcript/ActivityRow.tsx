@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { createPrivateDebugAPI } from 'botframework-webchat-core/internal';
+import { createRestrictedDebugAPI } from 'botframework-webchat-core/internal';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
@@ -91,12 +91,12 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const prevArticleRef = useRef<HTMLElement>(null);
 
-  const debugPrivateAPI = useMemo(
-    () => createPrivateDebugAPI(['render'], { activity: () => activityRef.current }),
+  const restrictedDebugAPI = useMemo(
+    () => createRestrictedDebugAPI(['render'], { activity: () => activityRef.current }),
     [activityRef]
   );
 
-  const debugAPI = useMemo(() => debugPrivateAPI.toPublic(), [debugPrivateAPI]);
+  const debugAPI = useMemo(() => restrictedDebugAPI.toPublic(), [restrictedDebugAPI]);
 
   const wrappedRef = useCallback(
     (el: HTMLElement | null) => {
@@ -123,7 +123,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
     [debugAPI, handleFormData, ref]
   );
 
-  debugPrivateAPI.UNSAFE_callBreakpoint.render();
+  restrictedDebugAPI.UNSAFE_callBreakpoint.render();
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.

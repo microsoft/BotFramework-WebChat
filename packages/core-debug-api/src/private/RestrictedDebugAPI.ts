@@ -1,4 +1,4 @@
-import type { BaseContextGetters, BreakpointObject, ContextOfGetters, PrivateDebugAPIType } from '../types';
+import type { BaseContextGetters, BreakpointObject, ContextOfGetters, RestrictedDebugAPIType } from '../types';
 import { SHOULD_LOCKDOWN } from './constants';
 import DebugAPI from './DebugAPI';
 
@@ -6,10 +6,10 @@ import DebugAPI from './DebugAPI';
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
 const BREAKPOINT_FUNCTION = <T>(__DEBUG_CONTEXT__: T) => {};
 
-class PrivateDebugAPI<
+class RestrictedDebugAPI<
   TBreakpointName extends string,
   TContextGetters extends BaseContextGetters
-> implements PrivateDebugAPIType<TBreakpointName, TContextGetters> {
+> implements RestrictedDebugAPIType<TBreakpointName, TContextGetters> {
   constructor(breakpointNames: readonly TBreakpointName[], contextGetters: TContextGetters) {
     type TContext = { [K in keyof TContextGetters]: ReturnType<TContextGetters[K]> };
 
@@ -77,4 +77,4 @@ class PrivateDebugAPI<
   UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
 }
 
-export default PrivateDebugAPI;
+export default RestrictedDebugAPI;

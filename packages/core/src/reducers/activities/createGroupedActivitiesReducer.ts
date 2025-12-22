@@ -27,7 +27,7 @@ import type {
   PostActivityRejectedAction
 } from '../../actions/postActivity';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
-import { type RootPrivateDebugAPI } from '../../types/RootDebugAPI';
+import { type RestrictedRootDebugAPI } from '../../types/RootDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
@@ -62,7 +62,7 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 
 function createGroupedActivitiesReducer(
   ponyfill: GlobalScopePonyfill,
-  rootPrivateDebugAPI: RootPrivateDebugAPI
+  rootPrivateDebugAPI: RestrictedRootDebugAPI
 ): Reducer<GroupedActivitiesState, GroupedActivitiesAction> {
   return function activities(
     state: GroupedActivitiesState = DEFAULT_STATE,

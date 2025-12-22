@@ -32,7 +32,7 @@ interface DebugAPIType<TBreakpointName extends string, TContext extends object> 
  *
  * For public consumption, call `toPublic()` to create an object for receiving side.
  */
-interface PrivateDebugAPIType<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
+interface RestrictedDebugAPIType<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
   /**
    * Creates a public version of Debug API for external consumption.
    */
@@ -44,4 +44,4 @@ interface PrivateDebugAPIType<TBreakpointName extends string, TContextGetters ex
   get UNSAFE_callBreakpoint(): Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
 }
 
-export type { BaseContextGetters, BreakpointObject, ContextOfGetters, DebugAPIType, PrivateDebugAPIType };
+export type { BaseContextGetters, BreakpointObject, ContextOfGetters, DebugAPIType, RestrictedDebugAPIType };

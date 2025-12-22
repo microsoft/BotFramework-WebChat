@@ -1,4 +1,4 @@
-import { type PrivateDebugAPIType } from '@msinternal/botframework-webchat-core-debug-api';
+import { type RestrictedDebugAPIType } from '@msinternal/botframework-webchat-core-debug-api';
 
 type RootDebugBreakpointName = 'incomingActivity';
 
@@ -6,7 +6,7 @@ type RootDebugContext = {
   readonly activities: readonly any[];
 };
 
-type RootPrivateDebugAPI = PrivateDebugAPIType<
+type RestrictedRootDebugAPI = RestrictedDebugAPIType<
   RootDebugBreakpointName,
   {
     [K in keyof RootDebugContext]: () => RootDebugContext[K];
@@ -22,4 +22,4 @@ type RootDebugAPI = {
   get debugger(): void;
 };
 
-export { type RootDebugAPI, type RootPrivateDebugAPI };
+export { type RootDebugAPI, type RestrictedRootDebugAPI };
