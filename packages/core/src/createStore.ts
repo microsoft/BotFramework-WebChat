@@ -113,7 +113,7 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   // eslint-disable-next-line prefer-const
   let store: Store | undefined;
 
-  const rootRestrictedDebugAPI = createRestrictedDebugAPI(['incomingActivity'], {
+  const restrictedRootDebugAPI = createRestrictedDebugAPI(['incomingActivity'], {
     // We can guarantee `store` is not accessed before it is defined few lines below.
     activities: () => store?.getState().activities
   });
@@ -122,13 +122,13 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
 
   store = createReduxStore(
-    createReducer(ponyfill, rootRestrictedDebugAPI),
+    createReducer(ponyfill, restrictedRootDebugAPI),
     initialState || {},
     options.devTools ? composeWithDevTools(enhancer) : enhancer
   );
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
-  store['debugAPI'] = rootRestrictedDebugAPI.toPublic();
+  store['debugAPI'] = restrictedRootDebugAPI.toPublic();
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
   sagaMiddleware.run(createSagas({ ponyfill }));
