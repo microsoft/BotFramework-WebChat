@@ -1,7 +1,7 @@
-import { createPrivateDebugAPI } from 'botframework-webchat-core/internal';
+import { createRestrictedDebugAPI } from 'botframework-webchat-core/internal';
 
 function createActivityPrivateDebugAPI(getActivity: () => object) {
-  return createPrivateDebugAPI(['render'], { activity: getActivity });
+  return createRestrictedDebugAPI(['render'], { activity: getActivity });
 }
 
 export default createActivityPrivateDebugAPI;
