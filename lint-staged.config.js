@@ -18,6 +18,8 @@ module.exports = {
   'packages/bundle/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:bundle'],
   'packages/component/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component'],
   'packages/core/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core'],
+  'packages/core-debug-api/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-debug-api'],
+  'packages/core-graph/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-graph'],
   'packages/debug-theme/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:debug-theme'],
   'packages/directlinespeech/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:directlinespeech'],
   'packages/fluent-theme/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:fluent-theme'],

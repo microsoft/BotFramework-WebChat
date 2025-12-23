@@ -53,6 +53,7 @@
           sendFiles([blob1, blob2]);
 
           await pageConditions.numActivitiesShown(2);
+          await pageConditions.allOutgoingActivitiesSent();
 
           await host.snapshot('local');
         },

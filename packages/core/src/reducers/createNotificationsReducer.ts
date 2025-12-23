@@ -1,16 +1,16 @@
+import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 import updateIn from 'simple-update-in';
 
 import { DISMISS_NOTIFICATION } from '../actions/dismissNotification';
 import { SAGA_ERROR } from '../actions/sagaError';
 import { SET_NOTIFICATION } from '../actions/setNotification';
-import isForbiddenPropertyName from '../utils/isForbiddenPropertyName';
 
-import type { DismissNotificationAction } from '../actions/dismissNotification';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { Notification } from '../types/internal/Notification';
 import type { Reducer } from 'redux';
+import type { DismissNotificationAction } from '../actions/dismissNotification';
 import type { SagaErrorAction } from '../actions/sagaError';
 import type { SetNotificationAction } from '../actions/setNotification';
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import type { Notification } from '../types/internal/Notification';
 
 type NotificationsAction = DismissNotificationAction | SagaErrorAction | SetNotificationAction;
 type NotificationsState = Record<string, Notification>;

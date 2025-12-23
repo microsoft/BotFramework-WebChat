@@ -19,10 +19,12 @@ import suggestedActions from './reducers/suggestedActions';
 import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginActivity';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
-export default function createReducer(ponyfill: GlobalScopePonyfill) {
+export default function createReducer(ponyfill: GlobalScopePonyfill, restrictedStoreDebugAPI: RestrictedStoreDebugAPI) {
   return combineActivitiesReducer(
     ponyfill,
+    restrictedStoreDebugAPI,
     combineReducers({
       connectivityStatus,
       dictateInterims,

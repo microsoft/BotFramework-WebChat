@@ -2,25 +2,26 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 import SpeakActivity from '../Activity/Speak';
+import { RestrictedActivityDebugAPI } from '../ActivityDebug';
 import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 import ScreenReaderText from '../ScreenReaderText';
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
-import useActivityAccessibleName from './useActivityAccessibleName';
-
-import type { WebChatActivity } from 'botframework-webchat-core';
-import type { MouseEventHandler, PropsWithChildren } from 'react';
-import { useRefFrom } from 'use-ref-from';
 import {
   TranscriptFocusContent,
   TranscriptFocusContentActiveDescendant,
   TranscriptFocusContentOverlay,
   TranscriptFocusIndicator
 } from './TranscriptFocus';
+import useActivityAccessibleName from './useActivityAccessibleName';
+
+import type { WebChatActivity } from 'botframework-webchat-core';
+import type { MouseEventHandler, PropsWithChildren } from 'react';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -29,6 +30,7 @@ type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
 const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
+  const activityRef = useRefFrom(activity);
   const bodyRef = useRef<HTMLDivElement>();
   const focusByActivityKey = useFocusByActivityKey();
   const getKeyByActivity = useGetKeyByActivity();
@@ -89,14 +91,20 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const prevArticleRef = useRef<HTMLElement>(null);
 
+  const restrictedDebugAPI = useMemo(() => new RestrictedActivityDebugAPI(() => activityRef.current), [activityRef]);
+
+  const debugAPI = useMemo(() => restrictedDebugAPI.toPublic(), [restrictedDebugAPI]);
+
   const wrappedRef = useCallback(
     (el: HTMLElement | null) => {
       if (prevArticleRef.current) {
         prevArticleRef.current.removeEventListener('formdata', handleFormData);
+        prevArticleRef.current['webChat'] = undefined;
       }
 
       if (el) {
         el.addEventListener('formdata', handleFormData);
+        el['webChat'] = debugAPI;
       }
 
       prevArticleRef.current = el;
@@ -109,8 +117,10 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         }
       }
     },
-    [handleFormData, ref]
+    [debugAPI, handleFormData, ref]
   );
+
+  restrictedDebugAPI.UNSAFE_callBreakpoint.render();
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
