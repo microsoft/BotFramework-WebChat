@@ -5,6 +5,7 @@ export {
   type SetRawStateAction
 } from './actions/setRawState';
 
-export { type RootDebugAPI } from '../types/RootDebugAPI';
+export { default as StoreDebugAPIRegistry } from './StoreDebugAPIRegistry';
+export { type StoreDebugAPI } from '../types/StoreDebugAPI';
 
 export { RestrictedDebugAPI, type InferPublic } from '@msinternal/botframework-webchat-core-debug-api';

@@ -5,9 +5,10 @@ import createSagaMiddleware from 'redux-saga';
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
 import createSagas from './createSagas';
-import { RestrictedRootDebugAPI } from './types/RootDebugAPI';
+import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import { StoreDebugAPIRegistry } from './internal';
 
 type CreateStoreOptions = {
   /**
@@ -113,24 +114,24 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   // eslint-disable-next-line prefer-const
   let store: Store | undefined;
 
-  const restrictedRootDebugAPI = new RestrictedRootDebugAPI(() => store?.getState().activities);
+  const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
 
   store = createReduxStore(
-    createReducer(ponyfill, restrictedRootDebugAPI),
+    createReducer(ponyfill, restrictedStoreDebugAPI),
     initialState || {},
     options.devTools ? composeWithDevTools(enhancer) : enhancer
   );
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
-  store['debugAPI'] = restrictedRootDebugAPI.toPublic();
+  StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
   sagaMiddleware.run(createSagas({ ponyfill }));
 
-  return Object.freeze(store);
+  return store;
 }
 
 /**

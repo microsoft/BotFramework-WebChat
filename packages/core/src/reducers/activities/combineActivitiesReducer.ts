@@ -1,7 +1,7 @@
 import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 import type { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducersMapObject } from 'redux';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
-import type { RestrictedRootDebugAPI } from '../../types/RootDebugAPI';
+import type { RestrictedStoreDebugAPI } from '../../types/StoreDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import createGroupedActivitiesReducer, {
   type GroupedActivitiesAction,
@@ -22,13 +22,13 @@ type ActivitiesState = {
  */
 export default function combineActivitiesReducer<M>(
   ponyfill: GlobalScopePonyfill,
-  restrictedRootDebugAPI: RestrictedRootDebugAPI,
+  restrictedStoreDebugAPI: RestrictedStoreDebugAPI,
   existingSlicedReducer: ReturnType<typeof combineReducers<M>>
 ): Reducer<StateFromReducersMapObject<M> & ActivitiesState, ActionFromReducersMapObject<M> & GroupedActivitiesAction> {
   type ExistingState = StateFromReducersMapObject<M>;
   type ExistingAction = ActionFromReducersMapObject<M>;
 
-  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, restrictedRootDebugAPI);
+  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, restrictedStoreDebugAPI);
 
   return function (
     state: (ExistingState & ActivitiesState) | undefined,

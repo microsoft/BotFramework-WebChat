@@ -27,7 +27,7 @@ import type {
   PostActivityRejectedAction
 } from '../../actions/postActivity';
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
-import { type RestrictedRootDebugAPI } from '../../types/RootDebugAPI';
+import { type RestrictedStoreDebugAPI } from '../../types/StoreDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
@@ -62,7 +62,7 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 
 function createGroupedActivitiesReducer(
   ponyfill: GlobalScopePonyfill,
-  restrictedRootDebugAPI: RestrictedRootDebugAPI
+  restrictedStoreDebugAPI: RestrictedStoreDebugAPI
 ): Reducer<GroupedActivitiesState, GroupedActivitiesAction> {
   return function activities(
     state: GroupedActivitiesState = DEFAULT_STATE,
@@ -192,7 +192,7 @@ function createGroupedActivitiesReducer(
         } = action;
 
         // We cannot call breakpoint inside Redux because DebugContext cannot call getState(), need setTimeout.
-        queueMicrotask(() => restrictedRootDebugAPI.UNSAFE_callBreakpoint.incomingActivity({ activity }));
+        queueMicrotask(() => restrictedStoreDebugAPI.UNSAFE_callBreakpoint.incomingActivity({ activity }));
 
         activity = patchActivity(activity, ponyfill);
 

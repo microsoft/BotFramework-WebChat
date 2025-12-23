@@ -74,7 +74,6 @@ import useVoiceSelector from './useVoiceSelector';
 
 export { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
 export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
-export { default as useRootDebugAPI } from '../providers/DebugAPI/useRootDebugAPI';
 
 export {
   useActiveTyping,

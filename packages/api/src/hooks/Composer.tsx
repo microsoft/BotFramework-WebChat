@@ -60,7 +60,6 @@ import ActivityListenerComposer from '../providers/ActivityListener/ActivityList
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
-import DebugAPIComposer from '../providers/DebugAPI/DebugAPIComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer';
@@ -748,19 +747,17 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <DebugAPIComposer rootDebugAPI={memoizedStore['debugAPI']}>
-      <Provider context={WebChatReduxContext} store={memoizedStore}>
-        <ReduxStoreComposer store={memoizedStore}>
-          <GraphProvider store={memoizedStore}>
-            <ActivityKeyerComposer>
-              <ActivityAcknowledgementComposer>
-                <ComposerCore onTelemetry={onTelemetry} {...props} />
-              </ActivityAcknowledgementComposer>
-            </ActivityKeyerComposer>
-          </GraphProvider>
-        </ReduxStoreComposer>
-      </Provider>
-    </DebugAPIComposer>
+    <Provider context={WebChatReduxContext} store={memoizedStore}>
+      <ReduxStoreComposer store={memoizedStore}>
+        <GraphProvider store={memoizedStore}>
+          <ActivityKeyerComposer>
+            <ActivityAcknowledgementComposer>
+              <ComposerCore onTelemetry={onTelemetry} {...props} />
+            </ActivityAcknowledgementComposer>
+          </ActivityKeyerComposer>
+        </GraphProvider>
+      </ReduxStoreComposer>
+    </Provider>
   );
 };
 

@@ -47,7 +47,6 @@ export {
   useRenderAttachment,
   useRenderToast,
   useRenderTypingIndicator,
-  useRootDebugAPI,
   useSendBoxAttachments,
   useSendBoxValue,
   useSendEvent,
