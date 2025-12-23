@@ -130,7 +130,7 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
   sagaMiddleware.run(createSagas({ ponyfill }));
 
-  return store;
+  return Object.freeze(store);
 }
 
 /**
