@@ -48,7 +48,7 @@
         // "Cannot assign to read only property 'incomingActivity' of object '#<Object>'"
         const scenario1 = () => spyOn(rootElement.webChat.breakpoint, 'incomingActivity');
 
-        expect(scenario1).toThrow("Cannot assign to read only property 'incomingActivity' of object '#<Object>'");
+        expect(scenario1).toThrow("Cannot assign to read only property 'incomingActivity' of object '[object Object]'");
         expect(rootElement.webChat.breakpoint.incomingActivity).toBe(originalIncomingActivity);
 
         // Scenario 2.
