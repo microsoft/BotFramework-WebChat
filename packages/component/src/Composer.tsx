@@ -111,12 +111,12 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
 
     if (current) {
       current['webChat'] = rootDebugAPI;
+
+      return () => delete current['webChat'];
     }
 
     return () => {
-      if (current) {
-        delete current['webChat'];
-      }
+      // Intentionally left blank.
     };
   }, [rootDebugAPI]);
 

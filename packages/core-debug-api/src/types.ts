@@ -1,4 +1,5 @@
 type BaseContextGetters = { readonly [key: string]: () => unknown };
+type BaseContext = { readonly [key: string]: unknown };
 type ContextOfGetters<T extends BaseContextGetters> = { [K in keyof T]: ReturnType<T[K]> };
 
 type BreakpointObject<TName extends string, TContext extends object> = Readonly<
@@ -32,16 +33,30 @@ interface DebugAPIType<TBreakpointName extends string, TContext extends object> 
  *
  * For public consumption, call `toPublic()` to create an object for receiving side.
  */
-interface RestrictedDebugAPIType<TBreakpointName extends string, TContextGetters extends BaseContextGetters> {
+interface RestrictedDebugAPIType<TBreakpointName extends string, TContext extends BaseContext> {
   /**
    * Creates a public version of Debug API for external consumption.
    */
-  toPublic(): DebugAPIType<TBreakpointName, ContextOfGetters<TContextGetters>>;
+  toPublic(): DebugAPIType<TBreakpointName, TContext>;
 
   /**
    * Triggers a breakpoint function.
    */
   get UNSAFE_callBreakpoint(): Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
+
+  readonly '~types': {
+    readonly public: DebugAPIType<TBreakpointName, TContext>;
+  };
 }
 
-export type { BaseContextGetters, BreakpointObject, ContextOfGetters, DebugAPIType, RestrictedDebugAPIType };
+type InferPublic<T extends RestrictedDebugAPIType<any, any>> = T['~types']['public'];
+
+export type {
+  BaseContext,
+  BaseContextGetters,
+  BreakpointObject,
+  ContextOfGetters,
+  DebugAPIType,
+  InferPublic,
+  RestrictedDebugAPIType
+};

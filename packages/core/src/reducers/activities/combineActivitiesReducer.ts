@@ -22,13 +22,13 @@ type ActivitiesState = {
  */
 export default function combineActivitiesReducer<M>(
   ponyfill: GlobalScopePonyfill,
-  rootPrivateDebugAPI: RestrictedRootDebugAPI,
+  restrictedRootDebugAPI: RestrictedRootDebugAPI,
   existingSlicedReducer: ReturnType<typeof combineReducers<M>>
 ): Reducer<StateFromReducersMapObject<M> & ActivitiesState, ActionFromReducersMapObject<M> & GroupedActivitiesAction> {
   type ExistingState = StateFromReducersMapObject<M>;
   type ExistingAction = ActionFromReducersMapObject<M>;
 
-  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, rootPrivateDebugAPI);
+  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, restrictedRootDebugAPI);
 
   return function (
     state: (ExistingState & ActivitiesState) | undefined,

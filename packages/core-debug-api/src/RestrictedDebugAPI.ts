@@ -1,18 +1,20 @@
-import type { BaseContextGetters, BreakpointObject, ContextOfGetters, RestrictedDebugAPIType } from '../types';
-import { SHOULD_LOCKDOWN } from './constants';
-import DebugAPI from './DebugAPI';
+import { SHOULD_LOCKDOWN } from './private/constants';
+import DebugAPI from './private/DebugAPI';
+import type { BaseContext, BreakpointObject, RestrictedDebugAPIType } from './types';
 
 // 🔒 This function must be left empty.
 // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
 const BREAKPOINT_FUNCTION = <T>(__DEBUG_CONTEXT__: T) => {};
 
-class RestrictedDebugAPI<
-  TBreakpointName extends string,
-  TContextGetters extends BaseContextGetters
-> implements RestrictedDebugAPIType<TBreakpointName, TContextGetters> {
-  constructor(breakpointNames: readonly TBreakpointName[], contextGetters: TContextGetters) {
-    type TContext = { [K in keyof TContextGetters]: ReturnType<TContextGetters[K]> };
+type AsGetters<T> = {
+  readonly [K in keyof T]: () => T[K];
+};
 
+abstract class RestrictedDebugAPI<
+  TBreakpointName extends string,
+  TContext extends BaseContext
+> implements RestrictedDebugAPIType<TBreakpointName, TContext> {
+  constructor(breakpointNames: readonly TBreakpointName[], contextGetters: AsGetters<TContext>) {
     this.#context = Object.create(null) satisfies Partial<TContext> as TContext;
 
     for (const [name, getter] of Object.entries(contextGetters)) {
@@ -67,14 +69,19 @@ class RestrictedDebugAPI<
     }
   }
 
-  #breakpoint: BreakpointObject<TBreakpointName, ContextOfGetters<TContextGetters>>;
-  #context: ContextOfGetters<TContextGetters>;
+  #breakpoint: BreakpointObject<TBreakpointName, TContext>;
+  #context: TContext;
 
   toPublic() {
     return new DebugAPI(this.#breakpoint, this.#context);
   }
 
   UNSAFE_callBreakpoint: Readonly<Record<TBreakpointName, (...args: any[]) => void>>;
+
+  // eslint-disable-next-line class-methods-use-this
+  get '~types'() {
+    return Object.freeze({ public: undefined as any });
+  }
 }
 
 export default RestrictedDebugAPI;

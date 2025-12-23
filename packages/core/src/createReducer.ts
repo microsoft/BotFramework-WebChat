@@ -21,10 +21,10 @@ import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginAct
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { RestrictedRootDebugAPI } from './types/RootDebugAPI';
 
-export default function createReducer(ponyfill: GlobalScopePonyfill, rootPrivateDebugAPI: RestrictedRootDebugAPI) {
+export default function createReducer(ponyfill: GlobalScopePonyfill, restrictedRootDebugAPI: RestrictedRootDebugAPI) {
   return combineActivitiesReducer(
     ponyfill,
-    rootPrivateDebugAPI,
+    restrictedRootDebugAPI,
     combineReducers({
       connectivityStatus,
       dictateInterims,

@@ -5,9 +5,9 @@ import createSagaMiddleware from 'redux-saga';
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
 import createSagas from './createSagas';
+import { RestrictedRootDebugAPI } from './types/RootDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import { createRestrictedDebugAPI } from '@msinternal/botframework-webchat-core-debug-api';
 
 type CreateStoreOptions = {
   /**
@@ -113,10 +113,7 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
   // eslint-disable-next-line prefer-const
   let store: Store | undefined;
 
-  const restrictedRootDebugAPI = createRestrictedDebugAPI(['incomingActivity'], {
-    // We can guarantee `store` is not accessed before it is defined few lines below.
-    activities: () => store?.getState().activities
-  });
+  const restrictedRootDebugAPI = new RestrictedRootDebugAPI(() => store?.getState().activities);
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);

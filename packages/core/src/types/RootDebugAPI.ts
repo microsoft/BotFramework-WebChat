@@ -1,25 +1,32 @@
-import { type RestrictedDebugAPIType } from '@msinternal/botframework-webchat-core-debug-api';
+import { RestrictedDebugAPI, type InferPublic } from '@msinternal/botframework-webchat-core-debug-api';
+import type { ArrayElement } from 'type-fest';
 
-type RootDebugBreakpointName = 'incomingActivity';
+const BREAKPOINT_NAMES = ['incomingActivity'] as const;
+
+type RootBreakpointName = ArrayElement<typeof BREAKPOINT_NAMES>;
 
 type RootDebugContext = {
   readonly activities: readonly any[];
 };
 
-type RestrictedRootDebugAPI = RestrictedDebugAPIType<
-  RootDebugBreakpointName,
-  {
-    [K in keyof RootDebugContext]: () => RootDebugContext[K];
+class RestrictedRootDebugAPI extends RestrictedDebugAPI<RootBreakpointName, RootDebugContext> {
+  constructor(getActivities: () => RootDebugContext['activities']) {
+    super(
+      BREAKPOINT_NAMES,
+      Object.freeze({
+        activities: getActivities
+      })
+    );
   }
->;
+}
 
 // TODO: [P1] Not sure why it break "api" packages. "api" tries to reference the "core-debug-api" package and failed.
 //       Maybe types are not rolled up in "core" packages properly.
-// type RootDebugAPI = InferPublic<RootPrivateDebugAPI>;
+type RootDebugAPI = InferPublic<RestrictedRootDebugAPI>;
 
-type RootDebugAPI = {
-  get breakpoint(): Readonly<Record<RootDebugBreakpointName, (__DEBUG_CONTEXT__: RootDebugContext) => void>>;
-  get debugger(): void;
-};
+// type RootDebugAPI = {
+//   get breakpoint(): Readonly<Record<RootBreakpointName, (__DEBUG_CONTEXT__: RootDebugContext) => void>>;
+//   get debugger(): void;
+// };
 
-export { type RootDebugAPI, type RestrictedRootDebugAPI };
+export { RestrictedRootDebugAPI, type RootDebugAPI };

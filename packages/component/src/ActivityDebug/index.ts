@@ -1,2 +1,1 @@
-export { type ActivityDebugContext } from './ActivityDebugContext';
-export { default as createActivityPrivateDebugAPI } from './createActivityPrivateDebugAPI';
+export { default as RestrictedActivityDebugAPI } from './RestrictedActivityDebugAPI';

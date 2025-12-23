@@ -1,27 +1,27 @@
 import { hooks } from 'botframework-webchat-api';
-import { createRestrictedDebugAPI } from 'botframework-webchat-core/internal';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 import SpeakActivity from '../Activity/Speak';
+import { RestrictedActivityDebugAPI } from '../ActivityDebug';
 import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 import ScreenReaderText from '../ScreenReaderText';
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
-import useActivityAccessibleName from './useActivityAccessibleName';
-
-import type { WebChatActivity } from 'botframework-webchat-core';
-import type { MouseEventHandler, PropsWithChildren } from 'react';
-import { useRefFrom } from 'use-ref-from';
 import {
   TranscriptFocusContent,
   TranscriptFocusContentActiveDescendant,
   TranscriptFocusContentOverlay,
   TranscriptFocusIndicator
 } from './TranscriptFocus';
+import useActivityAccessibleName from './useActivityAccessibleName';
+
+import type { WebChatActivity } from 'botframework-webchat-core';
+import type { MouseEventHandler, PropsWithChildren } from 'react';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -91,10 +91,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const prevArticleRef = useRef<HTMLElement>(null);
 
-  const restrictedDebugAPI = useMemo(
-    () => createRestrictedDebugAPI(['render'], { activity: () => activityRef.current }),
-    [activityRef]
-  );
+  const restrictedDebugAPI = useMemo(() => new RestrictedActivityDebugAPI(() => activityRef.current), [activityRef]);
 
   const debugAPI = useMemo(() => restrictedDebugAPI.toPublic(), [restrictedDebugAPI]);
 
