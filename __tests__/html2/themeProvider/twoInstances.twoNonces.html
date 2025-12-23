@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { Fragment },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { Composer, ThemeProvider }
+        }
+      } = window;
+
+      function createStyle(body) {
+        const styleElement = document.createElement('style');
+
+        const { sheet } = styleElement;
+
+        styleElement.dataset['testid'] = 'style';
+        styleElement.innerHTML = body;
+
+        return styleElement;
+      }
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const render = ({ stylesRoot }) =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Fragment>
+                <Composer directLine={directLine} nonce="1" store={store} styleOptions={stylesRoot ? { stylesRoot } : {}} />
+                <Composer directLine={directLine} nonce="2" store={store} styleOptions={stylesRoot ? { stylesRoot } : {}} />
+              </Fragment>,
+              document.getElementById('webchat'),
+              resolve
+            )
+          );
+
+        await render({});
+
+        const allInjectedStyles = document.head.querySelectorAll('style[data-webchat-injected]');
+
+        // CSS with different nonces are actually different.
+        const identifiers = new Set(Array.from(allInjectedStyles).map(element => `${element.getAttribute('nonce')}:${element.dataset.webchatInjected}`));
+
+        // THEN: All injected CSS should be unique and have no duplicates.
+        expect(allInjectedStyles).toHaveLength(identifiers.size);
+      });
+    </script>
+  </body>
+</html>

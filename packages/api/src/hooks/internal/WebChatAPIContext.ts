@@ -9,7 +9,6 @@ import {
 } from 'botframework-webchat-core';
 import { createContext } from 'react';
 
-import { StrictStyleOptions } from '../../StyleOptions';
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
 import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
@@ -74,7 +73,6 @@ export type WebChatAPIContextType = {
   startSpeakingActivity?: () => void;
   stopDictate?: () => void;
   stopSpeakingActivity?: () => void;
-  styleOptions?: StrictStyleOptions;
   submitSendBox?: (method?: string, { channelData }?: { channelData: any }) => void;
   telemetryDimensionsRef?: React.Ref<any>;
   toastRenderer?: RenderToast;

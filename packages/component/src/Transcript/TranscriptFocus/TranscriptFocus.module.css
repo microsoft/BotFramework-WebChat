@@ -53,6 +53,7 @@
   .transcript-focus-area__content {
     display: grid;
     grid-template-areas: 'content';
+    min-height: 0;
     min-width: 0;
 
     > * {

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Keyboard Event Custom Element</title>
+</head>
+<body>
+  <template>
+    <style>
+      /* TODO this is not needed after Chrome v133+, just use var(--event-count) */
+      :host kbd::after {
+        counter-set: event-index var(--event-count);
+        --event-counter: counter(event-index);
+      }
+
+      kbd {
+        background-color: #f7f7f7;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        box-shadow: 0 1px 0 #aaaaaa44, 0 2px 0 #ffffff44 inset;
+        color: #3e3e3e;
+        font-family: ui-monospace;
+        font-weight: bold;
+        line-height: 1;
+        padding: 0.2em 0.4em;
+        position: relative;
+        text-align: center;
+      }
+
+      kbd::after {
+        content: var(--event-counter, var(--event-count));
+        font-size: 16px;
+        inset: 6px auto auto 6px;
+        position: absolute;
+      }
+
+      :host(:last-of-type) kbd {
+        background-color: #e4e8ec;
+      }
+      
+      kbd[data-key]::before {
+        content: attr(data-key);
+        display: inline-block;
+        height: 1em;
+        text-align: center;
+        width: 1em;
+      }
+      kbd[data-key="Enter"]::before {
+        content: "⏎";
+      }
+      kbd[data-key="Backspace"]::before {
+        content: "⌫";
+      }
+      kbd[data-key="Tab"]::before {
+        content: "⇥";
+      }
+      kbd[data-key="Escape"]::before {
+        content: "⎋";
+      }
+      kbd[data-key=" "]::before {
+        content: "␣";
+      }
+      kbd[data-key="ArrowUp"]::before {
+        content: "↑";
+      }
+      kbd[data-key="ArrowDown"]::before {
+        content: "↓";
+      }
+      kbd[data-key="ArrowLeft"]::before {
+        content: "←";
+      }
+      kbd[data-key="ArrowRight"]::before {
+        content: "→";
+      }
+      kbd[data-key="Delete"]::before {
+        content: "⌦";
+      }
+      kbd[data-key="Home"]::before {
+        content: "⇱";
+      }
+      kbd[data-key="End"]::before {
+        content: "⇲";
+      }
+      kbd[data-key="PageUp"]::before {
+        content: "⇈";
+      }
+      kbd[data-key="PageDown"]::before {
+        content: "⇊";
+      }
+      kbd[data-key="Insert"]::before {
+        content: "⎀";
+      }
+      kbd[data-key="Meta"]::before {
+        content: "⌘";
+      }
+      kbd[data-key="Control"]::before {
+        content: "⌃";
+      }
+      kbd[data-key="Alt"]::before {
+        content: "⎇";
+      }
+      kbd[data-key="Shift"]::before {
+        content: "⇧";
+      }
+    </style>
+    <kbd></kbd>
+  </template>
+  <script type="module">
+    import { customElement, getCustomElementName } from '/assets/custom-element/custom-element.js';
+
+    customElement('keyboard-event', currentDocument =>
+      class KeyboardEventElement extends HTMLElement {
+        constructor() {
+          super();
+          const template = currentDocument.querySelector('template');
+          const fragment = template.content.cloneNode(true);
+  
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          shadowRoot.appendChild(fragment);
+
+          this.kbd = shadowRoot.querySelector('kbd');
+        }
+
+        set key(value) {
+          this.kbd.setAttribute('data-key', value);
+        }
+
+        get key() {
+          return this.kbd.getAttribute('data-key');
+        }
+  
+        static listenKeyboardEvents(scope = window) {
+          // const myTagName = customElements.getName(this)
+          const myTagName = getCustomElementName(this);
+          const abortController = new AbortController();
+          scope.addEventListener('keydown', event => {
+            const element = document.createElement(myTagName);
+            element.key = event.key;
+            document.dispatchEvent(new CustomEvent('event-stream:event', {
+              detail: {
+                content: element
+              }
+            }));
+          }, { capture: true, signal: abortController.signal });
+
+          return abortController;
+        }
+      }
+    )
+  </script>
+</body>
+</html>

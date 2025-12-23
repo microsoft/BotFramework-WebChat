@@ -2,7 +2,8 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
+import React, { Fragment, memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
+import cx from 'classnames';
 import {
   array,
   custom,
@@ -17,6 +18,7 @@ import {
 } from 'valibot';
 
 import StackedLayoutMain from '../../../../../Activity/StackedLayoutMain';
+import StackedLayoutMessageStatus from '../../../../../Activity/StackedLayoutMessageStatus';
 import StackedLayoutRoot from '../../../../../Activity/StackedLayoutRoot';
 import StackedLayoutStatus from '../../../../../Activity/StackedLayoutStatus';
 import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
@@ -35,11 +37,13 @@ import {
 import { android } from '../../../../../Utils/detectBrowser';
 import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import CollapsibleGrouping from '../CollapsibleGrouping';
+import CollapsibleGroupingList from '../CollapsibleGroupingList';
+import CollapsibleGroupingTitle from '../CollapsibleGroupingTitle';
 import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 
 import styles from './PartGroupingActivity.module.css';
 
-const { useAvatarForBot, useStyleOptions, useGetKeyByActivity } = hooks;
+const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 
 const partGroupingActivityPropsSchema = pipe(
   object({
@@ -134,6 +138,7 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
 });
 
 function PartGroupingActivity(props: PartGroupingActivityProps) {
+  const localize = useLocalizer();
   const { activities, children } = validateProps(partGroupingActivityPropsSchema, props);
 
   const classNames = useStyles(styles);
@@ -162,7 +167,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const lastActivity = activities.at(-1);
 
   const currentMessage = useMemo(
-    () => messages.toReversed().find(message => message.creativeWorkStatus === 'incomplete') || lastMessage,
+    () => messages.find(message => message.creativeWorkStatus === 'Incomplete') || lastMessage,
     [messages, lastMessage]
   );
 
@@ -175,6 +180,40 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [{ bubbleNubOffset }] = useStyleOptions();
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
+
+  const defaultWorkStatus = useMemo(
+    () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
+    [messages]
+  );
+
+  const currentGroupStatus = currentMessage?.creativeWorkStatus || defaultWorkStatus;
+
+  /**
+   * The idea behind group header is that it displays the state of the entire group:
+   * - We start by determining if the group should display a status (i.e., if any message in the group has a creativeWorkStatus).
+   * - If there is a status to display we display it.
+   * - For the title we check if the current group status is 'Incomplete'.
+   * - If it is 'Incomplete', we show the abstract of the first message with 'Incomplete' status.
+   * - If not, we fall back to a default title.
+   */
+  const groupHeader = useMemo(
+    () => (
+      <Fragment>
+        {defaultWorkStatus && (
+          <StackedLayoutMessageStatus
+            className={classNames['part-grouping-activity__message-status']}
+            creativeWorkStatus={currentGroupStatus}
+          />
+        )}
+        <CollapsibleGroupingTitle>
+          {currentGroupStatus === 'Incomplete'
+            ? currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
+            : localize('COLLAPSIBLE_GROUPING_TITLE')}
+        </CollapsibleGroupingTitle>
+      </Fragment>
+    ),
+    [classNames, currentGroupStatus, currentMessage?.abstract, defaultWorkStatus, localize]
+  );
 
   return (
     <FocusablePartGroupingActivity
@@ -189,10 +228,20 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         topCallout={topAlignedCallout}
       >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
-          <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={currentMessage?.abstract || ''}>
-            <TranscriptActivityList className={classNames['part-grouping-activity__activities']}>
+          <CollapsibleGrouping
+            className={cx(classNames['part-grouping-activity__collapsible'], {
+              [classNames['part-grouping-activity__collapsible--open']]: isGroupOpen
+            })}
+            header={groupHeader}
+            isOpen={isGroupOpen}
+            onToggle={setIsGroupOpen}
+          >
+            <CollapsibleGroupingList
+              className={classNames['part-grouping-activity__activities']}
+              tag={TranscriptActivityList}
+            >
               {children}
-            </TranscriptActivityList>
+            </CollapsibleGroupingList>
           </CollapsibleGrouping>
         </StackedLayoutMain>
         {renderActivityStatus && <StackedLayoutStatus>{renderActivityStatus({ hideTimestamp })}</StackedLayoutStatus>}

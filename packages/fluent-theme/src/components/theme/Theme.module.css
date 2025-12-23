@@ -30,6 +30,7 @@
   --webchat-colorNeutralShadowAmbient: var(--colorNeutralShadowAmbient, rgba(0, 0, 0, 0.12));
   --webchat-colorNeutralShadowKey: var(--colorNeutralShadowKey, rgba(0, 0, 0, 0.14));
 
+  --webchat-colorBackgroundOverlay: var(--colorBackgroundOverlay, rgba(0, 0, 0, 0.4)); /* rgba(0, 0, 0, 0.5) for dark mode */
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
@@ -205,14 +206,16 @@
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
     var(--webchat-spacingHorizontalMNudge);
+  --webchat__transition-duration: var(--webchat-durationNormal);
+  --webchat__transition-easing: var(--webchat-curveDecelerateMid);
   --webchat__border-animation--color-1: #464feb;
   --webchat__border-animation--color-2: #47cffa;
   --webchat__border-animation--color-3: #b47cf8;
 }
 
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {
-  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalXL)
-    var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalMNudge);
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalL)
+    var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalSNudge);
 }
 
 /* Transcript surface */
@@ -328,7 +331,7 @@
     }
 
     &::after {
-      border-radius: var(--webchat__bubble--border-radius);
+      border-radius: var(--webchat-part-grouping__bubble--border-radius);
       content: '';
       grid-area: focused-content;
       outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
@@ -342,7 +345,7 @@
   }
 
   :global(.collapsible-grouping)::after {
-    border-radius: var(--webchat__bubble--border-radius);
+    border-radius: var(--webchat-part-grouping__bubble--border-radius);
     border: none;
     content: '';
     inset: 0;
@@ -357,7 +360,7 @@
   }
 
   :global(.pre-chat-message-activity)::after {
-    border-radius: var(--webchat__bubble--border-radius);
+    border-radius: var(--webchat-part-grouping__bubble--border-radius);
     content: '';
     inset: 0;
     outline-offset: 0;
@@ -382,7 +385,7 @@
 :global(.webchat-fluent).theme.variant-copilot
   :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
   :global(.collapsible-grouping)::after {
-    inset: -2px -4px;
+    inset: -4px;
   }
 }
 
@@ -409,7 +412,7 @@
   place-items: center;
 
   &::backdrop {
-    background-color: var(--webchat-colorTransparentBackground);
+    background-color: var(--webchat-colorBackgroundOverlay);
   }
 
   :global(.webchat__modal-dialog__box) {

@@ -1,3 +1,4 @@
+/** @jest-environment @happy-dom/jest-environment */
 /* eslint no-magic-numbers: "off" */
 
 import { getEarliestUpdateNotBefore } from './useDebouncedNotifications';

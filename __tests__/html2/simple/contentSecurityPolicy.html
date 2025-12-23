@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" nonce="TEST_PAGE_NONCE" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/__dist__/webchat-es5.js"></script>
+    <!--
+      Outside of the CSP defined in our /docs/CONTENT_SECURITY_POLICY.md, this test added limited number rules to enable the test case.
+
+      - connect-src
+        - https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline to fetching Direct Line token
+      - script-src
+        - 'nonce-TEST_PAGE_NONCE' to loading test related assets
+      - style-src
+        - 'nonce-TEST_PAGE_NONCE' to loading test related assets
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; base-uri 'none'; connect-src blob: https://directline.botframework.com https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline wss://directline.botframework.com; img-src blob: data:; script-src 'strict-dynamic' 'nonce-TEST_PAGE_NONCE'; style-src 'nonce-WEB_CHAT_NONCE' 'nonce-TEST_PAGE_NONCE'"
+    />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script nonce="TEST_PAGE_NONCE">
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({
+              token: await testHelpers.token.fetchDirectLineToken()
+            }),
+            nonce: 'WEB_CHAT_NONCE',
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('card breakfast');
+
+        await pageConditions.numActivitiesShown(2);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

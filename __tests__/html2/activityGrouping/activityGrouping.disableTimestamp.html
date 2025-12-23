@@ -54,6 +54,8 @@
           )
         ).resolveAll();
 
+        clock.tick(1000);
+
         const { resolveAll: resolveAll1 } = await directLine.emulateOutgoingActivity(
           'Elit adipisicing laborum sit anim.'
         );

@@ -21,6 +21,20 @@
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
 
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -71,12 +85,16 @@
         // WHEN: Receive a contentless livestream message.
         const streamId = crypto.randomUUID();
 
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'bot', role: 'bot' },
-          id: streamId,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: streamId,
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should continue to show typing indicator.
         expect(pageElements.typingIndicator()).toBeTruthy();
@@ -87,13 +105,17 @@
         // ---
 
         // WHEN: Receive a livestream message with partial content.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId, streamSequence: 2, streamType: 'streaming' },
-          from: { id: 'bot', role: 'bot' },
-          id: streamId,
-          text: 'A quick brown fox',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: `${streamId}:2`,
+              text: 'A quick brown fox',
+              type: 'typing'
+            },
+            { streamId, streamSequence: 2, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display the message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
@@ -110,13 +132,17 @@
         // ---
 
         // WHEN: Receive a concluded livestream message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId, streamType: 'final' },
-          from: { id: 'bot', role: 'bot' },
-          id: streamId,
-          text: 'A quick brown fox jumped over the lazy dogs.',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: `${streamId}:3`,
+              text: 'A quick brown fox jumped over the lazy dogs.',
+              type: 'message'
+            },
+            { streamId, streamType: 'final' }
+          )
+        );
 
         // THEN: Should display the message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(1));

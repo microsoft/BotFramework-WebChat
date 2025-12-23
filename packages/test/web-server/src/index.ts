@@ -13,7 +13,7 @@ const {
 (async () => {
   const config = JSON.parse(await readFile('./serve.json', 'utf8'));
   const attrs = [{ name: 'commonName', value: 'webchat2' }];
-  const pems = selfsigned.generate(attrs, { days: 365 });
+  const pems = await selfsigned.generate(attrs, { days: 365 });
 
   const handler = (req, res) => handleServe(req, res, config);
 

@@ -41,7 +41,7 @@ The only change needed in this sample is to configure a strict Content Security 
   <head>
 +   <meta
 +     http-equiv="Content-Security-Policy"
-+     content="default-src 'none'; base-uri 'none'; connect-src https://directline.botframework.com wss://directline.botframework.com https://webchat-mockbot.azurewebsites.net; img-src blob:; script-src 'nonce-a1b2c3d' 'strict-dynamic'; style-src 'nonce-a1b2c3d'"
++     content="default-src 'none'; base-uri 'none'; connect-src https://directline.botframework.com wss://directline.botframework.com https://webchat-mockbot.azurewebsites.net; img-src blob: data:; script-src 'nonce-a1b2c3d' 'strict-dynamic'; style-src 'nonce-a1b2c3d'"
 +   />
 -   <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
 +   <script crossorigin="anonymous" nonce="a1b2c3d" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
@@ -78,10 +78,10 @@ Here is the finished `index.html`:
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Minimal bundle</title>
+    <title>Web Chat: Content Security Policy</title>
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; base-uri 'none'; connect-src https://directline.botframework.com wss://directline.botframework.com https://webchat-mockbot.azurewebsites.net; img-src blob:; script-src 'nonce-a1b2c3d' 'strict-dynamic'; style-src 'nonce-a1b2c3d'"
+      content="default-src 'none'; base-uri 'none'; connect-src https://directline.botframework.com wss://directline.botframework.com https://webchat-mockbot.azurewebsites.net; img-src blob: data:; script-src 'nonce-a1b2c3d' 'strict-dynamic'; style-src 'nonce-a1b2c3d'"
     />
     <script crossorigin="anonymous" nonce="a1b2c3d" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <style nonce="a1b2c3d">

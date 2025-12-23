@@ -40,7 +40,7 @@ export type CreativeWork = Thing & {
    *
    * @see https://schema.org/creativeWorkStatus
    */
-  creativeWorkStatus?: 'incomplete' | 'published' | undefined;
+  creativeWorkStatus?: 'Incomplete' | 'Published' | undefined;
 
   /**
    * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
@@ -107,7 +107,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     abstract: orgSchemaProperty(string()),
     author: orgSchemaProperty(union([person(), string()])),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
-    creativeWorkStatus: orgSchemaProperty(union([literal('incomplete'), literal('published')])),
+    creativeWorkStatus: orgSchemaProperty(union([literal('Incomplete'), literal('Published')])),
     isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),

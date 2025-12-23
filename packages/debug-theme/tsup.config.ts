@@ -49,7 +49,8 @@ export default defineConfig([
     entry: {
       'botframework-webchat-debug-theme': './src/index.ts'
     },
-    format: 'esm'
+    format: 'esm',
+    onSuccess: 'touch ./package.json'
   })),
   applyConfig(config => ({
     ...config,

@@ -31,10 +31,6 @@
     .fui-FluentProvider {
       height: 100%;
     }
-
-    .theme.variant-copilot {
-      --webchat__color--surface: var(--colorGrey98);
-    }
   </style>
 </head>
 
@@ -116,7 +112,7 @@
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(
-        variant === 'copilot' || variant === 'fluent' ?
+        variant ?
           React.createElement(
             FluentProvider,
             { className: 'fui-FluentProvider', theme: fluentTheme },
@@ -146,7 +142,7 @@
           name: 'Research',
         },
         isPartOf: {
-          '@id': 'h-00001',
+          '@id': '_:h-00001',
           '@type': 'HowTo',
         }
       };
@@ -246,7 +242,7 @@
       // When: updating an existing activity to remove its position
       directLine.emulateIncomingActivity(withPosition(activities.at(0), undefined, 'two updated to no position'));
 
-      // Then: show the activity moved to end (no position)
+      // Then: show the activity unmoved
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
@@ -254,7 +250,7 @@
       // When: updating an activity's position from 3 to 1
       directLine.emulateIncomingActivity(withPosition(activities.at(4), 1, 'three updated to one'));
 
-      // Then: show the activity moved to the beginning
+      // Then: show the activity moved before "four"
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
@@ -262,7 +258,7 @@
       // When: updating an activity's position from 5 to 2
       directLine.emulateIncomingActivity(withPosition(activities.at(3), 2, 'five updated to two'));
 
-      // Then: show the activity moved to position 2
+      // Then: show the activity moved before "four"
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
@@ -271,7 +267,7 @@
       directLine.emulateIncomingActivity(withPosition(activities.at(1), 6, 'four updated to six'));
       directLine.emulateIncomingActivity(withPosition(activities.at(2), 3, 'one updated to three'));
 
-      // Then: show all activities repositioned according to new positions
+      // Then: show the "one" activity moved before "foru"
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
     });

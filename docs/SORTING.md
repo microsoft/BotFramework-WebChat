@@ -1,3 +1,62 @@
+## How are activities grouped?
+
+Before sorting, activities are grouped as a unit:
+
+- Activities within the same part grouping are inserted next to each other
+   - Order is based on the `position` property
+   - Logical timestamp of the part grouping is the "maximum logical timestamp" of all parts
+   - Parts can contain livestream session or ungrouped activities
+- Activities within the same livestream session will be inserted next to each other
+   - Order is based on the `streamSequence` property
+   - Logical timestamp of the livestream session is the logical timestamp of the finalizing activity (if any), or the logical timestamp of the first activity
+      - In other words, livestream will be reordered when they are inserted for the first time, or when they are finalized
+      - Interim updates will not reorder the livestream to avoid too much flickering
+- All other activities are not grouped, they are individual units
+
+## How are activities sorted?
+
+Short answer: activities are sorted by logical timestamp when inserted.
+
+Long answer:
+
+- For grouped activities (such as part groupings or livestream sessions), all activities within the group are treated as a unit
+- For ungrouped activities, each activity is a unit on its own
+
+Units are sorted using their logical timestamp on insertion. If the unit is already in the chat history, they will be removed before being re-inserted.
+
+## What is logical timestamp?
+
+By logical timestamp, in JavaScript:
+
+```
+logicalTimestamp = activity.channelData['webchat:sequence-id'] ?? +new Date(activity.timestamp) || +new Date(activity.localTimestamp);
+```
+
+1. `activity.channelData['webchat:sequence-id']: number`
+   -  This field represents the order of the activity in the chat history and can be a sparse number;
+   -  This field is OPTIONAL, but RECOMMENDED;
+   -  This field MUST be an integer number;
+   -  This field MUST be a unique number assigned by the chat service;
+   -  This field SHOULD be consistent across all members of the conversation.
+1. Otherwise, `activity.timestamp: string`
+   -  This field represents the server timestamp of the activity;
+   -  This field is REQUIRED;
+   -  This field MUST be an ISO date-time string, for example, `2000-01-23T12:34:56.000Z`;
+   -  This field MUST be assigned by the chat service, a.k.a. server timestamp;
+   -  This field SHOULD have resolution up to 1 millisecond;
+   -  This field MUST be the same across all members of the conversation.
+1. Otherwise, `activity.localTimestamp: string`
+   -  This field represents the local timestamp of an outgoing activity;
+   -  This field is REQUIRED for all outgoing activities;
+   -  This field MUST be an ISO date-time string, for example, `2000-01-23T12:34:56.000Z`;
+   -  This field MUST be assigned by the sender, a.k.a. Web Chat;
+   -  This field SHOULD have resolution up to 1 millisecond;
+   -  This field MUST be the same across all members of the conversation.
+
+# Archived documentation
+
+The following documentation is archived.
+
 ## How activities are being sorted?
 
 Web Chat sort activities based on a few sort keys stamped by the chat service, with the following fallback order:
@@ -61,6 +120,8 @@ Combining the algorithms above, Web Chat has the following assumptions
 
 ## Related read
 
+-  Pull requests
+   - [Grouped activities are sorted as a single unit](https://github.com/microsoft/BotFramework-WebChat/pull/5635)
 -  Posting an activity, [`sagas/postActivitySaga.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/sagas/postActivitySaga.ts)
 -  Inserting an activity into the chat history, [`reducers/activities.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/reducers/activities.ts)
 -  Activity type, [`types/WebChatActivity.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/types/WebChatActivity.ts)

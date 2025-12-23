@@ -6,6 +6,7 @@ const clickAt = require('./clickAt');
 const done = require('./done');
 const dragAndHold = require('./dragAndHold');
 const error = require('./error');
+const executeScriptInFrame = require('./executeScriptInFrame');
 const getLogs = require('./getLogs');
 const hover = require('./hover');
 const moveTo = require('./moveTo');
@@ -35,6 +36,7 @@ module.exports = function createHost(webDriver) {
     donePromise: doneWithResolvers.promise,
     dragAndHold: dragAndHold(webDriver),
     error: error(doneWithResolvers.reject),
+    executeScriptInFrame: executeScriptInFrame(webDriver),
     getLogs: getLogs(webDriver),
     hover: hover(webDriver),
     moveTo: moveTo(webDriver),

@@ -11,6 +11,8 @@ export default function useSendTimeoutForActivity(activity: WebChatActivity) {
       'botframework-webchat: "useSendTimeoutForActivity" is deprecated and will be removed on or after 2022-07-28. Please use "useGetSendTimeoutForActivity()" instead.'
     );
 
+    // This is intentionally run once.
+    // eslint-disable-next-line react-hooks/globals
     showDeprecationNotes = false;
   }
 

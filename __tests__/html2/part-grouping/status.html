@@ -31,10 +31,6 @@
     .fui-FluentProvider {
       height: 100%;
     }
-
-    .theme.variant-copilot {
-      --webchat__color--surface: var(--colorGrey98);
-    }
   </style>
 </head>
 
@@ -114,7 +110,7 @@
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(
-        variant === 'copilot' || variant === 'fluent' ?
+        variant ?
           React.createElement(
             FluentProvider,
             { className: 'fui-FluentProvider', theme: fluentTheme },
@@ -144,7 +140,7 @@
           name: 'Research',
         },
         isPartOf: {
-          '@id': 'h-00001',
+          '@id': '_:h-00001',
           '@type': 'HowTo',
         }
       };
@@ -175,8 +171,8 @@
 
       // Test Case 1: Initial activities with different statuses
       // When: adding activities with various statuses
-      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { position: 1, status: 'incomplete', abstract: 'one' }));
-      directLine.emulateIncomingActivity(withModifiers(activities.at(1), { position: 2, status: 'published', abstract: 'two' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { position: 1, status: 'Incomplete', abstract: 'one' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(1), { position: 2, status: 'Published', abstract: 'two' }));
       directLine.emulateIncomingActivity(withModifiers(activities.at(2), { position: 3, status: undefined, abstract: 'three' }));
 
       // Then: show activities with corresponding status indicators
@@ -184,8 +180,8 @@
       await host.snapshot('local');
 
       // Test Case 2: Multiple activities being worked on
-      // When: setting another activity to 'incomplete'
-      directLine.emulateIncomingActivity(withModifiers(activities.at(2), { status: 'incomplete', abstract: 'three in progress' }));
+      // When: setting another activity to 'Incomplete'
+      directLine.emulateIncomingActivity(withModifiers(activities.at(2), { status: 'Incomplete', abstract: 'three in progress' }));
 
       // Then: show multiple loading indicators
       await pageConditions.numActivitiesShown(4);
@@ -200,18 +196,18 @@
       await host.snapshot('local');
 
       // When: continuing work on the first activity
-      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'incomplete', abstract: 'one resumed' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'Incomplete', abstract: 'one resumed' }));
 
       // Then: show the loading indicator again for the first activity
       await pageConditions.numActivitiesShown(4);
       await host.snapshot('local');
 
       // Test Case 4: Complete all work
-      // When: marking all activities as 'published'
-      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'published', abstract: 'one done' }));
-      directLine.emulateIncomingActivity(withModifiers(activities.at(2), { status: 'published', abstract: 'three done' }));
+      // When: marking all activities as 'Published'
+      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'Published', abstract: 'one done' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(2), { status: 'Published', abstract: 'three done' }));
 
-      // Then: all activities should show the 'published' status indicator
+      // Then: all activities should show the 'Published' status indicator
       await pageConditions.numActivitiesShown(4);
       await host.snapshot('local');
 
@@ -220,8 +216,10 @@
       directLine.emulateIncomingActivity(withModifiers(activities.at(3), { position: 4, status: undefined, abstract: 'four' }));
       directLine.emulateIncomingActivity(withModifiers(activities.at(4), { position: 5, status: undefined, abstract: 'five' }));
       await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
 
-      directLine.emulateIncomingActivity(withModifiers(activities.at(4), { position: 1, status: 'incomplete', abstract: 'five moved to one and in progress' }));
+      // Become 1-5-2-3-4.
+      directLine.emulateIncomingActivity(withModifiers(activities.at(4), { position: 1, status: 'Incomplete', abstract: 'five moved to one and in progress' }));
 
       // Then: show the activity moved to the new position with a loading indicator
       await pageConditions.numActivitiesShown(6);
@@ -229,22 +227,23 @@
 
       // Test Case 6: Start work on an item, then another item is inserted before it
       // When: starting work on an item and then inserting another before it
-      directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'incomplete', abstract: 'four in progress' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'Incomplete', abstract: 'four in progress' }));
       await host.snapshot('local');
 
-      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { position: 3, status: 'incomplete', abstract: 'one (was done) moved to three and in progress' }));
+      // Become 5-2-3-4-1.
+      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { position: 3, status: 'Incomplete', abstract: 'one (was done) moved to three and in progress' }));
 
       // Then: show the new item inserted with a loading indicator, and the other items shifted
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
       // Test Case 7: Complete all remaining work
-      // When: marking all incomplete activities as 'published'
-      directLine.emulateIncomingActivity(withModifiers(activities.at(4), { status: 'published', abstract: 'five done' }));
-      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'published', abstract: 'one done again' }));
-      directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'published', abstract: 'four done' }));
+      // When: marking all incomplete activities as 'Published'
+      directLine.emulateIncomingActivity(withModifiers(activities.at(4), { status: 'Published', abstract: 'five done' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'Published', abstract: 'one done again' }));
+      directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'Published', abstract: 'four done' }));
 
-      // Then: all activities should show the 'published' status indicator
+      // Then: all activities should show the 'Published' status indicator
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
     });

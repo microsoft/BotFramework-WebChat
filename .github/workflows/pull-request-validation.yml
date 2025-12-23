@@ -22,7 +22,7 @@ defaults:
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
-  node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
+  node-version: 24
 
 permissions:
   contents: read
@@ -145,6 +145,7 @@ jobs:
           --forceExit \
           --logHeapUsage \
           --runInBand \
+          --silent \
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
@@ -154,7 +155,7 @@ jobs:
           ls -laR .
 
           mv lcov.info lcov-unit.info
-          mv result.trx result-unit.trx
+        # mv result.trx result-unit.trx
         working-directory: ./coverage
 
       - if: always()
@@ -164,7 +165,7 @@ jobs:
           name: test-result-unit
           path: |
             ./coverage/lcov-*.info
-            ./coverage/result-*.trx
+          # ./coverage/result-*.trx
 
   type-definitions-test:
     name: Type definitions test
@@ -228,7 +229,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Run docker compose build
-        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com
 
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
@@ -255,7 +256,8 @@ jobs:
             --forceExit \
             --logHeapUsage \
             --runInBand \
-            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
+            --silent
         timeout-minutes: 10
 
       - if: always()
@@ -268,7 +270,7 @@ jobs:
           ls -laR .
 
           mv lcov.info lcov-${{ matrix.shard-index }}.info
-          mv result.trx result-${{ matrix.shard-index }}.trx
+        # mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
 
       - if: always()
@@ -278,7 +280,7 @@ jobs:
           name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/lcov-*.info
-            ./coverage/result-*.trx
+          # ./coverage/result-*.trx
 
       - if: failure()
         name: Upload test snapshot diffs

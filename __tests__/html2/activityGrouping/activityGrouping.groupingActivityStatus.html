@@ -50,6 +50,8 @@
         await sendMessage1.echoBack();
         sendMessage1.resolvePostActivity();
 
+        clock.tick(1000);
+
         const sendMessage2 = await directLine.emulateOutgoingActivity('A retry prompt must show on this activity.');
 
         clock.tick(1000);
@@ -60,6 +62,8 @@
 
         await sendMessage3.echoBack();
         sendMessage3.resolvePostActivity();
+
+        clock.tick(1000);
 
         const sendMessage4 = await directLine.emulateOutgoingActivity(
           'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.'

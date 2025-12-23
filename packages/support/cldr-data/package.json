@@ -1,6 +1,7 @@
 {
   "name": "@msinternal/botframework-webchat-cldr-data",
-  "version": "36.0.0-0",
+  "version": "0.0.0-0",
+  "adoptedVersion": "36.0.0",
   "engines": {
     "node": ">= 12"
   },
@@ -39,18 +40,20 @@
     "urls.json"
   ],
   "scripts": {
-    "build": "node ./src/install.mjs && node ./src/patch.mjs",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../../scripts/npm/build-watch.sh",
+    "build:run": "node ./src/install.mjs && node ./src/patch.mjs && touch ./package.json",
     "bump": "npm run bump:dev && npm run bump:prod && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "eslint": "npm run precommit",
-    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "postversion": "../../../scripts/npm/postversion.sh",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0",
-    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json"
-  },
-  "localDependencies": {
-    "@msinternal/botframework-webchat-cldr-data-downloader": "production"
+    "preversion": "../../../scripts/npm/preversion.sh",
+    "start": "../../../scripts/npm/notify-build.sh \"src\" \"../cldr-data-downloader/package.json\""
   },
   "pinDependencies": {
     "glob": [
@@ -58,10 +61,13 @@
       "glob@10 updated the entrypoint, need funding to upgrade"
     ]
   },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-cldr-data-downloader": "production"
+  },
   "dependencies": {
-    "@msinternal/botframework-webchat-cldr-data-downloader": "0.3.5-0",
+    "@msinternal/botframework-webchat-cldr-data-downloader": "0.0.0-0",
     "glob": "8.1.0",
-    "read-pkg": "9.0.1",
-    "read-pkg-up": "11.0.0"
+    "read-package-up": "12.0.0",
+    "read-pkg": "10.0.0"
   }
 }

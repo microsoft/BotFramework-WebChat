@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
+import combineActivitiesReducer from './reducers/activities/combineActivitiesReducer';
 import connectivityStatus from './reducers/connectivityStatus';
-import createActivitiesReducer from './reducers/createActivitiesReducer';
 import createInternalReducer from './reducers/createInternalReducer';
 import createNotificationsReducer from './reducers/createNotificationsReducer';
 import createTypingReducer from './reducers/createTypingReducer';
@@ -19,25 +19,29 @@ import suggestedActions from './reducers/suggestedActions';
 import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginActivity';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
-export default function createReducer(ponyfill: GlobalScopePonyfill) {
-  return combineReducers({
-    activities: createActivitiesReducer(ponyfill),
-    connectivityStatus,
-    dictateInterims,
-    dictateState,
-    internal: createInternalReducer(ponyfill),
-    language,
-    notifications: createNotificationsReducer(ponyfill),
-    readyState,
-    referenceGrammarID,
-    sendBoxAttachments,
-    sendBoxValue,
-    sendTimeout,
-    sendTypingIndicator,
-    shouldSpeakIncomingActivity,
-    suggestedActions,
-    suggestedActionsOriginActivity,
-    typing: createTypingReducer(ponyfill)
-  });
+export default function createReducer(ponyfill: GlobalScopePonyfill, restrictedStoreDebugAPI: RestrictedStoreDebugAPI) {
+  return combineActivitiesReducer(
+    ponyfill,
+    restrictedStoreDebugAPI,
+    combineReducers({
+      connectivityStatus,
+      dictateInterims,
+      dictateState,
+      internal: createInternalReducer(ponyfill),
+      language,
+      notifications: createNotificationsReducer(ponyfill),
+      readyState,
+      referenceGrammarID,
+      sendBoxAttachments,
+      sendBoxValue,
+      sendTimeout,
+      sendTypingIndicator,
+      shouldSpeakIncomingActivity,
+      suggestedActions,
+      suggestedActionsOriginActivity,
+      typing: createTypingReducer(ponyfill)
+    })
+  );
 }

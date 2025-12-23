@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <script>
+      function expectWidthHeight(element, width, height) {
+        try {
+          expect(Math.abs(element.clientWidth - width) <= 1).toBe(true);
+        } catch {
+          expect(element.clientWidth).toBe(width); // Better message.
+        }
+      }
+
+      run(
+        async function () {
+          const container = document.createElement('main');
+
+          container.setAttribute('id', 'webchat');
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              styleOptions: { bubbleImageHeight: 240, bubbleImageMaxHeight: 10, bubbleImageMinHeight: 10 }
+            },
+            container
+          );
+
+          document.body.append(container);
+
+          await host.windowSize(360, 1280, document.getElementById('webchat'));
+
+          await pageConditions.uiConnected();
+
+          // Generated from https://placeholder.pics/svg/320x180.
+          const LANDSCAPE_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect x="2" y="2" width="316" height="176" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">320×180 (16:9)</text></svg>`;
+
+          // Generated from https://placeholder.pics/svg/180x320.
+          const PORTRAIT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="320"><rect x="2" y="2" width="176" height="316" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">180×320 (9:16)</text></svg>`;
+
+          // Generated from https://placeholder.pics/svg/640x180.
+          const WIDE_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180"><rect x="2" y="2" width="636" height="176" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">640×180 (32:9)</text></svg>`;
+
+          await directLine.emulateIncomingActivity({
+            attachments: [
+              {
+                contentType: 'image/svg+xml',
+                contentUrl: WIDE_SVG,
+                thumbnailUrl: WIDE_SVG
+              },
+              {
+                contentType: 'image/svg+xml',
+                contentUrl: LANDSCAPE_SVG,
+                thumbnailUrl: LANDSCAPE_SVG
+              },
+              {
+                contentType: 'image/svg+xml',
+                contentUrl: PORTRAIT_SVG,
+                thumbnailUrl: PORTRAIT_SVG
+              }
+            ],
+            from: { role: 'user' },
+            text: 'Images with fixed `bubbleImageHeight`.',
+            type: 'message'
+          });
+
+          await pageConditions.allImagesLoaded();
+
+          const imageElements = pageElements.activities()[0].querySelectorAll('.webchat__fixed-width-image');
+          const wideImage = imageElements[0];
+          const landscapeImage = imageElements[1];
+          const portraitImage = imageElements[2];
+
+          expectWidthHeight(wideImage, 338, 240);
+          expectWidthHeight(landscapeImage, 338, 240);
+          expectWidthHeight(portraitImage, 338, 240);
+
+          await host.snapshot('local');
+        },
+        { expectDeprecations: true }
+      );
+    </script>
+  </body>
+</html>

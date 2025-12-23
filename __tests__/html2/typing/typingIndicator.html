@@ -61,20 +61,13 @@
         await directLine.emulateIncomingActivity({
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
-          text: 'Excepteur enim tempor ex do magna elit consectetur elit incididunt.',
-          type: 'message'
-        });
-
-        await directLine.emulateIncomingActivity({
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00003',
           text: 'Ad minim fugiat sint et laboris consectetur eu ut in nisi fugiat cillum est labore.',
           type: 'message'
         });
 
         await directLine.emulateIncomingActivity({
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00004',
+          id: 'a-00003',
           text: 'Est voluptate eiusmod ad Lorem irure amet sint ea aliqua labore eu do nostrud exercitation.',
           type: 'message'
         });
@@ -90,7 +83,7 @@
               }
             : {}),
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00002',
+          id: 'a-00004',
           type: 'typing'
         });
 
@@ -107,7 +100,7 @@
           ...(isLivestream
             ? {
                 channelData: {
-                  streamId: 'a-00002',
+                  streamId: 'a-00004',
                   streamType: 'final'
                 }
               }
@@ -119,7 +112,7 @@
                 }
               }),
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00002',
+          id: 'a-00004',
           type: 'typing'
         });
 

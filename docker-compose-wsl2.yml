@@ -1,13 +1,10 @@
-version: '3'
-
 services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
   chrome:
-    image: selenium/node-chrome:110.0
+    image: selenium/node-chrome:141.0
     depends_on:
       - selenium-hub
-      - webchat
       - webchat2
     environment:
       SE_EVENT_BUS_HOST: selenium-hub
@@ -17,23 +14,15 @@ services:
       SE_NODE_SESSION_TIMEOUT: '300'
     shm_size: '2.5gb'
     volumes:
-      - ./__tests__/setup/local/:/home/seluser/Downloads
+      - ./__tests__/downloads/:/home/seluser/Downloads
 
   selenium-hub:
-    image: selenium/hub:4.8.1
+    image: selenium/hub:4.36.0
     container_name: selenium-hub
     environment:
       GRID_TIMEOUT: '300'
     ports:
       - '4444:4444'
-
-  webchat:
-    build:
-      context: ./
-      dockerfile: testharness.dockerfile
-    ports:
-      - '5080:80'
-    stop_grace_period: 0s
 
   webchat2:
     build:
@@ -41,7 +30,7 @@ services:
       dockerfile: testharness2.dockerfile
     stop_grace_period: 0s
     volumes:
-      - ./__tests__/html/:/var/web/__tests__/html/
+      - ./__tests__/assets/:/var/web/__tests__/assets/
       - ./__tests__/html2/:/var/web/__tests__/html2/
       - ./packages/bundle/dist/:/var/web/packages/bundle/dist/
       - ./packages/bundle/static/:/var/web/packages/bundle/static/

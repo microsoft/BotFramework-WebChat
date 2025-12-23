@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const workingDirectLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        let firstBotActivityId;
+        let firstBotActivityTimestamp;
+
+        const directLine = {
+          activity$: workingDirectLine.activity$.map(activity => {
+            if (!activity.channelData && activity.type === 'message') {
+              // Remove all activity ID from bot
+
+              return Object.assign({}, activity, { id: undefined });
+            }
+
+            return activity;
+          }),
+          connectionStatus$: workingDirectLine.connectionStatus$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          token: workingDirectLine.token
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: An "echo" message is being sent to the bot.
+        await pageObjects.sendMessageViaSendBox('echo This message will not be replaced by a carousel.', {
+          waitForSend: true
+        });
+
+        // THEN: Both bot replies will have `activity.id` of `undefined`.
+        //       Although the ID is duplicated, it is falsy, thus, we are treating them different ID.
+        //       Thus, it should show 3 messages: 1 outgoing and 2 incoming.
+        await pageConditions.numActivitiesShown(3);
+
+        // THEN: It should show 3 messages.
+        await host.snapshot('local');
+
+        // THEN: A "carousel" message is being sent.
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+
+        // THEN: It should show 5 messages in total, where 2 are new incoming messages related to carousel.
+        await pageConditions.numActivitiesShown(5);
+
+        // WHEN: All images are loaded.
+        await pageConditions.allImagesLoaded();
+
+        // WHEN: Scroll to bottom completed.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should show 5 messages in total.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

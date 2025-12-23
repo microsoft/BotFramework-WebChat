@@ -8,18 +8,15 @@ import {
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
+import languageSelector from '../selectors/language';
+import sendTimeoutSelector from '../selectors/sendTimeout';
 import dateToLocaleISOString from '../utils/dateToLocaleISOString';
 import deleteKey from '../utils/deleteKey';
-import languageSelector from '../selectors/language';
-import observeOnce from './effects/observeOnce';
-import sendTimeoutSelector from '../selectors/sendTimeout';
 import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
+import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
 
-import type { DirectLineActivity } from '../types/external/DirectLineActivity';
-import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type {
   PostActivityAction,
@@ -28,8 +25,12 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { setSendStatusInOutgoingActivity } from '../reducers/activities/sort/property/SendStatus';
+import type { DirectLineActivity } from '../types/external/DirectLineActivity';
+import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
+import type { WebChatActivity } from '../types/WebChatActivity';
 
 // After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
@@ -52,13 +53,12 @@ function* postActivity(
 
   // Currently, we allow untyped outgoing activity as long as the chat adapter can deliver.
   // In the future, we should warn if the outgoing activity is not matching the type.
-  const outgoingActivity: WebChatOutgoingActivity = {
+  let outgoingActivity: WebChatOutgoingActivity = {
     ...deleteKey(activity, 'id'),
     channelData: {
-      // Remove local fields that should not be send to the service.
       // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
       // Please refer to #4362 for details. Remove on or after 2024-07-31.
-      ...deleteKey(activity.channelData, 'state', 'webchat:send-status'),
+      ...deleteKey(activity.channelData, 'state'),
       clientActivityID
     },
     channelId: 'webchat',
@@ -89,6 +89,13 @@ function* postActivity(
           }
         : {})
   };
+
+  // Remove local fields that should not be send to the service.
+  outgoingActivity = setSendStatusInOutgoingActivity(
+    // TODO: [P1] Need to rework WebChatActivity typing.
+    outgoingActivity as WebChatActivity,
+    undefined
+  ) as WebChatOutgoingActivity;
 
   if (!numActivitiesPosted) {
     outgoingActivity.entities = [

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity(
+          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+        );
+
+        await pageConditions.numActivitiesShown(1);
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+
+        // With new lines
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).value = ['One', 'Two', 'Three'].join('\n');
+        await host.sendKeys(' ');
+        await host.snapshot('local');
+
+        // With a single long line
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).value = '';
+        await host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(2));
+        await host.snapshot('local');
+
+        // With a scroll-bar when passed 10 lines
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).value += ['', 'One', 'Two', 'Three'].join('\n');
+        await host.sendKeys(' ');
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

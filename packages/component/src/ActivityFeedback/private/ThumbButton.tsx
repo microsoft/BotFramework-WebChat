@@ -18,6 +18,7 @@ const thumbButtonPropsSchema = pipe(
     className: optional(string()),
     direction: union([literal('down'), literal('up')]),
     disabled: optional(boolean()),
+    name: string(),
     onClick: optional(function_()),
     pressed: optional(boolean()),
     size: union([literal('small'), literal('large')]),
@@ -30,7 +31,7 @@ const thumbButtonPropsSchema = pipe(
 type ThumbButtonProps = InferInput<typeof thumbButtonPropsSchema>;
 
 function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement>) {
-  const { as, className, direction, disabled, onClick, pressed, size, submitted, title } = validateProps(
+  const { as, className, direction, disabled, name, onClick, pressed, size, submitted, title } = validateProps(
     thumbButtonPropsSchema,
     props
   );
@@ -73,6 +74,7 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
           thumbButton + ''
         )}
         data-testid={testIds.feedbackButton}
+        name={name}
         onKeyDown={handleKeyDown}
         ref={ref}
         {...(as === 'radio'

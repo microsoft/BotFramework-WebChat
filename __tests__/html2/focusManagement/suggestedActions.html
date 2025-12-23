@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { subtle: '#666' }
+          },
+          document.getElementById('webchat')
+        );
+
+        // Verification of fix of #1971, https://github.com/microsoft/BotFramework-WebChat/issues/1971
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.suggestedActionsShown();
+        await pageObjects.clickNthSuggestedAction(1);
+        await pageConditions.allOutgoingActivitiesSent();
+        await pageConditions.minNumActivitiesShown(4);
+
+        // After clicking on any suggested actions, it should focus back on the type focus sink.
+        expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

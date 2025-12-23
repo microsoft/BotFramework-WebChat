@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const baseProps = { directLine, store, styleOptions: { subtle: '#666' } };
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(baseProps, webChatElement);
+
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('herocard qna 1', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        await host.snapshot('local');
+
+        WebChat.renderWebChat({ ...baseProps, disabled: true }, webChatElement);
+
+        await host.snapshot('local');
+
+        // Focusing on the transcript, then press ENTER on the hero card. It should not change focus away from transcript because the card is disabled.
+        await host.sendShiftTab(2);
+        await host.sendKeys('ENTER');
+
+        expect(document.activeElement === pageElements.transcript()).toBe(true);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

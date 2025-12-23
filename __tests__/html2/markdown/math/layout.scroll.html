@@ -83,7 +83,7 @@
         const root = createRoot(document.getElementById('webchat'));
 
         root.render(
-          variant === 'copilot' || variant === 'fluent' ? 
+          variant ? 
             React.createElement(
               FluentProvider,
               { theme: fluentTheme },
@@ -115,7 +115,7 @@
         document.querySelector(`#webchat [data-testid="${testIds.sendBoxTextBox}"]`).focus();
 
         await host.sendShiftTab(
-          (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') ? 2 : 3
+          ['copilot', 'fluent'].includes(searchParams.get('variant')) ? 2 : 3
         );
         await host.sendKeys('ENTER');
 

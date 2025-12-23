@@ -30,77 +30,24 @@
       .fui-FluentProvider {
         height: 100%;
       }
-
-      .theme.variant-copilot {
-        --webchat__color--surface: var(--colorGrey98);
-      }
-
-      #key-history {
-        align-items: center;
-        display: flex;
-        gap: 0.5em;
-        left: 0.5em;
-        padding: 0.5em;
-        position: fixed;
-        top: 0.5em;
-        z-index: 1;
-        font-size: 3rem;
-      }
-
-      #key-history kbd {
-        background-color: #f7f7f7;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 0 1px 0 #aaaaaa44, 0 2px 0 #ffffff44 inset;
-        color: #222;
-        font-weight: bold;
-        padding: 0.2em 0.6em;
-        text-align: center;
-      }
-      #key-history kbd:last-of-type {
-        background-color: #e4e8ec;
-      }
     </style>
   </head>
 
   <body>
-    <div id="key-history" aria-hidden="true"></div>
+    <event-stream></event-stream>
     <main id="webchat"></main>
+    <script type="module">
+      import { registerElements } from '/assets/custom-element/custom-element.js';
+
+      const [KeyboardEventElement] = await registerElements('keyboard-event', 'event-stream');
+
+      KeyboardEventElement.listenKeyboardEvents();
+    </script>
     <script type="module">
       import React from 'react';
       import { createRoot } from 'react-dom/client';
       import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
       import { waitFor } from '@testduet/wait-for';
-
-      const KEY_MAP = {
-        ArrowDown: '↓',
-        ArrowUp: '↑'
-      };
-
-      const keyHistory = [];
-      const keyHistoryElement = document.getElementById('key-history');
-
-      const updateKeyHistory = () => {
-        const children = keyHistory.slice(-3).map(key => {
-          const kbd = document.createElement('kbd');
-
-          kbd.textContent = key;
-          return kbd;
-        });
-
-        keyHistoryElement.replaceChildren(...children);
-      };
-
-      window.addEventListener(
-        'keydown',
-        event => {
-          keyHistory.push(KEY_MAP[event.key] || event.key);
-          updateKeyHistory();
-        },
-        { capture: true }
-      );
-
-      updateKeyHistory();
 
       run(async function () {
         const {
@@ -138,7 +85,7 @@
         const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
         root.render(
-          variant === 'copilot' || variant === 'fluent'
+          variant
             ? React.createElement(
                 FluentProvider,
                 { className: 'fui-FluentProvider', theme: fluentTheme },
@@ -176,10 +123,10 @@
 
         // Setup: Send all activities.
         directLine.emulateIncomingActivity(createActivity('activity-1', 'Activity 1'));
-        directLine.emulateIncomingActivity(createActivity('g1-activity-1', 'Group 1, Activity 1', 'g-00001'));
-        directLine.emulateIncomingActivity(createActivity('g1-activity-2', 'Group 1, Activity 2', 'g-00001'));
-        directLine.emulateIncomingActivity(createActivity('g2-activity-1', 'Group 2, Activity 1', 'g-00002'));
-        directLine.emulateIncomingActivity(createActivity('g2-activity-2', 'Group 2, Activity 2', 'g-00002'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-1', 'Group 1, Activity 1', '_:g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-2', 'Group 1, Activity 2', '_:g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-1', 'Group 2, Activity 1', '_:g-00002'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-2', 'Group 2, Activity 2', '_:g-00002'));
         directLine.emulateIncomingActivity(createActivity('activity-2', 'Activity 2'));
 
         await pageConditions.numActivitiesShown(7);

@@ -31,10 +31,6 @@
     .fui-FluentProvider {
       height: 100%;
     }
-
-    .theme.variant-copilot {
-      --webchat__color--surface: var(--colorGrey98);
-    }
   </style>
 </head>
 
@@ -59,6 +55,8 @@
       await waitFor(() => {
         return summaries.at(-1).getAttribute('aria-expanded') === 'true';
       }, 500);
+
+      await pageConditions.scrollStabilized();
     }
 
     run(async function () {
@@ -131,7 +129,7 @@
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(
-        variant === 'copilot' || variant === 'fluent' ?
+        variant ?
           React.createElement(
             FluentProvider,
             { className: 'fui-FluentProvider', theme: fluentTheme },
@@ -232,7 +230,7 @@ plot_sine_waves()`;
               abstract: 'Considering equation solutions',
               position: 1,
               isPartOf: {
-                '@id': 'h-00001',
+                '@id': '_:h-00001',
                 '@type': 'HowTo'
               }
             }
@@ -250,7 +248,7 @@ plot_sine_waves()`;
               abstract: 'Planning plot implementation',
               position: 2,
               isPartOf: {
-                '@id': 'h-00001',
+                '@id': '_:h-00001',
                 '@type': 'HowTo'
               }
             }
@@ -267,7 +265,7 @@ plot_sine_waves()`;
               abstract: 'Writing plot code',
               position: 3,
               isPartOf: {
-                '@id': 'h-00001',
+                '@id': '_:h-00001',
                 '@type': 'HowTo'
               }
             }
@@ -295,7 +293,7 @@ plot_sine_waves()`;
                 }
               ],
               isPartOf: {
-                '@id': 'h-00001',
+                '@id': '_:h-00001',
                 '@type': 'HowTo'
               },
             }
@@ -323,7 +321,7 @@ plot_sine_waves()`;
                 }
               ],
               isPartOf: {
-                '@id': 'h-00001',
+                '@id': '_:h-00001',
                 '@type': 'HowTo'
               },
               keywords: ['Collapsible']
@@ -337,8 +335,8 @@ plot_sine_waves()`;
       ];
 
       // When activities are sent:
-      // 1st is sent with status 'incomplete' to show the work has started
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'incomplete'));
+      // 1st is sent with status 'Incomplete' to show the work has started
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'Incomplete'));
       // 2nd is sent with status not set to show the work is in
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), undefined));
 
@@ -348,10 +346,10 @@ plot_sine_waves()`;
       await pageConditions.numActivitiesShown(3);
       await host.snapshot('local');
 
-      // When marking the 1st activity as 'published':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'published'));
+      // When marking the 1st activity as 'Published':
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'Published'));
 
-      // Then: show the 1st activity in the list with the 'published' status indicator
+      // Then: show the 1st activity in the list with the 'Published' status indicator
       await pageConditions.numActivitiesShown(3);
       await host.snapshot('local');
 
@@ -363,30 +361,30 @@ plot_sine_waves()`;
       await pageConditions.numActivitiesShown(5);
       await host.snapshot('local');
 
-      // When marking the 2nd activity as 'incomplete':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'incomplete'));
+      // When marking the 2nd activity as 'Incomplete':
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'Incomplete'));
 
       // Then: show the 2nd activity in the list with the loading status indicator
       await pageConditions.numActivitiesShown(5);
       await host.snapshot('local');
 
-      // When marking the 2rd activity as 'published' and the 3th as 'published':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'published'));
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(2), 'published'));
+      // When marking the 2rd activity as 'Published' and the 3th as 'Published':
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'Published'));
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(2), 'Published'));
 
-      // Then: both activities should show the 'published' status indicator
+      // Then: both activities should show the 'Published' status indicator
       await pageConditions.numActivitiesShown(5);
       await host.snapshot('local');
 
-      // When setting status of the last activity to 'incomplete':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(3), 'incomplete'));
+      // When setting status of the last activity to 'Incomplete':
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(3), 'Incomplete'));
 
       // Then: the last activity should show the loading status indicator
       await pageConditions.numActivitiesShown(5);
       await host.snapshot('local');
 
       // When updating the last activity with code content:
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'incomplete'));
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'Incomplete'));
 
       // Then: the last activity should show the loading status indicator and chevron
       await pageConditions.numActivitiesShown(5);
@@ -398,10 +396,10 @@ plot_sine_waves()`;
       // Then: the last activity should expand to show the code content
       await host.snapshot('local');
 
-      // When marking the last activity as 'published':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'published'));
+      // When marking the last activity as 'Published':
+      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'Published'));
 
-      // Then: the last activity should show the 'published' status indicator and remain open
+      // Then: the last activity should show the 'Published' status indicator and remain open
       await pageConditions.numActivitiesShown(5);
       await host.snapshot('local');
 

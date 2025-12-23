@@ -12,6 +12,8 @@
   <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   <style>
     .completion {
+      /* If line-height is not set to normal/initial, it will make the send box taller by 1 pixel when the completion is shown. */
+      line-height: normal;
       opacity: 0.75;
     }
   </style>
@@ -24,9 +26,9 @@
       const {
         React,
         ReactDOM: { render },
-        WebChat: { 
+        WebChat: {
           FluentThemeProvider, FluentSendBox, testIds,
-          Components: { BasicWebChat, Composer }, 
+          Components: { BasicWebChat, Composer },
           hooks: { useSendBoxValue }
         }
       } = window; // Imports in UMD fashion.

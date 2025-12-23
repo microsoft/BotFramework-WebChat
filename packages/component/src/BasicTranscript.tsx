@@ -118,7 +118,10 @@ type InternalTranscriptProps = Readonly<{
 
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ className, terminatorRef }: InternalTranscriptProps, ref) => {
+  (
+    { className, terminatorRef }: InternalTranscriptProps,
+    ref: MutableRefObject<HTMLDivElement> | ((instance: HTMLDivElement | null) => void)
+  ) => {
     const [activeDescendantId] = useActiveDescendantId();
     const [direction] = useDirection();
     const [focusedKey] = useFocusedKey();
@@ -377,7 +380,12 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       event => {
         const { altKey, ctrlKey, key, metaKey, target } = event;
 
-        if (altKey || (ctrlKey && key !== 'v') || metaKey || (!inputtableKey(key) && key !== 'Backspace')) {
+        if (
+          altKey ||
+          (ctrlKey && key !== 'v' && key !== 'V') ||
+          metaKey ||
+          (!inputtableKey(key) && key !== 'Backspace')
+        ) {
           // Ignore if one of the utility key (except SHIFT) is pressed
           // E.g. CTRL-C on a link in one of the message should not jump to chat box
           // E.g. "A" or "Backspace" should jump to chat box

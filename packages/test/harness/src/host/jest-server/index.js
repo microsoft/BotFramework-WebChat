@@ -10,6 +10,7 @@ require('global-agent/bootstrap');
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
 const express = require('express');
 const removeInline = require('./removeInline');
+const { ADJUST_WINDOW_SIZE_HEIGHT } = require('../common/constants');
 const sleep = require('../../common/utils/sleep');
 
 const INSTANCE_LIFE = 30000 * 10; // Instance can live up to 5 minutes.
@@ -126,7 +127,9 @@ async function prepareSession(sessionId) {
   await sendWebDriverCommand(sessionId, 'url', { url: 'about:blank' });
 
   // It may have set a different window size.
-  await sendWebDriverCommand(sessionId, 'window/rect', { height: 640, width: 360 });
+  // TODO: [P2] We cannot run --headless mode reliably, setting window size will mess things up.
+  //            Look at /packages/test/harness/src/host/jest/allocateWebDriver.js.
+  await sendWebDriverCommand(sessionId, 'window/rect', { height: 640 + ADJUST_WINDOW_SIZE_HEIGHT, width: 360 });
 
   // Last test may have moved the mouse cursor.
   await sendWebDriverCommand(sessionId, 'actions', {

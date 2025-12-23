@@ -43,7 +43,8 @@ export default defineConfig([
       ...config.env,
       module_format: 'esmodules'
     },
-    format: 'esm'
+    format: 'esm',
+    onSuccess: 'touch ./package.json'
   },
   {
     ...config,

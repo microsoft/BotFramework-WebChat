@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    style: 'heading',
+                    type: 'TextBlock',
+                    text: 'This is an Adaptive Card'
+                  },
+                  {
+                    type: 'TextBlock',
+                    text: atob(
+                      'IyMgSGVhZGVyCjxwPlRoaXMgaXMgc29tZSB0ZXh0IHdpdGggYSA8YSBocmVmPSJodHRwOi8vZXhhbXBsZS5jb20iIHRpdGxlPSJldmVuIGhhY2tlcnMgcmVzcGVjdCBhMTF5Ij5saW5rIGluIGl0PC9hPi4gQWxzbyA8c3Ryb25nPnNvbWUgdGV4dDwvc3Ryb25nPiA8ZW0+d2l0aCBmb3JtYXR0aW5nPC9lbT4uPC9wPgo8dWw+CjxsaT5Vbm9yZGVyZWQ8L2xpPgo8bGk+bGlzdDwvbGk+CjxsaT5pdGVtczwvbGk+CjwvdWw+CjxvbD4KPGxpPk9yZGVyZWQ8L2xpPgo8bGk+bGlzdDwvbGk+CjxsaT5pdGVtczwvbGk+Cjwvb2w+Cjx1bD4KPGxpPkJlbG93IGFyZSBzb21lIHVuc2FmZSB0aGluZ3MgdGhhdCBzaG91bGQgZ2V0IHNhbml0aXplZDoKPGxpPjxzY3JpcHQ+VGhpcyBpc24ndCBhbGxvd2VkITwvc2NyaXB0Pgo8bGk+PGltZyBzcmM9IiIgYWx0PSJJIGFtIGEgZHVtbXkgaW1hZ2UgdHJ5aW5nIHRvIGhhY2sgeW91IiBvbmVycm9yPWFsZXJ0KDEpIC8+CjxsaT48c3ZnIGFyaWEtbGFiZWw9Im1hbGljaW91cyBzdmcgaGVyZSI+PGcvb25sb2FkPWFsZXJ0KDIpLy88cD4KPGxpPjxwPmFiYzxpZnJhbWUvL3NyYz1qQXZhJlRhYjtzY3JpcHQ6YWxlcnQoMyk+ZGVmPC9wPgo8bGk+PG1hdGg+PG1pLy94bGluazpocmVmPSJkYXRhOngsPHNjcmlwdD5hbGVydCg0KTwvc2NyaXB0Pgo8bGk+CjwvdWw+'
+                    ),
+                    wrap: true
+                  }
+                ],
+                actions: [
+                  {
+                    type: 'Action.Submit',
+                    title: 'Submit card'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [firstActivityElement] = pageElements.activities();
+
+        const link = firstActivityElement.querySelector('[href="http://example.com"]');
+        const linkImage = link.querySelector('.webchat__render-markdown__external-link-icon');
+
+        expect(link.getAttribute('aria-label')).toBe('link in it Opens in a new window; external.');
+        expect(link.getAttribute('target')).toBe('_blank');
+        expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+        expect(linkImage.title).toBe('Opens in a new window; external.');
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

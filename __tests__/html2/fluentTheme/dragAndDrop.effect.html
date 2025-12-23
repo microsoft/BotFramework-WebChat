@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style type="text/css">
+      #draggable-file {
+        align-items: center;
+        background-color: #e00;
+        border-radius: 8px;
+        color: White;
+        display: flex;
+        height: 80px;
+        justify-content: center;
+        left: 10px;
+        position: absolute;
+        top: 10px;
+        width: 80px;
+      }
+
+      #draggable-file:hover {
+        background-color: #080;
+      }
+
+      #draggable-file:active {
+        background-color: #066;
+      }
+
+      #draggable-file.draggable-file--dragging {
+        background-color: #008!important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <div role="navigation">
+      <div draggable="true" id="draggable-file">Drag me</div>
+    </div>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity(
+          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+        );
+
+        await pageConditions.numActivitiesShown(1);
+
+        // We cannot mimic drag-and-drop in WebDriver yet. So we are doing as good as we could.
+
+        // In this test, we are mimicking the effect.
+
+        const draggableFile = document.getElementById('draggable-file');
+
+        draggableFile.addEventListener('dragstart', event => {
+          event.currentTarget.classList.add('draggable-file--dragging');
+
+          event.dataTransfer.setData('text/plain', 'abc');
+          event.dataTransfer.setData('Files', new File([], 'empty.txt'));
+          // event.dataTransfer.files.add(new File([new ArrayBuffer(100)], 'simple.txt'));
+
+          event.dataTransfer.effectAllowed = 'all';
+        });
+
+        draggableFile.addEventListener('dragend', event => {
+          event.currentTarget.classList.remove('draggable-file--dragging');
+        });
+
+        await host.dragAndHold(draggableFile, document.body);
+
+        await host.snapshot('local');
+
+        await host.release();
+        await host.dragAndHold(draggableFile, document.querySelector(`[data-testid="${WebChat.testIds['sendBoxSendButton']}"]`));
+
+        await host.snapshot('local');
+        await host.release();
+
+        // await host.snapshot('local');
+
+        // await host.moveTo(100, 100, draggableFile);
+
+        // await host.snapshot('local');
+
+        // await host.dragAndDrop(
+        //   document.getElementById('draggable-file'),
+        //   document.querySelector(`[data-testid="${WebChat.testIds['sendBoxTextBox']}"]`)
+        // );
+        // await host.moveTo(0, 0, document.querySelector(`[data-testid="${WebChat.testIds['sendBoxTextBox']}"]`));
+
+        // await host.snapshot('local');
+
+        // await host.release();
+
+        // await host.snapshot('local');
+
+        // // TODO: Try build a draggable and modify its dragstart event to mimic dragging a file.
+
+        // const dataTransfer = new DataTransfer();
+
+        // dataTransfer.items.add(new File([new ArrayBuffer(100)], 'simple.txt'));
+
+        // const dragEnterDocumentEvent = new DragEvent('dragenter', { dataTransfer });
+
+        // document.dispatchEvent(dragEnterDocumentEvent);
+
+        // // THEN: Should render the drop zone.
+        // await host.snapshot('local');
+
+        // // WHEN: Dragging into the drop zone.
+
+        // const dragEnterDropZoneEvent = new DragEvent('dragenter', { dataTransfer });
+
+        // document
+        //   .querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`)
+        //   .dispatchEvent(dragEnterDropZoneEvent);
+
+        // // THEN: Should render the drop zone.
+        // await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

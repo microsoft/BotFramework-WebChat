@@ -11,6 +11,7 @@ export default function createTextContentStyle() {
       '&.webchat__text-content--is-markdown': {
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         gap: CSSTokens.PaddingRegular,
         minWidth: 0
       },

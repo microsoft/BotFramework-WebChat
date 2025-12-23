@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button": "https://esm.sh/react-dictate-button",
+          "react-dictate-button/": "https://esm.sh/react-dictate-button/"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import { SpeechGrammarList, SpeechRecognition } from 'react-dictate-button/internal';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from '/assets/esm/speech/index.js';
+      import { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill } from '/assets/esm/speech/speechPageObjects.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { renderWebChat, testIds }
+      } = window;
+
+      run(async function () {
+        const speechSynthesis = new SpeechSynthesis();
+        const ponyfill = createWebSpeechPonyfill();
+
+        spyOn(ponyfill.speechSynthesis, 'cancel');
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            webSpeechPonyfillFactory: () => ponyfill
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const { resolveAll } = await directLine.actPostActivity(async () => {
+          await actRecognizeOnce(
+            ponyfill,
+            async () => {
+              // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+              await actSpeakOnce(ponyfill, async () => {
+                await pageObjects.clickMicrophoneButton();
+              });
+            },
+            'hint accepting'
+          );
+        });
+
+        await resolveAll();
+
+        expect(ponyfill.speechSynthesis.cancel).toHaveBeenCalledTimes(0);
+
+        // THEN: Should have send the activity.
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'hint accepting');
+
+        // THEN: Send box go back to input mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+
+        const spoken = await actSpeakOnce(
+          ponyfill,
+          async () => {
+            // WHEN: Bot replied with "acceptingInput".
+            await directLine.emulateIncomingActivity({
+              inputHint: 'acceptingInput',
+              text: '`{ inputHint: "acceptingInput" }`',
+              type: 'message'
+            });
+          },
+          () =>
+            // WHEN: Type "Aloha!" in send box while synthesizing.
+            pageObjects.typeInSendBox('Aloha!')
+        );
+
+        expect(ponyfill.speechSynthesis.cancel).toHaveBeenCalledTimes(1);
+
+        const microphoneButton = pageElements.microphoneButton();
+
+        expect(microphoneButton.classList.contains('webchat__microphone-button--dictating')).toBe(false);
+      });
+    </script>
+  </body>
+</html>

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
-import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
+import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/stylesheet/createFluentThemeStyleElements';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -73,7 +73,8 @@ export default defineConfig([
       ...(config.esbuildPlugins ?? []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
-    format: ['esm']
+    format: ['esm'],
+    onSuccess: 'touch ./package.json'
   })),
   applyConfig(config => ({
     ...config,

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { useActivities } from 'botframework-webchat/hook';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const renderHook = createRenderHook(
+          document.getElementById('webchat'),
+          { directLine, store },
+          { renderWebChat: true }
+        );
+
+        await renderHook();
+        await pageConditions.uiConnected();
+
+        const { resolveAll } = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+        );
+
+        await resolveAll();
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          speak: 'Unknown command: I don\'t know Hello, World!. You can say "help" to learn more.',
+          text: 'Unknown command: \`Hello, World!\`.\n\nType \`help\` to learn more.',
+          type: 'message'
+        });
+
+        const [activities] = await renderHook(() => useActivities());
+
+        const cleanedActivities = activities
+          .filter(({ type }) => type === 'message')
+          .map(({ from: { role }, speak, text, textFormat, type }) => ({
+            from: { role },
+            speak,
+            text,
+            textFormat,
+            type
+          }));
+
+        expect(cleanedActivities).toEqual([
+          {
+            from: {
+              role: 'user'
+            },
+            speak: undefined,
+            text: 'Hello, World!',
+            textFormat: 'plain',
+            type: 'message'
+          },
+          {
+            from: {
+              role: 'bot'
+            },
+            speak: 'Unknown command: I don\'t know Hello, World!. You can say "help" to learn more.',
+            text: 'Unknown command: \`Hello, World!\`.\n\nType \`help\` to learn more.',
+            textFormat: undefined,
+            type: 'message'
+          }
+        ]);
+      });
+    </script>
+  </body>
+</html>

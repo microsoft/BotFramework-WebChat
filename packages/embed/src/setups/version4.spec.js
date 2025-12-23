@@ -7,6 +7,8 @@ import setupVersion4 from './version4';
 
 beforeEach(() => {
   delete window.WebChat;
+
+  window.happyDOM.settings.handleDisabledFileLoadingAsSuccess = true;
 });
 
 test('Load Web Chat v4', async () => {

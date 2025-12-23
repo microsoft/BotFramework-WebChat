@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+          await pageConditions.uiConnected();
+
+          // SETUP: Successfully send a message.
+          await (await directLine.emulateOutgoingActivity('Lorem pariatur ea veniam.')).resolveAll();
+
+          // SETUP: Successfully send another message.
+          await (
+            await directLine.emulateOutgoingActivity('Reprehenderit culpa laboris consectetur sint.')
+          ).resolveAll();
+
+          // SETUP: Fail sending a message.
+          (await directLine.emulateOutgoingActivity('Duis duis irure proident dolor labore.')).rejectPostActivity();
+
+          // SETUP: Successfully send the last message.
+          await (
+            await directLine.emulateOutgoingActivity(
+              'Mollit ullamco consequat occaecat enim pariatur reprehenderit tempor.'
+            )
+          ).resolveAll();
+
+          // THEN: The first and second message is grouped as "Just now".
+          //       The third message has "Send failed. Retry."
+          //       The last message has "Just now".
+          await host.snapshot('local');
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

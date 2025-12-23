@@ -17,8 +17,8 @@ const { useLocalizer } = hooks;
 const collapsibleGroupingPropsSchema = pipe(
   object({
     children: reactNode(),
-    title: string(),
-    titleClassName: optional(string()),
+    className: optional(string()),
+    header: optional(reactNode()),
     isOpen: optional(boolean()),
     onToggle: optional(pipe(custom<(isOpen: boolean) => void>(toggle => typeof toggle === 'function')), readonly())
   }),
@@ -38,13 +38,7 @@ function uniqueId(count = Infinity) {
 }
 
 function CollapsibleGrouping(props: CollapsibleGroupingProps) {
-  const {
-    children,
-    title,
-    titleClassName,
-    isOpen = true,
-    onToggle
-  } = validateProps(collapsibleGroupingPropsSchema, props);
+  const { children, className, header, isOpen = true, onToggle } = validateProps(collapsibleGroupingPropsSchema, props);
   const [id] = useState(() => `webchat-collapsible-grouping-${uniqueId()}`);
   const classNames = useStyles(styles);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -65,9 +59,15 @@ function CollapsibleGrouping(props: CollapsibleGroupingProps) {
   const text = isOpen ? localize('COLLAPSE_BUTTON_LESS') : localize('COLLAPSE_BUTTON_MORE');
 
   return (
-    <div className={cx(classNames['collapsible-grouping'], { [classNames['collapsible-grouping--open']]: isOpen })}>
+    <div
+      className={cx(
+        classNames['collapsible-grouping'],
+        { [classNames['collapsible-grouping--open']]: isOpen },
+        className
+      )}
+    >
       <div className={cx(classNames['collapsible-grouping__header'])}>
-        <div className={cx(classNames['collapsible-grouping__title'], titleClassName)}>{title}</div>
+        {header}
         <ActivityButton
           aria-controls={id}
           aria-expanded={isOpen}

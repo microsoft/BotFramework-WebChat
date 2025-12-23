@@ -23,7 +23,7 @@ export const babelPlugin = ({ filter, loader, name, predicate = defaultPredicate
       }
 
       const result = await transformFileAsync(args.path, {
-        configFile: join(fileURLToPath(import.meta.url), '../babel.profile.config.json'),
+        configFile: join(fileURLToPath(import.meta.url), '../esbuildBabelPluginIstanbul.babel.config.json'),
         rootMode: 'root',
         sourceFileName: args.path
       });

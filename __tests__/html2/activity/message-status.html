@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <title>Message status</title>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "@fluentui/react-provider": "https://esm.sh/@fluentui/react-provider?deps=react@18&exports=FluentProvider",
+        "@fluentui/tokens": "https://esm.sh/@fluentui/tokens?deps=react@18&exports=createDarkTheme,webLightTheme",
+        "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+        "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+        "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+        "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+        "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+        "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+        "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+        "react": "https://esm.sh/react@18",
+        "react-dom": "https://esm.sh/react-dom@18",
+        "react-dom/": "https://esm.sh/react-dom@18/"
+      }
+    }
+  </script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <style type="text/css">
+    #webchat {
+      width: 640px;
+    }
+
+    .fui-FluentProvider {
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="module">
+    import '/test-harness.mjs';
+    import '/test-page-object.mjs';
+
+    import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+    import { FluentProvider } from '@fluentui/react-provider';
+    import { waitFor } from '@testduet/wait-for';
+    import { createDirectLine, createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+    import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+    import { createElement } from 'react';
+    import { createRoot } from 'react-dom/client';
+
+    const {
+      testHelpers: { createDirectLineEmulator }
+    } = window;
+
+    // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+    window.WebChat = { createStoreWithOptions };
+
+    run(async function () {
+      const { directLine, store } = createDirectLineEmulator();
+
+      const searchParams = new URLSearchParams(location.search);
+      const variant = searchParams.get('variant');
+      const theme = searchParams.get('fluent-theme');
+
+      await host.windowSize(640, 1024, document.getElementById('webchat'));
+      await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+        features: [
+          { name: 'prefers-reduced-motion', value: 'reduce' },
+          ...(theme === 'dark' || theme === 'light'
+            ? [{ name: 'prefers-color-scheme', value: theme }]
+            : [])
+        ]
+      });
+
+      const root = createRoot(document.getElementById('webchat'));
+
+      let fluentTheme;
+      let codeBlockTheme;
+
+      if (theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches && theme !== 'light') {
+        fluentTheme = {
+          ...createDarkTheme({
+            10: '#12174c',
+            20: '#1a1f5b',
+            30: '#21276a',
+            40: '#293079',
+            50: '#303788',
+            60: '#384097',
+            70: '#4049a7',
+            80: '#151e80',
+            90: '#4f59c5',
+            100: '#5661d4',
+            110: '#5e69e3',
+            120: '#7982e8',
+            130: '#949bec',
+            140: '#afb5f1',
+            150: '#c9cdf6',
+            160: '#e4e6fa'
+          }),
+          colorNeutralBackground1Disabled: '#101010',
+          colorNeutralBackground1Hover: '#101010',
+          colorNeutralForeground5: '#424242',
+          colorGrey98: '#1b1b1b'
+        };
+        codeBlockTheme = 'github-dark-default';
+      } else {
+        fluentTheme = {
+          ...webLightTheme,
+          colorNeutralForeground1: '#1b1b1b',
+          colorGrey98: '#fafafa'
+        };
+        codeBlockTheme = 'github-light-default';
+      }
+
+      if (variant) {
+        window.checkAccessibility = async () => { }
+      }
+
+      const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
+
+      root.render(
+        variant ?
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: variant },
+              createElement(ReactWebChat, webChatProps)
+            )
+          ) :
+          createElement(ReactWebChat, webChatProps)
+      );
+
+      await pageConditions.uiConnected();
+
+      const botIcon = 'data:image/png;base64,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';
+
+      const author = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        image: botIcon,
+        name: 'Agent',
+      };
+
+      directLine.emulateIncomingActivity({
+        from: { role: 'user' },
+        type: 'message',
+        text: `Message from user.`
+      });
+
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-000',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Response without status',
+          author
+        }]
+      });
+
+      // Test Case 1: Single activity with different statuses
+      // When: sending a message without status
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-001',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Another response without status',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(3);
+      await host.snapshot('local');
+
+      // When: updating to incomplete status (loading)
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-001',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Response in progress...',
+          creativeWorkStatus: 'Incomplete',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(3);
+      await host.snapshot('local');
+
+      // When: updating to published status (complete)
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-001',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Response completed!',
+          creativeWorkStatus: 'Published',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(3);
+      await host.snapshot('local');
+
+      // Test Case 2: Multiple activities with mixed statuses
+      // When: adding multiple activities with different statuses
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-002',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Second message - published',
+          creativeWorkStatus: 'Published',
+          author
+        }]
+      });
+
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-003',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Third message - in progress',
+          creativeWorkStatus: 'Incomplete',
+          author
+        }]
+      });
+
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-004',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Fourth message - no status',
+          creativeWorkStatus: 'Incomplete',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+
+      // Test Case 3: Status transitions
+      // When: changing status from incomplete to published
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-003',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Third message - now complete',
+          creativeWorkStatus: 'Published',
+          author
+        }]
+      });
+
+      // When: adding status to previously statusless message
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-004',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Fourth message - now loading',
+          creativeWorkStatus: 'Incomplete',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+
+      // Test Case 4: Final completion
+      // When: completing all remaining work
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: '',
+        id: 'msg-004',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          abstract: 'Fourth message - final completion',
+          creativeWorkStatus: 'Published',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+
+      // Test Case 5: With text and status but no abstract
+      // When: completing all remaining work
+      directLine.emulateIncomingActivity({
+        from: { role: 'bot', name: 'Bot' },
+        type: 'message',
+        text: 'Some text with published status',
+        id: 'msg-005',
+        entities: [{
+          '@id': '',
+          '@context': 'https://schema.org',
+          '@type': 'Message',
+          type: 'https://schema.org/Message',
+          creativeWorkStatus: 'Published',
+          author
+        }]
+      });
+
+      await pageConditions.numActivitiesShown(7);
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>

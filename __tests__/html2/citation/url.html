@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <title>Citation URL</title>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "@fluentui/react-provider": "https://esm.sh/@fluentui/react-provider?deps=react@18&exports=FluentProvider",
+        "@fluentui/tokens": "https://esm.sh/@fluentui/tokens?deps=react@18&exports=createDarkTheme,webLightTheme",
+        "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+        "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+        "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+        "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+        "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+        "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+        "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+        "react": "https://esm.sh/react@18",
+        "react-dom": "https://esm.sh/react-dom@18",
+        "react-dom/": "https://esm.sh/react-dom@18/"
+      }
+    }
+  </script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <style type="text/css">
+    #webchat {
+      width: 640px;
+    }
+
+    .fui-FluentProvider {
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="module">
+    import '/test-harness.mjs';
+    import '/test-page-object.mjs';
+
+    import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+    import { FluentProvider } from '@fluentui/react-provider';
+    import { waitFor } from '@testduet/wait-for';
+    import { createDirectLine, createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+    import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+    import { createElement } from 'react';
+    import { createRoot } from 'react-dom/client';
+
+    const {
+      testHelpers: { createDirectLineEmulator }
+    } = window;
+
+    // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+    window.WebChat = { createStoreWithOptions };
+
+    // run = fn => fn();
+    run(async function () {
+      const { directLine, store } = createDirectLineEmulator();
+
+      const searchParams = new URLSearchParams(location.search);
+      const variant = searchParams.get('variant');
+      const theme = searchParams.get('fluent-theme');
+
+      await host.windowSize(480, 760, document.getElementById('webchat'));
+      await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+        features: [
+          { name: 'prefers-reduced-motion', value: 'reduce' },
+          ...(theme === 'dark' || theme === 'light'
+            ? [{ name: 'prefers-color-scheme', value: theme }]
+            : [])
+        ]
+      });
+
+      const root = createRoot(document.getElementById('webchat'));
+
+      let fluentTheme;
+      let codeBlockTheme;
+
+      if (theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches && theme !== 'light') {
+        fluentTheme = {
+          ...createDarkTheme({
+            10: '#12174c',
+            20: '#1a1f5b',
+            30: '#21276a',
+            40: '#293079',
+            50: '#303788',
+            60: '#384097',
+            70: '#4049a7',
+            80: '#151e80',
+            90: '#4f59c5',
+            100: '#5661d4',
+            110: '#5e69e3',
+            120: '#7982e8',
+            130: '#949bec',
+            140: '#afb5f1',
+            150: '#c9cdf6',
+            160: '#e4e6fa'
+          }),
+          colorNeutralBackground1Disabled: '#101010',
+          colorNeutralBackground1Hover: '#101010',
+          colorNeutralForeground5: '#424242',
+          colorGrey98: '#1b1b1b'
+        };
+        codeBlockTheme = 'github-dark-default';
+      } else {
+        fluentTheme = {
+          ...webLightTheme,
+          colorNeutralForeground1: '#1b1b1b',
+          colorGrey98: '#fafafa'
+        };
+        codeBlockTheme = 'github-light-default';
+      }
+
+      if (variant) {
+        window.checkAccessibility = async () => { }
+      }
+
+      const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
+
+      root.render(
+        variant ?
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: variant },
+              createElement(ReactWebChat, webChatProps)
+            )
+          ) :
+          createElement(ReactWebChat, webChatProps)
+      );
+
+      await pageConditions.uiConnected();
+
+      await directLine.emulateIncomingActivity(
+        {
+          "type": "message",
+          "id": "00000000-0000-0000-0000-000000000001",
+          "timestamp": "2025-10-09T00:00:00.0000000+00:00",
+          "channelId": "test",
+          "from": {
+            "id": "bot-anon",
+            "name": "test_agent",
+            "role": "bot"
+          },
+          "conversation": { "id": "conv-anon" },
+          "recipient": { "id": "user-anon", "role": "user" },
+          "textFormat": "markdown",
+          "locale": "en-US",
+          "text": "Verify that citation **[9]** renders correctly.\n\n- **2025 Product Area Review [Template]** [9]\n\n[9]: https://example.sharepoint.com/sites/Docs/2025%20Product%20Area%20Review%20[Template].pptx \"2025 Product Area Review [Template].pptx\"",
+          "entities": [
+            {
+              "type": "https://schema.org/Message",
+              "@type": "Message",
+              "@context": "https://schema.org",
+              "citation": [
+                {
+                  "appearance": {
+                    "text": "",
+                    "abstract": "2025 Product Area Review [Template].pptx",
+                    "@type": "DigitalDocument",
+                    "name": "2025 Product Area Review [Template].pptx",
+                    "url": "https://example.sharepoint.com/sites/Docs/2025%20Product%20Area%20Review%20[Template].pptx"
+                  },
+                  "position": 9,
+                  "@type": "Claim",
+                  "@id": "SPO_XYZ_claim_id_only_for_test_9"
+                }
+              ]
+            },
+            {
+              "type": "https://schema.org/Claim",
+              "@type": "Claim",
+              "@context": "https://schema.org",
+              "@id": "SPO_XYZ_claim_id_only_for_test_9",
+              "text": "",
+              "name": "2025 Product Area Review [Template].pptx"
+            }
+          ]
+        }
+      );
+
+      await directLine.emulateIncomingActivity({
+        "type": "message",
+        "id": "00000000-0000-0000-0000-000000000102",
+        "timestamp": "2025-10-09T00:00:00.0000000+00:00",
+        "channelId": "test",
+        "from": { "id": "bot-anon", "name": "test_agent", "role": "bot" },
+        "conversation": { "id": "conv-anon" },
+        "recipient": { "id": "user-anon", "role": "user" },
+        "textFormat": "markdown",
+        "locale": "en-US",
+        "text": "Verify array-style query params and nested redirect. **Search results (tags)**. [2]\n\n[2]: https://files.example.com/search?tags%5B%5D=a&tags%5B%5D=a%2Fb&redirect=https%3A%2F%2Fexample.com%2Fx%3Fy%3Dz \"search with tags[] and redirect\"",
+        "entities": [
+          {
+            "type": "https://schema.org/Message",
+            "@type": "Message",
+            "@context": "https://schema.org",
+            "citation": [
+              {
+                "appearance": {
+                  "text": "",
+                  "abstract": "search with tags[] and redirect",
+                  "@type": "DigitalDocument",
+                  "name": "search with tags[] and redirect",
+                  "url": "https://files.example.com/search?tags%5B%5D=a&tags%5B%5D=a%2Fb&redirect=https%3A%2F%2Fexample.com%2Fx%3Fy%3Dz"
+                },
+                "position": 2,
+                "@type": "Claim",
+                "@id": "CLAIM_TEST_102"
+              }
+            ]
+          },
+          { "type": "https://schema.org/Claim", "@type": "Claim", "@context": "https://schema.org", "@id": "CLAIM_TEST_102", "text": "", "name": "search with tags[] and redirect" }
+        ]
+      });
+
+      await directLine.emulateIncomingActivity({
+        "type": "message",
+        "id": "00000000-0000-0000-0000-000000000103",
+        "timestamp": "2025-10-09T00:00:00.0000000+00:00",
+        "channelId": "test",
+        "from": { "id": "bot-anon", "name": "test_agent", "role": "bot" },
+        "conversation": { "id": "conv-anon" },
+        "recipient": { "id": "user-anon", "role": "user" },
+        "textFormat": "markdown",
+        "locale": "en-US",
+        "text": "Verify UTF-8 encoding in path. **Отчёт - план 📄**. [3]\n\n[3]: https://docs.example.com/reports/%D0%9E%D1%82%D1%87%D1%91%D1%82%20%E2%80%94%20%D0%BF%D0%BB%D0%B0%D0%BD%20%F0%9F%93%84.pdf \"Отчёт - план 📄.pdf\"",
+        "entities": [
+          {
+            "type": "https://schema.org/Message",
+            "@type": "Message",
+            "@context": "https://schema.org",
+            "citation": [
+              {
+                "appearance": {
+                  "text": "",
+                  "abstract": "Отчёт - план 📄.pdf",
+                  "@type": "DigitalDocument",
+                  "name": "Отчёт - план 📄.pdf",
+                  "url": "https://docs.example.com/reports/%D0%9E%D1%82%D1%87%D1%91%D1%82%20%E2%80%94%20%D0%BF%D0%BB%D0%B0%D0%BD%20%F0%9F%93%84.pdf"
+                },
+                "position": 3,
+                "@type": "Claim",
+                "@id": "CLAIM_TEST_103"
+              }
+            ]
+          },
+          { "type": "https://schema.org/Claim", "@type": "Claim", "@context": "https://schema.org", "@id": "CLAIM_TEST_103", "text": "", "name": "Отчёт - план 📄.pdf" }
+        ]
+      });
+
+      await directLine.emulateIncomingActivity({
+        "type": "message",
+        "id": "00000000-0000-0000-0000-000000000105",
+        "timestamp": "2025-10-09T00:00:00.0000000+00:00",
+        "channelId": "test",
+        "from": { "id": "bot-anon", "name": "test_agent", "role": "bot" },
+        "conversation": { "id": "conv-anon" },
+        "recipient": { "id": "user-anon", "role": "user" },
+        "textFormat": "markdown",
+        "locale": "en-US",
+        "text": "Verify mailto with plus-addressing and encoded query. **Email owner**. [5]\n\n[5]: mailto:support+roadmap@example.com?subject=Roadmap%20Review%20%5BTemplate%5D&body=Please%20review%20slide%203.%0AThanks%21 \"mailto with + and encoded subject/body\"",
+        "entities": [
+          {
+            "type": "https://schema.org/Message",
+            "@type": "Message",
+            "@context": "https://schema.org",
+            "citation": [
+              {
+                "appearance": {
+                  "text": "",
+                  "abstract": "mailto with + and encoded subject/body",
+                  "@type": "DigitalDocument",
+                  "name": "mailto with + and encoded subject/body",
+                  "url": "mailto:support+roadmap@example.com?subject=Roadmap%20Review%20%5BTemplate%5D&body=Please%20review%20slide%203.%0AThanks%21"
+                },
+                "position": 5,
+                "@type": "Claim",
+                "@id": "CLAIM_TEST_105"
+              }
+            ]
+          },
+          { "type": "https://schema.org/Claim", "@type": "Claim", "@context": "https://schema.org", "@id": "CLAIM_TEST_105", "text": "", "name": "mailto with + and encoded subject/body" }
+        ]
+      });
+
+      await directLine.emulateIncomingActivity({
+        "type": "message",
+        "id": "00000000-0000-0000-0000-000000000106",
+        "timestamp": "2025-10-09T00:00:00.0000000+00:00",
+        "channelId": "test",
+        "from": { "id": "bot-anon", "name": "test_agent", "role": "bot" },
+        "conversation": { "id": "conv-anon" },
+        "recipient": { "id": "user-anon", "role": "user" },
+        "textFormat": "markdown",
+        "locale": "en-US",
+        "text": "Verify `%23` for literal hash in filename. **Q1#1 Plan**. [6]\n\n[6]: https://example.sharepoint.com/sites/Docs/Q1%231%20Plan.pptx \"Q1#1 Plan.pptx\"",
+        "entities": [
+          {
+            "type": "https://schema.org/Message",
+            "@type": "Message",
+            "@context": "https://schema.org",
+            "citation": [
+              {
+                "appearance": {
+                  "text": "",
+                  "abstract": "Q1#1 Plan.pptx",
+                  "@type": "DigitalDocument",
+                  "name": "Q1#1 Plan.pptx",
+                  "url": "https://example.sharepoint.com/sites/Docs/Q1%231%20Plan.pptx"
+                },
+                "position": 6,
+                "@type": "Claim",
+                "@id": "CLAIM_TEST_106"
+              }
+            ]
+          },
+          { "type": "https://schema.org/Claim", "@type": "Claim", "@context": "https://schema.org", "@id": "CLAIM_TEST_106", "text": "", "name": "Q1#1 Plan.pptx" }
+        ]
+      });
+
+      expect(Array.from(document.querySelectorAll('.webchat__render-markdown a')).map(a => a.href)).toEqual([
+        'https://example.sharepoint.com/sites/Docs/2025%20Product%20Area%20Review%20%5BTemplate%5D.pptx',
+        'https://example.sharepoint.com/sites/Docs/2025%20Product%20Area%20Review%20%5BTemplate%5D.pptx',
+        'https://files.example.com/search?tags%5B%5D=a&tags%5B%5D=a%2Fb&redirect=https%3A%2F%2Fexample.com%2Fx%3Fy%3Dz',
+        'https://docs.example.com/reports/%D0%9E%D1%82%D1%87%D1%91%D1%82%20%E2%80%94%20%D0%BF%D0%BB%D0%B0%D0%BD%20%F0%9F%93%84.pdf',
+        'mailto:support+roadmap@example.com?subject=Roadmap%20Review%20%5BTemplate%5D&body=Please%20review%20slide%203.%0AThanks%21',
+        'https://example.sharepoint.com/sites/Docs/Q1%231%20Plan.pptx'
+      ]);
+
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>

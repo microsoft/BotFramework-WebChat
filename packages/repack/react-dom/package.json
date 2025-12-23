@@ -10,7 +10,11 @@
     "./client": "./dist/react-dom/client.js"
   },
   "scripts": {
-    "build": "node ./build.js",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../../scripts/npm/build-watch.sh",
+    "build:run": "node ./build.js && touch ./package.json",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -18,12 +22,11 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "start": "npm run build -- --watch 200"
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
   },
-  "localDependencies": {},
   "pinDependencies": {
     "@types/react-dom": [
-      "~18.3",
+      "18",
       "Bump React manually"
     ],
     "react-dom": [
@@ -31,11 +34,12 @@
       "Bump React manually"
     ]
   },
-  "dependencies": {
-    "react-dom": "18.3.1"
-  },
+  "localDependencies": {},
   "devDependencies": {
     "@types/react-dom": "^18.3.7",
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.27.2"
+  },
+  "dependencies": {
+    "react-dom": "18.3.1"
   }
 }

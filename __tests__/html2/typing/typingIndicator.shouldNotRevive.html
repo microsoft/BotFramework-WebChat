@@ -63,7 +63,7 @@
         // THEN: Should display the message.
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: Should not display typing indicator.
+        // THEN: Should not display typing indicator because typing started at t=2 ms but now is t = 5002 ms.
         await pageConditions.typingIndicatorHidden();
       });
     </script>
