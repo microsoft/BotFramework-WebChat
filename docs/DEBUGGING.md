@@ -25,7 +25,7 @@ To break into the debugger for a specific element:
 2. In the Elements pane, click on the element to break into
 3. Switch to Console pane, type `$0.webChat.debugger`
 
-Then, it should break into the debugger.
+Then it should break into the debugger.
 
 ![Screenshot of DevTools debugger breaking into the root container component](media/DEBUGGING/devtools-debugger.png)
 
@@ -35,7 +35,7 @@ Use DevTools Console `debug()` to attach a debugger to specific breakpoint funct
 
 | Component      | Breakpoint         | Arguments                | Description              |
 | -------------- | ------------------ | ------------------------ | ------------------------ |
-| Root container | `incomingActivity` | `{ activity: Activity }` | When an activity arrive  |
+| Root container | `incomingActivity` | `{ activity: Activity }` | When an activity arrives |
 | Activity       | `render`           |                          | When the activity render |
 
 To break into the debugger when an activity arrives:
@@ -43,9 +43,9 @@ To break into the debugger when an activity arrives:
 1. Press <kbd>F12</kbd> to open Chrome DevTools
 2. In the Elements pane, click on the Web Chat root container to break into
    - Or type `inspect($('.webchat'))` to select the first root container on the page
-3. Switch to Console pane, type `debug($0.webChat.breakpoint.incomingActivity)`
+3. Switch to the Console pane, type `debug($0.webChat.breakpoint.incomingActivity)`
 
-When an activity arrive, it will automatically break into the debugger.
+When an activity arrives, it will automatically break into the debugger.
 
 When breakpoints are used, the debugger may offer extra diagnostic information relevant to the triggering event, available as function arguments.
 
@@ -53,10 +53,10 @@ When breakpoints are used, the debugger may offer extra diagnostic information r
 
 While in the debugger, the `__DEBUG_CONTEXT__` variable contains various data useful for diagnostic purpose.
 
-| Component      | Debug context                | Description                      |
-| -------------- | ---------------------------- | -------------------------------- |
-| Root container | `{ activities: Activity[] }` | All messages in the chat history |
-| Activity       | `{ activity: Activity }`     | The current message              |
+| Component      | Debug context                | Description                        |
+| -------------- | ---------------------------- | ---------------------------------- |
+| Root container | `{ activities: Activity[] }` | All activities in the chat history |
+| Activity       | `{ activity: Activity }`     | The current message                |
 
 ## Recipes
 
@@ -76,7 +76,7 @@ $$('article').at(-1).webChat.debugger;
 
 Note: `$$()` will select all elements and put them into an array, while `$()` only select the first occurrence.
 
-### Break into debugger when an activity arrive
+### Break into debugger when an activity arrives
 
 ```js
 debug($('.webchat').webChat.breakpoint.incomingActivity);
