@@ -45,7 +45,7 @@ function GraphProvider(props: GraphProviderProps) {
       const state = graph.getState();
 
       setContext(context => {
-        const [prevOrderedActivities] = context.orderedMessageNodesState;
+        const [prevOrderedMessages] = context.orderedMessageNodesState;
         let nextOrderedMessageMap: Map<Identifier, MessageNode> | undefined;
 
         for (const id of record.upsertedNodeIdentifiers) {
@@ -55,7 +55,7 @@ function GraphProvider(props: GraphProviderProps) {
             const activityNode = node as MessageNode;
 
             if (!nextOrderedMessageMap) {
-              nextOrderedMessageMap = new Map(prevOrderedActivities.map(node => [node['@id'], node]));
+              nextOrderedMessageMap = new Map(prevOrderedMessages.map(node => [node['@id'], node]));
             }
 
             const permanentId = activityNode['@id'];
@@ -68,7 +68,7 @@ function GraphProvider(props: GraphProviderProps) {
         const orderedMessages: readonly MessageNode[] = nextOrderedMessageMap
           ? // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
             Object.freeze(Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0]))
-          : prevOrderedActivities;
+          : prevOrderedMessages;
 
         const orderedActivities: readonly WebChatActivity[] = orderedMessages.map(
           node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
