@@ -70,6 +70,7 @@ function GraphProvider(props: GraphProviderProps) {
             Object.freeze(Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0]))
           : prevOrderedMessages;
 
+        // TODO: [P1] To save memory, we can use a Proxy instead of instantiating a new real array.
         const orderedActivities: readonly WebChatActivity[] = orderedMessages.map(
           node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
         );
