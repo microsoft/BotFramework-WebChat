@@ -1,9 +1,9 @@
-import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
 import {
   createGraphFromStore,
   isOfType,
+  type MessageNode,
   type GraphSubscriber,
   type Identifier,
   type SlantNode
@@ -46,13 +46,13 @@ function GraphProvider(props: GraphProviderProps) {
 
       setContext(context => {
         const [prevOrderedActivities] = context.orderedMessageNodesState;
-        let nextOrderedMessageMap: Map<Identifier, DirectLineActivityNode> | undefined;
+        let nextOrderedMessageMap: Map<Identifier, MessageNode> | undefined;
 
         for (const id of record.upsertedNodeIdentifiers) {
           const node = state.get(id);
 
-          if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
-            const activityNode = node as DirectLineActivityNode;
+          if (node && isOfType(node, 'Message') && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
+            const activityNode = node as MessageNode;
 
             if (!nextOrderedMessageMap) {
               nextOrderedMessageMap = new Map(prevOrderedActivities.map(node => [node['@id'], node]));
@@ -65,7 +65,7 @@ function GraphProvider(props: GraphProviderProps) {
           }
         }
 
-        const orderedMessages: readonly DirectLineActivityNode[] = nextOrderedMessageMap
+        const orderedMessages: readonly MessageNode[] = nextOrderedMessageMap
           ? // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
             Object.freeze(Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0]))
           : prevOrderedActivities;
