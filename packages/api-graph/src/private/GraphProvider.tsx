@@ -1,13 +1,25 @@
 import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
-import { createGraphFromStore, isOfType, type GraphSubscriber, type Identifier } from 'botframework-webchat-core/graph';
+import {
+  createGraphFromStore,
+  isOfType,
+  type GraphSubscriber,
+  type Identifier,
+  type SlantNode
+} from 'botframework-webchat-core/graph';
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { custom, function_, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, function_, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
-import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
+import GraphContext, { type GraphContextType } from './GraphContext';
 
 const EMPTY_ARRAY = Object.freeze([]);
+
+const INITIAL_CONTEXT: GraphContextType = {
+  orderedActivitiesState: Object.freeze([EMPTY_ARRAY] as const),
+  orderedMessageNodesState: Object.freeze([EMPTY_ARRAY] as const),
+  readonlyGraphState: Object.freeze([new Map<Identifier, SlantNode>()])
+};
 
 const graphProviderPropsSchema = pipe(
   object({
@@ -25,15 +37,15 @@ function GraphProvider(props: GraphProviderProps) {
   const { children, store } = validateProps(graphProviderPropsSchema, props);
 
   const graph = useMemo(() => createGraphFromStore(store), [store]);
-
-  const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(EMPTY_ARRAY);
+  const [context, setContext] = useState<GraphContextType>(INITIAL_CONTEXT);
 
   useEffect(() => {
-    // Sync between graph and `orderedActivities`.
+    // Sync between graph and `orderedActivities`/`orderedMessages`.
     const handleChange: GraphSubscriber = record => {
       const state = graph.getState();
 
-      setOrderedActivityNodes(prevOrderedMessages => {
+      setContext(context => {
+        const [prevOrderedActivities] = context.orderedMessageNodesState;
         let nextOrderedMessageMap: Map<Identifier, DirectLineActivityNode> | undefined;
 
         for (const id of record.upsertedNodeIdentifiers) {
@@ -43,7 +55,7 @@ function GraphProvider(props: GraphProviderProps) {
             const activityNode = node as DirectLineActivityNode;
 
             if (!nextOrderedMessageMap) {
-              nextOrderedMessageMap = new Map(prevOrderedMessages.map(node => [node['@id'], node]));
+              nextOrderedMessageMap = new Map(prevOrderedActivities.map(node => [node['@id'], node]));
             }
 
             const permanentId = activityNode['@id'];
@@ -53,14 +65,20 @@ function GraphProvider(props: GraphProviderProps) {
           }
         }
 
-        if (nextOrderedMessageMap) {
-          // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
-          return Object.freeze(
-            Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0])
-          );
-        }
+        const orderedMessages: readonly DirectLineActivityNode[] = nextOrderedMessageMap
+          ? // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
+            Object.freeze(Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0]))
+          : prevOrderedActivities;
 
-        return prevOrderedMessages;
+        const orderedActivities: readonly WebChatActivity[] = orderedMessages.map(
+          node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
+        );
+
+        return Object.freeze({
+          orderedActivitiesState: Object.freeze([orderedActivities]),
+          orderedMessageNodesState: Object.freeze([orderedMessages]),
+          readonlyGraphState: Object.freeze([state])
+        } satisfies GraphContextType);
       });
     };
 
@@ -72,29 +90,9 @@ function GraphProvider(props: GraphProviderProps) {
 
     return () => {
       unsubscribe();
-      setOrderedActivityNodes(EMPTY_ARRAY);
+      setContext(INITIAL_CONTEXT);
     };
-  }, [graph, setOrderedActivityNodes]);
-
-  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
-    () =>
-      Object.freeze([
-        Object.freeze(
-          orderedActivityNodes.map(
-            node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
-          )
-        )
-      ] as const),
-    [orderedActivityNodes]
-  );
-
-  const context = useMemo<GraphContextType>(
-    () =>
-      parse(graphContextSchema, {
-        orderedActivitiesState
-      }),
-    [orderedActivitiesState]
-  );
+  }, [graph, setContext]);
 
   return <GraphContext.Provider value={context}>{children}</GraphContext.Provider>;
 }
