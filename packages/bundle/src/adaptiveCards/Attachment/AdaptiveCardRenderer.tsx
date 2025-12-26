@@ -6,7 +6,6 @@ import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitActio
 import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware';
 import { getTabIndex, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
-import cx from 'classnames';
 import React, {
   memo,
   useCallback,
@@ -251,7 +250,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     <ErrorBoxPolymiddlewareProxy error={errors[0]} where={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
   ) : (
     <div
-      className={cx('adaptive-card-renderer', classNames['adaptive-card-renderer'])}
+      className={classNames['adaptive-card-renderer']}
       onClick={handleClickAndKeyPressForTapAction as MouseEventHandler<HTMLDivElement>}
       onKeyPress={handleClickAndKeyPressForTapAction as KeyboardEventHandler<HTMLDivElement>}
       ref={contentRef}
