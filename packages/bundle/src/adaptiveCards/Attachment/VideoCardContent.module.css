@@ -1,0 +1,10 @@
+:global(.webchat) .video-card-attachment {
+  display: flex;
+  flex-direction: column;
+
+  > :global(ul.media-list) {
+    list-style-type: none;
+    margin: var(--webchat__padding--regular);
+    padding: 0;
+  }
+}

@@ -1,13 +1,15 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+
+import styles from './AnimationCardContent.module.css';
 
 const { ImageContent, VideoContent } = Components;
 
@@ -26,10 +28,10 @@ function AnimationCardContent(props: AnimationCardContentProps) {
   const { actionPerformedClassName, content, disabled } = validateProps(animationCardContentPropsSchema, props);
 
   const { media = [] } = content;
-  const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
 
   return (
-    <div className={animationCardAttachmentStyleSet}>
+    <div className={classNames['animation-card-attachment']}>
       <ul className="media-list">
         {media.map(({ profile = '', url }, index) => (
           <li key={index}>

@@ -1,0 +1,10 @@
+:global(.webchat) .sign-in-card-attachment {
+  display: flex;
+  flex-direction: column;
+
+  > :global(ul.media-list) {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+}
