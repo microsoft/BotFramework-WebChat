@@ -11,10 +11,10 @@ import React, { memo, type ReactNode } from 'react';
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
 import { type AdaptiveCardsStyleOptions } from './adaptiveCards/AdaptiveCardsStyleOptions';
 import ShikiComposer from './codeHighlighter/ShikiComposer';
+import BundleStylesheet from './stylesheet/BundleStylesheet';
 import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
 import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import useComposerProps from './useComposerProps';
-import BundleStylesheet from './stylesheet/BundleStylesheet';
 
 type AddFullBundleChildren = ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
 
@@ -25,6 +25,7 @@ type AddFullBundleProps = Readonly<{
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   children: AddFullBundleChildren;
   htmlContentTransformMiddleware?: HTMLContentTransformMiddleware[];
+  nonce: string | undefined;
   renderMarkdown?: (
     markdown: string,
     newLineOptions: { markdownRespectCRLF: boolean },
@@ -32,7 +33,6 @@ type AddFullBundleProps = Readonly<{
   ) => string;
   styleOptions?: StyleOptions & AdaptiveCardsStyleOptions;
   styleSet?: any & { options: StrictFullBundleStyleOptions };
-  nonce: string | undefined;
 
   /** @deprecated Rename to "adaptiveCardsHostConfig" */
   adaptiveCardHostConfig?: any;
@@ -50,10 +50,10 @@ function AddFullBundle({
   attachmentMiddleware,
   children,
   htmlContentTransformMiddleware,
+  nonce,
   renderMarkdown,
   styleOptions,
-  styleSet,
-  nonce
+  styleSet
 }: AddFullBundleProps) {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
