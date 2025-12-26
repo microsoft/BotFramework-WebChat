@@ -25,7 +25,7 @@ type AddFullBundleProps = Readonly<{
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   children: AddFullBundleChildren;
   htmlContentTransformMiddleware?: HTMLContentTransformMiddleware[];
-  nonce: string | undefined;
+  nonce?: string | undefined;
   renderMarkdown?: (
     markdown: string,
     newLineOptions: { markdownRespectCRLF: boolean },
