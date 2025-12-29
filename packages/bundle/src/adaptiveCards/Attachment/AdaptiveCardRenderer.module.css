@@ -67,7 +67,7 @@
   :global(.ac-pushButton[aria-pressed='true']) {
     background-color: var(--webchat__background--card-push-button, #0063b1);
     border-color: var(--webchat__background--card-push-button, #0063b1);
-    color: var(--webchat__color--card-push-button-text, white);
+    color: var(--webchat__color--card-push-button, white);
 
     @media (forced-colors: active) {
       background-color: Highlight;

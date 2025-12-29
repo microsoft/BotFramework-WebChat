@@ -7,6 +7,7 @@ import random from 'math-random';
 import React, { forwardRef, memo, useMemo, type Ref } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 import CustomPropertyNames from './CustomPropertyNames';
+import { StrictStyleOptions } from 'botframework-webchat-api';
 
 const customPropertiesContainerPropsSchema = pipe(
   object({
@@ -25,6 +26,13 @@ const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 function uniqueId() {
   // eslint-disable-next-line no-magic-numbers
   return Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36);
+}
+
+function hasBundleStyleOptions(styleOptions: StrictStyleOptions): styleOptions is StrictStyleOptions & {
+  cardPushButtonBackgroundColor?: string;
+  cardPushButtonTextColor?: string;
+} {
+  return 'cardPushButtonBackgroundColor' in styleOptions || 'cardPushButtonTextColor' in styleOptions;
 }
 
 function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: Ref<HTMLDivElement>) {
@@ -71,11 +79,21 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       transitionEasing
     } = styleOptions;
 
+    let bundleStyleProps = '';
+    if (hasBundleStyleOptions(styleOptions)) {
+      const { cardPushButtonBackgroundColor, cardPushButtonTextColor } = styleOptions;
+      bundleStyleProps = `
+  ${CustomPropertyNames.BackgroundCardPushButton}: ${cardPushButtonBackgroundColor};
+  ${CustomPropertyNames.ColorCardPushButton}: ${cardPushButtonTextColor};
+`;
+    }
+
     const randomClass = `w${uniqueId()}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
 
     const contents = `
 .${webchatCustomPropertiesClass}.${randomClass} {
   display: contents;
+  /* From component */
   ${CustomPropertyNames.BackgroundTranscriptTerminator}: ${transcriptTerminatorBackgroundColor};
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
@@ -111,6 +129,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
   ${CustomPropertyNames.TransitionEasing}: ${transitionEasing};
+  /* From bundle */
+  ${bundleStyleProps}
 }
 `;
     const [style] = makeCreateStyles(contents)(`component/CustomPropertiesContainer-${uniqueId()}`);
