@@ -72,7 +72,7 @@ function AddFullBundle({
         adaptiveCardsHostConfig={adaptiveCardHostConfig || adaptiveCardsHostConfig}
         adaptiveCardsPackage={adaptiveCardsPackage}
       >
-        <BundleStylesheet nonce={nonce} />
+        <BundleStylesheet at={styleOptions?.stylesRoot} nonce={nonce} />
         {children(patchedProps)}
       </AdaptiveCardsComposer>
     </ShikiComposer>
