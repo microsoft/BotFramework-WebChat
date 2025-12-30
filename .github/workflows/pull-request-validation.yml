@@ -82,6 +82,23 @@ jobs:
           path: docker.zip
           retention-days: 1
 
+  build-browser:
+    name: Build test harness
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --ignore-scripts --strict-peer-deps
+
+      - run: npm run build-browser
+
   build-samples:
     name: Build samples
     runs-on: ubuntu-latest

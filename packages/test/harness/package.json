@@ -16,7 +16,7 @@
     "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
     "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
     "build:pre:watch": "../../../scripts/npm/build-watch.sh",
-    "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:esbuild:esm\" \"npm:build:run:esbuild:iife\" && touch ./package.json",
+    "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:esbuild:esm\" \"npm:build:run:esbuild:iife\" && node ../../../scripts/touch.mjs ./package.json",
     "build:run:esbuild:base": "esbuild test-harness=./src/browser/index.js --bundle --define:define=undefined --define:process.env.CI=undefined --minify --outdir=dist --sourcemap --target=chrome100",
     "build:run:esbuild:esm": "npm run build:run:esbuild:base -- --format=esm --out-extension:.js=.mjs",
     "build:run:esbuild:iife": "npm run build:run:esbuild:base -- --format=iife",

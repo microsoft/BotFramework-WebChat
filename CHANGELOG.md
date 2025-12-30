@@ -15,6 +15,7 @@ Legends:
 - 🐛 are known issues
 - 🧪 are experimental changes
 - 🏫 are samples
+- 👷🏻 are development environment changes
 
 ## [Unreleased]
 
@@ -147,6 +148,7 @@ Breaking changes in this release:
    - Debug into element: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.debugger`
    - Breakpoint: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.breakpoint.incomingActivity`
 - The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Added `npm run build-browser` script for building test harness package only, in PR [#5667](https://github.com/microsoft/BotFramework-WebChat/pull/5667), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
