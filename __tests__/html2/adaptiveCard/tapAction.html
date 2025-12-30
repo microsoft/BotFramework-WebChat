@@ -51,7 +51,7 @@
         // When using runHookActivityMiddleware, an additional hidden activities will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
         await pageConditions.numActivitiesShown(1);
 
-        const renderer = document.querySelector('.webchat__adaptive-card-renderer');
+        const renderer = document.querySelector('.adaptive-card-renderer');
         const card = renderer.querySelector('.ac-adaptiveCard[tabindex="0"]');
 
         expect(card).toBeTruthy();

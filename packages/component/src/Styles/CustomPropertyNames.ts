@@ -1,5 +1,6 @@
 const CustomPropertyNames = Object.freeze({
   // Make sure key names does not have JavaScript forbidden names.
+  BackgroundCardPushButton: '--webchat__background--card-push-button',
   BackgroundCodeBlock: '--webchat__background--code-block',
   BackgroundTranscriptTerminator: '--webchat__background--transcript-terminator',
   BorderAnimationColor1: '--webchat__border-animation--color-1',
@@ -17,6 +18,7 @@ const CustomPropertyNames = Object.freeze({
   BorderRadiusTranscriptTerminator: '--webchat__border-radius--transcript-terminator',
   BorderWidthTranscriptVisualKeyboardIndicator: '--webchat__border-width--transcript-visual-keyboard-indicator',
   ColorAccent: '--webchat__color--accent',
+  ColorCardPushButton: '--webchat__color--card-push-button',
   ColorCodeBlock: '--webchat__color--code-block',
   ColorSubtle: '--webchat__color--subtle',
   ColorTimestamp: '--webchat__color--timestamp',

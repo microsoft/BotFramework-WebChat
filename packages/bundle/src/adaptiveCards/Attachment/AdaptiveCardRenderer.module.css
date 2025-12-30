@@ -1,0 +1,83 @@
+:global(.webchat) .adaptive-card-renderer {
+  /* Related to #4075. */
+  /* Adaptive Cards assume its host is in "forced border-box" mode. */
+  /* In CSS, the default is "content-box" mode. */
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#values */
+  * {
+    box-sizing: border-box;
+  }
+
+  :global(.ac-input),
+  :global(.ac-inlineActionButton),
+  :global(.ac-quickActionButton) {
+    font-family: var(--webchat__font--primary);
+  }
+
+  :global(.ac-multichoiceInput) {
+    padding: var(--webchat__padding--regular);
+  }
+
+  :global(.ac-pushButton) {
+    appearance: none;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    color: var(--webchat__color--accent);
+    font-weight: 600;
+    padding: var(--webchat__padding--regular);
+  }
+
+  :global(.ac-pushButton.style-destructive) {
+    background-color: #e50000;
+    color: white;
+  }
+
+  :global(.ac-pushButton.style-destructive:hover),
+  :global(.ac-pushButton.style-destructive:active) {
+    background-color: #bf0000;
+  }
+
+  :global(.ac-pushButton.style-positive) {
+    background-color: #0078d7;
+    color: white;
+  }
+
+  :global(.ac-pushButton.style-positive:hover),
+  :global(.ac-pushButton.style-positive:active) {
+    background-color: #006abc;
+  }
+
+  /* The following styles are copied from :disabled via Chromium. */
+  :global(.ac-pushButton[aria-disabled='true']),
+  input[aria-disabled='true'],
+  select[aria-disabled='true'],
+  textarea[aria-disabled='true'] {
+    background-color: rgba(239, 239, 239, 0.3);
+    border-color: rgba(118, 118, 118, 0.3);
+    border-style: solid;
+    border-width: 1px;
+    color: #545454;
+  }
+
+  :global(.ac-pushButton[aria-disabled='true']) {
+    background-color: #eee;
+    color: #4f4f4f;
+  }
+
+  :global(.ac-pushButton[aria-pressed='true']) {
+    background-color: var(--webchat__background--card-push-button, #0063b1);
+    border-color: var(--webchat__background--card-push-button, #0063b1);
+    color: var(--webchat__color--card-push-button, white);
+
+    @media (forced-colors: active) {
+      background-color: Highlight;
+      border-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
+
+  input[aria-disabled='true'] {
+    padding: 2px 1px;
+  }
+}

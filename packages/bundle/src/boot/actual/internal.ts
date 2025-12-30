@@ -4,6 +4,7 @@ export {
   CodeHighlighterComposer,
   createIconComponent,
   InjectStyleElements,
+  injectStyleElementsPropsSchema,
   parseDocumentFragmentFromString,
   PartGrouping,
   ScreenReaderText,

@@ -30,7 +30,7 @@
         await host.sendShiftTab();
 
         const focusingOnRoot =
-          document.activeElement === document.querySelector('.webchat__adaptive-card-renderer').firstChild;
+          document.activeElement === document.querySelector('.adaptive-card-renderer').firstChild;
 
         expect(focusingOnRoot).toBe(true);
 

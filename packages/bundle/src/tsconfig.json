@@ -2,5 +2,8 @@
   "compilerOptions": {
     "types": ["dom-speech-recognition"]
   },
-  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
+  "extends": [
+    "@msinternal/botframework-webchat-tsconfig/legacy",
+    "@msinternal/botframework-webchat-tsconfig/features/cssModules"
+  ]
 }
