@@ -15,6 +15,7 @@ Legends:
 - 🐛 are known issues
 - 🧪 are experimental changes
 - 🏫 are samples
+- 👷🏻 are development environment changes
 
 ## [Unreleased]
 
