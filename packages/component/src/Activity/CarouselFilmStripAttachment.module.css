@@ -1,0 +1,41 @@
+:global(.webchat) .carousel-filmstrip-attachment {
+  max-width: var(--webchat__max-width--attachment-bubble);
+  min-width: var(--webchat__min-width--attachment-bubble);
+  transition-duration: var(--webchat__transition-duration);
+  transition-property: max-width, min-width;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus .carousel-filmstrip-attachment--focus {
+    border-color: var(--webchat__color--transcript-visual-keyboard-indicator);
+    border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
+    box-sizing: border-box;
+    height: calc(100% - var(--webchat__border-width--transcript-visual-keyboard-indicator));
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: calc(100% - var(--webchat__border-width--transcript-visual-keyboard-indicator));
+  }
+
+  .carousel-filmstrip-attachment--rtl {
+    padding-left: var(--webchat__padding--regular);
+
+    .carousel-filmstrip-attachment--hide-avatar,
+    .carousel-filmstrip-attachment--show-avatar {
+      &:first-child {
+        padding-left: calc(var(--webchat__size--avatar) + var(--webchat__padding--regular) * 2);
+      }
+    }
+
+    .carousel-filmstrip-attachment--hide-nub,
+    .carousel-filmstrip-attachment--show-nub {
+      &:not(.carousel-filmstrip-attachment--hide-avatar.carousel-filmstrip-attachment--show-avatar):first-child {
+        padding-left: calc(var(--webchat__padding--regular) * 2);
+      }
+    }
+  }
+}

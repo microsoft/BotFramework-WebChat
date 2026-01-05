@@ -1,0 +1,140 @@
+:global(.webchat) .bubble {
+  display: flex;
+  position: relative;
+
+  .bubble__content {
+    flex-grow: 1;
+    margin-left: 0;
+    margin-right: 0;
+    /* This is for hiding content outside of the bubble, for example, content outside of border radius */
+    overflow: hidden;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: margin-left, margin-right;
+    word-break: var(--webchat__message-activity-word-break);
+  }
+
+  .bubble__nub {
+    overflow: hidden; /* This style is for IE11 because it doesn't respect SVG viewport */
+    position: absolute;
+  }
+
+  .bubble__nub-pad {
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+    width: 0;
+  }
+
+  &.bubble--hide-nub,
+  &.bubble--show-nub {
+    .bubble__nub-pad {
+      width: var(--webchat__padding--regular);
+    }
+  }
+
+  &.bubble--rtl .bubble__nub {
+    transform: scale(-1, 1);
+  }
+
+  /* Bot bubble styles (not from user) */
+  &:not(.bubble--from-user) {
+    .bubble__content {
+      background: var(--webchat__bubble-background);
+      border-color: var(--webchat__bubble-border-color);
+      border-radius: var(--webchat__bubble-border-radius);
+      border-style: var(--webchat__bubble-border-style);
+      border-width: var(--webchat__bubble-border-width);
+      color: var(--webchat__bubble-text-color);
+      min-height: calc(var(--webchat__bubble-min-height) - var(--webchat__bubble-border-width) * 2);
+    }
+
+    .bubble__nub {
+      height: var(--webchat__bubble-nub-size);
+      width: var(--webchat__bubble-nub-size);
+    }
+
+    &:not(.bubble--nub-on-top) .bubble__nub {
+      bottom: calc(-1 * var(--webchat__bubble-nub-offset));
+    }
+
+    &.bubble--nub-on-top .bubble__nub {
+      top: var(--webchat__bubble-nub-offset);
+    }
+
+    .bubble__nub-outline {
+      fill: var(--webchat__bubble-background);
+      stroke: var(--webchat__bubble-border-color);
+      stroke-width: var(--webchat__bubble-border-width);
+    }
+  }
+
+  /* User bubble styles */
+  &.bubble--from-user {
+    flex-direction: row-reverse;
+
+    .bubble__content {
+      background: var(--webchat__bubble-from-user-background);
+      border-color: var(--webchat__bubble-from-user-border-color);
+      border-radius: var(--webchat__bubble-from-user-border-radius);
+      border-style: var(--webchat__bubble-from-user-border-style);
+      border-width: var(--webchat__bubble-from-user-border-width);
+      color: var(--webchat__bubble-from-user-text-color);
+      min-height: calc(var(--webchat__bubble-min-height) - var(--webchat__bubble-from-user-border-width) * 2);
+    }
+
+    .bubble__nub {
+      height: var(--webchat__bubble-from-user-nub-size);
+      width: var(--webchat__bubble-from-user-nub-size);
+    }
+
+    &:not(.bubble--nub-on-top) .bubble__nub {
+      bottom: calc(-1 * var(--webchat__bubble-from-user-nub-offset));
+    }
+
+    &.bubble--nub-on-top .bubble__nub {
+      top: var(--webchat__bubble-from-user-nub-offset);
+    }
+
+    .bubble__nub-outline {
+      fill: var(--webchat__bubble-from-user-background);
+      stroke: var(--webchat__bubble-from-user-border-color);
+      stroke-width: var(--webchat__bubble-from-user-border-width);
+    }
+  }
+
+  /* RTL styles for bot bubbles */
+  &.bubble--rtl:not(.bubble--from-user) {
+    &.bubble--show-nub {
+      /* Hide border radius if there is a nub on the top/bottom left corner */
+      &:not(.bubble--nub-on-top) .bubble__content {
+        border-bottom-left-radius: min(var(--webchat__bubble-border-radius), abs(var(--webchat__bubble-nub-offset)));
+      }
+
+      &.bubble--nub-on-top .bubble__content {
+        border-top-left-radius: min(var(--webchat__bubble-border-radius), abs(var(--webchat__bubble-nub-offset)));
+      }
+    }
+
+    .bubble__nub {
+      left: calc(var(--webchat__bubble-border-width) - var(--webchat__bubble-nub-size) + var(--webchat__padding--regular));
+    }
+  }
+
+  /* RTL styles for user bubbles */
+  &.bubble--rtl.bubble--from-user {
+    &.bubble--show-nub {
+      /* Hide border radius if there is a nub on the top/bottom right corner */
+      &:not(.bubble--nub-on-top) .bubble__content {
+        border-bottom-right-radius: min(var(--webchat__bubble-from-user-border-radius), abs(var(--webchat__bubble-from-user-nub-offset)));
+      }
+
+      &.bubble--nub-on-top .bubble__content {
+        border-top-right-radius: min(var(--webchat__bubble-from-user-border-radius), abs(var(--webchat__bubble-from-user-nub-offset)));
+      }
+    }
+
+    .bubble__nub {
+      right: calc(var(--webchat__bubble-from-user-border-width) - var(--webchat__bubble-from-user-nub-size) + var(--webchat__padding--regular));
+    }
+  }
+}

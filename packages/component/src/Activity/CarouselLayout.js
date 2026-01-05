@@ -1,3 +1,4 @@
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import {
   Composer as FilmComposer,
@@ -8,23 +9,16 @@ import {
   useStyleSetClassNames as useReactFilmStyleSetClassNames
 } from 'react-film';
 
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { memo, useMemo } from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
-import useStyleSet from '../hooks/useStyleSet';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+
+import styles from './CarouselLayout.module.css';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
-
-const ROOT_STYLE = {
-  '&.webchat__carousel-layout': {
-    overflow: 'hidden',
-    position: 'relative'
-  }
-};
 
 const CarouselLayoutCore = ({
   activity,
@@ -34,7 +28,6 @@ const CarouselLayoutCore = ({
   renderAvatar,
   showCallout
 }) => {
-  const [{ carouselFlipper: carouselFlipperStyleSet }] = useStyleSet();
   const [{ root: filmRootClassName }] = useReactFilmStyleSetClassNames();
   const [direction] = useDirection();
   const [scrollBarWidth] = useScrollBarWidth();
@@ -42,7 +35,7 @@ const CarouselLayoutCore = ({
   const leftSideFlipper = direction === 'rtl' ? '>' : '<';
   const localize = useLocalizer();
   const rightSideFlipper = direction === 'rtl' ? '<' : '>';
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const classNames = useStyles(styles);
 
   const nextAlt = localize('CAROUSEL_FLIPPER_NEXT_ALT');
   const previousAlt = localize('CAROUSEL_FLIPPER_PREVIOUS_ALT');
@@ -51,10 +44,8 @@ const CarouselLayoutCore = ({
   const rightFlipperAriaLabel = direction === 'rtl' ? previousAlt : nextAlt;
 
   return (
-    <div
-      className={classNames('webchat__carousel-layout', rootClassName, carouselFlipperStyleSet + '', filmRootClassName)}
-    >
-      <div className={classNames('react-film__main', { 'react-film__main--scrolling': scrolling })}>
+    <div className={cx(classNames['carousel-layout'], filmRootClassName)}>
+      <div className={cx('react-film__main', { 'react-film__main--scrolling': scrolling })}>
         <CarouselFilmStrip
           activity={activity}
           hideTimestamp={hideTimestamp}

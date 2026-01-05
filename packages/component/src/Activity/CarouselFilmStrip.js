@@ -1,8 +1,9 @@
 /* eslint complexity: ["error", 30] */
 
 import { hooks } from 'botframework-webchat-api';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { useItemContainerCallbackRef, useScrollableCallbackRef } from 'react-film';
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -11,89 +12,10 @@ import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useStyleSet from '../hooks/useStyleSet';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+
+import styles from './CarouselFilmStrip.module.css';
 
 const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
-
-const ROOT_STYLE = {
-  '&.webchat__carousel-filmstrip': {
-    display: 'flex',
-    flexDirection: 'column',
-    MsOverflowStyle: 'none',
-    overflowX: 'scroll',
-    overflowY: 'hidden',
-    position: 'relative', // This is to keep screen reader text in the destinated area.
-    touchAction: 'manipulation',
-    WebkitOverflowScrolling: 'touch',
-
-    '&::-webkit-scrollbar': {
-      display: 'none'
-    },
-
-    '& .webchat__carousel-filmstrip__alignment-pad': {
-      flexShrink: 0
-    },
-
-    '& .webchat__carousel-filmstrip-attachment': {
-      flex: 1
-    },
-
-    '& .webchat__carousel-filmstrip__attachments': {
-      display: 'flex',
-      listStyleType: 'none',
-      margin: 0,
-      padding: 0
-    },
-
-    '& .webchat__carousel-filmstrip__avatar': {
-      flexShrink: 0
-    },
-
-    '& .webchat__carousel-filmstrip__avatar-gutter': {
-      display: 'flex',
-      flexDirection: 'column',
-      flexShrink: 0
-    },
-
-    '& .webchat__carousel-filmstrip__complimentary': {
-      display: 'flex'
-    },
-
-    '& .webchat__carousel-filmstrip__complimentary-content': {
-      display: 'flex',
-      flexGrow: 1,
-      flexDirection: 'column'
-    },
-
-    '& .webchat__carousel-filmstrip__content': {
-      display: 'flex',
-      flexGrow: 1,
-      flexDirection: 'column'
-    },
-
-    '& .webchat__carousel-filmstrip__filler': {
-      flexGrow: 10000,
-      flexShrink: 1
-    },
-
-    '& .webchat__carousel-filmstrip__main': {
-      display: 'flex'
-    },
-
-    '& .webchat__carousel-filmstrip__message': {
-      display: 'flex'
-    },
-
-    '& .webchat__carousel-filmstrip__nub-pad': {
-      flexShrink: 0
-    },
-
-    '& .webchat__carousel-filmstrip__status': {
-      display: 'flex'
-    }
-  }
-};
 
 const CarouselFilmStrip = ({
   activity,
@@ -105,13 +27,12 @@ const CarouselFilmStrip = ({
   showCallout
 }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
-  const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
   const localize = useLocalizer();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const showActivityStatus = typeof renderActivityStatus === 'function';
+  const classNames = useStyles(styles);
 
   const itemContainerCallbackRef = useItemContainerCallbackRef();
   const scrollableCallbackRef = useScrollableCallbackRef();
@@ -152,33 +73,33 @@ const CarouselFilmStrip = ({
 
   return (
     <div
-      className={classNames(
-        'webchat__carousel-filmstrip',
+      className={cx(
+        classNames['carousel-filmstrip'],
         {
-          'webchat__carousel-filmstrip--extra-trailing': extraTrailing,
-          'webchat__carousel-filmstrip--hide-avatar': hasAvatar && !showAvatar,
-          'webchat__carousel-filmstrip--hide-nub': hideNub,
-          'webchat__carousel-filmstrip--no-message': !activityDisplayText,
-          'webchat__carousel-filmstrip--rtl': direction === 'rtl',
-          'webchat__carousel-filmstrip--show-avatar': showAvatar,
-          'webchat__carousel-filmstrip--show-nub': showNub,
-          'webchat__carousel-filmstrip--top-callout': topAlignedCallout
+          [classNames['carousel-filmstrip--extra-trailing']]: extraTrailing,
+          [classNames['carousel-filmstrip--hide-avatar']]: hasAvatar && !showAvatar,
+          [classNames['carousel-filmstrip--hide-nub']]: hideNub,
+          [classNames['carousel-filmstrip--no-message']]: !activityDisplayText,
+          [classNames['carousel-filmstrip--rtl']]: direction === 'rtl',
+          [classNames['carousel-filmstrip--show-avatar']]: showAvatar,
+          [classNames['carousel-filmstrip--show-nub']]: showNub,
+          [classNames['carousel-filmstrip--top-callout']]: topAlignedCallout
         },
         'react-film__filmstrip',
-        rootClassName,
-        carouselFilmStripStyleSet + '',
-        (className || '') + ''
+        className
       )}
       ref={scrollableCallbackRef}
     >
-      <div className="webchat__carousel-filmstrip__main">
-        <div className="webchat__carousel-filmstrip__avatar-gutter">{showAvatar && renderAvatar({ activity })}</div>
-        <div className="webchat__carousel-filmstrip__content">
+      <div className={classNames['carousel-filmstrip__main']}>
+        <div className={classNames['carousel-filmstrip__avatar-gutter']}>
+          {showAvatar && renderAvatar({ activity })}
+        </div>
+        <div className={classNames['carousel-filmstrip__content']}>
           {!!activityDisplayText && (
-            <div aria-roledescription="message" className="webchat__carousel-filmstrip__message" role="group">
+            <div aria-roledescription="message" className={classNames['carousel-filmstrip__message']} role="group">
               <ScreenReaderText text={greetingAlt} />
               <Bubble
-                className="webchat__carousel-filmstrip__bubble"
+                className={classNames['carousel-filmstrip__bubble']}
                 fromUser={fromUser}
                 nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
               >
@@ -190,14 +111,14 @@ const CarouselFilmStrip = ({
                   }
                 })}
               </Bubble>
-              <div className="webchat__carousel-filmstrip__filler" />
+              <div className={classNames['carousel-filmstrip__filler']} />
             </div>
           )}
-          <div className="webchat__carousel-filmstrip__complimentary">
-            <div className="webchat__carousel-filmstrip__nub-pad" />
-            <div className="webchat__carousel-filmstrip__complimentary-content">
+          <div className={classNames['carousel-filmstrip__complimentary']}>
+            <div className={classNames['carousel-filmstrip__nub-pad']} />
+            <div className={classNames['carousel-filmstrip__complimentary-content']}>
               <ul
-                className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list"
+                className={cx(classNames['carousel-filmstrip__attachments'], 'react-film__filmstrip__list')}
                 ref={itemContainerCallbackRef}
               >
                 {attachments.map((attachment, index) => (
@@ -220,12 +141,12 @@ const CarouselFilmStrip = ({
             </div>
           </div>
         </div>
-        <div className="webchat__carousel-filmstrip__alignment-pad" />
+        <div className={classNames['carousel-filmstrip__alignment-pad']} />
       </div>
       {showActivityStatus && (
-        <div className="webchat__carousel-filmstrip__status">
-          <div className="webchat__carousel-filmstrip__avatar-gutter" />
-          <div className="webchat__carousel-filmstrip__nub-pad" />
+        <div className={classNames['carousel-filmstrip__status']}>
+          <div className={classNames['carousel-filmstrip__avatar-gutter']} />
+          <div className={classNames['carousel-filmstrip__nub-pad']} />
           {renderActivityStatus({ hideTimestamp })}
         </div>
       )}

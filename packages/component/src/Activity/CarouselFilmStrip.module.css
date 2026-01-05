@@ -1,0 +1,158 @@
+:global(.webchat) .carousel-filmstrip {
+  display: flex;
+  flex-direction: column;
+  -ms-overflow-style: none;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  position: relative; /* This is to keep screen reader text in the destinated area. */
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+
+  /* Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function */
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/overflow */
+  @supports (-moz-appearance: none) {
+    margin-bottom: -17px;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-filmstrip__bubble {
+    max-width: var(--webchat__max-width--message-bubble);
+    min-width: var(--webchat__min-width--message-bubble);
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: max-width;
+  }
+
+  .carousel-filmstrip--hide-nub,
+  .carousel-filmstrip--show-nub,
+  .carousel-filmstrip--hide-avatar,
+  .carousel-filmstrip--show-avatar {
+    .carousel-filmstrip__bubble {
+      max-width: calc(var(--webchat__bubble-message-max-width) + var(--webchat__padding--regular));
+    }
+  }
+
+  .carousel-filmstrip__alignment-pad {
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+    width: var(--webchat__padding--regular);
+  }
+
+  .carousel-filmstrip--extra-trailing .carousel-filmstrip__alignment-pad {
+    width: calc(var(--webchat__padding--regular) * 2);
+  }
+
+  &:not(.carousel-filmstrip--no-message) .carousel-filmstrip__attachments {
+    margin-top: var(--webchat__padding--regular);
+  }
+
+  .carousel-filmstrip__attachments {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .carousel-filmstrip__avatar {
+    flex-shrink: 0;
+  }
+
+  .carousel-filmstrip__avatar-gutter {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+  }
+
+  .carousel-filmstrip--hide-avatar,
+  .carousel-filmstrip--show-avatar {
+    .carousel-filmstrip__avatar-gutter {
+      width: var(--webchat__size--avatar);
+    }
+  }
+
+  &:not(.carousel-filmstrip--top-callout) .carousel-filmstrip__avatar-gutter {
+    justify-content: flex-end;
+  }
+
+  .carousel-filmstrip__complimentary {
+    display: flex;
+  }
+
+  .carousel-filmstrip__complimentary-content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+  }
+
+  .carousel-filmstrip__content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+  }
+
+  .carousel-filmstrip__filler {
+    flex-grow: 10000;
+    flex-shrink: 1;
+  }
+
+  .carousel-filmstrip__main {
+    display: flex;
+  }
+
+  .carousel-filmstrip__message {
+    display: flex;
+  }
+
+  .carousel-filmstrip__nub-pad {
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+    width: 0;
+  }
+
+  .carousel-filmstrip--hide-avatar,
+  .carousel-filmstrip--show-avatar,
+  .carousel-filmstrip--hide-nub,
+  .carousel-filmstrip--show-nub {
+    .carousel-filmstrip__nub-pad {
+      width: var(--webchat__padding--regular);
+    }
+  }
+
+  .carousel-filmstrip__status {
+    display: flex;
+  }
+
+  /* RTL styles */
+  .carousel-filmstrip--rtl {
+    .carousel-filmstrip__avatar-gutter {
+      margin-left: var(--webchat__padding--regular);
+    }
+
+    .carousel-filmstrip__attachments {
+      margin-left: calc(-1 * var(--webchat__padding--regular));
+    }
+
+    .carousel-filmstrip--hide-avatar,
+    .carousel-filmstrip--show-avatar {
+      .carousel-filmstrip__attachments {
+        margin-left: calc(-1 * (var(--webchat__size--avatar) + var(--webchat__padding--regular) * 2));
+      }
+    }
+
+    .carousel-filmstrip--hide-nub,
+    .carousel-filmstrip--show-nub {
+      &:not(.carousel-filmstrip--hide-avatar):not(.carousel-filmstrip--show-avatar) {
+        .carousel-filmstrip__attachments {
+          margin-left: calc(-1 * var(--webchat__padding--regular) * 2);
+        }
+      }
+    }
+  }
+}

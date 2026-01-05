@@ -1,0 +1,4 @@
+:global(.webchat) .carousel-layout {
+  overflow: hidden;
+  position: relative;
+}
