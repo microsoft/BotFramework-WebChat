@@ -30,7 +30,7 @@
   .carousel-filmstrip--hide-avatar,
   .carousel-filmstrip--show-avatar {
     .carousel-filmstrip__bubble {
-      max-width: calc(var(--webchat__bubble-message-max-width) + var(--webchat__padding--regular));
+      max-width: calc(var(--webchat__max-width--message-bubble) + var(--webchat__padding--regular));
     }
   }
 

@@ -4,32 +4,32 @@
 
   & :global(.react-film__flipper) {
     & :global(.react-film__flipper__body) {
-      background-color: var(--webchat__transcript-overlay-button-background);
-      color: var(--webchat__transcript-overlay-button-color);
+      background-color: var(--webchat__background--transcript-overlay-button);
+      color: var(--webchat__color--transcript-overlay-button);
       outline: 0;
     }
 
     &:disabled,
     &[aria-disabled='true'] {
       & :global(.react-film__flipper__body) {
-        background-color: var(--webchat__transcript-overlay-button-background-on-disabled);
-        color: var(--webchat__transcript-overlay-button-color-on-disabled);
+        background-color: var(--webchat__background--transcript-overlay-button-disabled);
+        color: var(--webchat__color--transcript-overlay-button-disabled);
       }
     }
 
     &:focus :global(.react-film__flipper__body) {
-      background-color: var(--webchat__transcript-overlay-button-background-on-focus);
+      background-color: var(--webchat__background--transcript-overlay-button-focus);
       color: var(
-        --webchat__transcript-overlay-button-color-on-focus,
-        var(--webchat__transcript-overlay-button-color)
+        --webchat__color--transcript-overlay-button-focus,
+        var(--webchat__color--transcript-overlay-button)
       );
     }
 
     &:hover :global(.react-film__flipper__body) {
-      background-color: var(--webchat__transcript-overlay-button-background-on-hover);
+      background-color: var(--webchat__background--transcript-overlay-button-hover);
       color: var(
-        --webchat__transcript-overlay-button-color-on-hover,
-        var(--webchat__transcript-overlay-button-color)
+        --webchat__color--transcript-overlay-button-hover,
+        var(--webchat__color--transcript-overlay-button)
       );
     }
   }
