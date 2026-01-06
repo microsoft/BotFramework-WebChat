@@ -116,7 +116,11 @@
     }
 
     .bubble__nub {
-      left: calc(var(--webchat__border-width--bubble) - var(--webchat__size--bubble-nub) + var(--webchat__padding--regular));
+      left: calc(
+        var(--webchat__border-width--bubble) -
+        var(--webchat__size--bubble-nub) +
+        var(--webchat__padding--regular)
+      );
     }
   }
 
@@ -125,16 +129,26 @@
     &.bubble--show-nub {
       /* Hide border radius if there is a nub on the top/bottom right corner */
       &:not(.bubble--nub-on-top) .bubble__content {
-        border-bottom-right-radius: min(var(--webchat__border-radius--bubble-user), abs(var(--webchat__space--bubble-nub-user)));
+        border-bottom-right-radius: min(
+          var(--webchat__border-radius--bubble-user),
+          abs(var(--webchat__space--bubble-nub-user))
+        );
       }
 
       &.bubble--nub-on-top .bubble__content {
-        border-top-right-radius: min(var(--webchat__border-radius--bubble-user), abs(var(--webchat__space--bubble-nub-user)));
+        border-top-right-radius: min(
+          var(--webchat__border-radius--bubble-user),
+          abs(var(--webchat__space--bubble-nub-user))
+        );
       }
     }
 
     .bubble__nub {
-      right: calc(var(--webchat__border-width--bubble-user) - var(--webchat__size--bubble-nub-user) + var(--webchat__padding--regular));
+      right: calc(
+        var(--webchat__border-width--bubble-user) -
+        var(--webchat__size--bubble-nub-user) +
+        var(--webchat__padding--regular)
+      );
     }
   }
 }

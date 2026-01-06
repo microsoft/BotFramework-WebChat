@@ -19,18 +19,12 @@
 
     &:focus :global(.react-film__flipper__body) {
       background-color: var(--webchat__background--transcript-overlay-button-focus);
-      color: var(
-        --webchat__color--transcript-overlay-button-focus,
-        var(--webchat__color--transcript-overlay-button)
-      );
+      color: var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
     }
 
     &:hover :global(.react-film__flipper__body) {
       background-color: var(--webchat__background--transcript-overlay-button-hover);
-      color: var(
-        --webchat__color--transcript-overlay-button-hover,
-        var(--webchat__color--transcript-overlay-button)
-      );
+      color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
     }
   }
 }

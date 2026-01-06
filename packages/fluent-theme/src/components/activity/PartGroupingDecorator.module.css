@@ -724,8 +724,7 @@
       border-style: solid;
     }
 
-    &:not(.part-grouping-decorator--group)
-      :global(.bubble:not(.bubble--from-user) .bubble__content) {
+    &:not(.part-grouping-decorator--group) :global(.bubble:not(.bubble--from-user) .bubble__content) {
       anchor-name: --webchat-flair;
       max-width: unset;
     }
