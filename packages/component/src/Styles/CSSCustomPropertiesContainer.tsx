@@ -147,8 +147,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.ColorTranscriptOverlayButton}: ${transcriptOverlayButtonColor};
   ${CustomPropertyNames.ColorTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonColorOnDisabled};
-  ${CustomPropertyNames.ColorTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonColorOnFocus};
-  ${CustomPropertyNames.ColorTranscriptOverlayButtonHover}: ${transcriptOverlayButtonColorOnHover};
+  ${CustomPropertyNames.ColorTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonColorOnFocus || 'unset'};
+  ${CustomPropertyNames.ColorTranscriptOverlayButtonHover}: ${transcriptOverlayButtonColorOnHover || 'unset'};
   ${CustomPropertyNames.ColorTranscriptTerminator}: ${transcriptTerminatorColor};
   ${CustomPropertyNames.ColorTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.FontMonospace}: ${monospaceFont};
