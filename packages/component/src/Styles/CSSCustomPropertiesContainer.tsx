@@ -62,6 +62,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       bubbleFromUserNubOffset,
       bubbleFromUserNubSize,
       bubbleFromUserTextColor,
+      bubbleTextColor,
       bubbleImageMaxHeight,
       bubbleImageMinHeight,
       bubbleMessageMaxWidth,
@@ -139,6 +140,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BorderWidthTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorWidth}px;
   ${CustomPropertyNames.BorderWidthTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorWidth}px;
   ${CustomPropertyNames.ColorAccent}: ${accent};
+  ${CustomPropertyNames.ColorBubble}: ${bubbleTextColor};
   ${CustomPropertyNames.ColorBubbleUser}: ${bubbleFromUserTextColor};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};

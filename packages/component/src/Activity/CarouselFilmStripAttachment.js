@@ -9,7 +9,7 @@ import ScreenReaderText from '../ScreenReaderText';
 
 import styles from './CarouselFilmStripAttachment.module.css';
 
-const { useDirection, useLocalizer } = hooks;
+const { useLocalizer } = hooks;
 
 const CarouselFilmStripAttachment = ({
   activity,
@@ -23,7 +23,6 @@ const CarouselFilmStripAttachment = ({
   showAvatar,
   showNub
 }) => {
-  const [direction] = useDirection();
   const localize = useLocalizer();
   const classNames = useStyles(styles);
 
@@ -37,7 +36,6 @@ const CarouselFilmStripAttachment = ({
         {
           [classNames['carousel-filmstrip-attachment--hide-avatar']]: hasAvatar && !showAvatar,
           [classNames['carousel-filmstrip-attachment--hide-nub']]: hideNub,
-          [classNames['carousel-filmstrip-attachment--rtl']]: direction === 'rtl',
           [classNames['carousel-filmstrip-attachment--show-avatar']]: showAvatar,
           [classNames['carousel-filmstrip-attachment--show-nub']]: showNub
         },

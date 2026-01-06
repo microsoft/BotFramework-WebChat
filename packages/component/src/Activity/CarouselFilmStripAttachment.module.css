@@ -1,6 +1,7 @@
 :global(.webchat) .carousel-filmstrip-attachment {
   max-width: var(--webchat__max-width--attachment-bubble);
   min-width: var(--webchat__min-width--attachment-bubble);
+  padding-inline-start: var(--webchat__padding--regular);
   transition-duration: var(--webchat__transition-duration);
   transition-property: max-width, min-width;
 
@@ -14,28 +15,24 @@
     border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
     box-sizing: border-box;
     height: calc(100% - var(--webchat__border-width--transcript-visual-keyboard-indicator));
-    left: 0;
+    inset-block-start: 0;
+    inset-inline-start: 0;
     pointer-events: none;
     position: absolute;
-    top: 0;
     width: calc(100% - var(--webchat__border-width--transcript-visual-keyboard-indicator));
   }
 
-  .carousel-filmstrip-attachment--rtl {
-    padding-left: var(--webchat__padding--regular);
-
-    .carousel-filmstrip-attachment--hide-avatar,
-    .carousel-filmstrip-attachment--show-avatar {
-      &:first-child {
-        padding-left: calc(var(--webchat__size--avatar) + var(--webchat__padding--regular) * 2);
-      }
+  &.carousel-filmstrip-attachment--hide-avatar,
+  &.carousel-filmstrip-attachment--show-avatar {
+    &:first-child {
+      padding-inline-start: calc(var(--webchat__size--avatar) + var(--webchat__padding--regular) * 2);
     }
+  }
 
-    .carousel-filmstrip-attachment--hide-nub,
-    .carousel-filmstrip-attachment--show-nub {
-      &:not(.carousel-filmstrip-attachment--hide-avatar.carousel-filmstrip-attachment--show-avatar):first-child {
-        padding-left: calc(var(--webchat__padding--regular) * 2);
-      }
+  &.carousel-filmstrip-attachment--hide-nub,
+  &.carousel-filmstrip-attachment--show-nub {
+    &:not(.carousel-filmstrip-attachment--hide-avatar.carousel-filmstrip-attachment--show-avatar):first-child {
+      padding-inline-start: calc(var(--webchat__padding--regular) * 2);
     }
   }
 }

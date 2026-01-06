@@ -15,7 +15,7 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 
 import styles from './CarouselFilmStrip.module.css';
 
-const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
+const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
 const CarouselFilmStrip = ({
   activity,
@@ -29,7 +29,6 @@ const CarouselFilmStrip = ({
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const [direction] = useDirection();
   const localize = useLocalizer();
   const showActivityStatus = typeof renderActivityStatus === 'function';
   const classNames = useStyles(styles);
@@ -80,7 +79,6 @@ const CarouselFilmStrip = ({
           [classNames['carousel-filmstrip--hide-avatar']]: hasAvatar && !showAvatar,
           [classNames['carousel-filmstrip--hide-nub']]: hideNub,
           [classNames['carousel-filmstrip--no-message']]: !activityDisplayText,
-          [classNames['carousel-filmstrip--rtl']]: direction === 'rtl',
           [classNames['carousel-filmstrip--show-avatar']]: showAvatar,
           [classNames['carousel-filmstrip--show-nub']]: showNub,
           [classNames['carousel-filmstrip--top-callout']]: topAlignedCallout

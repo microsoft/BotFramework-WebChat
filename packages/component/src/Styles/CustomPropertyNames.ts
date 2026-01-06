@@ -35,6 +35,7 @@ const CustomPropertyNames = Object.freeze({
   BorderRadiusTranscriptTerminator: '--webchat__border-radius--transcript-terminator',
   BorderWidthTranscriptVisualKeyboardIndicator: '--webchat__border-width--transcript-visual-keyboard-indicator',
   ColorAccent: '--webchat__color--accent',
+  ColorBubble: '--webchat__color--bubble',
   ColorBubbleUser: '--webchat__color--bubble-user',
   ColorCardPushButton: '--webchat__color--card-push-button',
   ColorCodeBlock: '--webchat__color--code-block',
