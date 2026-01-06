@@ -43,7 +43,7 @@
   /* #endregion */
 
   /* #region Generated badge & attachments */
-  :global(.stacked-layout .webchat__bubble .webchat__text-content__generated-badge) {
+  :global(.stacked-layout .bubble .webchat__text-content__generated-badge) {
     align-items: center;
     align-self: flex-start;
     background-color: var(--webchat-colorNeutralBackground5);
@@ -70,7 +70,7 @@
     }
   }
 
-  :global(.stacked-layout .webchat__bubble .webchat__fileContent__badge) {
+  :global(.stacked-layout .bubble .webchat__fileContent__badge) {
     cursor: default;
     font-size: var(--webchat-fontSizeBase300);
     line-height: var(--webchat-lineHeightBase300);
@@ -86,7 +86,7 @@
     }
   }
 
-  :global(.stacked-layout .webchat__bubble .webchat__fileContent__downloadIcon) {
+  :global(.stacked-layout .bubble .webchat__fileContent__downloadIcon) {
     color: var(--webchat-colorBrandForegroundLink);
   }
   /* #endregion */
@@ -378,7 +378,7 @@
       display: none;
     }
 
-    :global(.part-grouping-decorator .webchat__bubble .webchat__bubble__content) {
+    :global(.part-grouping-decorator .bubble .bubble__content) {
       box-sizing: content-box;
       gap: var(--webchat-spacingVerticalXS);
     }
@@ -416,7 +416,7 @@
     margin-block-start: var(--webchat-part-grouping__message-status--space-block);
   }
 
-  :global(.stacked-layout .stacked-layout__content:has(.webchat__bubble)) {
+  :global(.stacked-layout .stacked-layout__content:has(.bubble)) {
     max-width: 100%;
     overflow: visible;
   }
@@ -428,19 +428,19 @@
   /* #endregion */
 
   /* #region Bubble surface */
-  :global(.stacked-layout .webchat__bubble) {
+  :global(.stacked-layout .bubble) {
     max-width: min(var(--webchat-part-grouping__bubble--max-width), 100%);
     min-width: var(--webchat-part-grouping__bubble--min-width);
     overflow: visible;
   }
 
-  :global(.stacked-layout .webchat__bubble):has(:global(.activity-loader)) :global(.webchat__bubble__content) {
+  :global(.stacked-layout .bubble):has(:global(.activity-loader)) :global(.bubble__content) {
     background: unset;
     box-shadow: unset;
     border-color: transparent;
   }
 
-  :global(.stacked-layout .webchat__bubble .webchat__bubble__content) {
+  :global(.stacked-layout .bubble .bubble__content) {
     background-color: var(--webchat-part-grouping__bubble-content--background);
     border-color: var(--webchat-part-grouping__bubble--border-color);
     border-radius: var(--webchat-part-grouping__bubble--border-radius);
@@ -452,7 +452,7 @@
     min-height: var(--webchat-part-grouping__bubble--min-height);
   }
 
-  :global(.stacked-layout .webchat__bubble .webchat__text-content) {
+  :global(.stacked-layout .bubble .webchat__text-content) {
     font-size: var(--webchat__font-size--medium);
     line-height: var(--webchat__line-height--medium);
     min-height: auto;
@@ -469,7 +469,7 @@
   /* #endregion */
 
   /* #region Code blocks */
-  :global(.stacked-layout .webchat__bubble .code-block-content) {
+  :global(.stacked-layout .bubble .code-block-content) {
     border-radius: var(--webchat-borderRadiusXLarge);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
     font-size: var(--webchat-fontSizeBase300);
@@ -500,7 +500,7 @@
   /* #endregion */
 
   /* #region Collapsible content */
-  :global(.stacked-layout .webchat__bubble .collapsible-content) {
+  :global(.stacked-layout .bubble .collapsible-content) {
     :global(.collapsible-content__summary) {
       &:focus-visible {
         border-radius: var(--webchat-borderRadiusSmall);
@@ -586,7 +586,7 @@
         }
       }
 
-      :global(.webchat__bubble) {
+      :global(.bubble) {
         position: static;
       }
 
@@ -594,7 +594,7 @@
         border-radius: var(--webchat-part-grouping__bubble--border-radius);
       }
 
-      :global(.webchat__bubble .webchat__bubble__content) {
+      :global(.bubble .bubble__content) {
         margin-block: calc(var(--webchat-spacingVerticalS) * -1);
         padding-block: var(--webchat-spacingVerticalS);
       }
@@ -630,11 +630,11 @@
         position: static;
       }
 
-      :global(.webchat__bubble) {
+      :global(.bubble) {
         position: static;
         width: var(--webchat-part-grouping__bubble--max-width);
 
-        :global(.webchat__bubble__content .adaptive-card-renderer > .ac-adaptiveCard) {
+        :global(.bubble__content .adaptive-card-renderer > .ac-adaptiveCard) {
           font-family: var(--webchat-fontFamilyBase);
           /* Remove double padding for adaptive cards inside bubble */
           padding: unset !important;
@@ -642,14 +642,14 @@
       }
 
       &:not(.part-grouping-decorator--group) {
-        :global(.webchat__bubble__content) {
+        :global(.bubble__content) {
           display: flex;
           flex-direction: column;
           gap: var(--webchat-spacingVerticalS);
         }
       }
 
-      :global(.webchat__bubble .collapsible-content .collapsible-content__content) {
+      :global(.bubble .collapsible-content .collapsible-content__content) {
         margin-block: var(--webchat-spacingVerticalNone);
 
         :global(.stacked-layout__attachment-list) {
@@ -689,7 +689,7 @@
         }
       }
 
-      :global(.webchat__bubble .webchat__bubble__content) {
+      :global(.bubble .bubble__content) {
         margin-block: calc(var(--webchat-spacingVerticalS) * -1);
         padding-block: var(--webchat-spacingVerticalS);
 
@@ -713,19 +713,19 @@
       }
     }
 
-    &.part-grouping-decorator--from-bot:not(.part-grouping-decorator--group) :global(.webchat__bubble__content) {
+    &.part-grouping-decorator--from-bot:not(.part-grouping-decorator--group) :global(.bubble__content) {
       box-sizing: content-box;
       padding-block: var(--webchat-spacingVerticalM);
       padding-inline: var(--webchat-spacingHorizontalL);
     }
 
-    &:not(.part-grouping-decorator--group) :global(.stacked-layout .webchat__bubble .webchat__bubble__content) {
+    &:not(.part-grouping-decorator--group) :global(.stacked-layout .bubble .bubble__content) {
       border-width: var(--webchat-strokeWidthThin);
       border-style: solid;
     }
 
     &:not(.part-grouping-decorator--group)
-      :global(.webchat__bubble:not(.webchat__bubble--from-user) .webchat__bubble__content) {
+      :global(.bubble:not(.bubble--from-user) .bubble__content) {
       anchor-name: --webchat-flair;
       max-width: unset;
     }
@@ -738,19 +738,19 @@
       order: -1;
     }
 
-    &:has(:global(.webchat__bubble--from-user)) {
-      :global(.webchat__bubble) {
+    &:has(:global(.bubble--from-user)) {
+      :global(.bubble) {
         margin-block-end: var(--webchat-spacingVerticalM);
       }
     }
 
-    &:has(:global(.webchat__bubble.webchat__bubble--from-user)),
+    &:has(:global(.bubble.bubble--from-user)),
     &:has(:global(.pre-chat-message-activity)),
     &:has(:global(.liner-message-activity)) {
       padding-inline-start: var(--webchat-spacingHorizontalNone);
     }
 
-    :global(.webchat__bubble .webchat__text-content .webchat__text-content__generated-badge) {
+    :global(.bubble .webchat__text-content .webchat__text-content__generated-badge) {
       display: none;
     }
 
