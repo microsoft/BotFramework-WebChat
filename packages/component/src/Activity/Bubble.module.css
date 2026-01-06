@@ -2,20 +2,64 @@
   display: flex;
   position: relative;
 
+  --webchat__bubble--background: var(--webchat__background--bubble);
+  --webchat__bubble--border-color: var(--webchat__border-color--bubble);
+  --webchat__bubble--border-radius: var(--webchat__border-radius--bubble);
+  --webchat__bubble--border-style: var(--webchat__border-style--bubble);
+  --webchat__bubble--border-width: var(--webchat__border-width--bubble);
+  --webchat__bubble--border-width: var(--webchat__border-width--bubble);
+  --webchat__bubble--color: var(--webchat__color--bubble);
+  --webchat__bubble--nub-size: var(--webchat__size--bubble-nub);
+  --webchat__bubble--nub-space: var(--webchat__space--bubble-nub);
+
+  --webchat__bubble--nub-border-radius: min(
+    var(--webchat__bubble--border-radius),
+    calc(var(--webchat__bubble--nub-space) * -1)
+  );
+  --webchat__bubble--nub-inset-block: auto calc(-1 * var(--webchat__bubble--nub-space));
+  --webchat__bubble--nub-inset-inline: calc(
+      var(--webchat__bubble--border-width) -
+      var(--webchat__bubble--nub-size) +
+      var(--webchat__padding--regular)
+    )
+    auto;
+
+  &.bubble--nub-on-top {
+    --webchat__bubble--nub-border-radius: min(var(--webchat__bubble--border-radius), var(--webchat__bubble--nub-space));
+    --webchat__bubble--nub-inset-block: var(--webchat__bubble--nub-space) auto;
+  }
+  &.bubble--from-user {
+    --webchat__bubble--background: var(--webchat__background--bubble-user);
+    --webchat__bubble--border-color: var(--webchat__border-color--bubble-user);
+    --webchat__bubble--border-radius: var(--webchat__border-radius--bubble-user);
+    --webchat__bubble--border-style: var(--webchat__border-style--bubble-user);
+    --webchat__bubble--border-width: var(--webchat__border-width--bubble-user);
+    --webchat__bubble--border-width: var(--webchat__border-width--bubble-user);
+    --webchat__bubble--color: var(--webchat__color--bubble-user);
+    --webchat__bubble--nub-size: var(--webchat__size--bubble-nub-user);
+    --webchat__bubble--nub-space: var(--webchat__space--bubble-nub-user);
+
+    --webchat__bubble--nub-inset-inline: auto
+      calc(var(--webchat__bubble--border-width) - var(--webchat__bubble--nub-size) + var(--webchat__padding--regular));
+  }
+
   .bubble__content {
     flex-grow: 1;
-    margin-left: 0;
-    margin-right: 0;
+    margin-inline: 0;
     /* This is for hiding content outside of the bubble, for example, content outside of border radius */
     overflow: hidden;
     transition-duration: var(--webchat__transition-duration);
-    transition-property: margin-left, margin-right;
+    transition-property: margin-inline-start, margin-inline-end;
     word-break: var(--webchat__word-break--message-activity);
   }
 
   .bubble__nub {
     overflow: hidden; /* This style is for IE11 because it doesn't respect SVG viewport */
     position: absolute;
+  }
+
+  &:dir(rtl) .bubble__nub {
+    transform: scale(-1, 1);
   }
 
   .bubble__nub-pad {
@@ -32,123 +76,56 @@
     }
   }
 
-  &.bubble--rtl .bubble__nub {
-    transform: scale(-1, 1);
+  .bubble__content {
+    background: var(--webchat__bubble--background);
+    border-color: var(--webchat__bubble--border-color);
+    border-radius: var(--webchat__bubble--border-radius);
+    border-style: var(--webchat__bubble--border-style);
+    border-width: var(--webchat__bubble--border-width);
+    color: var(--webchat__bubble--color);
+    min-height: calc(var(--webchat__min-height--bubble) - var(--webchat__bubble--border-width) * 2);
   }
 
-  /* Bot bubble styles (not from user) */
+  .bubble__nub {
+    height: var(--webchat__bubble--nub-size);
+    inset-inline: var(--webchat__bubble--nub-inset-inline);
+    inset-block: var(--webchat__bubble--nub-inset-block);
+    width: var(--webchat__bubble--nub-size);
+  }
+
+  .bubble__nub-outline {
+    fill: var(--webchat__bubble--background);
+    stroke: var(--webchat__bubble--border-color);
+    stroke-width: var(--webchat__bubble--border-width);
+  }
+
+  /* Bot bubble styles (not from user) - nub on inline-start side */
   &:not(.bubble--from-user) {
-    .bubble__content {
-      background: var(--webchat__background--bubble);
-      border-color: var(--webchat__border-color--bubble);
-      border-radius: var(--webchat__border-radius--bubble);
-      border-style: var(--webchat__border-style--bubble);
-      border-width: var(--webchat__border-width--bubble);
-      color: var(--webchat__text-color--bubble);
-      min-height: calc(var(--webchat__min-height--bubble) - var(--webchat__border-width--bubble) * 2);
-    }
+    /* Adjust border radius when nub is shown */
+    &.bubble--show-nub {
+      &:not(.bubble--nub-on-top) .bubble__content {
+        border-end-start-radius: var(--webchat__bubble--nub-border-radius);
+      }
 
-    .bubble__nub {
-      height: var(--webchat__size--bubble-nub);
-      width: var(--webchat__size--bubble-nub);
-    }
-
-    &:not(.bubble--nub-on-top) .bubble__nub {
-      bottom: calc(-1 * var(--webchat__space--bubble-nub));
-    }
-
-    &.bubble--nub-on-top .bubble__nub {
-      top: var(--webchat__space--bubble-nub);
-    }
-
-    .bubble__nub-outline {
-      fill: var(--webchat__background--bubble);
-      stroke: var(--webchat__border-color--bubble);
-      stroke-width: var(--webchat__border-width--bubble);
+      &.bubble--nub-on-top .bubble__content {
+        border-start-start-radius: var(--webchat__bubble--nub-border-radius);
+      }
     }
   }
 
-  /* User bubble styles */
+  /* User bubble styles - nub on inline-end side */
   &.bubble--from-user {
     flex-direction: row-reverse;
 
-    .bubble__content {
-      background: var(--webchat__background--bubble-user);
-      border-color: var(--webchat__border-color--bubble-user);
-      border-radius: var(--webchat__border-radius--bubble-user);
-      border-style: var(--webchat__border-style--bubble-user);
-      border-width: var(--webchat__border-width--bubble-user);
-      color: var(--webchat__color--bubble-user);
-      min-height: calc(var(--webchat__min-height--bubble) - var(--webchat__border-width--bubble-user) * 2);
-    }
-
-    .bubble__nub {
-      height: var(--webchat__size--bubble-nub-user);
-      width: var(--webchat__size--bubble-nub-user);
-    }
-
-    &:not(.bubble--nub-on-top) .bubble__nub {
-      bottom: calc(-1 * var(--webchat__space--bubble-nub-user));
-    }
-
-    &.bubble--nub-on-top .bubble__nub {
-      top: var(--webchat__space--bubble-nub-user);
-    }
-
-    .bubble__nub-outline {
-      fill: var(--webchat__background--bubble-user);
-      stroke: var(--webchat__border-color--bubble-user);
-      stroke-width: var(--webchat__border-width--bubble-user);
-    }
-  }
-
-  /* RTL styles for bot bubbles */
-  &.bubble--rtl:not(.bubble--from-user) {
+    /* Adjust border radius when nub is shown */
     &.bubble--show-nub {
-      /* Hide border radius if there is a nub on the top/bottom left corner */
       &:not(.bubble--nub-on-top) .bubble__content {
-        border-bottom-left-radius: min(var(--webchat__border-radius--bubble), abs(var(--webchat__space--bubble-nub)));
+        border-end-end-radius: var(--webchat__bubble--nub-border-radius);
       }
 
       &.bubble--nub-on-top .bubble__content {
-        border-top-left-radius: min(var(--webchat__border-radius--bubble), abs(var(--webchat__space--bubble-nub)));
+        border-start-end-radius: var(--webchat__bubble--nub-border-radius);
       }
-    }
-
-    .bubble__nub {
-      left: calc(
-        var(--webchat__border-width--bubble) -
-        var(--webchat__size--bubble-nub) +
-        var(--webchat__padding--regular)
-      );
-    }
-  }
-
-  /* RTL styles for user bubbles */
-  &.bubble--rtl.bubble--from-user {
-    &.bubble--show-nub {
-      /* Hide border radius if there is a nub on the top/bottom right corner */
-      &:not(.bubble--nub-on-top) .bubble__content {
-        border-bottom-right-radius: min(
-          var(--webchat__border-radius--bubble-user),
-          abs(var(--webchat__space--bubble-nub-user))
-        );
-      }
-
-      &.bubble--nub-on-top .bubble__content {
-        border-top-right-radius: min(
-          var(--webchat__border-radius--bubble-user),
-          abs(var(--webchat__space--bubble-nub-user))
-        );
-      }
-    }
-
-    .bubble__nub {
-      right: calc(
-        var(--webchat__border-width--bubble-user) -
-        var(--webchat__size--bubble-nub-user) +
-        var(--webchat__padding--regular)
-      );
     }
   }
 }

@@ -11,7 +11,7 @@ import isZeroOrPositive from '../Utils/isZeroOrPositive';
 
 import styles from './Bubble.module.css';
 
-const { useDirection, useStyleOptions } = hooks;
+const { useStyleOptions } = hooks;
 
 function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false, classNames) {
   if (typeof nubSize !== 'number') {
@@ -40,7 +40,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false, classNames)
       xmlns="http://www.w3.org/2000/svg"
     >
       <g transform={`${horizontalTransform} ${verticalTransform}`}>
-        <path className={classNames['bubble__nub_outline']} d={`M${p1} L${p2} L${p3}`} />
+        <path className={classNames['bubble__nub-outline']} d={`M${p1} L${p2} L${p3}`} />
       </g>
     </svg>
   );
@@ -68,7 +68,6 @@ function Bubble(props: BubbleProps) {
     nub = false
   } = validateProps(bubblePropsSchema, props);
 
-  const [direction] = useDirection();
   const [
     {
       bubbleBorderWidth,
@@ -104,7 +103,6 @@ function Bubble(props: BubbleProps) {
           [classNames['bubble--from-user']]: fromUser,
           [classNames['bubble--hide-nub']]: nub !== true && nub !== false,
           [classNames['bubble--nub-on-top']]: isZeroOrPositive(nubOffset),
-          [classNames['bubble--rtl']]: direction === 'rtl',
           [classNames['bubble--show-nub']]: nub === true
         },
         className
