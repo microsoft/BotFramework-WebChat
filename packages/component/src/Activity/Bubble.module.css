@@ -88,15 +88,15 @@
 
   .bubble__nub {
     height: var(--webchat__bubble--nub-size);
-    inset-inline: var(--webchat__bubble--nub-inset-inline);
     inset-block: var(--webchat__bubble--nub-inset-block);
+    inset-inline: var(--webchat__bubble--nub-inset-inline);
     width: var(--webchat__bubble--nub-size);
   }
 
   .bubble__nub-outline {
     fill: var(--webchat__bubble--background);
-    stroke: var(--webchat__bubble--border-color);
     stroke-width: var(--webchat__bubble--border-width);
+    stroke: var(--webchat__bubble--border-color);
   }
 
   /* Bot bubble styles (not from user) - nub on inline-start side */
