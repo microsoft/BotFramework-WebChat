@@ -133,7 +133,7 @@
     margin-inline-start: var(--webchat__padding--regular);
   }
 
-  .carousel-filmstrip__attachments {
+  &.carousel-filmstrip .carousel-filmstrip__attachments {
     margin-inline-start: calc(-1 * var(--webchat__padding--regular));
   }
 
@@ -146,8 +146,7 @@
 
   &.carousel-filmstrip--hide-nub,
   &.carousel-filmstrip--show-nub {
-    &:not(.carousel-filmstrip--hide-avatar),
-    &:not(.carousel-filmstrip--show-avatar) {
+    &:not(.carousel-filmstrip--hide-avatar.carousel-filmstrip--show-avatar) {
       .carousel-filmstrip__attachments {
         margin-inline-start: calc(-1 * var(--webchat__padding--regular) * 2);
       }
