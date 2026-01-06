@@ -324,7 +324,7 @@
   }
 
   /* Transcript activity focused directly */
-  > :global(.focus-trap > .basic-transcript__activity-body .bubble) {
+  > :global(.webchat__focus-trap > .webchat__basic-transcript__activity-body .bubble) {
     display: grid;
     grid-template-areas: 'focused-content';
     position: static;
