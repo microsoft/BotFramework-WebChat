@@ -32,7 +32,7 @@ import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
-import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
+import { getPositionFromActivity, queryPositionFromActivity, setPositionInActivity } from './sort/property/Position';
 import { setReceivedAtInActivity } from './sort/property/ReceivedAt';
 import { querySendStatusFromOutgoingActivity, setSendStatusInOutgoingActivity } from './sort/property/SendStatus';
 import queryLocalIdAByActivityId from './sort/queryLocalIdByActivityId';
@@ -42,6 +42,8 @@ import updateActivityChannelData, {
   updateActivityChannelDataInternalSkipNameCheck
 } from './sort/updateActivityChannelData';
 import upsert, { INITIAL_STATE } from './sort/upsert';
+import isVoiceActivity from '../../utils/voiceActivity/isVoiceActivity';
+import isVoiceTranscriptActivity from '../../utils/voiceActivity/isVoiceTranscriptActivity';
 
 type GroupedActivitiesAction =
   | DeleteActivityAction
@@ -100,6 +102,13 @@ function createGroupedActivitiesReducer(
           payload: { activity }
         } = action;
 
+        // Not transcript voice does not render on UI and mostly fire and forget as we dont't have replay etc.
+        // hence we don't want to process and simply pass through.
+        if (isVoiceActivity(activity) && !isVoiceTranscriptActivity(activity)) {
+          state = upsert(ponyfill, state, activity);
+          break;
+        }
+
         // Patch activity so the outgoing blob: URL is not re-downloadable.
         // Related to /__tests__/html2/accessibility/liveRegion/attachment/file.
 
@@ -151,6 +160,12 @@ function createGroupedActivitiesReducer(
       }
 
       case POST_ACTIVITY_FULFILLED: {
+        // Not transcript voice does not render on UI and mostly fire and forget as we dont't have replay etc.
+        // hence we don't want to process and simply pass through.
+        if (isVoiceActivity(action.payload.activity) && !isVoiceTranscriptActivity(action.payload.activity)) {
+          state = upsert(ponyfill, state, action.payload.activity);
+          break;
+        }
         const localId = queryLocalIdAByClientActivityId(state, action.meta.clientActivityID);
 
         const existingActivity = localId && state.activityMap.get(localId)?.activity;
@@ -175,8 +190,11 @@ function createGroupedActivitiesReducer(
         activity = setSendStatusInOutgoingActivity(activity, SENT);
         activity = setLocalIdInActivity(activity, localId);
 
-        // Keep existing position.
-        activity = setPositionInActivity(activity, getPositionFromActivity(existingActivity));
+        // Keep existing position (if it exists - voice activities don't have positions)
+        const existingPosition = queryPositionFromActivity(existingActivity);
+        if (typeof existingPosition !== 'undefined') {
+          activity = setPositionInActivity(activity, getPositionFromActivity(existingActivity));
+        }
 
         // Compare the INCOMING_ACTIVITY below:
         // - POST_ACTIVITY_FULFILLED will mark send status as SENT

@@ -7,6 +7,8 @@ import { useRecorder } from './useRecorder';
 
 // --- Mocks ---
 
+jest.mock('../../Ponyfill/usePonyfill', () => ({ __esModule: true, default: jest.fn(() => [{ Date: global.Date }]) }));
+
 const mockTrack = {
   stop: jest.fn()
 };
@@ -96,7 +98,9 @@ describe('useRecorder', () => {
     expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
     expect(global.AudioContext).toHaveBeenCalledTimes(1);
     expect(mockAudioContext.audioWorklet.addModule).toHaveBeenCalledTimes(1);
-    expect(global.AudioWorkletNode).toHaveBeenCalledWith(expect.anything(), 'audio-recorder');
+    expect(global.AudioWorkletNode).toHaveBeenCalledWith(expect.anything(), 'audio-recorder', {
+      processorOptions: { bufferSize: 2400 }
+    });
     expect(mockWorkletNode.connect).toHaveBeenCalledTimes(1);
     expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
   });

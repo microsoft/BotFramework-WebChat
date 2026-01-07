@@ -1,14 +1,17 @@
 import { WebChatActivity } from '../../types/WebChatActivity';
 
-// This is interim type guard until activity protocol is ratified.
+// This is interim until activity protocol is ratified.
 const isVoiceActivity = (
   activity: WebChatActivity
 ): activity is WebChatActivity & {
-  value: { voiceLiveEvent: any };
+  name: string;
+  type: 'event';
+  value: { voice: any };
 } =>
   activity.type === 'event' &&
-  activity.value &&
+  !!activity.name &&
+  !!activity.value &&
   typeof activity.value === 'object' &&
-  'voiceLiveEvent' in activity.value;
+  'voice' in activity.value;
 
 export default isVoiceActivity;

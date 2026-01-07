@@ -57,6 +57,7 @@ type State = {
   readonly livestreamSessionMap: LivestreamSessionMap;
   readonly sortedChatHistoryList: SortedChatHistory;
   readonly sortedActivities: readonly Activity[];
+  readonly voiceActivities: readonly Activity[];
 };
 
 export {

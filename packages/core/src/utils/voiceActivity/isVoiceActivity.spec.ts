@@ -2,36 +2,34 @@ import isVoiceActivity from './isVoiceActivity';
 import { WebChatActivity } from '../../types/WebChatActivity';
 
 // Mock activity factory for testing
-const createMockActivity = (type: string = 'event', value?: any): WebChatActivity => ({
+const createMockActivity = (type: string = 'event', name?: string, value?: any): WebChatActivity => ({
   type: type as any,
   id: 'test-activity-id',
   from: { id: 'test-user' },
   channelData: {
     'webchat:sequence-id': 1
   },
+  ...(name && { name }),
   ...(value && { value })
 });
 
-const createMockVoiceActivity = (voiceEventType: string, additionalProps?: any): WebChatActivity =>
-  createMockActivity('event', {
-    voiceLiveEvent: {
-      type: voiceEventType,
-      ...additionalProps
-    }
+const createMockVoiceActivity = (name: string, voiceProps: Record<string, any>): WebChatActivity =>
+  createMockActivity('event', name, {
+    voice: voiceProps
   });
 
 describe('isVoiceActivity', () => {
   describe('Valid voice activities', () => {
-    test('should return true for event activity with voiceLiveEvent', () => {
-      const activity = createMockVoiceActivity('response.audio.delta', { delta: 'audiodata' });
+    test('should return true for event activity with voice', () => {
+      const activity = createMockVoiceActivity('stream.chunk', { contentUrl: 'base64' });
 
       const result = isVoiceActivity(activity);
 
       expect(result).toBe(true);
     });
 
-    test('should return true for voice activity with minimal voiceLiveEvent', () => {
-      const activity = createMockActivity('event', { voiceLiveEvent: {} });
+    test('should return true for voice activity with minimal voice', () => {
+      const activity = createMockActivity('event', 'stream.chunk', { voice: {} });
 
       const result = isVoiceActivity(activity);
 
@@ -41,18 +39,29 @@ describe('isVoiceActivity', () => {
 
   describe('Invalid activities', () => {
     const testCases = [
-      // Invalid by activity type
       {
-        name: 'message activity with voiceLiveEvent',
-        activity: () => createMockActivity('message', { voiceLiveEvent: { type: 'response.audio.delta' } })
+        name: 'message activity with voice',
+        activity: () => createMockActivity('message', 'stream.chunk', { voice: { contentUrl: 'base64' } })
       },
       {
         name: 'typing activity',
         activity: () => createMockActivity('typing')
       },
       {
-        name: 'event activity with value',
-        activity: () => ({ ...createMockActivity('event'), value: 'not an object' })
+        name: 'event activity with non-object value',
+        activity: () => ({ ...createMockActivity('event', 'test'), value: 'not an object' })
+      },
+      {
+        name: 'event activity without voice property',
+        activity: () => createMockActivity('event', 'test', { someOtherProp: 'value' })
+      },
+      {
+        name: 'event activity with no value',
+        activity: () => createMockActivity('event', 'test')
+      },
+      {
+        name: 'event activity with no name',
+        activity: () => createMockActivity('event', undefined, { voice: {} })
       }
     ];
 
@@ -63,22 +72,37 @@ describe('isVoiceActivity', () => {
     });
   });
 
-  describe('Real-world voice event types', () => {
-    const voiceEventTypes = [
-      'input_audio_buffer.append',
-      'input_audio_buffer.speech_started',
-      'input_audio_buffer.speech_stopped',
-      'conversation.item.input_audio_transcription.completed',
-      'response.audio.delta',
-      'response.audio_transcript.delta',
-      'response.audio_transcript.done',
-      'response.done',
-      'session.update',
-      'response.cancel'
+  describe('Real-world voice activity scenarios', () => {
+    const voiceScenarios = [
+      {
+        name: 'session.update with speech detected state',
+        eventName: 'session.update',
+        voiceProps: { bot_state: 'voice.request.detected', message: 'Your request is identified' }
+      },
+      {
+        name: 'session.update with processing state',
+        eventName: 'session.update',
+        voiceProps: { bot_state: 'voice.request.processing', message: 'Your request is being processed' }
+      },
+      {
+        name: 'stream.end with user transcription',
+        eventName: 'stream.end',
+        voiceProps: { transcription: 'My destination is bangalore', origin: 'user' }
+      },
+      {
+        name: 'stream.chunk with server audio response',
+        eventName: 'stream.chunk',
+        voiceProps: { contentUrl: 'base64chunk' }
+      },
+      {
+        name: 'stream.end with bot transcription',
+        eventName: 'stream.end',
+        voiceProps: { transcription: 'Your destination is at 1000m above sea level', origin: 'bot' }
+      }
     ];
 
-    test.each(voiceEventTypes)('should return true for voice event type: %s', eventType => {
-      const activity = createMockVoiceActivity(eventType);
+    test.each(voiceScenarios)('should return true for $name', ({ eventName, voiceProps }) => {
+      const activity = createMockVoiceActivity(eventName, voiceProps);
 
       const result = isVoiceActivity(activity);
 

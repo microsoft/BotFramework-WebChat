@@ -1,18 +1,20 @@
 import { useRef, useCallback } from 'react';
 
-const SAMPLE_RATE = 24000;
+const DEFAULT_SAMPLE_RATE = 24000;
 const INT16_SCALE = 32768;
 
-export function useAudioPlayer() {
+export function useAudioPlayer(config?: Record<string, unknown> | null) {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const nextPlayTimeRef = useRef(0);
 
+  const { sampleRate = DEFAULT_SAMPLE_RATE } = config || {};
+
   const initAudio = useCallback(() => {
     if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext({ sampleRate: SAMPLE_RATE });
+      audioCtxRef.current = new AudioContext({ sampleRate: sampleRate as number });
     }
     return audioCtxRef.current;
-  }, []);
+  }, [sampleRate]);
 
   const playAudio = useCallback(
     (base64: string) => {
@@ -29,7 +31,7 @@ export function useAudioPlayer() {
           float32[i] = int16[i] / INT16_SCALE;
         }
 
-        const buffer = audioCtx.createBuffer(1, float32.length, SAMPLE_RATE);
+        const buffer = audioCtx.createBuffer(1, float32.length, audioCtx.sampleRate);
         buffer.getChannelData(0).set(float32);
 
         const src = audioCtx.createBufferSource();

@@ -71,6 +71,7 @@ import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
+import useVoiceActivities from './useVoiceActivities';
 
 export { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
 export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
@@ -148,5 +149,6 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceSelector
+  useVoiceSelector,
+  useVoiceActivities
 };
