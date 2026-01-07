@@ -427,6 +427,16 @@
   }
   /* #endregion */
 
+  /* #region Carousel layout */
+  :global(.carousel-layout) {
+    :global(.carousel-filmstrip__avatar-gutter),
+    :global(.carousel-filmstrip__alignment-pad) {
+      margin: 0;
+      width: var(--webchat-spacingHorizontalMNudge);
+    }
+  }
+  /* #endregion */
+
   /* #region Bubble surface */
   :global(.stacked-layout .bubble) {
     max-width: min(var(--webchat-part-grouping__bubble--max-width), 100%);
@@ -628,6 +638,13 @@
       :global(.stacked-layout) {
         margin: 0;
         position: static;
+      }
+
+      :global(.carousel-layout) {
+        :global(.carousel-filmstrip__avatar-gutter),
+        :global(.carousel-filmstrip__alignment-pad) {
+          width: 0;
+        }
       }
 
       :global(.bubble) {
