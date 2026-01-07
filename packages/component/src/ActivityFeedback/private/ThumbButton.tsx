@@ -1,14 +1,16 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { forwardRef, memo, useCallback, useMemo, type ForwardedRef, type KeyboardEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { boolean, function_, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
-import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
 import { Tooltip } from '../../Tooltip';
 import ThumbButtonImage from './ThumbButton.Image';
+
+import styles from './ThumbButton.module.css';
 
 const { useLocalizer } = hooks;
 
@@ -36,9 +38,9 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
     props
   );
 
-  const [{ thumbButton }] = useStyleSet();
   const localize = useLocalizer();
   const onClickRef = useRefFrom(onClick);
+  const classNames = useStyles(styles);
 
   const buttonTitle = useMemo(
     () => title ?? localize(direction === 'down' ? 'VOTE_DISLIKE_ALT' : 'VOTE_LIKE_ALT'),
@@ -54,25 +56,19 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
 
   return (
     <div
-      className={classNames(
-        'webchat__thumb-button',
+      className={cx(
+        classNames['thumb-button'],
         {
-          'webchat__thumb-button--large': size === 'large',
-          'webchat__thumb-button--has-submitted': submitted
+          [classNames['thumb-button--large']]: size === 'large',
+          [classNames['thumb-button--has-submitted']]: submitted
         },
-        className,
-        thumbButton + ''
+        className
       )}
     >
       <input
         aria-disabled={disabled ? 'true' : undefined}
         aria-label={buttonTitle}
-        className={classNames(
-          'webchat__thumb-button__input',
-          { 'webchat__thumb-button__input--is-pressed': pressed },
-          className,
-          thumbButton + ''
-        )}
+        className={cx(classNames['thumb-button__input'], className)}
         data-testid={testIds.feedbackButton}
         name={name}
         onKeyDown={handleKeyDown}
@@ -90,19 +86,15 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
             })}
       />
       <ThumbButtonImage
-        className={classNames('webchat__thumb-button__image', 'webchat__thumb-button__image--is-stroked', {
-          'webchat__thumb-button__image--is-down': direction === 'down'
-        })}
+        className={cx(classNames['thumb-button__image'], classNames['thumb-button__image--is-stroked'])}
         direction={direction}
       />
       <ThumbButtonImage
-        className={classNames('webchat__thumb-button__image', 'webchat__thumb-button__image--is-filled', {
-          'webchat__thumb-button__image--is-down': direction === 'down'
-        })}
+        className={cx(classNames['thumb-button__image'], classNames['thumb-button__image--is-filled'])}
         direction={direction}
         filled={true}
       />
-      <Tooltip className="webchat__thumb-button__tooltip">{buttonTitle}</Tooltip>
+      <Tooltip className={classNames['thumb-button__tooltip']}>{buttonTitle}</Tooltip>
     </div>
   );
 }
