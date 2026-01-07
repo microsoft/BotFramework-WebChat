@@ -132,14 +132,15 @@
 
         const styleElements = document.head.querySelectorAll('[data-webchat-injected]');
 
-        // THEN: Should have 5 <style> elements.
-        expect(styleElements).toHaveLength(5);
+        // THEN: Should have 6 <style> elements.
+        expect(styleElements).toHaveLength(6);
 
         // THEN: <style> should be strictly ordered as below.
         expect(Array.from(styleElements).map(element => element.dataset['webchatInjected'])).toEqual([
           '',
           'fluent-theme',
           'component/decorator',
+          'bundle',
           'component',
           expect.stringMatching(/^component\/CustomPropertiesContainer-/)
         ]);
@@ -154,19 +155,20 @@
         // WHEN: Move `stylesRoot` to document.body.
         render(document.body);
 
-        // THEN: Should remove all 5 style elements from document.head.
+        // THEN: Should remove all 6 style elements from document.head.
         expect(document.head.querySelectorAll('[data-webchat-injected]')).toHaveLength(0);
 
         // THEN: Should move all 5 style elements to document.body.
         const styleElementsInBody = document.body.querySelectorAll('[data-webchat-injected]');
 
-        expect(styleElementsInBody).toHaveLength(5);
+        expect(styleElementsInBody).toHaveLength(6);
 
         // THEN: <style> should be strictly ordered as below.
         expect(Array.from(styleElementsInBody).map(element => element.dataset['webchatInjected'])).toEqual([
           '',
           'fluent-theme',
           'component/decorator',
+          'bundle',
           'component',
           expect.stringMatching(/^component\/CustomPropertiesContainer-/)
         ]);

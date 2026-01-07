@@ -118,7 +118,10 @@ type InternalTranscriptProps = Readonly<{
 
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ className, terminatorRef }: InternalTranscriptProps, ref) => {
+  (
+    { className, terminatorRef }: InternalTranscriptProps,
+    ref: MutableRefObject<HTMLDivElement> | ((instance: HTMLDivElement | null) => void)
+  ) => {
     const [activeDescendantId] = useActiveDescendantId();
     const [direction] = useDirection();
     const [focusedKey] = useFocusedKey();

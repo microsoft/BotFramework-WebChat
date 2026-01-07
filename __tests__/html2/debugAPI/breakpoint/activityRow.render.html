@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { fn, spyOn } from 'https://esm.sh/jest-mock';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      testHelpers.hideKnownError();
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, role: 'complementary', store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          id: 'a-00001',
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [activityRowElement] = pageElements.activities();
+
+        // THEN: Make sure we are exposing the public version.
+        expect('breakpoint' in activityRowElement.webChat).toBe(true);
+        expect('debugger' in activityRowElement.webChat).toBe(true);
+
+        // THEN: Make sure we are not exposing the private version.
+        expect('~types' in activityRowElement.webChat).toBe(false);
+        expect('toPublic' in activityRowElement.webChat).toBe(false);
+        expect('UNSAFE_callBreakpoint' in activityRowElement.webChat).toBe(false);
+
+        console.log(activityRowElement.webChat);
+
+        spyOn(activityRowElement.webChat.breakpoint, 'render');
+
+        // WHEN: Activity is updated to "Aloha!"
+        await directLine.emulateIncomingActivity({
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          id: 'a-00001',
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        expect(activityRowElement.webChat.breakpoint.render).toHaveBeenCalledTimes(1);
+
+        expect(activityRowElement.webChat.breakpoint.render).toHaveBeenNthCalledWith(1, {
+          activity: {
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: expect.any(String),
+            text: 'Aloha!',
+            timestamp: expect.any(String),
+            type: 'message',
+            channelData: {
+              'webchat:internal:received-at': expect.any(Number),
+              'webchat:internal:local-id': expect.any(String),
+              'webchat:internal:position': 1000
+            }
+          }
+        });
+
+        activityRowElement.webChat.breakpoint.render.mockRestore();
+      });
+    </script>
+  </body>
+</html>

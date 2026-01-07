@@ -1,4 +1,4 @@
-import isForbiddenPropertyName from './isForbiddenPropertyName';
+import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 
 export default function deleteKey<TMap, TKey extends keyof TMap>(map: TMap, ...keys: TKey[]): Omit<TMap, TKey> {
   if (!map) {

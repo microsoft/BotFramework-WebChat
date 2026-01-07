@@ -35,21 +35,20 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "concurrently": "^9.2.0",
-    "esbuild": "^0.25.8"
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
     "bent": "7.3.12",
     "classnames": "2.5.1",
-    "core-js": "3.44.0",
-    "core-js-pure": "3.44.0",
+    "core-js": "3.47.0",
+    "core-js-pure": "3.47.0",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.17.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.47.0",
     "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
-  },
-  "peerDependencies": {}
+  }
 }

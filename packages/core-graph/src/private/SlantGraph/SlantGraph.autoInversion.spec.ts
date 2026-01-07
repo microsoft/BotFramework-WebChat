@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { fn } from 'jest-mock';
-import { GraphSubscriber } from '../Graph2';
+import { GraphSubscriber } from '../Graph';
 import SlantGraph from './SlantGraph';
 
 scenario('SlantGraph auto-inversion', bdd => {

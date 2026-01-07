@@ -4,7 +4,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
@@ -52,6 +52,7 @@ type BasicWebChatProps = InferInput<typeof basicWebChatPropsSchema>;
 function BasicWebChat(props: BasicWebChatProps) {
   const { className, role } = validateProps(basicWebChatPropsSchema, props, 'strict');
 
+  const rootRef = useRef<HTMLDivElement>(null);
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();
@@ -65,6 +66,7 @@ function BasicWebChat(props: BasicWebChatProps) {
   return (
     <AccessKeySinkSurface
       className={classNames('webchat__surface', rootClassName, rootStyleSet + '', className)}
+      ref={rootRef}
       role={role}
     >
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}

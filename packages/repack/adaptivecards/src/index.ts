@@ -1,7 +1,13 @@
+// Some exports are not in *.js but *.d.ts.
+// The only concrete object is `ActionButtonState` which is in *.d.ts, but realized as number in *.js.
+// Non-concrete objects are those `type *`, it is okay to leave it in our package.
+
+/* eslint-disable import/named */
+
 export {
   Action,
   ActionAlignment,
-  ActionButtonState,
+  // ActionButtonState, // Not in *.js because it is realized as a number, it is in *.d.ts though.
   ActionIconPlacement,
   ActionMode,
   ActionProperty,

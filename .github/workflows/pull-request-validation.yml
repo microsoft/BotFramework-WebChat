@@ -22,7 +22,7 @@ defaults:
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
-  node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
+  node-version: 24
 
 permissions:
   contents: read
@@ -81,6 +81,23 @@ jobs:
           name: docker
           path: docker.zip
           retention-days: 1
+
+  build-browser:
+    name: Build test harness
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --ignore-scripts --strict-peer-deps
+
+      - run: npm run build-browser
 
   build-samples:
     name: Build samples
@@ -145,6 +162,7 @@ jobs:
           --forceExit \
           --logHeapUsage \
           --runInBand \
+          --silent \
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
@@ -154,7 +172,7 @@ jobs:
           ls -laR .
 
           mv lcov.info lcov-unit.info
-          mv result.trx result-unit.trx
+        # mv result.trx result-unit.trx
         working-directory: ./coverage
 
       - if: always()
@@ -164,7 +182,7 @@ jobs:
           name: test-result-unit
           path: |
             ./coverage/lcov-*.info
-            ./coverage/result-*.trx
+          # ./coverage/result-*.trx
 
   type-definitions-test:
     name: Type definitions test
@@ -228,7 +246,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Run docker compose build
-        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com
 
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
@@ -255,7 +273,8 @@ jobs:
             --forceExit \
             --logHeapUsage \
             --runInBand \
-            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
+            --silent
         timeout-minutes: 10
 
       - if: always()
@@ -268,7 +287,7 @@ jobs:
           ls -laR .
 
           mv lcov.info lcov-${{ matrix.shard-index }}.info
-          mv result.trx result-${{ matrix.shard-index }}.trx
+        # mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
 
       - if: always()
@@ -278,7 +297,7 @@ jobs:
           name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/lcov-*.info
-            ./coverage/result-*.trx
+          # ./coverage/result-*.trx
 
       - if: failure()
         name: Upload test snapshot diffs

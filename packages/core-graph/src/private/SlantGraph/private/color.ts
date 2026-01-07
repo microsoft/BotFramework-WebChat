@@ -1,4 +1,4 @@
-import { type GraphMiddleware } from '../../Graph2';
+import { type GraphMiddleware } from '../../Graph';
 import colorNode, { type SlantNode } from '../../schemas/colorNode';
 import flattenNodeObject from '../../schemas/flattenNodeObject';
 import type { Identifier } from '../../schemas/Identifier';

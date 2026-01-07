@@ -16,7 +16,7 @@
     "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
     "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
     "build:pre:watch": "../../../scripts/npm/build-watch.sh",
-    "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:esbuild:esm\" \"npm:build:run:esbuild:iife\" && touch ./package.json",
+    "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:esbuild:esm\" \"npm:build:run:esbuild:iife\" && node ../../../scripts/touch.mjs ./package.json",
     "build:run:esbuild:base": "esbuild test-harness=./src/browser/index.js --bundle --define:define=undefined --define:process.env.CI=undefined --minify --outdir=dist --sourcemap --target=chrome100",
     "build:run:esbuild:esm": "npm run build:run:esbuild:base -- --format=esm --out-extension:.js=.mjs",
     "build:run:esbuild:iife": "npm run build:run:esbuild:base -- --format=iife",
@@ -55,28 +55,27 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "concurrently": "^9.2.0",
-    "esbuild": "^0.25.8",
-    "express": "^5.1.0",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.2",
+    "express": "^5.2.1",
     "global-agent": "^3.0.0",
     "http-proxy-middleware": "^2.0.9",
     "istanbul-lib-coverage": "^3.2.2",
     "jest": "^29.7.0",
     "jest-environment-node": "^29.7.0",
     "jest-image-snapshot": "^6.5.1",
-    "selenium-webdriver": "^4.34.0",
-    "serve": "^14.2.4",
+    "selenium-webdriver": "^4.39.0",
+    "serve": "^14.2.5",
     "strip-ansi": "^6.0.1"
   },
   "dependencies": {
     "abort-controller": "3.0.0",
-    "axe-core": "4.10.3",
-    "core-js": "3.44.0",
-    "core-js-pure": "3.44.0",
+    "axe-core": "4.11.0",
+    "core-js": "3.47.0",
+    "core-js-pure": "3.47.0",
     "event-target-shim": "6.0.2",
     "expect": "25.5.0",
     "lolex": "6.0.0",
     "math-random": "2.0.1"
-  },
-  "peerDependencies": {}
+  }
 }

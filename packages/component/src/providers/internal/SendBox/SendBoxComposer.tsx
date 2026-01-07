@@ -116,6 +116,8 @@ const SendBoxComposer = ({ children }: SendBoxComposerProps) => {
 
   useEffect(() => {
     if (error === 'empty' && hasValue) {
+      // TODO: [P2] Intentionally set the state, we will visit it later.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError(false);
     }
   }, [error, hasValue]);

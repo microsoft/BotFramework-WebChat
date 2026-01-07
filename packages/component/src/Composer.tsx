@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import {
   Composer as APIComposer,
   extractSendBoxMiddleware,
@@ -14,9 +16,10 @@ import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
 
+import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
@@ -64,9 +67,9 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
 }
 
 type ComposerCoreUIProps = {
-  // eslint-disable-next-line react/require-default-props
   readonly children?: ReactNode | undefined;
   readonly nonce: string | undefined;
+  readonly storeDebugAPI?: StoreDebugAPI | undefined;
 };
 
 const ROOT_STYLE = {
@@ -83,9 +86,10 @@ const ROOT_STYLE = {
   }
 };
 
-const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
+const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
 
   const dictationOnError = useCallback(
@@ -103,10 +107,25 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
     [trackException]
   );
 
+  useEffect(() => {
+    const { current } = rootRef;
+
+    if (current) {
+      current['webChat'] = storeDebugAPI;
+
+      return () => delete current['webChat'];
+    }
+
+    return () => {
+      // Intentionally left blank.
+    };
+  }, [storeDebugAPI]);
+
   return (
     <CSSCustomPropertiesContainer
       className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}
       nonce={nonce}
+      ref={rootRef}
     >
       <CustomElementsComposer>
         <FocusSendBoxScope>
@@ -140,6 +159,7 @@ type ComposerCoreProps = Readonly<{
     newLineOptions: { markdownRespectCRLF: boolean },
     linkOptions: { externalLinkAlt: string }
   ) => string;
+  storeDebugAPI?: StoreDebugAPI | undefined;
   styleSet?: any;
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
@@ -150,6 +170,7 @@ const ComposerCore = ({
   extraStyleSet,
   nonce,
   renderMarkdown,
+  storeDebugAPI,
   styleSet,
   suggestedActionsAccessKey,
   webSpeechPonyfillFactory
@@ -291,7 +312,9 @@ const ComposerCore = ({
   return (
     <SayComposer ponyfill={webSpeechPonyfill}>
       <WebChatUIContext.Provider value={context}>
-        <ComposerCoreUI nonce={nonce}>{children}</ComposerCoreUI>
+        <ComposerCoreUI nonce={nonce} storeDebugAPI={storeDebugAPI}>
+          {children}
+        </ComposerCoreUI>
       </WebChatUIContext.Provider>
     </SayComposer>
   );
@@ -440,6 +463,8 @@ const Composer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
+  const storeDebugAPI = useMemo(() => StoreDebugAPIRegistry.get(composerProps.store), [composerProps.store]);
+
   return (
     <APIComposer
       activityMiddleware={patchedActivityMiddleware}
@@ -469,6 +494,7 @@ const Composer = ({
                   extraStyleSet={extraStyleSet}
                   nonce={nonce}
                   renderMarkdown={renderMarkdown}
+                  storeDebugAPI={storeDebugAPI}
                   styleSet={styleSet}
                   suggestedActionsAccessKey={suggestedActionsAccessKey}
                   webSpeechPonyfillFactory={webSpeechPonyfillFactory}

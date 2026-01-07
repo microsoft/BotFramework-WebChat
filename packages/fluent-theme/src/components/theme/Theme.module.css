@@ -30,7 +30,10 @@
   --webchat-colorNeutralShadowAmbient: var(--colorNeutralShadowAmbient, rgba(0, 0, 0, 0.12));
   --webchat-colorNeutralShadowKey: var(--colorNeutralShadowKey, rgba(0, 0, 0, 0.14));
 
-  --webchat-colorBackgroundOverlay: var(--colorBackgroundOverlay, rgba(0, 0, 0, 0.4)); /* rgba(0, 0, 0, 0.5) for dark mode */
+  --webchat-colorBackgroundOverlay: var(
+    --colorBackgroundOverlay,
+    rgba(0, 0, 0, 0.4)
+  ); /* rgba(0, 0, 0, 0.5) for dark mode */
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
@@ -321,12 +324,12 @@
   }
 
   /* Transcript activity focused directly */
-  > :global(.webchat__focus-trap > .webchat__basic-transcript__activity-body .webchat__bubble) {
+  > :global(.webchat__focus-trap > .webchat__basic-transcript__activity-body .bubble) {
     display: grid;
     grid-template-areas: 'focused-content';
     position: static;
 
-    :global(.webchat__bubble__content) {
+    :global(.bubble__content) {
       grid-area: focused-content;
     }
 
@@ -355,7 +358,7 @@
     position: absolute;
   }
 
-  :global(.activity-decorator .webchat__bubble .webchat__bubble__nub-pad) {
+  :global(.activity-decorator .bubble .bubble__nub-pad) {
     display: none;
   }
 

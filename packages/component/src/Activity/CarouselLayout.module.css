@@ -1,0 +1,30 @@
+:global(.webchat) .carousel-layout {
+  overflow: hidden;
+  position: relative;
+
+  :global(.react-film__flipper) {
+    :global(.react-film__flipper__body) {
+      background-color: var(--webchat__background--transcript-overlay-button);
+      color: var(--webchat__color--transcript-overlay-button);
+      outline: 0;
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      :global(.react-film__flipper__body) {
+        background-color: var(--webchat__background--transcript-overlay-button-disabled);
+        color: var(--webchat__color--transcript-overlay-button-disabled);
+      }
+    }
+
+    &:focus :global(.react-film__flipper__body) {
+      background-color: var(--webchat__background--transcript-overlay-button-focus);
+      color: var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
+    }
+
+    &:hover :global(.react-film__flipper__body) {
+      background-color: var(--webchat__background--transcript-overlay-button-hover);
+      color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
+    }
+  }
+}

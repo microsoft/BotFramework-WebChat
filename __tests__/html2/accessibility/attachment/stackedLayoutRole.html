@@ -23,7 +23,7 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.scrollToBottomCompleted();
 
-        const attachmentRole = document.querySelector('.webchat__carousel-filmstrip-attachment').getAttribute('role');
+        const attachmentRole = document.querySelector('.carousel-filmstrip-attachment').getAttribute('role');
 
         expect(attachmentRole).toBeTruthy();
       });

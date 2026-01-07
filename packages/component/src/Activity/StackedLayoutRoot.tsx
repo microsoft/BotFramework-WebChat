@@ -47,7 +47,7 @@ const StackedLayoutRoot = memo((props: StackedLayoutRootProps) => {
   return (
     <div
       aria-labelledby={ariaLabelId}
-      className={cx('webchat__stacked-layout', classNames['stacked-layout'], {
+      className={cx(classNames['stacked-layout'], {
         [classNames['stacked-layout--from-user']]: fromUser,
         [classNames['stacked-layout--extra-trailing']]: extraTrailing,
         [classNames['stacked-layout--hide-avatar']]: hideAvatar,

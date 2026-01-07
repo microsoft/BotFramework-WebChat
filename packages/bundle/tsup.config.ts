@@ -1,7 +1,9 @@
+import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import path from 'path';
 import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
+import { bundleStyleContent as bundleStyleContentPlaceholder } from './src/stylesheet/createBundleStyleElements';
 
 // Redirect import paths for "react" and "react-dom"
 const resolveReact = {
@@ -62,7 +64,11 @@ export default defineConfig([
       'webchat-es5': './src/boot/iife/webchat-es5.ts',
       'webchat-minimal': './src/boot/iife/webchat-minimal.ts'
     },
-    esbuildPlugins: [...(commonConfig.esbuildPlugins ?? []), resolveReact],
+    esbuildPlugins: [
+      ...(commonConfig.esbuildPlugins ?? []),
+      injectCSSPlugin({ stylesPlaceholder: bundleStyleContentPlaceholder }),
+      resolveReact
+    ],
     format: 'iife',
     outExtension() {
       return { js: '.js' };

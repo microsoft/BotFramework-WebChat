@@ -71,7 +71,7 @@ const TOAST_ACCORDION_IDS = {
 };
 
 const BasicToaster = ({ className }) => {
-  const instanceId = useMemo(randomId, []);
+  const instanceId = useMemo(() => randomId(), []);
   const [{ toaster: toasterStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
   const [expanded, setExpanded] = useState(false);
@@ -107,6 +107,8 @@ const BasicToaster = ({ className }) => {
   );
 
   useEffect(() => {
+    // TODO: [P2] Intentionally set error, we will visit it later.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     !expandable && setExpanded(false);
   }, [expandable]);
 

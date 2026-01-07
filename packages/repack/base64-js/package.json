@@ -24,7 +24,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
     "base64-js": "1.5.1"

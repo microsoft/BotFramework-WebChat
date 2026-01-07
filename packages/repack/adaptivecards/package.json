@@ -23,15 +23,15 @@
   },
   "pinDependencies": {
     "adaptivecards": [
-      "3.0.2",
+      "3.0.5",
       "Bump manually to ensure compatibility"
     ]
   },
   "localDependencies": {},
   "devDependencies": {
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.27.2"
   },
   "dependencies": {
-    "adaptivecards": "3.0.2"
+    "adaptivecards": "3.0.5"
   }
 }
