@@ -1,13 +1,14 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo, useCallback } from 'react';
 import { any, literal, object, pipe, readonly, union, type InferInput } from 'valibot';
 
 import useFocus from '../../hooks/useFocus';
-import useStyleSet from '../../hooks/useStyleSet';
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
 import SendFailedRetry from './private/SendFailedRetry';
+
+import styles from '../ActivityStatus.module.css';
 
 const { useLocalizer, usePostActivity } = hooks;
 
@@ -24,10 +25,10 @@ type SendStatusProps = InferInput<typeof sendStatusPropsSchema>;
 function SendStatus(props: SendStatusProps) {
   const { activity, sendStatus } = validateProps(sendStatusPropsSchema, props);
 
-  const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focus = useFocus();
   const localize = useLocalizer();
   const postActivity = usePostActivity();
+  const classNames = useStyles(styles);
 
   const handleRetryClick = useCallback(() => {
     postActivity(activity);
@@ -40,7 +41,7 @@ function SendStatus(props: SendStatusProps) {
 
   return (
     <React.Fragment>
-      <span className={classNames('webchat__activity-status', 'webchat__activity-status--sending', sendStatusStyleSet)}>
+      <span className={classNames['activity-status']}>
         {sendStatus === SENDING ? (
           sendingText
         ) : sendStatus === SEND_FAILED ? (

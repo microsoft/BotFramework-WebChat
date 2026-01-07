@@ -1,0 +1,31 @@
+:global(.webchat) .activity-status {
+  color: var(--webchat__color--timestamp);
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat__font-size--small);
+  margin-block-start: calc(var(--webchat__padding--regular) / 2);
+
+  &.activity-status--slotted {
+    display: inline-flex;
+    gap: 4px;
+  }
+}
+
+:global(.webchat) .activity-status-slot {
+  display: contents;
+
+  &:not(:first-child)::before {
+    content: '|';
+  }
+
+  &:empty {
+    display: none;
+  }
+}
+
+:global(.webchat) .activity-status__originator {
+  align-items: center;
+
+  &.activity-status__originator--has-link {
+    color: var(--webchat__color--accent);
+  }
+}

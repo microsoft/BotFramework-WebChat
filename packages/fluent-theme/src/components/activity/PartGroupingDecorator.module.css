@@ -746,7 +746,7 @@
       max-width: unset;
     }
 
-    :global(.webchat__activity-status) {
+    :global(.activity-status) {
       margin: 0 0 var(--webchat-spacingHorizontalXXS);
     }
 
