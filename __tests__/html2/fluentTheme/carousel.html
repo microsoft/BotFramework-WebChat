@@ -55,8 +55,8 @@
       await pageConditions.numActivitiesShown(2);
 
       // WHEN: Right flipper is clicked.
-      const carouselLayout = document.querySelector('.webchat__carousel-layout');
-      const carouselFilmstrip = carouselLayout.querySelector('.webchat__carousel-filmstrip');
+      const carouselLayout = document.querySelector('.carousel-layout');
+      const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
       const rightFlipper = carouselLayout.querySelector('[aria-label="Next"]');
 
       // Improve test reliability by hover before click on flipper button.

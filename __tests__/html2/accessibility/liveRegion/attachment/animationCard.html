@@ -51,7 +51,7 @@
         await pageConditions.minNumActivitiesShown(2);
 
         // Replace the animation with a static image.
-        for (const imageElement of document.querySelectorAll('.webchat__bubble__content img')) {
+        for (const imageElement of document.querySelectorAll('.bubble__content img')) {
           imageElement.setAttribute(
             'src',
             'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'

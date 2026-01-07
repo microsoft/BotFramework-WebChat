@@ -50,7 +50,7 @@
 
           await pageConditions.numActivitiesShown(2);
 
-          const openUrlButton = document.querySelector('.webchat__bubble__content button');
+          const openUrlButton = document.querySelector('.bubble__content button');
 
           await host.click(openUrlButton);
           await pageConditions.numActivitiesShown(4);

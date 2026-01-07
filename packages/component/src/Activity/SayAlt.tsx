@@ -1,14 +1,9 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo } from 'react';
 import { literal, object, pipe, readonly, string, union, type InferInput } from 'valibot';
 
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
-
-// TODO: [P3] Although this is for development purpose, prettify it
-const ROOT_STYLE = {
-  color: 'Red',
-  margin: 0
-};
+import styles from './SayAlt.module.css';
 
 const sayAltPropsSchema = pipe(
   object({
@@ -21,9 +16,9 @@ type SayAltProps = InferInput<typeof sayAltPropsSchema>;
 
 const SayAlt = (props: SayAltProps) => {
   const { speak } = validateProps(sayAltPropsSchema, props);
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const classNames = useStyles(styles);
 
-  return !!speak && <pre className={rootClassName}>{speak}</pre>;
+  return !!speak && <pre className={classNames['say-alt']}>{speak}</pre>;
 };
 
 export default memo(SayAlt);
