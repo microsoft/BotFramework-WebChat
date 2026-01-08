@@ -658,16 +658,17 @@
 }
 
 /* Feedback button */
-:global(.webchat-fluent).theme :global(.webchat__thumb-button) {
-  :global(.webchat__thumb-button__image) {
+:global(.webchat-fluent).theme :global(.thumb-button),
+:global(.webchat-fluent).theme :global(.thumb-button.thumb-button--large) {
+  :global(.thumb-button__image) {
     color: var(--webchat-colorNeutralForeground1);
   }
 
-  &:has(:global(.webchat__thumb-button__input):focus-visible) {
+  &:has(:global(.thumb-button__input):focus-visible) {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 
-  &:has(:global(.webchat__thumb-button__input)[aria-disabled='true']) :global(.webchat__thumb-button__image) {
+  &:has(:global(.thumb-button__input)[aria-disabled='true']) :global(.thumb-button__image) {
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
 }

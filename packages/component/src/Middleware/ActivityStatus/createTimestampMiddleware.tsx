@@ -20,9 +20,9 @@ export default function createTimestampMiddleware(): ActivityStatusMiddleware {
         // If "hideTimestamp" is set, we will not render the visual timestamp. But continue to render the screen reader only version.
         return <AbsoluteTime hide={true} value={activity.timestamp} />;
       } else if (activity.from.role === 'bot') {
-        return <OthersActivityStatus activity={activity} className={'webchat__activity-status--slotted'} />;
+        return <OthersActivityStatus activity={activity} slotted={true} />;
       }
 
-      return <SelfActivityStatus activity={activity} className={'webchat__activity-status--slotted'} />;
+      return <SelfActivityStatus activity={activity} slotted={true} />;
     };
 }
