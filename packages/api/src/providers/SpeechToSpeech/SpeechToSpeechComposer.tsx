@@ -1,21 +1,22 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { isVoiceActivity, WebChatActivity } from 'botframework-webchat-core';
 import { useAudioPlayer } from './private/useAudioPlayer';
 import { useRecorder } from './private/useRecorder';
 import { useDebouncedNotifications, usePostActivity, useVoiceActivities } from '../../hooks';
 import SpeechToSpeechContext from './private/Context';
 import { SpeechState } from './types/SpeechState';
+import useStateRef from '../../hooks/internal/useStateRef';
 
 export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> = ({ children }) => {
   const [voiceActivities] = useVoiceActivities();
   const postActivity = usePostActivity();
   const [{ connectivitystatus }] = useDebouncedNotifications();
   const lastProcessedIndexRef = useRef(0);
-  const [speechState, setSpeechState] = useState<SpeechState>('idle');
+  const [speechState, setSpeechState] = useStateRef<SpeechState>('idle');
 
-  // config received from server on session start, for now ccv2 and mmrt runs on different sample rate and chunk interval.
+  // config received from server on session init (only once), for now ccv2 and mmrt runs on different sample rate and chunk interval.
   // we will read those config, free form object as unsure of what all session config would be needed in future.
-  const [serverConfig, setServerConfig] = useState<Record<string, unknown> | null>(null);
+  const [serverConfig, setServerConfig] = useStateRef<Record<string, unknown> | null>(null);
   const { playAudio, stopAudio, isPlaying } = useAudioPlayer(serverConfig);
 
   const isConnected = useMemo(() => connectivitystatus?.message === 'connected', [connectivitystatus]);
@@ -42,27 +43,44 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
       const { name, value } = activity;
       const { voice } = value;
 
-      // TODO - this will be commandResult activity and not event, need to think on handling of command and commandResult activities.
-      if (name === 'session.init' && value.session?.config) {
-        setServerConfig(value.session.config as Record<string, unknown>);
-      } else if (name === 'session.update') {
-        switch (voice.bot_state) {
-          case 'voice.request.detected':
-            stopAudio();
-            setSpeechState('listening');
-            break;
-          case 'voice.request.processing':
-            setSpeechState('processing');
-            break;
-          default:
-            break;
+      switch (name) {
+        // TODO - this will be commandResult activity and not event, need to think on handling of command and commandResult activities.
+        case 'session.init': {
+          setServerConfig(value.session?.config as Record<string, unknown>);
+          break;
         }
-      } else if (name === 'stream.chunk' && voice.contentUrl) {
-        playAudio(voice.contentUrl);
+
+        case 'session.update': {
+          switch (voice.bot_state) {
+            case 'voice.request.detected':
+              stopAudio();
+              setSpeechState('listening');
+              break;
+
+            case 'voice.request.processing':
+              setSpeechState('processing');
+              break;
+
+            default:
+              break;
+          }
+          break;
+        }
+
+        case 'stream.chunk': {
+          if (voice.contentUrl) {
+            playAudio(voice.contentUrl);
+          }
+          break;
+        }
+
+        default:
+          break;
       }
     },
-    [playAudio, stopAudio]
+    [playAudio, setServerConfig, setSpeechState, stopAudio]
   );
+
   useEffect(() => {
     const startIndex = lastProcessedIndexRef.current;
     if (!voiceActivities.length || startIndex >= voiceActivities.length) {
@@ -93,7 +111,7 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
     }
 
     lastProcessedIndexRef.current = voiceActivities.length;
-  }, [voiceActivities, recording, isPlaying, speechState, handleVoiceActivity]);
+  }, [handleVoiceActivity, isPlaying, recording, setSpeechState, speechState, voiceActivities]);
 
   const setRecording = useCallback(
     async (shouldRecord: boolean) => {
@@ -110,7 +128,7 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
 
       await baseSetRecording(shouldRecord);
     },
-    [isConnected, baseSetRecording, stopAudio]
+    [isConnected, baseSetRecording, setSpeechState, stopAudio]
   );
 
   const contextValue = useMemo(

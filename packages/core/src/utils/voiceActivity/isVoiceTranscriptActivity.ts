@@ -7,7 +7,7 @@ const isVoiceTranscriptActivity = (
   value: {
     voice: {
       transcription: string;
-      origin: 'user' | 'bot';
+      origin: 'user' | 'agent';
     };
   };
 } =>
