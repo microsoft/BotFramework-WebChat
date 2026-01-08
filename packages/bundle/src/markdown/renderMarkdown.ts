@@ -55,7 +55,7 @@ export default function render(
       ariaLabelSegments.push(linkDefinition.title || linkDefinition?.parsedUrl?.host || linkDefinition.url);
 
       // linkDefinition.identifier is uppercase, while linkDefinition.label is as-is.
-      linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
+      linkDefinition.label === textContent && classes.add('render-markdown__pure-identifier');
     }
 
     // Let javascript: fell through. Our sanitizer will catch and remove it from <a href>.
@@ -68,10 +68,10 @@ export default function render(
       if (!ALLOWED_SCHEMES.map(scheme => `${scheme}:`).includes(protocol)) {
         decoration.asButton = true;
 
-        classes.add('webchat__render-markdown__citation');
+        classes.add('render-markdown__citation');
       } else if (protocol === 'http:' || protocol === 'https:') {
         decoration.iconAlt = externalLinkAlt;
-        decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
+        decoration.iconClassName = 'render-markdown__external-link-icon';
 
         ariaLabelSegments.push(externalLinkAlt);
       }

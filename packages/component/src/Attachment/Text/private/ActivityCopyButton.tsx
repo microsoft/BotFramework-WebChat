@@ -1,13 +1,15 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { instance, nullable, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../../../hooks/useStyleSet';
 import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import refObject from '../../../types/internal/refObject';
 import ActivityButton from './ActivityButton';
+
+import styles from './ActivityCopyButton.module.css';
 
 const { useLocalizer, useUIState } = hooks;
 
@@ -24,7 +26,7 @@ type ActivityCopyButtonProps = InferInput<typeof activityCopyButtonPropsSchema>;
 const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   const { className, targetRef } = validateProps(activityCopyButtonPropsSchema, props);
 
-  const [{ activityButton, activityCopyButton }] = useStyleSet();
+  const classNames = useStyles(styles);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [uiState] = useUIState();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -39,13 +41,14 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
     const { current } = buttonRef;
 
     if (current) {
-      const handleAnimationEnd = () => current.classList.remove('webchat__activity-copy-button--copied');
+      const handleAnimationEnd = () =>
+        current.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
 
       current.addEventListener('animationend', handleAnimationEnd);
 
       return () => current.removeEventListener('animationend', handleAnimationEnd);
     }
-  }, [buttonRef]);
+  }, [buttonRef, classNames]);
 
   const handleClick = useCallback(() => {
     const htmlText = targetRef.current?.outerHTML;
@@ -60,16 +63,16 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       ])
       .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
-    buttonRef.current?.classList.remove('webchat__activity-copy-button--copied');
+    buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
 
     // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
     // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
     buttonRef.current?.offsetWidth;
 
-    buttonRef.current?.classList.add('webchat__activity-copy-button--copied');
+    buttonRef.current?.classList.add(...classNames['activity-copy-button--copied'].split(/\s+/gu));
 
-    queueStaticElement(<div className="webchat__activity-copy-button__copy-announcement">{copiedText}</div>);
-  }, [buttonRef, copiedText, queueStaticElement, targetRef]);
+    queueStaticElement(<div className={classNames['activity-copy-button__copy-announcement']}>{copiedText}</div>);
+  }, [classNames, copiedText, queueStaticElement, targetRef]);
 
   useEffect(() => {
     let unmounted = false;
@@ -87,13 +90,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
 
   return (
     <ActivityButton
-      className={classNames(
-        activityButton,
-        activityCopyButton,
-        'webchat__activity-button',
-        'webchat__activity-copy-button',
-        className
-      )}
+      className={cx(classNames['activity-copy-button'], className)}
       data-testid="copy button"
       disabled={disabled}
       icon="copy"
@@ -101,7 +98,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       ref={buttonRef}
       text={copyText}
     >
-      <span className="webchat__activity-copy-button__copied-text">{copiedText}</span>
+      <span className={classNames['activity-copy-button__copied-text']}>{copiedText}</span>
     </ActivityButton>
   );
 };

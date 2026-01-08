@@ -57,7 +57,7 @@
 
         await host.snapshot('local');
 
-        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownElement = pageElements.activities()[0].querySelector('.text-content__markdown');
         const markdownLinks = markdownElement.querySelectorAll('a');
 
         // The javascript: shouldn't be a link.

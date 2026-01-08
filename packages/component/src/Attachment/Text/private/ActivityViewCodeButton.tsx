@@ -1,11 +1,9 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import cx from 'classnames';
 import React, { memo, useCallback } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import LocalizedString from '../../../Utils/LocalizedString';
 import ActivityButton from './ActivityButton';
@@ -32,7 +30,6 @@ const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
   const { className, code, language, title, isAIGenerated } = validateProps(activityViewCodeButtonPropsSchema, props);
   const classNames = useStyles(styles);
 
-  const [{ activityButton }] = useStyleSet();
   const showModal = useShowModal();
   const localize = useLocalizer();
 
@@ -42,13 +39,13 @@ const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
         <CodeContent code={code} language={language} title={title}>
           {isAIGenerated && (
             <div className={classNames['view-code-dialog__footer']}>
-              <LocalizedString linkClassName={'webchat__view-code-dialog__link'} stringIds="ACTIVITY_CODE_CAUTION" />
+              <LocalizedString linkClassName={'view-code-dialog__link'} stringIds="ACTIVITY_CODE_CAUTION" />
             </div>
           )}
         </CodeContent>
       ),
       {
-        className: cx('webchat__view-code-dialog', classNames['view-code-dialog']),
+        className: classNames['view-code-dialog'],
         'aria-label': localize('ACTIVITY_CODE_ALT', title ?? '')
       }
     );
@@ -56,7 +53,7 @@ const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
 
   return (
     <ActivityButton
-      className={cx(activityButton, 'webchat__activity-button', className)}
+      className={className}
       data-testid="view code button"
       icon="view-code"
       onClick={showCodeModal}

@@ -1,0 +1,9 @@
+:global(.webchat) .citation-modal-dialog {
+  .citation-modal-dialog__header {
+    cursor: default;
+  }
+
+  .citation-modal-dialog__body {
+    line-height: 20px;
+  }
+}
