@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Forrige",
   "CITATION_MODEL_DIALOG_ALT": "Citat",
   "CLOSE_BUTTON_ALT": "Luk",
+  "COLLAPSIBLE_GROUPING_TITLE": "Tænker…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Dette vises, når botten skriver svarbeskeder i en gruppe, hvis der ikke er angivet et resumé.",
   "COLLAPSE_BUTTON_LESS": "Vis mindre",
   "COLLAPSE_BUTTON_LESS.comment": "Dette er teksten i en vinkelknap til at skjule gruppen af meddelelser. Når slutbrugeren klikker på knappen, foldes gruppen af meddelelser sammen.",
   "COLLAPSE_BUTTON_MORE": "Vis mere",

@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Vorige",
   "CITATION_MODEL_DIALOG_ALT": "Citaat",
   "CLOSE_BUTTON_ALT": "Sluiten",
+  "COLLAPSIBLE_GROUPING_TITLE": "Aan het denken…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Dit wordt getoond wanneer de bot antwoordberichten in een groep opstelt als er geen samenvatting is opgegeven.",
   "COLLAPSE_BUTTON_LESS": "Minder weergeven",
   "COLLAPSE_BUTTON_LESS.comment": "Dit is de tekst van een punthaakknop om een groep berichten samen te vouwen. Wanneer een eindgebruiker op de knop klikt, wordt de berichtengroep samengevouwen.",
   "COLLAPSE_BUTTON_MORE": "Meer weergeven",

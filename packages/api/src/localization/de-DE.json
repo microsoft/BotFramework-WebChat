@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Zurück",
   "CITATION_MODEL_DIALOG_ALT": "Zitat",
   "CLOSE_BUTTON_ALT": "Schließen",
+  "COLLAPSIBLE_GROUPING_TITLE": "Denken…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Dies wird angezeigt, wenn der Bot Antwortnachrichten in einer Gruppe verfasst, sofern keine Zusammenfassung bereitgestellt wird.",
   "COLLAPSE_BUTTON_LESS": "Weniger anzeigen",
   "COLLAPSE_BUTTON_LESS.comment": "Dies ist der Text einer Chevron-Schaltfläche zum Reduzieren einer Gruppe von Nachrichten. Wenn Endbenutzer auf die Schaltfläche klicken, wird die Gruppe von Nachrichten reduziert.",
   "COLLAPSE_BUTTON_MORE": "Mehr anzeigen",

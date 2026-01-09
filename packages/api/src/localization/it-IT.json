@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Indietro",
   "CITATION_MODEL_DIALOG_ALT": "Citazione",
   "CLOSE_BUTTON_ALT": "Chiudi",
+  "COLLAPSIBLE_GROUPING_TITLE": "Sto pensando...",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Queste parole vengono visualizzate quando il bot sta componendo messaggi di risposta in un gruppo se non viene fornito alcun riassunto.",
   "COLLAPSE_BUTTON_LESS": "Mostra meno",
   "COLLAPSE_BUTTON_LESS.comment": "Questo è il testo di un pulsante per comprimere il gruppo di messaggi. Quando l'utente finale fa clic sul pulsante, il gruppo di messaggi viene compresso.",
   "COLLAPSE_BUTTON_MORE": "Mostra altro",

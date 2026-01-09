@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Předchozí",
   "CITATION_MODEL_DIALOG_ALT": "Citace",
   "CLOSE_BUTTON_ALT": "Zavřít",
+  "COLLAPSIBLE_GROUPING_TITLE": "Přemýšlím…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "To se zobrazí, když bot vytváří zprávy odpovědí ve skupině, pokud není k dispozici žádný abstrakt.",
   "COLLAPSE_BUTTON_LESS": "Zobrazit méně",
   "COLLAPSE_BUTTON_LESS.comment": "Toto je text tlačítka se šipkou pro sbalení skupiny zpráv. Když koncový uživatel klikne na tlačítko, skupina zpráv se sbalí.",
   "COLLAPSE_BUTTON_MORE": "Zobrazit více",

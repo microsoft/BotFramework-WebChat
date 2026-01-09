@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Föregående",
   "CITATION_MODEL_DIALOG_ALT": "Hänvisning",
   "CLOSE_BUTTON_ALT": "Stäng",
+  "COLLAPSIBLE_GROUPING_TITLE": "Tänker...",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Detta visas när roboten skriver svarsmeddelanden i en grupp om inget abstrakt anges.",
   "COLLAPSE_BUTTON_LESS": "Visa mindre",
   "COLLAPSE_BUTTON_LESS.comment": "Det här är texten på en sparrknapp för att dölja en grupp meddelanden. När slutanvändaren klickar på knappen viks meddelandegruppen.",
   "COLLAPSE_BUTTON_MORE": "Visa mer",

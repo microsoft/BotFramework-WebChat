@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Forrige",
   "CITATION_MODEL_DIALOG_ALT": "Referanse",
   "CLOSE_BUTTON_ALT": "Lukk",
+  "COLLAPSIBLE_GROUPING_TITLE": "Tenker ...",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Dette vises når boten skriver svarmeldinger i en gruppe, hvis det ikke er oppgitt noe sammendrag.",
   "COLLAPSE_BUTTON_LESS": "Vis mindre",
   "COLLAPSE_BUTTON_LESS.comment": "Dette er teksten på en vinkeltegnknapp for å skjule en gruppe meldinger. Når sluttbrukeren klikker på knappen, lukkes meldingsgruppen.",
   "COLLAPSE_BUTTON_MORE": "Vis mer",
