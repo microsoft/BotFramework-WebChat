@@ -1,13 +1,15 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+
+import styles from './AudioCardContent.module.css';
 
 const { AudioContent } = Components;
 
@@ -25,11 +27,11 @@ type AudioCardContentProps = InferInput<typeof audioCardContentPropsSchema>;
 function AudioCardContent(props: AudioCardContentProps) {
   const { actionPerformedClassName, content, disabled } = validateProps(audioCardContentPropsSchema, props);
 
-  const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
   const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
+  const classNames = useStyles(styles);
 
   return (
-    <div className={audioCardAttachmentStyleSet}>
+    <div className={classNames['audio-card-attachment']}>
       <ul className="media-list">
         {media.map(({ url }, index) => (
           <li key={index}>

@@ -135,9 +135,9 @@
         await pageObjects.focusTranscript();
 
         const groupHeaders = () => document.querySelectorAll('.collapsible-grouping__header');
-        const expandCollapseButtons = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button');
-        const expandedGroups = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button[aria-expanded="true"]');
-        const collapsedGroups = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button[aria-expanded="false"]');
+        const expandCollapseButtons = () => document.querySelectorAll('.collapsible-grouping__header .activity-button');
+        const expandedGroups = () => document.querySelectorAll('.collapsible-grouping__header .activity-button[aria-expanded="true"]');
+        const collapsedGroups = () => document.querySelectorAll('.collapsible-grouping__header .activity-button[aria-expanded="false"]');
 
         await waitFor(async () => expect(groupHeaders()).toHaveLength(2));
         await waitFor(async () => expect(expandCollapseButtons()).toHaveLength(2));

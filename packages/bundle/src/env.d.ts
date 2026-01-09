@@ -1,3 +1,5 @@
+/// <reference types="@msinternal/botframework-webchat-styles/env" />
+
 // For adding things to `globalThis`, TypeScript need `var`, not `const` or `let`.
 /* eslint-disable no-var */
 declare global {

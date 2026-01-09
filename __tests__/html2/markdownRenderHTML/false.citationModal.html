@@ -89,13 +89,13 @@
 
         const [firstActivityElement] = pageElements.activities();
 
-        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+        const linkDefinitions = firstActivityElement.querySelectorAll('.link-definitions__list-item');
 
         expect(linkDefinitions).toHaveProperty('length', 5);
 
         linkDefinitions[3].querySelector('button').click();
 
-        const markdownElement = document.querySelectorAll('dialog .webchat__render-markdown')[1];
+        const markdownElement = document.querySelectorAll('dialog .render-markdown')[1];
 
         expect(markdownElement.innerHTML.startsWith('<h2>Header</h2>\n&lt;p&gt;This is some text')).toBe(true);
 

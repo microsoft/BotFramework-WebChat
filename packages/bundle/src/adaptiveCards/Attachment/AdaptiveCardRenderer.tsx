@@ -1,11 +1,11 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
 import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware';
 import { getTabIndex, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
-import classNames from 'classnames';
 import React, {
   memo,
   useCallback,
@@ -19,7 +19,6 @@ import React, {
 import { useRefFrom } from 'use-ref-from';
 import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
@@ -31,6 +30,8 @@ import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEf
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
 import { directLineCardActionSchema } from './private/directLineSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
+
+import styles from './AdaptiveCardRenderer.module.css';
 
 const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useUIState } = hooks;
 
@@ -54,7 +55,6 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     tapAction
   } = validateProps(adaptiveCardRendererPropsSchema, props);
 
-  const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [uiState] = useUIState();
@@ -63,6 +63,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const performCardAction = usePerformCardAction();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const scrollToEnd = useScrollToEnd();
+  const classNames = useStyles(styles);
 
   const disabled = uiState === 'disabled' || disabledFromProps;
   const tapActionRef = useValueRef(tapAction);
@@ -249,7 +250,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     <ErrorBoxPolymiddlewareProxy error={errors[0]} where={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
   ) : (
     <div
-      className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
+      className={classNames['adaptive-card-renderer']}
       onClick={handleClickAndKeyPressForTapAction as MouseEventHandler<HTMLDivElement>}
       onKeyPress={handleClickAndKeyPressForTapAction as KeyboardEventHandler<HTMLDivElement>}
       ref={contentRef}

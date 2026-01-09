@@ -55,7 +55,7 @@
         const [firstActivityElement] = pageElements.activities();
 
         const link = firstActivityElement.querySelector('[href="http://example.com"]');
-        const linkImage = link.querySelector('.webchat__render-markdown__external-link-icon');
+        const linkImage = link.querySelector('.render-markdown__external-link-icon');
 
         expect(link.getAttribute('aria-label')).toBe('link in it Opens in a new window; external.');
         expect(link.getAttribute('target')).toBe('_blank');

@@ -1,4 +1,5 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
@@ -7,27 +8,28 @@ import {
   parseClaim,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 
 import ActivityFeedback from '../ActivityFeedback/ActivityFeedback';
-import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Originator from './private/Originator';
 import StatusSlot from './StatusSlot';
 import Timestamp from './Timestamp';
 
+import styles from './ActivityStatus.module.css';
+
 const { useStyleOptions } = hooks;
 
-type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined }>;
+type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined; slotted?: boolean }>;
 
 const warnRootLevelThings = warnOnce(
   'Root-level things are being deprecated, please relate all things to `entities[@id=""]` instead. This feature will be removed in 2025-03-06.'
 );
 
-const OthersActivityStatus = memo(({ activity, className }: Props) => {
+const OthersActivityStatus = memo(({ activity, className, slotted }: Props) => {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
-  const [{ sendStatus }] = useStyleSet();
+  const classNames = useStyles(styles);
   const { timestamp } = activity;
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
 
@@ -60,7 +62,9 @@ const OthersActivityStatus = memo(({ activity, className }: Props) => {
   }, [graph, messageThing]);
 
   return (
-    <span className={classNames('webchat__activity-status', className, sendStatus + '')}>
+    <span
+      className={cx(classNames['activity-status'], { [classNames['activity-status--slotted']]: slotted }, className)}
+    >
       {timestamp && (
         <StatusSlot>
           <Timestamp key="timestamp" timestamp={timestamp} />

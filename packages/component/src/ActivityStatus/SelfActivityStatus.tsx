@@ -1,19 +1,21 @@
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo } from 'react';
 
 import Timestamp from './Timestamp';
-import useStyleSet from '../hooks/useStyleSet';
 
-type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined }>;
+import styleClassNames from './ActivityStatus.module.css';
 
-const SelftActivityStatus = memo(({ activity, className }: Props) => {
-  const [{ sendStatus }] = useStyleSet();
+type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined; slotted?: boolean }>;
+
+const SelftActivityStatus = memo(({ activity, className, slotted }: Props) => {
+  const classNames = useStyles(styleClassNames);
   const { timestamp } = activity;
 
   return timestamp ? (
     <span
-      className={classNames('webchat__activity-status', 'webchat__activity-status--self', className, sendStatus + '')}
+      className={cx(classNames['activity-status'], { [classNames['activity-status--slotted']]: slotted }, className)}
     >
       <Timestamp timestamp={timestamp} />
     </span>

@@ -38,7 +38,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         const carouselContainer = document
-          .querySelector('.webchat__carousel-filmstrip')
+          .querySelector('.carousel-filmstrip')
           .getAttribute('aria-labelledby');
 
         expect(carouselContainer).toBeFalsy();

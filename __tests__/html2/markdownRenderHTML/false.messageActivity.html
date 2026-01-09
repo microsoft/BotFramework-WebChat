@@ -30,7 +30,7 @@
 
         const [firstActivityElement] = pageElements.activities();
 
-        const markdownElement = firstActivityElement.querySelector('.webchat__render-markdown');
+        const markdownElement = firstActivityElement.querySelector('.render-markdown');
 
         expect(markdownElement.innerHTML.startsWith('<h2>Header</h2>\n&lt;p&gt;This is some text')).toBe(true);
 

@@ -1,0 +1,102 @@
+:global(.webchat) .render-markdown {
+  display: contents;
+
+  /* Adaptive Cards context styles */
+  &.render-markdown--adaptive-cards > *:first-child {
+    margin-block-start: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  &.render-markdown--adaptive-cards > *:last-child {
+    margin-block-end: 0;
+  }
+
+  /* Message activity context styles */
+  &.render-markdown--message-activity > *:first-child {
+    margin-block-start: 0;
+  }
+
+  &.render-markdown--message-activity > *:last-child {
+    margin-block-end: 0;
+  }
+
+  /* External link icon */
+  :global(.render-markdown__external-link-icon) {
+    background-image: var(--webchat__icon-url--external-link);
+    height: 0.75em;
+    margin-inline-start: 0.25em;
+  }
+
+  /* Citation button */
+  :global(.render-markdown__citation) {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    display: inline-block;
+    font-family: unset;
+    font-size: unset;
+    overflow: hidden;
+    padding: 0;
+    text-decoration: underline;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+
+    @media (forced-colors: active) {
+      color: LinkText;
+    }
+
+    @media not (forced-colors: active) {
+      color: var(--webchat__color--accent);
+    }
+  }
+
+  /* Pure identifier styles */
+  :global(.render-markdown__pure-identifier) {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+
+    &::before {
+      content: '[';
+    }
+
+    &::after {
+      content: ']';
+    }
+  }
+
+  /* Math block styles */
+  [data-math-type='block'] {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-block-end: -4px;
+    outline-offset: 2px;
+    overflow-x: auto;
+    overflow-y: clip;
+    padding-block-end: 4px;
+    scrollbar-width: thin;
+  }
+
+  span[data-math-type='block'] {
+    display: inline-flex;
+  }
+
+  /* Math inline styles */
+  [data-math-type='inline'] {
+    align-items: center;
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  /* Math content wrapper */
+  :is([data-math-type='block'], [data-math-type='inline']) > span {
+    display: contents;
+  }
+}

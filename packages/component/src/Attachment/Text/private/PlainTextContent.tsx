@@ -1,9 +1,10 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { Fragment, memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../../../hooks/useStyleSet';
+import styles from '../TextContent.module.css';
 
 const plainTextContentPropsSchema = pipe(
   object({
@@ -18,25 +19,16 @@ type PlainTextContentProps = InferInput<typeof plainTextContentPropsSchema>;
 function PlainTextContent(props: PlainTextContentProps) {
   const { children, text } = validateProps(plainTextContentPropsSchema, props);
 
-  const [{ textContent: textContentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
 
   return (
     <Fragment>
       {(text || '').split('\n').map(line => (
-        <p
-          className={classNames('webchat__text-content', 'webchat__text-content--is-plain', textContentStyleSet + '')}
-          key={line}
-        >
+        <p className={cx(classNames['text-content'])} key={line}>
           {line.trim()}
         </p>
       ))}
-      {children && (
-        <div
-          className={classNames('webchat__text-content', 'webchat__text-content--children', textContentStyleSet + '')}
-        >
-          {children}
-        </div>
-      )}
+      {children && <div className={classNames['text-content']}>{children}</div>}
     </Fragment>
   );
 }

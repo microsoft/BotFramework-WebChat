@@ -24,7 +24,7 @@
         const App = () => (
           <React.Fragment>
             <ReactWebChat directLine={directLine} store={store} />
-            <div style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
+            <div className="webchat" style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
               <label>
                 <div>Plain text box</div>
                 <input
@@ -40,7 +40,7 @@
                   contentEditable={true}
                   data-testid="rich-text-box"
                   spellCheck={false}
-                  style={{ background: '#f0f0f0', border: 0, height: 50, width: '100%' }}
+                  style={{ margin: 0, background: '#f0f0f0', border: 0, height: 50, width: '100%' }}
                 />
               </label>
             </div>

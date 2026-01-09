@@ -40,12 +40,12 @@
         const renderMarkdownAsHTML = await renderHook(() => useRenderMarkdownAsHTML());
 
         const actual = renderMarkdownAsHTML('Click [here](https://aka.ms/) to find out more.').replace(
-          /webchat--css-[\d\w]*-[\d\w]*/u,
-          'webchat--css-xxxxx-xxxxx'
+          /w[\d\w\-]{6}_/gu,
+          'wxxxxxx_'
         );
 
         expect(actual).toBe(
-          `<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Click \u200B<a href="https://aka.ms/" aria-label="here 喺新嘅視窗開啟外部連結。" rel="noopener noreferrer" target="_blank">here<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="喺新嘅視窗開啟外部連結。" /></a>\u200B to find out more.</p></div>`
+          `<div xmlns="http://www.w3.org/1999/xhtml" class="render-markdown wxxxxxx_render-markdown render-markdown--message-activity wxxxxxx_render-markdown--message-activity"><p>Click \u200B<a href="https://aka.ms/" aria-label="here 喺新嘅視窗開啟外部連結。" rel="noopener noreferrer" target="_blank">here<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="render-markdown__external-link-icon" title="喺新嘅視窗開啟外部連結。" /></a>\u200B to find out more.</p></div>`
         );
       });
     </script>

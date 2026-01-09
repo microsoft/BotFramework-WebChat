@@ -1,0 +1,91 @@
+:global(.webchat) .thumb-button {
+  align-items: center;
+  border-radius: 2px;
+  box-sizing: content-box;
+  display: grid;
+  grid-template-areas: 'main';
+  height: 16px;
+  width: 16px;
+
+  .thumb-button__input {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    grid-area: main;
+    height: 16px;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+    width: 16px;
+
+    &:active {
+      background: #edebe9;
+    }
+  }
+
+  &:has(.thumb-button__input:focus-visible) {
+    outline: solid 1px #605e5c; /* <input> has opacity of 0, we need to set the outline in the container. */
+  }
+
+  .thumb-button__image {
+    color: var(--webchat__color--accent);
+    grid-area: main;
+    justify-self: center; /* Unsure why "justifyContent" doesn't work. */
+    pointer-events: none;
+    visibility: hidden;
+    width: 14px;
+
+    &.thumb-button__image--is-stroked {
+      visibility: unset;
+    }
+  }
+
+  &:has(.thumb-button__input:is(:not([aria-disabled='true']):hover, :checked, [aria-pressed='true'])) {
+    .thumb-button__image {
+      &.thumb-button__image--is-stroked {
+        visibility: hidden;
+      }
+
+      &.thumb-button__image--is-filled {
+        visibility: unset;
+      }
+    }
+  }
+
+  &.thumb-button--large {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    height: 30px;
+    width: 30px;
+
+    .thumb-button__input {
+      background: currentColor;
+      height: 30px;
+      width: 30px;
+    }
+
+    .thumb-button__image {
+      color: currentColor;
+      font-size: 20px;
+      height: 1em;
+      width: 1em;
+    }
+
+    &:has(.thumb-button__input:is(:hover, :active, :checked, [aria-pressed='true'])) .thumb-button__image {
+      color: var(--webchat__color--accent);
+    }
+
+    &:has(.thumb-button__input[aria-disabled='true']) .thumb-button__image {
+      color: var(--webchat__color--subtle);
+    }
+
+    &.thumb-button--has-submitted:has(.thumb-button__input:not(:checked):not([aria-pressed='true']))
+      .thumb-button__tooltip {
+      display: none;
+    }
+
+    &.thumb-button--has-submitted .thumb-button__tooltip {
+      --webchat__tooltip-anchor-inline-start: 20%;
+    }
+  }
+}

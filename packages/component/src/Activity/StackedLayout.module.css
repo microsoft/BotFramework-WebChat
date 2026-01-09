@@ -116,7 +116,7 @@
     place-self: start;
     width: 1em;
 
-    &:has(+ :global(.webchat__text-content)) {
+    &:has(+ :global(.text-content)) {
       font-size: 1em;
     }
 

@@ -1,9 +1,12 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ShieldIcon from './ShieldIcon';
+
+import styles from '../../../LinkDefinition/LinkDefinitions.module.css';
 
 const messageSensitivityLabelPropsSchema = pipe(
   object({
@@ -21,23 +24,25 @@ type MessageSensitivityLabelProps = InferInput<typeof messageSensitivityLabelPro
 function MessageSensitivityLabel(props: MessageSensitivityLabelProps) {
   const { className, color, isEncrypted, name, title } = validateProps(messageSensitivityLabelPropsSchema, props);
 
+  const classNames = useStyles(styles);
+
   return (
     <div
-      className={classNames(
-        'webchat__link-definitions__message-sensitivity-label',
+      className={cx(
+        classNames['link-definitions__message-sensitivity-label'],
         {
-          'webchat__link-definitions__message-sensitivity-label--is-encrypted': isEncrypted
+          'link-definitions__message-sensitivity-label--is-encrypted': isEncrypted
         },
         className
       )}
       title={useMemo(() => [name, title].filter(Boolean).join('\n\n'), [name, title])}
     >
       <ShieldIcon
-        className="webchat__link-definitions__message-sensitivity-label-icon"
+        className={classNames['link-definitions__message-sensitivity-label-icon']}
         fillColor={color}
         hasLock={isEncrypted}
       />
-      <span className="webchat__link-definitions__message-sensitivity-label-text">{name}</span>
+      <span className={classNames['link-definitions__message-sensitivity-label-text']}>{name}</span>
     </div>
   );
 }

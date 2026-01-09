@@ -23,8 +23,8 @@
         await pageConditions.numActivitiesShown(2);
 
         // GIVEN: Carousel is at left most position.
-        const carouselLayout = document.querySelector('.webchat__carousel-layout');
-        const carouselFilmstrip = carouselLayout.querySelector('.webchat__carousel-filmstrip');
+        const carouselLayout = document.querySelector('.carousel-layout');
+        const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
 
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 

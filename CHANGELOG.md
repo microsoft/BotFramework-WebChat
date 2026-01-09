@@ -15,6 +15,7 @@ Legends:
 - 🐛 are known issues
 - 🧪 are experimental changes
 - 🏫 are samples
+- 👷🏻 are development environment changes
 
 ## [Unreleased]
 
@@ -143,9 +144,11 @@ Breaking changes in this release:
    - Added loading animation for `copilot`, and `fluent` variants
 - New JSON-LD graph backend, by [@compulim](https://github.com/compulim) in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622)
    - Cleanup, by [@compulim](https://github.com/compulim) in PR [#5657](https://github.com/microsoft/BotFramework-WebChat/pull/5657)
-- New debug API, by [@compulim](https://github.com/compulim) in PR [#5663](https://github.com/microsoft/BotFramework-WebChat/pull/5663), see [`DEBUGGING.md`](docs/DEBUGGING.md) for more
+- New debug API, by [@compulim](https://github.com/compulim) in PR [#5663](https://github.com/microsoft/BotFramework-WebChat/pull/5663) and PR [#5664](https://github.com/microsoft/BotFramework-WebChat/pull/5664), see [`DEBUGGING.md`](docs/DEBUGGING.md) for more
    - Debug into element: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.debugger`
    - Breakpoint: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.breakpoint.incomingActivity`
+- The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Added `npm run build-browser` script for building test harness package only, in PR [#5667](https://github.com/microsoft/BotFramework-WebChat/pull/5667), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
@@ -310,6 +313,10 @@ Breaking changes in this release:
 - Bumped Chrome in Docker to 141 from 110, in PR [#5619](https://github.com/microsoft/BotFramework-WebChat/pull/5619), by [@compulim](https://github.com/compulim)
 - Bumped to [`valibot@1.2.0`](https://npmjs.com/package/valibot/v/1.2.0), in PR [#5650](https://github.com/microsoft/BotFramework-WebChat/pull/5650), by [@compulim](https://github.com/compulim)
 - Pinned to [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6), by [@OEvgeny](https://github.com/OEvgeny) in PR [#5662](https://github.com/microsoft/BotFramework-WebChat/pull/5662)
+- Converted activity components to CSS Modules
+   - Bubble, carousel, say-alt, in PR [#5668](https://github.com/microsoft/BotFramework-WebChat/pull/5668), by [@OEvgeny](https://github.com/OEvgeny)
+   - Activity status, in PR [#5669](https://github.com/microsoft/BotFramework-WebChat/pull/5669), by [@OEvgeny](https://github.com/OEvgeny)
+   - Text attachment and related components, in PR [#5670](https://github.com/microsoft/BotFramework-WebChat/pull/5670), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Deprecated
 

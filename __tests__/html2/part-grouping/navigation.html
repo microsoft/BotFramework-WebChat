@@ -166,7 +166,7 @@
 
         // Test Case 2: Collapsed group navigation.
         // When: Collapsing group 1 and group 2.
-        const groupHeaders = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button');
+        const groupHeaders = () => document.querySelectorAll('.collapsible-grouping__header .activity-button');
         await waitFor(async () => expect(groupHeaders()).toHaveLength(2));
 
         for (const header of groupHeaders()) {

@@ -64,7 +64,7 @@
       const commits = new Map();
       function handleRender(id, renderPhase, actualDuration, baseDuration, startTime, commitTime) {
         const commit = commits.get(commitTime) ?? {};
-        commit.activitiesCount = document.querySelectorAll('.webchat__bubble__content').length;
+        commit.activitiesCount = document.querySelectorAll('.bubble__content').length;
         commit.commit = commitTime;
         commit[`${id} ${renderPhase} actual`] ??= 0;
         commit[`${id} ${renderPhase} actual`] += actualDuration;

@@ -1,13 +1,15 @@
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import Bubble from './Bubble';
 import ScreenReaderText from '../ScreenReaderText';
-import useStyleSet from '../hooks/useStyleSet';
 
-const { useDirection, useLocalizer } = hooks;
+import styles from './CarouselFilmStripAttachment.module.css';
+
+const { useLocalizer } = hooks;
 
 const CarouselFilmStripAttachment = ({
   activity,
@@ -21,27 +23,24 @@ const CarouselFilmStripAttachment = ({
   showAvatar,
   showNub
 }) => {
-  const [direction] = useDirection();
   const localize = useLocalizer();
-  const [{ carouselFilmStripAttachment: carouselFilmStripAttachmentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
 
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
 
   return (
     <li
       aria-roledescription="attachment"
-      className={classNames(
-        'webchat__carousel-filmstrip-attachment',
+      className={cx(
+        classNames['carousel-filmstrip-attachment'],
         {
-          'webchat__carousel-filmstrip-attachment--hide-avatar': hasAvatar && !showAvatar,
-          'webchat__carousel-filmstrip-attachment--hide-nub': hideNub,
-          'webchat__carousel-filmstrip-attachment--rtl': direction === 'rtl',
-          'webchat__carousel-filmstrip-attachment--show-avatar': showAvatar,
-          'webchat__carousel-filmstrip-attachment--show-nub': showNub
+          [classNames['carousel-filmstrip-attachment--hide-avatar']]: hasAvatar && !showAvatar,
+          [classNames['carousel-filmstrip-attachment--hide-nub']]: hideNub,
+          [classNames['carousel-filmstrip-attachment--show-avatar']]: showAvatar,
+          [classNames['carousel-filmstrip-attachment--show-nub']]: showNub
         },
         'react-film__filmstrip__item',
-        carouselFilmStripAttachmentStyleSet + '',
-        (className || '') + ''
+        className
       )}
       role="listitem"
       tabIndex={0}
@@ -49,7 +48,7 @@ const CarouselFilmStripAttachment = ({
       <ScreenReaderText text={attachedAlt} />
       <Bubble fromUser={fromUser} key={index} nub={false}>
         {renderAttachment({ activity, attachment })}
-        <div className="webchat__carousel-filmstrip-attachment--focus" />
+        <div className={classNames['carousel-filmstrip-attachment--focus']} />
       </Bubble>
     </li>
   );

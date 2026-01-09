@@ -112,55 +112,55 @@
 
         const activityElement = pageElements.activities()[2];
 
-        const linkDefinitions = activityElement.querySelectorAll('.webchat__link-definitions__list-item');
+        const linkDefinitions = activityElement.querySelectorAll('.link-definitions__list-item');
 
         expect(linkDefinitions).toHaveProperty('length', 3);
 
-        expect(linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[0].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[0].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('IT - Proxy Settings for external access');
-        expect(linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-badge')).toHaveProperty(
+        expect(linkDefinitions[0].querySelector('.link-definitions__list-item-badge')).toHaveProperty(
           'textContent',
           'General'
         );
         expect(
-          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-badge').getAttribute('title')
+          linkDefinitions[0].querySelector('.link-definitions__list-item-badge').getAttribute('title')
         ).toBe('General');
 
-        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[1].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[1].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Changing proxy settings - Windows 11');
-        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+        expect(linkDefinitions[1].querySelector('.link-definitions__list-item-badge')).toBeNull();
 
-        expect(linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[2].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[2].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('How to renew authentication token');
         expect(
-          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-badge').getAttribute('title')
+          linkDefinitions[2].querySelector('.link-definitions__list-item-badge').getAttribute('title')
         ).toBe(
           'Confidential\\Any User (No Protection)\n\nData is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.'
         );
 
-        expect(document.querySelector('.webchat__link-definitions__header-text')).toHaveProperty(
+        expect(document.querySelector('.link-definitions__header-text')).toHaveProperty(
           'textContent',
           '3 references'
         );
 
-        expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label-text')).toHaveProperty(
+        expect(document.querySelector('.link-definitions__message-sensitivity-label-text')).toHaveProperty(
           'textContent',
           'Confidential\\Any User (No Protection)'
         );
 
-        expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label')).toHaveProperty(
+        expect(document.querySelector('.link-definitions__message-sensitivity-label')).toHaveProperty(
           'title',
           'Confidential\\Any User (No Protection)\n\nData is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.'
         );
 
         expect(
-          document.querySelector('.webchat__link-definitions__message-sensitivity-label--is-encrypted')
+          document.querySelector('.link-definitions__message-sensitivity-label--is-encrypted')
         ).toBeTruthy();
       });
     </script>
