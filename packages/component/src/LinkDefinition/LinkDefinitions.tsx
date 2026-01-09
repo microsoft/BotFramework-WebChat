@@ -1,5 +1,6 @@
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import random from 'math-random';
 import React, {
   Children,
@@ -11,8 +12,9 @@ import React, {
   type ReactNode
 } from 'react';
 
-import useStyleSet from '../hooks/useStyleSet';
 import { ComponentIcon } from '../Icon';
+
+import styles from './LinkDefinitions.module.css';
 
 const { useLocalizer } = hooks;
 const { count: childrenCount, map: childrenMap } = Children;
@@ -49,9 +51,9 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
   children
 }: Props<TAccessoryProps>) => {
   const [id] = useState(() => `webchat-link-definitions-${uniqueId()}`);
-  const [{ linkDefinitions }] = useStyleSet();
   const localizeWithPlural = useLocalizer({ plural: true });
   const summaryRef = useRef<HTMLElement>(null);
+  const classNames = useStyles(styles);
 
   const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, childrenCount(children));
 
@@ -67,7 +69,7 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
 
   return (
     <details
-      className={classNames(linkDefinitions, 'webchat__link-definitions')}
+      className={classNames['link-definitions']}
       // eslint-disable-next-line react/forbid-dom-props
       id={id}
       onToggle={handleToggle}
@@ -77,25 +79,35 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
         aria-controls={id}
         aria-expanded="true"
         aria-pressed="true"
-        className="webchat__link-definitions__header"
+        className={classNames['link-definitions__header']}
         ref={summaryRef}
         role="button"
       >
-        <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--left">
-          <div className="webchat__link-definitions__header-text">{headerText}</div>
-          <ComponentIcon appearance="text" className="webchat__link-definitions__header-chevron" icon="chevron" />
+        <div
+          className={cx(
+            classNames['link-definitions__header-section'],
+            classNames['link-definitions__header-section--left']
+          )}
+        >
+          <div className={classNames['link-definitions__header-text']}>{headerText}</div>
+          <ComponentIcon appearance="text" className={classNames['link-definitions__header-chevron']} icon="chevron" />
         </div>
-        <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--right">
+        <div
+          className={cx(
+            classNames['link-definitions__header-section'],
+            classNames['link-definitions__header-section--right']
+          )}
+        >
           {accessoryComponentType && (
-            <div className="webchat__link-definitions__header-accessory">
+            <div className={classNames['link-definitions__header-accessory']}>
               {React.createElement(accessoryComponentType, accessoryProps)}
             </div>
           )}
         </div>
       </summary>
-      <div className="webchat__link-definitions__list" role="list">
+      <div className={classNames['link-definitions__list']} role="list">
         {childrenMap(children, child => (
-          <div className="webchat__link-definitions__list-item" role="listitem">
+          <div className={classNames['link-definitions__list-item']} role="listitem">
             {child}
           </div>
         ))}

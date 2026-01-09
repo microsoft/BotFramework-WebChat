@@ -1,10 +1,14 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo, useCallback, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ItemBody from './private/ItemBody';
 import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain';
+
+import styles from './LinkDefinitions.module.css';
 
 const linkDefinitionItemPropsSchema = pipe(
   object({
@@ -41,6 +45,8 @@ const LinkDefinitionItem = memo(function LinkDefinitionItem(props: LinkDefinitio
     props
   );
 
+  const classNames = useStyles(styles);
+
   const onClickRef = useRefFrom(onClick);
 
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>>(
@@ -62,7 +68,10 @@ const LinkDefinitionItem = memo(function LinkDefinitionItem(props: LinkDefinitio
     // URL is sanitized.
     // eslint-disable-next-line react/forbid-elements
     <a
-      className="webchat__link-definitions__list-item-box webchat__link-definitions__list-item-box--as-link"
+      className={cx(
+        classNames['link-definitions__list-item-box'],
+        classNames['link-definitions__list-item-box--as-link']
+      )}
       href={sanitizedHref}
       onClick={handleClick}
       rel="noopener noreferrer"
@@ -78,7 +87,10 @@ const LinkDefinitionItem = memo(function LinkDefinitionItem(props: LinkDefinitio
     </a>
   ) : (
     <button
-      className="webchat__link-definitions__list-item-box webchat__link-definitions__list-item-box--as-button"
+      className={cx(
+        classNames['link-definitions__list-item-box'],
+        classNames['link-definitions__list-item-box--as-button']
+      )}
       onClick={handleClick}
       type="button"
     >

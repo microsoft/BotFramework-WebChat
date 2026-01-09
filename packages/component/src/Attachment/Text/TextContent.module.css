@@ -1,0 +1,45 @@
+:global(.webchat) .text-content {
+  font-family: var(--webchat__font--primary);
+  margin: 0;
+  min-height: calc(var(--webchat__min-height--bubble) - var(--webchat__padding--regular) * 2);
+  padding: var(--webchat__padding--regular);
+
+  &.text-content--is-markdown {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--webchat__padding--regular);
+    min-width: 0;
+  }
+
+  .text-content__markdown img:not(:global(.render-markdown__external-link-icon)) {
+    max-width: var(--webchat__max-width--message-bubble);
+    min-width: var(--webchat__min-width--message-bubble);
+    width: 100%;
+  }
+
+  .text-content__markdown pre {
+    overflow: hidden;
+  }
+
+  .text-content__open-in-new-window-icon {
+    height: 0.75em;
+  }
+
+  .text-content__activity-actions {
+    align-self: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px calc(var(--webchat__padding--regular) / 2);
+    width: 100%;
+  }
+
+  .text-content__activity-actions:empty {
+    display: none;
+  }
+
+  .text-content__generated-badge {
+    color: var(--webchat__color--subtle);
+    font-size: var(--webchat__font-size--small);
+  }
+}

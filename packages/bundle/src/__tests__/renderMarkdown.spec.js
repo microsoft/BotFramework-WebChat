@@ -8,7 +8,7 @@ describe('renderMarkdown', () => {
     codeBlockCopyButtonAltCopied: 'Copied',
     codeBlockCopyButtonAltCopy: 'Copy',
     codeBlockCopyButtonTagName: 'webchat--code-block-copy-button',
-    codeBlockCopyButtonClassName: 'webchat__code-block-copy-button',
+    codeBlockCopyButtonClassName: 'code-block-copy-button',
     copyButtonAlt: 'Copy',
     copyButtonCopiedAlt: 'Copied'
   };
@@ -72,7 +72,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown('[example](https://sample.com)', styleOptions, renderMarkdownOptions)).toBe(
-      `<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="https://sample.com" aria-label="example " rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" /></a>\u200B</p>`
+      `<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="https://sample.com" aria-label="example " rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="render-markdown__external-link-icon" /></a>\u200B</p>`
     );
   });
 
@@ -81,7 +81,7 @@ describe('renderMarkdown', () => {
     const options = { externalLinkAlt: 'Opens in a new window, external.' };
 
     expect(renderMarkdown('[example](https://sample.com)', styleOptions, options)).toBe(
-      `<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="https://sample.com" aria-label="example Opens in a new window, external." rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="Opens in a new window, external." /></a>\u200B</p>`
+      `<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="https://sample.com" aria-label="example Opens in a new window, external." rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="render-markdown__external-link-icon" title="Opens in a new window, external." /></a>\u200B</p>`
     );
   });
 

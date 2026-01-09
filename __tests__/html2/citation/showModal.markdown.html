@@ -42,7 +42,7 @@
           type: 'message'
         });
 
-        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownElement = pageElements.activities()[0].querySelector('.text-content__markdown');
         const markdownButtons = markdownElement.querySelectorAll('button');
 
         await host.click(markdownButtons[0]);

@@ -6,7 +6,9 @@ import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/in
 import parseDocumentFragmentFromString from '../Utils/parseDocumentFragmentFromString';
 import serializeDocumentFragmentIntoString from '../Utils/serializeDocumentFragmentIntoString';
 import useWebChatUIContext from './internal/useWebChatUIContext';
-import useStyleSet from './useStyleSet';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+
+import styles from './RenderMarkdown.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -21,25 +23,22 @@ export default function useRenderMarkdownAsHTML(
   | undefined {
   const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
-  const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const transformHTMLContent = useTransformHTMLContent();
+
+  const classNames = useStyles(styles);
 
   const externalLinkAlt = localize('MARKDOWN_EXTERNAL_LINK_ALT');
 
   const containerClassName = useMemo(
     () =>
-      cx(
-        'webchat__render-markdown',
-        {
-          'webchat__render-markdown--adaptive-cards': mode === 'adaptive cards',
-          'webchat__render-markdown--citation': mode === 'citation modal',
-          'webchat__render-markdown--message-activity':
-            mode !== 'accessible name' && mode !== 'adaptive cards' && mode !== 'citation modal'
-        },
-        renderMarkdownStyleSet + ''
-      ),
-    [mode, renderMarkdownStyleSet]
+      cx(classNames['render-markdown'], {
+        [classNames['render-markdown--adaptive-cards']]: mode === 'adaptive cards',
+        [classNames['render-markdown--citation']]: mode === 'citation modal',
+        [classNames['render-markdown--message-activity']]:
+          mode !== 'accessible name' && mode !== 'adaptive cards' && mode !== 'citation modal'
+      }),
+    [classNames, mode]
   );
 
   return useMemo(

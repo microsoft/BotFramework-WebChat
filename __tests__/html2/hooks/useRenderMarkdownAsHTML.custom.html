@@ -40,12 +40,12 @@
         const renderMarkdownAsHTML = await renderHook(() => useRenderMarkdownAsHTML());
 
         const actual = renderMarkdownAsHTML('Hello, World!').replace(
-          /webchat--css-[\d\w]*-[\d\w]*/u,
-          'webchat--css-xxxxx-xxxxx'
+          /w[\d\w\-]{6}_/gu,
+          'wxxxxxx_'
         );
 
         expect(actual).toBe(
-          '<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>HELLO, WORLD!</p></div>'
+          '<div xmlns="http://www.w3.org/1999/xhtml" class="render-markdown wxxxxxx_render-markdown render-markdown--message-activity wxxxxxx_render-markdown--message-activity"><p>HELLO, WORLD!</p></div>'
         );
       });
     </script>
