@@ -36,7 +36,7 @@
         const renderMarkdownAsHTML = await renderHook(() => useRenderMarkdownAsHTML());
 
         const actual = renderMarkdownAsHTML('Click [here](https://aka.ms/) to find out more.').replace(
-          /w[\d\w]{6}_/gu,
+          /w[\d\w\-]{6}_/gu,
           'wxxxxxx_'
         );
 

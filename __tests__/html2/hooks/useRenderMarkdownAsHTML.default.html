@@ -36,7 +36,7 @@
         const renderMarkdownAsHTML = await renderHook(() => useRenderMarkdownAsHTML());
 
         const actual = renderMarkdownAsHTML('Hello, World!').replace(
-          /w[\d\w]{6}_/gu,
+          /w[\d\w\-]{6}_/gu,
           'wxxxxxx_'
         );
 
