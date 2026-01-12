@@ -11,15 +11,17 @@ const dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const parseAllToJSON = yamlContent => YAML.parseAllDocuments(yamlContent).map(doc => doc.toJSON());
 
+export const description = 'Verify one or more files using an AST-Grep preset.';
+
 export function help() {
   console.log(`Usage: vg ast-check <preset> <files...>
 
-Verify one or more files using an AST‑Grep preset.
+${description}
 
 Arguments:
-  <preset>   Name of the preset to use.  Presets are located in the "rules"
+  <preset>   Name of the preset to use. Presets are located in the "rules"
              directory next to this script and can be YAML or JS files.
-  <files...> One or more files to verify.  Shell glob expansion happens
+  <files...> One or more files to verify. Shell glob expansion happens
              outside this tool, so pass files directly.
 `);
 
@@ -28,7 +30,6 @@ Arguments:
     .readdirSync(path.resolve(dirname, '../rules'))
     .filter(file => file.endsWith('.yaml') || file.endsWith('.yml') || file.endsWith('.js'));
 
-  const examples = [];
   console.log('Available presets:');
   for (const rule of rules) {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -42,14 +43,8 @@ Arguments:
     for (const ruleData of rules) {
       console.log(`    ${ruleData.id || '(unnamed)'} - ${ruleData.description || 'No description provided.'}`);
       if (ruleData.args && Array.isArray(ruleData.args)) {
-        examples.push(`vg ast-check ${ruleName} ${ruleData.args.join(' ')}`);
+        console.log(`      Example: vg ast-check ${ruleName} ${ruleData.args.join(' ')}`);
       }
-    }
-  }
-  if (examples.length > 0) {
-    console.log('\nExample usage:');
-    for (const example of examples) {
-      console.log(`  ${example}`);
     }
   }
 }
@@ -57,12 +52,14 @@ Arguments:
 export default async function run(...args) {
   if (args.length === 0) {
     console.error('Error: no preset specified for ast-check command.');
+    help();
     return;
   }
   const preset = args.shift();
   const files = args;
   if (files.length === 0) {
     console.error('Error: no files provided for ast-check command.');
+    help();
     return;
   }
   // Resolve the preset file.
@@ -132,13 +129,14 @@ export default async function run(...args) {
       const matches = root.findAll(matcher);
       if (matches.length > 0) {
         hasViolation = isFatalRule || hasViolation;
-        console.error(`❌ FAIL ${file}: found ${matches.length} violation(s) for rule '${id}'.`);
+        console.error(
+          `${isFatalRule ? '🔴 FAIL' : '🟡 SKIP'} ${file}: found ${matches.length} violation(s) for rule '${id}'.`
+        );
         // Print custom message from the rule if provided.
         if (rule.message) {
           console.error(`   ${rule.severity || 'note'}: ${rule.message}`);
         }
         try {
-          // Extract 1‑based line numbers for each match using ast‑grep's range API.
           const lines = matches.map(node => {
             const rng = node.range();
             return rng.start.line + 1;
@@ -153,7 +151,7 @@ export default async function run(...args) {
           console.error(`      ${file}: <unable to determine line numbers>`);
         }
       } else {
-        console.log(`✅ PASS ${file}: ${id}.`);
+        console.log(`🟢 PASS ${file}: ${id}.`);
       }
     }
   }

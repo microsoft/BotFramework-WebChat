@@ -25,6 +25,8 @@ Built on top of [`ast-grep`](https://ast-grep.github.io/), vibe-grep provides ex
 Create a `.js` file in the `commands/` directory:
 
 ```js
+export const description = 'Short command description.';
+
 export function help(...args) {
    // Print command help (optional)
 }

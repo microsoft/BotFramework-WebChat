@@ -2,7 +2,7 @@
 # This rule checks that generated TypeScript declaration files do not 
 # contain any import or export statements that reference modules
 # under the '@msinternal/' namespace. Such imports/exports indicate
-# that the declarations were not rolled up by the dtsroll tool.
+# that the declarations were not processed by the dtsroll tool.
 
 id: no-msinternal
 language: TypeScript
