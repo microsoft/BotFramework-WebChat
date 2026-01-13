@@ -1,0 +1,38 @@
+{
+  "name": "@msinternal/vibe-grep",
+  "description": "VibeGrep (vg) is an internal tool for the repo housekeeping.",
+  "version": "0.0.0-0",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "vg": "./src/vg.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "files": [
+    "src/**/*"
+  ],
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/vibe-grep#readme",
+  "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "../../scripts/npm/postversion.sh",
+    "precommit": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "preversion": "../../scripts/npm/preversion.sh"
+  },
+  "pinDependencies": {},
+  "localDependencies": {},
+  "dependencies": {
+    "@ast-grep/napi": "^0.40.5",
+    "yaml": "^2.8.2"
+  }
+}
