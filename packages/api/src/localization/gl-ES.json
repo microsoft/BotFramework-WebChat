@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Anterior",
   "CITATION_MODEL_DIALOG_ALT": "Cita",
   "CLOSE_BUTTON_ALT": "Pechar",
+  "COLLAPSIBLE_GROUPING_TITLE": "Pensando…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Isto móstrase cando o bot compón mensaxes de resposta nun grupo se non se proporciona ningún resumo.",
   "COLLAPSE_BUTTON_LESS": "Mostrar menos",
   "COLLAPSE_BUTTON_LESS.comment": "Este é o texto dun botón de comiñas angulares para contraer o grupo de mensaxes. Cando o usuario final fai clic no botón, o grupo de mensaxes contráese.",
   "COLLAPSE_BUTTON_MORE": "Mostrar máis",

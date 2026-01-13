@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Anterior",
   "CITATION_MODEL_DIALOG_ALT": "Citação",
   "CLOSE_BUTTON_ALT": "Fechar",
+  "COLLAPSIBLE_GROUPING_TITLE": "A pensar…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Isto é mostrado quando o bot está a compor mensagens de resposta num grupo, caso não seja fornecido um resumo.",
   "COLLAPSE_BUTTON_LESS": "Mostrar menos",
   "COLLAPSE_BUTTON_LESS.comment": "Este é o texto de um botão de divisa para fechar o grupo de mensagens. Quando o utilizador final clica no botão, o grupo de mensagens é fechado.",
   "COLLAPSE_BUTTON_MORE": "Mostrar mais",

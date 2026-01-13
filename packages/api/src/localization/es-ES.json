@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Anterior",
   "CITATION_MODEL_DIALOG_ALT": "Cita",
   "CLOSE_BUTTON_ALT": "Cerrar",
+  "COLLAPSIBLE_GROUPING_TITLE": "Pensando…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Esto se muestra cuando el bot redacta mensajes de respuesta en un grupo si no se proporciona ningún resumen.",
   "COLLAPSE_BUTTON_LESS": "Mostrar menos",
   "COLLAPSE_BUTTON_LESS.comment": "Este es el texto de un botón de contenido adicional para contraer el grupo de mensajes. Cuando el usuario final hace clic en el botón, el grupo de mensajes se pliega.",
   "COLLAPSE_BUTTON_MORE": "Mostrar más",

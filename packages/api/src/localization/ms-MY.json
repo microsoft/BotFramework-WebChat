@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Sebelumnya",
   "CITATION_MODEL_DIALOG_ALT": "Petikan",
   "CLOSE_BUTTON_ALT": "Tutup",
+  "COLLAPSIBLE_GROUPING_TITLE": "Berfikir…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Perkara ini dipaparkan apabila bot sedang menyusun mesej respons dalam kumpulan jika tiada abstrak disediakan.",
   "COLLAPSE_BUTTON_LESS": "Tunjukkan kurang",
   "COLLAPSE_BUTTON_LESS.comment": "Ini ialah teks butang chevron untuk meruntuhkan kumpulan mesej. Apabila pengguna akhir mengklik butang tersebut, kumpulan mesej akan dilipat.",
   "COLLAPSE_BUTTON_MORE": "Tunjukkan lagi",

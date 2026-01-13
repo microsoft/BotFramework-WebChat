@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "上一個",
   "CITATION_MODEL_DIALOG_ALT": "引用",
   "CLOSE_BUTTON_ALT": "關閉",
+  "COLLAPSIBLE_GROUPING_TITLE": "思考中...",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "當機器人在群組中撰寫回覆訊息時，若未提供摘要，則會顯示此訊息。",
   "COLLAPSE_BUTTON_LESS": "顯示較少",
   "COLLAPSE_BUTTON_LESS.comment": "這是用於摺疊訊息群組的＞形箭號按鈕的文字。當終端使用者按一下該按鈕時，訊息群組會摺疊。",
   "COLLAPSE_BUTTON_MORE": "顯示更多",

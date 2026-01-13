@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Назад",
   "CITATION_MODEL_DIALOG_ALT": "Цитата",
   "CLOSE_BUTTON_ALT": "Закрыть",
+  "COLLAPSIBLE_GROUPING_TITLE": "Думаю…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Это сообщение отображается, когда бот создает ответные сообщения в группе, если не предоставлено краткое содержание.",
   "COLLAPSE_BUTTON_LESS": "Показать меньше",
   "COLLAPSE_BUTTON_LESS.comment": "Это текст кнопки шеврона для свертывания группы сообщений. Когда пользователь нажимает кнопку, группа сообщений свертывается.",
   "COLLAPSE_BUTTON_MORE": "Показать больше",

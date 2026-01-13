@@ -40,6 +40,8 @@
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Προηγούμενο",
   "CITATION_MODEL_DIALOG_ALT": "Παραπομπή",
   "CLOSE_BUTTON_ALT": "Κλείσιμο",
+  "COLLAPSIBLE_GROUPING_TITLE": "Σκέφτομαι…",
+  "COLLAPSIBLE_GROUPING_TITLE.comment": "Αυτό εμφανίζεται όταν το bot συνθέτει μηνύματα απάντησης σε μια ομάδα, εάν δεν έχει δοθεί περίληψη.",
   "COLLAPSE_BUTTON_LESS": "Εμφάνιση λιγότερων",
   "COLLAPSE_BUTTON_LESS.comment": "Αυτό είναι το κείμενο ενός κουμπιού διασήμου για την σύμπτυξη της ομάδας μηνυμάτων. Όταν ο τελικός χρήστης κάνει κλικ στο κουμπί, η ομάδα μηνυμάτων συμπτύσσεται.",
   "COLLAPSE_BUTTON_MORE": "Εμφάνιση περισσότερων",
