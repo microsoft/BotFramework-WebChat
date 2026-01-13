@@ -29,7 +29,7 @@
   }
 }
 
-.activity-copy-button__copy-announcement {
+:global(.webchat) .activity-copy-button__copy-announcement {
   pointer-events: none;
 }
 
