@@ -1,5 +1,5 @@
 import transcript from './transcript';
 
 export default function linkDefinitions() {
-  return transcript().querySelectorAll('.webchat__link-definitions');
+  return transcript().querySelectorAll('.link-definitions');
 }

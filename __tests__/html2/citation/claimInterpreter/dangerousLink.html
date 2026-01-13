@@ -57,7 +57,7 @@
 
         await host.snapshot('local');
 
-        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownElement = pageElements.activities()[0].querySelector('.text-content__markdown');
         const markdownLinks = markdownElement.querySelectorAll('a');
 
         // The javascript: shouldn't be a link.
@@ -65,7 +65,7 @@
 
         expect(markdownLinks[0].getAttribute('href')).toBe('https://aka.ms/claim');
 
-        const claimInterpreterElement = pageElements.activities()[0].querySelector('.webchat__activity-status__originator');
+        const claimInterpreterElement = pageElements.activities()[0].querySelector('.activity-status__originator');
 
         expect(claimInterpreterElement).toHaveProperty('tagName', 'SPAN');
         expect(claimInterpreterElement).toHaveProperty('textContent', 'Surfaced with Azure OpenAI');

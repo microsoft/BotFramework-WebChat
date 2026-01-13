@@ -1,0 +1,209 @@
+:global(.webchat) .link-definitions {
+  .link-definitions__header {
+    align-items: center;
+    cursor: default;
+    display: flex;
+    font-family: var(--webchat__font--primary);
+    font-size: var(--webchat__font-size--small);
+    gap: 4px;
+    justify-content: space-between;
+    list-style: none;
+
+    @media (forced-colors: none) {
+      color: #616161; /* TODO: Should we use subtle color instead? */
+    }
+
+    /* TODO: Temporarily disable dark theme until chat history support dark theme. */
+    @media (forced-colors: none) and (not (forced-colors: none)) {
+      color: #616161; /* TODO: Add dark theme color. */
+    }
+  }
+
+  .link-definitions__header-section {
+    align-items: center;
+    display: flex;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .link-definitions__header-section--left {
+    flex-shrink: 0;
+  }
+
+  .link-definitions__header-text {
+    flex-shrink: 0;
+  }
+
+  .link-definitions__header::-webkit-details-marker {
+    display: none;
+  }
+
+  .link-definitions__header-chevron {
+    flex-shrink: 0;
+  }
+
+  &:not([open]) .link-definitions__header-chevron {
+    transform: rotate(-180deg);
+  }
+
+  .link-definitions__header-accessory {
+    overflow: hidden;
+  }
+
+  .link-definitions__message-sensitivity-label {
+    align-items: center;
+    display: flex;
+    gap: 4px;
+  }
+
+  .link-definitions__message-sensitivity-label-icon {
+    color: CanvasText;
+    flex-shrink: 0;
+  }
+
+  .link-definitions__message-sensitivity-label-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .link-definitions__list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 4px 0 0;
+    padding: 0;
+  }
+
+  .link-definitions__list-item {
+    display: flex; /* This prevents the <button> from overflowing. Unsure why "overflow: hidden" doesn't work. */
+    flex-direction: column;
+  }
+
+  .link-definitions__badge {
+    align-self: flex-start;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    flex-shrink: 0;
+    font-size: 75%;
+    margin: 4px;
+    max-width: 4em;
+    min-width: 1em;
+    overflow: hidden;
+    padding: 2px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (forced-colors: none) {
+      background-color: white;
+      border-color: #e0e0e0;
+      color: black;
+    }
+
+    /* TODO: Temporarily disable dark theme until chat history support dark theme. */
+    @media (forced-colors: none) and (not (forced-colors: none)) {
+      background-color: black;
+      border-color: #e0e0e0; /* TODO: Add dark theme color. */
+      color: white;
+    }
+
+    @media (forced-colors: active) {
+      border-color: buttonborder;
+    }
+  }
+
+  .link-definitions__list-item-box {
+    align-items: center;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+
+    @media (forced-colors: none) {
+      background-color: white;
+      border-color: #d1d1d1;
+    }
+
+    /* TODO: Temporarily disable dark theme until chat history support dark theme. */
+    @media (forced-colors: none) and (not (forced-colors: none)) {
+      background-color: black;
+      border-color: #d1d1d1; /* TODO: Add dark theme color. */
+    }
+
+    @media (forced-colors: active) {
+      background-color: canvas;
+      border-color: buttonborder;
+    }
+  }
+
+  .link-definitions__list-item-box--as-link {
+    display: block;
+    outline-offset: 0; /* This will make sure focus indicator is same as <button>. */
+    text-decoration: none;
+  }
+
+  .link-definitions__list-item-box--as-button {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    overflow: hidden;
+    padding: 0;
+    text-align: initial; /* By default, texts inside button are centered. */
+  }
+
+  .link-definitions__list-item-body {
+    align-items: center;
+    display: flex;
+    font-family: Calibri, 'Helvetica Neue', Arial, sans-serif;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .link-definitions__list-item-body-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  .link-definitions__list-item-main-text {
+    align-items: baseline;
+    display: flex;
+    gap: 4px;
+  }
+
+  .link-definitions__list-item-badge,
+  .link-definitions__list-item-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .link-definitions__list-item-text {
+    text-decoration: underline;
+
+    @media not (forced-colors: active) {
+      color: var(--webchat__color--accent);
+    }
+  }
+
+  .link-definitions__list-item-badge {
+    font-size: var(--webchat__font-size--small);
+
+    @media not (forced-colors: active) {
+      color: var(--webchat__color--subtle);
+    }
+  }
+
+  .link-definitions__open-in-new-window-icon {
+    flex-shrink: 0; /* When text is too long, make sure the chevron is not squeezed. */
+    padding-right: 4px; /* When text is too long and chevron is on far right, this will align the chevron so it's not too far. */
+
+    @media not (forced-colors: active) {
+      color: var(--webchat__color--accent);
+    }
+  }
+}

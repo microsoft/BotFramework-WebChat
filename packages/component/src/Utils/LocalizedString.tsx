@@ -31,16 +31,16 @@ const defaultDecorateLink = (href: string, textContent: string, linkOptions?: Li
     );
 
     // linkDefinition.identifier is uppercase, while linkDefinition.label is as-is.
-    linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
+    linkDefinition.label === textContent && classes.add('render-markdown__pure-identifier');
   }
 
   // For links that would be sanitized out, let's turn them into a button so we could handle them later.
   if (!allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
     decoration.asButton ??= true;
 
-    classes.add('webchat__render-markdown__citation');
+    classes.add('render-markdown__citation');
   } else if (protocol === 'http:' || protocol === 'https:') {
-    decoration.iconClassName = [decoration.iconClassName, 'webchat__render-markdown__external-link-icon']
+    decoration.iconClassName = [decoration.iconClassName, 'render-markdown__external-link-icon']
       .filter((className: string | undefined) => className)
       .join(' ');
 

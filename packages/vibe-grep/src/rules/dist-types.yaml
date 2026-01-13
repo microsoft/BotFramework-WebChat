@@ -1,0 +1,19 @@
+---
+# This rule checks that generated TypeScript declaration files do not 
+# contain any import or export statements that reference modules
+# under the '@msinternal/' namespace. Such imports/exports indicate
+# that the declarations were not processed by the dtsroll tool.
+
+id: no-msinternal
+language: TypeScript
+rule:
+  any:
+    - kind: import_statement
+      regex: "@msinternal\\/.*"
+    - kind: export_statement
+      regex: "@msinternal\\/.*"
+
+description: "Ensure no @msinternal/ specifiers remain in TypeScript declaration files"
+message: "Found @msinternal/ specifier. Ensure .d.ts files are compiled by dtsroll."
+severity: error
+args: [dist/*.d.*]

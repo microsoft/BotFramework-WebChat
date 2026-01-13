@@ -1,0 +1,45 @@
+:global(.webchat) .activity-copy-button {
+  overflow: clip;
+  position: relative;
+
+  @supports not (overflow: clip) {
+    overflow: hidden;
+  }
+
+  .activity-copy-button__copied-text {
+    align-items: center;
+    background-color: #fff;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    position: absolute;
+    visibility: hidden;
+    width: 100%;
+  }
+
+  &.activity-copy-button--copied {
+    .activity-copy-button__copied-text {
+      animation: webchat__activity-copy-button__copied-animation 0.7s linear;
+    }
+
+    .activity-button__icon,
+    .activity-button__text {
+      visibility: hidden;
+    }
+  }
+}
+
+:global(.webchat) .activity-copy-button__copy-announcement {
+  pointer-events: none;
+}
+
+@keyframes webchat__activity-copy-button__copied-animation {
+  0% {
+    /* This is set during the animation only hence shouldn't spill when hidden from the above tree */
+    visibility: visible;
+  }
+
+  100% {
+    visibility: unset;
+  }
+}

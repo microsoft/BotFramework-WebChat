@@ -52,7 +52,8 @@
     "packages/bundle",
     "packages/test/page-object",
     "packages/debug-theme",
-    "packages/fluent-theme"
+    "packages/fluent-theme",
+    "packages/vibe-grep"
   ],
   "scripts": {
     "audit-all": "find -name package-lock.json | xargs dirname | xargs -I {} sh -c 'cd {} && npm audit'",
@@ -172,7 +173,8 @@
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
-    "test": "jest"
+    "test": "jest",
+    "vg": "vg"
   },
   "pinDependencies": {
     "@testing-library/react": [
@@ -228,6 +230,7 @@
     "@babel/runtime": "^7.28.4",
     "@biomejs/biome": "^2.3.10",
     "@happy-dom/jest-environment": "^20.0.11",
+    "@msinternal/vibe-grep": "^0.0.0-0",
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^29.5.14",
     "@types/react": "^16.14.68",

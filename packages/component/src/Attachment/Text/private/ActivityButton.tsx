@@ -1,5 +1,6 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { forwardRef, memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import {
@@ -15,8 +16,9 @@ import {
   type InferInput
 } from 'valibot';
 
-import useStyleSet from '../../../hooks/useStyleSet';
 import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
+
+import styles from './ActivityButton.module.css';
 
 const activityButtonPropsSchema = pipe(
   object({
@@ -50,7 +52,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
     text
   } = validateProps(activityButtonPropsSchema, props);
 
-  const [{ activityButton }] = useStyleSet();
+  const classNames = useStyles(styles);
   const onClickRef = useRefFrom(onClick);
 
   const handleClick = useCallback(() => onClickRef.current?.(), [onClickRef]);
@@ -61,7 +63,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       aria-disabled={disabled ? 'true' : undefined}
       aria-expanded={ariaExpanded}
       aria-pressed={ariaPressed}
-      className={classNames(activityButton, 'webchat__activity-button', className)}
+      className={cx(classNames['activity-button'], className)}
       data-testid={dataTestId}
       onClick={disabled ? undefined : handleClick}
       ref={ref}
@@ -69,8 +71,8 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       tabIndex={disabled ? -1 : undefined}
       type="button"
     >
-      {icon && <ComponentIcon appearance="text" className="webchat__activity-button__icon" icon={icon} />}
-      {text && <span className="webchat__activity-button__text">{text}</span>}
+      {icon && <ComponentIcon appearance="text" className={classNames['activity-button__icon']} icon={icon} />}
+      {text && <span className="activity-button__text">{text}</span>}
       {children}
     </button>
   );

@@ -31,29 +31,29 @@
 
         const [firstActivityElement] = pageElements.activities();
 
-        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+        const linkDefinitions = firstActivityElement.querySelectorAll('.link-definitions__list-item');
 
         expect(linkDefinitions).toHaveProperty('length', 3);
 
-        expect(linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[0].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[0].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat');
 
-        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[1].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[1].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Laboris cupidatat voluptate');
-        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+        expect(linkDefinitions[1].querySelector('.link-definitions__list-item-badge')).toBeNull();
 
-        expect(linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[2].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[2].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Velit nulla culpa eu ea consectetur consectetur dolore velit');
 
         expect(
           [].map.call(
-            firstActivityElement.querySelectorAll('.webchat__link-definitions__badge'),
+            firstActivityElement.querySelectorAll('.link-definitions__badge'),
             ({ textContent }) => textContent
           )
         ).toEqual(['Abc', 'DEF', 'xyz']);

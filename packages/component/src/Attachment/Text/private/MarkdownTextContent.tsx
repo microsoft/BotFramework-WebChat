@@ -1,4 +1,5 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
@@ -7,7 +8,7 @@ import {
   type OrgSchemaClaim,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import classNames from 'classnames';
+import cx from 'classnames';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
@@ -19,7 +20,6 @@ import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/ind
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
-import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
 import ActivityCopyButton from './ActivityCopyButton';
@@ -29,6 +29,9 @@ import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './Me
 import isAIGeneratedActivity from './isAIGeneratedActivity';
 import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
+
+import citationModalStyles from './CitationModal.module.css';
+import textContentStyles from '../TextContent.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -76,14 +79,10 @@ function isCitingInline(claim: OrgSchemaClaim): claim is OrgSchemaClaim & {
 function MarkdownTextContent(props: MarkdownTextContentProps) {
   const { activity, children, markdown } = validateProps(markdownTextContentPropsSchema, props);
 
+  const citationModalClassNames = useStyles(citationModalStyles);
+  const textContentClassNames = useStyles(textContentStyles);
+
   const [{ feedbackActionsPlacement }] = useStyleOptions();
-  const [
-    {
-      citationModalDialog: citationModalDialogStyleSet,
-      renderMarkdown: renderMarkdownStyleSet,
-      textContent: textContentStyleSet
-    }
-  ] = useStyleSet();
   const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
@@ -112,10 +111,10 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     (title, text, altText) => {
       showModal(() => <CitationModalContext headerText={title} markdown={text} />, {
         'aria-label': altText || title || citationModalDialogLabel,
-        className: classNames('webchat__citation-modal-dialog', citationModalDialogStyleSet)
+        className: citationModalClassNames['citation-modal-dialog']
       });
     },
-    [citationModalDialogStyleSet, citationModalDialogLabel, showModal]
+    [citationModalClassNames, citationModalDialogLabel, showModal]
   );
 
   const sanitizeHref = useSanitizeHrefCallback();
@@ -283,11 +282,9 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.usageInfo?.description;
 
   return (
-    <div
-      className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
-    >
+    <div className={cx(textContentClassNames['text-content'], textContentClassNames['text-content--is-markdown'])}>
       <div
-        className={classNames('webchat__text-content__markdown', renderMarkdownStyleSet + '')}
+        className={cx(textContentClassNames['text-content__markdown'])}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
@@ -312,13 +309,13 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
           ))}
         </LinkDefinitions>
       )}
-      <div className="webchat__text-content__activity-actions">
+      <div className={textContentClassNames['text-content__activity-actions']}>
         {activity.type === 'message' &&
         isBasedOnSoftwareSourceCode(messageThing) &&
         messageThing.isBasedOn.text &&
         !messageThing.keywords?.includes?.('Collapsible') ? (
           <ActivityViewCodeButton
-            className="webchat__text-content__activity-view-code-button"
+            className="text-content__activity-view-code-button"
             code={messageThing.isBasedOn.text}
             isAIGenerated={isAIGeneratedActivity(activity)}
             language={messageThing.isBasedOn.programmingLanguage}
@@ -326,7 +323,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
           />
         ) : null}
         {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
-          <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
+          <ActivityCopyButton className="text-content__activity-copy-button" targetRef={contentRef} />
         ) : null}
         {activity.type === 'message' && feedbackActionsPlacement === 'activity-actions' && (
           <ActivityFeedback activity={activity} />

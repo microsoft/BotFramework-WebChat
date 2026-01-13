@@ -1,9 +1,13 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { type OrgSchemaProject } from 'botframework-webchat-core';
+import cx from 'classnames';
 import React, { memo } from 'react';
 import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useSanitizeHrefCallback from '../../hooks/internal/useSanitizeHrefCallback';
+
+import styles from '../ActivityStatus.module.css';
 
 const originatorPropsSchema = pipe(
   object({
@@ -33,6 +37,7 @@ const Originator = memo(function Originator(props: OriginatorProps) {
   } = validateProps(originatorPropsSchema, props);
 
   const sanitizeHref = useSanitizeHrefCallback();
+  const classNames = useStyles(styles);
 
   const { sanitizedHref } = sanitizeHref(url);
   const text = slogan || name;
@@ -41,7 +46,7 @@ const Originator = memo(function Originator(props: OriginatorProps) {
     // Link is sanitized.
     // eslint-disable-next-line react/forbid-elements
     <a
-      className="webchat__activity-status__originator webchat__activity-status__originator--has-link"
+      className={cx(classNames['activity-status__originator'], classNames['activity-status__originator--has-link'])}
       href={sanitizedHref}
       rel="noopener noreferrer"
       target="_blank"
@@ -49,7 +54,7 @@ const Originator = memo(function Originator(props: OriginatorProps) {
       {text}
     </a>
   ) : (
-    <span className="webchat__activity-status__originator">{text}</span>
+    <span className={classNames['activity-status__originator']}>{text}</span>
   );
 });
 

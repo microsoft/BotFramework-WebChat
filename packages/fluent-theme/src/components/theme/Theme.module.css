@@ -236,7 +236,7 @@
 :global(.webchat-fluent).theme :global(.send-box-attachment-bar.send-box-attachment-bar--as-list-item),
 :global(.webchat-fluent).theme :global(.text-area.text-area--scroll),
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
-:global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']),
+:global(.webchat-fluent).theme :global(.render-markdown [data-math-type='block']),
 :global(.webchat-fluent).theme :global(.view-code-dialog__body),
 :global(.webchat-fluent).theme :global(.view-code-dialog__code-body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
@@ -525,7 +525,7 @@
 }
 
 /* View Code dialog */
-:global(.webchat-fluent).theme :global(.webchat__modal-dialog.webchat__view-code-dialog) {
+:global(.webchat-fluent).theme :global(.webchat__modal-dialog.view-code-dialog) {
   :global(.webchat__modal-dialog__close-button-layout) {
     display: flex;
     padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
@@ -584,7 +584,7 @@
     line-height: var(--webchat-lineHeightBase100);
   }
 
-  :global(.webchat__view-code-dialog__link) {
+  :global(.view-code-dialog__link) {
     color: var(--webchat-colorBrandForegroundLink);
     text-decoration-color: transparent;
 
@@ -606,7 +606,7 @@
 }
 
 /* Activity button */
-:global(.webchat-fluent).theme :global(.webchat__activity-button) {
+:global(.webchat-fluent).theme :global(.activity-button) {
   background: var(--webchat-colorNeutralBackground1);
   border-radius: var(--webchat-borderRadiusMedium);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
@@ -638,7 +638,7 @@
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
 
-  :global(.webchat__activity-button__icon) {
+  :global(.activity-button__icon) {
     height: 20px;
     width: 20px;
 
@@ -647,27 +647,28 @@
 }
 
 /* Copy button */
-:global(.webchat-fluent).theme :global(.webchat__activity-copy-button) {
-  :global(.webchat__activity-copy-button__copied-text) {
+:global(.webchat-fluent).theme :global(.activity-copy-button) {
+  :global(.activity-copy-button__copied-text) {
     background-color: var(--webchat-colorNeutralBackground1);
   }
 
-  &:global(.webchat__activity-copy-button--copied) :global(.webchat__activity-copy-button__copied-text) {
+  &:global(.activity-copy-button--copied) :global(.activity-copy-button__copied-text) {
     animation-duration: var(--webchat-durationUltraSlow);
   }
 }
 
 /* Feedback button */
-:global(.webchat-fluent).theme :global(.webchat__thumb-button) {
-  :global(.webchat__thumb-button__image) {
+:global(.webchat-fluent).theme :global(.thumb-button),
+:global(.webchat-fluent).theme :global(.thumb-button.thumb-button--large) {
+  :global(.thumb-button__image) {
     color: var(--webchat-colorNeutralForeground1);
   }
 
-  &:has(:global(.webchat__thumb-button__input):focus-visible) {
+  &:has(:global(.thumb-button__input):focus-visible) {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 
-  &:has(:global(.webchat__thumb-button__input)[aria-disabled='true']) :global(.webchat__thumb-button__image) {
+  &:has(:global(.thumb-button__input)[aria-disabled='true']) :global(.thumb-button__image) {
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
 }

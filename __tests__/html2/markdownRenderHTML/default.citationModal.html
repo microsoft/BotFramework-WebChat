@@ -84,14 +84,14 @@
 
         const [firstActivityElement] = pageElements.activities();
 
-        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+        const linkDefinitions = firstActivityElement.querySelectorAll('.link-definitions__list-item');
 
         expect(linkDefinitions).toHaveProperty('length', 5);
 
         linkDefinitions[3].querySelector('button').click();
 
         const link = document.querySelector('dialog [href="http://example.com"]');
-        const linkImage = link.querySelector('.webchat__render-markdown__external-link-icon');
+        const linkImage = link.querySelector('.render-markdown__external-link-icon');
 
         expect(link.getAttribute('aria-label')).toBe('link in it Opens in a new window; external.');
         expect(link.getAttribute('target')).toBe('_blank');

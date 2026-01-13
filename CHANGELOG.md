@@ -313,7 +313,10 @@ Breaking changes in this release:
 - Bumped Chrome in Docker to 141 from 110, in PR [#5619](https://github.com/microsoft/BotFramework-WebChat/pull/5619), by [@compulim](https://github.com/compulim)
 - Bumped to [`valibot@1.2.0`](https://npmjs.com/package/valibot/v/1.2.0), in PR [#5650](https://github.com/microsoft/BotFramework-WebChat/pull/5650), by [@compulim](https://github.com/compulim)
 - Pinned to [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6), by [@OEvgeny](https://github.com/OEvgeny) in PR [#5662](https://github.com/microsoft/BotFramework-WebChat/pull/5662)
-- Converted remaining activity components to CSS Modules, in PR [#5668](https://github.com/microsoft/BotFramework-WebChat/pull/5668), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted activity components to CSS Modules
+   - Bubble, carousel, say-alt, in PR [#5668](https://github.com/microsoft/BotFramework-WebChat/pull/5668), by [@OEvgeny](https://github.com/OEvgeny)
+   - Activity status, in PR [#5669](https://github.com/microsoft/BotFramework-WebChat/pull/5669), by [@OEvgeny](https://github.com/OEvgeny)
+   - Text attachment and related components, in PR [#5670](https://github.com/microsoft/BotFramework-WebChat/pull/5670), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Deprecated
 

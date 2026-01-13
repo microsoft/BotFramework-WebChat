@@ -180,57 +180,57 @@
 
         const [firstActivityElement] = pageElements.activities();
 
-        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+        const linkDefinitions = firstActivityElement.querySelectorAll('.link-definitions__list-item');
 
         expect(linkDefinitions).toHaveProperty('length', 5);
 
-        expect(linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[0].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[0].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat');
         expect(
-          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-badge').getAttribute('title')
+          linkDefinitions[0].querySelector('.link-definitions__list-item-badge').getAttribute('title')
         ).toBe(
           'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat\n\nNisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.'
         );
 
-        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(linkDefinitions[1].querySelector('.link-definitions__list-item-box').tagName).toBe('A');
         expect(
-          linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[1].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Laboris cupidatat voluptate');
-        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+        expect(linkDefinitions[1].querySelector('.link-definitions__list-item-badge')).toBeNull();
 
-        expect(linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('BUTTON');
+        expect(linkDefinitions[2].querySelector('.link-definitions__list-item-box').tagName).toBe('BUTTON');
         expect(
-          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[2].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Velit nulla culpa eu ea consectetur consectetur dolore velit');
         expect(
-          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-badge').getAttribute('title')
+          linkDefinitions[2].querySelector('.link-definitions__list-item-badge').getAttribute('title')
         ).toBe('Velit exercitation');
 
-        expect(linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('BUTTON');
+        expect(linkDefinitions[3].querySelector('.link-definitions__list-item-box').tagName).toBe('BUTTON');
         expect(
-          linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+          linkDefinitions[3].querySelector('.link-definitions__list-item-text').getAttribute('title')
         ).toBe('Adipisicing enim nulla');
-        expect(linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+        expect(linkDefinitions[3].querySelector('.link-definitions__list-item-badge')).toBeNull();
 
-        expect(document.querySelector('.webchat__link-definitions__header-text')).toHaveProperty(
+        expect(document.querySelector('.link-definitions__header-text')).toHaveProperty(
           'textContent',
           '5 references'
         );
 
-        expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label-text')).toHaveProperty(
+        expect(document.querySelector('.link-definitions__message-sensitivity-label-text')).toHaveProperty(
           'textContent',
           'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat'
         );
 
-        expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label')).toHaveProperty(
+        expect(document.querySelector('.link-definitions__message-sensitivity-label')).toHaveProperty(
           'title',
           'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat\n\nNisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.'
         );
 
         expect(
-          document.querySelector('.webchat__link-definitions__message-sensitivity-label--is-encrypted')
+          document.querySelector('.link-definitions__message-sensitivity-label--is-encrypted')
         ).toBeTruthy();
       });
     </script>
