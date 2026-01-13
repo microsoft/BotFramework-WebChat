@@ -13,14 +13,14 @@ export function help() {
 ${description}
 
 Arguments:
-  <dev|prod>   Specify whether to bump devDependencies or dependencies.
+  <dev|peer|prod>   Specify whether to bump devDependencies, peerDependencies, or dependencies.
 `);
 }
 
 export default function run(mode) {
   mode = (mode || '').toLowerCase();
-  if (mode !== 'dev' && mode !== 'prod') {
-    console.error('Usage: vg bump <dev|prod>');
+  if (mode !== 'dev' && mode !== 'prod' && mode !== 'peer') {
+    help();
     process.exit(1);
   }
 
@@ -37,7 +37,7 @@ export default function run(mode) {
   const local = pkg.localDependencies && typeof pkg.localDependencies === 'object' ? pkg.localDependencies : {};
   const localNames = new Set(Object.keys(local));
 
-  const depField = mode === 'dev' ? 'devDependencies' : 'dependencies';
+  const depField = mode === 'dev' ? 'devDependencies' : mode === 'peer' ? 'peerDependencies' : 'dependencies';
   // eslint-disable-next-line security/detect-object-injection
   const deps = pkg[depField] && typeof pkg[depField] === 'object' ? pkg[depField] : {};
 
