@@ -41,6 +41,9 @@ import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
 import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
+import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
+import getVoiceActivityRole from './utils/voiceActivity/getVoiceActivityRole';
+import getVoiceActivityText from './utils/voiceActivity/getVoiceActivityText';
 
 export {
   isForbiddenPropertyName,
@@ -100,7 +103,10 @@ export {
   emitTypingIndicator,
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
+  getVoiceActivityRole,
+  getVoiceActivityText,
   isVoiceActivity,
+  isVoiceTranscriptActivity,
   markActivity,
   onErrorResumeNext,
   parseAction,

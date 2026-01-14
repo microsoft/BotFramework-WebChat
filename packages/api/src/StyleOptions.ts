@@ -998,6 +998,13 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   disableFileUpload?: boolean;
+  /**
+   * Indicates if microphone button should be shown in fluent theme sendbox.
+   *
+   * @default false
+   *
+   */
+  showMicrophoneButton?: boolean;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

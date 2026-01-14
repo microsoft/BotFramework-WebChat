@@ -57,6 +57,7 @@ export {
   useSendTypingIndicator,
   useSetNotification,
   useShouldSpeakIncomingActivity,
+  useSpeechToSpeech,
   useStartDictate,
   useStopDictate,
   useStyleOptions,
@@ -71,6 +72,7 @@ export {
   useUIState,
   useUserID,
   useUsername,
+  useVoiceActivities,
   useVoiceSelector
 } from 'botframework-webchat-api/hook';
 

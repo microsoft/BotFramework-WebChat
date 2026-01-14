@@ -317,7 +317,10 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   // Send box attachment bar
   sendBoxAttachmentBarMaxHeight: 114,
-  sendBoxAttachmentBarMaxThumbnail: 3
+  sendBoxAttachmentBarMaxThumbnail: 3,
+
+  // S2S options
+  showMicrophoneButton: false
 };
 
 export default DEFAULT_OPTIONS;

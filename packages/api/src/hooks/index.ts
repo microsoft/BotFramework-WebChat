@@ -57,6 +57,7 @@ import useSendTimeoutForActivity from './useSendTimeoutForActivity';
 import useSendTypingIndicator from './useSendTypingIndicator';
 import useSetNotification from './useSetNotification';
 import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
+import useSpeechToSpeech from './useSpeechToSpeech';
 import useStartDictate from './useStartDictate';
 import useStopDictate from './useStopDictate';
 import useStyleOptions from './useStyleOptions';
@@ -136,6 +137,7 @@ export {
   useSendTypingIndicator,
   useSetNotification,
   useShouldSpeakIncomingActivity,
+  useSpeechToSpeech,
   useStartDictate,
   useStopDictate,
   useStyleOptions,
@@ -149,6 +151,6 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceSelector,
-  useVoiceActivities
+  useVoiceActivities,
+  useVoiceSelector
 };

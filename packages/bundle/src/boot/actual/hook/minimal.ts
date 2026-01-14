@@ -74,6 +74,7 @@ export {
   useSetNotification,
   useShouldReduceMotion,
   useShouldSpeakIncomingActivity,
+  useSpeechToSpeech,
   useStartDictate,
   useStopDictate,
   useStyleOptions,
@@ -93,6 +94,7 @@ export {
   useUIState,
   useUserID,
   useUsername,
+  useVoiceActivities,
   useVoiceSelector,
   useWebSpeechPonyfill,
   type SendBoxFocusOptions

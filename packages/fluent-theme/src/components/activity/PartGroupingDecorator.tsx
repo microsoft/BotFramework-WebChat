@@ -7,6 +7,7 @@ import { array, custom, object, optional, pipe, readonly, safeParse } from 'vali
 import { useStyles, useVariantClassName } from '../../styles';
 
 import styles from './PartGroupingDecorator.module.css';
+import { getVoiceActivityRole } from 'botframework-webchat-core';
 
 const partGroupingDecoratorPropsSchema = pipe(
   object({
@@ -36,8 +37,10 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
     [activity, restActivities.length]
   );
 
-  const isFromUser = activity?.from?.role === 'user';
-  const isFromBot = activity?.from?.role === 'bot';
+  // S2S-both user and bot transcript comes from server (RT-LLM) hence need to check role explicitly.
+  const voiceActivityRole = activity && getVoiceActivityRole(activity);
+  const isFromUser = activity?.from?.role === 'user' || voiceActivityRole === 'user';
+  const isFromBot = activity?.from?.role === 'bot' || voiceActivityRole === 'bot';
 
   return (
     <div

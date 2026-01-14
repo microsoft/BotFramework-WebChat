@@ -37,13 +37,14 @@ const TextArea = forwardRef<
     placeholder?: string | undefined;
     startRows?: number | undefined;
     value?: string | undefined;
+    readOnly?: boolean | undefined;
   }>
 >((props, ref) => {
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const isInCompositionRef = useRef<boolean>(false);
 
-  const disabled = uiState === 'disabled';
+  const disabled = uiState === 'disabled' || props.readOnly;
 
   const handleCompositionEnd = useCallback(() => {
     isInCompositionRef.current = false;

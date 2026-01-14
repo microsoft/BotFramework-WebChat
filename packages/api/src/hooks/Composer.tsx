@@ -62,6 +62,7 @@ import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatus
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
+import { SpeechToSpeechComposer } from '../providers/SpeechToSpeech/SpeechToSpeechComposer';
 import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
@@ -599,7 +600,9 @@ const ComposerCore = ({
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                 <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
                   <PolymiddlewareComposer polymiddleware={polymiddleware}>
-                    {typeof children === 'function' ? children(context) : children}
+                    <SpeechToSpeechComposer>
+                      {typeof children === 'function' ? children(context) : children}
+                    </SpeechToSpeechComposer>
                   </PolymiddlewareComposer>
                 </GroupActivitiesComposer>
                 <ActivitySendStatusTelemetryComposer />

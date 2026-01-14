@@ -18,6 +18,11 @@ const createMockVoiceActivity = (name: string, voiceProps: Record<string, any>):
     voice: voiceProps
   });
 
+const createMockDtmfActivity = (name: string, dtmfProps: Record<string, any>): WebChatActivity =>
+  createMockActivity('event', name, {
+    dtmf: dtmfProps
+  });
+
 describe('isVoiceActivity', () => {
   describe('Valid voice activities', () => {
     test('should return true for event activity with voice', () => {
@@ -30,6 +35,22 @@ describe('isVoiceActivity', () => {
 
     test('should return true for voice activity with minimal voice', () => {
       const activity = createMockActivity('event', 'stream.chunk', { voice: {} });
+
+      const result = isVoiceActivity(activity);
+
+      expect(result).toBe(true);
+    });
+
+    test('should return true for event activity with dtmf', () => {
+      const activity = createMockDtmfActivity('dtmf.key', { digit: '1' });
+
+      const result = isVoiceActivity(activity);
+
+      expect(result).toBe(true);
+    });
+
+    test('should return true for dtmf activity with minimal dtmf', () => {
+      const activity = createMockActivity('event', 'dtmf.key', { dtmf: {} });
 
       const result = isVoiceActivity(activity);
 
@@ -103,6 +124,39 @@ describe('isVoiceActivity', () => {
 
     test.each(voiceScenarios)('should return true for $name', ({ eventName, voiceProps }) => {
       const activity = createMockVoiceActivity(eventName, voiceProps);
+
+      const result = isVoiceActivity(activity);
+
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('Real-world DTMF activity scenarios', () => {
+    const dtmfScenarios = [
+      {
+        name: 'dtmf.key with digit pressed',
+        eventName: 'dtmf.key',
+        dtmfProps: { digit: '1' }
+      },
+      {
+        name: 'dtmf.key with star key',
+        eventName: 'dtmf.key',
+        dtmfProps: { digit: '*' }
+      },
+      {
+        name: 'dtmf.key with hash key',
+        eventName: 'dtmf.key',
+        dtmfProps: { digit: '#' }
+      },
+      {
+        name: 'dtmf.sequence with multiple digits',
+        eventName: 'dtmf.sequence',
+        dtmfProps: { sequence: '12345' }
+      }
+    ];
+
+    test.each(dtmfScenarios)('should return true for $name', ({ eventName, dtmfProps }) => {
+      const activity = createMockDtmfActivity(eventName, dtmfProps);
 
       const result = isVoiceActivity(activity);
 

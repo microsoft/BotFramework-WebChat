@@ -31,6 +31,7 @@ import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBo
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
 import type { WebChatActivity } from '../types/WebChatActivity';
+import isVoiceActivity from '../utils/voiceActivity/isVoiceActivity';
 
 // After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
@@ -126,6 +127,14 @@ function* postActivity(
     //         So, we setup expectation first, then postActivity afterward
 
     const echoBackCall = call(function* () {
+      // Special handling for voice events - they don't echo back normally
+      // as we send them directly to socket and you dont get them back as incoming activity
+      // so we immediately return the outgoing activity with echoed true
+      if (isVoiceActivity(outgoingActivity as WebChatActivity)) {
+        echoed = true;
+        return outgoingActivity;
+      }
+
       for (;;) {
         const {
           payload: { activity }
