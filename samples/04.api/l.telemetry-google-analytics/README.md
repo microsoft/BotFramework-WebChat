@@ -28,7 +28,7 @@ Insert the following snippets to load Google Analytics SDK (gtag.js) on to the p
   <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
   <script>
     (async function() {
-      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
 +     window.dataLayer = window.dataLayer || [];
@@ -61,7 +61,7 @@ Add an event handler to receive telemetry measurements from Web Chat and log the
   <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
   <script>
     (async function() {
-      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
       window.dataLayer = window.dataLayer || [];
@@ -106,7 +106,7 @@ Events with multiple properties will be expanded into multiple events.
   <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
   <script>
     (async function() {
-      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
       window.dataLayer = window.dataLayer || [];
@@ -185,7 +185,7 @@ Record conversation ID, user ID, and Web Chat UI version into the metadata of me
       // Tokens are more secure. To learn about the differences between secrets and tokens
       // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
-      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
 -     const { token } = await res.json();
 +     const { conversationID, token, userID } = await res.json();
 +     const { content: webChatUIVersion } =
@@ -248,7 +248,7 @@ Here is the finished `index.html`:
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_IDD"></script>
     <script>
       (async function() {
-        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { conversationID, token, userID } = await res.json();
         const { content: webChatUIVersion } =
           document.querySelector('head meta[name="botframework-webchat:ui:version"]') || {};

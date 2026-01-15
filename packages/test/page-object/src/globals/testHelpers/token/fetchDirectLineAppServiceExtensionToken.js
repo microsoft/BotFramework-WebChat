@@ -1,6 +1,6 @@
 export default async function fetchDirectLineAppServiceExtensionToken() {
   const res = await fetch(
-    'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease',
+    'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directlinease',
     { method: 'POST' }
   );
 

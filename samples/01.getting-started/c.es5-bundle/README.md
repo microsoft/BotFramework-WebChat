@@ -100,7 +100,7 @@ Here is the finished `index.html`:
     <div id="webchat" role="main"></div>
     <script>
       window
-        .fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' })
+        .fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' })
         .then(function(res) {
           return res.json();
         })

@@ -31,7 +31,7 @@ This sample shows how to customize the activity status component through middlew
 First, create a middleware to render activity status. The middleware will render activity status based on its send state and timestamp grouping. If the send state returns as failed, developers can add custom retry logic to the app.
 
 ```diff
-  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
   const { ReactWebChat } = window.WebChat;
 
@@ -163,7 +163,7 @@ Here is the finished `index.html`:
     <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
 
-        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
 

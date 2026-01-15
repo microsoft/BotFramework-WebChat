@@ -100,7 +100,7 @@ When clicking on the button bar, the URL will be updated with a new retry value 
 First, call `renderWebChat` on initial page load and on every `hashchange` event. The `directLine` object will be memoized so it will not be recreated and reconnected on every call.
 
 ```diff
-  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
   const directLine = window.WebChat.createDirectLine({ token });
 
@@ -124,7 +124,7 @@ First, call `renderWebChat` on initial page load and on every `hashchange` event
 Then, read the `sendTimeout` value from `location.hash` and update Web Chat.
 
 ```diff
-  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
   const directLine = window.WebChat.createDirectLine({ token });
 
@@ -245,7 +245,7 @@ Here is the finished `index.html`:
     </p>
     <script>
       (async function() {
-        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const directLine = window.WebChat.createDirectLine({ token });
 
