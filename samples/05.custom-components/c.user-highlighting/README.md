@@ -142,7 +142,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
       (async function() {
         'use strict';
 
-        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
         const activityMiddleware = () => next => card => {

@@ -53,7 +53,7 @@ We will start by using subscription key to connect to the Direct Line Speech cha
 We are replacing the existing code by creating an adapter set using the new `createDirectLineSpeechAdapters` function. We will pass the adapter set to Web Chat using the [spread operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax).
 
 ```diff
-- const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+- const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
 - const { token } = await res.json();
 + const adapters = await window.WebChat.createDirectLineSpeechAdapters({
 +   fetchCredentials: {
