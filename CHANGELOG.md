@@ -384,7 +384,7 @@ Breaking changes in this release:
 - Fixed activity sorting introduced in PR [#5622](https://github.com/microsoft/BotFramework-WebChat/pull/5622), part grouping, and livestreaming, by [@compulim](https://github.com/compulim) in PR [#5635](https://github.com/microsoft/BotFramework-WebChat/pull/5635)
 - Fixed Content Security Policy documentation and sample in PR, by [@compulim](https://github.com/compulim) in PR [#5648](https://github.com/microsoft/BotFramework-WebChat/pull/5648)
    - Added `img-src data:`, required for icons
-- Downgraded graph upsert conflict checks, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+- Downgraded graph upsert conflict checks, by [@compulim](https://github.com/compulim) in PR [#5674](https://github.com/microsoft/BotFramework-WebChat/pull/5674)
 
 ## [4.18.0] - 2024-07-10
 
