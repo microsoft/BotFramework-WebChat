@@ -77,6 +77,15 @@
   }
 }
 
+/* Speech-to-speech variant: disable focus animations and pointer events on the main box. */
+:global(.webchat-fluent) .sendbox__sendbox.sendbox__sendbox--speech {
+  &::after,
+  &:focus-within::after {
+    display: none;
+  }
+}
+
+
 :global(.webchat-fluent) .sendbox__attachment-bar:global(.send-box-attachment-bar) {
   :global(.send-box-attachment-bar__box) {
     gap: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalXS);

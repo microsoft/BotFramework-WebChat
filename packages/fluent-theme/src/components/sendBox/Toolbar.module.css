@@ -46,6 +46,50 @@
     color: var(--webchat-colorNeutralForegroundDisabled);
     cursor: not-allowed;
   }
+
+  &.sendbox__toolbar-button--active {
+    --webchat__toolbar-button--pulse-start-size: 30px;
+    --webchat__toolbar-button--pulse-end-size: 58px;
+    --webchat__toolbar-button--pulse-opacity: 0.5;
+    --webchat__toolbar-button--background-gradient-opacity: 0.15;
+
+    background-color: var(--webchat-colorNeutralForeground2BrandSelected);
+    border-radius: 50%;
+    color: var(--webchat-colorNeutralBackground1);
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--webchat-colorNeutralBackground1);
+      }
+    }
+  }
+
+  &.sendbox__toolbar-button--with-pulse::before {
+    animation: toolbar-button__pulse 1s linear infinite alternate;
+    background-color: var(--webchat-colorNeutralForeground2BrandSelected);
+    border-radius: 50%;
+    content: '';
+    height: var(--webchat__toolbar-button--pulse-start-size);
+    opacity: var(--webchat__toolbar-button--pulse-opacity);
+    position: absolute;
+    width: var(--webchat__toolbar-button--pulse-start-size);
+  }
+
+  &.sendbox__toolbar-button--with-gradient::after {
+    background: linear-gradient(
+      90deg,
+      var(--webchat-colorBrandForeground1, #0078d4) 0%,
+      color-mix(in srgb, var(--webchat-colorBrandForeground1, #0078d4), #2db4ff) 33%,
+      color-mix(in srgb, var(--webchat-colorBrandForeground1, #0078d4), #d660ff) 66%,
+      color-mix(in srgb, var(--webchat-colorBrandForeground1, #0078d4), #fea874) 100%
+    );
+    border-radius: 50%;
+    content: '';
+    height: var(--webchat__toolbar-button--pulse-end-size);
+    opacity: var(--webchat__toolbar-button--background-gradient-opacity);
+    position: absolute;
+    width: var(--webchat__toolbar-button--pulse-end-size);
+  }
 }
 
 :global(.webchat-fluent) .sendbox__toolbar-separator {
@@ -57,5 +101,17 @@
   &:last-child,
   &:only-child {
     display: none;
+  }
+}
+
+@keyframes toolbar-button__pulse {
+  0% {
+    height: var(--webchat__toolbar-button--pulse-start-size);
+    width: var(--webchat__toolbar-button--pulse-start-size);
+  }
+
+  100% {
+    height: var(--webchat__toolbar-button--pulse-end-size);
+    width: var(--webchat__toolbar-button--pulse-end-size);
   }
 }

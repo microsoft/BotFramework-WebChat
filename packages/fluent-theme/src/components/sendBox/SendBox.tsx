@@ -4,6 +4,7 @@ import React, {
   memo,
   ReactNode,
   useCallback,
+  useMemo,
   useRef,
   useState,
   type FormEventHandler,
@@ -19,12 +20,14 @@ import { SuggestedActions } from '../suggestedActions';
 import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
 import ErrorMessage from './ErrorMessage';
+import useSpeechStateMessage from './private/useSpeechStateMessage';
 import useSubmitError from './private/useSubmitError';
 import useTranscriptNavigation from './private/useTranscriptNavigation';
 import useUniqueId from './private/useUniqueId';
 import styles from './SendBox.module.css';
 import TelephoneKeypadToolbarButton from './TelephoneKeypadToolbarButton';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
+import MicrophoneToolbarButton from './MicrophoneToolbarButton';
 
 const {
   useFocus,
@@ -35,7 +38,8 @@ const {
   useSendBoxValue,
   useSendMessage,
   useStyleOptions,
-  useUIState
+  useUIState,
+  usePostActivity
 } = hooks;
 
 const { AttachmentBar, TextArea } = Components;
@@ -48,7 +52,7 @@ type Props = Readonly<{
 }>;
 
 function SendBox(props: Props) {
-  const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength }] = useStyleOptions();
+  const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength, showMicrophoneButton }] = useStyleOptions();
   const [attachments, setAttachments] = useSendBoxAttachments();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
@@ -62,6 +66,8 @@ function SendBox(props: Props) {
   const makeThumbnail = useMakeThumbnail();
   const sendMessage = useSendMessage();
   const setFocus = useFocus();
+  const postActivity = usePostActivity();
+  const speechStateMessage = useSpeechStateMessage();
 
   const message = props.isPrimary ? globalMessage : localMessage;
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
@@ -69,8 +75,15 @@ function SendBox(props: Props) {
 
   const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
-  const shouldShowMessageLength =
-    !isBlueprint && !telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength);
+  const shouldShowMessageLength = useMemo(
+    () =>
+      !isBlueprint &&
+      !telephoneKeypadShown &&
+      !!maxMessageLength &&
+      isFinite(maxMessageLength) &&
+      !showMicrophoneButton,
+    [isBlueprint, telephoneKeypadShown, maxMessageLength, showMicrophoneButton]
+  );
   const shouldShowTelephoneKeypad = !isBlueprint && telephoneKeypadShown;
 
   useRegisterFocusSendBox(
@@ -171,9 +184,23 @@ function SendBox(props: Props) {
   );
 
   const handleTelephoneKeypadButtonClick = useCallback(
-    // TODO: We need more official way of sending DTMF.
-    (dtmf: DTMF) => sendMessage(`/DTMFKey ${dtmf}`),
-    [sendMessage]
+    (dtmf: DTMF) => {
+      if (showMicrophoneButton) {
+        postActivity({
+          type: 'event',
+          name: 'dtmf',
+          value: {
+            dtmf: {
+              value: dtmf
+            }
+          }
+        } as any);
+      } else {
+        // TODO: We need more official way of sending DTMF.
+        sendMessage(`/DTMFKey ${dtmf}`);
+      }
+    },
+    [postActivity, sendMessage, showMicrophoneButton]
   );
 
   const handleTranscriptNavigation = useTranscriptNavigation();
@@ -196,7 +223,9 @@ function SendBox(props: Props) {
     >
       <SuggestedActions />
       <div
-        className={cx(classNames['sendbox__sendbox'])}
+        className={cx(classNames['sendbox__sendbox'], {
+          [classNames['sendbox__sendbox--speech']]: showMicrophoneButton
+        })}
         onClickCapture={handleSendBoxClick}
         onKeyDown={handleTranscriptNavigation}
       >
@@ -207,7 +236,10 @@ function SendBox(props: Props) {
           data-testid={testIds.sendBoxTextBox}
           hidden={shouldShowTelephoneKeypad}
           onInput={handleMessageChange}
-          placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
+          placeholder={
+            props.placeholder ?? (showMicrophoneButton ? speechStateMessage : localize('TEXT_INPUT_PLACEHOLDER'))
+          }
+          readOnly={showMicrophoneButton}
           ref={inputRef}
           value={message}
         />
@@ -240,14 +272,17 @@ function SendBox(props: Props) {
             {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
             {!disableFileUpload && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
             <ToolbarSeparator />
-            <ToolbarButton
-              aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
-              data-testid={testIds.sendBoxSendButton}
-              disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad}
-              type="submit"
-            >
-              <FluentIcon appearance="text" icon="send" />
-            </ToolbarButton>
+            {showMicrophoneButton && <MicrophoneToolbarButton />}
+            {!showMicrophoneButton && (
+              <ToolbarButton
+                aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
+                data-testid={testIds.sendBoxSendButton}
+                disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad}
+                type="submit"
+              >
+                <FluentIcon appearance="text" icon="send" />
+              </ToolbarButton>
+            )}
           </Toolbar>
         </div>
         {!disableFileUpload && <DropZone onFilesAdded={handleAddFiles} />}
