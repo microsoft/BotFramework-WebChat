@@ -103,9 +103,8 @@ function createGroupedActivitiesReducer(
         } = action;
 
         // Not transcript voice does not render on UI and mostly fire and forget as we dont't have replay etc.
-        // hence we don't want to process and simply pass through.
+        // hence we don't want to process and simply pass through. update state in fulfilled as it will echo back quickly.
         if (isVoiceActivity(activity) && !isVoiceTranscriptActivity(activity)) {
-          state = upsert(ponyfill, state, activity);
           break;
         }
 

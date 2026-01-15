@@ -54,7 +54,7 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
           switch (voice.bot_state) {
             case 'voice.request.detected':
               stopAudio();
-              setSpeechState('listening');
+              setSpeechState('user_speaking');
               break;
 
             case 'voice.request.processing':

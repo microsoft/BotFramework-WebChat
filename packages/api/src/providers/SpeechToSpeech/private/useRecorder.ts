@@ -1,6 +1,16 @@
 import { useRef, useState, useCallback } from 'react';
 import usePonyfill from '../../Ponyfill/usePonyfill';
 
+/**
+ * AudioWorklet processor code for recording audio.
+ * This code runs in a separate AudioWorklet context with its own globals
+ * (AudioWorkletProcessor, registerProcessor, etc.)
+ *
+ * IMPORTANT: This must be a plain string template to avoid transpiling issues
+ * as those don't exist in the AudioWorklet context.
+ *
+ * CSP Compliant: check __tests__/html2/speechToSpeech/csp.recording.html for CSP compliance tests.
+ */
 const audioProcessorCode = `
   class AudioRecorderProcessor extends AudioWorkletProcessor {
     constructor(options) {
