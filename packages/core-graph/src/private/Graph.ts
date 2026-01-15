@@ -90,7 +90,9 @@ class Graph<TInput extends GraphNode, TOutput extends GraphNode = TInput> implem
               const id = node['@id'];
 
               if (upsertedNodes.has(id)) {
-                console.warn(`botframework-webchat: Should NOT upsert a node multiple times in a single transaction (@id = "${id}")`);
+                console.warn(
+                  `botframework-webchat: Should NOT upsert a node multiple times in a single transaction (@id = "${id}")`
+                );
               }
 
               upsertedNodes.set(id, node);
