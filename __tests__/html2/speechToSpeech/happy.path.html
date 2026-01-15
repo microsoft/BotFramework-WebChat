@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        // GIVEN: Web Chat with Speech-to-Speech enabled
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+              styleOptions={{
+                showMicrophoneButton: true
+              }}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButton).toBeTruthy();
+
+        // WHEN: User clicks microphone button to start recording
+        await host.click(micButton);
+
+        // THEN: Button should show recording state
+        await pageConditions.became(
+          'Microphone button changes to recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && (label.includes('Microphone on'));
+          },
+          1000
+        );
+
+        // THEN: Verify voice activities (audio chunks) are in voiceActivities store
+        await pageConditions.became(
+          'Audio chunks are being sent to voiceActivities store',
+          () => store.getState().voiceActivities && store.getState().voiceActivities.length > 0,
+          1000
+        );
+
+        // WHEN: Server detects speech start (barge-in)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'session.update',
+          value: {
+            voice: {
+              bot_state: 'voice.request.detected'
+            }
+          }
+        });
+
+
+        // WHEN: Server detects speech stop (processing)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'session.update',
+          value: {
+            voice: {
+              bot_state: 'voice.request.processing'
+            }
+          }
+        });
+
+        // WHEN: Server sends user transcript (this goes to activities with text)
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          value: {
+            voice: {
+              transcription: 'What is the weather today?',
+              origin: 'user'
+            }
+          }
+        });
+
+        // THEN: User transcript appears in chat
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'What is the weather today?'
+        );
+
+        // WHEN: Server sends audio chunks
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'stream.chunk',
+          value: {
+            voice: {
+              contentUrl: 'AAAAAA=='
+            }
+          }
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'stream.chunk',
+          from: { role: 'bot' },
+          value: {
+            voice: {
+              contentUrl: 'AAAAAA=='
+            }
+          }
+        });
+
+
+        // WHEN: Server sends bot transcript (this goes to activities with text)
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          value: {
+            voice: {
+              transcription: 'The weather today is sunny with a high of 75 degrees.',
+              origin: 'agent'
+            }
+          }
+        });
+
+
+        // THEN: Bot transcript appears in chat
+        await pageConditions.numActivitiesShown(2);
+        
+        const activities = pageElements.activityContents();
+        expect(activities[0]).toHaveProperty('textContent', 'What is the weather today?');
+        expect(activities[1]).toHaveProperty('textContent', 'The weather today is sunny with a high of 75 degrees.');
+
+        // WHEN: User stops recording by clicking microphone button again
+        await host.click(micButton);
+
+        // THEN: Button should change to not-recording state
+        await pageConditions.became(
+          'Microphone button changes to not-recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && (label.includes('Microphone off'));
+          },
+          1000
+        );
+
+      });
+    </script>
+  </body>
+</html>

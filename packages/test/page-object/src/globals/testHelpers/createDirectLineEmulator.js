@@ -42,6 +42,27 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   const postActivity = outgoingActivity => {
     const returnPostActivityWithResolvers = withResolvers();
 
+    // Auto-handle voice activities (continuous sending by mic) without requiring actPostActivity
+    // Voice activities are fire-and-forget and don't echo back
+    if (
+      outgoingActivity.type === 'event' &&
+      outgoingActivity.value &&
+      (outgoingActivity.value.voice || outgoingActivity.value.dtmf)
+    ) {
+      const id = uniqueId();
+
+      return new Observable(observer => {
+        (function () {
+          try {
+            observer.next(id);
+            observer.complete();
+          } catch (error) {
+            observer.error(error);
+          }
+        })();
+      });
+    }
+
     const deferred = postActivityCallDeferreds.shift();
 
     if (!deferred) {
@@ -149,6 +170,29 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
         (await became(
           'incoming activity appears in the store',
           () => store.getState().activities.find(activity => activity.id === id),
+          1000
+        ));
+    },
+    emulateIncomingVoiceActivity: async (activity, { skipWait } = {}) => {
+      activity = updateIn(activity, ['from', 'role'], role => role || 'bot');
+      activity = updateIn(activity, ['id'], id => id || uniqueId());
+      activity = updateIn(activity, ['timestamp'], timestamp =>
+        typeof timestamp === 'number'
+          ? new Date(now + timestamp).toISOString()
+          : 'timestamp' in activity
+            ? timestamp
+            : getTimestamp()
+      );
+      activity = updateIn(activity, ['type'], type => type || 'event');
+
+      const { id } = activity;
+
+      activityDeferredObservable.next(activity);
+
+      skipWait ||
+        (await became(
+          'incoming voice activity appears in the voiceActivities store',
+          () => store.getState().voiceActivities?.find(activity => activity.id === id),
           1000
         ));
     },

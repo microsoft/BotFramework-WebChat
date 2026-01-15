@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      Test: DTMF (Dual-Tone Multi-Frequency) Input
+      
+      This test validates DTMF keypad input during voice sessions:
+      1. User is in voice mode
+      2. User presses keypad digits (DTMF tones)
+      3. Server processes DTMF input
+      4. Bot responds accordingly
+    -->
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      setupMockMediaDevices();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+              styleOptions={{
+                disableFileUpload: true,
+                showMicrophoneButton: true,
+                hideTelephoneKeypadButton: false,
+              }}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // ===== STEP 1: Verify mic button and turn on =====
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButton).toBeTruthy();
+
+        // GIVEN: Recording is active
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording started',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone on'),
+          1000
+        );
+
+        // ===== STEP 2: Bot prompts for DTMF input =====
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          from: { role: 'bot' },
+          text: 'Please enter your 4-digit PIN using your keypad.',
+          value: {
+            voice: {
+              transcription: 'Please enter your 4-digit PIN using your keypad.',
+              origin: 'agent'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // ===== STEP 3: Click telephony keypad button =====
+        const keypadButton = document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadToolbarButton}"]`);
+        expect(keypadButton).toBeTruthy();
+        
+        await host.click(keypadButton);
+        
+        // Wait for keypad to open
+        await pageConditions.became(
+          'Keypad opened',
+          () => document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadButton1}"]`),
+          1000
+        );
+
+        // ===== STEP 4: Click 1, 2, 3, 4 on keypad =====
+        const key1 = document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadButton1}"]`);
+        const key2 = document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadButton2}"]`);
+        const key3 = document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadButton3}"]`);
+        const key4 = document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadButton4}"]`);
+        
+        expect(key1).toBeTruthy();
+        expect(key2).toBeTruthy();
+        expect(key3).toBeTruthy();
+        expect(key4).toBeTruthy();
+        
+        await host.click(key1);
+        await host.click(key2);
+        await host.click(key3);
+        await host.click(key4);
+
+        // ===== STEP 5: Verify DTMF activities in voice state =====
+        await pageConditions.became(
+          'DTMF events received',
+          () => {
+            const voiceActivities = store.getState().voiceActivities;
+            const dtmfEvents = voiceActivities?.filter(a => a.name === 'dtmf');
+            return dtmfEvents?.length >= 4;
+          },
+          1000
+        );
+
+        const voiceActivities = store.getState().voiceActivities;
+        const dtmfActivities = voiceActivities?.filter(a => a.name === 'dtmf');
+        expect(dtmfActivities.length).toBe(4);
+
+        await host.click(keypadButton);
+
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          value: {
+            voice: {
+              transcription: '/DTMFKey 1',
+              origin: 'user'
+            }
+          }
+        });
+        
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          value: {
+            voice: {
+              transcription: '/DTMFKey 2',
+              origin: 'user'
+            }
+          }
+        });
+        
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          value: {
+            voice: {
+              transcription: '/DTMFKey 3',
+              origin: 'user'
+            }
+          }
+        });
+        
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          value: {
+            voice: {
+              transcription: '/DTMFKey 4',
+              origin: 'user'
+            }
+          }
+        });
+
+        // ===== STEP 6: Verify user transcript with 4 incoming "/DTMFKey {1/2/3/4}" =====
+        await pageConditions.numActivitiesShown(5); // 1 bot prompt + 4 user DTMF
+        
+        const activities = pageElements.activityContents();
+        expect(activities[0]).toHaveProperty('textContent', 'Please enter your 4-digit PIN using your keypad.');
+        expect(activities[1]).toHaveProperty('textContent', '/DTMFKey 1');
+        expect(activities[2]).toHaveProperty('textContent', '/DTMFKey 2');
+        expect(activities[3]).toHaveProperty('textContent', '/DTMFKey 3');
+        expect(activities[4]).toHaveProperty('textContent', '/DTMFKey 4');
+
+        // ===== STEP 7: Bot responds =====
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          from: { role: 'bot' },
+          value: {
+            voice: {
+              transcription: 'Thank you. Your PIN has been verified.',
+              origin: 'agent'
+            }
+          }
+        });
+
+        // THEN: Bot message appears
+        await pageConditions.numActivitiesShown(6);
+        const finalActivities = pageElements.activityContents();
+        expect(finalActivities[5]).toHaveProperty('textContent', 'Thank you. Your PIN has been verified.');
+
+        await host.click(micButton);
+
+      });
+    </script>
+  </body>
+</html>

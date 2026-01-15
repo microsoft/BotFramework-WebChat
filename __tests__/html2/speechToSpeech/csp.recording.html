@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" nonce="TEST_PAGE_NONCE" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" nonce="TEST_PAGE_NONCE" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <!--
+      CSP Configuration for testing AudioWorklet with blob URLs
+      
+      Key requirements for AudioWorklet CSP compliance:
+      - connect-src blob: allows AudioWorklet.addModule() with blob URLs
+      
+      This test verifies that:
+      1. AudioWorklet can be loaded via blob URL under strict CSP
+      2. Recording functionality works with CSP enabled
+      3. No CSP violations occur during the recording flow
+
+      Note: 'unsafe-inline' is used for style-src to allow styles from Fluent package, however our testing focuses on and connect-src directives with blob: which is working fine here.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; base-uri 'none'; connect-src blob: https://directline.botframework.com wss://directline.botframework.com; img-src blob: data:; script-src 'strict-dynamic' 'nonce-TEST_PAGE_NONCE'; style-src 'unsafe-inline'; media-src blob: mediastream:"
+    />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script nonce="TEST_PAGE_NONCE" type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      
+      // Setup mock media devices before test starts
+      setupMockMediaDevices();
+    </script>
+    <script nonce="TEST_PAGE_NONCE" type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        // Track CSP violations
+        const cspViolations = [];
+        document.addEventListener('securitypolicyviolation', (e) => {
+          cspViolations.push({
+            violatedDirective: e.violatedDirective,
+            blockedURI: e.blockedURI,
+            originalPolicy: e.originalPolicy
+          });
+          console.error('CSP Violation:', e.violatedDirective, e.blockedURI);
+        });
+
+        // Verify CSP is active
+        const cspMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+        expect(cspMeta).toBeTruthy();
+        expect(cspMeta.content).toContain('connect-src blob:');
+
+        // GIVEN: Web Chat with Speech-to-Speech enabled and CSP headers
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+              styleOptions={{
+                showMicrophoneButton: true
+              }}
+              nonce="WEB_CHAT_NONCE"
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButton).toBeTruthy();
+
+        // WHEN: User clicks microphone button to start recording
+        // This triggers AudioWorklet initialization with blob URL
+        await host.click(micButton);
+
+        // THEN: Button should show recording state (AudioWorklet loaded successfully via blob URL)
+        await pageConditions.became(
+          'Microphone button changes to recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && label.includes('Microphone on');
+          },
+          1000
+        );
+
+        // THEN: Verify no CSP violations occurred during AudioWorklet loading
+        const blobViolations = cspViolations.filter(v => 
+          v.blockedURI.startsWith('blob:') && v.violatedDirective.includes('connect-src')
+        );
+        expect(blobViolations.length).toBe(0);
+
+        // THEN: Verify audio chunks are being captured (AudioWorklet is functioning)
+        await pageConditions.became(
+          'Audio chunks are being sent to voiceActivities store',
+          () => store.getState().voiceActivities && store.getState().voiceActivities.length > 0,
+          1000
+        );
+
+        // WHEN: User stops recording
+        await host.click(micButton);
+
+        // THEN: Button should change to not-recording state
+        await pageConditions.became(
+          'Microphone button changes to not-recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && label.includes('Microphone off');
+          },
+          1000
+        );
+
+        // Final verification: No blob-related CSP violations
+        const finalBlobViolations = cspViolations.filter(v => 
+          v.blockedURI.startsWith('blob:')
+        );
+        
+        if (finalBlobViolations.length > 0) {
+          console.error('CSP blob violations detected:', finalBlobViolations);
+        }
+        
+        expect(finalBlobViolations.length).toBe(0);
+
+      });
+    </script>
+  </body>
+</html>

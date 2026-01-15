@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      Test: Barge-in scenario with full state cycle
+      
+      Flow:
+      1. User starts recording → "Listening..."
+      2. Bot sends audio chunks → "Talk to interrupt..." (bot speaking)
+      3. User barges in (server detects) → "Listening..." (user speaking)
+      4. Server processes → "Processing..."
+      5. Bot responds with new audio → "Talk to interrupt..." (bot speaking again)
+      6. User toggles mic off
+    -->
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+              styleOptions={{
+                showMicrophoneButton: true
+              }}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        const textArea = document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`);
+        expect(micButton).toBeTruthy();
+        expect(textArea).toBeTruthy();
+
+        // Start recording
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording started',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone on'),
+          1000
+        );
+
+        // VERIFY: State is "listening"
+        await pageConditions.became(
+          'State: listening → Placeholder: "Listening..."',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          2000
+        );
+
+        // Bot starts speaking (sends audio chunks)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'stream.chunk',
+          from: { role: 'bot' },
+          value: { voice: { contentUrl: 'AAAAAA==' } }
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'stream.chunk',
+          from: { role: 'bot' },
+          value: { voice: { contentUrl: 'AAAAAA==' } }
+        });
+
+        // VERIFY: State is "bot_speaking" (isPlaying = true)
+        await pageConditions.became(
+          'State: bot_speaking → Placeholder: "Talk to interrupt..."',
+          () => textArea.getAttribute('placeholder') === 'Talk to interrupt...',
+          1000
+        );
+
+        // User barges in (server detects user speech)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'session.update',
+          from: { role: 'bot' },
+          value: { voice: { bot_state: 'voice.request.detected' } }
+        });
+
+        // VERIFY: State changes to "user_speaking" - bot audio stopped
+        await pageConditions.became(
+          'State: user_speaking → Placeholder: "Listening…" (barge-in worked)',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          1000
+        );
+
+        // Server processes the user's interrupted request
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'session.update',
+          from: { role: 'bot' },
+          value: { voice: { bot_state: 'voice.request.processing' } }
+        });
+
+        // VERIFY: State is "processing"
+        await pageConditions.became(
+          'State: processing → Placeholder: "Processing…"',
+          () => textArea.getAttribute('placeholder') === 'Processing...',
+          1000
+        );
+
+        // User transcript arrives
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          from: { role: 'bot' },
+          text: 'Stop! Change my destination.',
+          value: { voice: { transcription: 'Stop! Change my destination.', origin: 'user' } }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // Bot responds with new audio
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'stream.chunk',
+          from: { role: 'bot' },
+          value: { voice: { contentUrl: 'AAAAAA==' } }
+        });
+
+        // VERIFY: State is "bot_speaking" again
+        await pageConditions.became(
+          'State: bot_speaking → Placeholder: "Talk to interrupt..." (bot responding)',
+          () => textArea.getAttribute('placeholder') === 'Talk to interrupt...',
+          1000
+        );
+
+        // Bot transcript arrives
+        await directLine.emulateIncomingActivity({
+          type: 'event',
+          name: 'stream.end',
+          from: { role: 'bot' },
+          text: 'Sure, where would you like to go instead?',
+          value: { voice: { transcription: 'Sure, where would you like to go instead?', origin: 'agent' } }
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // Verify both messages appear
+        const activities = pageElements.activityContents();
+        expect(activities[0]).toHaveProperty('textContent', 'Stop! Change my destination.');
+        expect(activities[1]).toHaveProperty('textContent', 'Sure, where would you like to go instead?');
+
+        // Toggle mic off
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording stopped',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone off'),
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>
