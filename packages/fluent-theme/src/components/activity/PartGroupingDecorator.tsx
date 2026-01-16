@@ -38,9 +38,10 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
   );
 
   // S2S-both user and bot transcript comes from server (RT-LLM) hence need to check role explicitly.
+  // voiceActivityRole takes precedence over from.role since S2S activities always come from 'bot'
   const voiceActivityRole = activity && getVoiceActivityRole(activity);
-  const isFromUser = activity?.from?.role === 'user' || voiceActivityRole === 'user';
-  const isFromBot = activity?.from?.role === 'bot' || voiceActivityRole === 'bot';
+  const isFromUser = voiceActivityRole ? voiceActivityRole === 'user' : activity?.from?.role === 'user';
+  const isFromBot = voiceActivityRole ? voiceActivityRole === 'bot' : activity?.from?.role === 'bot';
 
   return (
     <div

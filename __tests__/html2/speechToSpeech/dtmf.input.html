@@ -104,6 +104,9 @@
         expect(key2).toBeTruthy();
         expect(key3).toBeTruthy();
         expect(key4).toBeTruthy();
+
+        // THEN: Should show keypad open
+        await host.snapshot('local');
         
         await host.click(key1);
         await host.click(key2);
@@ -198,6 +201,10 @@
         await pageConditions.numActivitiesShown(6);
         const finalActivities = pageElements.activityContents();
         expect(finalActivities[5]).toHaveProperty('textContent', 'Thank you. Your PIN has been verified.');
+
+        // THEN: Should show DTMF conversation
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
 
         await host.click(micButton);
 

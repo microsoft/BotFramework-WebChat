@@ -73,6 +73,12 @@
           1000
         );
 
+        // VERIFY: Mic button shows microphone icon and is active (but no pulse in listening state)
+        const micIcon = micButton.querySelector('[class*="icon--"]');
+        expect(micIcon.className).toMatch(/icon--microphone/);
+        expect(micButton.className).toMatch(/active/);
+        expect(micButton.className).not.toMatch(/with-pulse/);
+
         // ===== TURN 1: User speaks =====
         // User speech detected
         await directLine.emulateIncomingVoiceActivity({
@@ -88,6 +94,10 @@
           () => textArea.getAttribute('placeholder') === 'Listening...',
           1000
         );
+
+        // VERIFY: Mic button has pulse AND gradient during user speaking
+        expect(micButton.className).toMatch(/with-pulse/);
+        expect(micButton.className).toMatch(/with-gradient/);
 
         // User speech processing
         await directLine.emulateIncomingVoiceActivity({
@@ -140,6 +150,11 @@
           () => textArea.getAttribute('placeholder') === 'Talk to interrupt...',
           1000
         );
+
+        // VERIFY: Mic button shows audio-playing icon with pulse animation during bot speaking
+        expect(micButton.querySelector('[class*="icon--"]').className).toMatch(/icon--audio-playing/);
+        expect(micButton.className).toMatch(/with-pulse/);
+        expect(micButton.className).not.toMatch(/with-gradient/);
 
         // Bot transcript appears
         await directLine.emulateIncomingActivity({
@@ -246,6 +261,13 @@
           value: { voice: { bot_state: 'voice.request.detected' } }
         });
 
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'session.update',
+          from: { role: 'bot' },
+          value: { voice: { bot_state: 'voice.request.processing' } }
+        });
+
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
@@ -274,6 +296,7 @@
           value: { voice: { contentUrl: 'AAAAAA==' } }
         });
 
+        console.log(textArea.getAttribute('placeholder'));
         // Verify: State is "bot_speaking"
         await pageConditions.became(
           'State: bot_speaking (Turn 3)',
@@ -311,6 +334,10 @@
           () => micButton.getAttribute('aria-label')?.includes('Microphone off'),
           1000
         );
+
+        // THEN: Should show multi-turn conversation
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
       });
     </script>
   </body>

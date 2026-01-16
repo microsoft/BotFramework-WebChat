@@ -104,7 +104,7 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
       handleVoiceActivity(activity);
     }
 
-    if (isPlaying && speechState !== 'bot_speaking') {
+    if (isPlaying && speechState !== 'bot_speaking' && speechState !== 'user_speaking') {
       setSpeechState('bot_speaking');
     } else if (!isPlaying && speechState === 'bot_speaking') {
       setSpeechState('listening');

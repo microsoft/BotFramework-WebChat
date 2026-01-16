@@ -55,6 +55,9 @@
         // THEN: Send button should NOT be present
         const sendButton = document.querySelector(`[data-testid="${testIds.sendBoxSendButton}"]`);
         expect(sendButton).toBeFalsy();
+
+        // THEN: Should show sendbox with microphone and keypad buttons
+        await host.snapshot('local');
       });
     </script>
   </body>

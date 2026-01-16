@@ -98,6 +98,9 @@
           1000
         );
 
+        // VERIFY: Mic button has pulse animation during bot speaking
+        expect(micButton.className).toMatch(/with-pulse/);
+
         // User barges in (server detects user speech)
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
@@ -112,6 +115,9 @@
           () => textArea.getAttribute('placeholder') === 'Listening...',
           1000
         );
+
+        // VERIFY: Mic button still has pulse animation during user speaking
+        expect(micButton.className).toMatch(/with-pulse/);
 
         // Server processes the user's interrupted request
         await directLine.emulateIncomingVoiceActivity({

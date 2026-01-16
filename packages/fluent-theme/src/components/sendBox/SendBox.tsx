@@ -39,7 +39,8 @@ const {
   useSendMessage,
   useStyleOptions,
   useUIState,
-  usePostActivity
+  usePostActivity,
+  useSpeechToSpeech
 } = hooks;
 
 const { AttachmentBar, TextArea } = Components;
@@ -68,6 +69,7 @@ function SendBox(props: Props) {
   const setFocus = useFocus();
   const postActivity = usePostActivity();
   const speechStateMessage = useSpeechStateMessage();
+  const [{ recording }] = useSpeechToSpeech();
 
   const message = props.isPrimary ? globalMessage : localMessage;
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
@@ -185,7 +187,7 @@ function SendBox(props: Props) {
 
   const handleTelephoneKeypadButtonClick = useCallback(
     (dtmf: DTMF) => {
-      if (showMicrophoneButton) {
+      if (recording) {
         postActivity({
           type: 'event',
           name: 'dtmf',
@@ -200,7 +202,7 @@ function SendBox(props: Props) {
         sendMessage(`/DTMFKey ${dtmf}`);
       }
     },
-    [postActivity, sendMessage, showMicrophoneButton]
+    [postActivity, recording, sendMessage]
   );
 
   const handleTranscriptNavigation = useTranscriptNavigation();

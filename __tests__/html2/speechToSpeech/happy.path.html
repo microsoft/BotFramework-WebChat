@@ -110,6 +110,10 @@
           'What is the weather today?'
         );
 
+        // THEN: Should show user message
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+
         // WHEN: Server sends audio chunks
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
@@ -165,6 +169,10 @@
           },
           1000
         );
+
+        // THEN: Should show happy path conversation
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
 
       });
     </script>
