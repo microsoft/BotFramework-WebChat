@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { expect, jest } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import Graph from './Graph';
 import './schemas/private/expectExtendValibot';
@@ -36,24 +36,26 @@ scenario('Graph.upsert()', bdd => {
     );
 
   bdd
-    .given(
-      'a Graph object',
-      () => new Graph<{ readonly '@id': Identifier; readonly name: string }>(() => () => request => request)
-    )
-    .when('act().upsert() is called twice with node of same @id', graph => {
-      try {
-        graph.act(graph => graph.upsert({ '@id': '_:b1', name: 'John Doe' }, { '@id': '_:b1', name: 'Mary Doe' }));
-      } catch (error) {
-        return error;
-      }
+    .given('a Graph object', () => ({
+      graph: new Graph<{ readonly '@id': Identifier; readonly name: string }>(() => () => request => request)
+    }))
+    .and(
+      'spying console.warn()',
+      precondition => {
+        const warn = jest.spyOn(console, 'warn');
 
-      return undefined;
+        return { ...precondition, warn };
+      },
+      ({ warn }) => {
+        warn.mockRestore();
+      }
+    )
+    .when('act().upsert() is called twice with node of same @id', ({ graph }) => {
+      graph.act(graph => graph.upsert({ '@id': '_:b1', name: 'John Doe' }, { '@id': '_:b1', name: 'Mary Doe' }));
     })
-    .then('should throw', (_, error) => {
-      expect(() => {
-        if (error) {
-          throw error;
-        }
-      }).toThrow('Cannot upsert a node multiple times in a single transaction (@id = "_:b1")');
+    .then('should throw', ({ warn }) => {
+      expect(warn).toHaveBeenCalledWith(
+        'botframework-webchat: Should NOT upsert a node multiple times in a single transaction (@id = "_:b1")'
+      );
     });
 });

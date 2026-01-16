@@ -335,7 +335,7 @@ When the bot send an event activity with the name `passwordInput`, show the `<Pa
           );
         };
 
-        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const store = createStore();
         const activityMiddleware = () => next => ({ activity, nextVisibleActivity, ...otherArgs }) => {
