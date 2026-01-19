@@ -1,4 +1,4 @@
-:is(.webchat-fluent .sendbox.variant-copilot, .webchat-fluent .sendbox.wKGyPWW_variant-copilot-deprecated) .sendbox__text-counter:not(.sendbox__text-counter--error) {
+:is(.webchat-fluent .sendbox.wKGyPWW_variant-copilot-deprecated) .sendbox__text-counter:not(.sendbox__text-counter--error) {
   visibility: hidden;
 }
 .webchat-fluent .activity-loader.wKGyPWW_variant-copilot-deprecated {
