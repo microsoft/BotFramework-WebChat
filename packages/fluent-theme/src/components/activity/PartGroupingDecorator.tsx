@@ -11,8 +11,8 @@ import styles from './PartGroupingDecorator.module.css';
 const partGroupingDecoratorPropsSchema = pipe(
   object({
     activities: pipe(array(custom<WebChatActivity>(value => safeParse(object({}), value).success)), readonly()),
-    header: optional(reactNode()),
-    children: optional(reactNode())
+    children: optional(reactNode()),
+    header: optional(reactNode())
   }),
   readonly()
 );
