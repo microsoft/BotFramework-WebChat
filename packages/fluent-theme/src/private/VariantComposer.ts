@@ -1,13 +1,17 @@
 import { createContext } from 'react';
 
-import { literal, union, type InferOutput } from 'valibot';
+import { custom, type InferOutput } from 'valibot';
 import createComposer from './createComposer';
 
-const variantNameSchema = union([literal(''), literal('copilot'), literal('fluent')]);
+const supportedVariants = ['', 'copilot', 'fluent'] as const;
 
-type VariantName = InferOutput<typeof variantNameSchema>;
+const variantNameSchema = custom<'' | 'fluent' | 'copilot' | `${string} ${string}`>(
+  value =>
+    typeof value === 'string' &&
+    (supportedVariants.includes(value as (typeof supportedVariants)[number]) || /\s+/u.test(value as string))
+);
 
-export type VariantList = `${VariantName}`;
+export type VariantList = InferOutput<typeof variantNameSchema>;
 
 export type VariantContextType = {
   variant: VariantList;

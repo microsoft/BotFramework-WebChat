@@ -1,0 +1,135 @@
+:is(.webchat-fluent .sendbox.variant-copilot, .webchat-fluent .sendbox.wKGyPWW_variant-copilot-deprecated) .sendbox__text-counter:not(.sendbox__text-counter--error) {
+  visibility: hidden;
+}
+.webchat-fluent .activity-loader.wKGyPWW_variant-copilot-deprecated {
+  margin: var(--webchat-spacingVerticalXS) 0 var(--webchat-spacingVerticalXS) -10px;
+}
+
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated {
+  --webchat-part-grouping__message-status--space-block: var(--webchat-spacingVerticalNone);
+  position: relative;
+}
+
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated .part-grouping-decorator__header {
+  padding-block: var(--webchat-spacingVerticalS);
+}
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated.part-grouping-decorator--from-bot:has(.part-grouping-decorator__header) + .part-grouping-decorator--from-bot:has(.part-grouping-decorator__header) .part-grouping-decorator__header {
+  display: none;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--group {
+  --webchat-part-grouping__message-status--space-block: var(--webchat-spacingVerticalXS);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot {
+  --webchat-part-grouping__bubble--background-color: transparent;
+  --webchat-part-grouping__bubble--border-radius: var(--webchat-borderRadius2XLarge);
+  --webchat-part-grouping__bubble--space-block: var(--webchat-spacingVerticalNone);
+  --webchat-part-grouping__bubble--space-inline: var(--webchat-spacingHorizontalNone);
+  --webchat-part-grouping__bubble--max-width: 100%;
+  --webchat-part-grouping__bubble--min-height: 20px;
+  --webchat-part-grouping__code-block--space-inline: var(--webchat-spacingHorizontalNone);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .activity-status {
+  margin: 0 0 var(--webchat-spacingHorizontalXXS);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .stacked-layout__status {
+  order: -1;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated):has(.bubble--from-user) .bubble {
+  margin-block-end: var(--webchat-spacingVerticalM);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated):has(.bubble.bubble--from-user),
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated):has(.pre-chat-message-activity),
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated):has(.liner-message-activity) {
+  padding-inline-start: var(--webchat-spacingHorizontalNone);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .bubble .text-content .text-content__generated-badge {
+  display: none;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .stacked-layout:has(.collapsible-grouping) {
+  margin-inline: var(--webchat-spacingHorizontalNone);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .collapsible-grouping__content {
+  anchor-name: --webchat-flair;
+  background: var(--webchat-colorNeutralBackground1);
+  border-radius: var(--webchat-borderRadius2XLarge);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .stacked-layout .stacked-layout__message-status {
+  margin-inline: var(--webchat-spacingHorizontalNone) var(--webchat-spacingHorizontalS);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated) .border-flair {
+  border-radius: var(--webchat-borderRadius2XLarge);
+  inset: anchor(top) anchor(right) anchor(bottom) anchor(left);
+  position-anchor: --webchat-flair;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot {
+  margin-inline-end: var(--webchat-spacingHorizontalXXL);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot .stacked-layout {
+  margin: 0;
+  position: static;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot .bubble {
+  width: var(--webchat-part-grouping__bubble--max-width);
+  position: static;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot:not(.part-grouping-decorator--group) .bubble__content {
+  gap: var(--webchat-spacingVerticalS);
+  flex-direction: column;
+  display: flex;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot .bubble .collapsible-content .collapsible-content__content {
+  margin-block: var(--webchat-spacingVerticalNone);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot .bubble .collapsible-content .collapsible-content__content .stacked-layout__attachment-list {
+  margin-block-start: var(--webchat-spacingVerticalS);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot .bubble .collapsible-content .collapsible-content__content .stacked-layout__attachment {
+  max-width: var(--webchat-part-grouping__bubble--max-width);
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated).part-grouping-decorator--from-bot .stacked-layout__status {
+  display: none;
+}
+:is(.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated):not(.part-grouping-decorator--group) .bubble:not(.bubble--from-user) .bubble__content {
+  anchor-name: --webchat-flair;
+  max-width: unset;
+}
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated {
+  padding-inline-start: var(--webchat-spacingHorizontalMNudge);
+}
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated .collapsible-grouping {
+  margin-inline-end: var(--webchat-spacingHorizontalXXL);
+}
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated.part-grouping-decorator--from-bot .bubble__content {
+  box-sizing: content-box;
+  margin-block: calc(var(--webchat-spacingVerticalS) * -1);
+  margin-inline: calc(var(--webchat-spacingHorizontalS) * -1);
+  padding-block: var(--webchat-spacingVerticalS);
+  padding-inline: var(--webchat-spacingHorizontalS);
+}
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated .stacked-layout .transcript-focus-area__activity-list {
+  --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalL);
+}
+.webchat-fluent .part-grouping-decorator.wKGyPWW_variant-copilot-deprecated .bubble:not(.bubble--from-user):after {
+  margin-block: var(--webchat-spacingVerticalXS);
+  outline-offset: 5px;
+  --webchat-part-grouping__bubble--border-radius: calc(var(--webchat-borderRadius2XLarge) - 8px);
+}
+.webchat-fluent.theme.wKGyPWW_variant-copilot-deprecated .webchat__css-custom-properties {
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalXL) var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalMNudge);
+}
+.webchat-fluent.theme.wKGyPWW_variant-copilot-deprecated .webchat__surface {
+  box-sizing: border-box;
+  padding-inline-start: var(--webchat-spacingHorizontalMNudge);
+}
+.webchat-fluent.theme.wKGyPWW_variant-copilot-deprecated .transcript-focus-area {
+  --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
+}
+.webchat-fluent.theme.wKGyPWW_variant-copilot-deprecated .webchat__basic-transcript .webchat__basic-transcript__scrollable {
+  scrollbar-gutter: stable;
+}
+.webchat-fluent.theme.wKGyPWW_variant-copilot-deprecated .transcript-focus-area:focus-visible .transcript-focus-area__content--focused .collapsible-grouping:after {
+  inset: -2px -4px;
+}
+.webchat-fluent.theme.wKGyPWW_variant-copilot-deprecated .webchat__basic-transcript .webchat__basic-transcript__filler {
+  flex-grow: 0;
+}

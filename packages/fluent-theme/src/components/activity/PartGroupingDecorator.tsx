@@ -11,6 +11,7 @@ import styles from './PartGroupingDecorator.module.css';
 const partGroupingDecoratorPropsSchema = pipe(
   object({
     activities: pipe(array(custom<WebChatActivity>(value => safeParse(object({}), value).success)), readonly()),
+    header: optional(reactNode()),
     children: optional(reactNode())
   }),
   readonly()
@@ -24,7 +25,8 @@ type PartGroupingDecoratorProps = {
 
 function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
   const {
-    activities: [activity, ...restActivities]
+    activities: [activity, ...restActivities],
+    header
   } = validateProps(partGroupingDecoratorPropsSchema, props);
 
   const classNames = useStyles(styles);
@@ -51,6 +53,7 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
         variantClassName
       )}
     >
+      {header}
       <PartGrouping {...props} />
     </div>
   );
