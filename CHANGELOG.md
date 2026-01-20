@@ -149,6 +149,7 @@ Breaking changes in this release:
    - Breakpoint: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.breakpoint.incomingActivity`
 - The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Added `npm run build-browser` script for building test harness package only, in PR [#5667](https://github.com/microsoft/BotFramework-WebChat/pull/5667), by [@compulim](https://github.com/compulim)
+- Added Speech-to-Speech (S2S) support for real-time voice conversations, in PR [#5654](https://github.com/microsoft/BotFramework-WebChat/pull/5654), by [@pranavjoshi](https://github.com/pranavjoshi001)
 
 ### Changed
 
