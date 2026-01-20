@@ -2,7 +2,7 @@ import isVoiceActivity from './isVoiceActivity';
 import { WebChatActivity } from '../../types/WebChatActivity';
 
 // Mock activity factory for testing
-const createMockActivity = (type: string = 'event', name?: string, value?: any): WebChatActivity => ({
+const createMockActivity = (type: string = 'event', name?: string, payload?: any): WebChatActivity => ({
   type: type as any,
   id: 'test-activity-id',
   from: { id: 'test-user' },
@@ -10,7 +10,7 @@ const createMockActivity = (type: string = 'event', name?: string, value?: any):
     'webchat:sequence-id': 1
   },
   ...(name && { name }),
-  ...(value && { value })
+  ...(payload && { payload })
 });
 
 const createMockVoiceActivity = (name: string, voiceProps: Record<string, any>): WebChatActivity =>
@@ -69,15 +69,15 @@ describe('isVoiceActivity', () => {
         activity: () => createMockActivity('typing')
       },
       {
-        name: 'event activity with non-object value',
-        activity: () => ({ ...createMockActivity('event', 'test'), value: 'not an object' })
+        name: 'event activity with non-object payload',
+        activity: () => ({ ...createMockActivity('event', 'test'), payload: 'not an object' })
       },
       {
         name: 'event activity without voice property',
         activity: () => createMockActivity('event', 'test', { someOtherProp: 'value' })
       },
       {
-        name: 'event activity with no value',
+        name: 'event activity with no payload',
         activity: () => createMockActivity('event', 'test')
       },
       {
@@ -98,12 +98,12 @@ describe('isVoiceActivity', () => {
       {
         name: 'session.update with speech detected state',
         eventName: 'session.update',
-        voiceProps: { bot_state: 'voice.request.detected', message: 'Your request is identified' }
+        voiceProps: { session: 'request.detected', message: 'Your request is identified' }
       },
       {
         name: 'session.update with processing state',
         eventName: 'session.update',
-        voiceProps: { bot_state: 'voice.request.processing', message: 'Your request is being processed' }
+        voiceProps: { session: 'request.processing', message: 'Your request is being processed' }
       },
       {
         name: 'stream.end with user transcription',

@@ -1,4 +1,8 @@
-import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import {
+  getActivityLivestreamingMetadata,
+  getVoiceActivityRole,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
 import {
@@ -26,6 +30,7 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
 
     return {
       from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
+      voiceTranscriptRole: getVoiceActivityRole(activity),
       livestreamingState:
         type === 'final activity'
           ? 'completing'

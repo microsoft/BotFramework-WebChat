@@ -71,7 +71,7 @@
           name: 'stream.end',
           from: { role: 'bot' },
           text: 'Please enter your 4-digit PIN using your keypad.',
-          value: {
+          payload: {
             voice: {
               transcription: 'Please enter your 4-digit PIN using your keypad.',
               origin: 'agent'
@@ -133,7 +133,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: '/DTMFKey 1',
               origin: 'user'
@@ -144,7 +144,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: '/DTMFKey 2',
               origin: 'user'
@@ -155,7 +155,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: '/DTMFKey 3',
               origin: 'user'
@@ -166,7 +166,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: '/DTMFKey 4',
               origin: 'user'
@@ -189,7 +189,7 @@
           type: 'event',
           name: 'stream.end',
           from: { role: 'bot' },
-          value: {
+          payload: {
             voice: {
               transcription: 'Thank you. Your PIN has been verified.',
               origin: 'agent'

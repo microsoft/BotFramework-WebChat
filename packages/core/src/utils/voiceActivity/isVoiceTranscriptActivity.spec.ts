@@ -2,7 +2,7 @@ import isVoiceTranscriptActivity from './isVoiceTranscriptActivity';
 import { WebChatActivity } from '../../types/WebChatActivity';
 
 // Mock activity factory for testing
-const createMockActivity = (type: string = 'event', name?: string, value?: any): WebChatActivity => ({
+const createMockActivity = (type: string = 'event', name?: string, payload?: any): WebChatActivity => ({
   type: type as any,
   id: 'test-activity-id',
   from: { id: 'test-user' },
@@ -10,7 +10,7 @@ const createMockActivity = (type: string = 'event', name?: string, value?: any):
     'webchat:sequence-id': 1
   },
   ...(name && { name }),
-  ...(value && { value })
+  ...(payload && { payload })
 });
 
 const createMockVoiceActivity = (name: string, voiceProps: Record<string, any>): WebChatActivity =>
@@ -62,7 +62,7 @@ describe('isVoiceTranscriptActivity', () => {
       },
       {
         name: 'session.update voice activity',
-        activity: () => createMockVoiceActivity('session.update', { bot_state: 'voice.request.detected' })
+        activity: () => createMockVoiceActivity('session.update', { session: 'request.detected' })
       },
       {
         name: 'stream.end without transcription',
@@ -89,11 +89,11 @@ describe('isVoiceTranscriptActivity', () => {
         activity: () => createMockActivity('event', 'stream.end', { someData: 'test' })
       },
       {
-        name: 'event activity with null value',
-        activity: () => ({ ...createMockActivity('event', 'stream.end'), value: null })
+        name: 'event activity with null payload',
+        activity: () => ({ ...createMockActivity('event', 'stream.end'), payload: null })
       },
       {
-        name: 'event activity without value',
+        name: 'event activity without payload',
         activity: () => createMockActivity('event', 'stream.end')
       },
       {
@@ -112,8 +112,8 @@ describe('isVoiceTranscriptActivity', () => {
   describe('Real-world scenarios', () => {
     test('should identify user transcript in conversation flow', () => {
       const conversationActivities = [
-        createMockVoiceActivity('session.update', { bot_state: 'voice.request.detected' }),
-        createMockVoiceActivity('session.update', { bot_state: 'voice.request.processing' }),
+        createMockVoiceActivity('session.update', { session: 'request.detected' }),
+        createMockVoiceActivity('session.update', { session: 'request.processing' }),
         createMockVoiceActivity('stream.end', {
           transcription: 'What is the weather today?',
           origin: 'user'
@@ -127,7 +127,7 @@ describe('isVoiceTranscriptActivity', () => {
 
     test('should identify bot transcript in response flow', () => {
       const responseActivities = [
-        createMockVoiceActivity('session.update', { bot_state: 'voice.response.available' }),
+        createMockVoiceActivity('session.update', { session: 'response.available' }),
         createMockVoiceActivity('stream.chunk', { contentUrl: 'chunk1' }),
         createMockVoiceActivity('stream.chunk', { contentUrl: 'chunk2' }),
         createMockVoiceActivity('stream.end', {

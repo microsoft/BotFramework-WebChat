@@ -17,10 +17,9 @@
       
       This test validates:
       1. Mic on → state becomes "listening"
-      2. Audio chunks are sent with timestamps in value.voice.timestamp
+      2. Audio chunks are sent with timestamps in payload.voice.timestamp
       3. Verify ~100ms interval between chunk timestamps
-      4. Verify chunk structure (type, name, from.role, value.voice)
-      5. Mic off stops sending chunks
+      4. Verify chunk structure (type, name, from.role, payload.voice)
     -->
     <script type="module">
       import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
@@ -111,13 +110,13 @@
         expect(sampleChunk.type).toBe('event');
         expect(sampleChunk.name).toBe('stream.chunk');
         expect(sampleChunk.from.role).toBe('user');
-        expect(sampleChunk.value).toBeTruthy();
-        expect(sampleChunk.value.voice).toBeTruthy();
-        expect(sampleChunk.value.voice.contentUrl).toBeTruthy();
-        expect(sampleChunk.value.voice.timestamp).toBeTruthy();
+        expect(sampleChunk.payload).toBeTruthy();
+        expect(sampleChunk.payload.voice).toBeTruthy();
+        expect(sampleChunk.payload.voice.content).toBeTruthy();
+        expect(sampleChunk.payload.voice.timestamp).toBeTruthy();
 
         // ===== STEP 6: Verify interval using timestamps =====
-        const timestamps = userChunks.map(c => new Date(c.value.voice.timestamp).getTime()).sort((a, b) => a - b);
+        const timestamps = userChunks.map(c => new Date(c.payload.voice.timestamp).getTime()).sort((a, b) => a - b);
         
         // Calculate intervals between consecutive chunks
         const intervals = [];

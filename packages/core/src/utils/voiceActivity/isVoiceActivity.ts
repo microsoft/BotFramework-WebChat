@@ -7,12 +7,12 @@ const isVoiceActivity = (
 ): activity is WebChatActivity & {
   name: string;
   type: 'event';
-  value: { voice: any };
+  payload: { voice: any };
 } =>
   activity.type === 'event' &&
   !!activity.name &&
-  !!activity.value &&
-  typeof activity.value === 'object' &&
-  ('voice' in activity.value || 'dtmf' in activity.value);
+  !!activity.payload &&
+  typeof activity.payload === 'object' &&
+  ('voice' in activity.payload || 'dtmf' in activity.payload);
 
 export default isVoiceActivity;

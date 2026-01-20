@@ -85,7 +85,7 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.detected' } }
+          payload: { voice: { session: 'request.detected' } }
         });
 
         // Verify: State is "user_speaking"
@@ -104,7 +104,7 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.processing' } }
+          payload: { voice: { session: 'request.processing' } }
         });
 
         // Verify: State is "processing"
@@ -118,7 +118,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: 'What time is my flight?',
               origin: 'user'
@@ -133,7 +133,7 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.response.available' } }
+          payload: { voice: { session: 'response.available' } }
         });
 
         // Bot sends audio chunk (triggers playback)
@@ -141,7 +141,7 @@
           type: 'event',
           name: 'stream.chunk',
           from: { role: 'bot' },
-          value: { voice: { contentUrl: 'AAAAAA==' } }
+          payload: { voice: { content: 'AAAAAA==' } }
         });
 
         // Verify: State is "bot_speaking"
@@ -160,7 +160,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: 'Your flight departs at 3:45 PM from Gate B7.',
               origin: 'agent'
@@ -181,14 +181,14 @@
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
           name: 'session.update',
-          value: { voice: { bot_state: 'voice.request.detected' } }
+          payload: { voice: { session: 'request.detected' } }
         });
 
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.processing' } }
+          payload: { voice: { session: 'request.processing' } }
         });
 
         // Verify: State is "processing"
@@ -201,7 +201,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: 'Is there a delay?',
               origin: 'user'
@@ -215,7 +215,7 @@
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
           name: 'session.update',
-          value: { voice: { bot_state: 'voice.response.available' } }
+          payload: { voice: { session: 'response.available' } }
         });
 
         // Bot sends audio chunk
@@ -223,7 +223,7 @@
           type: 'event',
           name: 'stream.chunk',
           from: { role: 'bot' },
-          value: { voice: { contentUrl: 'AAAAAA==' } }
+          payload: { voice: { content: 'AAAAAA==' } }
         });
 
         // Verify: State is "bot_speaking"
@@ -236,7 +236,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: 'No delays reported. Your flight is on time.',
               origin: 'agent'
@@ -258,20 +258,20 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.detected' } }
+          payload: { voice: { session: 'request.detected' } }
         });
 
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.processing' } }
+          payload: { voice: { session: 'request.processing' } }
         });
 
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: 'Thank you!',
               origin: 'user'
@@ -286,14 +286,14 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.response.available' } }
+          payload: { voice: { session: 'response.available' } }
         });
 
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
           name: 'stream.chunk',
           from: { role: 'bot' },
-          value: { voice: { contentUrl: 'AAAAAA==' } }
+          payload: { voice: { content: 'AAAAAA==' } }
         });
 
         console.log(textArea.getAttribute('placeholder'));
@@ -307,7 +307,7 @@
         await directLine.emulateIncomingActivity({
           type: 'event',
           name: 'stream.end',
-          value: {
+          payload: {
             voice: {
               transcription: "You're welcome! Have a safe flight.",
               origin: 'agent'

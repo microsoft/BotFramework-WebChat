@@ -26,7 +26,7 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
       postActivity({
         type: 'event',
         name: 'stream.chunk',
-        value: { voice: { contentUrl: base64, timestamp } }
+        payload: { voice: { contentType: 'audio/webm', content: base64, timestamp } }
       } as any);
     },
     [postActivity]
@@ -40,8 +40,8 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
         return;
       }
 
-      const { name, value } = activity;
-      const { voice } = value;
+      const { name, payload, value } = activity || {};
+      const { voice } = payload || {};
 
       switch (name) {
         // TODO - this will be commandResult activity and not event, need to think on handling of command and commandResult activities.
@@ -51,13 +51,13 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
         }
 
         case 'session.update': {
-          switch (voice.bot_state) {
-            case 'voice.request.detected':
+          switch (voice.session) {
+            case 'request.detected':
               stopAudio();
               setSpeechState('user_speaking');
               break;
 
-            case 'voice.request.processing':
+            case 'request.processing':
               setSpeechState('processing');
               break;
 
@@ -68,8 +68,8 @@ export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> 
         }
 
         case 'stream.chunk': {
-          if (voice.contentUrl) {
-            playAudio(voice.contentUrl);
+          if (voice.content) {
+            playAudio(voice.content);
           }
           break;
         }

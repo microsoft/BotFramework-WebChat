@@ -2,7 +2,7 @@ import getVoiceActivityRole from './getVoiceActivityRole';
 import { WebChatActivity } from '../../types/WebChatActivity';
 
 // Mock activity factory for testing
-const createMockActivity = (type: string = 'event', name?: string, value?: any): WebChatActivity => ({
+const createMockActivity = (type: string = 'event', name?: string, payload?: any): WebChatActivity => ({
   type: type as any,
   id: 'test-activity-id',
   from: { id: 'test-user' },
@@ -10,7 +10,7 @@ const createMockActivity = (type: string = 'event', name?: string, value?: any):
     'webchat:sequence-id': 1
   },
   ...(name && { name }),
-  ...(value && { value })
+  ...(payload && { payload })
 });
 
 const createMockVoiceActivity = (name: string, origin?: 'user' | 'agent', transcription?: string): WebChatActivity =>

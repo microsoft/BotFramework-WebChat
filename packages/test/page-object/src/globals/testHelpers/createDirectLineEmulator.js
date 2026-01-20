@@ -46,8 +46,8 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
     // Voice activities are fire-and-forget and don't echo back
     if (
       outgoingActivity.type === 'event' &&
-      outgoingActivity.value &&
-      (outgoingActivity.value.voice || outgoingActivity.value.dtmf)
+      outgoingActivity.payload &&
+      (outgoingActivity.payload.voice || outgoingActivity.payload.dtmf)
     ) {
       const id = uniqueId();
 

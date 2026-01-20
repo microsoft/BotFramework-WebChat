@@ -1,0 +1,20 @@
+.voice-transcript-activity-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--webchat__color--timestamp);
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat__font-size--small);
+  margin-block-start: calc(var(--webchat__padding--regular) / 2);
+}
+
+.voice-transcript-activity-status__agent-label {
+  color: var(--webchat-colorNeutralForeground3);
+  font-size: var(--webchat-fontSizeBase100);
+  font-weight: 600;
+  line-height: var(--webchat-lineHeightBase100);
+}
+
+.voice-transcript-activity-status__divider {
+  color: var(--webchat-colorNeutralStroke2);
+}

@@ -191,7 +191,7 @@ function SendBox(props: Props) {
         postActivity({
           type: 'event',
           name: 'dtmf',
-          value: {
+          payload: {
             dtmf: {
               value: dtmf
             }

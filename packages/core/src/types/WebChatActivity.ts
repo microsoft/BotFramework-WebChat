@@ -157,6 +157,7 @@ type EventActivityEssence = {
   name: string;
   type: 'event';
   value?: any;
+  payload?: any; // This is as per - https://github.com/microsoft/Agents/issues/377 and currently under review. Using it as server(MMRT/CCV2) is following same spec.
 };
 
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#message-activity

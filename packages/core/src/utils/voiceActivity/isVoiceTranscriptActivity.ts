@@ -4,7 +4,7 @@ import { WebChatActivity } from '../../types/WebChatActivity';
 const isVoiceTranscriptActivity = (
   activity: WebChatActivity
 ): activity is WebChatActivity & {
-  value: {
+  payload: {
     voice: {
       transcription: string;
       origin: 'user' | 'agent';
@@ -13,6 +13,6 @@ const isVoiceTranscriptActivity = (
 } =>
   isVoiceActivity(activity) &&
   activity.name === 'stream.end' &&
-  typeof activity.value?.voice?.transcription === 'string';
+  typeof activity?.payload?.voice?.transcription === 'string';
 
 export default isVoiceTranscriptActivity;

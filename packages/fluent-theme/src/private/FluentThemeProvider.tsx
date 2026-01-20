@@ -6,13 +6,20 @@ import {
   createActivityGroupingMiddleware,
   DecoratorComposer,
   WebChatDecorator,
+  BorderFlair,
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
-import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
+import {
+  isVoiceTranscriptActivity,
+  type ActivityMiddleware,
+  type ActivityStatusMiddleware,
+  type TypingIndicatorMiddleware
+} from 'botframework-webchat/internal';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
+import VoiceTranscriptActivityStatus from '../components/activityStatus/VoiceTranscriptActivityStatus';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 import AssetComposer from '../components/assets/AssetComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
@@ -64,6 +71,16 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
     }
     return next(request);
   }),
+  createActivityBorderMiddleware(function FluentBorderFlair({ request, Next, ...props }) {
+    if (request.voiceTranscriptRole === 'bot') {
+      return (
+        <BorderFlair showFlair={true}>
+          <Next {...props} />
+        </BorderFlair>
+      );
+    }
+    return <Next {...props} />;
+  }),
   createActivityBorderMiddleware(function FluentBorderLoader({ request, Next, ...props }) {
     return (
       <ActivityLoader showLoader={props.showLoader ?? request.livestreamingState === 'preparing'}>
@@ -71,6 +88,17 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
       </ActivityLoader>
     );
   })
+]);
+
+const activityStatusMiddleware: readonly ActivityStatusMiddleware[] = Object.freeze([
+  () =>
+    next =>
+    ({ activity, ...args }) => {
+      if (isVoiceTranscriptActivity(activity)) {
+        return <VoiceTranscriptActivityStatus activity={activity} />;
+      }
+      return next({ activity, ...args });
+    }
 ]);
 
 const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.freeze([
@@ -99,6 +127,7 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
         <TelephoneKeypadProvider>
           <ThemeProvider
             activityMiddleware={activityMiddleware}
+            activityStatusMiddleware={activityStatusMiddleware}
             sendBoxMiddleware={sendBoxMiddleware}
             styleOptions={fluentStyleOptions}
             typingIndicatorMiddleware={typingIndicatorMiddleware}

@@ -6,6 +6,8 @@
   "_ACCESS_KEY_FOR_MAC_ALT.comment": "These are keyboard modifier keys for screen reader on a Mac.",
   "ACTIVITY_BOT_SAID_ALT": "Bot $1 said:",
   "_ACTIVITY_BOT_SAID_ALT.comment": "This is for screen reader only. $1 is the initials for the bot (e.g. \"JD\").",
+  "ACTIVITY_STATUS_VOICE_TRANSCRIPT_AGENT_LABEL": "Agent",
+  "_ACTIVITY_STATUS_VOICE_TRANSCRIPT_AGENT_LABEL.comment": "Label shown before timestamp for incoming voice transcript messages from the agent.",
   "ACTIVITY_YOU_SAID_ALT": "You said:",
   "_ACTIVITY_YOU_SAID_ALT.comment": "This is for screen reader only.",
   "ACTIVITY_BOT_ATTACHED_ALT": "Bot attached:",

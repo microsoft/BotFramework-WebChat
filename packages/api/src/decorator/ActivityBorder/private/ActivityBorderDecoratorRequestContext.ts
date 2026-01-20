@@ -20,6 +20,15 @@ type ActivityBorderDecoratorRequest = Readonly<{
    * - `undefined` - the sender is unknown
    */
   from: 'bot' | 'channel' | `user` | undefined;
+
+  /**
+   * Gets the role of the voice transcript activity sender.
+   *
+   * - `"bot"` - the voice transcript is from the bot/agent
+   * - `"user"` - the voice transcript is from the user
+   * - `undefined` - the activity is not a voice transcript
+   */
+  voiceTranscriptRole: 'bot' | 'user' | undefined;
 }>;
 
 type ActivityBorderDecoratorRequestContextType = Readonly<{
@@ -30,6 +39,7 @@ const ActivityBorderDecoratorRequestContext = createContext<ActivityBorderDecora
   Object.freeze({
     request: Object.freeze({
       from: undefined,
+      voiceTranscriptRole: undefined,
       livestreamingState: undefined
     })
   })

@@ -81,14 +81,14 @@
           type: 'event',
           name: 'stream.chunk',
           from: { role: 'bot' },
-          value: { voice: { contentUrl: 'AAAAAA==' } }
+          payload: { voice: { content: 'AAAAAA==' } }
         });
 
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
           name: 'stream.chunk',
           from: { role: 'bot' },
-          value: { voice: { contentUrl: 'AAAAAA==' } }
+          payload: { voice: { content: 'AAAAAA==' } }
         });
 
         // VERIFY: State is "bot_speaking" (isPlaying = true)
@@ -106,7 +106,7 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.detected' } }
+          payload: { voice: { session: 'request.detected' } }
         });
 
         // VERIFY: State changes to "user_speaking" - bot audio stopped
@@ -124,7 +124,7 @@
           type: 'event',
           name: 'session.update',
           from: { role: 'bot' },
-          value: { voice: { bot_state: 'voice.request.processing' } }
+          payload: { voice: { session: 'request.processing' } }
         });
 
         // VERIFY: State is "processing"
@@ -140,7 +140,7 @@
           name: 'stream.end',
           from: { role: 'bot' },
           text: 'Stop! Change my destination.',
-          value: { voice: { transcription: 'Stop! Change my destination.', origin: 'user' } }
+          payload: { voice: { transcription: 'Stop! Change my destination.', origin: 'user' } }
         });
 
         await pageConditions.numActivitiesShown(1);
@@ -150,7 +150,7 @@
           type: 'event',
           name: 'stream.chunk',
           from: { role: 'bot' },
-          value: { voice: { contentUrl: 'AAAAAA==' } }
+          payload: { voice: { content: 'AAAAAA==' } }
         });
 
         // VERIFY: State is "bot_speaking" again
@@ -166,7 +166,7 @@
           name: 'stream.end',
           from: { role: 'bot' },
           text: 'Sure, where would you like to go instead?',
-          value: { voice: { transcription: 'Sure, where would you like to go instead?', origin: 'agent' } }
+          payload: { voice: { transcription: 'Sure, where would you like to go instead?', origin: 'agent' } }
         });
 
         await pageConditions.numActivitiesShown(2);

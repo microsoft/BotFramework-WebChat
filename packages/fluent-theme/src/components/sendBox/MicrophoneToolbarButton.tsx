@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import { useStyles } from '../../styles';
 import testIds from '../../testIds';
@@ -16,23 +16,9 @@ function MicrophoneToolbarButton() {
   const localize = useLocalizer();
   const [{ recording, setRecording, speechState }] = useSpeechToSpeech();
 
-  const handleClick = useCallback(() => {
+  const handleMicrophoneClick = useCallback(() => {
     setRecording(!recording);
   }, [recording, setRecording]);
-
-  const icon = useMemo(() => {
-    switch (speechState) {
-      case 'listening':
-      case 'processing':
-        return 'microphone';
-
-      case 'bot_speaking':
-        return 'audio-playing';
-
-      default:
-        return 'microphone';
-    }
-  }, [speechState]);
 
   const ariaLabel = localize(
     recording ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT'
@@ -50,10 +36,10 @@ function MicrophoneToolbarButton() {
         [classNames['sendbox__toolbar-button--with-gradient']]: isUserSpeaking
       })}
       data-testid={testIds.sendBoxMicrophoneButton}
-      onClick={handleClick}
+      onClick={handleMicrophoneClick}
       type="button"
     >
-      <FluentIcon appearance="text" icon={icon} />
+      <FluentIcon appearance="text" icon={speechState === 'bot_speaking' ? 'audio-playing' : 'microphone'} />
     </ToolbarButton>
   );
 }
