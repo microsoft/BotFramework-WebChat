@@ -83,7 +83,7 @@ const BASE_CONFIG = {
   plugins: [
     cssPlugin,
     injectCSSPlugin({
-      getCSSText: (_source, cssFiles) => cssFiles.find(({ path }) => path.endsWith('botframework-webchat.css'))?.text,
+      ignoreCSSEntries: ['static/botframework-webchat/component.css'],
       stylesPlaceholder: bundleStyleContentPlaceholder
     }),
     {
