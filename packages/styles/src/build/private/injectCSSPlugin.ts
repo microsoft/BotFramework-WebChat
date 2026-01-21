@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import { decode, encode } from '@jridgewell/sourcemap-codec';
 import path from 'node:path';
 import type { OutputFile, Plugin } from 'esbuild';
@@ -27,102 +26,78 @@ type Metafile = {
     string,
     {
       entryPoint?: string;
-      imports?: Array<{
-        path: string;
-        kind?: string;
-        external?: boolean;
-      }>;
+      imports?: Array<{ path: string; kind?: string; external?: boolean }>;
     }
   >;
 };
 
-export function mapOutputsToRootOutputs(metafile: Metafile): {
-  roots: string[];
-  outputToRoots: Map<string, readonly string[]>;
-} {
-  const outputs = metafile.outputs ?? {};
-  const outFiles = Object.keys(outputs);
+export function mapOutputsToRootOutputs(metafile: Metafile) {
+  const outputs = metafile.outputs || {};
+  const allFiles = new Set(Object.keys(outputs));
 
-  const rootSet = new Set<string>();
-  for (const outKey of outFiles) {
-    // eslint-disable-next-line security/detect-object-injection
-    if (outputs[outKey]?.entryPoint) {
-      rootSet.add(outKey);
+  const roots: string[] = [];
+  const graph = new Map<string, string[]>();
+
+  for (const [file, meta] of Object.entries(outputs)) {
+    if (meta.entryPoint) {
+      roots.push(file);
     }
-  }
-  const roots = [...rootSet].sort();
 
-  const outputKeySet = new Set(outFiles);
+    const edges: string[] = [];
+    const imports = meta.imports || [];
 
-  const adj = new Map<string, string[]>();
-  for (const outKey of outFiles) {
-    // eslint-disable-next-line security/detect-object-injection
-    const imps = outputs[outKey]?.imports ?? [];
-    const list: string[] = [];
-
-    for (const imp of imps) {
-      if (!imp || imp.external) {
+    for (const imp of imports) {
+      if (imp.external) {
         continue;
       }
 
-      const raw = imp.path;
-      let target: string | null = null;
-
-      if (outputKeySet.has(raw)) {
-        target = raw;
+      if (allFiles.has(imp.path)) {
+        edges.push(imp.path);
       } else {
-        const resolved = path.posix.normalize(path.posix.resolve(path.posix.dirname(outKey), raw));
-        if (outputKeySet.has(resolved)) {
-          target = resolved;
+        const resolved = path.posix.normalize(path.posix.resolve(path.posix.dirname(file), imp.path));
+        if (allFiles.has(resolved)) {
+          edges.push(resolved);
         }
-      }
-
-      if (target) {
-        list.push(target);
       }
     }
-
-    adj.set(outKey, list);
+    graph.set(file, edges);
   }
 
-  const outToRootSet = new Map<string, Set<string>>();
-  for (const outKey of outFiles) {
-    outToRootSet.set(outKey, new Set());
+  roots.sort();
+
+  const outputToRoots = new Map<string, Set<string>>();
+
+  for (const file of allFiles) {
+    outputToRoots.set(file, new Set());
   }
 
-  for (const rootKey of roots) {
-    const stack: string[] = [rootKey];
-    const seen = new Set<string>();
+  for (const root of roots) {
+    const stack = [root];
+    const visited = new Set<string>();
 
-    while (stack.length) {
-      const cur = stack.pop()!;
-      if (seen.has(cur)) {
+    while (stack.length > 0) {
+      const node = stack.pop()!;
+
+      if (visited.has(node)) {
         continue;
       }
-      seen.add(cur);
+      visited.add(node);
 
-      outToRootSet.get(cur)?.add(rootKey);
+      outputToRoots.get(node)?.add(root);
 
-      const nexts = adj.get(cur);
-      if (!nexts || nexts.length === 0) {
-        continue;
-      }
-
-      for (const n of nexts) {
-        if (!seen.has(n)) {
-          stack.push(n);
-        }
+      const children = graph.get(node);
+      if (children) {
+        stack.push(...children);
       }
     }
   }
 
-  const outputToRoots: Map<string, readonly string[]> = new Map();
-  for (const outKey of outFiles) {
-    const s = outToRootSet.get(outKey) ?? new Set<string>();
-    outputToRoots.set(outKey, Object.freeze([...s].sort()));
+  const result = new Map<string, readonly string[]>();
+  for (const [file, rootSet] of outputToRoots) {
+    result.set(file, Object.freeze([...rootSet].sort()));
   }
 
-  return { roots, outputToRoots };
+  return { roots, outputToRoots: result };
 }
 
 function findOutputKeyForFile(filePath: string, outputToRoots: Map<string, readonly string[]>): string | undefined {
