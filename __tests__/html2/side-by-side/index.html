@@ -4,6 +4,7 @@
 <head>
   <title>Two Chat panes side-by-side using Fluent theme</title>
   <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <link href="/assets/webchat-copilot-deprecated.variant.css" rel="stylesheet" type="text/css" />
   <script type="importmap">
     {
       "imports": {
@@ -107,7 +108,13 @@
 
     run(async function () {
       const {
-        WebChat: { FluentThemeProvider, ReactWebChat },
+        WebChat: { 
+          decorator: { createActivityGroupingMiddleware, DecoratorComposer },
+          CopilotMessageHeader,
+          FluentThemeProvider, 
+          PartGroupDecorator, 
+          ReactWebChat
+        }
       } = window; // Imports in UMD fashion.
 
       await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
@@ -791,6 +798,27 @@ Use the command to install required dependencies:
         '160': '#e4e6fa'
       };
 
+      let RightWrap = React.Fragment;
+      if (/\s/u.test(rightVariant)) {
+        const CustomPartGroupDecorator = (props) => {
+          const { 
+            activities: [activity, ...restActivities],
+          } = props;
+          const isFromBot = activity?.from?.role === 'bot';
+          return React.createElement(PartGroupDecorator, {
+            ...(isFromBot && { header: React.createElement(CopilotMessageHeader, { activity, className: 'part-grouping-decorator__header' })}),
+            ...props,
+          });
+        };
+        const partGrouping = createActivityGroupingMiddleware(next => request => {
+          if (request.groupingName === 'part') {
+            return CustomPartGroupDecorator;
+          }
+          return next(request);
+        });
+        RightWrap = ({ children }) => React.createElement(DecoratorComposer, { middleware: [partGrouping] }, children);
+      }
+
       const App = () => {
         const theme = searchParams.get('theme');
         const isDarkTheme = theme === 'fluent-dark';
@@ -823,20 +851,22 @@ Use the command to install required dependencies:
           ),
           React.createElement('div', { className: "webchat-right" },
             React.createElement(FluentThemeProvider, { variant: rightVariant },
-              React.createElement(ReactWebChat, {
-                directLine: rightDirectLine,
-                store: rightStore,
-                overrideLocalizedStrings: {
-                  TEXT_INPUT_PLACEHOLDER: 'Ask a work question or use / to reference people, files and more',
-                  ACTIVITY_CODE_CAUTION: 'AI-generated code. Review and use carefully. [More info on FAQ](https://aka.ms/AIandCopilotFAQs).'
-                },
-                styleOptions: {
-                  groupTimestamp: 1,
-                  timestampFormat: 'absolute',
-                  botAvatarBackgroundColor: '#304E7A',
-                  ...adjustStyleOptions
-                }
-              })
+              React.createElement(RightWrap, null,
+                React.createElement(ReactWebChat, {
+                  directLine: rightDirectLine,
+                  store: rightStore,
+                  overrideLocalizedStrings: {
+                    TEXT_INPUT_PLACEHOLDER: 'Ask a work question or use / to reference people, files and more',
+                    ACTIVITY_CODE_CAUTION: 'AI-generated code. Review and use carefully. [More info on FAQ](https://aka.ms/AIandCopilotFAQs).'
+                  },
+                  styleOptions: {
+                    groupTimestamp: 1,
+                    timestampFormat: 'absolute',
+                    botAvatarBackgroundColor: '#304E7A',
+                    ...adjustStyleOptions
+                  }
+                })
+              )
             )
           )
         );
