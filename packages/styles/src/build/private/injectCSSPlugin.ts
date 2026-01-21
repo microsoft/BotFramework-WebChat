@@ -137,10 +137,6 @@ export default function injectCSSPlugin({ ignoreCSSEntries, stylesPlaceholder }:
   return {
     name: `inject-css-plugin(${stylesPlaceholder})`,
     setup(build) {
-      if (build.initialOptions.metafile) {
-        build.initialOptions.metafile = true;
-      }
-
       build.onEnd(({ outputFiles = [], metafile }) => {
         const cssFiles = outputFiles.filter(({ path }) => path.match(/(\.css)$/u));
         const jsFiles = outputFiles.filter(({ path }) => path.match(/(\.js|\.mjs)$/u));
