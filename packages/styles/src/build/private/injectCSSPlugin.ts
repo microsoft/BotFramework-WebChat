@@ -31,7 +31,7 @@ type Metafile = {
   >;
 };
 
-export function mapOutputsToRootOutputs(metafile: Metafile) {
+function mapOutputsToRootOutputs(metafile: Metafile) {
   const outputs = metafile.outputs || {};
   const allFiles = new Set(Object.keys(outputs));
 
@@ -115,16 +115,6 @@ function findOutputKeyForFile(filePath: string, outputToRoots: Map<string, reado
   return undefined;
 }
 
-function diffSets<K>(self: Set<K>, other: Set<K>): Set<K> {
-  const result = new Set<K>();
-  for (const element of self) {
-    if (!other.has(element)) {
-      result.add(element);
-    }
-  }
-  return result;
-}
-
 export default function injectCSSPlugin({ ignoreCSSEntries, stylesPlaceholder }: InjectCSSPluginOptions): Plugin {
   if (!stylesPlaceholder) {
     throw new Error('inject-css-plugin: no placeholder for styles provided');
@@ -186,7 +176,7 @@ export default function injectCSSPlugin({ ignoreCSSEntries, stylesPlaceholder }:
                 .filter((entry): entry is readonly [string, OutputFile] => entry !== undefined)
             );
 
-            const cssCandidateKeys = diffSets(new Set(cssFilesMap.keys()), ignoreCSSEntriesSet);
+            const cssCandidateKeys = new Set(cssFilesMap.keys()).difference(ignoreCSSEntriesSet);
 
             if (cssCandidateKeys.size !== 1) {
               throw new Error(
