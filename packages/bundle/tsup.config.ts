@@ -66,7 +66,10 @@ export default defineConfig([
     },
     esbuildPlugins: [
       ...(commonConfig.esbuildPlugins ?? []),
-      injectCSSPlugin({ stylesPlaceholder: bundleStyleContentPlaceholder }),
+      injectCSSPlugin({
+        stylesPlaceholder: bundleStyleContentPlaceholder,
+        getCSSText: (_source, cssFiles) => cssFiles.find(({ path }) => path.endsWith('botframework-webchat.css'))?.text
+      }),
       resolveReact
     ],
     format: 'iife',
