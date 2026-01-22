@@ -44,6 +44,23 @@ import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
 import getVoiceActivityRole from './utils/voiceActivity/getVoiceActivityRole';
 import getVoiceActivityText from './utils/voiceActivity/getVoiceActivityText';
+import {
+  startVoiceRecording,
+  stopVoiceRecording,
+  setVoiceState,
+  registerVoiceHandler,
+  postVoiceActivity
+} from './actions/voiceActivityActions';
+import type {
+  SpeechState,
+  VoiceHandler,
+  VoiceActivityActions,
+  VoiceStartRecordingAction,
+  VoiceStopRecordingAction,
+  VoiceSetStateAction,
+  VoiceRegisterHandlerAction,
+  VoicePostActivityAction
+} from './actions/voiceActivityActions';
 
 export {
   isForbiddenPropertyName,
@@ -117,6 +134,8 @@ export {
   parseThing,
   parseVoteAction,
   postActivity,
+  postVoiceActivity,
+  registerVoiceHandler,
   sendEvent,
   sendFiles,
   sendMessage,
@@ -130,11 +149,14 @@ export {
   setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
+  setVoiceState,
   singleToArray,
   startDictate,
   startSpeakingActivity,
+  startVoiceRecording,
   stopDictate,
   stopSpeakingActivity,
+  stopVoiceRecording,
   submitSendBox
 };
 
@@ -163,6 +185,14 @@ export type {
   OrgSchemaThing,
   OrgSchemaUserReview,
   SendBoxAttachment,
+  SpeechState,
+  VoiceActivityActions,
+  VoiceHandler,
+  VoicePostActivityAction,
+  VoiceRegisterHandlerAction,
+  VoiceSetStateAction,
+  VoiceStartRecordingAction,
+  VoiceStopRecordingAction,
   WebChatActivity
 };
 

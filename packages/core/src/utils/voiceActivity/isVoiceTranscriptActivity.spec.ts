@@ -34,7 +34,7 @@ describe('isVoiceTranscriptActivity', () => {
     test('should return true for stream.end with bot transcription', () => {
       const activity = createMockVoiceActivity('stream.end', {
         transcription: 'Hi there!',
-        origin: 'bot'
+        origin: 'agent'
       });
 
       const result = isVoiceTranscriptActivity(activity);
@@ -132,7 +132,7 @@ describe('isVoiceTranscriptActivity', () => {
         createMockVoiceActivity('stream.chunk', { contentUrl: 'chunk2' }),
         createMockVoiceActivity('stream.end', {
           transcription: 'Today will be sunny with a high of 75 degrees.',
-          origin: 'bot'
+          origin: 'agent'
         })
       ];
 
@@ -151,7 +151,7 @@ describe('isVoiceTranscriptActivity', () => {
         createMockVoiceActivity('stream.chunk', { contentUrl: 'audio' }),
         createMockVoiceActivity('stream.end', {
           transcription: 'Hi there!',
-          origin: 'bot'
+          origin: 'agent'
         }),
         createMockActivity('typing')
       ];

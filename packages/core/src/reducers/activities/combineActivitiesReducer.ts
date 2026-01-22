@@ -10,7 +10,6 @@ import createGroupedActivitiesReducer, {
 
 type ActivitiesState = {
   activities: readonly WebChatActivity[];
-  voiceActivities: readonly WebChatActivity[];
   groupedActivities: GroupedActivitiesState;
 };
 
@@ -35,12 +34,7 @@ export default function combineActivitiesReducer<M>(
     state: (ExistingState & ActivitiesState) | undefined,
     action: ExistingAction & GroupedActivitiesAction
   ): ExistingState & ActivitiesState {
-    const {
-      activities: _activities,
-      voiceActivities: _voiceActivities,
-      groupedActivities,
-      ...existingState
-    } = state ?? {};
+    const { activities: _activities, groupedActivities, ...existingState } = state ?? {};
     const nextState = existingSlicedReducer(existingState as ExistingState, action);
     const nextGroupedActivities = groupedActivitiesReducer(groupedActivities, action);
 
@@ -61,7 +55,6 @@ export default function combineActivitiesReducer<M>(
       ? {
           ...nextState,
           activities: nextGroupedActivities.sortedActivities,
-          voiceActivities: nextGroupedActivities.voiceActivities,
           groupedActivities: nextGroupedActivities
         }
       : state;

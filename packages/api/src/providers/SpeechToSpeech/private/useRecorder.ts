@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import usePonyfill from '../../Ponyfill/usePonyfill';
 
 /**
@@ -52,23 +52,17 @@ const DEFAULT_SAMPLE_RATE = 24000;
 const DEFAULT_CHUNK_SIZE_IN_MS = 100;
 const MS_IN_SECOND = 1000;
 
-export function useRecorder(
-  onAudioChunk: (base64: string, timestamp: string) => void,
-  config?: Record<string, unknown> | null
-) {
-  const [recording, setRecordingInternal] = useState(false);
+export function useRecorder(onAudioChunk: (base64: string, timestamp: string) => void) {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const workletRef = useRef<AudioWorkletNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [{ Date }] = usePonyfill();
 
-  const { sampleRate = DEFAULT_SAMPLE_RATE, chunkIntervalMs = DEFAULT_CHUNK_SIZE_IN_MS } = config || {};
-
   const initAudio = useCallback(async () => {
     if (audioCtxRef.current) {
       return;
     }
-    const audioCtx = new AudioContext({ sampleRate: sampleRate as number });
+    const audioCtx = new AudioContext({ sampleRate: DEFAULT_SAMPLE_RATE });
     const blob = new Blob([audioProcessorCode], {
       type: 'application/javascript'
     });
@@ -78,7 +72,7 @@ export function useRecorder(
     URL.revokeObjectURL(url);
     // eslint-disable-next-line require-atomic-updates
     audioCtxRef.current = audioCtx;
-  }, [sampleRate]);
+  }, []);
 
   const startRecording = useCallback(async () => {
     await initAudio();
@@ -89,7 +83,7 @@ export function useRecorder(
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         channelCount: 1,
-        sampleRate,
+        sampleRate: DEFAULT_SAMPLE_RATE,
         echoCancellation: true
       }
     });
@@ -97,7 +91,7 @@ export function useRecorder(
     const source = audioCtx.createMediaStreamSource(stream);
     const worklet = new AudioWorkletNode(audioCtx, 'audio-recorder', {
       processorOptions: {
-        bufferSize: ((sampleRate as number) * (chunkIntervalMs as number)) / MS_IN_SECOND
+        bufferSize: (DEFAULT_SAMPLE_RATE * DEFAULT_CHUNK_SIZE_IN_MS) / MS_IN_SECOND
       }
     });
 
@@ -119,8 +113,7 @@ export function useRecorder(
     worklet.connect(audioCtx.destination);
     worklet.port.postMessage({ command: 'START' });
     workletRef.current = worklet;
-    setRecordingInternal(true);
-  }, [Date, chunkIntervalMs, initAudio, onAudioChunk, sampleRate]);
+  }, [Date, initAudio, onAudioChunk]);
 
   const stopRecording = useCallback(() => {
     if (workletRef.current) {
@@ -132,22 +125,13 @@ export function useRecorder(
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
-    setRecordingInternal(false);
   }, []);
 
-  const setRecording = useCallback(
-    async (shouldRecord: boolean) => {
-      if (!shouldRecord && recording) {
-        stopRecording();
-      } else if (shouldRecord && !recording) {
-        await startRecording();
-      }
-    },
-    [recording, startRecording, stopRecording]
+  return useMemo(
+    () => ({
+      startRecording,
+      stopRecording
+    }),
+    [startRecording, stopRecording]
   );
-
-  return {
-    recording,
-    setRecording
-  };
 }

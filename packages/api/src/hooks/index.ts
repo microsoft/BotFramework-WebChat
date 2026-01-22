@@ -40,6 +40,7 @@ import useNotifications from './useNotifications';
 import usePerformCardAction from './usePerformCardAction';
 import usePonyfill from './usePonyfill';
 import usePostActivity from './usePostActivity';
+import usePostVoiceActivity from './usePostVoiceActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRelativeTimeFormatter from './useRelativeTimeFormatter';
 import useRenderAttachment from './useRenderAttachment';
@@ -72,7 +73,6 @@ import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
-import useVoiceActivities from './useVoiceActivities';
 
 export { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
 export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
@@ -120,6 +120,7 @@ export {
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
+  usePostVoiceActivity,
   useReferenceGrammarID,
   useRelativeTimeFormatter,
   useRenderAttachment,
@@ -151,6 +152,5 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceActivities,
   useVoiceSelector
 };

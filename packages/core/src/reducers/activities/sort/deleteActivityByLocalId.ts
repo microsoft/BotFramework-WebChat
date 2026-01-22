@@ -10,7 +10,6 @@ export default function deleteActivityByLocalId(state: State, localId: LocalId):
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
-  const nextVoiceActivities = Array.from(state.voiceActivities);
 
   if (!nextActivityMap.delete(localId)) {
     throw new Error(`botframework-webchat: Cannot find activity with local ID "${localId}" to delete`);
@@ -173,7 +172,6 @@ export default function deleteActivityByLocalId(state: State, localId: LocalId):
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
     livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),
     sortedActivities: Object.freeze(nextSortedActivities),
-    sortedChatHistoryList: Object.freeze(nextSortedChatHistoryList),
-    voiceActivities: Object.freeze(nextVoiceActivities)
+    sortedChatHistoryList: Object.freeze(nextSortedChatHistoryList)
   } satisfies State);
 }

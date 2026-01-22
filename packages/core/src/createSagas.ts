@@ -24,6 +24,7 @@ import startSpeakActivityOnPostActivitySaga from './sagas/startSpeakActivityOnPo
 import stopDictateOnCardActionSaga from './sagas/stopDictateOnCardActionSaga';
 import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInputSaga';
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
+import postVoiceActivitySaga from './sagas/postVoiceActivitySaga';
 import { type GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 type CreateSagasOptions = {
@@ -57,5 +58,6 @@ export default function createSagas({ ponyfill }: CreateSagasOptions): Saga {
     yield fork(stopDictateOnCardActionSaga);
     yield fork(stopSpeakingActivityOnInputSaga);
     yield fork(submitSendBoxSaga);
+    yield fork(postVoiceActivitySaga, ponyfill);
   };
 }

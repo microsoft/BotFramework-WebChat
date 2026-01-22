@@ -1,5 +1,17 @@
-import isVoiceActivity from './isVoiceActivity';
+import { literal, object, picklist, safeParse, string } from 'valibot';
+
 import { WebChatActivity } from '../../types/WebChatActivity';
+
+const VoiceTranscriptActivitySchema = object({
+  name: literal('stream.end'),
+  payload: object({
+    voice: object({
+      origin: picklist(['user', 'agent']),
+      transcription: string()
+    })
+  }),
+  type: literal('event')
+});
 
 const isVoiceTranscriptActivity = (
   activity: WebChatActivity
@@ -10,9 +22,6 @@ const isVoiceTranscriptActivity = (
       origin: 'user' | 'agent';
     };
   };
-} =>
-  isVoiceActivity(activity) &&
-  activity.name === 'stream.end' &&
-  typeof activity?.payload?.voice?.transcription === 'string';
+} => safeParse(VoiceTranscriptActivitySchema, activity).success;
 
 export default isVoiceTranscriptActivity;

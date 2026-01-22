@@ -13,9 +13,14 @@ const createMockActivity = (type: string = 'event', name?: string, payload?: any
   ...(payload && { payload })
 });
 
-const createMockVoiceActivity = (name: string, transcription?: string): WebChatActivity =>
+const createMockVoiceActivity = (
+  name: string,
+  transcription?: string,
+  origin: 'user' | 'agent' = 'user'
+): WebChatActivity =>
   createMockActivity('event', name, {
     voice: {
+      origin,
       ...(transcription !== undefined && { transcription })
     }
   });

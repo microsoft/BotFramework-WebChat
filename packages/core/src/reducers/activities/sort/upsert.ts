@@ -18,8 +18,6 @@ import {
   type SortedChatHistoryEntry,
   type State
 } from './types';
-import isVoiceActivity from '../../../utils/voiceActivity/isVoiceActivity';
-import isVoiceTranscriptActivity from '../../../utils/voiceActivity/isVoiceTranscriptActivity';
 
 // Honoring timestamp or not:
 //
@@ -50,8 +48,7 @@ const INITIAL_STATE = Object.freeze({
   livestreamSessionMap: Object.freeze(new Map()),
   howToGroupingMap: Object.freeze(new Map()),
   sortedActivities: Object.freeze([]),
-  sortedChatHistoryList: Object.freeze([]),
-  voiceActivities: Object.freeze([])
+  sortedChatHistoryList: Object.freeze([])
 } satisfies State);
 
 // Question: Why insertion sort works but not quick sort?
@@ -61,14 +58,6 @@ const INITIAL_STATE = Object.freeze({
 // - Duplicate timestamps: activities without timestamp can't be sort deterministically with quick sort
 
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
-  // we only want to process transcript voice activities thorugh this as those will be rendered.
-  // all other voice activities will be stored in separate slice and we don't want to perform any operation on them.
-  if (isVoiceActivity(activity) && !isVoiceTranscriptActivity(activity)) {
-    return Object.freeze({
-      ...state,
-      voiceActivities: Object.freeze([...state.voiceActivities, activity])
-    } satisfies State);
-  }
   const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
   const nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
@@ -347,8 +336,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     howToGroupingMap: Object.freeze(nextHowToGroupingMap),
     livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),
     sortedActivities: Object.freeze(nextSortedActivities),
-    sortedChatHistoryList: Object.freeze(nextSortedChatHistoryList),
-    voiceActivities: state.voiceActivities
+    sortedChatHistoryList: Object.freeze(nextSortedChatHistoryList)
   } satisfies State);
 }
 

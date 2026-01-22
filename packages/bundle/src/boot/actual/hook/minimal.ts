@@ -49,6 +49,7 @@ export {
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
+  usePostVoiceActivity,
   useReferenceGrammarID,
   useRegisterFocusSendBox,
   useRelativeTimeFormatter,
@@ -94,7 +95,6 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceActivities,
   useVoiceSelector,
   useWebSpeechPonyfill,
   type SendBoxFocusOptions

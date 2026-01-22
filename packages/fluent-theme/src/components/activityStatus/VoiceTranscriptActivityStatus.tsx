@@ -1,6 +1,7 @@
 import { hooks } from 'botframework-webchat';
 import { Timestamp } from 'botframework-webchat/component';
-import { getVoiceActivityRole, type WebChatActivity } from 'botframework-webchat/internal';
+import { type WebChatActivity } from 'botframework-webchat/internal';
+import { getVoiceActivityRole, getVoiceActivityText } from 'botframework-webchat-core';
 import React, { Fragment, memo } from 'react';
 
 import { useStyles } from '../../styles';
@@ -17,8 +18,13 @@ function VoiceTranscriptActivityStatus({ activity }: VoiceTranscriptActivityStat
   const localize = useLocalizer();
   const { timestamp } = activity;
   const role = getVoiceActivityRole(activity);
+  const text = getVoiceActivityText(activity);
 
   const agentLabel = localize('ACTIVITY_STATUS_VOICE_TRANSCRIPT_AGENT_LABEL');
+
+  if (!text) {
+    return null;
+  }
 
   return (
     <span className={classNames['voice-transcript-activity-status']}>

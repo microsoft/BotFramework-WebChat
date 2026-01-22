@@ -42,6 +42,7 @@ export {
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
+  usePostVoiceActivity,
   useReferenceGrammarID,
   useRelativeTimeFormatter,
   useRenderAttachment,
@@ -72,7 +73,6 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceActivities,
   useVoiceSelector
 } from 'botframework-webchat-api/hook';
 

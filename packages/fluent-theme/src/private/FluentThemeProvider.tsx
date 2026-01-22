@@ -10,13 +10,13 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import {
-  isVoiceTranscriptActivity,
   type ActivityMiddleware,
-  type ActivityStatusMiddleware,
-  type TypingIndicatorMiddleware
+  type TypingIndicatorMiddleware,
+  type ActivityStatusMiddleware
 } from 'botframework-webchat/internal';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { isVoiceTranscriptActivity } from 'botframework-webchat-core';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
 import VoiceTranscriptActivityStatus from '../components/activityStatus/VoiceTranscriptActivityStatus';

@@ -1,48 +1,59 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
+import useWebChatAPIContext from '../../../hooks/internal/useWebChatAPIContext';
 
 const DEFAULT_SAMPLE_RATE = 24000;
 const INT16_SCALE = 32768;
 
-export function useAudioPlayer(config?: Record<string, unknown> | null) {
-  const audioCtxRef = useRef<AudioContext | null>(null);
+export function useAudioPlayer() {
+  const audioCtxRef = useRef<AudioContext | undefined>(undefined);
   const nextPlayTimeRef = useRef(0);
-
-  const { sampleRate = DEFAULT_SAMPLE_RATE } = config || {};
-
-  const initAudio = useCallback(() => {
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext({ sampleRate: sampleRate as number });
-    }
-    return audioCtxRef.current;
-  }, [sampleRate]);
+  const lastSourceRef = useRef<AudioBufferSourceNode | undefined>(undefined);
+  const { setVoiceState } = useWebChatAPIContext();
 
   const playAudio = useCallback(
-    (base64: string) => {
-      const audioCtx = initAudio();
-      audioCtx.resume?.();
+    async (base64: string) => {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new AudioContext({ sampleRate: DEFAULT_SAMPLE_RATE });
+      }
+      const audioCtx = audioCtxRef.current;
+      await audioCtx.resume();
 
       try {
         const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-        const int16 = new Int16Array(bytes.buffer);
-        const float32 = new Float32Array(int16.length);
+        const int16Bytes = new Int16Array(bytes.buffer);
+        const float32Bytes = new Float32Array(int16Bytes.length);
 
-        for (let i = 0; i < int16.length; i++) {
-          // eslint-disable-next-line security/detect-object-injection
-          float32[i] = int16[i] / INT16_SCALE;
+        for (let i = 0; i < int16Bytes.length; i++) {
+          float32Bytes[+i] = int16Bytes.at(i) / INT16_SCALE;
         }
 
-        const buffer = audioCtx.createBuffer(1, float32.length, audioCtx.sampleRate);
-        buffer.getChannelData(0).set(float32);
+        const buffer = audioCtx.createBuffer(1, float32Bytes.length, audioCtx.sampleRate);
+        buffer.getChannelData(0).set(float32Bytes);
 
         const src = audioCtx.createBufferSource();
         src.buffer = buffer;
         src.connect(audioCtx.destination);
 
-        // Clear buffer when finished
+        // Clear previous source's onended to avoid stale callbacks
+        if (lastSourceRef.current) {
+          lastSourceRef.current.onended = null;
+        }
+
         src.onended = () => {
           src.disconnect();
           src.buffer = null;
+          // Only the last source's onended should trigger state change to 'listening'
+          if (lastSourceRef.current === src) {
+            setVoiceState('listening');
+          }
         };
+
+        lastSourceRef.current = src;
+        const isFirstChunk = nextPlayTimeRef.current <= audioCtx.currentTime;
+        // Only dispatch bot_speaking on first chunk, we are resetting refs on stopAudio (bargein, mic off)
+        if (isFirstChunk) {
+          setVoiceState('bot_speaking');
+        }
 
         nextPlayTimeRef.current = Math.max(nextPlayTimeRef.current, audioCtx.currentTime);
         src.start(nextPlayTimeRef.current);
@@ -51,21 +62,26 @@ export function useAudioPlayer(config?: Record<string, unknown> | null) {
         console.warn('botframework-webchat: Error during audio playback in useAudioPlayer:', error);
       }
     },
-    [initAudio]
+    [setVoiceState]
   );
 
   const stopAudio = useCallback(() => {
     nextPlayTimeRef.current = 0;
-
+    if (lastSourceRef.current) {
+      lastSourceRef.current.onended = null;
+      lastSourceRef.current = null;
+    }
     if (audioCtxRef.current) {
       audioCtxRef.current.close();
       audioCtxRef.current = null;
     }
   }, []);
 
-  return {
-    playAudio,
-    stopAudio,
-    isPlaying: audioCtxRef.current ? audioCtxRef.current.currentTime < nextPlayTimeRef.current : false
-  };
+  return useMemo(
+    () => ({
+      playAudio,
+      stopAudio
+    }),
+    [playAudio, stopAudio]
+  );
 }

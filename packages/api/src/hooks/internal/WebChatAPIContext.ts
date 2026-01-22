@@ -1,5 +1,7 @@
 import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import {
+  SpeechState,
+  VoiceHandler,
   type DirectLineJSBotConnection,
   type Observable,
   type WebChatActivity,
@@ -47,6 +49,8 @@ export type WebChatAPIContextType = {
   onCardAction?: PerformCardAction;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   postActivity?: (activity: WebChatActivity) => Observable<string>;
+  postVoiceActivity?: (activity: WebChatActivity) => void;
+  registerVoiceHandler?: (voiceHandler: VoiceHandler) => void;
   renderMarkdown?: (
     markdown: string,
     newLineOptions: { markdownRespectCRLF: boolean },
@@ -71,8 +75,11 @@ export type WebChatAPIContextType = {
   setSendTimeout?: (timeout: number) => void;
   startDictate?: () => void;
   startSpeakingActivity?: () => void;
+  startVoiceRecording?: () => void;
+  setVoiceState?: (state: SpeechState) => void;
   stopDictate?: () => void;
   stopSpeakingActivity?: () => void;
+  stopVoiceRecording?: () => void;
   submitSendBox?: (method?: string, { channelData }?: { channelData: any }) => void;
   telemetryDimensionsRef?: React.Ref<any>;
   toastRenderer?: RenderToast;
