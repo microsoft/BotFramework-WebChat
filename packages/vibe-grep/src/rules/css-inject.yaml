@@ -1,0 +1,14 @@
+---
+
+# This rule checks that CSS is injected properly by verifying there are no placeholders
+
+id: css-inject-placeholder
+language: JavaScript
+rule:
+  kind: string
+  regex: "\\@\\-\\-[A-Z\\-]+\\-\\-\\@"
+
+description: "Ensure CSS placeholders are replaced during bundling"
+message: "Found CSS placeholder. Ensure CSS is properly injected during bundling."
+severity: error
+args: [dist/*.js dist/*.mjs static/*.js]

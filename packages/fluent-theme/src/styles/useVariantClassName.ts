@@ -8,7 +8,7 @@ export default function useVariantClassName<T extends CSSModuleClasses>(styles: 
   return useMemo(
     () =>
       variants
-        .map(variant => classNames[`variant-${variant}`])
+        .map(variant => classNames[`variant-${variant}`] || variant)
         .filter(value => value)
         .join(' '),
     [classNames, variants]
