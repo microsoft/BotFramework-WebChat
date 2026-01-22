@@ -1,5 +1,4 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
-/* eslint-disable react/require-default-props */
 
 import React, {
   ChangeEventHandler,
