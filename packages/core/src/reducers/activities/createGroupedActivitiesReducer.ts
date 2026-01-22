@@ -32,7 +32,7 @@ import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
-import { getPositionFromActivity, queryPositionFromActivity, setPositionInActivity } from './sort/property/Position';
+import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
 import { setReceivedAtInActivity } from './sort/property/ReceivedAt';
 import { querySendStatusFromOutgoingActivity, setSendStatusInOutgoingActivity } from './sort/property/SendStatus';
 import queryLocalIdAByActivityId from './sort/queryLocalIdByActivityId';
@@ -175,11 +175,8 @@ function createGroupedActivitiesReducer(
         activity = setSendStatusInOutgoingActivity(activity, SENT);
         activity = setLocalIdInActivity(activity, localId);
 
-        // Keep existing position (if it exists - voice activities don't have positions)
-        const existingPosition = queryPositionFromActivity(existingActivity);
-        if (typeof existingPosition !== 'undefined') {
-          activity = setPositionInActivity(activity, getPositionFromActivity(existingActivity));
-        }
+        // Keep existing position.
+        activity = setPositionInActivity(activity, getPositionFromActivity(existingActivity));
 
         // Compare the INCOMING_ACTIVITY below:
         // - POST_ACTIVITY_FULFILLED will mark send status as SENT

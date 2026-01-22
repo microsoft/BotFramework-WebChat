@@ -52,11 +52,7 @@ export default function combineActivitiesReducer<M>(
       );
 
     return hasChanged
-      ? {
-          ...nextState,
-          activities: nextGroupedActivities.sortedActivities,
-          groupedActivities: nextGroupedActivities
-        }
+      ? { ...nextState, activities: nextGroupedActivities.sortedActivities, groupedActivities: nextGroupedActivities }
       : state;
   };
 }
