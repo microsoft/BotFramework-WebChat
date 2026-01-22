@@ -47,6 +47,13 @@ const commonConfig = applyConfig(config => ({
     // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsup to proxy require() into __require() for dynamic loading.
     // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
     'uuid'
+  ],
+  esbuildPlugins: [
+    ...(config.esbuildPlugins ?? []),
+    injectCSSPlugin({
+      ignoreCSSEntries: ['dist/botframework-webchat.component.css'],
+      stylesPlaceholder: bundleStyleContentPlaceholder,
+    })
   ]
 }));
 
@@ -64,11 +71,7 @@ export default defineConfig([
       'webchat-es5': './src/boot/iife/webchat-es5.ts',
       'webchat-minimal': './src/boot/iife/webchat-minimal.ts'
     },
-    esbuildPlugins: [
-      ...(commonConfig.esbuildPlugins ?? []),
-      injectCSSPlugin({ stylesPlaceholder: bundleStyleContentPlaceholder }),
-      resolveReact
-    ],
+    esbuildPlugins: [...(commonConfig.esbuildPlugins ?? []), resolveReact],
     format: 'iife',
     outExtension() {
       return { js: '.js' };

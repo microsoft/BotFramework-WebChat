@@ -147,7 +147,7 @@ Breaking changes in this release:
 - New debug API, by [@compulim](https://github.com/compulim) in PR [#5663](https://github.com/microsoft/BotFramework-WebChat/pull/5663) and PR [#5664](https://github.com/microsoft/BotFramework-WebChat/pull/5664), see [`DEBUGGING.md`](docs/DEBUGGING.md) for more
    - Debug into element: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.debugger`
    - Breakpoint: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.breakpoint.incomingActivity`
-- The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), by [@OEvgeny](https://github.com/OEvgeny)
+- The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), in PR [#5677](https://github.com/microsoft/BotFramework-WebChat/pull/5677) by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Added `npm run build-browser` script for building test harness package only, in PR [#5667](https://github.com/microsoft/BotFramework-WebChat/pull/5667), by [@compulim](https://github.com/compulim)
 - Added Speech-to-Speech (S2S) support for real-time voice conversations, in PR [#5654](https://github.com/microsoft/BotFramework-WebChat/pull/5654), by [@pranavjoshi](https://github.com/pranavjoshi001)
 
@@ -318,6 +318,7 @@ Breaking changes in this release:
    - Bubble, carousel, say-alt, in PR [#5668](https://github.com/microsoft/BotFramework-WebChat/pull/5668), by [@OEvgeny](https://github.com/OEvgeny)
    - Activity status, in PR [#5669](https://github.com/microsoft/BotFramework-WebChat/pull/5669), by [@OEvgeny](https://github.com/OEvgeny)
    - Text attachment and related components, in PR [#5670](https://github.com/microsoft/BotFramework-WebChat/pull/5670), by [@OEvgeny](https://github.com/OEvgeny)
+- (Experimental) Added custom variants support for `botframework-webchat-fluent-theme` package, in PR [#5675](https://github.com/microsoft/BotFramework-WebChat/pull/5675), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Deprecated
 

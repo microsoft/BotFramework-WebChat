@@ -51,6 +51,7 @@ const config = {
   format: 'esm',
   loader: { '.js': 'jsx' },
   minify: true,
+  metafile: true,
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
   platform: 'browser',
   plugins: [

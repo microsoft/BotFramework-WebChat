@@ -13,6 +13,8 @@ This repository is part of the [Microsoft Bot Framework](https://github.com/micr
 
 Web Chat supports [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). Web developers are recommended to enable CSP to improve security and protect conversations. You can read more about CSP in [this article](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/CONTENT_SECURITY_POLICY.md).
 
+Note: The [Bot Framework SDK](https://github.com/microsoft/botframework-sdk) was archived on GitHub on December 2025. *This* Web Chat component specifically is *not* archived, and still is available on GitHub as under the related licences covered in this readme.
+
 <hr />
 
 # Version notes
