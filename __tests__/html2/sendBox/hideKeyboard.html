@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        const { resolveAll } = await directLine.actPostActivity(async () => {
+          await host.click(pageElements.sendBoxTextBox());
+          await host.sendKeys('suggested-actions');
+          // WHEN: Click on the send button.
+          await host.click(pageElements.sendButton());
+        });
+
+        // THEN: Should send the focus back to the send box.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // THEN: Should set `inputmode="none"`, thus, hide the virtual keyboard.
+        // Notes: We cannot test this functionality inside WebDriver. We assume the `inputmode` attribute will show/hide the virtual keyboard.
+        expect(pageElements.sendBoxTextBox().getAttribute('inputmode')).toBe('none');
+
+        await resolveAll();
+
+        await directLine.emulateIncomingActivity({
+          suggestedActions: {
+            actions: [
+              {
+                title: 'Hello, World!',
+                type: 'imBack'
+              },
+              {
+                title: 'Aloha!',
+                type: 'imBack'
+              }
+            ]
+          },
+          text: 'Select one of the following options.',
+          type: 'message'
+        });
+
+        // WHEN: Click on the send box.
+        await host.click(pageElements.sendBoxTextBox());
+
+        // THEN: Should revert `inputmode` attribute, thus, show the virtual keyboard.
+        expect(pageElements.sendBoxTextBox().getAttribute('inputmode')).not.toBe('none');
+      });
+    </script>
+  </body>
+</html>

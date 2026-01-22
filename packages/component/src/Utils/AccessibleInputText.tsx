@@ -6,7 +6,8 @@ import React, {
   forwardRef,
   KeyboardEventHandler,
   ReactEventHandler,
-  useRef
+  useRef,
+  type MouseEventHandler
 } from 'react';
 
 import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
@@ -38,6 +39,7 @@ type AccessibleInputTextProps = Readonly<{
   enterKeyHint?: string | undefined;
   inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
   onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
+  onClick?: MouseEventHandler<HTMLInputElement> | undefined;
   onFocus?: FocusEventHandler<HTMLInputElement> | undefined;
   onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
   onKeyDownCapture?: KeyboardEventHandler<HTMLInputElement> | undefined;
@@ -60,6 +62,7 @@ const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProp
       disabled,
       enterKeyHint,
       onChange,
+      onClick,
       onFocus,
       onKeyDown,
       onKeyDownCapture,
@@ -87,6 +90,7 @@ const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProp
         data-id={dataId}
         data-testid={dataTestId}
         onChange={disabled ? undefined : onChange}
+        onClick={onClick}
         onFocus={disabled ? undefined : onFocus}
         onKeyDown={disabled ? undefined : onKeyDown}
         onKeyDownCapture={disabled ? undefined : onKeyDownCapture}
