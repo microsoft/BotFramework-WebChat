@@ -34,6 +34,16 @@
         } = window;
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        
+        // Intercept postActivity to capture outgoing DTMF events
+        const capturedDtmfEvents = [];
+        const originalPostActivity = directLine.postActivity.bind(directLine);
+        directLine.postActivity = (activity) => {
+          if (activity.name === 'dtmf' && activity.payload?.dtmf) {
+            capturedDtmfEvents.push(activity);
+          }
+          return originalPostActivity(activity);
+        };
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -113,20 +123,14 @@
         await host.click(key3);
         await host.click(key4);
 
-        // ===== STEP 5: Verify DTMF activities in voice state =====
+        // ===== STEP 5: Verify DTMF events were sent via postActivity =====
         await pageConditions.became(
-          'DTMF events received',
-          () => {
-            const voiceActivities = store.getState().voiceActivities;
-            const dtmfEvents = voiceActivities?.filter(a => a.name === 'dtmf');
-            return dtmfEvents?.length >= 4;
-          },
+          'DTMF events sent via postActivity',
+          () => capturedDtmfEvents.length >= 4,
           1000
         );
 
-        const voiceActivities = store.getState().voiceActivities;
-        const dtmfActivities = voiceActivities?.filter(a => a.name === 'dtmf');
-        expect(dtmfActivities.length).toBe(4);
+        expect(capturedDtmfEvents.length).toBe(4);
 
         await host.click(keypadButton);
 

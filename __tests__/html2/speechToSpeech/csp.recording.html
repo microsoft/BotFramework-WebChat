@@ -101,10 +101,10 @@
         );
         expect(blobViolations.length).toBe(0);
 
-        // THEN: Verify audio chunks are being captured (AudioWorklet is functioning)
+        // THEN: Verify recording state is active (AudioWorklet is functioning)
         await pageConditions.became(
-          'Audio chunks are being sent to voiceActivities store',
-          () => store.getState().voiceActivities && store.getState().voiceActivities.length > 0,
+          'Voice state is listening (recording active)',
+          () => store.getState().voice?.recording === true && store.getState().voice?.speechState === 'listening',
           1000
         );
 

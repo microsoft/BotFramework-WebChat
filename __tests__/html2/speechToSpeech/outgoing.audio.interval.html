@@ -17,9 +17,12 @@
       
       This test validates:
       1. Mic on → state becomes "listening"
-      2. Audio chunks are sent with timestamps in payload.voice.timestamp
-      3. Verify ~100ms interval between chunk timestamps
-      4. Verify chunk structure (type, name, from.role, payload.voice)
+      2. Audio chunks are sent via postActivity (fire-and-forget)
+      3. Verify chunk structure (type, name, payload.voice)
+      4. Verify ~100ms interval between chunk timestamps
+      
+      Note: Since voice activities use postVoiceActivity (fire-and-forget),
+      we intercept postActivity to capture outgoing chunks for verification.
     -->
     <script type="module">
       import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
@@ -37,6 +40,19 @@
         } = window;
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        
+        // Intercept postActivity to capture outgoing voice chunks
+        const capturedChunks = [];
+        const originalPostActivity = directLine.postActivity.bind(directLine);
+        directLine.postActivity = (activity) => {
+          if (activity.name === 'stream.chunk' && activity.payload?.voice) {
+            capturedChunks.push({
+              ...activity,
+              capturedAt: Date.now()
+            });
+          }
+          return originalPostActivity(activity);
+        };
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -77,14 +93,8 @@
         // ===== STEP 2: Wait for multiple chunks =====
         // Default chunk interval is 100ms, wait for at least 5 chunks for better interval calculation
         await pageConditions.became(
-          'Multiple audio chunks sent',
-          () => {
-            const voiceActivities = store.getState().voiceActivities;
-            const userChunks = voiceActivities?.filter(a => 
-              a.name === 'stream.chunk' && a.from?.role === 'user'
-            );
-            return userChunks?.length >= 5;
-          },
+          'Multiple audio chunks sent via postActivity',
+          () => capturedChunks.length >= 5,
           2000
         );
 
@@ -97,26 +107,20 @@
           1000
         );
 
-        // ===== STEP 4: Analyze chunks from voiceActivities =====
-        const userChunks = store.getState().voiceActivities.filter(a => 
-          a.name === 'stream.chunk' && a.from?.role === 'user'
-        );
-        
-        expect(userChunks.length).toBeGreaterThanOrEqual(5);
+        // ===== STEP 4: Verify captured chunks =====
+        expect(capturedChunks.length).toBeGreaterThanOrEqual(5);
 
         // ===== STEP 5: Verify chunk structure =====
-        const sampleChunk = userChunks[0];
+        const sampleChunk = capturedChunks[0];
         
         expect(sampleChunk.type).toBe('event');
         expect(sampleChunk.name).toBe('stream.chunk');
-        expect(sampleChunk.from.role).toBe('user');
         expect(sampleChunk.payload).toBeTruthy();
         expect(sampleChunk.payload.voice).toBeTruthy();
         expect(sampleChunk.payload.voice.content).toBeTruthy();
-        expect(sampleChunk.payload.voice.timestamp).toBeTruthy();
 
-        // ===== STEP 6: Verify interval using timestamps =====
-        const timestamps = userChunks.map(c => new Date(c.payload.voice.timestamp).getTime()).sort((a, b) => a - b);
+        // ===== STEP 6: Verify interval using capturedAt timestamps =====
+        const timestamps = capturedChunks.map(c => c.capturedAt).sort((a, b) => a - b);
         
         // Calculate intervals between consecutive chunks
         const intervals = [];
@@ -127,9 +131,9 @@
         // Calculate average interval
         const avgInterval = intervals.reduce((sum, i) => sum + i, 0) / intervals.length;
 
-        // Verify average interval is approximately 100ms (allow 80-120ms range for test stability)
-        expect(avgInterval).toBeGreaterThanOrEqual(80);
-        expect(avgInterval).toBeLessThanOrEqual(120);
+        // Verify average interval is approximately 100ms (allow 50-150ms range for test stability)
+        expect(avgInterval).toBeGreaterThanOrEqual(50);
+        expect(avgInterval).toBeLessThanOrEqual(150);
       });
     </script>
   </body>

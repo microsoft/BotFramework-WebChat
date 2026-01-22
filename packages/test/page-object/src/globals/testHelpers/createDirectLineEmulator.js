@@ -173,9 +173,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
           1000
         ));
     },
-    emulateIncomingVoiceActivity: async (activity, { skipWait } = {}) => {
-      activity = updateIn(activity, ['from', 'role'], role => role || 'bot');
-      activity = updateIn(activity, ['id'], id => id || uniqueId());
+    emulateIncomingVoiceActivity: activity => {
       activity = updateIn(activity, ['timestamp'], timestamp =>
         typeof timestamp === 'number'
           ? new Date(now + timestamp).toISOString()
@@ -185,16 +183,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
       );
       activity = updateIn(activity, ['type'], type => type || 'event');
 
-      const { id } = activity;
-
       activityDeferredObservable.next(activity);
-
-      skipWait ||
-        (await became(
-          'incoming voice activity appears in the voiceActivities store',
-          () => store.getState().voiceActivities?.find(activity => activity.id === id),
-          1000
-        ));
     },
     emulateOutgoingActivity: (activity, options) => {
       if (typeof activity === 'string') {

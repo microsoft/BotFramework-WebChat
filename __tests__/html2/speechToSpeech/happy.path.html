@@ -61,10 +61,10 @@
           1000
         );
 
-        // THEN: Verify voice activities (audio chunks) are in voiceActivities store
+        // THEN: Verify voice state is recording/listening
         await pageConditions.became(
-          'Audio chunks are being sent to voiceActivities store',
-          () => store.getState().voiceActivities && store.getState().voiceActivities.length > 0,
+          'Voice state is listening',
+          () => store.getState().voice?.speechState === 'listening',
           1000
         );
 
