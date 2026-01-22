@@ -9,12 +9,10 @@
   <body>
     <main id="webchat"></main>
     <script>
-      const run = fn => fn();
-
       run(async function () {
         WebChat.renderWebChat(
           {
-            directLine: WebChat.createDirectLine({ token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Il9aNGdIZFFoT0Y2Xy1TM2tqUjdVUDgtOG4zRSIsIng1dCI6Il9aNGdIZFFoT0Y2Xy1TM2tqUjdVUDgtOG4zRSIsInR5cCI6IkpXVCJ9.eyJib3QiOiJoYXdvLW1vY2tib3Q0LW1vY2stYm90LWJvdCIsInNpdGUiOiIxWDZQNEhJVTlLWm9aRW5UU1hFdDhKVjVweUNyOWp6ZEtSNk9lUmtpeDlycFI4c0xYd1NsSlFRSjk5Q0FBQzRmMWNNQUFyb2hBQUFCQVpCUzJjYmsiLCJjb252IjoiRTFmSEZzQVZMbWkydjFOdVN0SG1VUC11cyIsImp0aSI6IjhERTU5RjZDRUNBRjQ2Ny0yOTQxZDRlZjkwZTc0YTdhODljNjk3ZGRkNzc2ZDI5NCIsIm5iZiI6MTc2OTExNDU2OSwiZXhwIjoxNzY5MTE4MTY5LCJpc3MiOiJodHRwczovL2RpcmVjdGxpbmUuYm90ZnJhbWV3b3JrLmNvbS8iLCJhdWQiOiJodHRwczovL2RpcmVjdGxpbmUuYm90ZnJhbWV3b3JrLmNvbS8ifQ.7MHOnvTg57byWuU4HJeY565rwaeP3UUjxVdzlNZGgFU2veFv9GMpxLY8P_q0NpSSunA2KTaTuwIn14onHgnJgowwnR87NQcDdQEtmpJPKgzwnZCPP6JrlGP0w5Uks7bWkaxIvYHgGfy7Pyj041lo_S_yPFkY6ZhBcBwpeQAw_bmQJt_v1ezGkjpGfjzlcvgumkhuPuSgbMPdi1iYKbL8vhx6I__x7_Ppykyqj4VyCovWZRz21YzVg7j7KFdW9L4i9kEZoj7dJGTlXdtVlQ-kwdsDl59If6E2UWYGXinzufbKP6vQx2iZdwdRUHXrzfln3fnB7pc3mOofNS5JNlR9qA' }),
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
             store: testHelpers.createStore()
           },
           document.getElementById('webchat')
