@@ -1,13 +1,13 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
 import React, {
-  ChangeEventHandler,
-  FocusEventHandler,
+  type ChangeEventHandler,
+  type FocusEventHandler,
   forwardRef,
-  KeyboardEventHandler,
-  ReactEventHandler,
-  useRef,
-  type MouseEventHandler
+  type KeyboardEventHandler,
+  type MouseEventHandler,
+  type ReactEventHandler,
+  useRef
 } from 'react';
 
 // Differences between <textarea> and <AccessibleTextArea>:
