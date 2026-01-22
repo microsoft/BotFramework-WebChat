@@ -102,7 +102,9 @@ export default defineConfig([
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
     esbuildPlugins: [
       ...(config.esbuildPlugins ?? []),
-      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
+      injectCSSPlugin({
+        stylesPlaceholder: fluentStyleContentPlaceholder
+      }),
       umdResolvePlugin
     ],
     format: 'iife',
