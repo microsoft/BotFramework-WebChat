@@ -79,18 +79,22 @@ describe('useRecorder', () => {
     };
   });
 
-  test('should return startRecording and stopRecording functions', () => {
+  test('should return record function', () => {
     render(<HookApp onAudioChunk={onAudioChunk} />);
-    expect(typeof hookData?.startRecording).toBe('function');
-    expect(typeof hookData?.stopRecording).toBe('function');
+    expect(typeof hookData?.record).toBe('function');
   });
 
-  test('should start recording when startRecording is called', async () => {
+  test('should start recording when record is called', async () => {
     renderResult = render(<HookApp onAudioChunk={onAudioChunk} />);
 
-    await hookData?.startRecording();
+    act(() => {
+      hookData?.record();
+    });
 
-    expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
+    });
+
     expect(global.AudioContext).toHaveBeenCalledTimes(1);
     expect(mockAudioContext.audioWorklet.addModule).toHaveBeenCalledTimes(1);
     expect(global.AudioWorkletNode).toHaveBeenCalledWith(expect.anything(), 'audio-recorder', {
@@ -100,15 +104,23 @@ describe('useRecorder', () => {
     expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
   });
 
-  test('should stop recording when stopRecording is called', async () => {
+  test('should stop recording when returned cleanup function is called', async () => {
     renderResult = render(<HookApp onAudioChunk={onAudioChunk} />);
 
+    let stopRecording: (() => void) | undefined;
     // Start recording
-    await hookData?.startRecording();
+    act(() => {
+      stopRecording = hookData?.record();
+    });
+
+    // Wait for async startRecording to complete
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
+    });
 
     // Stop recording
     act(() => {
-      hookData?.stopRecording();
+      stopRecording?.();
     });
 
     expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'STOP' });
@@ -119,7 +131,9 @@ describe('useRecorder', () => {
   test('should process audio chunks sent from the worklet', async () => {
     render(<HookApp onAudioChunk={onAudioChunk} />);
 
-    await hookData?.startRecording();
+    act(() => {
+      hookData?.record();
+    });
 
     await waitFor(() => expect(mockWorkletPort.onmessage).not.toBeNull());
 
@@ -144,19 +158,38 @@ describe('useRecorder', () => {
     (mockAudioContext.state as string) = 'suspended';
     render(<HookApp onAudioChunk={onAudioChunk} />);
 
-    await hookData?.startRecording();
+    act(() => {
+      hookData?.record();
+    });
 
-    expect(mockAudioContext.resume).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockAudioContext.resume).toHaveBeenCalledTimes(1);
+    });
   });
 
   test('should reuse existing AudioContext on subsequent calls', async () => {
     render(<HookApp onAudioChunk={onAudioChunk} />);
 
-    await hookData?.startRecording();
+    let stopRecording: (() => void) | undefined;
+    act(() => {
+      stopRecording = hookData?.record();
+    });
 
-    hookData?.stopRecording();
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
+    });
 
-    await hookData?.startRecording();
+    act(() => {
+      stopRecording?.();
+    });
+
+    act(() => {
+      hookData?.record();
+    });
+
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledTimes(3); // START, STOP, START
+    });
 
     // AudioContext should only be created once
     expect(global.AudioContext).toHaveBeenCalledTimes(1);
@@ -165,14 +198,18 @@ describe('useRecorder', () => {
   test('should request microphone with correct audio constraints', async () => {
     render(<HookApp onAudioChunk={onAudioChunk} />);
 
-    await hookData?.startRecording();
+    act(() => {
+      hookData?.record();
+    });
 
-    expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledWith({
-      audio: {
-        channelCount: 1,
-        sampleRate: 24000,
-        echoCancellation: true
-      }
+    await waitFor(() => {
+      expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledWith({
+        audio: {
+          channelCount: 1,
+          sampleRate: 24000,
+          echoCancellation: true
+        }
+      });
     });
   });
 });

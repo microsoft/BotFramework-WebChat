@@ -14,8 +14,6 @@ import {
   emitTypingIndicator,
   markActivity,
   postActivity,
-  postVoiceActivity,
-  registerVoiceHandler,
   sendEvent,
   sendFiles,
   sendMessage,
@@ -29,7 +27,6 @@ import {
   setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
-  setVoiceState,
   singleToArray,
   startDictate,
   startSpeakingActivity,
@@ -86,6 +83,7 @@ import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import Tracker from './internal/Tracker';
+import useVoiceHandlers from './internal/useVoiceHandlers';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import defaultSelectVoice from './internal/defaultSelectVoice';
@@ -108,8 +106,6 @@ const DISPATCHERS = {
   emitTypingIndicator,
   markActivity,
   postActivity,
-  postVoiceActivity,
-  registerVoiceHandler,
   sendEvent,
   sendFiles,
   sendMessage,
@@ -123,11 +119,8 @@ const DISPATCHERS = {
   setSendTimeout,
   startDictate,
   startSpeakingActivity,
-  startVoiceRecording,
-  setVoiceState,
   stopDictate,
   stopSpeakingActivity,
-  stopVoiceRecording,
   submitSendBox
 };
 
@@ -307,6 +300,7 @@ const ComposerCore = ({
   const [styleOptions] = useStyleOptions();
   const dispatch = useDispatch();
   const telemetryDimensionsRef = useRef({});
+  const [voiceHandlers] = useVoiceHandlers();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
@@ -376,6 +370,15 @@ const ComposerCore = ({
       ),
     [dispatch]
   );
+
+  const startVoice = useCallback(() => {
+    dispatch(startVoiceRecording());
+  }, [dispatch]);
+
+  const stopVoice = useCallback(() => {
+    voiceHandlers.forEach(handler => handler.stopAllAudio());
+    dispatch(stopVoiceRecording());
+  }, [dispatch, voiceHandlers]);
 
   const patchedLocalizedStrings = useMemo(
     () => mergeStringsOverrides(getAllLocalizedStrings()[normalizeLanguage(locale)], locale, overrideLocalizedStrings),
@@ -564,6 +567,8 @@ const ComposerCore = ({
       scrollToEndButtonRenderer,
       selectVoice: patchedSelectVoice,
       sendTypingIndicator,
+      startVoice,
+      stopVoice,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
@@ -593,6 +598,8 @@ const ComposerCore = ({
       renderMarkdown,
       scrollToEndButtonRenderer,
       sendTypingIndicator,
+      startVoice,
+      stopVoice,
       telemetryDimensionsRef,
       trackDimension,
       uiState,

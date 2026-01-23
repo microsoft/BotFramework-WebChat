@@ -35,9 +35,9 @@ const TextArea = forwardRef<
     hidden?: boolean | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
+    readOnly?: boolean | undefined;
     startRows?: number | undefined;
     value?: string | undefined;
-    readOnly?: boolean | undefined;
   }>
 >((props, ref) => {
   const [uiState] = useUIState();

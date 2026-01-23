@@ -9,12 +9,10 @@ import { useAudioPlayer } from './useAudioPlayer';
 // Mock setVoiceState function
 const mockSetVoiceState = jest.fn();
 
-// Mock useWebChatAPIContext hook
-jest.mock('../../../hooks/internal/useWebChatAPIContext', () => ({
+// Mock useSetVoiceState hook
+jest.mock('../../../hooks/internal/useSetVoiceState', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
-    setVoiceState: mockSetVoiceState
-  }))
+  default: jest.fn(() => mockSetVoiceState)
 }));
 
 // Mock AudioContext and related APIs
@@ -82,17 +80,17 @@ describe('useAudioPlayer', () => {
   });
 
   describe('Initialization', () => {
-    test('should return playAudio and stopAudio functions', () => {
+    test('should return queueAudio and stopAllAudio functions', () => {
       render(<HookApp />);
 
-      expect(typeof hookData?.playAudio).toBe('function');
-      expect(typeof hookData?.stopAudio).toBe('function');
+      expect(typeof hookData?.queueAudio).toBe('function');
+      expect(typeof hookData?.stopAllAudio).toBe('function');
     });
 
-    test('should create AudioContext on first playAudio call', async () => {
+    test('should create AudioContext on first queueAudio call', async () => {
       render(<HookApp />);
 
-      await hookData?.playAudio('dGVzdA=='); // base64 for 'test'
+      await hookData?.queueAudio('dGVzdA=='); // base64 for 'test'
 
       expect(AudioContext).toHaveBeenCalledWith({ sampleRate: 24000 });
     });
@@ -100,8 +98,8 @@ describe('useAudioPlayer', () => {
     test('should reuse existing AudioContext on subsequent calls', async () => {
       render(<HookApp />);
 
-      await hookData?.playAudio('dGVzdA==');
-      await hookData?.playAudio('dGVzdDI=');
+      await hookData?.queueAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdDI=');
 
       expect(AudioContext).toHaveBeenCalledTimes(1);
     });
@@ -113,7 +111,7 @@ describe('useAudioPlayer', () => {
     });
 
     test('should process base64 audio data correctly', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
       expect(global.atob).toHaveBeenCalledWith('dGVzdA==');
       expect(mockAudioContext.createBuffer).toHaveBeenCalledWith(1, expect.any(Number), 24000);
@@ -121,7 +119,7 @@ describe('useAudioPlayer', () => {
     });
 
     test('should set up audio buffer source correctly', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
       const [source] = createdBufferSources;
       expect(source.connect).toHaveBeenCalledWith(mockAudioContext.destination);
@@ -130,7 +128,7 @@ describe('useAudioPlayer', () => {
     });
 
     test('should resume AudioContext if needed', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
       expect(mockAudioContext.resume).toHaveBeenCalled();
     });
@@ -138,8 +136,8 @@ describe('useAudioPlayer', () => {
     test('should queue multiple audio chunks correctly', async () => {
       mockAudioBuffer.duration = 0.1; // 100ms
 
-      await hookData?.playAudio('dGVzdA==');
-      await hookData?.playAudio('dGVzdDI=');
+      await hookData?.queueAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdDI=');
 
       expect(createdBufferSources).toHaveLength(2);
       // First chunk starts at currentTime (0), second at 0.1
@@ -156,7 +154,7 @@ describe('useAudioPlayer', () => {
     test('should set voice state to bot_speaking on first chunk', async () => {
       mockAudioContext.currentTime = 0;
 
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
       expect(mockSetVoiceState).toHaveBeenCalledWith('bot_speaking');
     });
@@ -165,16 +163,16 @@ describe('useAudioPlayer', () => {
       mockAudioContext.currentTime = 0;
       mockAudioBuffer.duration = 0.1;
 
-      await hookData?.playAudio('dGVzdA=='); // First chunk
+      await hookData?.queueAudio('dGVzdA=='); // First chunk
       mockSetVoiceState.mockClear();
 
-      await hookData?.playAudio('dGVzdDI='); // Second chunk (while first is still playing)
+      await hookData?.queueAudio('dGVzdDI='); // Second chunk (while first is still playing)
 
       expect(mockSetVoiceState).not.toHaveBeenCalledWith('bot_speaking');
     });
 
     test('should set voice state to listening when last audio ends', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
       mockSetVoiceState.mockClear();
 
       // Simulate audio ended
@@ -189,8 +187,8 @@ describe('useAudioPlayer', () => {
     test('should only trigger listening on the last source ended', async () => {
       mockAudioBuffer.duration = 0.1;
 
-      await hookData?.playAudio('dGVzdA==');
-      await hookData?.playAudio('dGVzdDI=');
+      await hookData?.queueAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdDI=');
       mockSetVoiceState.mockClear();
 
       const [firstSource, lastSource] = createdBufferSources;
@@ -217,7 +215,7 @@ describe('useAudioPlayer', () => {
     });
 
     test('should clean up buffer source on ended', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
       const [source] = createdBufferSources;
       // Simulate audio ended
@@ -230,23 +228,23 @@ describe('useAudioPlayer', () => {
     });
 
     test('should stop all audio and close context', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
-      hookData?.stopAudio();
+      hookData?.stopAllAudio();
 
       expect(mockAudioContext.close).toHaveBeenCalled();
     });
 
     test('should clear lastSourceRef onended callback on stop', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
       const [source] = createdBufferSources;
       const onEndedBefore = source.onended;
 
       expect(onEndedBefore).not.toBeNull();
 
-      hookData?.stopAudio();
+      hookData?.stopAllAudio();
 
-      // After stopAudio, the onended should be cleared
+      // After stopAllAudio, the onended should be cleared
       expect(source.onended).toBeNull();
     });
   });
@@ -258,7 +256,7 @@ describe('useAudioPlayer', () => {
 
     test('should handle invalid base64 data gracefully', async () => {
       await expect(async () => {
-        await hookData?.playAudio('invalid-base64!@#');
+        await hookData?.queueAudio('invalid-base64!@#');
       }).not.toThrow();
     });
 
@@ -268,7 +266,7 @@ describe('useAudioPlayer', () => {
       }) as unknown as typeof AudioContext;
 
       await expect(async () => {
-        await hookData?.playAudio('dGVzdA==');
+        await hookData?.queueAudio('dGVzdA==');
       }).rejects.toThrow('AudioContext not supported');
     });
   });
@@ -282,7 +280,7 @@ describe('useAudioPlayer', () => {
       mockAudioBuffer.duration = 0.05; // 50ms chunks
 
       // Simulate streaming 5 chunks
-      await Promise.all(Array.from({ length: 5 }, (_, i) => hookData?.playAudio(`chunk${i}`)));
+      await Promise.all(Array.from({ length: 5 }, (_, i) => hookData?.queueAudio(`chunk${i}`)));
 
       expect(createdBufferSources).toHaveLength(5);
       createdBufferSources.forEach(source => {
@@ -294,18 +292,18 @@ describe('useAudioPlayer', () => {
     });
 
     test('should handle playback interruption', async () => {
-      await hookData?.playAudio('dGVzdA==');
+      await hookData?.queueAudio('dGVzdA==');
 
-      hookData?.stopAudio();
+      hookData?.stopAllAudio();
 
       expect(mockAudioContext.close).toHaveBeenCalled();
     });
 
     test('should handle resume after stop', async () => {
       // Play, stop, then play again
-      await hookData?.playAudio('dGVzdA==');
-      hookData?.stopAudio();
-      await hookData?.playAudio('dGVzdDI=');
+      await hookData?.queueAudio('dGVzdA==');
+      hookData?.stopAllAudio();
+      await hookData?.queueAudio('dGVzdDI=');
 
       expect(AudioContext).toHaveBeenCalledTimes(2); // New context after stop
     });
@@ -313,11 +311,11 @@ describe('useAudioPlayer', () => {
     test('should reset nextPlayTime after stop allowing immediate playback', async () => {
       mockAudioBuffer.duration = 0.1;
 
-      await hookData?.playAudio('dGVzdA==');
-      hookData?.stopAudio();
+      await hookData?.queueAudio('dGVzdA==');
+      hookData?.stopAllAudio();
       mockSetVoiceState.mockClear();
 
-      await hookData?.playAudio('dGVzdDI=');
+      await hookData?.queueAudio('dGVzdDI=');
 
       // Should trigger bot_speaking again since it's a fresh start
       expect(mockSetVoiceState).toHaveBeenCalledWith('bot_speaking');
@@ -333,13 +331,13 @@ describe('useAudioPlayer', () => {
       const largeBase64 = 'A'.repeat(10000);
 
       await expect(async () => {
-        await hookData?.playAudio(largeBase64);
+        await hookData?.queueAudio(largeBase64);
       }).not.toThrow();
     });
 
     test('should handle rapid successive calls', async () => {
       // Ensure the mock "base64" data has an even length as Int16Array requires multiples of 2 bytes
-      await Promise.all(Array.from({ length: 100 }, (_, i) => hookData?.playAudio(`chunk${i}`.padEnd(8, ' '))));
+      await Promise.all(Array.from({ length: 100 }, (_, i) => hookData?.queueAudio(`chunk${i}`.padEnd(8, ' '))));
 
       expect(createdBufferSources).toHaveLength(100);
       createdBufferSources.forEach(source => {

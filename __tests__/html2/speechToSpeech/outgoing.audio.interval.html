@@ -45,7 +45,7 @@
         const capturedChunks = [];
         const originalPostActivity = directLine.postActivity.bind(directLine);
         directLine.postActivity = (activity) => {
-          if (activity.name === 'stream.chunk' && activity.payload?.voice) {
+          if (activity.name === 'stream.chunk' && activity.payload?.voice?.content) {
             capturedChunks.push({
               ...activity,
               capturedAt: Date.now()

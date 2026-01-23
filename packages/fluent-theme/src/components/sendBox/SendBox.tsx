@@ -1,4 +1,5 @@
 import { Components, hooks } from 'botframework-webchat';
+import { usePostVoiceActivity } from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, {
   memo,
@@ -33,14 +34,13 @@ const {
   useFocus,
   useLocalizer,
   useMakeThumbnail,
-  usePostVoiceActivity,
   useRegisterFocusSendBox,
   useSendBoxAttachments,
   useSendBoxValue,
   useSendMessage,
-  useSpeechToSpeech,
   useStyleOptions,
-  useUIState
+  useUIState,
+  useVoiceState
 } = hooks;
 
 const { AttachmentBar, TextArea } = Components;
@@ -69,8 +69,9 @@ function SendBox(props: Props) {
   const setFocus = useFocus();
   const postVoiceActivity = usePostVoiceActivity();
   const speechStateMessage = useSpeechStateMessage();
-  const [{ recording }] = useSpeechToSpeech();
+  const [voiceState] = useVoiceState();
 
+  const recording = voiceState !== 'idle';
   const message = props.isPrimary ? globalMessage : localMessage;
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
   const isBlueprint = uiState === 'blueprint';

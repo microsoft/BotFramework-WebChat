@@ -104,7 +104,7 @@
         // THEN: Verify recording state is active (AudioWorklet is functioning)
         await pageConditions.became(
           'Voice state is listening (recording active)',
-          () => store.getState().voice?.recording === true && store.getState().voice?.speechState === 'listening',
+          () => store.getState().voice?.voiceState === 'listening',
           1000
         );
 

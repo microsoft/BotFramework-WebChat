@@ -72,7 +72,7 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
     return next(request);
   }),
   createActivityBorderMiddleware(function FluentBorderFlair({ request, Next, ...props }) {
-    if (request.voiceTranscriptRole === 'bot') {
+    if (request.modality.has('audio') && request.from === 'bot') {
       return (
         <BorderFlair showFlair={true}>
           <Next {...props} />

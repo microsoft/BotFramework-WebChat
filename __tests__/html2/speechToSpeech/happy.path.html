@@ -64,7 +64,7 @@
         // THEN: Verify voice state is recording/listening
         await pageConditions.became(
           'Voice state is listening',
-          () => store.getState().voice?.speechState === 'listening',
+          () => store.getState().voice?.voiceState === 'listening',
           1000
         );
 

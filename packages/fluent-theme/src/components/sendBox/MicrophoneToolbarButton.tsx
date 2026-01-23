@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat';
 import cx from 'classnames';
 import React, { memo, useCallback } from 'react';
 
@@ -9,29 +9,37 @@ import { ToolbarButton } from './Toolbar';
 
 import styles from './Toolbar.module.css';
 
-const { useSpeechToSpeech, useLocalizer } = hooks;
+const { useVoiceState, useStartVoice, useStopVoice, useLocalizer } = hooks;
 
 function MicrophoneToolbarButton() {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
-  const [{ recording, setRecording, speechState }] = useSpeechToSpeech();
+  const [voiceState] = useVoiceState();
+  const startVoice = useStartVoice();
+  const stopVoice = useStopVoice();
+
+  const recording = voiceState !== 'idle';
 
   const handleMicrophoneClick = useCallback(() => {
-    setRecording(!recording);
-  }, [recording, setRecording]);
+    if (recording) {
+      stopVoice();
+    } else {
+      startVoice();
+    }
+  }, [recording, startVoice, stopVoice]);
 
   const ariaLabel = localize(
     recording ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT'
   );
 
-  const isBotSpeaking = speechState === 'bot_speaking';
-  const isUserSpeaking = speechState === 'user_speaking';
+  const isBotSpeaking = voiceState === 'bot_speaking';
+  const isUserSpeaking = voiceState === 'user_speaking';
 
   return (
     <ToolbarButton
       aria-label={ariaLabel}
       className={cx({
-        [classNames['sendbox__toolbar-button--active']]: speechState !== 'idle',
+        [classNames['sendbox__toolbar-button--active']]: voiceState !== 'idle',
         [classNames['sendbox__toolbar-button--with-pulse']]: isBotSpeaking || isUserSpeaking,
         [classNames['sendbox__toolbar-button--with-gradient']]: isUserSpeaking
       })}
@@ -39,7 +47,7 @@ function MicrophoneToolbarButton() {
       onClick={handleMicrophoneClick}
       type="button"
     >
-      <FluentIcon appearance="text" icon={speechState === 'bot_speaking' ? 'audio-playing' : 'microphone'} />
+      <FluentIcon appearance="text" icon={voiceState === 'bot_speaking' ? 'audio-playing' : 'microphone'} />
     </ToolbarButton>
   );
 }

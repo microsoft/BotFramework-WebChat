@@ -1,13 +1,13 @@
 import { hooks } from 'botframework-webchat';
 import { useMemo } from 'react';
 
-const { useLocalizer, useSpeechToSpeech } = hooks;
+const { useLocalizer, useVoiceState } = hooks;
 
 export default function useSpeechPlaceholder(): string {
   const localize = useLocalizer();
-  const [{ speechState }] = useSpeechToSpeech();
+  const [voiceState] = useVoiceState();
   return useMemo(() => {
-    switch (speechState) {
+    switch (voiceState) {
       case 'idle':
         return localize('TEXT_INPUT_SPEECH_IDLE_PLACEHOLDER');
 
@@ -24,5 +24,5 @@ export default function useSpeechPlaceholder(): string {
       default:
         return localize('TEXT_INPUT_SPEECH_IDLE_PLACEHOLDER');
     }
-  }, [speechState, localize]);
+  }, [voiceState, localize]);
 }

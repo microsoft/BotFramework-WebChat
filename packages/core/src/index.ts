@@ -44,23 +44,14 @@ import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
 import getVoiceActivityRole from './utils/voiceActivity/getVoiceActivityRole';
 import getVoiceActivityText from './utils/voiceActivity/getVoiceActivityText';
-import {
-  startVoiceRecording,
-  stopVoiceRecording,
-  setVoiceState,
-  registerVoiceHandler,
-  postVoiceActivity
-} from './actions/voiceActivityActions';
-import type {
-  SpeechState,
-  VoiceHandler,
-  VoiceActivityActions,
-  VoiceStartRecordingAction,
-  VoiceStopRecordingAction,
-  VoiceSetStateAction,
-  VoiceRegisterHandlerAction,
-  VoicePostActivityAction
-} from './actions/voiceActivityActions';
+import startVoiceRecording from './actions/startVoiceRecording';
+import stopVoiceRecording from './actions/stopVoiceRecording';
+import setVoiceState from './actions/setVoiceState';
+import registerVoiceHandler from './actions/registerVoiceHandler';
+import unregisterVoiceHandler from './actions/unregisterVoiceHandler';
+import postVoiceActivity from './actions/postVoiceActivity';
+import type { VoiceState } from './actions/setVoiceState';
+import type { VoiceHandler } from './actions/registerVoiceHandler';
 
 export {
   isForbiddenPropertyName,
@@ -136,6 +127,7 @@ export {
   postActivity,
   postVoiceActivity,
   registerVoiceHandler,
+  unregisterVoiceHandler,
   sendEvent,
   sendFiles,
   sendMessage,
@@ -185,14 +177,8 @@ export type {
   OrgSchemaThing,
   OrgSchemaUserReview,
   SendBoxAttachment,
-  SpeechState,
-  VoiceActivityActions,
   VoiceHandler,
-  VoicePostActivityAction,
-  VoiceRegisterHandlerAction,
-  VoiceSetStateAction,
-  VoiceStartRecordingAction,
-  VoiceStopRecordingAction,
+  VoiceState,
   WebChatActivity
 };
 

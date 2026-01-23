@@ -1,5 +1,5 @@
 import { select, takeEvery } from 'redux-saga/effects';
-import { VOICE_POST_ACTIVITY } from '../actions/voiceActivityActions';
+import { VOICE_POST_ACTIVITY } from '../actions/postVoiceActivity';
 import languageSelector from '../selectors/language';
 import dateToLocaleISOString from '../utils/dateToLocaleISOString';
 import whileConnected from './effects/whileConnected';
@@ -8,7 +8,7 @@ import observeOnce from './effects/observeOnce';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { VoicePostActivityAction } from '../actions/voiceActivityActions';
+import type { VoicePostActivityAction } from '../actions/postVoiceActivity';
 
 /**
  * Saga for handling outgoing voice activities.

@@ -49,7 +49,6 @@ export {
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
-  usePostVoiceActivity,
   useReferenceGrammarID,
   useRegisterFocusSendBox,
   useRelativeTimeFormatter,
@@ -75,9 +74,10 @@ export {
   useSetNotification,
   useShouldReduceMotion,
   useShouldSpeakIncomingActivity,
-  useSpeechToSpeech,
   useStartDictate,
+  useStartVoice,
   useStopDictate,
+  useStopVoice,
   useStyleOptions,
   useStyleSet,
   useSubmitSendBox,
@@ -96,6 +96,7 @@ export {
   useUserID,
   useUsername,
   useVoiceSelector,
+  useVoiceState,
   useWebSpeechPonyfill,
   type SendBoxFocusOptions
 } from 'botframework-webchat-component/hook';

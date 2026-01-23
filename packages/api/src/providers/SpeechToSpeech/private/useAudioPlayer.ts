@@ -1,5 +1,5 @@
 import { useRef, useCallback, useMemo } from 'react';
-import useWebChatAPIContext from '../../../hooks/internal/useWebChatAPIContext';
+import useSetVoiceState from '../../../hooks/internal/useSetVoiceState';
 
 const DEFAULT_SAMPLE_RATE = 24000;
 const INT16_SCALE = 32768;
@@ -8,9 +8,9 @@ export function useAudioPlayer() {
   const audioCtxRef = useRef<AudioContext | undefined>(undefined);
   const nextPlayTimeRef = useRef(0);
   const lastSourceRef = useRef<AudioBufferSourceNode | undefined>(undefined);
-  const { setVoiceState } = useWebChatAPIContext();
+  const setVoiceState = useSetVoiceState();
 
-  const playAudio = useCallback(
+  const queueAudio = useCallback(
     async (base64: string) => {
       if (!audioCtxRef.current) {
         audioCtxRef.current = new AudioContext({ sampleRate: DEFAULT_SAMPLE_RATE });
@@ -50,7 +50,7 @@ export function useAudioPlayer() {
 
         lastSourceRef.current = src;
         const isFirstChunk = nextPlayTimeRef.current <= audioCtx.currentTime;
-        // Only dispatch bot_speaking on first chunk, we are resetting refs on stopAudio (bargein, mic off)
+        // Only dispatch bot_speaking on first chunk, we are resetting refs on stopAllAudio (bargein, mic off)
         if (isFirstChunk) {
           setVoiceState('bot_speaking');
         }
@@ -65,23 +65,23 @@ export function useAudioPlayer() {
     [setVoiceState]
   );
 
-  const stopAudio = useCallback(() => {
+  const stopAllAudio = useCallback(() => {
     nextPlayTimeRef.current = 0;
     if (lastSourceRef.current) {
       lastSourceRef.current.onended = null;
-      lastSourceRef.current = null;
+      lastSourceRef.current = undefined;
     }
     if (audioCtxRef.current) {
       audioCtxRef.current.close();
-      audioCtxRef.current = null;
+      audioCtxRef.current = undefined;
     }
   }, []);
 
   return useMemo(
     () => ({
-      playAudio,
-      stopAudio
+      queueAudio,
+      stopAllAudio
     }),
-    [playAudio, stopAudio]
+    [queueAudio, stopAllAudio]
   );
 }

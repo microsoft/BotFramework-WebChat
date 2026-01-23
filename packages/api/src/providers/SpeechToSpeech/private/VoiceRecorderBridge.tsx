@@ -1,18 +1,18 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useRecorder } from './useRecorder';
-import usePostVoiceActivity from '../../../hooks/usePostVoiceActivity';
-import useVoiceRecording from '../../../hooks/internal/useVoiceRecording';
-import useVoiceHandler from '../../../hooks/internal/useVoiceHandler';
+import usePostVoiceActivity from '../../../hooks/internal/usePostVoiceActivity';
+import useVoiceState from '../../../hooks/useVoiceState';
 
 /**
  * VoiceRecorderBridge is an invisible component that bridges the Redux recording state
  * with the actual microphone recording functionality.
  */
 export function VoiceRecorderBridge(): null {
-  const [recording] = useVoiceRecording();
-  const [voiceHandler] = useVoiceHandler();
+  const [voiceState] = useVoiceState();
   const postVoiceActivity = usePostVoiceActivity();
-  const prevRecordingRef = useRef(recording);
+
+  // Derive recording state from voiceState - recording is active when not idle
+  const recording = voiceState !== 'idle';
 
   const handleAudioChunk = useCallback(
     (base64: string, timestamp: string) => {
@@ -31,24 +31,13 @@ export function VoiceRecorderBridge(): null {
     [postVoiceActivity]
   );
 
-  const { startRecording, stopRecording } = useRecorder(handleAudioChunk);
+  const { record } = useRecorder(handleAudioChunk);
 
   useEffect(() => {
-    // This is to check transition of recording state, it it does not match then perorm actions
-    const wasRecording = prevRecordingRef.current;
-    prevRecordingRef.current = recording;
-
-    if (recording && !wasRecording) {
-      startRecording();
-    } else if (!recording && wasRecording) {
-      voiceHandler.stopAudio();
-      stopRecording();
+    if (recording) {
+      return record();
     }
-
-    return () => {
-      stopRecording();
-    };
-  }, [recording, startRecording, stopRecording, voiceHandler]);
+  }, [record, recording]);
 
   return null;
 }

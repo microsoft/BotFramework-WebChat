@@ -3,14 +3,13 @@ import updateIn from 'simple-update-in';
 
 import observeEach from './effects/observeEach';
 import queueIncomingActivity from '../actions/queueIncomingActivity';
-import { setVoiceState } from '../actions/voiceActivityActions';
+import setVoiceState from '../actions/setVoiceState';
 import whileConnected from './effects/whileConnected';
 import isVoiceActivity from '../utils/voiceActivity/isVoiceActivity';
 import isVoiceTranscriptActivity from '../utils/voiceActivity/isVoiceTranscriptActivity';
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { WebChatActivity } from '../types/WebChatActivity';
-import type { VoiceHandler } from '../actions/voiceActivityActions';
 
 const PASSTHRU_FN = (value: unknown) => value;
 
@@ -80,30 +79,31 @@ function patchFromName(activity: DirectLineActivity) {
 function* observeActivity({ directLine, userID }: { directLine: DirectLineJSBotConnection; userID?: string }) {
   yield observeEach(directLine.activity$, function* observeActivity(activity: DirectLineActivity) {
     // Handle voice activities separately - don't store them in Redux (except transcripts)
-    const directLineActivity = activity as DirectLineActivity;
-    if (isVoiceActivity(directLineActivity) && !isVoiceTranscriptActivity(directLineActivity)) {
-      const voiceHandler: VoiceHandler = yield select(state => state.voice?.voiceHandler);
-      const recording: boolean = yield select(state => state.voice?.recording);
+    if (isVoiceActivity(activity) && !isVoiceTranscriptActivity(activity)) {
+      const { recording, voiceHandlers } = yield select(state => ({
+        recording: state.voice.voiceState !== 'idle',
+        voiceHandlers: state.voice.voiceHandlers
+      }));
 
       if (!recording) {
         return;
       }
 
-      switch (directLineActivity.name) {
+      switch (activity.name) {
         case 'stream.chunk': {
-          const audioContent = directLineActivity?.payload?.voice?.content;
+          const audioContent = activity?.payload?.voice?.content;
           if (audioContent) {
-            voiceHandler.playAudio(audioContent);
+            voiceHandlers.forEach(handler => handler.queueAudio(audioContent));
           }
           break;
         }
 
         case 'session.update': {
-          const session = directLineActivity?.payload?.voice?.session;
+          const session = activity?.payload?.voice?.session;
 
           switch (session) {
             case 'request.detected':
-              voiceHandler.stopAudio();
+              voiceHandlers.forEach(handler => handler.stopAllAudio());
               yield put(setVoiceState('user_speaking'));
               break;
 

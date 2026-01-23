@@ -9,7 +9,7 @@ import { VoiceRecorderBridge } from './private/VoiceRecorderBridge';
  * 1. VoiceHandlerBridge - registers audio player functions with Redux
  * 2. VoiceRecorderBridge - reacts to recording state and manages microphone
  *
- * Use the `useSpeechToSpeech` hook to access state and controls.
+ * Use the `useVoiceState`, `useStartVoice`, and `useStopVoice` hooks to access state and controls.
  */
 export const SpeechToSpeechComposer: React.FC<{ readonly children: ReactNode }> = ({ children }) => (
   <React.Fragment>

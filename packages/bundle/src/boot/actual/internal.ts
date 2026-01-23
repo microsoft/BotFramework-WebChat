@@ -1,9 +1,10 @@
 // We should review exports in this file to make sure 1P = 3P.
 export {
   type ActivityMiddleware,
-  type TypingIndicatorMiddleware,
-  type ActivityStatusMiddleware
+  type ActivityStatusMiddleware,
+  type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
+export { usePostVoiceActivity } from 'botframework-webchat-api/internal';
 export {
   CodeHighlighterComposer,
   createIconComponent,
