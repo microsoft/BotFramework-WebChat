@@ -4,7 +4,8 @@ import React, {
   FocusEventHandler,
   forwardRef,
   KeyboardEventHandler,
-  ReactEventHandler
+  ReactEventHandler,
+  type MouseEventHandler
 } from 'react';
 
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
@@ -21,6 +22,7 @@ type AutoResizeTextAreaProps = Readonly<{
   enterKeyHint?: string | undefined;
   inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
   onChange?: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+  onClick?: MouseEventHandler<HTMLTextAreaElement> | undefined;
   onFocus?: FocusEventHandler<HTMLTextAreaElement> | undefined;
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
   onKeyDownCapture?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
@@ -45,6 +47,7 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
       enterKeyHint,
       inputMode,
       onChange,
+      onClick,
       onFocus,
       onKeyDown,
       onKeyDownCapture,
@@ -77,6 +80,7 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
           disabled={disabled}
           inputMode={inputMode}
           onChange={onChange}
+          onClick={onClick}
           onFocus={onFocus}
           onKeyDown={onKeyDown}
           onKeyDownCapture={onKeyDownCapture}
