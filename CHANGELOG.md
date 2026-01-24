@@ -388,6 +388,10 @@ Breaking changes in this release:
 - Downgraded graph upsert conflict checks, by [@compulim](https://github.com/compulim) in PR [#5674](https://github.com/microsoft/BotFramework-WebChat/pull/5674)
 - Fixed virtual keyboard should show up on tap after being suppressed, in iOS 26.2, by [@compulim](https://github.com/compulim) in PR [#5678](https://github.com/microsoft/BotFramework-WebChat/pull/5678)
 
+# Samples
+
+-  Added [`06.recomposing-ui\f.continuous-speech-recognition`](../../samples/06.recomposing-ui/f.continuous-speech-recognition) for continuous listening recomposing sample, in PR [#5431](https://github.com/microsoft/BotFramework-WebChat/pull/5431), by [@RushikeshGavali](https://github.com/RushikeshGavali)
+
 ## [4.18.0] - 2024-07-10
 
 ### Added
