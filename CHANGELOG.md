@@ -387,6 +387,7 @@ Breaking changes in this release:
    - Added `img-src data:`, required for icons
 - Downgraded graph upsert conflict checks, by [@compulim](https://github.com/compulim) in PR [#5674](https://github.com/microsoft/BotFramework-WebChat/pull/5674)
 - Fixed virtual keyboard should show up on tap after being suppressed, in iOS 26.2, by [@compulim](https://github.com/compulim) in PR [#5678](https://github.com/microsoft/BotFramework-WebChat/pull/5678)
+- Fixed compatibility with `create-react-app` by adding file extension to `core-js` imports, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ## [4.18.0] - 2024-07-10
 
