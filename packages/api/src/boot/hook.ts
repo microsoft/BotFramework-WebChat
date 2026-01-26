@@ -7,6 +7,7 @@ export {
   useAvatarForUser,
   useBuildRenderActivityCallback,
   useByteFormatter,
+  useCapabilities,
   useConnectivityStatus,
   useCreateActivityRenderer,
   useCreateActivityStatusRenderer,

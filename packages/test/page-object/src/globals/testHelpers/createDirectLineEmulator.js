@@ -103,10 +103,43 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
 
   autoConnect && connectedWithResolvers.resolve();
 
+  // Generic capabilities storage
+  const capabilities = new Map();
+
+  // Helper to emit capabilitiesChanged event
+  const emitCapabilitiesChangedEvent = () => {
+    activityDeferredObservable.next({
+      from: { id: 'bot', role: 'bot' },
+      id: uniqueId(),
+      name: 'capabilitiesChanged',
+      timestamp: getTimestamp(),
+      type: 'event'
+    });
+  };
+
   const directLine = {
     activity$: shareObservable(activityDeferredObservable.observable),
     actPostActivity,
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
+
+    /**
+     * Generic capability setter - dynamically creates getter on directLine object.
+     *
+     * @example
+     * directLine.setCapability('getVoiceConfiguration', { voice: 'en-US', speed: 1.0 });
+     * directLine.setCapability('getSessionInfo', { sessionId: '123' }, { emitEvent: false });
+     */
+    setCapability: (getterName, value, { emitEvent = true } = {}) => {
+      capabilities.set(getterName, value);
+
+      // Dynamically add/update getter on directLine object
+      // eslint-disable-next-line security/detect-object-injection
+      directLine[getterName] = () => capabilities.get(getterName);
+
+      if (emitEvent) {
+        emitCapabilitiesChangedEvent();
+      }
+    },
     end: () => {
       // This is a mock and will no-op on dispatch().
     },

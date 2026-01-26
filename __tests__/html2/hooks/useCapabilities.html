@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { useCapabilities } from 'botframework-webchat/hook';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        // TEST 1: Initial fetch on mount - capabilities should be fetched when directLine is available
+        const { directLine, store } = createDirectLineEmulator();
+
+        // Set initial capability BEFORE mount (simulating adapter already having capability)
+        directLine.setCapability('getVoiceConfiguration', { voice: 'en-US', speed: 1.0 }, { emitEvent: false });
+
+        const renderHook = createRenderHook(
+          document.getElementById('webchat'),
+          { directLine, store },
+          { renderWebChat: true }
+        );
+
+        await renderHook();
+        await pageConditions.uiConnected();
+
+        // Get initial voiceConfiguration using selector
+        const initialVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        expect(initialVoiceConfig).toEqual({ voice: 'en-US', speed: 1.0 });
+
+        // TEST 2: Regular activity should NOT trigger capability re-calculation
+        // Store reference to current voiceConfiguration
+        const preActivityVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        // Send a regular message (not capabilitiesChanged event)
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          text: 'Hello! This is a regular message.',
+          from: { id: 'bot', role: 'bot' }
+        });
+
+        // Wait for activity to be processed
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Get voiceConfiguration after regular activity
+        const postActivityVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        // Reference should be the same (no re-calculation for regular activities)
+        expect(postActivityVoiceConfig).toBe(preActivityVoiceConfig);
+
+        // TEST 3: capabilitiesChanged event SHOULD trigger re-calculation
+        const preChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        // Update capability and emit event
+        directLine.setCapability('getVoiceConfiguration', { voice: 'en-GB', speed: 1.5 }, { emitEvent: true });
+
+        // Wait for event to be processed
+        await waitFor(async () => {
+          const voiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+          return voiceConfig?.voice === 'en-GB';
+        }, { timeout: 2000 });
+
+        const postChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        expect(postChangeVoiceConfig).toEqual({ voice: 'en-GB', speed: 1.5 });
+        expect(postChangeVoiceConfig).not.toBe(preChangeVoiceConfig);
+
+        // TEST 4: Same value should reuse reference (shallow equality check)
+        const preNoChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        // Set same value and emit event
+        directLine.setCapability('getVoiceConfiguration', { voice: 'en-GB', speed: 1.5 }, { emitEvent: true });
+
+        // Wait for event to be processed
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        const postNoChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
+
+        // Reference should be the same when values are equal
+        expect(postNoChangeVoiceConfig).toBe(preNoChangeVoiceConfig);
+        expect(postNoChangeVoiceConfig).toEqual({ voice: 'en-GB', speed: 1.5 });
+      });
+    </script>
+  </body>
+</html>
