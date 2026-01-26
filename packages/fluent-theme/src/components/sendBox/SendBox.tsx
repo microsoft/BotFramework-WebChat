@@ -1,4 +1,4 @@
-import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, {
   memo,
@@ -74,31 +74,14 @@ function SendBox(props: Props) {
 
   useRegisterFocusSendBox(
     useCallback(
-      ({ noKeyboard, waitUntil }: SendBoxFocusOptions) => {
-        if (!inputRef.current) {
-          return;
-        }
-        if (noKeyboard) {
-          waitUntil(
-            (async () => {
-              const previousReadOnly = inputRef.current?.getAttribute('readonly');
-              inputRef.current?.setAttribute('readonly', 'true');
-              // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
-              //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
-              //       Or the second `focusCallback` should not set `readonly` to `true`.
-              // eslint-disable-next-line no-restricted-globals
-              await new Promise(resolve => setTimeout(resolve, 0));
-              inputRef.current?.focus();
-              if (typeof previousReadOnly !== 'string') {
-                inputRef.current?.removeAttribute('readonly');
-              } else {
-                inputRef.current?.setAttribute('readonly', previousReadOnly);
-              }
-            })()
-          );
-        } else {
-          inputRef.current?.focus();
-        }
+      ({ noKeyboard }) => {
+        const { current } = inputRef;
+
+        // Setting `inputMode` to `none` temporarily to suppress soft keyboard in iOS.
+        // We will revert the change once the end-user tap on the send box.
+        // This code path is only triggered when the user press "send" button to send the message, instead of pressing ENTER key.
+        noKeyboard && current?.setAttribute('inputmode', 'none');
+        current?.focus();
       },
       [inputRef]
     )
@@ -147,6 +130,8 @@ function SendBox(props: Props) {
     },
     [makeThumbnail, setAttachments]
   );
+
+  const handleClick = useCallback(({ currentTarget }) => currentTarget.removeAttribute('inputmode'), []);
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
@@ -210,6 +195,7 @@ function SendBox(props: Props) {
           completion={props.completion}
           data-testid={testIds.sendBoxTextBox}
           hidden={shouldShowTelephoneKeypad}
+          onClick={handleClick}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
           ref={inputRef}

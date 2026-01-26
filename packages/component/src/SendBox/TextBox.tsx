@@ -4,7 +4,6 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
-import { ie11 } from '../Utils/detectBrowser';
 import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useScrollDown from '../hooks/useScrollDown';
@@ -17,7 +16,9 @@ import AutoResizeTextArea from './AutoResizeTextArea';
 import type { MutableRefObject } from 'react';
 import testIds from '../testIds';
 
-const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
+const { useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
+
+const DEFAULT_INPUT_MODE = 'text';
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -83,7 +84,6 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   const [value, setValue] = useSendBoxValue();
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
-  const [{ setTimeout }] = usePonyfill();
   const [uiState] = useUIState();
   const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
   const localize = useLocalizer();
@@ -165,43 +165,24 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   );
 
   const focusCallback = useCallback(
-    (options: SendBoxFocusOptions) => {
-      const { noKeyboard } = options;
+    ({ noKeyboard }: SendBoxFocusOptions) => {
       const { current } = inputElementRef;
 
-      if (current) {
-        // The "disable soft keyboard on mobile devices" logic will not work on IE11. It will cause the <input> to become read-only until next focus.
-        // Thus, no mobile devices carry IE11 so we don't need to explicitly disable soft keyboard on IE11.
-        // See #3757 for repro and details.
-        if (noKeyboard && !ie11) {
-          // To not activate the virtual keyboard while changing focus to an input, we will temporarily set it as read-only and flip it back.
-          // https://stackoverflow.com/questions/7610758/prevent-iphone-default-keyboard-when-focusing-an-input/7610923
-          const readOnly = current.getAttribute('readonly');
-
-          current.setAttribute('readonly', 'readonly');
-
-          options.waitUntil(
-            (async function () {
-              // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
-              //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
-              //       Or the second `focusCallback` should not set `readonly` to `true`.
-              await new Promise(resolve => setTimeout(resolve, 0));
-
-              if (current) {
-                current.focus();
-                readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-              }
-            })()
-          );
-        } else {
-          current.focus();
-        }
-      }
+      // Setting `inputMode` to `none` temporarily to suppress soft keyboard in iOS.
+      // We will revert the change once the end-user tap on the send box.
+      // This code path is only triggered when the user press "send" button to send the message, instead of pressing ENTER key.
+      noKeyboard && current?.setAttribute('inputmode', 'none');
+      current?.focus();
     },
-    [inputElementRef, setTimeout]
+    [inputElementRef]
   );
 
   useRegisterFocusSendBox(focusCallback);
+
+  const handleClick = useCallback(
+    ({ currentTarget }) => currentTarget.setAttribute('inputmode', DEFAULT_INPUT_MODE),
+    []
+  );
 
   const emojiMap = useMemo(() => new Map<string, string>(Object.entries(emojiSet)), [emojiSet]);
 
@@ -225,8 +206,9 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"
-          inputMode="text"
+          inputMode={DEFAULT_INPUT_MODE}
           onChange={setValue}
+          onClick={handleClick}
           onKeyDownCapture={disabled ? undefined : handleKeyDownCapture}
           onKeyPress={disabled ? undefined : handleKeyPress}
           placeholder={typeYourMessageString}
@@ -244,8 +226,9 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"
-          inputMode="text"
+          inputMode={DEFAULT_INPUT_MODE}
           onChange={setValue}
+          onClick={handleClick}
           onKeyDownCapture={disabled ? undefined : handleKeyDownCapture}
           onKeyPress={disabled ? undefined : handleKeyPress}
           placeholder={typeYourMessageString}

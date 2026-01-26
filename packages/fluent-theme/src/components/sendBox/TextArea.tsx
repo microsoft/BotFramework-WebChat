@@ -7,6 +7,7 @@ import React, {
   useRef,
   type FormEventHandler,
   type KeyboardEventHandler,
+  type MouseEventHandler,
   type ReactNode
 } from 'react';
 import { useStyles } from '../../styles';
@@ -31,6 +32,7 @@ const TextArea = forwardRef<
      *   This ensures the flow of focus did not sent to document body
      */
     hidden?: boolean | undefined;
+    onClick?: MouseEventHandler<HTMLTextAreaElement> | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
     startRows?: number | undefined;
@@ -88,6 +90,7 @@ const TextArea = forwardRef<
             aria-label={props['aria-label']}
             className={cx(classNames['sendbox__text-area-input'], classNames['sendbox__text-area-shared'])}
             data-testid={props['data-testid']}
+            onClick={props.onClick}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}
             onInput={props.onInput}
