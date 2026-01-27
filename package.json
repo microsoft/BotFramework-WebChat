@@ -48,7 +48,6 @@
     "docker:up": "docker compose -f docker-compose-wsl2.yml down && docker compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
     "eslint": "npm run precommit",
     "lint-staged": "lint-staged",
-    "prebuild": "cd node_modules && cd abort-controller-es5 && npm run postinstall",
     "precommit": "npm run precommit --if-present --workspaces",
     "precommit:biome": "npm run biome -- --no-errors-on-unmatched",
     "precommit:eslint:api": "cd packages && cd api && npm run precommit:eslint",
