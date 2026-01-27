@@ -1,5 +1,5 @@
 // @ts-ignore No @types/core-js-pure
-import { default as toSpliced_ } from 'core-js-pure/features/array/to-spliced';
+import { default as toSpliced_ } from 'core-js-pure/features/array/to-spliced.js';
 
 // The Node.js version we are using for CI/CD does not support Array.prototype.toSpliced yet.
 function toSpliced<T>(array: readonly T[], start: number, deleteCount: number, ...items: T[]): T[] {
