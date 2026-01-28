@@ -1,6 +1,10 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { getVoiceActivityRole } from 'botframework-webchat-core';
-import { getOrgSchemaMessage, PartGrouping, type WebChatActivity } from 'botframework-webchat/internal';
+import {
+  getOrgSchemaMessage,
+  getVoiceActivityRole,
+  PartGrouping,
+  type WebChatActivity
+} from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';

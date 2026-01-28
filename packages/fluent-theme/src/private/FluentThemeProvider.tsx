@@ -9,11 +9,11 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import {
+  isVoiceTranscriptActivity,
   type ActivityMiddleware,
   type ActivityStatusMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat/internal';
-import { isVoiceTranscriptActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 

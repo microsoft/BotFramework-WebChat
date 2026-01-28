@@ -18,4 +18,11 @@ export {
   useLiveRegion,
   type HighlightCodeFn
 } from 'botframework-webchat-component/internal';
-export { getOrgSchemaMessage, type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
+export {
+  getOrgSchemaMessage,
+  getVoiceActivityRole,
+  getVoiceActivityText,
+  isVoiceTranscriptActivity,
+  type DirectLineCardAction,
+  type WebChatActivity
+} from 'botframework-webchat-core';
