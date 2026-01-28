@@ -1,5 +1,6 @@
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 
+// TODO: [P2] Move this file to `base` package.
 export default function shallowEqual(x, y) {
   if (x === y) {
     return true;

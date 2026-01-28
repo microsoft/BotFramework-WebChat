@@ -9,8 +9,8 @@ type Capabilities = Readonly<{
  * Optional for adapter/server to provide these configs for speech-to-speech.
  */
 type VoiceConfiguration = Readonly<{
-  sampleRate: number;
   chunkIntervalMs: number;
+  sampleRate: number;
 }>;
 
 export type { Capabilities, VoiceConfiguration };

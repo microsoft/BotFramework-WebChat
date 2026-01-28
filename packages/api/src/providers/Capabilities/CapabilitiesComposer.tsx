@@ -46,6 +46,7 @@ const CapabilitiesComposer = memo(({ children }: Props) => {
     [activities]
   );
 
+  // TODO: [P1] update to use EventTarget than activity$.
   const capabilities = useReduceMemo(
     activitiesWithInit,
     useCallback(

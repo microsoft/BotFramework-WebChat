@@ -1,6 +1,6 @@
 # Capabilities
 
-Web Chat supports dynamic capability discovery from adapters. Capabilities allow adapters to expose configuration values that WebChat components can consume and react to changes.
+Web Chat supports dynamic capability discovery from adapters. Capabilities allow adapters to expose configuration values that Web Chat components can consume and react to changes.
 
 ## Using the hook
 
@@ -22,9 +22,9 @@ if (voiceConfig) {
 
 ## Available capabilities
 
-| Capability | Type | Description |
-|------------|------|-------------|
-| `voiceConfiguration` | `{ sampleRate: number, chunkIntervalMs: number }` | Audio settings for Speech-to-Speech |
+| Capability           | Type                                               | Description                         |
+| -------------------- | -------------------------------------------------- | ----------------------------------- |
+| `voiceConfiguration` | `{ chunkIntervalMs: number, sampleRate: number }`  | Audio settings for Speech-to-Speech |
 
 ## How it works
 

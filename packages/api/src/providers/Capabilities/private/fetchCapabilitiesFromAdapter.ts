@@ -37,13 +37,13 @@ export default function fetchCapabilitiesFromAdapter(
         const prevValue = prevCapabilities[key];
 
         if (fetchedValue) {
-          if (prevValue !== undefined && isEqual(prevValue, fetchedValue)) {
+          if (typeof prevValue !== 'undefined' && isEqual(prevValue, fetchedValue)) {
             entries.push([key, prevValue]);
           } else {
             entries.push([key, Object.freeze({ ...fetchedValue })]);
             hasChanged = true;
           }
-        } else if (prevValue !== undefined) {
+        } else if (typeof prevValue !== 'undefined') {
           hasChanged = true;
         }
       } catch (error) {
