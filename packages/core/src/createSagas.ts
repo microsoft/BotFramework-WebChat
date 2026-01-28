@@ -45,6 +45,7 @@ export default function createSagas({ ponyfill }: CreateSagasOptions): Saga {
     yield fork(markAllAsSpokenOnStopSpeakActivitySaga);
     yield fork(observeActivitySaga);
     yield fork(postActivitySaga, ponyfill);
+    yield fork(postVoiceActivitySaga, ponyfill);
     yield fork(queueIncomingActivitySaga, ponyfill);
     yield fork(sendEventToPostActivitySaga);
     yield fork(sendFilesToPostActivitySaga);
@@ -58,6 +59,5 @@ export default function createSagas({ ponyfill }: CreateSagasOptions): Saga {
     yield fork(stopDictateOnCardActionSaga);
     yield fork(stopSpeakingActivityOnInputSaga);
     yield fork(submitSendBoxSaga);
-    yield fork(postVoiceActivitySaga, ponyfill);
   };
 }

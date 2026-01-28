@@ -6,7 +6,7 @@ const VoiceTranscriptActivitySchema = object({
   name: literal('stream.end'),
   payload: object({
     voice: object({
-      origin: picklist(['user', 'agent']),
+      origin: picklist(['agent', 'user']),
       transcription: string()
     })
   }),
@@ -18,8 +18,8 @@ const isVoiceTranscriptActivity = (
 ): activity is WebChatActivity & {
   payload: {
     voice: {
+      origin: 'agent' | 'user';
       transcription: string;
-      origin: 'user' | 'agent';
     };
   };
 } => safeParse(VoiceTranscriptActivitySchema, activity).success;

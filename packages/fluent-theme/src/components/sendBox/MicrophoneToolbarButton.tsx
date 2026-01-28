@@ -12,9 +12,9 @@ import styles from './Toolbar.module.css';
 const { useVoiceState, useStartVoice, useStopVoice, useLocalizer } = hooks;
 
 function MicrophoneToolbarButton() {
+  const [voiceState] = useVoiceState();
   const classNames = useStyles(styles);
   const localize = useLocalizer();
-  const [voiceState] = useVoiceState();
   const startVoice = useStartVoice();
   const stopVoice = useStopVoice();
 
@@ -22,9 +22,9 @@ function MicrophoneToolbarButton() {
 
   const handleMicrophoneClick = useCallback(() => {
     if (recording) {
-      stopVoice();
+      stopVoice(); // Stop recognition and synthesis.
     } else {
-      startVoice();
+      startVoice(); // If it was stopped, will start recognition. It will synthesize when the bot respond.
     }
   }, [recording, startVoice, stopVoice]);
 

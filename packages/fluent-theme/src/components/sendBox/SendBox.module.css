@@ -55,7 +55,7 @@
     transition: clip-path var(--webchat-durationUltraFast) var(--webchat-curveAccelerateMid);
   }
 
-  &:focus-within::after {
+  &:not(:has(textarea[readonly][aria-disabled='true'])):focus-within::after {
     clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 0 0 0);
     transition: clip-path var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
   }
@@ -74,14 +74,6 @@
 
   > .sendbox__telephone-keypad--in-grid {
     grid-area: telephone-keypad;
-  }
-}
-
-/* Speech-to-speech variant: disable focus animations and pointer events on the main box. */
-:global(.webchat-fluent) .sendbox__sendbox.sendbox__sendbox--speech {
-  &::after,
-  &:focus-within::after {
-    display: none;
   }
 }
 

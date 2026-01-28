@@ -52,6 +52,10 @@
     --webchat__toolbar-button--pulse-end-size: 58px;
     --webchat__toolbar-button--pulse-opacity: 0.5;
     --webchat__toolbar-button--background-gradient-opacity: 0.15;
+    --webchat__toolbar-button--gradient-color-1: var(--webchat-colorBrandForeground1, #0078d4);
+    --webchat__toolbar-button--gradient-color-2: #2db4ff;
+    --webchat__toolbar-button--gradient-color-3: #d660ff;
+    --webchat__toolbar-button--gradient-color-4: #fea874;
 
     background-color: var(--webchat-colorNeutralForeground2BrandSelected);
     border-radius: 50%;
@@ -78,10 +82,10 @@
   &.sendbox__toolbar-button--with-gradient::after {
     background: linear-gradient(
       90deg,
-      var(--webchat-colorBrandForeground1, #0078d4) 0%,
-      color-mix(in srgb, var(--webchat-colorBrandForeground1, #0078d4), #2db4ff) 33%,
-      color-mix(in srgb, var(--webchat-colorBrandForeground1, #0078d4), #d660ff) 66%,
-      color-mix(in srgb, var(--webchat-colorBrandForeground1, #0078d4), #fea874) 100%
+      var(--webchat__toolbar-button--gradient-color-1) 0%,
+      color-mix(in srgb, var(--webchat__toolbar-button--gradient-color-1), var(--webchat__toolbar-button--gradient-color-2)) 33%,
+      color-mix(in srgb, var(--webchat__toolbar-button--gradient-color-1), var(--webchat__toolbar-button--gradient-color-3)) 66%,
+      color-mix(in srgb, var(--webchat__toolbar-button--gradient-color-1), var(--webchat__toolbar-button--gradient-color-4)) 100%
     );
     border-radius: 50%;
     content: '';

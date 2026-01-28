@@ -59,20 +59,20 @@ function SendBox(props: Props) {
   const [localMessage, setLocalMessage] = useState('');
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const [uiState] = useUIState();
+  const [voiceState] = useVoiceState();
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(styles);
   const errorMessageId = useUniqueId('sendbox__error-message-id');
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
   const makeThumbnail = useMakeThumbnail();
+  const postVoiceActivity = usePostVoiceActivity();
   const sendMessage = useSendMessage();
   const setFocus = useFocus();
-  const postVoiceActivity = usePostVoiceActivity();
   const speechStateMessage = useSpeechStateMessage();
-  const [voiceState] = useVoiceState();
 
-  const recording = voiceState !== 'idle';
   const message = props.isPrimary ? globalMessage : localMessage;
+  const recording = voiceState !== 'idle';
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
   const isBlueprint = uiState === 'blueprint';
 
@@ -211,9 +211,7 @@ function SendBox(props: Props) {
     >
       <SuggestedActions />
       <div
-        className={cx(classNames['sendbox__sendbox'], {
-          [classNames['sendbox__sendbox--speech']]: showMicrophoneButton
-        })}
+        className={cx(classNames['sendbox__sendbox'])}
         onClickCapture={handleSendBoxClick}
         onKeyDown={handleTranscriptNavigation}
       >
@@ -261,8 +259,9 @@ function SendBox(props: Props) {
             {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
             {!disableFileUpload && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
             <ToolbarSeparator />
-            {showMicrophoneButton && <MicrophoneToolbarButton />}
-            {!showMicrophoneButton && (
+            {showMicrophoneButton ? (
+              <MicrophoneToolbarButton />
+            ) : (
               <ToolbarButton
                 aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
                 data-testid={testIds.sendBoxSendButton}

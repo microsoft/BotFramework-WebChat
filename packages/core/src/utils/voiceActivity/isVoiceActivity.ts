@@ -8,10 +8,10 @@ const VoiceActivitySchema = object({
   name: string(),
   payload: union([
     object({
-      voice: any()
+      dtmf: any()
     }),
     object({
-      dtmf: any()
+      voice: any()
     })
   ]),
   type: literal('event')

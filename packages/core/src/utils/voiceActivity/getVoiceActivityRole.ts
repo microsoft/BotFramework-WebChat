@@ -1,13 +1,11 @@
 import { WebChatActivity } from '../../types/WebChatActivity';
 import isVoiceTranscriptActivity from './isVoiceTranscriptActivity';
 
-const getVoiceActivityRole = (activity: WebChatActivity): 'user' | 'bot' | undefined => {
+const getVoiceActivityRole = (activity: WebChatActivity): 'bot' | 'user' | undefined => {
   if (isVoiceTranscriptActivity(activity)) {
     if (activity.payload.voice.origin === 'agent') {
       return 'bot';
-    }
-
-    if (activity.payload.voice.origin === 'user') {
+    } else if (activity.payload.voice.origin === 'user') {
       return 'user';
     }
   }

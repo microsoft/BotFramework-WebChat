@@ -85,6 +85,7 @@
   },
   "dependencies": {
     "botframework-webchat": "0.0.0-0",
+    "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.5.1",
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",

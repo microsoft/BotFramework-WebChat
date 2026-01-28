@@ -6,20 +6,18 @@ import {
   createActivityGroupingMiddleware,
   DecoratorComposer,
   WebChatDecorator,
-  BorderFlair,
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import {
   type ActivityMiddleware,
-  type TypingIndicatorMiddleware,
-  type ActivityStatusMiddleware
+  type ActivityStatusMiddleware,
+  type TypingIndicatorMiddleware
 } from 'botframework-webchat/internal';
+import { isVoiceTranscriptActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
-import { isVoiceTranscriptActivity } from 'botframework-webchat-core';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
-import VoiceTranscriptActivityStatus from '../components/activityStatus/VoiceTranscriptActivityStatus';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 import AssetComposer from '../components/assets/AssetComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
@@ -30,6 +28,7 @@ import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import FluentThemeStylesheet from '../stylesheet/FluentThemeStylesheet';
 import VariantComposer, { variantNameSchema } from './VariantComposer';
+import VoiceTranscriptActivityStatus from '../components/activityStatus/VoiceTranscriptActivityStatus';
 
 const fluentThemeProviderPropsSchema = pipe(
   object({
@@ -70,16 +69,6 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
       return PartGroupDecorator;
     }
     return next(request);
-  }),
-  createActivityBorderMiddleware(function FluentBorderFlair({ request, Next, ...props }) {
-    if (request.modality.has('audio') && request.from === 'bot') {
-      return (
-        <BorderFlair showFlair={true}>
-          <Next {...props} />
-        </BorderFlair>
-      );
-    }
-    return <Next {...props} />;
   }),
   createActivityBorderMiddleware(function FluentBorderLoader({ request, Next, ...props }) {
     return (
