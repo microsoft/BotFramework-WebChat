@@ -1,4 +1,4 @@
-/* global MessageChannel, navigator, setTimeout, URL, window */
+/* global clearInterval, MessageChannel, navigator, setInterval, URL, window */
 
 /**
  * Mocks browser audio APIs for speechToSpeech testing.
@@ -32,20 +32,31 @@ export function setupMockMediaDevices() {
     const node = context.createGain();
     const channel = new MessageChannel();
     let recording = false;
+    let intervalId = null;
 
     node.port = channel.port1;
 
+    // port1 is exposed as worklet.port to the real code
+    // Real code sends to port1 → received by port2.onmessage (commands)
+    // Mock sends from port2 → received by port1.onmessage (audio chunks)
     channel.port2.onmessage = ({ data }) => {
       if (data.command === 'START') {
         recording = true;
         const bufferSize = options?.processorOptions?.bufferSize || 2400;
-        setTimeout(() => {
+
+        // Send chunks at ~100ms intervals while recording
+        // Use port2.postMessage so port1.onmessage (set by real code) receives it
+        intervalId = setInterval(() => {
           if (recording) {
-            channel.port1.postMessage({ eventType: 'audio', audioData: new Float32Array(bufferSize) });
+            channel.port2.postMessage({ eventType: 'audio', audioData: new Float32Array(bufferSize) });
           }
         }, 100);
       } else if (data.command === 'STOP') {
         recording = false;
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
       }
     };
 
