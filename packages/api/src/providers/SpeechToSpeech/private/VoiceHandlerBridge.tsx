@@ -18,7 +18,7 @@ export const VoiceHandlerBridge = () => {
       return;
     }
     return registerVoiceHandler({ queueAudio, stopAllAudio });
-  }, [registerVoiceHandler, queueAudio, stopAllAudio, showMicrophoneButton]);
+  }, [registerVoiceHandler, queueAudio, showMicrophoneButton, stopAllAudio]);
 
   return null;
 };

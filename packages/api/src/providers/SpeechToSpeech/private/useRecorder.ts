@@ -5,6 +5,9 @@ import usePonyfill from '../../Ponyfill/usePonyfill';
 // adding reference of worker does not work
 declare class AudioWorkletProcessor {
   readonly port: MessagePort;
+  recording: boolean;
+  buffer: number[];
+  bufferSize: number;
   constructor(options?: AudioWorkletNodeOptions);
   process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean;
 }
@@ -12,44 +15,33 @@ declare function registerProcessor(name: string, processorCtor: typeof AudioWork
 
 /**
  * CSP Compliant: check __tests__/html2/speechToSpeech/csp.recording.html for CSP compliance tests.
+ * NOTE: This code is stringified and run in an AudioWorklet context, so it must be plain JavaScript
+ * without any TypeScript annotations that could be transformed by the compiler.
  */
 const audioProcessorCode = `(${function () {
-  type RecorderState = { recording: boolean; buffer: number[]; bufferSize: number };
   class AudioRecorderProcessor extends AudioWorkletProcessor {
     constructor(options: AudioWorkletNodeOptions) {
       super();
-      const state: RecorderState = {
-        recording: false,
-        buffer: [],
-        bufferSize: options.processorOptions.bufferSize
-      };
-      Object.assign(this, state);
+      this.buffer = [];
+      this.bufferSize = options.processorOptions.bufferSize;
+      this.recording = false;
 
-      this.port.onmessage = (e: MessageEvent) => {
-        const state = this as unknown as RecorderState;
+      this.port.onmessage = e => {
         if (e.data.command === 'START') {
-          state.recording = true;
+          this.recording = true;
         } else if (e.data.command === 'STOP') {
-          state.recording = false;
-          state.buffer = [];
+          this.recording = false;
+          this.buffer = [];
         }
       };
     }
 
-    sendBuffer() {
-      const { buffer, bufferSize } = this as unknown as RecorderState;
-      while (buffer.length >= bufferSize) {
-        const chunk = buffer.splice(0, bufferSize);
-        this.port.postMessage({ eventType: 'audio', audioData: new Float32Array(chunk) });
-      }
-    }
-
     process(inputs: Float32Array[][]) {
-      const state = this as unknown as RecorderState;
-      if (inputs[0]?.length && state.recording) {
-        state.buffer.push(...inputs[0][0]);
-        if (state.buffer.length >= state.bufferSize) {
-          this.sendBuffer();
+      if (inputs[0] && inputs[0].length && this.recording) {
+        this.buffer.push(...inputs[0][0]);
+        while (this.buffer.length >= this.bufferSize) {
+          const chunk = this.buffer.splice(0, this.bufferSize);
+          this.port.postMessage({ eventType: 'audio', audioData: new Float32Array(chunk) });
         }
       }
       return true;
@@ -109,8 +101,8 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         channelCount: 1,
-        sampleRate: DEFAULT_SAMPLE_RATE,
-        echoCancellation: true
+        echoCancellation: true,
+        sampleRate: DEFAULT_SAMPLE_RATE
       }
     });
     streamRef.current = stream;

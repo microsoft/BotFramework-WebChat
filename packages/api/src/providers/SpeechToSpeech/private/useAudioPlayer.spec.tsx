@@ -9,22 +9,22 @@ import { useAudioPlayer } from './useAudioPlayer';
 // Mock setVoiceState function
 const mockSetVoiceState = jest.fn();
 
-// Mock useSetVoiceState hook
-jest.mock('../../../hooks/internal/useSetVoiceState', () => ({
+// Mock useVoiceStateWritable hook - returns [state, setVoiceState] array
+jest.mock('../../../hooks/internal/useVoiceStateWritable', () => ({
   __esModule: true,
-  default: jest.fn(() => mockSetVoiceState)
+  default: jest.fn(() => [undefined, mockSetVoiceState])
 }));
 
 // Mock AudioContext and related APIs
 const mockAudioContext = {
-  sampleRate: 24000,
-  currentTime: 0,
-  destination: {},
-  state: 'running',
-  resume: jest.fn().mockResolvedValue(undefined),
   close: jest.fn().mockResolvedValue(undefined),
   createBuffer: jest.fn(),
-  createBufferSource: jest.fn()
+  createBufferSource: jest.fn(),
+  currentTime: 0,
+  destination: {},
+  resume: jest.fn().mockResolvedValue(undefined),
+  sampleRate: 24000,
+  state: 'running'
 };
 
 const mockAudioBuffer = {
@@ -36,10 +36,10 @@ const mockAudioBuffer = {
 const createMockBufferSource = () => ({
   buffer: null as typeof mockAudioBuffer | null,
   connect: jest.fn(),
-  start: jest.fn(),
-  stop: jest.fn(),
   disconnect: jest.fn(),
-  onended: null as (() => void) | null
+  onended: null as (() => void) | null,
+  start: jest.fn(),
+  stop: jest.fn()
 });
 
 // Track all created buffer sources for assertions

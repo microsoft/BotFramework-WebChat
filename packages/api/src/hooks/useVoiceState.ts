@@ -1,5 +1,5 @@
 import type { VoiceState } from 'botframework-webchat-core';
-import { useSelector } from './internal/WebChatReduxContext';
+import useVoiceStateWritable from './internal/useVoiceStateWritable';
 
 /**
  * Hook to get the voice state.
@@ -10,8 +10,6 @@ import { useSelector } from './internal/WebChatReduxContext';
  * - 'processing': User finished speaking, server is processing
  * - 'bot_speaking': Bot is speaking (audio playback)
  */
-export default function useVoiceState(): [VoiceState] {
-  return [useSelector(({ voice }) => voice.voiceState)];
+export default function useVoiceState(): readonly [VoiceState] {
+  return Object.freeze([useVoiceStateWritable()[0]]);
 }
-
-export type { VoiceState };

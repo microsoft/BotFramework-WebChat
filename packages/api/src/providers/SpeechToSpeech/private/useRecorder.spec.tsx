@@ -20,8 +20,8 @@ const mockMediaDevices = {
 };
 
 const mockWorkletPort = {
-  postMessage: jest.fn(),
-  onmessage: null as ((event: { data: unknown }) => void) | null
+  onmessage: null as ((event: { data: unknown }) => void) | null,
+  postMessage: jest.fn()
 };
 
 const mockWorkletNode = {
@@ -31,15 +31,15 @@ const mockWorkletNode = {
 };
 
 const mockAudioContext = {
-  state: 'running',
-  resume: jest.fn().mockResolvedValue(undefined),
+  audioWorklet: {
+    addModule: jest.fn().mockResolvedValue(undefined)
+  },
   createMediaStreamSource: jest.fn(() => ({
     connect: jest.fn()
   })),
   destination: {},
-  audioWorklet: {
-    addModule: jest.fn().mockResolvedValue(undefined)
-  }
+  resume: jest.fn().mockResolvedValue(undefined),
+  state: 'running'
 };
 
 // --- Global Mocks Setup ---
@@ -206,8 +206,8 @@ describe('useRecorder', () => {
       expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledWith({
         audio: {
           channelCount: 1,
-          sampleRate: 24000,
-          echoCancellation: true
+          echoCancellation: true,
+          sampleRate: 24000
         }
       });
     });

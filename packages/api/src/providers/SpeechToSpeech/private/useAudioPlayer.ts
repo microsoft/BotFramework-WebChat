@@ -1,14 +1,14 @@
 import { useRef, useCallback, useMemo } from 'react';
-import useSetVoiceState from '../../../hooks/internal/useSetVoiceState';
+import useVoiceStateWritable from '../../../hooks/internal/useVoiceStateWritable';
 
 const DEFAULT_SAMPLE_RATE = 24000;
 const INT16_SCALE = 32768;
 
 export function useAudioPlayer() {
   const audioCtxRef = useRef<AudioContext | undefined>(undefined);
-  const nextPlayTimeRef = useRef(0);
   const lastSourceRef = useRef<AudioBufferSourceNode | undefined>(undefined);
-  const setVoiceState = useSetVoiceState();
+  const nextPlayTimeRef = useRef(0);
+  const [, setVoiceState] = useVoiceStateWritable();
 
   const queueAudio = useCallback(
     async (base64: string) => {
