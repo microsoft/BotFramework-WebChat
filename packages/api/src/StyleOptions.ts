@@ -999,7 +999,7 @@ type StyleOptions = {
    */
   disableFileUpload?: boolean;
   /**
-   * Indicates if microphone button should be shown in fluent theme sendbox.
+   * Indicates if microphone button should be shown in Fluent theme send box.
    *
    * @default false
    *
