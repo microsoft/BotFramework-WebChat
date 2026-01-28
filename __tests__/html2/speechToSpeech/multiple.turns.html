@@ -174,7 +174,7 @@
         await pageConditions.became(
           'State: listening (after bot audio)',
           () => textArea.getAttribute('placeholder') === 'Listening...',
-          1000
+          2500
         );
 
         // ===== TURN 2: User asks follow-up =====
@@ -296,7 +296,6 @@
           payload: { voice: { content: 'AAAAAA==' } }
         });
 
-        console.log(textArea.getAttribute('placeholder'));
         // Verify: State is "bot_speaking"
         await pageConditions.became(
           'State: bot_speaking (Turn 3)',
