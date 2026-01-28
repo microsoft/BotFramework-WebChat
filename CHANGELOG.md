@@ -149,6 +149,7 @@ Breaking changes in this release:
    - Breakpoint: open <kbd>F12</kbd>, select the subject in Element pane, type `$0.webChat.breakpoint.incomingActivity`
 - The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), in PR [#5677](https://github.com/microsoft/BotFramework-WebChat/pull/5677) by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Added `npm run build-browser` script for building test harness package only, in PR [#5667](https://github.com/microsoft/BotFramework-WebChat/pull/5667), by [@compulim](https://github.com/compulim)
+- Added pull-based capabilities system for dynamically discovering adapter capabilities at runtime, in PR [#5679](https://github.com/microsoft/BotFramework-WebChat/pull/5679), by [@pranavjoshi001](https://github.com/pranavjoshi001)
 - Added Speech-to-Speech (S2S) support for real-time voice conversations, in PR [#5654](https://github.com/microsoft/BotFramework-WebChat/pull/5654), by [@pranavjoshi](https://github.com/pranavjoshi001)
 
 ### Changed
@@ -388,6 +389,7 @@ Breaking changes in this release:
    - Added `img-src data:`, required for icons
 - Downgraded graph upsert conflict checks, by [@compulim](https://github.com/compulim) in PR [#5674](https://github.com/microsoft/BotFramework-WebChat/pull/5674)
 - Fixed virtual keyboard should show up on tap after being suppressed, in iOS 26.2, by [@compulim](https://github.com/compulim) in PR [#5678](https://github.com/microsoft/BotFramework-WebChat/pull/5678)
+- Fixed compatibility with `create-react-app` by adding file extension to `core-js` imports, by [@compulim](https://github.com/compulim) in PR [#5680](https://github.com/microsoft/BotFramework-WebChat/pull/5680)
 
 ## [4.18.0] - 2024-07-10
 
