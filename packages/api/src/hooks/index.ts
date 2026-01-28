@@ -1,3 +1,4 @@
+import useCapabilities from '../providers/Capabilities/useCapabilities';
 import useGroupActivities from '../providers/GroupActivities/useGroupActivities';
 import useGroupActivitiesByName from '../providers/GroupActivities/useGroupActivitiesByName';
 import useActiveTyping from './useActiveTyping';
@@ -83,6 +84,7 @@ export {
   useAvatarForBot,
   useAvatarForUser,
   useByteFormatter,
+  useCapabilities,
   useConnectivityStatus,
   useCreateActivityRenderer,
   useCreateActivityStatusRenderer,
