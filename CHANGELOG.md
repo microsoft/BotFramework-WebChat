@@ -181,7 +181,6 @@ Breaking changes in this release:
       - [`@redux-devtools/extension@3.3.0`](https://npmjs.com/package/@redux-devtools/extension/v/3.3.0)
       - [`adaptivecards@3.0.5`](https://npmjs.com/package/adaptivecards/v/3.0.5)
       - [`botframework-directlinejs@0.15.6`](https://npmjs.com/package/botframework-directlinejs/v/0.15.6)
-      - [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6)
       - [`core-js@3.47.0`](https://npmjs.com/package/core-js/v/3.47.0)
       - [`core-js-pure@3.47.0`](https://npmjs.com/package/core-js-pure/v/3.47.0)
       - [`event-as-promise@2.0.0`](https://npmjs.com/package/event-as-promise/v/2.0.0)
@@ -314,7 +313,7 @@ Breaking changes in this release:
 - Bumped `react-chain-of-responsibility` to `0.4.2` version, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5620](https://github.com/microsoft/BotFramework-WebChat/pull/5620), in PR [#5624](https://github.com/microsoft/BotFramework-WebChat/pull/5624)
 - Bumped Chrome in Docker to 141 from 110, in PR [#5619](https://github.com/microsoft/BotFramework-WebChat/pull/5619), by [@compulim](https://github.com/compulim)
 - Bumped to [`valibot@1.2.0`](https://npmjs.com/package/valibot/v/1.2.0), in PR [#5650](https://github.com/microsoft/BotFramework-WebChat/pull/5650), by [@compulim](https://github.com/compulim)
-- Pinned to [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6), by [@OEvgeny](https://github.com/OEvgeny) in PR [#5662](https://github.com/microsoft/BotFramework-WebChat/pull/5662)
+- Pinned to [`botframework-directlinespeech-sdk@4.18.1-main.20251208.8ccadd6`](https://npmjs.com/package/botframework-directlinespeech-sdk/v/4.18.1-main.20251208.8ccadd6), by [@OEvgeny](https://github.com/OEvgeny) in PR [#5662](https://github.com/microsoft/BotFramework-WebChat/pull/5662), and unpinned in PR [#5681](https://github.com/microsoft/BotFramework-WebChat/pull/5681)
 - Converted activity components to CSS Modules
    - Bubble, carousel, say-alt, in PR [#5668](https://github.com/microsoft/BotFramework-WebChat/pull/5668), by [@OEvgeny](https://github.com/OEvgeny)
    - Activity status, in PR [#5669](https://github.com/microsoft/BotFramework-WebChat/pull/5669), by [@OEvgeny](https://github.com/OEvgeny)
