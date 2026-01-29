@@ -150,10 +150,6 @@
     "uuid": [
       "8",
       "uuid@9 emit non-ES5 build because of default parameters"
-    ],
-    "botframework-directlinespeech-sdk": [
-      "4.18.1-main.20251208.8ccadd6",
-      "pinned temporarily due to missing access rights"
     ]
   },
   "localDependencies": {
@@ -223,7 +219,7 @@
     "@babel/runtime": "7.28.4",
     "adaptivecards": "3.0.5",
     "botframework-directlinejs": "0.15.6",
-    "botframework-directlinespeech-sdk": "4.18.1-main.20251208.8ccadd6",
+    "botframework-directlinespeech-sdk": "0.0.0-0",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
