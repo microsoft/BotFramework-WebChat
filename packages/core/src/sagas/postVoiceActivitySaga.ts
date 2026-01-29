@@ -47,8 +47,7 @@ function* postVoiceActivity(
     ...(activity.type === 'event'
       ? {
           name: activity.name,
-          value: activity.value,
-          payload: activity.payload
+          value: activity.value
         }
       : {})
   };
