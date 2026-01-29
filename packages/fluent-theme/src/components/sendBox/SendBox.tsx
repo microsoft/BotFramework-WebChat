@@ -1,5 +1,5 @@
 import { Components, hooks } from 'botframework-webchat';
-import { usePostVoiceActivity } from 'botframework-webchat/internal';
+import { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, {
   memo,
@@ -53,7 +53,7 @@ type Props = Readonly<{
 }>;
 
 function SendBox(props: Props) {
-  const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength, showMicrophoneButton }] = useStyleOptions();
+  const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength }] = useStyleOptions();
   const [attachments, setAttachments] = useSendBoxAttachments();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
@@ -69,6 +69,7 @@ function SendBox(props: Props) {
   const postVoiceActivity = usePostVoiceActivity();
   const sendMessage = useSendMessage();
   const setFocus = useFocus();
+  const showMicrophoneButton = useShouldShowMicrophoneButton();
   const speechStateMessage = useSpeechStateMessage();
 
   const message = props.isPrimary ? globalMessage : localMessage;
@@ -175,12 +176,10 @@ function SendBox(props: Props) {
     (dtmf: DTMF) => {
       if (recording) {
         postVoiceActivity({
+          name: 'media.end',
           type: 'event',
-          name: 'dtmf',
-          payload: {
-            dtmf: {
-              value: dtmf
-            }
+          value: {
+            key: dtmf
           }
         } as any);
       } else {

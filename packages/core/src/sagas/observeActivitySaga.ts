@@ -90,24 +90,24 @@ function* observeActivity({ directLine, userID }: { directLine: DirectLineJSBotC
       }
 
       switch (activity.name) {
-        case 'stream.chunk': {
-          const audioContent = activity?.payload?.voice?.content;
+        case 'media.chunk': {
+          const audioContent = activity?.value?.content;
           if (audioContent) {
             voiceHandlers.forEach(handler => handler.queueAudio(audioContent));
           }
           break;
         }
 
-        case 'session.update': {
-          const session = activity?.payload?.voice?.session;
+        case 'request.update': {
+          const state = activity?.value?.state;
 
-          switch (session) {
-            case 'request.detected':
+          switch (state) {
+            case 'detected':
               voiceHandlers.forEach(handler => handler.stopAllAudio());
               yield put(setVoiceState('user_speaking'));
               break;
 
-            case 'request.processing':
+            case 'processing':
               yield put(setVoiceState('processing'));
               break;
 

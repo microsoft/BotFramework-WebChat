@@ -15,6 +15,13 @@ jest.mock('../../../hooks/internal/useVoiceStateWritable', () => ({
   default: jest.fn(() => [undefined, mockSetVoiceState])
 }));
 
+jest.mock('../../Capabilities/useCapabilities', () => ({
+  __esModule: true,
+  default: jest.fn((selector: (caps: { voiceConfiguration?: { sampleRate: number } }) => unknown) =>
+    selector({ voiceConfiguration: { sampleRate: 24000 } })
+  )
+}));
+
 // Mock AudioContext and related APIs
 const mockAudioContext = {
   close: jest.fn().mockResolvedValue(undefined),

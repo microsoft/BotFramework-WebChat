@@ -30,14 +30,14 @@
         // GIVEN: Web Chat with Speech-to-Speech enabled
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
         render(
           <FluentThemeProvider variant="fluent">
             <ReactWebChat 
               directLine={directLine}
               store={store}
-              styleOptions={{
-                showMicrophoneButton: true
-              }}
             />
           </FluentThemeProvider>,
           document.getElementById('webchat')
@@ -71,36 +71,26 @@
         // WHEN: Server detects speech start (barge-in)
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'session.update',
-          payload: {
-            voice: {
-              session: 'request.detected'
-            }
-          }
+          name: 'request.update',
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
         });
 
 
         // WHEN: Server detects speech stop (processing)
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'session.update',
-          payload: {
-            voice: {
-              session: 'request.processing'
-            }
-          }
+          name: 'request.update',
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
         });
 
         // WHEN: Server sends user transcript (this goes to activities with text)
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
-          payload: {
-            voice: {
-              transcription: 'What is the weather today?',
-              origin: 'user'
-            }
-          }
+          name: 'media.end',
+          value: { transcription: 'What is the weather today?', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
         // THEN: User transcript appears in chat
@@ -117,36 +107,26 @@
         // WHEN: Server sends audio chunks
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.chunk',
-          payload: {
-            voice: {
-              content: 'AAAAAA=='
-            }
-          }
+          name: 'media.chunk',
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
         });
 
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.chunk',
+          name: 'media.chunk',
           from: { role: 'bot' },
-          payload: {
-            voice: {
-              content: 'AAAAAA=='
-            }
-          }
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
         });
 
 
         // WHEN: Server sends bot transcript (this goes to activities with text)
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
-          payload: {
-            voice: {
-              transcription: 'The weather today is sunny with a high of 75 degrees.',
-              origin: 'agent'
-            }
-          }
+          name: 'media.end',
+          value: { transcription: 'The weather today is sunny with a high of 75 degrees.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
 

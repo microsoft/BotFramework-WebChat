@@ -320,7 +320,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   sendBoxAttachmentBarMaxThumbnail: 3,
 
   // Speech-to-speech options
-  showMicrophoneButton: false
+  showMicrophoneButton: 'auto'
 };
 
 export default DEFAULT_OPTIONS;

@@ -1,27 +1,29 @@
-import { literal, object, picklist, safeParse, string } from 'valibot';
+import { check, literal, object, picklist, pipe, safeParse, string } from 'valibot';
 
 import { WebChatActivity } from '../../types/WebChatActivity';
 
+// valueType: contains 'audio.transcript' (e.g., azure.directline.audio.transcript)
 const VoiceTranscriptActivitySchema = object({
-  name: literal('stream.end'),
-  payload: object({
-    voice: object({
-      origin: picklist(['agent', 'user']),
-      transcription: string()
-    })
+  name: literal('media.end'),
+  type: literal('event'),
+  value: object({
+    origin: picklist(['agent', 'user']),
+    transcription: string()
   }),
-  type: literal('event')
+  valueType: pipe(
+    string(),
+    check(value => value.includes('audio.transcript'))
+  )
 });
 
 const isVoiceTranscriptActivity = (
   activity: WebChatActivity
 ): activity is WebChatActivity & {
-  payload: {
-    voice: {
-      origin: 'agent' | 'user';
-      transcription: string;
-    };
+  value: {
+    origin: 'agent' | 'user';
+    transcription: string;
   };
+  valueType: string;
 } => safeParse(VoiceTranscriptActivitySchema, activity).success;
 
 export default isVoiceTranscriptActivity;

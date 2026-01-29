@@ -3,7 +3,7 @@ import isVoiceTranscriptActivity from './isVoiceTranscriptActivity';
 
 const getVoiceActivityText = (activity: WebChatActivity): string | undefined => {
   if (isVoiceTranscriptActivity(activity)) {
-    return activity.payload.voice.transcription;
+    return activity.value.transcription;
   }
   return undefined;
 };

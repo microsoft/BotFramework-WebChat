@@ -17,14 +17,12 @@ export function VoiceRecorderBridge(): null {
   const handleAudioChunk = useCallback(
     (base64: string, timestamp: string) => {
       postVoiceActivity({
+        name: 'media.chunk',
         type: 'event',
-        name: 'stream.chunk',
-        payload: {
-          voice: {
-            contentType: 'audio/webm',
-            content: base64,
-            timestamp
-          }
+        value: {
+          contentType: 'audio/webm',
+          content: base64,
+          timestamp
         }
       } as any);
     },

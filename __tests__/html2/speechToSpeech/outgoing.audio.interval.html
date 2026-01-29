@@ -18,7 +18,7 @@
       This test validates:
       1. Mic on → state becomes "listening"
       2. Audio chunks are sent via postActivity (fire-and-forget)
-      3. Verify chunk structure (type, name, payload.voice)
+      3. Verify chunk structure (type, name, value.content)
       4. Verify ~100ms interval between chunk timestamps
       
       Note: Since voice activities use postVoiceActivity (fire-and-forget),
@@ -40,12 +40,15 @@
         } = window;
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
         
         // Intercept postActivity to capture outgoing voice chunks
         const capturedChunks = [];
         const originalPostActivity = directLine.postActivity.bind(directLine);
         directLine.postActivity = (activity) => {
-          if (activity.name === 'stream.chunk' && activity.payload?.voice?.content) {
+          if (activity.name === 'media.chunk' && activity.type === 'event') {
             capturedChunks.push({
               ...activity,
               capturedAt: Date.now()
@@ -59,9 +62,6 @@
             <ReactWebChat 
               directLine={directLine}
               store={store}
-              styleOptions={{
-                showMicrophoneButton: true
-              }}
             />
           </FluentThemeProvider>,
           document.getElementById('webchat')
@@ -114,10 +114,10 @@
         const sampleChunk = capturedChunks[0];
         
         expect(sampleChunk.type).toBe('event');
-        expect(sampleChunk.name).toBe('stream.chunk');
-        expect(sampleChunk.payload).toBeTruthy();
-        expect(sampleChunk.payload.voice).toBeTruthy();
-        expect(sampleChunk.payload.voice.content).toBeTruthy();
+        expect(sampleChunk.name).toBe('media.chunk');
+        expect(sampleChunk.value).toBeTruthy();
+        expect(sampleChunk.value.content).toBeTruthy();
+        expect(sampleChunk.value.contentType).toBe('audio/webm');
 
         // ===== STEP 6: Verify interval using capturedAt timestamps =====
         const timestamps = capturedChunks.map(c => c.capturedAt).sort((a, b) => a - b);

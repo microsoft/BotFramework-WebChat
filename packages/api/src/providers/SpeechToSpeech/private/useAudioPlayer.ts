@@ -1,4 +1,5 @@
 import { useRef, useCallback, useMemo } from 'react';
+import useCapabilities from '../../Capabilities/useCapabilities';
 import useVoiceStateWritable from '../../../hooks/internal/useVoiceStateWritable';
 
 const DEFAULT_SAMPLE_RATE = 24000;
@@ -8,12 +9,15 @@ export function useAudioPlayer() {
   const audioCtxRef = useRef<AudioContext | undefined>(undefined);
   const lastSourceRef = useRef<AudioBufferSourceNode | undefined>(undefined);
   const nextPlayTimeRef = useRef(0);
+  const voiceConfiguration = useCapabilities(caps => caps.voiceConfiguration);
   const [, setVoiceState] = useVoiceStateWritable();
+
+  const sampleRate = voiceConfiguration?.sampleRate ?? DEFAULT_SAMPLE_RATE;
 
   const queueAudio = useCallback(
     async (base64: string) => {
       if (!audioCtxRef.current) {
-        audioCtxRef.current = new AudioContext({ sampleRate: DEFAULT_SAMPLE_RATE });
+        audioCtxRef.current = new AudioContext({ sampleRate });
       }
       const audioCtx = audioCtxRef.current;
       await audioCtx.resume();
@@ -62,7 +66,7 @@ export function useAudioPlayer() {
         console.warn('botframework-webchat: Error during audio playback in useAudioPlayer:', error);
       }
     },
-    [setVoiceState]
+    [setVoiceState, sampleRate]
   );
 
   const stopAllAudio = useCallback(() => {

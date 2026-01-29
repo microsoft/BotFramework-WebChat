@@ -1,15 +1,16 @@
 import { useRef, useCallback, useMemo } from 'react';
+import useCapabilities from '../../Capabilities/useCapabilities';
 import usePonyfill from '../../Ponyfill/usePonyfill';
 
 // Minimum AudioWorkletProcessor definition for TypeScript recognition
 // adding reference of worker does not work
 declare class AudioWorkletProcessor {
-  readonly port: MessagePort;
-  recording: boolean;
   buffer: number[];
   bufferSize: number;
   constructor(options?: AudioWorkletNodeOptions);
   process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean;
+  readonly port: MessagePort;
+  recording: boolean;
 }
 declare function registerProcessor(name: string, processorCtor: typeof AudioWorkletProcessor): void;
 
@@ -62,7 +63,11 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
   const audioCtxRef = useRef<AudioContext | undefined>(undefined);
   const workletRef = useRef<AudioWorkletNode | undefined>(undefined);
   const streamRef = useRef<MediaStream | undefined>(undefined);
+  const voiceConfiguration = useCapabilities(caps => caps.voiceConfiguration);
   const [{ Date }] = usePonyfill();
+
+  const sampleRate = voiceConfiguration?.sampleRate ?? DEFAULT_SAMPLE_RATE;
+  const chunkIntervalMs = voiceConfiguration?.chunkIntervalMs ?? DEFAULT_CHUNK_SIZE_IN_MS;
 
   const stopRecording = useCallback(() => {
     if (workletRef.current) {
@@ -80,7 +85,7 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     if (audioCtxRef.current) {
       return;
     }
-    const audioCtx = new AudioContext({ sampleRate: DEFAULT_SAMPLE_RATE });
+    const audioCtx = new AudioContext({ sampleRate });
     const blob = new Blob([audioProcessorCode], {
       type: 'application/javascript'
     });
@@ -90,7 +95,7 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     URL.revokeObjectURL(url);
     // eslint-disable-next-line require-atomic-updates
     audioCtxRef.current = audioCtx;
-  }, []);
+  }, [sampleRate]);
 
   const startRecording = useCallback(async () => {
     await initAudio();
@@ -102,14 +107,14 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
       audio: {
         channelCount: 1,
         echoCancellation: true,
-        sampleRate: DEFAULT_SAMPLE_RATE
+        sampleRate
       }
     });
     streamRef.current = stream;
     const source = audioCtx.createMediaStreamSource(stream);
     const worklet = new AudioWorkletNode(audioCtx, 'audio-recorder', {
       processorOptions: {
-        bufferSize: (DEFAULT_SAMPLE_RATE * DEFAULT_CHUNK_SIZE_IN_MS) / MS_IN_SECOND
+        bufferSize: (sampleRate * chunkIntervalMs) / MS_IN_SECOND
       }
     });
 
@@ -130,7 +135,7 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     worklet.connect(audioCtx.destination);
     worklet.port.postMessage({ command: 'START' });
     workletRef.current = worklet;
-  }, [Date, initAudio, onAudioChunk]);
+  }, [chunkIntervalMs, Date, initAudio, onAudioChunk, sampleRate]);
 
   const record = useCallback(() => {
     startRecording();

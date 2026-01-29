@@ -2,28 +2,30 @@ import getVoiceActivityText from './getVoiceActivityText';
 import { WebChatActivity } from '../../types/WebChatActivity';
 
 // Mock activity factory for testing
-const createMockActivity = (type: string = 'event', name?: string, payload?: any): WebChatActivity => ({
-  type: type as any,
-  id: 'test-activity-id',
-  from: { id: 'test-user' },
-  channelData: {
-    'webchat:sequence-id': 1
-  },
-  ...(name && { name }),
-  ...(payload && { payload })
-});
+const createMockActivity = (type: string = 'event', name?: string, value?: any, valueType?: string): WebChatActivity =>
+  ({
+    type: type as any,
+    id: 'test-activity-id',
+    from: { id: 'test-user' },
+    channelData: {
+      'webchat:sequence-id': 1
+    },
+    ...(name && { name }),
+    ...(value && { value }),
+    ...(valueType && { valueType })
+  }) as WebChatActivity;
 
-const createMockVoiceActivity = (
-  name: string,
-  transcription?: string,
-  origin: 'user' | 'agent' = 'user'
+const createMockTranscriptActivity = (
+  transcription: string | undefined,
+  origin: 'user' | 'agent' = 'user',
+  valueType: string = 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
 ): WebChatActivity =>
-  createMockActivity('event', name, {
-    voice: {
-      origin,
-      ...(transcription !== undefined && { transcription })
-    }
-  });
+  createMockActivity(
+    'event',
+    'media.end',
+    transcription !== undefined ? { transcription, origin } : { origin },
+    valueType
+  );
 
 describe('getVoiceActivityText', () => {
   describe('Voice transcript activities', () => {
@@ -31,16 +33,16 @@ describe('getVoiceActivityText', () => {
       ['Hello world', 'Hello world'],
       ['How can I help you today?', 'How can I help you today?'],
       ['', '']
-    ])('should return %p for stream.end with transcription %p', (expected, transcription) => {
-      const activity = createMockVoiceActivity('stream.end', transcription);
+    ])('should return %p for media.end with transcription %p', (expected, transcription) => {
+      const activity = createMockTranscriptActivity(transcription);
 
       const result = getVoiceActivityText(activity);
 
       expect(result).toBe(expected);
     });
 
-    test('should return undefined for stream.end without transcript property', () => {
-      const activity = createMockVoiceActivity('stream.end');
+    test('should return undefined for media.end without transcript property', () => {
+      const activity = createMockTranscriptActivity(undefined);
 
       const result = getVoiceActivityText(activity);
 
@@ -49,8 +51,13 @@ describe('getVoiceActivityText', () => {
   });
 
   describe('Non-transcript voice activities', () => {
-    test.each([['stream.chunk'], ['session.init']])('should return undefined for %s activity', name => {
-      const activity = createMockVoiceActivity(name);
+    test.each([['media.chunk'], ['request.update']])('should return undefined for %s activity', name => {
+      const activity = createMockActivity(
+        'event',
+        name,
+        { content: 'base64' },
+        'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+      );
 
       const result = getVoiceActivityText(activity);
 
@@ -60,10 +67,10 @@ describe('getVoiceActivityText', () => {
 
   describe('Non-voice activities', () => {
     test.each([
-      ['message', undefined, undefined],
-      ['event', undefined, { someData: 'test' }]
-    ])('should return undefined for %s', (type, name, payload) => {
-      const activity = createMockActivity(type, name, payload);
+      ['message', undefined, undefined, undefined],
+      ['event', undefined, { someData: 'test' }, undefined]
+    ])('should return undefined for %s', (type, name, value, valueType) => {
+      const activity = createMockActivity(type, name, value, valueType);
 
       const result = getVoiceActivityText(activity);
 
@@ -73,7 +80,7 @@ describe('getVoiceActivityText', () => {
 
   describe('Edge cases', () => {
     test('should handle transcript with whitespace only', () => {
-      const activity = createMockVoiceActivity('stream.end', '   ');
+      const activity = createMockTranscriptActivity('   ');
 
       const result = getVoiceActivityText(activity);
 
@@ -82,7 +89,7 @@ describe('getVoiceActivityText', () => {
 
     test('should handle very long transcript', () => {
       const longText = 'A'.repeat(10000);
-      const activity = createMockVoiceActivity('stream.end', longText);
+      const activity = createMockTranscriptActivity(longText);
 
       const result = getVoiceActivityText(activity);
 

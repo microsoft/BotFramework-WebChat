@@ -1,24 +1,23 @@
 import { useEffect } from 'react';
-
-import useStyleOptions from '../../../hooks/useStyleOptions';
-import useRegisterVoiceHandler from '../../../hooks/internal/useRegisterVoiceHandler';
 import { useAudioPlayer } from './useAudioPlayer';
+import useRegisterVoiceHandler from '../../../hooks/internal/useRegisterVoiceHandler';
+import useShouldShowMicrophoneButton from '../../../hooks/internal/useShouldShowMicrophoneButton';
 
 /**
  * VoiceHandlerBridge is an invisible component that registers the audio player
  * functions (queueAudio, stopAllAudio) with Redux
  */
 export const VoiceHandlerBridge = () => {
-  const registerVoiceHandler = useRegisterVoiceHandler();
   const { queueAudio, stopAllAudio } = useAudioPlayer();
-  const [{ showMicrophoneButton }] = useStyleOptions();
+  const registerVoiceHandler = useRegisterVoiceHandler();
+  const shouldShowMicrophoneButton = useShouldShowMicrophoneButton();
 
   useEffect(() => {
-    if (!showMicrophoneButton) {
+    if (!shouldShowMicrophoneButton) {
       return;
     }
     return registerVoiceHandler({ queueAudio, stopAllAudio });
-  }, [registerVoiceHandler, queueAudio, showMicrophoneButton, stopAllAudio]);
+  }, [queueAudio, registerVoiceHandler, shouldShowMicrophoneButton, stopAllAudio]);
 
   return null;
 };

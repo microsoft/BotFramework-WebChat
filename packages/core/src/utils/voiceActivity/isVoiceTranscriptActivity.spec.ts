@@ -2,51 +2,63 @@ import isVoiceTranscriptActivity from './isVoiceTranscriptActivity';
 import { WebChatActivity } from '../../types/WebChatActivity';
 
 // Mock activity factory for testing
-const createMockActivity = (type: string = 'event', name?: string, payload?: any): WebChatActivity => ({
-  type: type as any,
-  id: 'test-activity-id',
-  from: { id: 'test-user' },
-  channelData: {
-    'webchat:sequence-id': 1
-  },
-  ...(name && { name }),
-  ...(payload && { payload })
-});
+const createMockActivity = (type: string = 'event', name?: string, value?: any, valueType?: string): WebChatActivity =>
+  ({
+    type: type as any,
+    id: 'test-activity-id',
+    from: { id: 'test-user' },
+    channelData: {
+      'webchat:sequence-id': 1
+    },
+    ...(name && { name }),
+    ...(value && { value }),
+    ...(valueType && { valueType })
+  }) as WebChatActivity;
 
-const createMockVoiceActivity = (name: string, voiceProps: Record<string, any>): WebChatActivity =>
-  createMockActivity('event', name, {
-    voice: voiceProps
-  });
+const createMockVoiceActivity = (
+  name: string,
+  value: Record<string, any>,
+  valueType: string = 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+): WebChatActivity => createMockActivity('event', name, value, valueType);
+
+const createMockTranscriptActivity = (
+  transcription: string,
+  origin: 'user' | 'agent',
+  valueType: string = 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+): WebChatActivity => createMockActivity('event', 'media.end', { transcription, origin }, valueType);
 
 describe('isVoiceTranscriptActivity', () => {
   describe('Valid transcript activities', () => {
-    test('should return true for stream.end with user transcription', () => {
-      const activity = createMockVoiceActivity('stream.end', {
-        transcription: 'Hello world',
-        origin: 'user'
-      });
+    test('should return true for media.end with user transcription', () => {
+      const activity = createMockTranscriptActivity('Hello world', 'user');
 
       const result = isVoiceTranscriptActivity(activity);
 
       expect(result).toBe(true);
     });
 
-    test('should return true for stream.end with bot transcription', () => {
-      const activity = createMockVoiceActivity('stream.end', {
-        transcription: 'Hi there!',
-        origin: 'agent'
-      });
+    test('should return true for media.end with agent transcription', () => {
+      const activity = createMockTranscriptActivity('Hi there!', 'agent');
 
       const result = isVoiceTranscriptActivity(activity);
 
       expect(result).toBe(true);
     });
 
-    test('should return true for stream.end with empty transcription string', () => {
-      const activity = createMockVoiceActivity('stream.end', {
-        transcription: '',
-        origin: 'user'
-      });
+    test('should return true for media.end with empty transcription string', () => {
+      const activity = createMockTranscriptActivity('', 'user');
+
+      const result = isVoiceTranscriptActivity(activity);
+
+      expect(result).toBe(true);
+    });
+
+    test('should return true for ccv2 transcript valueType', () => {
+      const activity = createMockTranscriptActivity(
+        'Test transcript',
+        'user',
+        'application/vnd.microsoft.activity.ccv2.audio.transcript'
+      );
 
       const result = isVoiceTranscriptActivity(activity);
 
@@ -57,24 +69,52 @@ describe('isVoiceTranscriptActivity', () => {
   describe('Invalid activities', () => {
     const testCases = [
       {
-        name: 'stream.chunk voice activity',
-        activity: () => createMockVoiceActivity('stream.chunk', { contentUrl: 'base64' })
+        name: 'media.chunk voice activity',
+        activity: () =>
+          createMockVoiceActivity(
+            'media.chunk',
+            { content: 'base64' },
+            'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+          )
       },
       {
-        name: 'session.update voice activity',
-        activity: () => createMockVoiceActivity('session.update', { session: 'request.detected' })
+        name: 'request.update voice activity',
+        activity: () =>
+          createMockVoiceActivity(
+            'request.update',
+            { state: 'detected' },
+            'application/vnd.microsoft.activity.azure.directline.audio.state'
+          )
       },
       {
-        name: 'stream.end without transcription',
-        activity: () => createMockVoiceActivity('stream.end', { origin: 'user' })
+        name: 'media.end without transcription',
+        activity: () =>
+          createMockActivity(
+            'event',
+            'media.end',
+            { origin: 'user' },
+            'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+          )
       },
       {
-        name: 'stream.end with non-string transcription',
-        activity: () => createMockVoiceActivity('stream.end', { transcription: 123, origin: 'user' })
+        name: 'media.end with non-string transcription',
+        activity: () =>
+          createMockActivity(
+            'event',
+            'media.end',
+            { transcription: 123, origin: 'user' },
+            'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+          )
       },
       {
-        name: 'stream.end with null transcription',
-        activity: () => createMockVoiceActivity('stream.end', { transcription: null, origin: 'user' })
+        name: 'media.end with null transcription',
+        activity: () =>
+          createMockActivity(
+            'event',
+            'media.end',
+            { transcription: null, origin: 'user' },
+            'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+          )
       },
       {
         name: 'regular message activity',
@@ -85,20 +125,28 @@ describe('isVoiceTranscriptActivity', () => {
         activity: () => createMockActivity('typing')
       },
       {
-        name: 'event activity without voice data',
-        activity: () => createMockActivity('event', 'stream.end', { someData: 'test' })
+        name: 'media.end with non-transcript valueType',
+        activity: () =>
+          createMockActivity(
+            'event',
+            'media.end',
+            { transcription: 'test', origin: 'user' },
+            'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+          )
       },
       {
-        name: 'event activity with null payload',
-        activity: () => ({ ...createMockActivity('event', 'stream.end'), payload: null })
-      },
-      {
-        name: 'event activity without payload',
-        activity: () => createMockActivity('event', 'stream.end')
+        name: 'event activity without valueType',
+        activity: () => createMockActivity('event', 'media.end', { transcription: 'test', origin: 'user' })
       },
       {
         name: 'event activity without name',
-        activity: () => createMockActivity('event', undefined, { voice: { transcription: 'test' } })
+        activity: () =>
+          createMockActivity(
+            'event',
+            undefined,
+            { transcription: 'test', origin: 'user' },
+            'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+          )
       }
     ];
 
@@ -112,12 +160,17 @@ describe('isVoiceTranscriptActivity', () => {
   describe('Real-world scenarios', () => {
     test('should identify user transcript in conversation flow', () => {
       const conversationActivities = [
-        createMockVoiceActivity('session.update', { session: 'request.detected' }),
-        createMockVoiceActivity('session.update', { session: 'request.processing' }),
-        createMockVoiceActivity('stream.end', {
-          transcription: 'What is the weather today?',
-          origin: 'user'
-        })
+        createMockVoiceActivity(
+          'request.update',
+          { state: 'detected' },
+          'application/vnd.microsoft.activity.azure.directline.audio.state'
+        ),
+        createMockVoiceActivity(
+          'request.update',
+          { state: 'processing' },
+          'application/vnd.microsoft.activity.azure.directline.audio.state'
+        ),
+        createMockTranscriptActivity('What is the weather today?', 'user')
       ];
 
       const transcriptResults = conversationActivities.map(activity => isVoiceTranscriptActivity(activity));
@@ -125,15 +178,24 @@ describe('isVoiceTranscriptActivity', () => {
       expect(transcriptResults).toEqual([false, false, true]);
     });
 
-    test('should identify bot transcript in response flow', () => {
+    test('should identify agent transcript in response flow', () => {
       const responseActivities = [
-        createMockVoiceActivity('session.update', { session: 'response.available' }),
-        createMockVoiceActivity('stream.chunk', { contentUrl: 'chunk1' }),
-        createMockVoiceActivity('stream.chunk', { contentUrl: 'chunk2' }),
-        createMockVoiceActivity('stream.end', {
-          transcription: 'Today will be sunny with a high of 75 degrees.',
-          origin: 'agent'
-        })
+        createMockVoiceActivity(
+          'request.update',
+          { state: 'response.available' },
+          'application/vnd.microsoft.activity.azure.directline.audio.state'
+        ),
+        createMockVoiceActivity(
+          'media.chunk',
+          { content: 'chunk1' },
+          'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        ),
+        createMockVoiceActivity(
+          'media.chunk',
+          { content: 'chunk2' },
+          'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        ),
+        createMockTranscriptActivity('Today will be sunny with a high of 75 degrees.', 'agent')
       ];
 
       const transcriptResults = responseActivities.map(activity => isVoiceTranscriptActivity(activity));
@@ -144,15 +206,13 @@ describe('isVoiceTranscriptActivity', () => {
     test('should handle complete conversation with mixed activities', () => {
       const mixedActivities = [
         createMockActivity('message', 'test'),
-        createMockVoiceActivity('stream.end', {
-          transcription: 'Hello',
-          origin: 'user'
-        }),
-        createMockVoiceActivity('stream.chunk', { contentUrl: 'audio' }),
-        createMockVoiceActivity('stream.end', {
-          transcription: 'Hi there!',
-          origin: 'agent'
-        }),
+        createMockTranscriptActivity('Hello', 'user'),
+        createMockVoiceActivity(
+          'media.chunk',
+          { content: 'audio' },
+          'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        ),
+        createMockTranscriptActivity('Hi there!', 'agent'),
         createMockActivity('typing')
       ];
 

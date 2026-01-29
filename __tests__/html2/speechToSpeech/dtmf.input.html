@@ -34,12 +34,15 @@
         } = window;
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
         
         // Intercept postActivity to capture outgoing DTMF events
         const capturedDtmfEvents = [];
         const originalPostActivity = directLine.postActivity.bind(directLine);
         directLine.postActivity = (activity) => {
-          if (activity.name === 'dtmf' && activity.payload?.dtmf) {
+          if (activity.name === 'media.end' && activity.type === 'event') {
             capturedDtmfEvents.push(activity);
           }
           return originalPostActivity(activity);
@@ -52,7 +55,6 @@
               store={store}
               styleOptions={{
                 disableFileUpload: true,
-                showMicrophoneButton: true,
                 hideTelephoneKeypadButton: false,
               }}
             />
@@ -76,17 +78,13 @@
         );
 
         // ===== STEP 2: Bot prompts for DTMF input =====
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
+          name: 'media.end',
           from: { role: 'bot' },
           text: 'Please enter your 4-digit PIN using your keypad.',
-          payload: {
-            voice: {
-              transcription: 'Please enter your 4-digit PIN using your keypad.',
-              origin: 'agent'
-            }
-          }
+          value: { transcription: 'Please enter your 4-digit PIN using your keypad.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
         await pageConditions.numActivitiesShown(1);
@@ -134,48 +132,32 @@
 
         await host.click(keypadButton);
 
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
-          payload: {
-            voice: {
-              transcription: '/DTMFKey 1',
-              origin: 'user'
-            }
-          }
+          name: 'media.end',
+          value: { transcription: '/DTMFKey 1', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
         
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
-          payload: {
-            voice: {
-              transcription: '/DTMFKey 2',
-              origin: 'user'
-            }
-          }
+          name: 'media.end',
+          value: { transcription: '/DTMFKey 2', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
         
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
-          payload: {
-            voice: {
-              transcription: '/DTMFKey 3',
-              origin: 'user'
-            }
-          }
+          name: 'media.end',
+          value: { transcription: '/DTMFKey 3', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
         
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
-          payload: {
-            voice: {
-              transcription: '/DTMFKey 4',
-              origin: 'user'
-            }
-          }
+          name: 'media.end',
+          value: { transcription: '/DTMFKey 4', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
         // ===== STEP 6: Verify user transcript with 4 incoming "/DTMFKey {1/2/3/4}" =====
@@ -189,16 +171,12 @@
         expect(activities[4]).toHaveProperty('textContent', '/DTMFKey 4');
 
         // ===== STEP 7: Bot responds =====
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
+          name: 'media.end',
           from: { role: 'bot' },
-          payload: {
-            voice: {
-              transcription: 'Thank you. Your PIN has been verified.',
-              origin: 'agent'
-            }
-          }
+          value: { transcription: 'Thank you. Your PIN has been verified.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
         // THEN: Bot message appears

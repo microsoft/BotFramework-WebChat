@@ -42,11 +42,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   const postActivity = outgoingActivity => {
     // Auto-handle voice activities (continuous sending by mic) without requiring actPostActivity
     // Voice activities are fire-and-forget and don't echo back
-    if (
-      outgoingActivity.payload &&
-      (outgoingActivity.payload.voice || outgoingActivity.payload.dtmf) &&
-      outgoingActivity.type === 'event'
-    ) {
+    if (outgoingActivity.type === 'event' && outgoingActivity.name.includes('media')) {
       const id = uniqueId();
 
       return new Observable(observer => {

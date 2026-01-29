@@ -6,6 +6,12 @@ import React, { type ComponentType } from 'react';
 import { useRecorder } from './useRecorder';
 
 jest.mock('../../Ponyfill/usePonyfill', () => ({ __esModule: true, default: jest.fn(() => [{ Date: global.Date }]) }));
+jest.mock('../../Capabilities/useCapabilities', () => ({
+  __esModule: true,
+  default: jest.fn((selector: (caps: { voiceConfiguration?: { sampleRate: number } }) => unknown) =>
+    selector({ voiceConfiguration: { sampleRate: 24000 } })
+  )
+}));
 
 const mockTrack = {
   stop: jest.fn()

@@ -23,6 +23,9 @@
         // GIVEN: Web Chat with Fluent Theme and microphone button enabled
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
         render(
           <FluentThemeProvider variant="fluent">
             <ReactWebChat 
@@ -30,7 +33,6 @@
               store={store}
               styleOptions={{
                 disableFileUpload: true,
-                showMicrophoneButton: true,
                 hideTelephoneKeypadButton: false,
               }}
             />
@@ -58,6 +60,20 @@
 
         // THEN: Should show sendbox with microphone and keypad buttons
         await host.snapshot('local');
+
+        // WHEN: Voice configuration is removed from directLine
+        directLine.setCapability('getVoiceConfiguration', undefined);
+
+        // Wait for UI to update
+        await pageConditions.became(
+          'Microphone button should be hidden after removing voice configuration',
+          () => !document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`),
+          1000
+        );
+
+        // THEN: Microphone button should NOT be present anymore
+        const micButtonAfterRemoval = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButtonAfterRemoval).toBeFalsy();
       });
     </script>
   </body>

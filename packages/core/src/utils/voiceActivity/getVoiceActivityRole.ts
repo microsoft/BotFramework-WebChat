@@ -3,9 +3,9 @@ import isVoiceTranscriptActivity from './isVoiceTranscriptActivity';
 
 const getVoiceActivityRole = (activity: WebChatActivity): 'bot' | 'user' | undefined => {
   if (isVoiceTranscriptActivity(activity)) {
-    if (activity.payload.voice.origin === 'agent') {
+    if (activity.value.origin === 'agent') {
       return 'bot';
-    } else if (activity.payload.voice.origin === 'user') {
+    } else if (activity.value.origin === 'user') {
       return 'user';
     }
   }

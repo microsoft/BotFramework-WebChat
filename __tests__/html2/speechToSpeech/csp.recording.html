@@ -62,14 +62,14 @@
         // GIVEN: Web Chat with Speech-to-Speech enabled and CSP headers
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
         render(
           <FluentThemeProvider variant="fluent">
             <ReactWebChat 
               directLine={directLine}
               store={store}
-              styleOptions={{
-                showMicrophoneButton: true
-              }}
               nonce="WEB_CHAT_NONCE"
             />
           </FluentThemeProvider>,

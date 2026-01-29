@@ -40,14 +40,14 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
         render(
           <FluentThemeProvider variant="fluent">
             <ReactWebChat 
               directLine={directLine}
               store={store}
-              styleOptions={{
-                showMicrophoneButton: true
-              }}
             />
           </FluentThemeProvider>,
           document.getElementById('webchat')
@@ -79,16 +79,18 @@
         // Bot starts speaking (sends audio chunks)
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.chunk',
+          name: 'media.chunk',
           from: { role: 'bot' },
-          payload: { voice: { content: 'AAAAAA==' } }
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
         });
 
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.chunk',
+          name: 'media.chunk',
           from: { role: 'bot' },
-          payload: { voice: { content: 'AAAAAA==' } }
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
         });
 
         // VERIFY: State is "bot_speaking" (isPlaying = true)
@@ -104,9 +106,10 @@
         // User barges in (server detects user speech)
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'session.update',
+          name: 'request.update',
           from: { role: 'bot' },
-          payload: { voice: { session: 'request.detected' } }
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
         });
 
         // VERIFY: State changes to "user_speaking" - bot audio stopped
@@ -122,9 +125,10 @@
         // Server processes the user's interrupted request
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'session.update',
+          name: 'request.update',
           from: { role: 'bot' },
-          payload: { voice: { session: 'request.processing' } }
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
         });
 
         // VERIFY: State is "processing"
@@ -135,12 +139,13 @@
         );
 
         // User transcript arrives
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
+          name: 'media.end',
           from: { role: 'bot' },
           text: 'Stop! Change my destination.',
-          payload: { voice: { transcription: 'Stop! Change my destination.', origin: 'user' } }
+          value: { transcription: 'Stop! Change my destination.', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
         await pageConditions.numActivitiesShown(1);
@@ -148,9 +153,10 @@
         // Bot responds with new audio
         await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.chunk',
+          name: 'media.chunk',
           from: { role: 'bot' },
-          payload: { voice: { content: 'AAAAAA==' } }
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
         });
 
         // VERIFY: State is "bot_speaking" again
@@ -161,12 +167,13 @@
         );
 
         // Bot transcript arrives
-        await directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingVoiceActivity({
           type: 'event',
-          name: 'stream.end',
+          name: 'media.end',
           from: { role: 'bot' },
           text: 'Sure, where would you like to go instead?',
-          payload: { voice: { transcription: 'Sure, where would you like to go instead?', origin: 'agent' } }
+          value: { transcription: 'Sure, where would you like to go instead?', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
         });
 
         await pageConditions.numActivitiesShown(2);

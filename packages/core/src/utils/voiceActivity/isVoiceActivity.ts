@@ -1,20 +1,17 @@
-import { any, literal, object, safeParse, string, union } from 'valibot';
+import { check, literal, looseObject, object, pipe, safeParse, string } from 'valibot';
 
 import { WebChatActivity } from '../../types/WebChatActivity';
 
-// This is interim until activity protocol is ratified.
-// all voice and dtmf activities are considered voice activities.
+// Activity spec proposal - https://github.com/microsoft/Agents/issues/416
+// valueType: contains 'audio' or 'dtmf' (works with any server prefix like azure.directline, ccv2, etc.)
 const VoiceActivitySchema = object({
   name: string(),
-  payload: union([
-    object({
-      dtmf: any()
-    }),
-    object({
-      voice: any()
-    })
-  ]),
-  type: literal('event')
+  type: literal('event'),
+  value: looseObject({}),
+  valueType: pipe(
+    string(),
+    check(value => value.includes('audio') || value.includes('dtmf'))
+  )
 });
 
 const isVoiceActivity = (
@@ -22,7 +19,8 @@ const isVoiceActivity = (
 ): activity is WebChatActivity & {
   name: string;
   type: 'event';
-  payload: { voice: any };
+  value: any;
+  valueType: string;
 } => safeParse(VoiceActivitySchema, activity).success;
 
 export default isVoiceActivity;
