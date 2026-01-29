@@ -1,0 +1,42 @@
+name: '🚀 [AzDO] Build'
+
+on:
+  # push:
+  #   branches: ['main']
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  AZDO_ORG: ${{ vars.AZDO_ORG }}
+  AZDO_PROJECT: ${{ vars.AZDO_PROJECT }}
+
+jobs:
+  build:
+    environment:
+      name: azure-devops
+    name: Build
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Debug OIDC Claims
+        uses: github/actions-oidc-debugger@bc12dcf
+        with:
+          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+      - uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az extension add --name azure-devops
+            az pipelines list --org ${{ env.AZDO_ORG }} --project ${{ env.AZDO_PROJECT }}
