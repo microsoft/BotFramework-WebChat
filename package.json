@@ -51,6 +51,7 @@
     "packages/directlinespeech",
     "packages/bundle",
     "packages/test/page-object",
+    "packages/test/test-assets",
     "packages/debug-theme",
     "packages/fluent-theme",
     "packages/vibe-grep"

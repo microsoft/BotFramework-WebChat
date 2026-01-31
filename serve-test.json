@@ -104,6 +104,18 @@
       "destination": "packages/fluent-theme/static/:dirname/:filename"
     },
     {
+      "source": "/__dist__/packages/test/test-assets/out/:filename",
+      "destination": "packages/test/test-assets/out/:filename"
+    },
+    {
+      "source": "/__dist__/packages/test/test-assets/out/@fluentui/:filename",
+      "destination": "packages/test/test-assets/out/@fluentui/:filename"
+    },
+    {
+      "source": "/__dist__/packages/test/test-assets/out/:dirname/:filename",
+      "destination": "packages/test/test-assets/out/:dirname/:filename"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },

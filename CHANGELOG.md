@@ -318,6 +318,7 @@ Breaking changes in this release:
    - Activity status, in PR [#5669](https://github.com/microsoft/BotFramework-WebChat/pull/5669), by [@OEvgeny](https://github.com/OEvgeny)
    - Text attachment and related components, in PR [#5670](https://github.com/microsoft/BotFramework-WebChat/pull/5670), by [@OEvgeny](https://github.com/OEvgeny)
 - (Experimental) Added custom variants support for `botframework-webchat-fluent-theme` package, in PR [#5675](https://github.com/microsoft/BotFramework-WebChat/pull/5675), by [@OEvgeny](https://github.com/OEvgeny)
+- Improved adaptive cards rendering in copilot variant, in PR [#5682](https://github.com/microsoft/BotFramework-WebChat/pull/5682), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Deprecated
 

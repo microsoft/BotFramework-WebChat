@@ -7,11 +7,13 @@
   <script type="importmap">
       {
         "imports": {
-          "react": "https://esm.sh/react@18.3.1",
-          "react-dom": "https://esm.sh/react-dom@18.3.1",
-          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
           "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
-          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/",
+          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
         }
       }
     </script>
@@ -37,10 +39,11 @@
 <body>
   <main id="webchat"></main>
   <script type="module">
+    import { FluentProvider } from '@fluentui/react-provider';
+    import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+    import { waitFor } from '@testduet/wait-for';
     import React from 'react';
     import { createRoot } from 'react-dom/client';
-    import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
-    import { waitFor } from '@testduet/wait-for';
 
     run(async function () {
       const {

@@ -1,0 +1,34 @@
+{
+  "name": "@msinternal/test-assets",
+  "version": "0.0.0-0",
+  "description": "",
+  "private": true,
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "scripts": {
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:setup && npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:setup": "command -v make >/dev/null 2>&1 || { [ -x ./make.com ] || { curl -fsSL -o make.com https://cosmo.zip/pub/cosmos/bin/make && chmod +x make.com; }; }",
+    "build:pre:watch": "../../../scripts/npm/build-watch.sh",
+    "build:run": "MAKE_BIN=$(command -v make || echo ./make.com) && \"$MAKE_BIN\" clean all",
+    "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
+    "eslint": "npm run precommit",
+    "postversion": "../../../scripts/npm/postversion.sh",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "preversion": "../../../scripts/npm/preversion.sh",
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
+  },
+  "pinDependencies": {},
+  "localDependencies": {},
+  "dependencies": {
+    "@fluentui/react-provider": "^9.22.13",
+    "@fluentui/tokens": "^1.0.0-alpha.23",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

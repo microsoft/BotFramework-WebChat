@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Shell custom element</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+    }
+    test-shell {
+      display: grid;
+      grid-template-rows: min-content auto;
+
+      #webchat {
+        height: 640px;
+        width: 380px;
+        transition: width 0.2s 0.2s ease-out;
+      }
+
+      .fui-FluentProvider {
+        display: contents;
+      }
+
+      .webchat__surface {
+        overflow: hidden;
+      }
+    }
+
+    test-shell:has(.theme.variant-copilot) > #webchat {
+      width: 680px;
+    }
+  </style>
+</head>
+<body>
+  <template>
+    <style type="text/css">
+      * {
+        box-sizing: border-box;
+      }
+
+      :host([data-theme="light"]) {
+        --body-background: linear-gradient(135deg, #e0f7ff 0%, #ffe5f0 100%);
+        --webchat-container-background: linear-gradient(160deg, #ffffff22 0%, #f8f9facc 100%);
+        --notice-color: #495057;
+        --notice-background: #f8f9fa77;
+        --notice-border: 1px solid #dee2e6;
+      }
+
+      :host([data-theme="dark"]) {
+        --body-background: linear-gradient(135deg, #0b1a2b 0%, #2c001e 100%);
+        --webchat-container-background: linear-gradient(160deg, #1a1a1acc 0%, #222222cc 100%);
+        --notice-color: #f8f9fa;
+        --notice-background: #49505777;
+        --notice-border: 1px solid #666666;
+      }
+
+      :host {
+        margin: 0;
+        min-height: 100vh;
+        padding: 30px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: var(--body-background);
+        display: grid;
+        gap: 20px;
+
+        opacity: 0;
+        transition: opacity 0.3s 0.7s ease-in-out;
+      }
+
+      :host([data-theme="dark"]), :host([data-theme="light"]) {
+        opacity: 1;
+      }
+
+      .webchat-container {
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        background: var(--webchat-container-background);
+        position: relative;
+        display: grid;
+        place-self: center;
+
+        .loader-notice {
+          opacity: 0.33;
+          place-self: center;
+        }
+      }
+
+      .notice {
+        background: var(--notice-background);
+        border: var(--notice-border);
+        color: var(--notice-color);
+        padding: 15px;
+        border-radius: 8px;
+        max-width: 440px;
+        font-size: 14px;
+        place-self: start center;
+
+        &::after {
+          content: ' (theme=' attr(data-theme)')' ' (variant=' attr(data-variant)')';
+          opacity: 0.75;
+        } 
+      }
+    </style>
+    <div class="notice">
+    </div>
+    <div class="webchat-container">
+      <slot>
+        <div class="loader-notice">
+          Web Chat root element is not provided.
+        </div>
+      </slot>
+    </div>
+  </template>
+  <script type="module">
+    import { customElement } from '/assets/custom-element/custom-element.js';
+
+    customElement('test-shell', currentDocument =>
+      class TestShellElement extends HTMLElement {
+        constructor() {
+          super();
+          const template = currentDocument.querySelector('template');
+          const fragment = template.content.cloneNode(true);
+
+          this.notice = fragment.querySelector('.notice');
+  
+          this.initDataset();
+          this.initNotice();
+
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          shadowRoot.appendChild(fragment);
+        }
+
+        initNotice() {
+          this.notice.textContent = document.title;
+
+          Object.assign(this.notice.dataset, this.dataset);
+        }
+
+        initDataset() {
+          const params = new URLSearchParams(location.search)
+          this.dataset.theme = params.get('fluent-theme') || 'light';
+          this.dataset.fluentTheme = this.dataset.theme;
+          this.dataset.variant = params.get('variant');
+        }
+      }
+    );
+  </script>
+</body>
+</html>
