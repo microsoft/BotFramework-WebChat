@@ -18,10 +18,8 @@
     "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
     "eslint": "npm run precommit",
     "postversion": "../../../scripts/npm/postversion.sh",
-    "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "preversion": "../../../scripts/npm/preversion.sh",
-    "start": "../../../scripts/npm/notify-build.sh \"src\""
+    "start": "../../../scripts/npm/notify-build.sh \"out\""
   },
   "pinDependencies": {},
   "localDependencies": {},

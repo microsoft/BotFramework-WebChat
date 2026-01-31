@@ -10,5 +10,6 @@
 !/packages/test/fluent-bundle/dist
 !/packages/test/harness/dist
 !/packages/test/page-object/dist
+!/packages/test/test-assets/out
 !/packages/test/web-server/dist
 !/serve-test.json
