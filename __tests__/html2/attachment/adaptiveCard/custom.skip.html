@@ -176,7 +176,7 @@
     await host.snapshot('local');
 
     // When: send an adaptive card with containers
-    await postActivity(adapter, { text: 'card containerstyles' })
+    await postActivity(adapter, { text: 'card containerstyles' });
 
     // Then: should render container styles correctly
     await host.snapshot('local');

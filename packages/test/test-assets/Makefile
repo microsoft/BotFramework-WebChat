@@ -61,7 +61,6 @@ $(REACT_DOM_OUT): $(REACT_DOM_SRC) $(REACT_OUT)
 	esbuild $(REACT_DOM_SRC) --outfile=$@ \
 		$(SHARED_FLAGS) \
 		$(REACT_FLAGS) \
-		$(REACT_DOM_INJECT) \
 		$(ALIAS_REACT) \
 		--alias:out-root/react.js=react \
 		--external:react
