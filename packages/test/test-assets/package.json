@@ -13,7 +13,7 @@
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:pre": "npm run build:pre:setup && npm run build:pre:local-dependencies && npm run build:pre:watch",
     "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
-    "build:pre:setup": "command -v make >/dev/null 2>&1 || { [ -x ./make.com ] || { curl -fsSL -o make.com https://cosmo.zip/pub/cosmos/bin/make && chmod +x make.com && EXPECTED_SHA=$(node -p 'require(\"./package.json\").makeComSha256') && ACTUAL_SHA=$(shasum -a 256 make.com | cut -d' ' -f1) && [ \"$EXPECTED_SHA\" = \"$ACTUAL_SHA\" ] || { echo \"ERROR: make.com SHA mismatch! Expected: $EXPECTED_SHA, Got: $ACTUAL_SHA\" >&2; rm make.com; exit 1; }; }; }",
+    "build:pre:setup": "command -v make >/dev/null 2>&1 || { [ -x ./make.com ] || { curl -fsSL -o make.com https://cosmo.zip/pub/cosmos/bin/make && EXPECTED_SHA=$(node -p 'require(\"./package.json\").makeComSha256') && ACTUAL_SHA=$(shasum -a 256 make.com | cut -d' ' -f1) && [ \"$EXPECTED_SHA\" = \"$ACTUAL_SHA\" ] || { echo \"ERROR: make.com SHA mismatch! Expected: $EXPECTED_SHA, Got: $ACTUAL_SHA\" >&2; rm make.com; exit 1; } && chmod +x make.com; }; }",
     "build:pre:watch": "../../../scripts/npm/build-watch.sh",
     "build:run": "MAKE_BIN=$(command -v make || echo ./make.com) && \"$MAKE_BIN\" clean all",
     "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
