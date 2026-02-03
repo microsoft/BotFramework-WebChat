@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      Test: Audio chunks outgoing flow
+      
+      This test validates:
+      1. Mic on → state becomes "listening"
+      2. Audio chunks are sent via postActivity (fire-and-forget)
+      3. Verify chunk structure (type, name, value.content)
+      4. Verify ~100ms interval between chunk timestamps
+      
+      Note: Since voice activities use postVoiceActivity (fire-and-forget),
+      we intercept postActivity to capture outgoing chunks for verification.
+    -->
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        
+        // Intercept postActivity to capture outgoing voice chunks
+        const capturedChunks = [];
+        const originalPostActivity = directLine.postActivity.bind(directLine);
+        directLine.postActivity = (activity) => {
+          if (activity.name === 'media.chunk' && activity.type === 'event') {
+            capturedChunks.push({
+              ...activity,
+              capturedAt: Date.now()
+            });
+          }
+          return originalPostActivity(activity);
+        };
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        const textArea = document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`);
+        expect(micButton).toBeTruthy();
+        expect(textArea).toBeTruthy();
+
+        // ===== STEP 1: Start recording =====
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording started',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone on'),
+          1000
+        );
+
+        // VERIFY: State is "listening"
+        await pageConditions.became(
+          'State: listening → Placeholder: "Listening..."',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          1000
+        );
+
+        // ===== STEP 2: Wait for multiple chunks =====
+        // Default chunk interval is 100ms, wait for at least 5 chunks for better interval calculation
+        await pageConditions.became(
+          'Multiple audio chunks sent via postActivity',
+          () => capturedChunks.length >= 5,
+          2000
+        );
+
+        // ===== STEP 3: Stop recording =====
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording stopped',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone off'),
+          1000
+        );
+
+        // ===== STEP 4: Verify captured chunks =====
+        expect(capturedChunks.length).toBeGreaterThanOrEqual(5);
+
+        // ===== STEP 5: Verify chunk structure =====
+        const sampleChunk = capturedChunks[0];
+        
+        expect(sampleChunk.type).toBe('event');
+        expect(sampleChunk.name).toBe('media.chunk');
+        expect(sampleChunk.value).toBeTruthy();
+        expect(sampleChunk.value.content).toBeTruthy();
+        expect(sampleChunk.value.contentType).toBe('audio/webm');
+
+        // ===== STEP 6: Verify interval using capturedAt timestamps =====
+        const timestamps = capturedChunks.map(c => c.capturedAt).sort((a, b) => a - b);
+        
+        // Calculate intervals between consecutive chunks
+        const intervals = [];
+        for (let i = 1; i < timestamps.length; i++) {
+          intervals.push(timestamps[i] - timestamps[i - 1]);
+        }
+
+        // Calculate average interval
+        const avgInterval = intervals.reduce((sum, i) => sum + i, 0) / intervals.length;
+
+        // Verify average interval is approximately 100ms (allow 50-150ms range for test stability)
+        expect(avgInterval).toBeGreaterThanOrEqual(50);
+        expect(avgInterval).toBeLessThanOrEqual(150);
+      });
+    </script>
+  </body>
+</html>

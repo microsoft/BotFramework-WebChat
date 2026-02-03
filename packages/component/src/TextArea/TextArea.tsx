@@ -37,6 +37,7 @@ const TextArea = forwardRef<
     onClick?: MouseEventHandler<HTMLTextAreaElement> | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
+    readOnly?: boolean | undefined;
     startRows?: number | undefined;
     value?: string | undefined;
   }>
@@ -45,7 +46,7 @@ const TextArea = forwardRef<
   const classNames = useStyles(styles);
   const isInCompositionRef = useRef<boolean>(false);
 
-  const disabled = uiState === 'disabled';
+  const disabled = uiState === 'disabled' || props.readOnly;
 
   const handleCompositionEnd = useCallback(() => {
     isInCompositionRef.current = false;

@@ -998,6 +998,15 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   disableFileUpload?: boolean;
+  /**
+   * Controls microphone button visibility in Fluent theme send box.
+   *
+   * - `'auto'` - Show microphone button if the chat adapter supports voice (has voiceConfiguration capability)
+   * - `'hide'` - Do not show microphone button regardless of adapter capabilities
+   *
+   * @default 'auto'
+   */
+  showMicrophoneButton?: 'auto' | 'hide';
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

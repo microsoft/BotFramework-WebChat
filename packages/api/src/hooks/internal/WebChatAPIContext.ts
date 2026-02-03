@@ -71,8 +71,10 @@ export type WebChatAPIContextType = {
   setSendTimeout?: (timeout: number) => void;
   startDictate?: () => void;
   startSpeakingActivity?: () => void;
+  startVoice?: () => void;
   stopDictate?: () => void;
   stopSpeakingActivity?: () => void;
+  stopVoice?: () => void;
   submitSendBox?: (method?: string, { channelData }?: { channelData: any }) => void;
   telemetryDimensionsRef?: React.Ref<any>;
   toastRenderer?: RenderToast;

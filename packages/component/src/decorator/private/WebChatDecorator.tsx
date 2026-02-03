@@ -13,6 +13,16 @@ import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
 
 const middleware: readonly DecoratorMiddleware[] = Object.freeze([
+  createActivityBorderMiddleware(function FluentBorderFlair({ request, Next, ...props }) {
+    if (request.modality.has('audio') && request.from === 'bot') {
+      return (
+        <BorderFlair showFlair={true}>
+          <Next {...props} />
+        </BorderFlair>
+      );
+    }
+    return <Next {...props} />;
+  }),
   createActivityBorderMiddleware(function BorderFlairDecorator({ request, Next, ...props }) {
     return (
       <BorderFlair showFlair={props.showFlair ?? request.livestreamingState === 'completing'}>

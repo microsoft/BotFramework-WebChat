@@ -1,5 +1,3 @@
 /// <reference types="node" />
 
-module.exports = {
-  internal: (globalThis as any).WebChat.internal
-};
+module.exports = (globalThis as any).WebChat.internal;

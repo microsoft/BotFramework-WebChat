@@ -1,5 +1,10 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { getOrgSchemaMessage, PartGrouping, type WebChatActivity } from 'botframework-webchat/internal';
+import {
+  getOrgSchemaMessage,
+  getVoiceActivityRole,
+  PartGrouping,
+  type WebChatActivity
+} from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';
@@ -38,8 +43,12 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
     [activity, restActivities.length]
   );
 
-  const isFromUser = activity?.from?.role === 'user';
-  const isFromBot = activity?.from?.role === 'bot';
+  // S2S-both user and bot transcript comes from server (RT-LLM) hence need to check role explicitly.
+  // voiceActivityRole takes precedence over from.role since S2S activities always come from 'bot'
+  const voiceActivityRole = activity && getVoiceActivityRole(activity);
+
+  const isFromBot = voiceActivityRole ? voiceActivityRole === 'bot' : activity?.from?.role === 'bot';
+  const isFromUser = voiceActivityRole ? voiceActivityRole === 'user' : activity?.from?.role === 'user';
 
   return (
     <div

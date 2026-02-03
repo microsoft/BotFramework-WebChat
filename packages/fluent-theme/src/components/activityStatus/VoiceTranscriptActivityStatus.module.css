@@ -1,0 +1,20 @@
+.voice-transcript-activity-status {
+  align-items: center;
+  color: var(--webchat__color--timestamp);
+  display: inline-flex;
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat__font-size--small);
+  gap: var(--webchat-spacingHorizontalXS);
+  margin-block-start: calc(var(--webchat__padding--regular) / 2);
+}
+
+.voice-transcript-activity-status__agent-label {
+  color: var(--webchat-colorNeutralForeground3);
+  font-size: var(--webchat-fontSizeBase100);
+  font-weight: var(--webchat-fontWeightSemibold);
+  line-height: var(--webchat-lineHeightBase100);
+}
+
+.voice-transcript-activity-status__divider {
+  color: var(--webchat-colorNeutralStroke2);
+}

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        // GIVEN: Web Chat with Speech-to-Speech enabled
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButton).toBeTruthy();
+
+        // WHEN: User clicks microphone button to start recording
+        await host.click(micButton);
+
+        // THEN: Button should show recording state
+        await pageConditions.became(
+          'Microphone button changes to recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && (label.includes('Microphone on'));
+          },
+          1000
+        );
+
+        // THEN: Verify voice state is recording/listening
+        await pageConditions.became(
+          'Voice state is listening',
+          () => store.getState().voice?.voiceState === 'listening',
+          1000
+        );
+
+        // WHEN: Server detects speech start (barge-in)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+
+        // WHEN: Server detects speech stop (processing)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        // WHEN: Server sends user transcript (this goes to activities with text)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'What is the weather today?', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        // THEN: User transcript appears in chat
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'What is the weather today?'
+        );
+
+        // THEN: Should show user message
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+
+        // WHEN: Server sends audio chunks
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.chunk',
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.chunk',
+          from: { role: 'bot' },
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        });
+
+
+        // WHEN: Server sends bot transcript (this goes to activities with text)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'The weather today is sunny with a high of 75 degrees.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+
+        // THEN: Bot transcript appears in chat
+        await pageConditions.numActivitiesShown(2);
+        
+        const activities = pageElements.activityContents();
+        expect(activities[0]).toHaveProperty('textContent', 'What is the weather today?');
+        expect(activities[1]).toHaveProperty('textContent', 'The weather today is sunny with a high of 75 degrees.');
+
+        // THEN: Verify activity status for voice transcripts
+        const activityStatuses = pageElements.activityStatuses();
+        expect(activityStatuses.length).toBe(2);
+
+        // THEN: User transcript should have timestamp but NO "Agent" label
+        const userActivityStatus = activityStatuses[0];
+        expect(userActivityStatus.innerText).not.toContain('Agent');
+        expect(userActivityStatus.innerText).toContain('Just now');
+
+        // THEN: Bot transcript should have "Agent" label AND timestamp
+        const botActivityStatus = activityStatuses[1];
+        expect(botActivityStatus.innerText).toContain('Agent');
+        expect(botActivityStatus.innerText).toContain('|');
+        expect(botActivityStatus.innerText).toContain('Just now');
+
+        // WHEN: User stops recording by clicking microphone button again
+        await host.click(micButton);
+
+        // THEN: Button should change to not-recording state
+        await pageConditions.became(
+          'Microphone button changes to not-recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && (label.includes('Microphone off'));
+          },
+          1000
+        );
+
+        // THEN: Should show happy path conversation
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+
+      });
+    </script>
+  </body>
+</html>
