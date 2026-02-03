@@ -18,6 +18,7 @@ const VoiceTranscriptActivitySchema = object({
 
 const isVoiceTranscriptActivity = (
   activity: WebChatActivity
-): activity is WebChatActivity & InferOutput<typeof VoiceTranscriptActivitySchema> => safeParse(VoiceTranscriptActivitySchema, activity).success;
+): activity is WebChatActivity & InferOutput<typeof VoiceTranscriptActivitySchema> =>
+  safeParse(VoiceTranscriptActivitySchema, activity).success;
 
 export default isVoiceTranscriptActivity;
