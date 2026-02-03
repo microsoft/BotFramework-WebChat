@@ -106,7 +106,7 @@
     <kbd></kbd>
   </template>
   <script type="module">
-    import { customElement, getCustomElementName } from '/assets/custom-element/custom-element.js';
+    import { customElement } from '/assets/custom-element/custom-element.js';
 
     customElement('keyboard-event', currentDocument =>
       class KeyboardEventElement extends HTMLElement {
@@ -130,8 +130,7 @@
         }
   
         static listenKeyboardEvents(scope = window) {
-          // const myTagName = customElements.getName(this)
-          const myTagName = getCustomElementName(this);
+          const myTagName = customElements.getName(this)
           const abortController = new AbortController();
           scope.addEventListener('keydown', event => {
             const element = document.createElement(myTagName);

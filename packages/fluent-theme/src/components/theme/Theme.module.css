@@ -219,6 +219,7 @@
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalL)
     var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalSNudge);
+  --webchat__max-height--image-bubble: max(480px, 90cqb);
 }
 
 /* Transcript surface */

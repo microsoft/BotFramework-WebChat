@@ -66,6 +66,7 @@ jobs:
           ./packages/fluent-theme/static/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
+          ./packages/test/test-assets/out/
           ./packages/test/web-server/dist/
           ./serve-test.json
           ./testharness.dockerfile
