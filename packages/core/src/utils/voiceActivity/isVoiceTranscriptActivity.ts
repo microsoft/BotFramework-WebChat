@@ -1,4 +1,4 @@
-import { check, literal, object, picklist, pipe, safeParse, string } from 'valibot';
+import { check, literal, object, picklist, pipe, safeParse, string, type InferOutput } from 'valibot';
 
 import { WebChatActivity } from '../../types/WebChatActivity';
 
@@ -18,12 +18,6 @@ const VoiceTranscriptActivitySchema = object({
 
 const isVoiceTranscriptActivity = (
   activity: WebChatActivity
-): activity is WebChatActivity & {
-  value: {
-    origin: 'agent' | 'user';
-    transcription: string;
-  };
-  valueType: string;
-} => safeParse(VoiceTranscriptActivitySchema, activity).success;
+): activity is WebChatActivity & InferOutput<VoiceTranscriptActivitySchema> => safeParse(VoiceTranscriptActivitySchema, activity).success;
 
 export default isVoiceTranscriptActivity;

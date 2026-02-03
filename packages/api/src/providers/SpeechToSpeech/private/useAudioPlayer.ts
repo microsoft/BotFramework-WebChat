@@ -82,7 +82,7 @@ export function useAudioPlayer() {
   }, []);
 
   return useMemo(
-    () => ({
+    () => Object.freeze({
       queueAudio,
       stopAllAudio
     }),

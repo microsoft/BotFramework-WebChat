@@ -17,6 +17,7 @@ import {
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import VoiceTranscriptActivityStatus from '../components/activityStatus/VoiceTranscriptActivityStatus';
 import ActivityLoader from '../components/activity/ActivityLoader';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 import AssetComposer from '../components/assets/AssetComposer';
@@ -28,7 +29,6 @@ import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import FluentThemeStylesheet from '../stylesheet/FluentThemeStylesheet';
 import VariantComposer, { variantNameSchema } from './VariantComposer';
-import VoiceTranscriptActivityStatus from '../components/activityStatus/VoiceTranscriptActivityStatus';
 
 const fluentThemeProviderPropsSchema = pipe(
   object({

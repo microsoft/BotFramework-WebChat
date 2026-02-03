@@ -1,4 +1,4 @@
-import { check, literal, looseObject, object, pipe, safeParse, string } from 'valibot';
+import { check, literal, looseObject, object, pipe, safeParse, string, type InferOutput } from 'valibot';
 
 import { WebChatActivity } from '../../types/WebChatActivity';
 
@@ -16,11 +16,6 @@ const VoiceActivitySchema = object({
 
 const isVoiceActivity = (
   activity: WebChatActivity
-): activity is WebChatActivity & {
-  name: string;
-  type: 'event';
-  value: any;
-  valueType: string;
-} => safeParse(VoiceActivitySchema, activity).success;
+): activity is WebChatActivity & InferOutput<typeof VoiceActivitySchema> => safeParse(VoiceActivitySchema, activity).success;
 
 export default isVoiceActivity;

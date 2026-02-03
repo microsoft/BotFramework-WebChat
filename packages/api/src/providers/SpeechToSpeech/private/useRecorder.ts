@@ -60,14 +60,14 @@ const DEFAULT_CHUNK_SIZE_IN_MS = 100;
 const MS_IN_SECOND = 1000;
 
 export function useRecorder(onAudioChunk: (base64: string, timestamp: string) => void) {
+  const [{ Date }] = usePonyfill();
   const audioCtxRef = useRef<AudioContext | undefined>(undefined);
-  const workletRef = useRef<AudioWorkletNode | undefined>(undefined);
   const streamRef = useRef<MediaStream | undefined>(undefined);
   const voiceConfiguration = useCapabilities(caps => caps.voiceConfiguration);
-  const [{ Date }] = usePonyfill();
+  const workletRef = useRef<AudioWorkletNode | undefined>(undefined);
 
-  const sampleRate = voiceConfiguration?.sampleRate ?? DEFAULT_SAMPLE_RATE;
   const chunkIntervalMs = voiceConfiguration?.chunkIntervalMs ?? DEFAULT_CHUNK_SIZE_IN_MS;
+  const sampleRate = voiceConfiguration?.sampleRate ?? DEFAULT_SAMPLE_RATE;
 
   const stopRecording = useCallback(() => {
     if (workletRef.current) {
@@ -79,7 +79,7 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = undefined;
     }
-  }, []);
+  }, [streamRef, workletRef]);
 
   const initAudio = useCallback(async () => {
     if (audioCtxRef.current) {
@@ -95,11 +95,11 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     URL.revokeObjectURL(url);
     // eslint-disable-next-line require-atomic-updates
     audioCtxRef.current = audioCtx;
-  }, [sampleRate]);
+  }, [audioCtxRef, sampleRate]);
 
   const startRecording = useCallback(async () => {
     await initAudio();
-    const audioCtx = audioCtxRef.current!;
+    const audioCtx = audioCtxRef.current!; // audioCtx must be available after initAudio().
     if (audioCtx.state === 'suspended') {
       await audioCtx.resume();
     }
@@ -135,7 +135,7 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     worklet.connect(audioCtx.destination);
     worklet.port.postMessage({ command: 'START' });
     workletRef.current = worklet;
-  }, [chunkIntervalMs, Date, initAudio, onAudioChunk, sampleRate]);
+  }, [audioCtxRef, chunkIntervalMs, Date, initAudio, onAudioChunk, sampleRate]);
 
   const record = useCallback(() => {
     startRecording();

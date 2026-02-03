@@ -85,6 +85,7 @@ function* observeActivity({ directLine, userID }: { directLine: DirectLineJSBotC
         voiceHandlers: state.voice.voiceHandlers
       }));
 
+      // Only process voice chunks if speech-to-speech is enabled.
       if (!recording) {
         return;
       }

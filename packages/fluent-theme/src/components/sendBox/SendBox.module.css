@@ -77,7 +77,6 @@
   }
 }
 
-
 :global(.webchat-fluent) .sendbox__attachment-bar:global(.send-box-attachment-bar) {
   :global(.send-box-attachment-bar__box) {
     gap: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalXS);
