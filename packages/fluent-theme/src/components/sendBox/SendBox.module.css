@@ -55,7 +55,7 @@
     transition: clip-path var(--webchat-durationUltraFast) var(--webchat-curveAccelerateMid);
   }
 
-  &:focus-within::after {
+  &:not(:has(textarea[readonly][aria-disabled='true'])):focus-within::after {
     clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 0 0 0);
     transition: clip-path var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
   }

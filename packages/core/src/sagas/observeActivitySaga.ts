@@ -1,9 +1,12 @@
-import { put } from 'redux-saga/effects';
+import { put, select } from 'redux-saga/effects';
 import updateIn from 'simple-update-in';
 
 import observeEach from './effects/observeEach';
 import queueIncomingActivity from '../actions/queueIncomingActivity';
+import setVoiceState from '../actions/setVoiceState';
 import whileConnected from './effects/whileConnected';
+import isVoiceActivity from '../utils/voiceActivity/isVoiceActivity';
+import isVoiceTranscriptActivity from '../utils/voiceActivity/isVoiceTranscriptActivity';
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { WebChatActivity } from '../types/WebChatActivity';
@@ -75,6 +78,53 @@ function patchFromName(activity: DirectLineActivity) {
 
 function* observeActivity({ directLine, userID }: { directLine: DirectLineJSBotConnection; userID?: string }) {
   yield observeEach(directLine.activity$, function* observeActivity(activity: DirectLineActivity) {
+    // Handle voice activities separately - don't store them in Redux (except transcripts)
+    if (isVoiceActivity(activity) && !isVoiceTranscriptActivity(activity)) {
+      const { recording, voiceHandlers } = yield select(state => ({
+        recording: state.voice.voiceState !== 'idle',
+        voiceHandlers: state.voice.voiceHandlers
+      }));
+
+      // Only process voice chunks if speech-to-speech is enabled.
+      if (!recording) {
+        return;
+      }
+
+      switch (activity.name) {
+        case 'media.chunk': {
+          const audioContent = activity?.value?.content;
+          if (audioContent) {
+            voiceHandlers.forEach(handler => handler.queueAudio(audioContent));
+          }
+          break;
+        }
+
+        case 'request.update': {
+          const state = activity?.value?.state;
+
+          switch (state) {
+            case 'detected':
+              voiceHandlers.forEach(handler => handler.stopAllAudio());
+              yield put(setVoiceState('user_speaking'));
+              break;
+
+            case 'processing':
+              yield put(setVoiceState('processing'));
+              break;
+
+            default:
+              break;
+          }
+          break;
+        }
+
+        default:
+          break;
+      }
+
+      return;
+    }
+
     // TODO: [P2] #3953 Move the patching logic to a DirectLineJS wrapper, instead of too close to inners of Web Chat.
     activity = patchNullAsUndefined(activity);
     activity = patchActivityWithFromRole(activity, userID);

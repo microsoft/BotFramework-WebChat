@@ -150,6 +150,7 @@ Breaking changes in this release:
 - The `botframework-webchat` package now uses CSS modules for styling purposes, in PR [#5666](https://github.com/microsoft/BotFramework-WebChat/pull/5666), in PR [#5677](https://github.com/microsoft/BotFramework-WebChat/pull/5677) by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Added `npm run build-browser` script for building test harness package only, in PR [#5667](https://github.com/microsoft/BotFramework-WebChat/pull/5667), by [@compulim](https://github.com/compulim)
 - Added pull-based capabilities system for dynamically discovering adapter capabilities at runtime, in PR [#5679](https://github.com/microsoft/BotFramework-WebChat/pull/5679), by [@pranavjoshi001](https://github.com/pranavjoshi001)
+- Added Speech-to-Speech (S2S) support for real-time voice conversations, in PR [#5654](https://github.com/microsoft/BotFramework-WebChat/pull/5654), by [@pranavjoshi](https://github.com/pranavjoshi001)
 
 ### Changed
 

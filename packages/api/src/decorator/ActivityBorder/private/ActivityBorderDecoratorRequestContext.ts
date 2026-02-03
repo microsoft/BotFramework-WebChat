@@ -20,6 +20,14 @@ type ActivityBorderDecoratorRequest = Readonly<{
    * - `undefined` - the sender is unknown
    */
   from: 'bot' | 'channel' | `user` | undefined;
+
+  /**
+   * Gets the modalities of the activity.
+   *
+   * - `'audio'` - the activity originated from audio/voice input
+   * - `'text'` - the activity originated from text input
+   */
+  modality: Set<'audio' | 'text'>;
 }>;
 
 type ActivityBorderDecoratorRequestContextType = Readonly<{
@@ -30,6 +38,7 @@ const ActivityBorderDecoratorRequestContext = createContext<ActivityBorderDecora
   Object.freeze({
     request: Object.freeze({
       from: undefined,
+      modality: new Set<'audio' | 'text'>(),
       livestreamingState: undefined
     })
   })

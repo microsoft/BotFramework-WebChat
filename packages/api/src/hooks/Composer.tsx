@@ -30,8 +30,10 @@ import {
   singleToArray,
   startDictate,
   startSpeakingActivity,
+  startVoiceRecording,
   stopDictate,
   stopSpeakingActivity,
+  stopVoiceRecording,
   submitSendBox,
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
@@ -63,6 +65,7 @@ import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingCo
 import CapabilitiesComposer from '../providers/Capabilities/CapabilitiesComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
+import { SpeechToSpeechComposer } from '../providers/SpeechToSpeech/SpeechToSpeechComposer';
 import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
@@ -81,6 +84,7 @@ import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import Tracker from './internal/Tracker';
+import useVoiceHandlers from './internal/useVoiceHandlers';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import defaultSelectVoice from './internal/defaultSelectVoice';
@@ -297,6 +301,7 @@ const ComposerCore = ({
   const [styleOptions] = useStyleOptions();
   const dispatch = useDispatch();
   const telemetryDimensionsRef = useRef({});
+  const [voiceHandlers] = useVoiceHandlers();
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
@@ -366,6 +371,15 @@ const ComposerCore = ({
       ),
     [dispatch]
   );
+
+  const startVoice = useCallback(() => {
+    dispatch(startVoiceRecording());
+  }, [dispatch]);
+
+  const stopVoice = useCallback(() => {
+    voiceHandlers.forEach(handler => handler.stopAllAudio());
+    dispatch(stopVoiceRecording());
+  }, [dispatch, voiceHandlers]);
 
   const patchedLocalizedStrings = useMemo(
     () => mergeStringsOverrides(getAllLocalizedStrings()[normalizeLanguage(locale)], locale, overrideLocalizedStrings),
@@ -554,6 +568,8 @@ const ComposerCore = ({
       scrollToEndButtonRenderer,
       selectVoice: patchedSelectVoice,
       sendTypingIndicator,
+      startVoice,
+      stopVoice,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
@@ -583,6 +599,8 @@ const ComposerCore = ({
       renderMarkdown,
       scrollToEndButtonRenderer,
       sendTypingIndicator,
+      startVoice,
+      stopVoice,
       telemetryDimensionsRef,
       trackDimension,
       uiState,
@@ -601,7 +619,9 @@ const ComposerCore = ({
                 <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                   <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
                     <PolymiddlewareComposer polymiddleware={polymiddleware}>
-                      {typeof children === 'function' ? children(context) : children}
+                      <SpeechToSpeechComposer>
+                        {typeof children === 'function' ? children(context) : children}
+                      </SpeechToSpeechComposer>
                     </PolymiddlewareComposer>
                   </GroupActivitiesComposer>
                   <ActivitySendStatusTelemetryComposer />

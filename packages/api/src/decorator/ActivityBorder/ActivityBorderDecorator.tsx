@@ -1,4 +1,9 @@
-import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import {
+  getActivityLivestreamingMetadata,
+  getVoiceActivityRole,
+  isVoiceActivity,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
 import {
@@ -25,7 +30,12 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
     const { type } = getActivityLivestreamingMetadata(activity) || {};
 
     return {
-      from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
+      from: isVoiceActivity(activity)
+        ? getVoiceActivityRole(activity)
+        : supportedActivityRoles.includes(activity?.from?.role)
+          ? activity?.from?.role
+          : undefined,
+      modality: new Set(isVoiceActivity(activity) ? ['audio', 'text'] : ['text']),
       livestreamingState:
         type === 'final activity'
           ? 'completing'

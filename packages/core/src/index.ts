@@ -40,6 +40,18 @@ import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMe
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
+import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
+import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
+import getVoiceActivityRole from './utils/voiceActivity/getVoiceActivityRole';
+import getVoiceActivityText from './utils/voiceActivity/getVoiceActivityText';
+import startVoiceRecording from './actions/startVoiceRecording';
+import stopVoiceRecording from './actions/stopVoiceRecording';
+import setVoiceState from './actions/setVoiceState';
+import registerVoiceHandler from './actions/registerVoiceHandler';
+import unregisterVoiceHandler from './actions/unregisterVoiceHandler';
+import postVoiceActivity from './actions/postVoiceActivity';
+import type { VoiceState } from './actions/setVoiceState';
+import type { VoiceHandler } from './actions/registerVoiceHandler';
 
 export {
   isForbiddenPropertyName,
@@ -99,6 +111,10 @@ export {
   emitTypingIndicator,
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
+  getVoiceActivityRole,
+  getVoiceActivityText,
+  isVoiceActivity,
+  isVoiceTranscriptActivity,
   markActivity,
   onErrorResumeNext,
   parseAction,
@@ -109,6 +125,9 @@ export {
   parseThing,
   parseVoteAction,
   postActivity,
+  postVoiceActivity,
+  registerVoiceHandler,
+  unregisterVoiceHandler,
   sendEvent,
   sendFiles,
   sendMessage,
@@ -122,11 +141,14 @@ export {
   setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
+  setVoiceState,
   singleToArray,
   startDictate,
   startSpeakingActivity,
+  startVoiceRecording,
   stopDictate,
   stopSpeakingActivity,
+  stopVoiceRecording,
   submitSendBox
 };
 
@@ -155,6 +177,8 @@ export type {
   OrgSchemaThing,
   OrgSchemaUserReview,
   SendBoxAttachment,
+  VoiceHandler,
+  VoiceState,
   WebChatActivity
 };
 

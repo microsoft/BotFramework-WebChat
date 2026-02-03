@@ -3,7 +3,14 @@
 import { hooks } from 'botframework-webchat-api';
 import type { RenderAttachment } from 'botframework-webchat-api';
 import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
-import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import {
+  getActivityLivestreamingMetadata,
+  getOrgSchemaMessage,
+  getVoiceActivityRole,
+  getVoiceActivityText,
+  isVoiceActivity,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
@@ -124,7 +131,7 @@ const StackedLayout = ({
   const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
 
   const attachments = useMemo(() => (isMessageOrTyping && activity.attachments) || [], [activity, isMessageOrTyping]);
-  const fromUser = activity.from.role === 'user';
+  const fromUser = activity.from.role === 'user' || getVoiceActivityRole(activity) === 'user';
   const messageBackDisplayText: string = (isMessageOrTyping && activity.channelData?.messageBack?.displayText) || '';
   const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
   const isCollapsible = useMemo(() => messageThing?.keywords?.includes('Collapsible'), [messageThing]);
@@ -134,7 +141,9 @@ const StackedLayout = ({
     ? messageBackDisplayText || activity.text
     : isLivestreaming && 'text' in activity
       ? (activity.text as string)
-      : '';
+      : isVoiceActivity(activity)
+        ? getVoiceActivityText(activity)
+        : '';
 
   const initials = fromUser ? userInitials : botInitials;
   const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;

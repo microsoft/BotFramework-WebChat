@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      Test: Multiple conversation turns via voice
+      
+      This test validates a multi-turn voice conversation:
+      1. User asks a question → state: user_speaking → processing
+      2. Bot responds → state: bot_speaking (with audio playback)
+      3. User asks follow-up → state: user_speaking → processing
+      4. Bot responds again → state: bot_speaking
+      All while verifying placeholder text transitions
+    -->
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        const textArea = document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`);
+
+        // ===== START: Turn on mic =====
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording started',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone on'),
+          1000
+        );
+
+        // Verify: State is "listening"
+        await pageConditions.became(
+          'State: listening',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          1000
+        );
+
+        // VERIFY: Mic button shows microphone icon and is active (but no pulse in listening state)
+        const micIcon = micButton.querySelector('[class*="icon--"]');
+        expect(micIcon.className).toMatch(/icon--microphone/);
+        expect(micButton.className).toMatch(/active/);
+        expect(micButton.className).not.toMatch(/with-pulse/);
+
+        // ===== TURN 1: User speaks =====
+        // User speech detected
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        // Verify: State is "user_speaking"
+        await pageConditions.became(
+          'State: user_speaking',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          1000
+        );
+
+        // VERIFY: Mic button has pulse AND gradient during user speaking
+        expect(micButton.className).toMatch(/with-pulse/);
+        expect(micButton.className).toMatch(/with-gradient/);
+
+        // User speech processing
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        // Verify: State is "processing"
+        await pageConditions.became(
+          'State: processing',
+          () => textArea.getAttribute('placeholder') === 'Processing...',
+          1000
+        );
+
+        // User transcript appears
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'What time is my flight?', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // ===== TURN 1: Bot responds with audio =====
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'response.available' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        // Bot sends audio chunk (triggers playback)
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.chunk',
+          from: { role: 'bot' },
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        });
+
+        // Verify: State is "bot_speaking"
+        await pageConditions.became(
+          'State: bot_speaking',
+          () => textArea.getAttribute('placeholder') === 'Talk to interrupt...',
+          1000
+        );
+
+        // VERIFY: Mic button shows audio-playing icon with pulse animation during bot speaking
+        expect(micButton.querySelector('[class*="icon--"]').className).toMatch(/icon--audio-playing/);
+        expect(micButton.className).toMatch(/with-pulse/);
+        expect(micButton.className).not.toMatch(/with-gradient/);
+
+        // Bot transcript appears
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'Your flight departs at 3:45 PM from Gate B7.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // Wait for audio to finish, state returns to "listening"
+        await pageConditions.became(
+          'State: listening (after bot audio)',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          2500
+        );
+
+        // ===== TURN 2: User asks follow-up =====
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        // Verify: State is "processing"
+        await pageConditions.became(
+          'State: processing (Turn 2)',
+          () => textArea.getAttribute('placeholder') === 'Processing...',
+          1000
+        );
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'Is there a delay?', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+
+        // ===== TURN 2: Bot responds =====
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          value: { state: 'response.available' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        // Bot sends audio chunk
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.chunk',
+          from: { role: 'bot' },
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        });
+
+        // Verify: State is "bot_speaking"
+        await pageConditions.became(
+          'State: bot_speaking (Turn 2)',
+          () => textArea.getAttribute('placeholder') === 'Talk to interrupt...',
+          1000
+        );
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'No delays reported. Your flight is on time.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        // Wait for audio to finish
+        await pageConditions.became(
+          'State: listening (after Turn 2 bot audio)',
+          () => textArea.getAttribute('placeholder') === 'Listening...',
+          1000
+        );
+
+        // ===== TURN 3: User says thank you =====
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'Thank you!', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(5);
+
+        // ===== TURN 3: Bot responds =====
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'response.available' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.chunk',
+          from: { role: 'bot' },
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        });
+
+        // Verify: State is "bot_speaking"
+        await pageConditions.became(
+          'State: bot_speaking (Turn 3)',
+          () => textArea.getAttribute('placeholder') === 'Talk to interrupt...',
+          1000
+        );
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: "You're welcome! Have a safe flight.", origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(6);
+
+        // ===== VERIFY: All messages in correct order =====
+        const activities = pageElements.activityContents();
+        expect(activities[0]).toHaveProperty('textContent', 'What time is my flight?');
+        expect(activities[1]).toHaveProperty('textContent', 'Your flight departs at 3:45 PM from Gate B7.');
+        expect(activities[2]).toHaveProperty('textContent', 'Is there a delay?');
+        expect(activities[3]).toHaveProperty('textContent', 'No delays reported. Your flight is on time.');
+        expect(activities[4]).toHaveProperty('textContent', 'Thank you!');
+        expect(activities[5]).toHaveProperty('textContent', "You're welcome! Have a safe flight.");
+
+        // ===== END: Turn off mic =====
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording stopped',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone off'),
+          1000
+        );
+
+        // THEN: Should show multi-turn conversation
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

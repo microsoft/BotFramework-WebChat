@@ -40,6 +40,21 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
 
   const postActivityCallDeferreds = [];
   const postActivity = outgoingActivity => {
+    // Auto-handle voice activities (continuous sending by mic) without requiring actPostActivity
+    // Voice activities are fire-and-forget and don't echo back
+    if (outgoingActivity.type === 'event' && outgoingActivity.name.includes('media')) {
+      const id = uniqueId();
+
+      return new Observable(observer => {
+        try {
+          observer.next(id);
+          observer.complete();
+        } catch (error) {
+          observer.error(error);
+        }
+      });
+    }
+
     const returnPostActivityWithResolvers = withResolvers();
 
     const deferred = postActivityCallDeferreds.shift();
@@ -184,6 +199,18 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
           () => store.getState().activities.find(activity => activity.id === id),
           1000
         ));
+    },
+    emulateIncomingVoiceActivity: activity => {
+      activity = updateIn(activity, ['timestamp'], timestamp =>
+        typeof timestamp === 'number'
+          ? new Date(now + timestamp).toISOString()
+          : 'timestamp' in activity
+            ? timestamp
+            : getTimestamp()
+      );
+      activity = updateIn(activity, ['type'], type => type || 'event');
+
+      activityDeferredObservable.next(activity);
     },
     emulateOutgoingActivity: (activity, options) => {
       if (typeof activity === 'string') {

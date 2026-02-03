@@ -1,5 +1,10 @@
 // We should review exports in this file to make sure 1P = 3P.
-export { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
+export {
+  type ActivityMiddleware,
+  type ActivityStatusMiddleware,
+  type TypingIndicatorMiddleware
+} from 'botframework-webchat-api';
+export { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat-api/internal';
 export {
   CodeHighlighterComposer,
   createIconComponent,
@@ -13,4 +18,11 @@ export {
   useLiveRegion,
   type HighlightCodeFn
 } from 'botframework-webchat-component/internal';
-export { getOrgSchemaMessage, type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
+export {
+  getOrgSchemaMessage,
+  getVoiceActivityRole,
+  getVoiceActivityText,
+  isVoiceTranscriptActivity,
+  type DirectLineCardAction,
+  type WebChatActivity
+} from 'botframework-webchat-core';
