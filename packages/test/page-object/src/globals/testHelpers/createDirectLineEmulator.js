@@ -121,15 +121,12 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   // Generic capabilities storage
   const capabilities = new Map();
 
-  // Helper to emit capabilitiesChanged event
+  // EventTarget for capability change notifications
+  const eventTarget = new EventTarget();
+
+  // Helper to dispatch capabilitiesChanged event via EventTarget
   const emitCapabilitiesChangedEvent = () => {
-    activityDeferredObservable.next({
-      from: { id: 'bot', role: 'bot' },
-      id: uniqueId(),
-      name: 'capabilitiesChanged',
-      timestamp: getTimestamp(),
-      type: 'event'
-    });
+    eventTarget.dispatchEvent(new Event('capabilitiesChanged'));
   };
 
   const directLine = {
@@ -155,6 +152,8 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
         emitCapabilitiesChangedEvent();
       }
     },
+    addEventListener: eventTarget.addEventListener.bind(eventTarget),
+    removeEventListener: eventTarget.removeEventListener.bind(eventTarget),
     end: () => {
       // This is a mock and will no-op on dispatch().
     },
