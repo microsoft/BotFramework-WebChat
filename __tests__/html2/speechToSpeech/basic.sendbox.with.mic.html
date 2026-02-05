@@ -25,6 +25,8 @@
 
         // Set voice configuration capability to enable microphone button
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        // Enable voice-only mode (hides send button, shows mic + dismiss buttons)
+        directLine.setCapability('getIsVoiceOnlyMode', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">

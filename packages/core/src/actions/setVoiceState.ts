@@ -1,6 +1,6 @@
 const VOICE_SET_STATE = 'WEB_CHAT/VOICE_SET_STATE' as const;
 
-type VoiceState = 'idle' | 'listening' | 'user_speaking' | 'processing' | 'bot_speaking';
+type VoiceState = 'idle' | 'listening' | 'muted' | 'user_speaking' | 'processing' | 'bot_speaking';
 
 type VoiceSetStateAction = {
   type: typeof VOICE_SET_STATE;

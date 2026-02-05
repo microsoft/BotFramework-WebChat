@@ -4,7 +4,11 @@ export {
   type ActivityStatusMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
-export { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat-api/internal';
+export {
+  usePostVoiceActivity,
+  useShouldShowMicrophoneButton,
+  useVoiceStateWritable
+} from 'botframework-webchat-api/internal';
 export {
   CodeHighlighterComposer,
   createIconComponent,
