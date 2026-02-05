@@ -14,7 +14,7 @@ const { useStopVoice, useLocalizer } = hooks;
 function DismissToolbarButton() {
   const localize = useLocalizer();
   const stopVoice = useStopVoice();
-  
+
   const ariaLabel = localize('SPEECH_INPUT_STOP_RECORDING_ALT');
 
   const handleDismissClick = useCallback(() => {
