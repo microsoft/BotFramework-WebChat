@@ -19,6 +19,9 @@ export default function useSpeechPlaceholder(): string {
       case 'user_speaking':
         return localize('TEXT_INPUT_SPEECH_LISTENING_PLACEHOLDER');
 
+      case 'muted':
+        return localize('TEXT_INPUT_SPEECH_MUTED_PLACEHOLDER');
+
       case 'processing':
         return localize('TEXT_INPUT_SPEECH_PROCESSING_PLACEHOLDER');
 

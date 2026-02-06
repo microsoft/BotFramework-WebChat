@@ -32,12 +32,18 @@
 
         // Set voice configuration capability to enable microphone button
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        // Enable voice-only mode (hides send button, shows mic + dismiss buttons)
+        directLine.setCapability('getIsVoiceOnlyMode', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">
             <ReactWebChat 
               directLine={directLine}
               store={store}
+              styleOptions={{
+                disableFileUpload: true,
+                hideTelephoneKeypadButton: false,
+              }}
             />
           </FluentThemeProvider>,
           document.getElementById('webchat')
@@ -152,8 +158,10 @@
         expect(botActivityStatus.innerText).toContain('|');
         expect(botActivityStatus.innerText).toContain('Just now');
 
-        // WHEN: User stops recording by clicking microphone button again
-        await host.click(micButton);
+        // WHEN: User stops voice recording by clicking dismiss button
+        const dismissButton = document.querySelector(`[data-testid="${testIds.sendBoxDismissButton}"]`);
+        expect(dismissButton).toBeTruthy();
+        await host.click(dismissButton);
 
         // THEN: Button should change to not-recording state
         await pageConditions.became(

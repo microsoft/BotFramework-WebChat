@@ -64,6 +64,8 @@
 
         // Set voice configuration capability to enable microphone button
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        // Enable voice-only mode (hides send button, shows mic + dismiss buttons)
+        directLine.setCapability('getIsVoiceOnlyMode', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -108,8 +110,10 @@
           1000
         );
 
-        // WHEN: User stops recording
-        await host.click(micButton);
+        // WHEN: User stops voice session using dismiss button
+        const dismissButton = document.querySelector(`[data-testid="${testIds.sendBoxDismissButton}"]`);
+        expect(dismissButton).toBeTruthy();
+        await host.click(dismissButton);
 
         // THEN: Button should change to not-recording state
         await pageConditions.became(

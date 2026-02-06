@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        // Track voice activities sent
+        const sentVoiceActivities = [];
+
+        // GIVEN: Web Chat with Speech-to-Speech enabled
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Set voice configuration capability to enable microphone button
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        // Enable voice-only mode (hides send button, shows mic + dismiss buttons)
+        directLine.setCapability('getIsVoiceOnlyMode', true, { emitEvent: false });
+
+        // Intercept outgoing activities to track audio chunks
+        const originalPostActivity = directLine.postActivity;
+        directLine.postActivity = function(activity) {
+          sentVoiceActivities.push(activity);
+          return originalPostActivity.call(this, activity);
+        };
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat 
+              directLine={directLine}
+              store={store}
+              styleOptions={{
+                disableFileUpload: true,
+                hideTelephoneKeypadButton: false,
+              }}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButton).toBeTruthy();
+
+        // STEP 1: Click mic button to start voice session (idle → listening)
+        await host.click(micButton);
+
+        // THEN: Voice state should be 'listening'
+        await pageConditions.became(
+          'Voice state is listening',
+          () => store.getState().voice?.voiceState === 'listening',
+          1000
+        );
+
+        // THEN: Button should show recording state
+        await pageConditions.became(
+          'Microphone button changes to recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && (label.includes('Microphone on'));
+          },
+          1000
+        );
+
+        // Wait a bit for audio chunks to be sent
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Record how many chunks were sent before muting
+        const chunksBeforeMute = sentVoiceActivities.filter(
+          a => a.type === 'event' && a.name === 'media.chunk'
+        ).length;
+
+        // STEP 2: Click mic button to mute (listening → muted)
+        await host.click(micButton);
+
+        // THEN: Voice state should be 'muted'
+        await pageConditions.became(
+          'Voice state is muted',
+          () => store.getState().voice?.voiceState === 'muted',
+          1000
+        );
+
+        // Record chunks count at mute time
+        const chunksAtMute = sentVoiceActivities.filter(
+          a => a.type === 'event' && a.name === 'media.chunk'
+        ).length;
+
+        // Wait a bit - silent chunks should still be sent while muted
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        const chunksWhileMuted = sentVoiceActivities.filter(
+          a => a.type === 'event' && a.name === 'media.chunk'
+        ).length;
+
+        // THEN: Silent chunks should still be sent while muted (to keep connection alive)
+        expect(chunksWhileMuted).toBeGreaterThan(chunksAtMute);
+
+        // Take snapshot while muted
+        await host.snapshot('local');
+
+        // STEP 3: Click mic button to unmute (muted → listening)
+        await host.click(micButton);
+
+        // THEN: Voice state should be 'listening' again
+        await pageConditions.became(
+          'Voice state is listening after unmute',
+          () => store.getState().voice?.voiceState === 'listening',
+          1000
+        );
+
+        // Wait a bit for audio chunks to start flowing again
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        const chunksAfterUnmute = sentVoiceActivities.filter(
+          a => a.type === 'event' && a.name === 'media.chunk'
+        ).length;
+
+        // THEN: Chunks should continue after unmute
+        expect(chunksAfterUnmute).toBeGreaterThan(chunksWhileMuted);
+
+        // STEP 4: Click dismiss button to stop voice session
+        const dismissButton = document.querySelector(`[data-testid="${testIds.sendBoxDismissButton}"]`);
+        expect(dismissButton).toBeTruthy();
+        await host.click(dismissButton);
+
+        // THEN: Voice state should be 'idle'
+        await pageConditions.became(
+          'Voice state is idle after dismiss',
+          () => store.getState().voice?.voiceState === 'idle',
+          1000
+        );
+
+        // THEN: Button should show not-recording state
+        await pageConditions.became(
+          'Microphone button changes to not-recording state',
+          () => {
+            const label = micButton.getAttribute('aria-label');
+            return label && (label.includes('Microphone off'));
+          },
+          1000
+        );
+
+        // Verify silent chunks were sent while muted (connection kept alive)
+        expect(chunksWhileMuted).toBeGreaterThan(chunksAtMute);
+        // Verify chunks continued after unmute
+        expect(chunksAfterUnmute).toBeGreaterThan(chunksWhileMuted);
+
+      });
+    </script>
+  </body>
+</html>

@@ -36,13 +36,16 @@ const mockWorkletNode = {
   port: mockWorkletPort
 };
 
+const mockSourceNode = {
+  connect: jest.fn(),
+  disconnect: jest.fn()
+};
+
 const mockAudioContext = {
   audioWorklet: {
     addModule: jest.fn().mockResolvedValue(undefined)
   },
-  createMediaStreamSource: jest.fn(() => ({
-    connect: jest.fn()
-  })),
+  createMediaStreamSource: jest.fn(() => mockSourceNode),
   destination: {},
   resume: jest.fn().mockResolvedValue(undefined),
   state: 'running'
@@ -216,6 +219,76 @@ describe('useRecorder', () => {
           sampleRate: 24000
         }
       });
+    });
+  });
+
+  test('should return mute function', () => {
+    render(<HookApp onAudioChunk={onAudioChunk} />);
+    expect(typeof hookData?.mute).toBe('function');
+  });
+
+  test('should send MUTE command and stop media stream when mute is called', async () => {
+    render(<HookApp onAudioChunk={onAudioChunk} />);
+
+    // Start recording first
+    act(() => {
+      hookData?.record();
+    });
+
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
+    });
+
+    // Clear mocks to isolate mute behavior
+    mockWorkletPort.postMessage.mockClear();
+    mockTrack.stop.mockClear();
+    mockSourceNode.disconnect.mockClear();
+
+    // Call mute
+    act(() => {
+      hookData?.mute();
+    });
+
+    // Should send MUTE command to worklet
+    expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'MUTE' });
+    // Should stop media stream tracks (mic indicator OFF)
+    expect(mockTrack.stop).toHaveBeenCalledTimes(1);
+    // Should disconnect source node
+    expect(mockSourceNode.disconnect).toHaveBeenCalledTimes(1);
+  });
+
+  test('should return unmute function from mute() that sends UNMUTE and restarts media stream', async () => {
+    render(<HookApp onAudioChunk={onAudioChunk} />);
+
+    // Start recording first
+    act(() => {
+      hookData?.record();
+    });
+
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
+    });
+
+    // Call mute and get unmute function
+    let unmute: (() => void) | undefined;
+    act(() => {
+      unmute = hookData?.mute();
+    });
+
+    // Clear mocks to isolate unmute behavior
+    mockWorkletPort.postMessage.mockClear();
+    mockMediaDevices.getUserMedia.mockClear();
+
+    // Call unmute
+    act(() => {
+      unmute?.();
+    });
+
+    // Should send UNMUTE command to worklet
+    expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'UNMUTE' });
+    // Should restart media stream
+    await waitFor(() => {
+      expect(mockMediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
     });
   });
 });
