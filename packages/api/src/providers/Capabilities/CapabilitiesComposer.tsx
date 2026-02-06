@@ -21,8 +21,8 @@ const EMPTY_CAPABILITIES: Capabilities = Object.freeze({});
 const CapabilitiesComposer = memo(({ children }: Props) => {
   const { directLine } = useWebChatAPIContext();
 
-  const getAllCapabilities = useCallback(() =>
-    fetchCapabilitiesFromAdapter(directLine, EMPTY_CAPABILITIES).capabilities,
+  const getAllCapabilities = useCallback(
+    () => fetchCapabilitiesFromAdapter(directLine, EMPTY_CAPABILITIES).capabilities,
     [directLine]
   );
 
@@ -31,10 +31,7 @@ const CapabilitiesComposer = memo(({ children }: Props) => {
   useEffect(() => {
     const handleCapabilitiesChange = () => {
       setCapabilities(prevCapabilities => {
-        const { capabilities, hasChanged } = fetchCapabilitiesFromAdapter(
-          directLine,
-          prevCapabilities
-        );
+        const { capabilities, hasChanged } = fetchCapabilitiesFromAdapter(directLine, prevCapabilities);
         return hasChanged ? capabilities : prevCapabilities;
       });
     };
