@@ -22,7 +22,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "dependencies": {
-    "botframework-directlinejs": "0.15.6"
+    "botframework-directlinejs": "0.15.8"
   },
   "devDependencies": {
     "esbuild": "^0.27.2"
