@@ -52,11 +52,11 @@
 
         expect(initialVoiceConfig).toEqual({ voice: 'en-US', speed: 1.0 });
 
-        // TEST 2: Regular activity should NOT trigger capability re-calculation
+        // TEST 2: Regular activity should NOT trigger capability re-fetch
         // Store reference to current voiceConfiguration
         const preActivityVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
 
-        // Send a regular message (not capabilitiesChanged event)
+        // Send a regular message (capabilities only update via EventTarget, not activities)
         await directLine.emulateIncomingActivity({
           type: 'message',
           text: 'Hello! This is a regular message.',
@@ -69,13 +69,13 @@
         // Get voiceConfiguration after regular activity
         const postActivityVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
 
-        // Reference should be the same (no re-calculation for regular activities)
+        // Reference should be the same (activities don't trigger capability re-fetch)
         expect(postActivityVoiceConfig).toBe(preActivityVoiceConfig);
 
-        // TEST 3: capabilitiesChanged event SHOULD trigger re-calculation
+        // TEST 3: capabilitieschanged event SHOULD trigger re-fetch
         const preChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
 
-        // Update capability and emit event
+        // Update capability and dispatch capabilitieschanged event via EventTarget
         directLine.setCapability('getVoiceConfiguration', { voice: 'en-GB', speed: 1.5 }, { emitEvent: true });
 
         // Wait for event to be processed
@@ -92,7 +92,7 @@
         // TEST 4: Same value should reuse reference (shallow equality check)
         const preNoChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
 
-        // Set same value and emit event
+        // Set same value and dispatch event
         directLine.setCapability('getVoiceConfiguration', { voice: 'en-GB', speed: 1.5 }, { emitEvent: true });
 
         // Wait for event to be processed
