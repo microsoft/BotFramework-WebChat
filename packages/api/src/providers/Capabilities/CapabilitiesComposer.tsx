@@ -21,30 +21,28 @@ const EMPTY_CAPABILITIES: Capabilities = Object.freeze({});
 const CapabilitiesComposer = memo(({ children }: Props) => {
   const { directLine } = useWebChatAPIContext();
 
-  const getAllCapabilities = useCallback(() => {
-    const { capabilities } = fetchCapabilitiesFromAdapter(directLine, EMPTY_CAPABILITIES);
-    return capabilities;
-  }, [directLine]);
+  const getAllCapabilities = useCallback(() =>
+    fetchCapabilitiesFromAdapter(directLine, EMPTY_CAPABILITIES).capabilities,
+    [directLine]
+  );
 
   const [capabilities, setCapabilities] = useState<Capabilities>(() => getAllCapabilities());
 
   useEffect(() => {
     const handleCapabilitiesChange = () => {
       setCapabilities(prevCapabilities => {
-        const { capabilities: newCapabilities, hasChanged } = fetchCapabilitiesFromAdapter(
+        const { capabilities, hasChanged } = fetchCapabilitiesFromAdapter(
           directLine,
           prevCapabilities
         );
-        return hasChanged ? newCapabilities : prevCapabilities;
+        return hasChanged ? capabilities : prevCapabilities;
       });
     };
 
     if (typeof directLine?.addEventListener === 'function') {
       directLine.addEventListener('capabilitiesChanged', handleCapabilitiesChange);
 
-      return () => {
-        directLine.removeEventListener('capabilitiesChanged', handleCapabilitiesChange);
-      };
+      return () => directLine.removeEventListener('capabilitiesChanged', handleCapabilitiesChange);
     }
   }, [directLine]);
 
