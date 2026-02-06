@@ -72,10 +72,10 @@
         // Reference should be the same (activities don't trigger capability re-fetch)
         expect(postActivityVoiceConfig).toBe(preActivityVoiceConfig);
 
-        // TEST 3: capabilitiesChanged event SHOULD trigger re-fetch
+        // TEST 3: capabilitieschanged event SHOULD trigger re-fetch
         const preChangeVoiceConfig = await renderHook(() => useCapabilities(caps => caps.voiceConfiguration));
 
-        // Update capability and dispatch capabilitiesChanged event via EventTarget
+        // Update capability and dispatch capabilitieschanged event via EventTarget
         directLine.setCapability('getVoiceConfiguration', { voice: 'en-GB', speed: 1.5 }, { emitEvent: true });
 
         // Wait for event to be processed

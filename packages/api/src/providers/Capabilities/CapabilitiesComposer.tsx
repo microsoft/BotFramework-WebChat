@@ -14,7 +14,7 @@ const EMPTY_CAPABILITIES: Capabilities = Object.freeze({});
  *
  * Design principles:
  * 1. Initial fetch: Pulls capabilities from adapter on mount
- * 2. Event-driven updates: Re-fetches when adapter dispatches 'capabilitiesChanged' event
+ * 2. Event-driven updates: Re-fetches when adapter dispatches 'capabilitieschanged' event
  * 3. Stable references: Individual capability objects maintain reference equality if unchanged
  *    - This ensures consumers using selectors only re-render when their capability changes
  */
@@ -37,9 +37,9 @@ const CapabilitiesComposer = memo(({ children }: Props) => {
     };
 
     if (typeof directLine?.addEventListener === 'function') {
-      directLine.addEventListener('capabilitiesChanged', handleCapabilitiesChange);
+      directLine.addEventListener('capabilitieschanged', handleCapabilitiesChange);
 
-      return () => directLine.removeEventListener('capabilitiesChanged', handleCapabilitiesChange);
+      return () => directLine.removeEventListener('capabilitieschanged', handleCapabilitiesChange);
     }
   }, [directLine]);
 

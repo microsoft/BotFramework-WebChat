@@ -124,9 +124,9 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   // EventTarget for capability change notifications
   const eventTarget = new EventTarget();
 
-  // Helper to dispatch capabilitiesChanged event via EventTarget
+  // Helper to dispatch capabilitieschanged event via EventTarget
   const emitCapabilitiesChangedEvent = () => {
-    eventTarget.dispatchEvent(new Event('capabilitiesChanged'));
+    eventTarget.dispatchEvent(new Event('capabilitieschanged'));
   };
 
   const directLine = {

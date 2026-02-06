@@ -29,7 +29,7 @@ if (voiceConfig) {
 ## How it works
 
 1. **Initial fetch** - When WebChat mounts, it checks if the adapter exposes capability getter functions and retrieves initial values
-2. **Event-driven updates** - When the adapter dispatches a `capabilitiesChanged` event, WebChat re-fetches all capabilities from the adapter
+2. **Event-driven updates** - When the adapter dispatches a `capabilitieschanged` event, WebChat re-fetches all capabilities from the adapter
 3. **Optimized re-renders** - Only components consuming changed capabilities will re-render
 
 ## For adapter implementers
@@ -57,11 +57,11 @@ const adapter = {
 
 ### 2. Dispatch change events internally
 
-When capability values change, dispatch a `capabilitiesChanged` event using the internal EventTarget:
+When capability values change, dispatch a `capabilitieschanged` event using the internal EventTarget:
 
 ```js
 // When configuration changes, dispatch the event internally
-eventTarget.dispatchEvent(new Event('capabilitiesChanged'));
+eventTarget.dispatchEvent(new Event('capabilitieschanged'));
 ```
 
 WebChat will then call all capability getter functions and update consumers if values changed.
