@@ -55,8 +55,8 @@ const MCPAppActivity = (props: MCPAppActivityProps) => {
       const firstContent = parse(MCPAppsResourceSchema, resource.contents[0]);
 
       const { sendToolResult } = await setupIframe(
+        client,
         iframeRef.current,
-        new URL('https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp'),
         firstContent.text,
         entity['urn:microsoft:webchat:model-context-protocol:input']
       );

@@ -64,12 +64,13 @@ export async function loadSandboxProxy(
   return readyPromise;
 }
 
-async function setupIframe(iframeElement: HTMLIFrameElement, url: URL, html: string, input: Record<string, unknown>) {
+async function setupIframe(
+  client: Client,
+  iframeElement: HTMLIFrameElement,
+  html: string,
+  input: Record<string, unknown>
+) {
   console.log('!!!!!!!!!!!!!!!!!', iframeElement);
-
-  const client = new Client(IMPLEMENTATION);
-
-  await client.connect(new StreamableHTTPClientTransport(url));
 
   const serverCapabilities = client.getServerCapabilities();
 
