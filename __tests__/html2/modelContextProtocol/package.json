@@ -1,0 +1,21 @@
+{
+  "name": "@msinternal/test-model-context-protocol",
+  "version": "0.0.0-0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:run",
+    "build:run": "esbuild --bundle --external:botframework-webchat --external:react --format=esm --outdir=./dist/ app=./src/app/index.ts index=./src/index.ts sandbox=./src/sandbox.ts",
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2",
+    "valibot": "^1.2.0"
+  }
+}

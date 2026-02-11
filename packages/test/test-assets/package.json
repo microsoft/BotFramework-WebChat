@@ -19,7 +19,7 @@
     "eslint": "npm run precommit",
     "postversion": "../../../scripts/npm/postversion.sh",
     "preversion": "../../../scripts/npm/preversion.sh",
-    "start": "../../../scripts/npm/notify-build.sh \"out\""
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
   },
   "pinDependencies": {},
   "localDependencies": {},

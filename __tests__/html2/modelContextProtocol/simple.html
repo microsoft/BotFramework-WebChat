@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+          "eventsource-parser": "https://esm.sh/eventsource-parser",
+          "eventsource-parser/": "https://esm.sh/eventsource-parser/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "valibot": "https://esm.sh/valibot"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { EventSourceParserStream } from 'eventsource-parser/stream';
+      import { createElement, useEffect, useMemo, useRef } from 'react';
+      import { array, literal, number, object, optional, pipe, readonly, safeParse, string, url } from 'valibot';
+      import { loadSandboxProxy, setupIframe } from './dist/index.js';
+      import { createPolymiddleware } from './dist/app.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      testHelpers.hideKnownError();
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            polymiddleware: createPolymiddleware(),
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              additionalType: ['WebPage'],
+              encodingFormat: 'text/html;profile=mcp-app',
+              isPartOf: [
+                {
+                  '@type': ['HowToTool', 'urn:microsoft:webchat:model-context-protocol:tool'],
+                  name: 'show-weather',
+                  url: 'https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp'
+                }
+              ],
+              type: 'https://schema.org/Message',
+              'urn:microsoft:webchat:model-context-protocol:input': { location: 'Tokyo' }
+            }
+          ],
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          text: '',
+          type: 'message'
+        });
+      });
+    </script>
+  </body>
+</html>
