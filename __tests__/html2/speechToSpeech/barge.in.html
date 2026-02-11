@@ -21,7 +21,10 @@
       3. User barges in (server detects) → "Listening..." (user speaking)
       4. Server processes → "Processing..."
       5. Bot responds with new audio → "Talk to interrupt..." (bot speaking again)
-      6. User toggles mic off
+      6. User clicks dismiss button to stop voice session
+      
+      Note: Mic button toggles between listening/muted states.
+      Use dismiss button to completely stop the voice session.
     -->
     <script type="module">
       import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
@@ -42,6 +45,8 @@
 
         // Set voice configuration capability to enable microphone button
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        // Enable voice-only mode (hides send button, shows mic + dismiss buttons)
+        directLine.setCapability('getIsVoiceOnlyMode', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -183,8 +188,10 @@
         expect(activities[0]).toHaveProperty('textContent', 'Stop! Change my destination.');
         expect(activities[1]).toHaveProperty('textContent', 'Sure, where would you like to go instead?');
 
-        // Toggle mic off
-        await host.click(micButton);
+        // Click dismiss button to stop voice session
+        const dismissButton = document.querySelector(`[data-testid="${testIds.sendBoxDismissButton}"]`);
+        expect(dismissButton).toBeTruthy();
+        await host.click(dismissButton);
 
         await pageConditions.became(
           'Recording stopped',

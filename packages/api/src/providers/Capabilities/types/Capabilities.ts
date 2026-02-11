@@ -3,6 +3,7 @@
  */
 type Capabilities = Readonly<{
   voiceConfiguration?: VoiceConfiguration | undefined;
+  isVoiceOnlyMode?: boolean | undefined;
 }>;
 
 /**

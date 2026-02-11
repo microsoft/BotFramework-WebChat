@@ -20,6 +20,7 @@ import { FluentIcon } from '../icon';
 import { SuggestedActions } from '../suggestedActions';
 import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
+import DismissToolbarButton from './DismissToolbarButton';
 import ErrorMessage from './ErrorMessage';
 import useSpeechStateMessage from './private/useSpeechStateMessage';
 import useSubmitError from './private/useSubmitError';
@@ -31,6 +32,7 @@ import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 import MicrophoneToolbarButton from './MicrophoneToolbarButton';
 
 const {
+  useCapabilities,
   useFocus,
   useLocalizer,
   useMakeThumbnail,
@@ -64,6 +66,7 @@ function SendBox(props: Props) {
   const variantClassName = useVariantClassName(styles);
   const errorMessageId = useUniqueId('sendbox__error-message-id');
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const isVoiceOnlyMode = useCapabilities(caps => caps.isVoiceOnlyMode);
   const localize = useLocalizer();
   const makeThumbnail = useMakeThumbnail();
   const postVoiceActivity = usePostVoiceActivity();
@@ -257,9 +260,10 @@ function SendBox(props: Props) {
           <Toolbar>
             {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
             {!disableFileUpload && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
+            {showMicrophoneButton && <MicrophoneToolbarButton />}
             <ToolbarSeparator />
-            {showMicrophoneButton ? (
-              <MicrophoneToolbarButton />
+            {showMicrophoneButton && isVoiceOnlyMode ? (
+              <DismissToolbarButton />
             ) : (
               <ToolbarButton
                 aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}

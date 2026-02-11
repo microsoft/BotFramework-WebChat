@@ -11,6 +11,7 @@ export function VoiceRecorderBridge(): null {
   const [voiceState] = useVoiceState();
   const postVoiceActivity = usePostVoiceActivity();
 
+  const muted = voiceState === 'muted';
   // Derive recording state from voiceState - recording is active when not idle
   const recording = voiceState !== 'idle';
 
@@ -29,7 +30,13 @@ export function VoiceRecorderBridge(): null {
     [postVoiceActivity]
   );
 
-  const { record } = useRecorder(handleAudioChunk);
+  const { record, mute } = useRecorder(handleAudioChunk);
+
+  useEffect(() => {
+    if (muted) {
+      return mute();
+    }
+  }, [mute, muted]);
 
   useEffect(() => {
     if (recording) {

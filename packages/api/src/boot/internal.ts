@@ -2,5 +2,6 @@ export { default as LowPriorityDecoratorComposer } from '../decorator/internal/L
 export { default as usePostVoiceActivity } from '../hooks/internal/usePostVoiceActivity';
 export { default as useSetDictateState } from '../hooks/internal/useSetDictateState';
 export { default as useShouldShowMicrophoneButton } from '../hooks/internal/useShouldShowMicrophoneButton';
+export { default as useVoiceStateWritable } from '../hooks/internal/useVoiceStateWritable';
 export { LegacyActivityContextProvider, type LegacyActivityContextType } from '../legacy/LegacyActivityBridgeContext';
 export { default as StyleOptionsComposer } from '../providers/StyleOptions/StyleOptionsComposer';
