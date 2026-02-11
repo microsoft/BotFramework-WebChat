@@ -398,11 +398,7 @@
       margin: var(--webchat-part-grouping__bubble--space-block) var(--webchat-part-grouping__bubble--space-inline);
     }
 
-    :global(.stacked-layout__attachment-row) {
-      margin-block-start: var(--webchat-spacingVerticalMNudge);
-    }
-
-    &:global(.stacked-layout--no-message .stacked-layout__attachment-row) {
+    &:global(.stacked-layout--no-message .stacked-layout__attachment-row:first-child) {
       margin-block-start: 0;
     }
   }
@@ -561,6 +557,10 @@
       gap: var(--webchat-spacingVerticalXS);
     }
 
+    :global(.stacked-layout .stacked-layout__attachment-row) {
+      margin-block-start: var(--webchat-spacingVerticalMNudge);
+    }
+
     &.part-grouping-decorator--group {
       --webchat-part-grouping__bubble--min-height: 20px;
 
@@ -650,6 +650,64 @@
           font-family: var(--webchat-fontFamilyBase);
           /* Remove double padding for adaptive cards inside bubble */
           padding: unset !important;
+
+          :global(.ac-textBlock) {
+            font-family: var(--webchat-fontFamilyBase) !important;
+          }
+
+          :global(.ac-container:not([style*='background-color:']) .ac-textBlock),
+          > :global(.ac-textBlock) {
+            color: currentColor !important;
+          }
+
+          :global(.ac-pushButton) {
+            background-color: var(--webchat-colorNeutralBackground1);
+            color: var(--webchat-colorNeutralForeground1);
+            border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+            border-radius: var(--webchat-borderRadiusLarge);
+            transition: all var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+          }
+
+          :global(.ac-pushButton:hover) {
+            background-color: var(--webchat-colorNeutralBackground1Hover);
+            border-color: var(--webchat-colorNeutralStroke1Hover);
+            color: var(--webchat-colorNeutralForeground1Hover);
+            cursor: pointer;
+          }
+
+          :global(.ac-pushButton:active),
+          :global(.ac-pushButton[aria-pressed='true']) {
+            background-color: var(--webchat-colorNeutralBackground1Pressed);
+            border-color: var(--webchat-colorNeutralStroke1Pressed);
+            color: var(--webchat-colorNeutralForeground1Pressed);
+            outline-style: none;
+          }
+
+          :global(.ac-pushButton:focus-visible) {
+            border-color: var(--webchat-colorStrokeFocus2);
+            border-width: var(--webchat-strokeWidthThin);
+            outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorTransparentStroke);
+            box-shadow: 0 0 0 var(--webchat-strokeWidthThin) var(--webchat-colorStrokeFocus2) inset;
+          }
+
+          :global(.ac-pushButton.primary) {
+            background-color: var(--webchat-colorBrandBackground);
+            border-color: transparent;
+            color: var(--webchat-colorNeutralForegroundOnBrand);
+          }
+
+          :global(.ac-pushButton.primary:hover) {
+            background-color: var(--webchat-colorBrandBackgroundHover);
+            border-color: transparent;
+            color: var(--webchat-colorNeutralForegroundOnBrand);
+          }
+
+          :global(.ac-pushButton.primary:active),
+          :global(.ac-pushButton.primary[aria-pressed='true']) {
+            background-color: var(--webchat-colorBrandBackgroundPressed);
+            border-color: transparent;
+            color: var(--webchat-colorNeutralForegroundOnBrand);
+          }
         }
       }
 
@@ -801,6 +859,7 @@
     :global(.collapsible-grouping__content) {
       anchor-name: --webchat-flair;
       background: var(--webchat-colorNeutralBackground1);
+      background-clip: padding-box;
       border-radius: var(--webchat-borderRadius2XLarge);
       height: unset;
       opacity: unset;

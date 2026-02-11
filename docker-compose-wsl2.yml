@@ -39,6 +39,7 @@ services:
       - ./packages/fluent-theme/static/:/var/web/packages/fluent-theme/static/
       - ./packages/test/harness/dist/:/var/web/packages/test/harness/dist/
       - ./packages/test/page-object/dist/:/var/web/packages/test/page-object/dist/
+      - ./packages/test/test-assets/out/:/var/web/packages/test/test-assets/out/
     ports:
       - '5081:80'
 

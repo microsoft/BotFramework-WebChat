@@ -8,6 +8,7 @@ type CreateDirectLineOptions = {
   fetch?: typeof window.fetch;
   pollingInterval?: number;
   secret?: string;
+  streaming?: boolean;
   streamUrl?: string;
   token?: string;
   watermark?: string;
@@ -22,6 +23,7 @@ export default function createDirectLine({
   fetch,
   pollingInterval,
   secret,
+  streaming,
   streamUrl,
   token,
   watermark,
@@ -36,6 +38,7 @@ export default function createDirectLine({
     fetch,
     pollingInterval,
     secret,
+    streaming,
     streamUrl,
     token,
     watermark,
