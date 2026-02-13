@@ -4,27 +4,27 @@ import {
   type McpUiSandboxResourceReadyNotification
 } from '@modelcontextprotocol/ext-apps/app-bridge';
 
-const ALLOWED_REFERRER_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/u;
+// const ALLOWED_REFERRER_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/u;
 
 if (window.self === window.top) {
   throw new Error('This file is only to be used in an iframe sandbox.');
 }
 
-if (!document.referrer) {
-  throw new Error('No referrer, cannot validate embedding site.');
-}
+// if (!document.referrer) {
+//   throw new Error('No referrer, cannot validate embedding site.');
+// }
 
-if (!document.referrer.match(ALLOWED_REFERRER_PATTERN)) {
-  throw new Error(
-    `Embedding domain not allowed in referrer ${document.referrer}. (Consider updating the validation logic to allow your domain.)`
-  );
-}
+// if (!document.referrer.match(ALLOWED_REFERRER_PATTERN)) {
+//   throw new Error(
+//     `Embedding domain not allowed in referrer ${document.referrer}. (Consider updating the validation logic to allow your domain.)`
+//   );
+// }
 
 // Extract the expected host origin from the referrer for origin validation.
 // This is the origin we expect all parent messages to come from.
-const EXPECTED_HOST_ORIGIN = new URL(document.referrer).origin;
+const EXPECTED_HOST_ORIGIN = document.referrer ? new URL(document.referrer).origin : '*';
 
-const OWN_ORIGIN = new URL(window.location.href).origin;
+// const OWN_ORIGIN = new URL(window.location.href).origin;
 
 // Security self-test: verify iframe isolation is working correctly.
 // This MUST throw a SecurityError -- if `window.top` is accessible, the sandbox

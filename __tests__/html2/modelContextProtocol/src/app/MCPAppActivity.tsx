@@ -1,19 +1,21 @@
 import { Client } from '@modelcontextprotocol/sdk/client';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import React, { useEffect, useRef } from 'react';
-import { never, object, optional, parse, type InferOutput } from 'valibot';
+import { custom, never, object, optional, parse, type InferOutput } from 'valibot';
 import { loadSandboxProxy, setupIframe } from '../index.js';
 import { MCPAppsResourceSchema, MCPAppsResponseEntitySchema, MCPToolWithAppsMetaSchema } from './types';
 
 const MCPAppActivityPropsSchema = object({
   children: optional(never()),
-  entity: MCPAppsResponseEntitySchema
+  entity: MCPAppsResponseEntitySchema,
+  transport: optional(custom<Transport>(t => t instanceof Object))
 });
 
 type MCPAppActivityProps = { children?: never } & InferOutput<typeof MCPAppActivityPropsSchema>;
 
 const MCPAppActivity = (props: MCPAppActivityProps) => {
-  const { entity } = parse(MCPAppActivityPropsSchema, props);
+  const { entity, transport } = parse(MCPAppActivityPropsSchema, props);
   const toolName = entity.isPartOf[0]!.name;
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -31,12 +33,16 @@ const MCPAppActivity = (props: MCPAppActivityProps) => {
         version: '0.0.0-0'
       });
 
-      await client.connect(
-        new StreamableHTTPClientTransport(
-          new URL('https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp')
-        ),
-        { signal }
-      );
+      if (transport) {
+        await client.connect(transport, { signal });
+      } else {
+        await client.connect(
+          new StreamableHTTPClientTransport(
+            new URL('https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp')
+          ),
+          { signal }
+        );
+      }
 
       const { tools } = await client.listTools(undefined, { signal });
 

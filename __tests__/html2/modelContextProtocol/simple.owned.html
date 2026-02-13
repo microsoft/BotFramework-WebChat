@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP apps (owned)</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+        "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+        "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+        "bot-bundle-chat-adapter": "https://cdn.jsdelivr.net/gh/compulim/experiment-mockbot@v0.0.4/esm/bot-bundle-chat-adapter.js",
+        "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+        "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+        "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+        "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+        "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+        "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+        "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+        "react": "/__dist__/packages/test/test-assets/out/react.js",
+        "react-dom": "/__dist__/packages/test/test-assets/out/react-dom.js",
+        "react-dom/": "/__dist__/packages/test/test-assets/out/react-dom/",
+        "react-jsx-runtime": "/__dist__/packages/test/test-assets/out/react-jsx-runtime.js",
+        "eventsource-parser": "https://esm.sh/eventsource-parser",
+        "eventsource-parser/": "https://esm.sh/eventsource-parser/",
+        "valibot": "https://esm.sh/valibot"
+      }
+    }
+  </script>
+  <script type="module">
+    import { registerElements } from '/assets/custom-element/custom-element.js';
+
+    await registerElements('test-shell');
+  </script>
+</head>
+
+<body>
+  <main>
+    <test-shell>
+      <div id="webchat"></div>
+    </test-shell>
+  </main>
+</body>
+
+<script type="module">
+  import { createStoreWithOptions, testIds, ReactWebChat } from 'botframework-webchat';
+  import { EventSourceParserStream } from 'eventsource-parser/stream';
+  import { createElement, useEffect, useMemo, useRef } from 'react';
+  import { array, literal, number, object, optional, pipe, readonly, safeParse, string, url } from 'valibot';
+  import { loadSandboxProxy, setupIframe } from './dist/index.js';
+  import { createPolymiddleware } from './dist/app.js';
+
+  import { Composer, BasicWebChat } from 'botframework-webchat/component';
+
+  import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+  import { createElement as h } from 'react';
+  import { createRoot } from 'react-dom/client.js';
+  import { FluentProvider } from '@fluentui/react-provider';
+  import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+
+  import { run, host, pageConditions, testHelpers } from '/assets/esm/test.js';
+
+  import { startMessageChannelServer } from "https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.1/esm/index.js";
+  import { MessagePortClientTransport } from "https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.1/esm/mcp.js";
+
+  testHelpers.hideKnownError();
+
+  const channel = new MessageChannel();
+
+  startMessageChannelServer(channel.port2).catch((e) => {
+    console.error('MCP server error:', e);
+  });
+
+  const searchParams = new URLSearchParams(location.search);
+  const theme = document.querySelector('test-shell').dataset.theme;
+  let codeBlockTheme;
+  let fluentTheme;
+
+  const root = createRoot(document.getElementById('webchat'));
+
+  if (theme !== 'light') {
+    fluentTheme = {
+      ...createDarkTheme({
+        10: '#12174c',
+        20: '#1a1f5b',
+        30: '#21276a',
+        40: '#293079',
+        50: '#303788',
+        60: '#384097',
+        70: '#4049a7',
+        80: '#151e80',
+        90: '#4f59c5',
+        100: '#5661d4',
+        110: '#5e69e3',
+        120: '#7982e8',
+        130: '#949bec',
+        140: '#afb5f1',
+        150: '#c9cdf6',
+        160: '#e4e6fa'
+      }),
+      colorNeutralBackground1Disabled: '#101010',
+      colorNeutralBackground1Hover: '#101010',
+      colorNeutralForeground5: '#424242'
+    };
+    codeBlockTheme = 'github-dark-default';
+  } else {
+    fluentTheme = webLightTheme;
+  }
+
+  function renderWebChat(props) {
+    root.render(
+      h(
+        FluentProvider,
+        { className: 'fui-FluentProvider', theme: fluentTheme },
+        h(
+          Composer,
+          props,
+          h(
+            FluentThemeProvider,
+            { variant: searchParams.get('variant') ?? 'copilot' },
+            h(BasicWebChat, {
+              dir: searchParams.get('dir'),
+              styleOptions: {
+                ...(codeBlockTheme && { codeBlockTheme }),
+                maxMessageLength: null
+              }
+            })
+          )
+        )
+      )
+    );
+  }
+
+  run(async function () {
+    const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+    renderWebChat(
+      {
+        directLine,
+        polymiddleware: createPolymiddleware({ transport: new MessagePortClientTransport(channel.port1) }),
+        store
+      }
+    );
+
+    await pageConditions.uiConnected();
+
+    await directLine.emulateIncomingActivity({
+      entities: [
+        {
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          additionalType: ['WebPage'],
+          encodingFormat: 'text/html;profile=mcp-app',
+          isPartOf: [
+            {
+              '@type': ['HowToTool', 'urn:microsoft:webchat:model-context-protocol:tool'],
+              name: 'show-weather',
+              url: 'https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp'
+            }
+          ],
+          type: 'https://schema.org/Message',
+          'urn:microsoft:webchat:model-context-protocol:input': { location: 'Tokyo' }
+        }
+      ],
+      from: {
+        id: 'bot',
+        role: 'bot'
+      },
+      text: '',
+      type: 'message'
+    });
+  });
+</script>
+</body>
+
+</html>
