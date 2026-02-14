@@ -1,0 +1,27 @@
+{
+  "name": "@msinternal/modelcontextprotocol-ext-apps-sandbox",
+  "version": "0.0.0-0",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:run",
+    "build:run": "npm run build:run:esbuild && npm run build:run:template",
+    "build:run:esbuild": "esbuild --bundle --format=esm --outdir=./dist/ --platform=browser sandbox=./src/sandbox.ts",
+    "build:run:template": "node --experimental-strip-types ./scripts/buildHTML.ts",
+    "start": "SANDBOX_PORT=5100 node --experimental-strip-types ./serve.ts"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.13",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "esbuild": "^0.27.3"
+  },
+  "main": "index.js",
+  "author": "",
+  "description": ""
+}

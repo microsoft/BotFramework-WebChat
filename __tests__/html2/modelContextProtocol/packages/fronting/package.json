@@ -1,0 +1,28 @@
+{
+  "name": "@msinternal/fronting",
+  "version": "0.0.0-0",
+  "scripts": {
+    "build": "npm run build:vendor",
+    "build:vendor": "npm run build:vendor:mkdir && npm run build:vendor:curl && npm run build:vendor:unzip",
+    "build:vendor:mkdir": "mkdir -p ./vendor/",
+    "build:vendor:curl": "curl -L https://github.com/OEvgeny/mcp-map-server-ui/releases/download/v0.0.2/esm-v0.0.2.zip -o ./vendor/esm-v0.0.2.zip",
+    "build:vendor:unzip": "unzip -j -o ./vendor/esm-v0.0.2.zip -d ./vendor/",
+    "start": "PORT=5101 node --experimental-strip-types ./src/index.ts"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@tsconfig/recommended": "^1.0.13",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6"
+  },
+  "main": "index.js",
+  "description": ""
+}

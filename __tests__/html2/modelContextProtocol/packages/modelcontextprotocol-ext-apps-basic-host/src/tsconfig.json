@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": false,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "esnext"
+  },
+  "extends": "@tsconfig/recommended"
+}

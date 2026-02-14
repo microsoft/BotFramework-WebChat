@@ -26,8 +26,7 @@
       import { EventSourceParserStream } from 'eventsource-parser/stream';
       import { createElement, useEffect, useMemo, useRef } from 'react';
       import { array, literal, number, object, optional, pipe, readonly, safeParse, string, url } from 'valibot';
-      import { loadSandboxProxy, setupIframe } from './dist/index.js';
-      import { createPolymiddleware } from './dist/app.js';
+      import { createPolymiddleware } from './packages/app/dist/app.js';
 
       const {
         testHelpers: { createDirectLineEmulator }
@@ -62,13 +61,42 @@
               encodingFormat: 'text/html;profile=mcp-app',
               isPartOf: [
                 {
-                  '@type': ['HowToTool', 'urn:microsoft:webchat:model-context-protocol:tool'],
+                  '@type': ['HowToTool', 'urn:microsoft:webchat:model-context-protocol:call-tool'],
                   name: 'show-weather',
                   url: 'https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp'
                 }
               ],
               type: 'https://schema.org/Message',
-              'urn:microsoft:webchat:model-context-protocol:input': { location: 'Tokyo' }
+              'urn:microsoft:webchat:model-context-protocol:call-tool:input': { location: 'Tokyo' },
+              'urn:microsoft:webchat:model-context-protocol:call-tool:result': {
+                _meta: {
+                  viewUUID: 'df4b7c01-6602-4d78-9adf-7b4571c855de',
+                  weatherData: {
+                    location: '東京都',
+                    latitude: 35.6768601,
+                    longitude: 139.7638947,
+                    current: {
+                      temperature: 9.9,
+                      condition: 'Clear Sky',
+                      feelsLike: 8,
+                      humidity: 44,
+                      windSpeed: 1.1,
+                      uvIndex: 3.85,
+                      weatherCode: 0
+                    },
+                    forecast: [
+                      { date: '2026-02-05', tempMax: 11.7, tempMin: 1.2, weatherCode: 2, condition: 'Partly Cloudy' },
+                      { date: '2026-02-06', tempMax: 13.4, tempMin: 2.2, weatherCode: 1, condition: 'Mainly Clear' },
+                      { date: '2026-02-07', tempMax: 5.3, tempMin: 1.2, weatherCode: 2, condition: 'Partly Cloudy' },
+                      { date: '2026-02-08', tempMax: 0.8, tempMin: -1.7, weatherCode: 85, condition: 'Snow Showers' },
+                      { date: '2026-02-09', tempMax: 6.2, tempMin: -2.8, weatherCode: 0, condition: 'Clear Sky' },
+                      { date: '2026-02-10', tempMax: 8.1, tempMin: -0.9, weatherCode: 3, condition: 'Overcast' },
+                      { date: '2026-02-11', tempMax: 16.3, tempMin: 2.3, weatherCode: 61, condition: 'Rain' }
+                    ]
+                  }
+                },
+                content: [{ type: 'text', text: 'Showing weather for 東京都: 9.9°C, Clear Sky' }]
+              }
             }
           ],
           from: {

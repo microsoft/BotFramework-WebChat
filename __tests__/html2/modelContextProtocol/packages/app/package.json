@@ -1,0 +1,24 @@
+{
+  "name": "@msinternal/app",
+  "version": "0.0.0-0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:run",
+    "build:run": "esbuild --bundle --external:botframework-webchat --external:react --format=esm --outdir=./dist/ app=./src/index.ts",
+    "start": "../../../../../scripts/npm/notify-build.sh \"src\""
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.13",
+    "@tsconfig/strictest": "^2.0.8",
+    "esbuild": "^0.27.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@msinternal/modelcontextprotocol-ext-apps-basic-host": "0.0.0-0",
+    "valibot": "^1.2.0"
+  },
+  "description": ""
+}

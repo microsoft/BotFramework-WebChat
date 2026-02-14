@@ -1,7 +1,7 @@
 import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
 import { is } from 'valibot';
 import MCPAppActivity from './MCPAppActivity.js';
-import { MCPAppsResponseEntitySchema, type MCPAppsResponseEntity } from './types.js';
+import { MessageEntityForMCPAppSchema, type MessageEntityForMCPApp } from './types/MessageEntityForMCPApp.js';
 
 export default function createPolymiddleware() {
   return Object.freeze([
@@ -10,9 +10,9 @@ export default function createPolymiddleware() {
         activity: { entities }
       } = request;
 
-      const messageEntity: MCPAppsResponseEntity | undefined = (
+      const messageEntity: MessageEntityForMCPApp | undefined = (
         entities as any[] | undefined
-      )?.find<MCPAppsResponseEntity>(entity => is(MCPAppsResponseEntitySchema, entity));
+      )?.find<MessageEntityForMCPApp>(entity => is(MessageEntityForMCPAppSchema, entity));
 
       if (messageEntity?.additionalType?.includes('WebPage')) {
         return activityComponent(MCPAppActivity, { entity: messageEntity });

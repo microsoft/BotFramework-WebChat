@@ -1,0 +1,27 @@
+{
+  "name": "@msinternal/modelcontextprotocol-ext-apps-basic-host",
+  "version": "0.0.0-0",
+  "type": "module",
+  "exports": {
+    "./implementation": {
+      "types": "./dist/implementation.d.ts",
+      "default": "./dist/implementation.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup --dts --entry.implementation ./src/implementation.ts --external * --format esm --out-dir ./dist/ --platform browser"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@tsconfig/recommended": "^1.0.13",
+    "tsup": "^8.5.1"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
+}
