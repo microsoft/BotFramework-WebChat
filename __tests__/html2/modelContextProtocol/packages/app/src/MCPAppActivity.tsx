@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { getToolUiResourceUri } from '@modelcontextprotocol/ext-apps/app-bridge';
 import { Client } from '@modelcontextprotocol/sdk/client';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
@@ -7,6 +8,10 @@ import { never, object, optional, parse, type InferOutput } from 'valibot';
 import setupIframe from './setupIframe.js';
 import { MCPToolUIResourceSchema } from './types/MCPToolUIResource.js';
 import { MessageEntityForMCPAppSchema } from './types/MessageEntityForMCPApp.js';
+import { startMessageChannelServer } from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.2/esm/index.js';
+import { MessagePortClientTransport } from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.2/esm/mcp.js';
+
+const USE_OFFLINE_MCP_SERVER = true;
 
 const MCPAppActivityPropsSchema = object({
   children: optional(never()),
@@ -29,19 +34,31 @@ const MCPAppActivity = (props: MCPAppActivityProps) => {
         return;
       }
 
+      const { port1, port2 } = new MessageChannel();
+
       const client = new Client({
         name: 'botframework-webchat-mcp-app',
         version: '0.0.0-0'
       });
 
-      await client.connect(
-        new StreamableHTTPClientTransport(
-          new URL('https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp')
-        ) satisfies StreamableHTTPClientTransport & {
-          sessionId: string | undefined;
-        } as StreamableHTTPClientTransport & { sessionId: string }, // Fixing type issues in @modelcontextprotocol/ext-apps
-        { signal }
-      );
+      if (USE_OFFLINE_MCP_SERVER) {
+        console.log('Using offline MCP server');
+
+        await startMessageChannelServer(port2);
+
+        await client.connect(new MessagePortClientTransport(port1), { signal });
+      } else {
+        console.warn('Using online MCP server');
+
+        await client.connect(
+          new StreamableHTTPClientTransport(
+            new URL('https://mcp-apps-020426-ctgxdudsfxgebfa8.canadacentral-01.azurewebsites.net/mcp')
+          ) satisfies StreamableHTTPClientTransport & {
+            sessionId: string | undefined;
+          } as StreamableHTTPClientTransport & { sessionId: string }, // Fixing type issues in @modelcontextprotocol/ext-apps
+          { signal }
+        );
+      }
 
       const { tools } = await client.listTools(undefined, { signal });
 
