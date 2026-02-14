@@ -80,13 +80,15 @@ const MCPAppActivity = (props: MCPAppActivityProps) => {
 
       await loadSandboxProxy(iframeRef.current, uiResource._meta.ui.csp);
 
-      await setupIframe(
+      const appBridge = await setupIframe(
         client,
         iframeRef.current,
         uiResource,
         entity['urn:microsoft:webchat:model-context-protocol:call-tool:input'],
         entity['urn:microsoft:webchat:model-context-protocol:call-tool:result']
       );
+
+      appBridge.onopenlink = () => console.log('do something');
     })(abortController.signal);
 
     return () => abortController.abort();

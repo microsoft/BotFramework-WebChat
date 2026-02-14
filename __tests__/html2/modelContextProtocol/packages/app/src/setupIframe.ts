@@ -64,6 +64,8 @@ async function setupIframe(
   await appBridge.sendToolInput(toolInput ? { arguments: toolInput } : {});
 
   await appBridge.sendToolResult(toolResult);
+
+  return appBridge;
 }
 
 export { setupIframe };
