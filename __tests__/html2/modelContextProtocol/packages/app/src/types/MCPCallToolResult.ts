@@ -3,25 +3,26 @@ import {
   boolean,
   isoDateTime,
   literal,
+  looseObject,
   number,
   object,
+  optional,
   picklist,
   pipe,
   readonly,
   record,
   string,
-  undefinedable,
   union,
   unknown,
   type InferInput
 } from 'valibot';
 
 const MCPCallToolResultSchema = pipe(
-  object({
-    _meta: undefinedable(
-      object({
-        progressToken: undefinedable(union([string(), number()])),
-        'io.modelcontextprotocol/related-task': undefinedable(
+  looseObject({
+    _meta: optional(
+      looseObject({
+        progressToken: optional(union([string(), number()])),
+        'io.modelcontextprotocol/related-task': optional(
           object({
             taskId: string()
           })
@@ -34,65 +35,65 @@ const MCPCallToolResultSchema = pipe(
           object({
             type: literal('text'),
             text: string(),
-            annotations: undefinedable(
+            annotations: optional(
               object({
-                audience: undefinedable(array(picklist(['user', 'assistant']))),
-                priority: undefinedable(number()),
-                lastModified: undefinedable(pipe(string(), isoDateTime()))
+                audience: optional(array(picklist(['user', 'assistant']))),
+                priority: optional(number()),
+                lastModified: optional(pipe(string(), isoDateTime()))
               })
             ),
-            _meta: undefinedable(record(string(), unknown()))
+            _meta: optional(record(string(), unknown()))
           }),
           object({
             type: literal('image'),
             data: string(),
             mimeType: string(),
-            annotations: undefinedable(
+            annotations: optional(
               object({
-                audience: undefinedable(array(picklist(['user', 'assistant']))),
-                priority: undefinedable(number()),
-                lastModified: undefinedable(pipe(string(), isoDateTime()))
+                audience: optional(array(picklist(['user', 'assistant']))),
+                priority: optional(number()),
+                lastModified: optional(pipe(string(), isoDateTime()))
               })
             ),
-            _meta: undefinedable(record(string(), unknown()))
+            _meta: optional(record(string(), unknown()))
           }),
           object({
             type: literal('audio'),
             data: string(),
             mimeType: string(),
-            annotations: undefinedable(
+            annotations: optional(
               object({
-                audience: undefinedable(array(picklist(['user', 'assistant']))),
-                priority: undefinedable(number()),
-                lastModified: undefinedable(pipe(string(), isoDateTime()))
+                audience: optional(array(picklist(['user', 'assistant']))),
+                priority: optional(number()),
+                lastModified: optional(pipe(string(), isoDateTime()))
               })
             ),
-            _meta: undefinedable(record(string(), unknown()))
+            _meta: optional(record(string(), unknown()))
           }),
           object({
             uri: string(),
-            description: undefinedable(string()),
-            mimeType: undefinedable(string()),
-            annotations: undefinedable(
+            description: optional(string()),
+            mimeType: optional(string()),
+            annotations: optional(
               object({
-                audience: undefinedable(array(picklist(['user', 'assistant']))),
-                priority: undefinedable(number()),
-                lastModified: undefinedable(pipe(string(), isoDateTime()))
+                audience: optional(array(picklist(['user', 'assistant']))),
+                priority: optional(number()),
+                lastModified: optional(pipe(string(), isoDateTime()))
               })
             ),
-            _meta: undefinedable(record(string(), unknown())),
-            icons: undefinedable(
+            _meta: optional(record(string(), unknown())),
+            icons: optional(
               array(
                 object({
                   src: string(),
-                  mimeType: undefinedable(string()),
-                  sizes: undefinedable(array(string())),
-                  theme: undefinedable(picklist(['light', 'dark']))
+                  mimeType: optional(string()),
+                  sizes: optional(array(string())),
+                  theme: optional(picklist(['light', 'dark']))
                 })
               )
             ),
             name: string(),
-            title: undefinedable(string()),
+            title: optional(string()),
             type: literal('resource_link')
           }),
           object({
@@ -100,31 +101,31 @@ const MCPCallToolResultSchema = pipe(
             resource: union([
               object({
                 uri: string(),
-                mimeType: undefinedable(string()),
-                _meta: undefinedable(record(string(), unknown())),
+                mimeType: optional(string()),
+                _meta: optional(record(string(), unknown())),
                 text: string()
               }),
               object({
                 uri: string(),
-                mimeType: undefinedable(string()),
-                _meta: undefinedable(record(string(), unknown())),
+                mimeType: optional(string()),
+                _meta: optional(record(string(), unknown())),
                 blob: string()
               })
             ]),
-            annotations: undefinedable(
+            annotations: optional(
               object({
-                audience: undefinedable(array(picklist(['user', 'assistant']))),
-                priority: undefinedable(number()),
-                lastModified: undefinedable(pipe(string(), isoDateTime()))
+                audience: optional(array(picklist(['user', 'assistant']))),
+                priority: optional(number()),
+                lastModified: optional(pipe(string(), isoDateTime()))
               })
             ),
-            _meta: undefinedable(record(string(), unknown()))
+            _meta: optional(record(string(), unknown()))
           })
         ])
       )
     ),
-    structuredContent: undefinedable(record(string(), unknown())),
-    isError: undefinedable(boolean())
+    structuredContent: optional(record(string(), unknown())),
+    isError: optional(boolean())
   }),
   readonly()
 );
