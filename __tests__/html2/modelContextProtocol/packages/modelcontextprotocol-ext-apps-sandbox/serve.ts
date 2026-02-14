@@ -33,6 +33,9 @@ const __dirname = dirname(__filename);
 // const HOST_PORT = parseInt(process.env.HOST_PORT || '8080', 10);
 // #endregion
 const SANDBOX_PORT = parseInt(process.env.SANDBOX_PORT || '8081', 10);
+// #region MOD
+const SANDBOX_PORTS = parseInt(process.env.SANDBOX_PORTS || '8082', 10);
+// #endregion
 const DIRECTORY = join(__dirname, 'dist');
 
 // #region MOD
@@ -165,3 +168,20 @@ sandboxApp.listen(SANDBOX_PORT, err => {
   console.log(`Sandbox server: http://localhost:${SANDBOX_PORT}`);
   console.log('\nPress Ctrl+C to stop\n');
 });
+
+// #region MOD
+/* eslint-disable no-console */
+import { createServer as createSecureServer } from 'node:https';
+import selfsigned from 'selfsigned';
+
+const attrs = [{ name: 'commonName', value: 'mcpproxy' }];
+const pems = await selfsigned.generate(attrs, { days: 365 });
+
+createSecureServer(
+  {
+    cert: pems.cert,
+    key: pems.private
+  },
+  sandboxApp
+).listen(SANDBOX_PORTS, () => console.log(`Listening to port ${SANDBOX_PORTS} (secure).`));
+// #endregion

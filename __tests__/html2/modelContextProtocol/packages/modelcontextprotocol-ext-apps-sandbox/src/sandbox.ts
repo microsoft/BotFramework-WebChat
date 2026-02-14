@@ -17,7 +17,10 @@ import type {
 import { buildAllowAttribute } from '@modelcontextprotocol/ext-apps/app-bridge';
 // #endregion
 
-const ALLOWED_REFERRER_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/;
+// #region MOD
+// const ALLOWED_REFERRER_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/;
+const ALLOWED_REFERRER_PATTERN = /^(http:\/\/(localhost|127\.0\.0\.1))|(https:\/\/webchat2)(:|\/|$)/;
+// #endregion
 
 if (window.self === window.top) {
   throw new Error("This file is only to be used in an iframe sandbox.");

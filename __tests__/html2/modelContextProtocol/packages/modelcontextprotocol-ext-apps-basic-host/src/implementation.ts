@@ -17,7 +17,10 @@ import type { CallToolResult, Resource, Tool } from "@modelcontextprotocol/sdk/t
 
 // #region MOD
 // const SANDBOX_PROXY_BASE_URL = "http://localhost:8081/sandbox.html";
-const SANDBOX_PROXY_BASE_URL = "http://mcpsandbox.localhost:5100/sandbox.html";
+const SANDBOX_PROXY_BASE_URL =
+  location.protocol === 'https:'
+    ? 'https://mcpsandbox/sandbox.html'
+    : 'http://mcpsandbox.localhost:5100/sandbox.html';
 // #endregion
 const IMPLEMENTATION = { name: "MCP Apps Host", version: "1.0.0" };
 

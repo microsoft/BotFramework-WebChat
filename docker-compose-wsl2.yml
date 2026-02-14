@@ -43,6 +43,14 @@ services:
     ports:
       - '5081:80'
 
+  mcpsandbox:
+    build:
+      context: ./
+      dockerfile: ./__tests__/html2/modelContextProtocol/mcpsandbox.dockerfile
+    stop_grace_period: 0s
+    volumes:
+      - ./__tests__/html2/modelContextProtocol/:/var/web/
+
   jest-server:
     build:
       context: ./packages/test/harness/
