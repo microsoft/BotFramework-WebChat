@@ -37,8 +37,6 @@
 
         // Set voice configuration capability to enable microphone button
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
-        // Enable voice-only mode (hides send button, shows mic + dismiss buttons)
-        directLine.setCapability('getIsVoiceOnlyMode', true, { emitEvent: false });
         
         // Intercept postActivity to capture outgoing DTMF events
         const capturedDtmfEvents = [];
@@ -190,10 +188,7 @@
         await pageConditions.scrollToBottomCompleted();
         await host.snapshot('local');
 
-        // Stop voice recording using dismiss button
-        const dismissButton = document.querySelector(`[data-testid="${testIds.sendBoxDismissButton}"]`);
-        expect(dismissButton).toBeTruthy();
-        await host.click(dismissButton);
+        await host.click(micButton);
 
       });
     </script>

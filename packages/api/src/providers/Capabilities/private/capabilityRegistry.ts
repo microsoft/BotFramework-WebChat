@@ -39,10 +39,6 @@ const CAPABILITY_REGISTRY: readonly CapabilityDescriptor<keyof Capabilities>[] =
   {
     key: 'voiceConfiguration',
     getterName: 'getVoiceConfiguration'
-  },
-  {
-    key: 'isVoiceOnlyMode',
-    getterName: 'getIsVoiceOnlyMode'
   }
 ]);
 
