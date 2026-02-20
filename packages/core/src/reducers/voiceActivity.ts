@@ -1,20 +1,26 @@
+import { VOICE_MUTE_RECORDING } from '../actions/muteVoiceRecording';
 import { VOICE_REGISTER_HANDLER } from '../actions/registerVoiceHandler';
 import { VOICE_SET_STATE } from '../actions/setVoiceState';
 import { VOICE_START_RECORDING } from '../actions/startVoiceRecording';
 import { VOICE_STOP_RECORDING } from '../actions/stopVoiceRecording';
+import { VOICE_UNMUTE_RECORDING } from '../actions/unmuteVoiceRecording';
 import { VOICE_UNREGISTER_HANDLER } from '../actions/unregisterVoiceHandler';
 
+import type { VoiceMuteRecordingAction } from '../actions/muteVoiceRecording';
 import type { VoiceHandler, VoiceRegisterHandlerAction } from '../actions/registerVoiceHandler';
 import type { VoiceSetStateAction, VoiceState } from '../actions/setVoiceState';
 import type { VoiceStartRecordingAction } from '../actions/startVoiceRecording';
 import type { VoiceStopRecordingAction } from '../actions/stopVoiceRecording';
+import type { VoiceUnmuteRecordingAction } from '../actions/unmuteVoiceRecording';
 import type { VoiceUnregisterHandlerAction } from '../actions/unregisterVoiceHandler';
 
 type VoiceActivityActions =
+  | VoiceMuteRecordingAction
   | VoiceRegisterHandlerAction
   | VoiceSetStateAction
   | VoiceStartRecordingAction
   | VoiceStopRecordingAction
+  | VoiceUnmuteRecordingAction
   | VoiceUnregisterHandlerAction;
 
 interface VoiceActivityState {
@@ -32,6 +38,12 @@ export default function voiceActivity(
   action: VoiceActivityActions
 ): VoiceActivityState {
   switch (action.type) {
+    case VOICE_MUTE_RECORDING:
+      return {
+        ...state,
+        voiceState: 'muted'
+      };
+
     case VOICE_REGISTER_HANDLER: {
       const newHandlers = new Map(state.voiceHandlers);
       newHandlers.set(action.payload.id, action.payload.voiceHandler);
@@ -70,6 +82,16 @@ export default function voiceActivity(
       return {
         ...state,
         voiceState: 'idle'
+      };
+
+    case VOICE_UNMUTE_RECORDING:
+      if (state.voiceState !== 'muted') {
+        console.warn(`botframework-webchat: Should not transit from "${state.voiceState}" to "listening"`);
+      }
+
+      return {
+        ...state,
+        voiceState: 'listening'
       };
 
     default:

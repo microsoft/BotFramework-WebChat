@@ -13,6 +13,7 @@ import {
   dismissNotification,
   emitTypingIndicator,
   markActivity,
+  muteVoiceRecording,
   postActivity,
   sendEvent,
   sendFiles,
@@ -35,6 +36,7 @@ import {
   stopSpeakingActivity,
   stopVoiceRecording,
   submitSendBox,
+  unmuteVoiceRecording,
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
   type OneOrMany,
@@ -381,6 +383,14 @@ const ComposerCore = ({
     dispatch(stopVoiceRecording());
   }, [dispatch, voiceHandlers]);
 
+  const muteVoice = useCallback(() => {
+    dispatch(muteVoiceRecording());
+  }, [dispatch]);
+
+  const unmuteVoice = useCallback(() => {
+    dispatch(unmuteVoiceRecording());
+  }, [dispatch]);
+
   const patchedLocalizedStrings = useMemo(
     () => mergeStringsOverrides(getAllLocalizedStrings()[normalizeLanguage(locale)], locale, overrideLocalizedStrings),
     [locale, overrideLocalizedStrings]
@@ -563,6 +573,7 @@ const ComposerCore = ({
       language: locale,
       localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
+      muteVoice,
       onTelemetry,
       renderMarkdown,
       scrollToEndButtonRenderer,
@@ -575,6 +586,7 @@ const ComposerCore = ({
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       uiState,
+      unmuteVoice,
       userID,
       username
     }),
@@ -585,6 +597,7 @@ const ComposerCore = ({
       hoistedDispatchers,
       locale,
       localizedGlobalize,
+      muteVoice,
       onTelemetry,
       patchedActivityStatusRenderer,
       patchedAttachmentForScreenReaderRenderer,
@@ -604,6 +617,7 @@ const ComposerCore = ({
       telemetryDimensionsRef,
       trackDimension,
       uiState,
+      unmuteVoice,
       userID,
       username
     ]

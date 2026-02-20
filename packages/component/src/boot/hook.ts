@@ -39,6 +39,7 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
+  useMuteVoice,
   useNotifications,
   usePerformCardAction,
   usePonyfill,
@@ -75,7 +76,8 @@ export {
   useUserID,
   useUsername,
   useVoiceSelector,
-  useVoiceState
+  useVoiceState,
+  useUnmuteVoice
 } from 'botframework-webchat-api/hook';
 
 // #region Overrides

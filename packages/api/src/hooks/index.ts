@@ -37,6 +37,7 @@ import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import useMarkActivityKeyAsRead from './useMarkActivityKeyAsRead';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
+import useMuteVoice from './useMuteVoice';
 import useNotifications from './useNotifications';
 import usePerformCardAction from './usePerformCardAction';
 import usePonyfill from './usePonyfill';
@@ -71,6 +72,7 @@ import useTrackEvent from './useTrackEvent';
 import useTrackException from './useTrackException';
 import useTrackTiming from './useTrackTiming';
 import useUIState from './useUIState';
+import useUnmuteVoice from './useUnmuteVoice';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
@@ -119,6 +121,7 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
+  useMuteVoice,
   useNotifications,
   usePerformCardAction,
   usePonyfill,
@@ -153,6 +156,7 @@ export {
   useTrackException,
   useTrackTiming,
   useUIState,
+  useUnmuteVoice,
   useUserID,
   useUsername,
   useVoiceSelector,

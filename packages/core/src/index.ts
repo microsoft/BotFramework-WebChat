@@ -3,7 +3,10 @@ import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
 import markActivity from './actions/markActivity';
+import muteVoiceRecording from './actions/muteVoiceRecording';
 import postActivity from './actions/postActivity';
+import postVoiceActivity from './actions/postVoiceActivity';
+import registerVoiceHandler from './actions/registerVoiceHandler';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
 import sendMessage from './actions/sendMessage';
@@ -17,11 +20,16 @@ import setSendBox from './actions/setSendBox';
 import setSendBoxAttachments from './actions/setSendBoxAttachments';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
+import setVoiceState from './actions/setVoiceState';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
+import startVoiceRecording from './actions/startVoiceRecording';
 import stopDictate from './actions/stopDictate';
 import stopSpeakingActivity from './actions/stopSpeakingActivity';
+import stopVoiceRecording from './actions/stopVoiceRecording';
 import submitSendBox from './actions/submitSendBox';
+import unmuteVoiceRecording from './actions/unmuteVoiceRecording';
+import unregisterVoiceHandler from './actions/unregisterVoiceHandler';
 import * as ActivityClientState from './constants/ActivityClientState';
 import * as DictateState from './constants/DictateState';
 import createStore, {
@@ -44,12 +52,6 @@ import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
 import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
 import getVoiceActivityRole from './utils/voiceActivity/getVoiceActivityRole';
 import getVoiceActivityText from './utils/voiceActivity/getVoiceActivityText';
-import startVoiceRecording from './actions/startVoiceRecording';
-import stopVoiceRecording from './actions/stopVoiceRecording';
-import setVoiceState from './actions/setVoiceState';
-import registerVoiceHandler from './actions/registerVoiceHandler';
-import unregisterVoiceHandler from './actions/unregisterVoiceHandler';
-import postVoiceActivity from './actions/postVoiceActivity';
 import type { VoiceState } from './actions/setVoiceState';
 import type { VoiceHandler } from './actions/registerVoiceHandler';
 
@@ -116,6 +118,7 @@ export {
   isVoiceActivity,
   isVoiceTranscriptActivity,
   markActivity,
+  muteVoiceRecording,
   onErrorResumeNext,
   parseAction,
   parseClaim,
@@ -127,7 +130,6 @@ export {
   postActivity,
   postVoiceActivity,
   registerVoiceHandler,
-  unregisterVoiceHandler,
   sendEvent,
   sendFiles,
   sendMessage,
@@ -149,7 +151,9 @@ export {
   stopDictate,
   stopSpeakingActivity,
   stopVoiceRecording,
-  submitSendBox
+  submitSendBox,
+  unmuteVoiceRecording,
+  unregisterVoiceHandler
 };
 
 export type {
