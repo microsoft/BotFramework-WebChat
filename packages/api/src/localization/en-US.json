@@ -137,8 +137,6 @@
   "_TEXT_INPUT_SPEECH_IDLE_PLACEHOLDER.comment": "This is the placeholder text shown in the message input box when speech-to-speech is enabled and in idle state.",
   "TEXT_INPUT_SPEECH_LISTENING_PLACEHOLDER": "Listening...",
   "_TEXT_INPUT_SPEECH_LISTENING_PLACEHOLDER.comment": "This is the placeholder text shown in the message input box when speech-to-speech is enabled and actively listening to user speech.",
-  "TEXT_INPUT_SPEECH_MUTED_PLACEHOLDER": "Muted",
-  "_TEXT_INPUT_SPEECH_MUTED_PLACEHOLDER.comment": "This is the placeholder text shown in the message input box when speech-to-speech is enabled and the microphone is muted.",
   "TEXT_INPUT_SPEECH_PROCESSING_PLACEHOLDER": "Processing...",
   "_TEXT_INPUT_SPEECH_PROCESSING_PLACEHOLDER.comment": "This is the placeholder text shown in the message input box when speech-to-speech is enabled and processing the user's speech input.",
   "TEXT_INPUT_SPEECH_BOT_SPEAKING_PLACEHOLDER": "Talk to interrupt...",
