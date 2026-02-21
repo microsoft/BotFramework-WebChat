@@ -19,7 +19,8 @@ import { buildAllowAttribute } from '@modelcontextprotocol/ext-apps/app-bridge';
 
 // #region MOD
 // const ALLOWED_REFERRER_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/;
-const ALLOWED_REFERRER_PATTERN = /^(http:\/\/(localhost|127\.0\.0\.1))|(https:\/\/webchat2)(:|\/|$)/;
+// const ALLOWED_REFERRER_PATTERN = /^(http:\/\/(localhost|127\.0\.0\.1))|(https:\/\/webchat2)(:|\/|$)/;
+const ALLOWED_REFERRER_PATTERN = /.*/;
 // #endregion
 
 if (window.self === window.top) {

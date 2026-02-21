@@ -7,6 +7,8 @@ import {
   type McpUiToolResultNotification
 } from '@modelcontextprotocol/ext-apps/app-bridge';
 import type { Client } from '@modelcontextprotocol/sdk/client';
+
+import { createAppTheme } from './createAppTheme';
 import type { MCPToolUIResource } from './types/MCPToolUIResource';
 
 const IMPLEMENTATION = {
@@ -45,11 +47,19 @@ async function setupIframe(
     {
       // TODO: Work on this.
       hostContext: {
-        availableDisplayModes: ['inline'],
-        platform: 'web'
+        availableDisplayModes: ['inline', 'fullscreen'],
+        platform: 'web',
+        theme: document.documentElement.style.colorScheme === 'dark' ? 'dark' : 'light',
+        styles: {
+          variables: createAppTheme(iframeElement)
+          // TODO: fonts
+          // FluentUI seems to not provide web fonts if using only the theme provider
+        }
       }
     }
   );
+
+  console.log('Theme', createAppTheme(iframeElement));
 
   const initializedResolver = Promise.withResolvers();
 

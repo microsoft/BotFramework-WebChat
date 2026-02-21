@@ -12,17 +12,28 @@
   --webchat-colorNeutralForeground3: var(--colorNeutralForeground3, #616161);
   --webchat-colorNeutralForeground4: var(--colorNeutralForeground4, #707070);
   --webchat-colorNeutralForeground5: var(--colorNeutralForeground5, #7e7e7e);
+  --webchat-colorNeutralForegroundInverted: var(--colorNeutralForegroundInverted, #ffffff);
 
   --webchat-colorNeutralForegroundOnBrand: var(--colorNeutralForegroundOnBrand, #fff);
 
   --webchat-colorNeutralBackgroundDisabled: var(--colorNeutralBackgroundDisabled, #f0f0f0);
+  --webchat-colorNeutralBackgroundInverted: var(--colorNeutralBackgroundInverted, #292929);
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
   --webchat-colorNeutralBackground1Hover: var(--colorNeutralBackground1Hover, #f5f5f5);
   --webchat-colorNeutralBackground1Pressed: var(--colorNeutralBackground1Pressed, #e0e0e0);
+  --webchat-colorNeutralBackground2Hover: var(--colorNeutralBackground2Hover, #f0f0f0);
+  --webchat-colorNeutralBackground2Pressed: var(--colorNeutralBackground2Pressed, #dbdbdb);
+  --webchat-colorNeutralBackground2Selected: var(--colorNeutralBackground2Selected, #e6e6e6);
   --webchat-colorNeutralBackground3: var(--colorNeutralBackground3, #f5f5f5);
   --webchat-colorNeutralBackground4: var(--colorNeutralBackground4, #f0f0f0);
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
   --webchat-colorNeutralBackground6: var(--colorNeutralBackground6, #e6e6e6);
+  --webchat-colorNeutralBackground2: var(--colorNeutralBackground2, #fafafa);
+
+  --webchat-colorSubtleBackground: var(--colorSubtleBackground, transparent);
+  --webchat-colorSubtleBackgroundHover: var(--colorSubtleBackgroundHover, #f5f5f5);
+  --webchat-colorSubtleBackgroundPressed: var(--colorSubtleBackgroundPressed, #e0e0e0);
+  --webchat-colorSubtleBackgroundSelected: var(--colorSubtleBackgroundSelected, #ebebeb);
 
   --webchat-colorNeutralStencil1: var(--colorNeutralStencil1, #e6e6e6); /* #575757 for dark mode */
   --webchat-colorNeutralStencil2: var(--colorNeutralStencil2, #fafafa); /* #333333 for dark mode */
@@ -37,14 +48,20 @@
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
+  --webchat-colorNeutralStrokeAccessible: var(--colorNeutralStrokeAccessible, #616161);
   --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
   --webchat-colorNeutralStroke1Hover: var(--colorNeutralStroke1Hover, #c7c7c7);
   --webchat-colorNeutralStroke1Pressed: var(--colorNeutralStroke1Pressed, #b3b3b3);
   --webchat-colorNeutralStroke1Selected: var(--colorNeutralStroke1Selected, #bdbdbd);
   --webchat-colorNeutralStroke2: var(--colorNeutralStroke2, #e0e0e0);
+  --webchat-colorNeutralStrokeSubtle: var(--colorNeutralStrokeSubtle, #e0e0e0);
+  --webchat-colorNeutralStrokeOnBrand: var(--colorNeutralStrokeOnBrand, #ffffff);
+  --webchat-colorNeutralStroke3: var(--colorNeutralStroke3, #f0f0f0);
 
+  --webchat-colorStrokeFocus1: var(--colorStrokeFocus1, #ffffff);
   --webchat-colorStrokeFocus2: var(--colorStrokeFocus2, #000000);
 
+  --webchat-colorBrandStroke1: var(--colorBrandStroke1, #077fab);
   --webchat-colorBrandStroke2: var(--colorBrandStroke2, #9edcf7);
   --webchat-colorBrandStroke2Pressed: var(--colorBrandStroke2Pressed, #01384d);
 
@@ -68,7 +85,20 @@
 
   --webchat-colorCompoundBrandForeground1Hover: var(--colorCompoundBrandForeground1Hover, #02729c);
 
+  --webchat-colorStatusSuccessBackground1: var(--colorStatusSuccessBackground1, #f1faf1);
+  --webchat-colorStatusSuccessForeground1: var(--colorStatusSuccessForeground1, #0e700e);
+  --webchat-colorStatusSuccessBorder1: var(--colorStatusSuccessBorder1, #9fd89f);
+  --webchat-colorStatusSuccessBorderActive: var(--colorStatusSuccessBorderActive, #107c10);
+
+  --webchat-colorStatusWarningBackground1: var(--colorStatusWarningBackground1, #fff9f5);
+  --webchat-colorStatusWarningForeground1: var(--colorStatusWarningForeground1, #bc4b09);
+  --webchat-colorStatusWarningBorder1: var(--colorStatusWarningBorder1, #fdcfb4);
+  --webchat-colorStatusWarningBorderActive: var(--colorStatusWarningBorderActive, #f7630c);
+
+  --webchat-colorStatusDangerBackground1: var(--colorStatusDangerBackground1, #fdf3f4);
   --webchat-colorStatusDangerForeground1: var(--colorStatusDangerForeground1, #b10e1c);
+  --webchat-colorStatusDangerBorder1: var(--colorStatusDangerBorder1, #eeacb2);
+  --webchat-colorStatusDangerBorderActive: var(--colorStatusDangerBorderActive, #c50f1f);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/colors.ts */
   --webchat-colorGray30: var(--colorGray30, #edebe9);
@@ -85,6 +115,7 @@
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts */
   --webchat-shadow2: var(--shadow2, 0 0 2px rgba(0, 0, 0, 12%), 0 1px 2px rgba(0, 0, 0, 14%));
   --webchat-shadow4: var(--shadow4, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.14));
+  --webchat-shadow8: var(--shadow8, 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14));
   --webchat-shadow16: var(--shadow16, 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108));
   --webchat-shadow64: var(--shadow64, 0 0 8px rgba(0, 0, 0, 0.12), 0 32px 64px rgba(0, 0, 0, 0.14));
 
@@ -140,7 +171,9 @@
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontWeightRegular: var(--fontWeightRegular, 400);
+  --webchat-fontWeightMedium: var(--fontWeightMedium, 500);
   --webchat-fontWeightSemibold: var(--fontWeightSemibold, 600);
+  --webchat-fontWeightBold: var(--fontWeightBold, 700);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontSizeBase100: var(--fontSizeBase100, 10px);
@@ -152,6 +185,7 @@
   --webchat-fontSizeHero700: var(--fontSizeHero700, 28px);
   --webchat-fontSizeHero800: var(--fontSizeHero800, 32px);
   --webchat-fontSizeHero900: var(--fontSizeHero900, 40px);
+  --webchat-fontSizeHero1000: var(--fontSizeHero1000, 68px);
 
   --webchat-lineHeightBase100: var(--lineHeightBase100, 14px);
   --webchat-lineHeightBase200: var(--lineHeightBase200, 16px);
@@ -170,6 +204,7 @@
   --webchat-borderRadiusLarge: var(--borderRadiusLarge, 6px);
   --webchat-borderRadiusXLarge: var(--borderRadiusXLarge, 8px);
   --webchat-borderRadius2XLarge: var(--borderRadius2XLarge, 12px);
+  --webchat-borderRadiusCircular: var(--borderRadiusCircular, 10000px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/strokeWidths.ts */
   --webchat-strokeWidthThin: var(--strokeWidthThin, 1px);

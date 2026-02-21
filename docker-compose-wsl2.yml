@@ -48,6 +48,8 @@ services:
       context: ./
       dockerfile: ./__tests__/html2/modelContextProtocol/mcpsandbox.dockerfile
     stop_grace_period: 0s
+    ports:
+      - '5002:80'
     volumes:
       - ./__tests__/html2/modelContextProtocol/:/var/web/
 

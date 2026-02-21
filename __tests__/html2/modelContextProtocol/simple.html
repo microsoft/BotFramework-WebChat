@@ -22,14 +22,14 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, renderWebChat, testIds, createDirectLine } from 'botframework-webchat';
       import { EventSourceParserStream } from 'eventsource-parser/stream';
       import { createElement, useEffect, useMemo, useRef } from 'react';
       import { array, literal, number, object, optional, pipe, readonly, safeParse, string, url } from 'valibot';
       import { createPolymiddleware } from './packages/app/dist/app.js';
 
       const {
-        testHelpers: { createDirectLineEmulator }
+        testHelpers: { createDirectLineEmulator, createStore }
       } = window;
 
       // TODO: Should find ways to eliminate this line.
@@ -37,9 +37,12 @@
 
       testHelpers.hideKnownError();
 
+      run = fn => fn();
       run(
         async function () {
           const { directLine, store } = createDirectLineEmulator();
+          // const directLine = createDirectLine({ token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6Il9aNGdIZFFoT0Y2Xy1TM2tqUjdVUDgtOG4zRSIsIng1dCI6Il9aNGdIZFFoT0Y2Xy1TM2tqUjdVUDgtOG4zRSIsInR5cCI6IkpXVCJ9.eyJib3QiOiJhZmMzOGI0My0xMGExLWNlNjktNDc4MS04NjZmOTM2ZjhhNzEiLCJzaXRlIjoiMTRzSEdsUzRxT2dKS0tMekljR3lmQkNPdmlnWTBwVndNNFBDODdTbFY1aHIyU2RLR3Y2QkpRUUo5OUNCQUNpNVlwekFBcm9oQUFBQkFaQlMxY2szIiwiY29udiI6IjV6cngyd0dldUpuNE5mbWtGWElZeHQtdXMiLCJ1c2VyIjoiZDhhYjNkN2ItNGNiMS00NjFkLWI0NGItYTRiOTc0YmJkOWY1IiwibmJmIjoxNzcxNDQyNzUxLCJleHAiOjE3NzE0NDYzNTEsImlzcyI6Imh0dHBzOi8vZGlyZWN0bGluZS5ib3RmcmFtZXdvcmsuY29tLyIsImF1ZCI6Imh0dHBzOi8vZGlyZWN0bGluZS5ib3RmcmFtZXdvcmsuY29tLyJ9.WOaD1UErQw3gFghTxkXZKsHfwsbjuNq1-zNxtrGs6-o98pNZSihq0vRXiaV4_egQD9fMRIXLNu32MEh_O56thSCfKNjsc1FsJppV-36pQkRrDR5hiRQiTtjLwmK8gRBZzlNAvHGq3EWP9nsV_Z4TbIy0JGl3UNnBEbR7N-gJQCfyPPv9Q-rArt_ftn_mNn5WvzubHQX0KKkJJ_hTEgSESY_IAOv-KO6X8YWwqrGrMuJK7WV5lRsX_4gr2D3o4jH9yFJkP30wPATPfw_9wPrjZpP5Ct6PArjFx13FDNejZyFx7Dl_yf-CRjLLCJa68RzTRKB1CyBaaAVvX_PRr-0UyQ' });
+          // const store = createStore();
 
           renderWebChat(
             {

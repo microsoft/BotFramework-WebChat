@@ -1,5 +1,5 @@
 import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
-import { is, safeParse } from 'valibot';
+import { is } from 'valibot';
 import MCPAppActivity from './MCPAppActivity.js';
 import { MessageEntityForMCPAppSchema, type MessageEntityForMCPApp } from './types/MessageEntityForMCPApp.js';
 

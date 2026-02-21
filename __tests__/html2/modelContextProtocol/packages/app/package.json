@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build:run",
-    "build:run": "esbuild --bundle --external:botframework-webchat --external:react --format=esm --outdir=./dist/ app=./src/index.ts",
+    "build:run": "esbuild --bundle --external:botframework-webchat --external:react --external:react-dom --format=esm --alias:@modelcontextprotocol/ext-apps/app-bridge=@msinternal/webchat-mcp/out/mcp-ext-app.js --outdir=./dist/ app=./src/index.ts",
     "start": "../../../../../scripts/npm/notify-build.sh \"src\""
   },
   "author": "",
