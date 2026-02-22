@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@msinternal/botframework-webchat-cldr-data-downloader": "0.0.0-0",
-    "glob": "8.1.0",
+    "glob": "12.0.0",
     "read-package-up": "12.0.0",
     "read-pkg": "10.0.0"
   }
