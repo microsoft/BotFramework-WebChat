@@ -156,7 +156,7 @@ Our philosophy:
 
 This is for the best interest of everyone.
 
-### Can I add a feature that is only available to certain demography of customers?
+### Can I add a feature that is only available to a certain demographic of customers?
 
 No, please create your own private fork and distribution channel.
 
