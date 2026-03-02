@@ -37,6 +37,9 @@ Thanks for your interest in improving Web Chat. We invest heavily in engineering
       - Install Google Chrome
    2. Clone locally: `git clone https://github.com/microsoft/BotFramework-WebChat.git`
    3. [Download ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) and extract the binary to the repo root
+   <!-- Verify if we need this
+      - macOS: add execute permission by `chmod +x ./chromedriver` and remove quarantine flag `xattr -d com.apple.quarantine ./chromedriver`
+   -->
    3. Run `npm clean-install`
    4. Run `npm run build-browser`
    5. Run `npm run browser`
@@ -117,6 +120,8 @@ Our CI pipeline use the very same build/test script. When you run `npm test` in 
 
 There are a few reasons:
 
+- Failing static code analysis
+   - Run `npm run precommit` and check for errors
 - Flaky tests
 - Test infrastructure is down
    - All of use share the same test infrastructure, it will be rebuilt every weekend or on-demand
