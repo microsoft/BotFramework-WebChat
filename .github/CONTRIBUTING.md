@@ -105,7 +105,7 @@ To create VRTs, inside your Codespace:
 - Run the tests
    1. Start another terminal while `npm run docker` is running
    2. `npm test`, or a scoped run, e.g. `npm test -- --testPathPattern your-test-file.html`
-   2. Verify the setup: run `npm test -- --testPathPattern simple/contentSecurityPolicy.html`
+   3. Verify the setup: run `npm test -- --testPathPattern simple/contentSecurityPolicy.html`
       - The test should pass
 
 ### Why run Chrome inside Docker?
