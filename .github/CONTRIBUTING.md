@@ -30,10 +30,10 @@ Thanks for your interest in improving Web Chat. We invest heavily in engineering
    5. Run `npm start`
    6. Verify the setup: navigate to http://localhost:5000/webchat.js
       - It should emit JavaScript code of Web Chat
-- Local machine (for running test browser)
+- Local machine (for running a test browser)
    1. Install pre-requisites
       - Install Node.js
-         - We support [all versions that are still in service](https://nodejs.org/en/about/previous-releases)
+         - We support [all versions that are active in service](https://nodejs.org/en/about/previous-releases)
       - Install Google Chrome
    2. Clone locally: `git clone https://github.com/microsoft/BotFramework-WebChat.git`
    3. [Download ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) and extract the binary to the repo root
@@ -47,7 +47,7 @@ Thanks for your interest in improving Web Chat. We invest heavily in engineering
 
 ### Start coding
 
-> From this point, all the code you made will be inside your Codespace.
+> All the changes you made should be done inside your Codespace.
 
 1. Inside your Codespace, add a new test by copying existing one, such as `/__tests__/html2/simple/simple.emulator.html`
 2. In the test browser, navigate to your new test, `http://localhost:5001/__tests__/html2/.../your-test-file-html`
@@ -56,10 +56,12 @@ Thanks for your interest in improving Web Chat. We invest heavily in engineering
    1. Add your test scenario to the HTML file
       - You can look at other tests to see how to interact with the test framework, such as `/__tests__/html2/simple/contentSecurityPolicy.html`
       - Page conditions/elements/objects can be found at `/packages/test/page-object/src/globals`
-   2. Browse to the new test page, it should show the test is *failing* with a red cross mark
+   2. Browse to your new test HTML file, it should show the test is *failing* with a red cross mark
    3. Modify the production code under `/packages/(api|bundle|component|core|fluent-theme)/`
    4. Refresh the test browser, it should show the test is *passing* with a green checkmark
    5. If you are using snapshot testing, take the snapshot by running `npm test -- --testPathPattern your-test-file.html`
+
+When you are ready, you can submit a pull request to us. Please make sure you follow the instructions inside the pull request template.
 
 ## Behaviors
 
@@ -142,12 +144,18 @@ No, unless you are working solely on refactoring the code or bumping versions.
 
 Our philosophy:
 
-- Features need to stand on its own without maintainers actively working on them
-- Maintainers will never have enough resources to maintain existing features while bringing the product forward
-- Contributors must write tests that fortify the feature for the next 5 years
-- If the feature fail, maintainers will have to remove the feature to maintain the healthiness of the whole product
+- Features need to stand on its own without maintainers actively looking out for them
+- With increasing number of features, maintainers will never have enough resources to maintain features while bringing the product forward
+- Contributors must write tests that fortify the feature for the *next 5 years*
+- If the feature fail, maintainers will have to remove the feature to maintain healthiness of the whole product
 
 This is for the best interest of everyone.
+
+### Can I add a feature that is only available to certain demography of customers?
+
+No, please create your own private fork and distribution channel.
+
+We are open-source software. Our interests are for broader audience and we believe transparency is key to our success.
 
 ## Additional context
 
