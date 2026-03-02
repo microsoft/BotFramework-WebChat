@@ -140,7 +140,7 @@ Our philosophy:
 
 ### Can I submit a pull request without tests?
 
-No, unless you are working solely on refactoring the code or bumping versions.
+No, unless you are working solely on refactoring the code, bumping versions, documentation, or other non-feature-related activities.
 
 Our philosophy:
 
