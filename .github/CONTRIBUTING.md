@@ -128,7 +128,7 @@ There are a few reasons:
 
 Before filing a ticket for us to investigate CI issues, please checkout the `main` branch without your change. If the tests are passing in `main` but failing in yours, then it is very likely a problem in the new code.
 
-### How long does all tests takes to run?
+### How long does it take to run all tests?
 
 > At the time of writing, we have about 1,700 screenshots and 1,200 integration tests.
 
