@@ -40,12 +40,12 @@ Thanks for your interest in improving Web Chat. We invest heavily in engineering
    <!-- Verify if we need this
       - macOS: add execute permission by `chmod +x ./chromedriver` and remove quarantine flag `xattr -d com.apple.quarantine ./chromedriver`
    -->
-   3. Run `npm clean-install`
-   4. Run `npm run build-browser`
-   5. Run `npm run browser`
+   4. Run `npm clean-install`
+   5. Run `npm run build-browser`
+   6. Run `npm run browser`
       - This will start a new Chrome session with banner saying the browser is controlled by automation
       - This browser is solely for development purpose, do not use it for personal browsing
-   6. Verify the setup: use the new Chrome session and navigate to http://localhost:5001/__tests__/html2/simple/contentSecurityPolicy.html
+   7. Verify the setup: use the new Chrome session and navigate to http://localhost:5001/__tests__/html2/simple/contentSecurityPolicy.html
       - It should show a green checkmark
 
 ### Start coding
@@ -97,7 +97,7 @@ We love VRTs. Majority of our tests prioritize snapshot testing over assertion/e
 To create VRTs, inside your Codespace:
 
 - Keep the `npm start` running
-- Start a container swarm with hosted Chrome
+- Start Docker Compose/Selenium Grid with hosted Chrome
    1. Start a new terminal
    2. `npm run docker`
    3. Verify the setup: browse to http://localhost:4444/wd/hub/status
@@ -116,7 +116,7 @@ Chrome render slightly different. The changing factors include versions of the h
 
 ### Why my pull request is failing?
 
-Our CI pipeline use the very same build/test script. When you run `npm test` in your Codespace, you should be able to figure out which tests are failing.
+Our CI pipeline uses the very same build/test script. When you run `npm test` in your Codespace, you should be able to figure out which tests are failing.
 
 There are a few reasons:
 
@@ -124,9 +124,9 @@ There are a few reasons:
    - Run `npm run precommit` and check for errors
 - Flaky tests
 - Test infrastructure is down
-   - All of use share the same test infrastructure, it will be rebuilt every weekend or on-demand
+   - All of us share the same test infrastructure, it will be rebuilt every weekend or on-demand
 
-Before filing a ticket for us to investigate CI issues, please checkout the `main` branch without your change. If the tests are passing in `main` but failing in yours, then it is very likely a problem in the new code.
+Before filing a ticket for us to investigate CI issues, please check out the `main` branch without your change. If the tests are passing in `main` but failing in yours, then it is very likely a problem in the new code.
 
 ### How long does it take to run all tests?
 
