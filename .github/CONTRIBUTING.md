@@ -110,9 +110,9 @@ To create VRTs, inside your Codespace:
 
 ### Why run Chrome inside Docker?
 
-We drive for pixel-perfection. Every single pixel in the screenshot matters.
+We strive for pixel-perfection. Every single pixel in the screenshot matters.
 
-Chrome render slightly different. The changing factors include versions of the host OS. We need to control the stack to guarantee snapshots are generated exactly the same across machines. This includes running a specific version of Chrome and supporting software inside Docker.
+Chrome renders slightly different. The changing factors include versions of the host OS. We need to control the stack to guarantee snapshots are generated exactly the same across machines. This includes running a specific version of Chrome and supporting software inside Docker.
 
 ### Why my pull request is failing?
 
