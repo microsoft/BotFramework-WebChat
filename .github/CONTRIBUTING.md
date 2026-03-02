@@ -92,7 +92,7 @@ On your local box, make sure http://localhost:5001/ is accessible. The Chrome br
 
 ### How to emit screenshots for visual regression tests (VRT)?
 
-We love VRTs. Majority of our tests prioritize snapshot testing over assertation/expectation.
+We love VRTs. Majority of our tests prioritize snapshot testing over assertion/expectation.
 
 To create VRTs, inside your Codespace:
 
