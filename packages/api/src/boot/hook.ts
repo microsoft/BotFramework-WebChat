@@ -39,7 +39,6 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
-  useMuteVoice,
   useNotifications,
   usePerformCardAction,
   usePonyfill,
@@ -75,9 +74,9 @@ export {
   useTrackException,
   useTrackTiming,
   useUIState,
-  useUnmuteVoice,
   useUserID,
   useUsername,
   useVoiceSelector,
+  useVoiceRecordingMuted,
   useVoiceState
 } from '../hooks/index';

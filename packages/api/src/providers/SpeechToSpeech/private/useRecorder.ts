@@ -12,7 +12,6 @@ declare class AudioWorkletProcessor {
   process(inputs: Float32Array[][], outputs: Float32Array[][], parameters: Record<string, Float32Array>): boolean;
   readonly port: MessagePort;
   recording: boolean;
-  silentFrame: Float32Array;
 }
 declare function registerProcessor(name: string, processorCtor: typeof AudioWorkletProcessor): void;
 
@@ -23,6 +22,7 @@ declare function registerProcessor(name: string, processorCtor: typeof AudioWork
  */
 const audioProcessorCode = `(${function () {
   const RENDER_QUANTUM = 128;
+  const SILENT_FRAME = new Float32Array(RENDER_QUANTUM);
 
   class AudioRecorderProcessor extends AudioWorkletProcessor {
     constructor(options: AudioWorkletNodeOptions) {
@@ -31,7 +31,6 @@ const audioProcessorCode = `(${function () {
       this.bufferSize = options.processorOptions.bufferSize;
       this.muted = false;
       this.recording = false;
-      this.silentFrame = new Float32Array(RENDER_QUANTUM); // Pre-allocated zeros
 
       this.port.onmessage = e => {
         if (e.data.command === 'START') {
@@ -49,8 +48,9 @@ const audioProcessorCode = `(${function () {
 
     process(inputs: Float32Array[][]) {
       if (this.recording) {
-        // Use real audio when not muted, otherwise silenced chunk to keep connection alive (all zeros).
-        const audioData = !this.muted && inputs[0] && inputs[0].length ? inputs[0][0] : this.silentFrame;
+        // Use real audio when not muted, otherwise silent frame to keep connection alive.
+        const inputAudio = inputs[0]?.[0];
+        const audioData = this.muted || !inputAudio ? SILENT_FRAME : inputAudio;
         this.buffer.push(...audioData);
 
         while (this.buffer.length >= this.bufferSize) {
@@ -171,10 +171,10 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
 
     worklet.port.postMessage({ command: 'START' });
   }, [
-    Date,
     acquireAndConnectMediaStream,
     audioCtxRef,
     chunkIntervalMs,
+    Date,
     initAudio,
     onAudioChunk,
     sampleRate,
@@ -216,5 +216,5 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
 
   const mute = useCallback(() => muteRecording(), [muteRecording]);
 
-  return useMemo(() => ({ record, mute }), [record, mute]);
+  return useMemo(() => ({ mute, record }), [mute, record]);
 }

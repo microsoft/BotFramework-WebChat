@@ -238,6 +238,7 @@ describe('useRecorder', () => {
     await waitFor(() => {
       expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
     });
+    await waitFor(() => expect(mockWorkletPort.onmessage).not.toBeNull());
 
     // Clear mocks to isolate mute behavior
     mockWorkletPort.postMessage.mockClear();
@@ -255,6 +256,30 @@ describe('useRecorder', () => {
     expect(mockTrack.stop).toHaveBeenCalledTimes(1);
     // Should disconnect source node
     expect(mockSourceNode.disconnect).toHaveBeenCalledTimes(1);
+
+    // Clear to track only muted audio
+    onAudioChunk.mockClear();
+    (global.btoa as jest.Mock).mockClear();
+
+    // Simulate audio worklet sending silent frame (all zeros) while muted
+    const silentAudioData = new Float32Array(128).fill(0);
+    act(() => {
+      mockWorkletPort.onmessage!({
+        data: {
+          eventType: 'audio',
+          audioData: silentAudioData
+        }
+      });
+    });
+
+    await waitFor(() => expect(onAudioChunk).toHaveBeenCalledTimes(1));
+
+    // Verify btoa was called with data representing zeros
+    expect(global.btoa).toHaveBeenCalled();
+    const [[btoaCall]] = (global.btoa as jest.Mock).mock.calls;
+    // All characters should be null characters (representing 16-bit zeros)
+    const allZeros = [...btoaCall].every((char: string) => char.charCodeAt(0) === 0);
+    expect(allZeros).toBe(true);
   });
 
   test('should return unmute function from mute() that sends UNMUTE and restarts media stream', async () => {
@@ -268,6 +293,7 @@ describe('useRecorder', () => {
     await waitFor(() => {
       expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
     });
+    await waitFor(() => expect(mockWorkletPort.onmessage).not.toBeNull());
 
     // Call mute and get unmute function
     let unmute: (() => void) | undefined;
@@ -290,5 +316,29 @@ describe('useRecorder', () => {
     await waitFor(() => {
       expect(mockMediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
     });
+
+    // Clear mocks to track audio after unmute
+    onAudioChunk.mockClear();
+    (global.btoa as jest.Mock).mockClear();
+
+    // Simulate real audio data after unmute (non-zero values)
+    const realAudioData = new Float32Array([0.7, -0.5, 0.9, -0.2, 0.4]);
+    act(() => {
+      mockWorkletPort.onmessage!({
+        data: {
+          eventType: 'audio',
+          audioData: realAudioData
+        }
+      });
+    });
+
+    await waitFor(() => expect(onAudioChunk).toHaveBeenCalledTimes(1));
+
+    // Verify real audio (non-zero) was processed
+    expect(global.btoa).toHaveBeenCalled();
+    const [[btoaCall]] = (global.btoa as jest.Mock).mock.calls;
+    // Real audio should have non-zero bytes
+    const hasNonZero = [...btoaCall].some((char: string) => char.charCodeAt(0) !== 0);
+    expect(hasNonZero).toBe(true);
   });
 });

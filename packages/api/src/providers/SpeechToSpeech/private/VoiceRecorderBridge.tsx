@@ -30,13 +30,13 @@ export function VoiceRecorderBridge(): null {
     [postVoiceActivity]
   );
 
-  const { record, mute } = useRecorder(handleAudioChunk);
+  const { mute, record } = useRecorder(handleAudioChunk);
 
   useEffect(() => {
     if (muted) {
       return mute();
     }
-  }, [mute, muted]);
+  }, [muted, mute]);
 
   useEffect(() => {
     if (recording) {

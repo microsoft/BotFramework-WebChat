@@ -44,7 +44,6 @@ export type WebChatAPIContextType = {
   localizedGlobalizeState?: PrecompiledGlobalize[];
   localizedStrings?: { [language: string]: LocalizedStrings };
   markActivity?: (activity: { id: string }, name: string, value?: any) => void;
-  muteVoice?: () => void;
   onCardAction?: PerformCardAction;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   postActivity?: (activity: WebChatActivity) => Observable<string>;
@@ -82,7 +81,6 @@ export type WebChatAPIContextType = {
   trackDimension?: (name: string, data: any) => void;
   typingIndicatorRenderer?: any; // TODO
   uiState: 'blueprint' | 'disabled' | undefined;
-  unmuteVoice?: () => void;
   userID?: string;
   username?: string;
 };
