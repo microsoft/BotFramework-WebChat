@@ -1,0 +1,5 @@
+# AGENTS.md for `botframework-webchat-base`
+
+## Coding
+
+- Stay platform neutral, no browser technologies, no Node.js, no React
