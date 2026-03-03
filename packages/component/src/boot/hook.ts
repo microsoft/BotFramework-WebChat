@@ -74,8 +74,8 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceSelector,
   useVoiceRecordingMuted,
+  useVoiceSelector,
   useVoiceState
 } from 'botframework-webchat-api/hook';
 

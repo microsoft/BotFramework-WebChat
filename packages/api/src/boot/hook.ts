@@ -76,7 +76,7 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceSelector,
   useVoiceRecordingMuted,
+  useVoiceSelector,
   useVoiceState
 } from '../hooks/index';

@@ -73,8 +73,8 @@ import useTrackTiming from './useTrackTiming';
 import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
-import useVoiceSelector from './useVoiceSelector';
 import useVoiceRecordingMuted from './useVoiceRecordingMuted';
+import useVoiceSelector from './useVoiceSelector';
 import useVoiceState from './useVoiceState';
 
 export { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
@@ -156,7 +156,7 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceSelector,
   useVoiceRecordingMuted,
+  useVoiceSelector,
   useVoiceState
 };
