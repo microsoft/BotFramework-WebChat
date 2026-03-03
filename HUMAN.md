@@ -18,20 +18,22 @@
 
 ### Platform level
 
-| Package family           | Level        | Platform-neutral | React Native | Full Browser | React | Node.js |
-| ------------------------ | ------------ | ---------------- | ------------ | ------------ | ----- | ------- |
-| `base`                   | Neutral      | Yes              | No           | No           | No    | No      |
-| `core`                   | Neutral      | Yes              | No           | No           | No    | No      |
-| `api`                    | React Native | Yes              | Yes          | No           | No    | No      |
-| `react-*`                | React Native | Yes              | Yes          | No           | No    | No      |
-| `redux-*`                | React Native | Yes              | Yes          | No           | No    | No      |
-| `component`              | React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
-| `bundle`                 | React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
-| `fluent-theme`/`*-theme` | React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
-| `support`                | Neutral      | Yes              | No           | Yes          | No    | No      |
+This table list expect platform level supported in the running environment.
+
+| Package family           | Level              | Platform-neutral | React Native | Full Browser | React | Node.js |
+| ------------------------ | ------------------ | ---------------- | ------------ | ------------ | ----- | ------- |
+| `base`                   | 100 - Neutral      | Yes              | No           | No           | No    | No      |
+| `core`                   | 100 - Neutral      | Yes              | No           | No           | No    | No      |
+| `api`                    | 200 - React Native | Yes              | Yes          | No           | No    | No      |
+| `react-*`                | 200 - React Native | Yes              | Yes          | No           | No    | No      |
+| `redux-*`                | 200 - React Native | Yes              | Yes          | No           | No    | No      |
+| `component`              | 300 - React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
+| `bundle`                 | 300 - React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
+| `fluent-theme`/`*-theme` | 300 - React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
+| `support`                | 100 - Neutral      | Yes              | No           | Yes          | No    | No      |
 
 In the order of platform support:
 
-1. Neutral: JavaScript engine only, logic only, UI-agnostic, minimal
-2. React Native: browser-like but not full browser, mobile app or web app
-3. React (HTML): full browser, web app
+- 100 - Neutral: JavaScript engine only, logic only, UI-agnostic, minimal
+- 200 - React Native: browser-like but not full browser, mobile app or web app
+- 300 - React (HTML): full browser, web app
