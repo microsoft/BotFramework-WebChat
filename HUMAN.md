@@ -22,15 +22,15 @@ This table list expect platform level supported in the running environment.
 
 | Package family           | Level              | Platform-neutral | React Native | Full Browser | React | Node.js |
 | ------------------------ | ------------------ | ---------------- | ------------ | ------------ | ----- | ------- |
-| `base`                   | 100 - Neutral      | Yes              | No           | No           | No    | No      |
-| `core`                   | 100 - Neutral      | Yes              | No           | No           | No    | No      |
-| `api`                    | 200 - React Native | Yes              | Yes          | No           | No    | No      |
-| `react-*`                | 200 - React Native | Yes              | Yes          | No           | No    | No      |
-| `redux-*`                | 200 - React Native | Yes              | Yes          | No           | No    | No      |
-| `component`              | 300 - React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
-| `bundle`                 | 300 - React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
-| `fluent-theme`/`*-theme` | 300 - React (HTML) | Yes              | Yes          | Yes          | Yes   | No      |
-| `support`                | 100 - Neutral      | Yes              | No           | Yes          | No    | No      |
+| `base`                   | 100 - Neutral      | ✅               | ❌           | ❌           | ❌    | ❌      |
+| `core`                   | 100 - Neutral      | ✅               | ❌           | ❌           | ❌    | ❌      |
+| `api`                    | 200 - React Native | ✅               | ✅           | ❌           | ❌    | ❌      |
+| `react-*`                | 200 - React Native | ✅               | ✅           | ❌           | ❌    | ❌      |
+| `redux-*`                | 200 - React Native | ✅               | ✅           | ❌           | ❌    | ❌      |
+| `component`              | 300 - React (HTML) | ✅               | ✅           | ✅           | ✅    | ❌      |
+| `bundle`                 | 300 - React (HTML) | ✅               | ✅           | ✅           | ✅    | ❌      |
+| `fluent-theme`/`*-theme` | 300 - React (HTML) | ✅               | ✅           | ✅           | ✅    | ❌      |
+| `support`                | 100 - Neutral      | ✅               | ❌           | ❌           | ❌    | ❌      |
 
 In the order of platform support:
 
