@@ -1,6 +1,5 @@
-# AGENTS.md for `botframework-webchat-api`
+# AGENTS.md
 
 ## Coding
 
-- Allow browser technologies, but no Node.js nor React
-- Newly added packages and transient packages must be platform-neutral or browser-specific
+- The code could run on React Native, no browser-specific technologies
