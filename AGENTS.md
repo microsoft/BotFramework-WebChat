@@ -34,7 +34,7 @@
 
 ### Typing
 
-- TypeScript is best-effort checking, use valibot for strict type checking
+- TypeScript is best-effort checking, use `valibot` for strict type checking
 - Use `valibot` for runtime type checker, never use `zod`
    - Assume all externally exported functions will receive unsafe/invalid input, always check with `valibot`
 - Avoid `any`
