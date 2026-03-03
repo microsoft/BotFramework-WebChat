@@ -16,23 +16,23 @@
 - Do not add external/publishing packages unless explicitly requested
 - Always prefix internal/non-publishing packages with `@msinternal/` to prevent package squatting
 
-### Platform level
+### Platform complexity level
 
-This table list expect platform level supported in the running environment.
+This table list expect platform complexity in the running environment.
 
-| Package family           | Level              | Platform-neutral | React Native | Full Browser | React | Node.js |
-| ------------------------ | ------------------ | ---------------- | ------------ | ------------ | ----- | ------- |
-| `base`                   | 100 - Neutral      | ✅               | ❌           | ❌           | ❌    | ❌      |
-| `core`                   | 100 - Neutral      | ✅               | ❌           | ❌           | ❌    | ❌      |
-| `api`                    | 200 - React Native | ✅               | ✅           | ❌           | ❌    | ❌      |
-| `react-*`                | 200 - React Native | ✅               | ✅           | ❌           | ❌    | ❌      |
-| `redux-*`                | 200 - React Native | ✅               | ✅           | ❌           | ❌    | ❌      |
-| `component`              | 300 - React (HTML) | ✅               | ✅           | ✅           | ✅    | ❌      |
-| `bundle`                 | 300 - React (HTML) | ✅               | ✅           | ✅           | ✅    | ❌      |
-| `fluent-theme`/`*-theme` | 300 - React (HTML) | ✅               | ✅           | ✅           | ✅    | ❌      |
-| `support`                | 100 - Neutral      | ✅               | ❌           | ❌           | ❌    | ❌      |
+| Package family           | Platform complexity | Neutral | React Native | Full Browser | React | Node.js |
+| ------------------------ | ------------------- | ------- | ------------ | ------------ | ----- | ------- |
+| `base`                   | 100 - Neutral       | ✅      | ❌           | ❌           | ❌    | ❌      |
+| `core`                   | 100 - Neutral       | ✅      | ❌           | ❌           | ❌    | ❌      |
+| `api`                    | 200 - React Native  | ✅      | ✅           | ❌           | ❌    | ❌      |
+| `react-*`                | 200 - React Native  | ✅      | ✅           | ❌           | ❌    | ❌      |
+| `redux-*`                | 200 - React Native  | ✅      | ✅           | ❌           | ❌    | ❌      |
+| `component`              | 300 - React (HTML)  | ✅      | ✅           | ✅           | ✅    | ❌      |
+| `bundle`                 | 300 - React (HTML)  | ✅      | ✅           | ✅           | ✅    | ❌      |
+| `fluent-theme`/`*-theme` | 300 - React (HTML)  | ✅      | ✅           | ✅           | ✅    | ❌      |
+| `support`                | 100 - Neutral       | ✅      | ❌           | ❌           | ❌    | ❌      |
 
-In the order of platform support:
+In the order of platform complexity:
 
 - 100 - Neutral: JavaScript engine only, logic only, UI-agnostic, minimal
 - 200 - React Native: browser-like but not full browser, mobile app or web app
