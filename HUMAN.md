@@ -32,7 +32,7 @@ This table list expect platform complexity in the running environment.
 | `fluent-theme`/`*-theme` | 300 - React (HTML)  | ✅      | ✅           | ✅           | ✅    | ❌      |
 | `support`                | 100 - Neutral       | ✅      | ❌           | ❌           | ❌    | ❌      |
 
-In the order of platform complexity:
+Descriptions of platform complexity:
 
 - 100 - Neutral: JavaScript engine only, logic only, UI-agnostic, minimal
 - 200 - React Native: browser-like but not full browser, mobile app or web app
