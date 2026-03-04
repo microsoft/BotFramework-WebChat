@@ -4,6 +4,7 @@
 
 ### General
 
+- Read `docs/CONTRIBUTING.md` for details on setting up the repository for development
 - Unless stated otherwise, avoid Node.js
 - Apply our latest coding style to every file changed
 - Avoid spaghetti code: on new feature with a similar existing feature, refactor existing one before writing new feature
@@ -23,6 +24,9 @@
 - Prefer uppercase for acronyms instead of Pascal case, e.g. `getURL()` over `getUrl()`
    - The only exception is `id`, e.g. `getId()` over `getID()`
 - Use fewer shorthands, only allow `min`, `max`, `num`
+- All new/changed production code must have test cases, look at `__tests__/html2/**`
+- Code coverage for new/changed code should reach 80%
+- Deprecation notes should mark the date as 2 years from now
 
 ### Design
 
@@ -48,7 +52,11 @@
 - Use `{ readonly value: string }` instead of `Readonly<{ value: string }>`
 - Use as much `readonly` as possible
 
-### React template
+### React
+
+- Always add `displayName`
+
+Follow the template below.
 
 ```tsx
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
