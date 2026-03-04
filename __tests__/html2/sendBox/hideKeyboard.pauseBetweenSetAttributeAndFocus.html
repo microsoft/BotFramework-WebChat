@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { fn, spyOn } from 'jest-mock';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const timeline = [];
+
+        const originalRequestIdleCallback = window.requestIdleCallback;
+
+        const requestIdleCallback = spyOn(window, 'requestIdleCallback').mockImplementation(callback => {
+          timeline.push('requestIdleCallback()');
+          originalRequestIdleCallback.call(window, callback);
+        });
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.actPostActivity(async () => {
+          const sendBoxTextBox = pageElements.sendBoxTextBox();
+
+          const originalFocus = sendBoxTextBox.focus;
+          const originalSetAttribute = sendBoxTextBox.setAttribute;
+
+          const focus = spyOn(sendBoxTextBox, 'focus').mockImplementation(() => {
+            timeline.push('focus()');
+            originalFocus.call(sendBoxTextBox);
+          });
+
+          const setAttribute = spyOn(sendBoxTextBox, 'setAttribute').mockImplementation((name, value) => {
+            timeline.push(`setAttribute(${JSON.stringify(name)}, ${JSON.stringify(value)})`);
+            originalSetAttribute.call(sendBoxTextBox, name, value);
+          });
+
+          await host.click(pageElements.sendBoxTextBox());
+          await host.sendKeys('Hello, World!');
+
+          // WHEN: Click on the send button.
+          await host.click(pageElements.sendButton());
+
+          expect(timeline).toEqual([
+            'setAttribute(\"inputmode\", \"text\")', // THEN: `setAttribute()` is called when click on the text box.
+            'setAttribute(\"inputmode\", \"none\")', // THEN: Tap on the send button should hide the virtual keyboard.
+            'requestIdleCallback()', // THEN: Make sure there is a pause between `setAttribute()` and `focus()`
+            'focus()' // THEN: Should focus on the send box.
+          ]);
+
+          expect(document.activeElement).toBe(sendBoxTextBox);
+        });
+      });
+    </script>
+  </body>
+</html>

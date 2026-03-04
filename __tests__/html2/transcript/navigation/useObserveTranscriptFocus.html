@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -75,7 +75,7 @@
         // THEN: It should send a "transcriptfocus" event with the third-last activity, which is a card activity (#29).
         expect(transcriptFocusActivityIDHistory).toEqual(['31', '30', '29']);
 
-        // WHEN: Pressing ENTER key while focusingo on the card activity (#29).
+        // WHEN: Pressing ENTER key while focusing on the card activity (#29).
         await host.sendKeys('ENTER');
 
         // THEN: It should not send another event because the transcript did not gain any new focus.

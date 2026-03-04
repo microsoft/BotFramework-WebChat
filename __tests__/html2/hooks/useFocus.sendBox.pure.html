@@ -39,13 +39,13 @@
 
         await renderHook();
 
-        expect(document.activeElement).not.toEqual(pageElements.sendBoxTextBox());
+        expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(false);
 
         const focus = await renderHook(() => useFocus());
 
-        focus('sendBox');
+        await focus('sendBox');
 
-        expect(document.activeElement).toEqual(pageElements.sendBoxTextBox());
+        expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
       });
     </script>
   </body>
