@@ -108,6 +108,8 @@ export { MyComponentPropsSchema, type MyComponentProps };
 - Use `@testduet/given-when-then` package instead of xUnit style `describe`/`before`/`test`/`after`
 - Prefer integration/end-to-end testing than unit testing
 - Use as realistic setup as possible, such as using `msw` than mocking calls
+- MUST NOT modify/update any existing snapshots, let human review the test failures, they could be failing legitimately
+- MUST NOT use `-u` to update snapshots, delete the snapshots and rerun `npm test` instead
 
 ## PR instructions
 
