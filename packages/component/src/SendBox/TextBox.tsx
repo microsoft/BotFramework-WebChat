@@ -1,11 +1,12 @@
 import { hooks } from 'botframework-webchat-api';
+import { usePonyfill } from 'botframework-webchat-api/hook';
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useRef } from 'react';
 
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
-import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
@@ -164,17 +165,47 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
     [scrollDown, scrollUp]
   );
 
-  const focusCallback = useCallback(
-    ({ noKeyboard }: SendBoxFocusOptions) => {
-      const { current } = inputElementRef;
+  const [{ requestAnimationFrame, requestIdleCallback }] = usePonyfill();
+  const requestIdleCallbackWithPonyfill = useMemo(
+    () => requestIdleCallback ?? ((callback: () => void) => requestAnimationFrame(callback)),
+    [requestAnimationFrame, requestIdleCallback]
+  );
 
-      // Setting `inputMode` to `none` temporarily to suppress soft keyboard in iOS.
-      // We will revert the change once the end-user tap on the send box.
-      // This code path is only triggered when the user press "send" button to send the message, instead of pressing ENTER key.
-      noKeyboard && current?.setAttribute('inputmode', 'none');
-      current?.focus();
+  const focusCallback = useCallback(
+    ({ noKeyboard, waitUntil }: SendBoxFocusOptions) => {
+      waitUntil(
+        (async () => {
+          const { current } = inputElementRef;
+
+          if (current) {
+            // Setting `inputMode` to `none` temporarily to suppress soft keyboard in iOS.
+            // We will revert the change once the end-user tap on the send box.
+            // This code path is only triggered when the user press "send" button to send the message, instead of pressing ENTER key.
+            if (noKeyboard) {
+              if (current.getAttribute('inputmode') !== 'none') {
+                // Collapse the virtual keybaord if it was expanded.
+                current.setAttribute('inputmode', 'none');
+
+                // iOS 26.3 quirks: `HTMLElement.focus()` does not pickup `inputmode="none"` changes immediately.
+                //                  We need to wait for next frame before calling `focus()`.
+                //                  This is a regression from iOS 26.2.
+                await new Promise<void>(resolve => requestIdleCallbackWithPonyfill(resolve));
+              }
+            } else if (current.hasAttribute('inputmode')) {
+              // Expanding the virtual keyboard if it was collapsed.
+              // However, we are not pausing here to workaround iOS 26.3 quirks.
+              // If we pause here, it will not able to handle this scenario: focus on an activity on the transcript, press A, the letter A should be inputted into the send box.
+              // In other words, if we pause here, the event will be send to the activity/transcript, instead of the newly focused send box.
+              // This is related to BasicTranscript.handleTranscriptKeyDownCapture().
+              current.removeAttribute('inputmode');
+            }
+
+            current?.focus();
+          }
+        })()
+      );
     },
-    [inputElementRef]
+    [inputElementRef, requestIdleCallbackWithPonyfill]
   );
 
   useRegisterFocusSendBox(focusCallback);
