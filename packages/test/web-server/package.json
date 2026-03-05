@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "selfsigned": "5.2.0",
-    "serve-handler": "6.1.6"
+    "serve-handler": "6.1.7"
   }
 }
