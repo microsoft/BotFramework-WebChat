@@ -15,13 +15,30 @@ import { MessageEntityForMCPAppSchema } from './types/MessageEntityForMCPApp.js'
 import { startMessageChannelServer } from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.6/esm/index.js';
 // @ts-expect-error: TypeScript doesn't support remote import paths
 import { createServer } from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.6/esm/server.js';
-// @ts-expect-error: TypeScript doesn't support remote import paths
-import { MessagePortClientTransport } from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.6/esm/mcp.js';
+import {
+  MessagePortServerTransport,
+  MessagePortClientTransport
+  // @ts-expect-error: TypeScript doesn't support remote import paths
+} from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.6/esm/mcp.js';
 // @ts-expect-error: TypeScript doesn't support remote import paths
 import { createServer as createWebMCPServer } from 'https://cdn.jsdelivr.net/gh/OEvgeny/mcp-map-server-ui@v0.0.6/esm/webmcp-server.js';
 
 const USE_WEB_MCP_SERVER = true;
 const USE_OFFLINE_MCP_SERVER = true;
+
+const { port1, port2 } = new MessageChannel();
+
+export function initializeMCPServer() {
+  if (USE_WEB_MCP_SERVER) {
+    console.log('Using offline MCP server');
+
+    const server = createWebMCPServer();
+
+    server.connect(new MessagePortServerTransport(port2));
+
+    return server;
+  }
+}
 
 export function useMCPClient(
   iframe: HTMLIFrameElement | null,
@@ -46,8 +63,6 @@ export function useMCPClient(
         return;
       }
 
-      const { port1, port2 } = new MessageChannel();
-
       const client = new Client({
         name: 'botframework-webchat-mcp-app',
         version: '0.0.0-0'
@@ -55,8 +70,6 @@ export function useMCPClient(
 
       if (USE_WEB_MCP_SERVER) {
         console.log('Using offline WebMCP server');
-
-        await startMessageChannelServer(port2, createWebMCPServer);
 
         await client.connect(new MessagePortClientTransport(port1), { signal });
       } else if (USE_OFFLINE_MCP_SERVER) {

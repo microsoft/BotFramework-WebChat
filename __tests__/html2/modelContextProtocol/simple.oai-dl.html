@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP apps (with OAI→DL adapter)</title>
+  <script src="https://unpkg.com/@mcp-b/webmcp-polyfill@latest/dist/index.iife.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+        "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+        "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+        "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+        "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+        "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+        "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+        "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+        "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+        "react": "/__dist__/packages/test/test-assets/out/react.js",
+        "react-dom": "/__dist__/packages/test/test-assets/out/react-dom.js",
+        "react-dom/": "/__dist__/packages/test/test-assets/out/react-dom/",
+        "react-jsx-runtime": "/__dist__/packages/test/test-assets/out/react-jsx-runtime.js",
+        "rxjs": "https://esm.sh/rxjs@7",
+        "@msinternal/oai-dl-adapter": "./packages/oai-dl-adapter/dist/oai-dl-adapter.js",
+        "@msinternal/app": "./packages/app/dist/app.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import { registerElements } from '/assets/custom-element/custom-element.js';
+
+    await registerElements('test-shell');
+  </script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    main {
+      height: 100%;
+    }
+
+    #webchat {
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <test-shell>
+      <div id="webchat"></div>
+    </test-shell>
+  </main>
+</body>
+
+<script type="module">
+  import { ReactWebChat } from 'botframework-webchat';
+  import { createElement as h } from 'react';
+  import { createRoot } from 'react-dom/client.js';
+  import { FluentProvider } from '@fluentui/react-provider';
+  import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+  import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+  import { create, toOAITool, ToolOrchestrator } from '@msinternal/oai-dl-adapter';
+  import { createPolymiddleware, initializeMCPServer } from '@msinternal/app';
+
+  const server = await initializeMCPServer();
+
+  console.log('MCP server initialized:', server);
+
+  const tools = Array.from((navigator.modelContext?.tools ?? navigator.modelContext?.native?.tools)?.values() ?? []);
+
+  console.log('Discovered tools:', tools);
+  // ── Adapter configuration ──────────────────────────────────────────────────
+  // Fill these in before use.
+
+  const directLine = create({
+    baseUrl: 'http://10.0.0.241:8080',       // e.g. 'http://localhost:8080'
+    // apiKey: '',
+    systemPrompt: `You are a helpful assistant.`,
+    defaultRequest: {
+      parallel_tool_calls: true
+    //   reasoning_format: 'deepseek',
+    //   chat_template_kwargs: { enable_thinking: true }
+    },
+    tools: [
+      ...tools.map(tool => toOAITool(tool)),
+      {
+        type: 'function',
+        function: {
+          name: 'ui.set_suggested_actions',
+          description: 'Display follow-up suggestion buttons below the ongoing message.',
+          parameters: {
+            type: 'object',
+            properties: {
+              actions: {
+                type: 'array',
+                description: 'List of suggested action buttons.',
+                items: {
+                  type: 'object',
+                  properties: {
+                    type: { type: 'string', enum: ['imBack', 'postBack'], description: 'Action type. Use "imBack" to echo the value in chat.' },
+                    title: { type: 'string', description: 'Button label shown to the user.' },
+                    value: { type: 'string', description: 'Text sent to the bot when the button is clicked.' }
+                  },
+                  required: ['type', 'title', 'value']
+                }
+              }
+            },
+            required: ['actions']
+          }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'ui.set_citations',
+          description: 'Attach citation references (schema.org Claim objects) to the ongoing message.',
+          parameters: {
+            type: 'object',
+            properties: {
+              citations: {
+                type: 'array',
+                description: 'List of citation Claim objects.',
+                items: {
+                  type: 'object',
+                  properties: {
+                    '@type': { type: 'string', enum: ['Claim'] },
+                    '@id': { type: 'string', description: 'Citation identifier, e.g. "cite:1".' },
+                    name: { type: 'string', description: 'Citation title / document name.' },
+                    text: { type: 'string', description: 'Short excerpt or summary.' },
+                    position: { type: 'number', description: 'Display position (1-based).' }
+                  },
+                  required: ['@type', '@id', 'name', 'text', 'position']
+                }
+              }
+            },
+            required: ['citations']
+          }
+        }
+      },
+      // {
+      //   type: 'function',
+      //   function: {
+      //     name: 'ui.set_hints',
+      //     description: 'Provide example question hints to the ongoing message.',
+      //     parameters: {
+      //       type: 'object',
+      //       properties: {
+      //         hints: {
+      //           type: 'array',
+      //           description: 'List of short example question strings.',
+      //           items: { type: 'string', enum: ['imBack', 'postBack'] }
+      //         }
+      //       },
+      //       required: ['hints']
+      //     }
+      //   }
+      // }
+    ]
+  }, new ToolOrchestrator(tools));
+
+  // ── Theme ──────────────────────────────────────────────────────────────────
+
+  const searchParams = new URLSearchParams(location.search);
+  const theme = document.querySelector('test-shell').dataset.theme;
+  let codeBlockTheme;
+  let fluentTheme;
+
+  if (theme !== 'light') {
+    document.documentElement.style.colorScheme = 'dark';
+    fluentTheme = {
+      ...createDarkTheme({
+        10: '#12174c',
+        20: '#1a1f5b',
+        30: '#21276a',
+        40: '#293079',
+        50: '#303788',
+        60: '#384097',
+        70: '#4049a7',
+        80: '#151e80',
+        90: '#4f59c5',
+        100: '#5661d4',
+        110: '#5e69e3',
+        120: '#7982e8',
+        130: '#949bec',
+        140: '#afb5f1',
+        150: '#c9cdf6',
+        160: '#e4e6fa'
+      }),
+      colorNeutralBackground1Disabled: '#101010',
+      colorNeutralBackground1Hover: '#101010',
+      colorNeutralForeground5: '#424242'
+    };
+    codeBlockTheme = 'github-dark-default';
+  } else {
+    document.documentElement.style.colorScheme = 'light';
+    fluentTheme = webLightTheme;
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
+  const root = createRoot(document.getElementById('webchat'));
+
+  root.render(
+    h(
+      FluentProvider,
+      { className: 'fui-FluentProvider', theme: fluentTheme },
+      h(
+        FluentThemeProvider,
+        { variant: searchParams.get('variant') ?? 'copilot' },
+        h(ReactWebChat, {
+          directLine,
+          polymiddleware: createPolymiddleware(),
+          dir: searchParams.get('dir'),
+          styleOptions: {
+            ...(codeBlockTheme && { codeBlockTheme }),
+            maxMessageLength: null
+          }
+        })
+      )
+    )
+  );
+</script>
+
+</html>

@@ -11,6 +11,7 @@
     "packages/modelcontextprotocol-ext-apps-basic-host",
     "packages/modelcontextprotocol-ext-apps-sandbox",
     "packages/fronting",
-    "packages/app"
+    "packages/app",
+    "packages/oai-dl-adapter"
   ]
 }
