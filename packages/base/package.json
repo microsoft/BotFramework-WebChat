@@ -73,10 +73,10 @@
   "pinDependencies": {},
   "devDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/node": "^25.0.3",
-    "core-js-pure": "^3.47.0",
+    "@types/node": "^25.3.3",
+    "core-js-pure": "^3.48.0",
     "cross-env": "^10.1.0",
-    "type-fest": "^5.3.1",
+    "type-fest": "^5.4.4",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {

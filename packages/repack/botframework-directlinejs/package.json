@@ -25,6 +25,6 @@
     "botframework-directlinejs": "0.15.8"
   },
   "devDependencies": {
-    "esbuild": "^0.27.2"
+    "esbuild": "^0.27.3"
   }
 }
