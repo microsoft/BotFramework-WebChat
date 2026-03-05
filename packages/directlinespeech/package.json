@@ -60,6 +60,10 @@
       "8",
       "@typescript-eslint/eslint-plugin does not support eslint@9 yet"
     ],
+    "global-agent": [
+      "3",
+      "global-agent@4 changed its signature, need time to migrate"
+    ],
     "jest": [
       "29",
       "jest-image-snapshot@6.5.1 does not support jest@29 yet"
@@ -87,7 +91,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-security": "^4.0.0",
-    "global-agent": "^4.1.2",
+    "global-agent": "^3.0.0",
     "has-resolved": "^2.0.0",
     "jest": "^29.7.0",
     "prettier": "^3.8.1",
