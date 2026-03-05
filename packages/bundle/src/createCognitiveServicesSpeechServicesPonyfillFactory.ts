@@ -12,7 +12,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
   audioContext,
   audioInputDeviceId,
-  credentials: rawCredentials,
+  credentials,
   enableTelemetry,
   initialSilenceTimeout,
   speechRecognitionEndpointId,
@@ -62,7 +62,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
       createSpeechServicesPonyfill({
         audioConfig,
         audioContext,
-        credentials: removeBearerInAuthorizationToken(rawCredentials),
+        credentials: removeBearerInAuthorizationToken(credentials),
         enableTelemetry,
         initialSilenceTimeout,
         referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
