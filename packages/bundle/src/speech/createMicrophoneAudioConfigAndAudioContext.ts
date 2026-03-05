@@ -53,7 +53,7 @@ function createMicrophoneAudioConfig(options: MicrophoneAudioInputStreamOptions)
   const bufferDurationInMS = options.bufferDurationInMS || DEFAULT_BUFFER_DURATION_IN_MS;
 
   // Related to #4523.
-  // Pass "true" for microsoft-cognitiveservices-speech-sdk@1.45.0.
+  // Pass "true" as required by microsoft-cognitiveservices-speech-sdk (see #4523).
   const pcmRecorder = new PcmRecorder(true);
   // const pcmRecorder = new PcmRecorder();
 
