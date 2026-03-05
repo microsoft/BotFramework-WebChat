@@ -71,7 +71,12 @@
     "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\" \"../react-hooks/package.json\" \"../react-valibot/package.json\""
   },
-  "pinDependencies": {},
+  "pinDependencies": {
+    "react-wrap-with": [
+      "0.1.0",
+      "0.2.0 is having compatibility issues with preact@10.25.4"
+    ]
+  },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-react-hooks": "development",
@@ -89,7 +94,7 @@
   },
   "dependencies": {
     "handler-chain": "0.1.1",
-    "react-wrap-with": "0.2.0",
+    "react-wrap-with": "0.1.0",
     "valibot": "1.2.0"
   },
   "peerDependencies": {
