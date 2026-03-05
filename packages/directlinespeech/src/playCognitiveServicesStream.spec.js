@@ -2,7 +2,7 @@
 
 /* eslint no-magic-numbers: "off" */
 
-import hasResolved from 'has-resolved';
+import { hasResolved } from 'has-resolved';
 
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 
