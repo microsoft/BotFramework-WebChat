@@ -14,7 +14,7 @@ const SlidingDots = ({ className }: SlidingDotsProps) => {
 
   const altText = localize('TYPING_INDICATOR_ALT');
 
-  return <img aria-label={altText} className={className} src={url.href} />;
+  return <img alt={altText} className={className} src={url.href} />;
 };
 
 SlidingDots.displayName = 'SlidingDots';
