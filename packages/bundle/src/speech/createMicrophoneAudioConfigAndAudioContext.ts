@@ -54,8 +54,8 @@ function createMicrophoneAudioConfig(options: MicrophoneAudioInputStreamOptions)
 
   // Related to #4523.
   // Pass "true" for microsoft-cognitiveservices-speech-sdk@1.45.0.
-  // const pcmRecorder = new PcmRecorder(true);
-  const pcmRecorder = new PcmRecorder();
+  const pcmRecorder = new PcmRecorder(true);
+  // const pcmRecorder = new PcmRecorder();
 
   pcmRecorderWorkletUrl && pcmRecorder.setWorkletUrl(pcmRecorderWorkletUrl);
 
