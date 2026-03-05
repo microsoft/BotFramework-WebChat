@@ -19,14 +19,14 @@
     "eslint": "npm run precommit",
     "postversion": "../../../scripts/npm/postversion.sh",
     "preversion": "../../../scripts/npm/preversion.sh",
-    "start": "../../../scripts/npm/notify-build.sh \"out\""
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
   },
   "pinDependencies": {},
   "localDependencies": {},
   "dependencies": {
-    "@fluentui/react-provider": "^9.22.13",
-    "@fluentui/tokens": "^1.0.0-alpha.23",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@fluentui/react-provider": "9.22.15",
+    "@fluentui/tokens": "1.0.0-alpha.23",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   }
 }
