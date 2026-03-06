@@ -96,6 +96,7 @@ export {
   useUIState,
   useUserID,
   useUsername,
+  useVoiceRecordingMuted,
   useVoiceSelector,
   useVoiceState,
   useWebSpeechPonyfill,

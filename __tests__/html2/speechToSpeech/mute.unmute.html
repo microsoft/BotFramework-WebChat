@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      Test: Mute/Unmute functionality for Speech-to-Speech
+      
+      This test validates:
+      1. Listening state can transition to muted and back to listening
+      2. Other states (idle) cannot transition to muted
+      3. Muted chunks contain all zeros (silent audio)
+      4. Uses useVoiceRecordingMuted hook via Composer pattern for mute/unmute control
+    -->
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+      
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React: { useEffect },
+          ReactDOM: { render },
+          WebChat: { 
+            FluentThemeProvider, 
+            testIds,
+            hooks: { useVoiceRecordingMuted },
+            Components: { Composer, BasicWebChat }
+          }
+        } = window;
+
+        // Helper to decode base64 audio and check if all zeros
+        function isAudioAllZeros(base64Content) {
+          const binaryString = atob(base64Content);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          return bytes.every(byte => byte === 0);
+        }
+
+        // Helper to check if audio has non-zero data (real audio)
+        function hasNonZeroAudio(base64Content) {
+          const binaryString = atob(base64Content);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          return bytes.some(byte => byte !== 0);
+        }
+
+        const audioChunks = [];
+        let currentVoiceState = 'idle';
+
+        // Setup Web Chat with Speech-to-Speech
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+
+        // Track voiceState changes
+        store.subscribe(() => {
+          currentVoiceState = store.getState().voice?.voiceState || 'idle';
+        });
+
+        // Intercept postActivity to capture outgoing voice chunks
+        const originalPostActivity = directLine.postActivity.bind(directLine);
+        directLine.postActivity = activity => {
+          if (activity.name === 'media.chunk' && activity.type === 'event') {
+            audioChunks.push({
+              content: activity.value?.content,
+              voiceState: currentVoiceState
+            });
+          }
+          return originalPostActivity(activity);
+        };
+
+        // Component to expose hook functions for testing (inside Composer context)
+        let muteControlRef = { setMuted: null, muted: false };
+        
+        const MuteController = () => {
+          const [muted, setMuted] = useVoiceRecordingMuted();
+          
+          useEffect(() => {
+            muteControlRef.setMuted = setMuted;
+          }, [setMuted]);
+          
+          // Update muted on every render to capture latest value
+          muteControlRef.muted = muted;
+          
+          return false;
+        };
+
+        // Helper to get voice state from store
+        const getVoiceState = () => store.getState().voice?.voiceState;
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <Composer directLine={directLine} store={store}>
+              <BasicWebChat />
+              <MuteController />
+            </Composer>
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        expect(micButton).toBeTruthy();
+
+        // ===== TEST 1: Muting from idle state should be no-op =====
+        expect(getVoiceState()).toBe('idle');
+        expect(muteControlRef.muted).toBe(false);
+
+        muteControlRef.setMuted(true);
+        await new Promise(r => setTimeout(r, 100));
+
+        expect(getVoiceState()).toBe('idle'); // Still idle, not muted
+        expect(muteControlRef.muted).toBe(false);
+
+        // ===== TEST 2: Start recording → listening state =====
+        await host.click(micButton);
+        
+        await pageConditions.became(
+          'Voice state is listening',
+          () => getVoiceState() === 'listening',
+          2000
+        );
+
+        // Wait for some listening chunks
+        await pageConditions.became(
+          'At least 2 listening chunks received',
+          () => audioChunks.filter(c => c.voiceState === 'listening').length >= 2,
+          2000
+        );
+
+        // ===== TEST 3: Mute from listening state → muted state =====
+        muteControlRef.setMuted(true);
+        
+        await pageConditions.became(
+          'Voice state is muted',
+          () => getVoiceState() === 'muted',
+          1000
+        );
+        
+        expect(muteControlRef.muted).toBe(true);
+
+        // Wait for muted chunks
+        await pageConditions.became(
+          'At least 2 muted chunks received',
+          () => audioChunks.filter(c => c.voiceState === 'muted').length >= 2,
+          2000
+        );
+
+        // ===== TEST 4: Verify muted chunks are all zeros =====
+        const mutedChunks = audioChunks.filter(c => c.voiceState === 'muted');
+        expect(mutedChunks.length).toBeGreaterThanOrEqual(2);
+        for (const chunk of mutedChunks) {
+          expect(isAudioAllZeros(chunk.content)).toBe(true);
+        }
+
+        // ===== TEST 5: Unmute → back to listening state =====
+        muteControlRef.setMuted(false);
+        
+        await pageConditions.became(
+          'Voice state is listening after unmute',
+          () => getVoiceState() === 'listening',
+          1000
+        );
+        
+        expect(muteControlRef.muted).toBe(false);
+
+        // Wait for more chunks after unmute
+        const chunksBeforeCheck = audioChunks.length;
+        await pageConditions.became(
+          'New chunks received after unmute',
+          () => audioChunks.length > chunksBeforeCheck + 1,
+          2000
+        );
+
+        // ===== TEST 6: Verify listening chunks contain real (non-zero) audio =====
+        const listeningChunks = audioChunks.filter(c => c.voiceState === 'listening');
+        expect(listeningChunks.length).toBeGreaterThanOrEqual(4); // At least 2 before mute + 2 after unmute
+        
+        // Verify listening audio is non-zero (real audio)
+        for (const chunk of listeningChunks) {
+          expect(hasNonZeroAudio(chunk.content)).toBe(true);
+        }
+
+        // ===== TEST 7: Stop recording =====
+        await host.click(micButton);
+        
+        await pageConditions.became(
+          'Voice state is idle after stop',
+          () => getVoiceState() === 'idle',
+          2000
+        );
+        
+        expect(muteControlRef.muted).toBe(false);
+      });
+    </script>
+  </body>
+</html>

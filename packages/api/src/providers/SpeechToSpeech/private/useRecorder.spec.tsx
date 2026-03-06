@@ -36,13 +36,16 @@ const mockWorkletNode = {
   port: mockWorkletPort
 };
 
+const mockSourceNode = {
+  connect: jest.fn(),
+  disconnect: jest.fn()
+};
+
 const mockAudioContext = {
   audioWorklet: {
     addModule: jest.fn().mockResolvedValue(undefined)
   },
-  createMediaStreamSource: jest.fn(() => ({
-    connect: jest.fn()
-  })),
+  createMediaStreamSource: jest.fn(() => mockSourceNode),
   destination: {},
   resume: jest.fn().mockResolvedValue(undefined),
   state: 'running'
@@ -217,5 +220,125 @@ describe('useRecorder', () => {
         }
       });
     });
+  });
+
+  test('should return mute function', () => {
+    render(<HookApp onAudioChunk={onAudioChunk} />);
+    expect(typeof hookData?.mute).toBe('function');
+  });
+
+  test('should send MUTE command and stop media stream when mute is called', async () => {
+    render(<HookApp onAudioChunk={onAudioChunk} />);
+
+    // Start recording first
+    act(() => {
+      hookData?.record();
+    });
+
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
+    });
+    await waitFor(() => expect(mockWorkletPort.onmessage).not.toBeNull());
+
+    // Clear mocks to isolate mute behavior
+    mockWorkletPort.postMessage.mockClear();
+    mockTrack.stop.mockClear();
+    mockSourceNode.disconnect.mockClear();
+
+    // Call mute
+    act(() => {
+      hookData?.mute();
+    });
+
+    // Should send MUTE command to worklet
+    expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'MUTE' });
+    // Should stop media stream tracks (mic indicator OFF)
+    expect(mockTrack.stop).toHaveBeenCalledTimes(1);
+    // Should disconnect source node
+    expect(mockSourceNode.disconnect).toHaveBeenCalledTimes(1);
+
+    // Clear to track only muted audio
+    onAudioChunk.mockClear();
+    (global.btoa as jest.Mock).mockClear();
+
+    // Simulate audio worklet sending silent frame (all zeros) while muted
+    const silentAudioData = new Float32Array(128).fill(0);
+    act(() => {
+      mockWorkletPort.onmessage!({
+        data: {
+          eventType: 'audio',
+          audioData: silentAudioData
+        }
+      });
+    });
+
+    await waitFor(() => expect(onAudioChunk).toHaveBeenCalledTimes(1));
+
+    // Verify btoa was called with data representing zeros
+    expect(global.btoa).toHaveBeenCalled();
+    const [[btoaCall]] = (global.btoa as jest.Mock).mock.calls;
+    // All characters should be null characters (representing 16-bit zeros)
+    const allZeros = [...btoaCall].every((char: string) => char.charCodeAt(0) === 0);
+    expect(allZeros).toBe(true);
+  });
+
+  test('should return unmute function from mute() that sends UNMUTE and restarts media stream', async () => {
+    render(<HookApp onAudioChunk={onAudioChunk} />);
+
+    // Start recording first
+    act(() => {
+      hookData?.record();
+    });
+
+    await waitFor(() => {
+      expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' });
+    });
+    await waitFor(() => expect(mockWorkletPort.onmessage).not.toBeNull());
+
+    // Call mute and get unmute function
+    let unmute: (() => void) | undefined;
+    act(() => {
+      unmute = hookData?.mute();
+    });
+
+    // Clear mocks to isolate unmute behavior
+    mockWorkletPort.postMessage.mockClear();
+    mockMediaDevices.getUserMedia.mockClear();
+
+    // Call unmute
+    act(() => {
+      unmute?.();
+    });
+
+    // Should send UNMUTE command to worklet
+    expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'UNMUTE' });
+    // Should restart media stream
+    await waitFor(() => {
+      expect(mockMediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
+    });
+
+    // Clear mocks to track audio after unmute
+    onAudioChunk.mockClear();
+    (global.btoa as jest.Mock).mockClear();
+
+    // Simulate real audio data after unmute (non-zero values)
+    const realAudioData = new Float32Array([0.7, -0.5, 0.9, -0.2, 0.4]);
+    act(() => {
+      mockWorkletPort.onmessage!({
+        data: {
+          eventType: 'audio',
+          audioData: realAudioData
+        }
+      });
+    });
+
+    await waitFor(() => expect(onAudioChunk).toHaveBeenCalledTimes(1));
+
+    // Verify real audio (non-zero) was processed
+    expect(global.btoa).toHaveBeenCalled();
+    const [[btoaCall]] = (global.btoa as jest.Mock).mock.calls;
+    // Real audio should have non-zero bytes
+    const hasNonZero = [...btoaCall].some((char: string) => char.charCodeAt(0) !== 0);
+    expect(hasNonZero).toBe(true);
   });
 });

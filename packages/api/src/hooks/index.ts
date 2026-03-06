@@ -73,6 +73,7 @@ import useTrackTiming from './useTrackTiming';
 import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
+import useVoiceRecordingMuted from './useVoiceRecordingMuted';
 import useVoiceSelector from './useVoiceSelector';
 import useVoiceState from './useVoiceState';
 
@@ -155,6 +156,7 @@ export {
   useUIState,
   useUserID,
   useUsername,
+  useVoiceRecordingMuted,
   useVoiceSelector,
   useVoiceState
 };

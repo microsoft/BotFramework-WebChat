@@ -32,6 +32,7 @@ export function setupMockMediaDevices() {
     const node = context.createGain();
     const channel = new MessageChannel();
     let recording = false;
+    let muted = false;
     let intervalId = null;
 
     node.port = channel.port1;
@@ -42,13 +43,21 @@ export function setupMockMediaDevices() {
     channel.port2.onmessage = ({ data }) => {
       if (data.command === 'START') {
         recording = true;
+        muted = false;
         const bufferSize = options?.processorOptions?.bufferSize || 2400;
 
         // Send chunks at ~100ms intervals while recording
         // Use port2.postMessage so port1.onmessage (set by real code) receives it
         intervalId = setInterval(() => {
           if (recording) {
-            channel.port2.postMessage({ eventType: 'audio', audioData: new Float32Array(bufferSize) });
+            // Float32Array defaults to zeros (silent), fill with sine wave when not muted
+            const audioData = new Float32Array(bufferSize);
+            if (!muted) {
+              for (let i = 0; i < bufferSize; i++) {
+                audioData[+i] = Math.sin(i * 0.1) * 0.5;
+              }
+            }
+            channel.port2.postMessage({ eventType: 'audio', audioData });
           }
         }, 100);
       } else if (data.command === 'STOP') {
@@ -57,6 +66,10 @@ export function setupMockMediaDevices() {
           clearInterval(intervalId);
           intervalId = null;
         }
+      } else if (data.command === 'MUTE') {
+        muted = true;
+      } else if (data.command === 'UNMUTE') {
+        muted = false;
       }
     };
 
