@@ -1,1 +1,1 @@
-export { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+export { createDarkTheme, webDarkTheme, webLightTheme } from '@fluentui/tokens';

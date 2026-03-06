@@ -27,7 +27,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "selfsigned": "5.2.0",
-    "serve-handler": "6.1.6"
+    "selfsigned": "5.5.0",
+    "serve-handler": "6.1.7"
   }
 }

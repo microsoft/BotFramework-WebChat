@@ -3,6 +3,7 @@ import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createSpeechServicesPonyfill } from 'web-speech-cognitive-services';
 
 import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
+import removeBearerInAuthorizationToken from './speech/removeBearerInAuthorizationToken';
 import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
 import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
@@ -61,7 +62,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
       createSpeechServicesPonyfill({
         audioConfig,
         audioContext,
-        credentials,
+        credentials: removeBearerInAuthorizationToken(credentials),
         enableTelemetry,
         initialSilenceTimeout,
         referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
