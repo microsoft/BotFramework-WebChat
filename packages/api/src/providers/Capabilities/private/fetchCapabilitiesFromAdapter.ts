@@ -28,7 +28,7 @@ export default function fetchCapabilitiesFromAdapter(
     }
 
     // eslint-disable-next-line security/detect-object-injection
-    const getter = directLine[getterName];
+    const getter = directLine?.[getterName];
 
     if (typeof getter === 'function') {
       try {
