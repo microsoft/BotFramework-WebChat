@@ -155,11 +155,6 @@
       }
     });
 
-    // When (copilot): opening the group
-    if (searchParams.get('variant') === 'copilot') {
-      await host.click(document.querySelector('.collapsible-grouping__toggle'));
-    }
-
     // Then: should apply styles for buttons correctly
     await host.snapshot('local');
 
