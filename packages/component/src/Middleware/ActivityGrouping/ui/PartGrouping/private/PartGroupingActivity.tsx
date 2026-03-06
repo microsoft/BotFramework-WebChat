@@ -181,17 +181,29 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
 
+  // The HowTo entity (the group root) may carry an explicit `creativeWorkStatus`.
+  // When present, it takes precedence over status derived from individual messages.
+  const howToStatus = useMemo(
+    () => messages.find(message => message.isPartOf?.creativeWorkStatus)?.isPartOf?.creativeWorkStatus,
+    [messages]
+  );
+
   const defaultWorkStatus = useMemo(
     () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
     [messages]
   );
 
-  const currentGroupStatus = currentMessage?.creativeWorkStatus || defaultWorkStatus;
+  // Group status resolution:
+  // 1. If the HowTo entity has an explicit `creativeWorkStatus`, use it.
+  // 2. Otherwise, derive from the active message: find the first 'Incomplete' message's status.
+  // 3. Fall back to `defaultWorkStatus` which is 'Incomplete' if any message has a `creativeWorkStatus` property.
+  const currentGroupStatus = howToStatus || currentMessage?.creativeWorkStatus || defaultWorkStatus;
 
   /**
    * The idea behind group header is that it displays the state of the entire group:
-   * - We start by determining if the group should display a status (i.e., if any message in the group has a creativeWorkStatus).
-   * - If there is a status to display we display it.
+   * - We first check if the HowTo entity (isPartOf) has an explicit `creativeWorkStatus`.
+   * - If it does, we use it directly as the group status.
+   * - Otherwise, we derive status from messages: find the active 'Incomplete' message.
    * - For the title we check if the current group status is 'Incomplete'.
    * - If it is 'Incomplete', we show the abstract of the first message with 'Incomplete' status.
    * - If not, we fall back to a default title.
@@ -199,7 +211,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const groupHeader = useMemo(
     () => (
       <Fragment>
-        {defaultWorkStatus && (
+        {(howToStatus || defaultWorkStatus) && (
           <StackedLayoutMessageStatus
             className={classNames['part-grouping-activity__message-status']}
             creativeWorkStatus={currentGroupStatus}
@@ -212,7 +224,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         </CollapsibleGroupingTitle>
       </Fragment>
     ),
-    [classNames, currentGroupStatus, currentMessage?.abstract, defaultWorkStatus, localize]
+    [classNames, currentGroupStatus, currentMessage?.abstract, defaultWorkStatus, howToStatus, localize]
   );
 
   return (
