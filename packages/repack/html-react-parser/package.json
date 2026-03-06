@@ -24,9 +24,9 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
-    "esbuild": "^0.27.2"
+    "esbuild": "^0.27.3"
   },
   "dependencies": {
-    "html-react-parser": "5.2.10"
+    "html-react-parser": "5.2.17"
   }
 }
