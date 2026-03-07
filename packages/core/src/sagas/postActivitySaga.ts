@@ -105,6 +105,7 @@ function* postActivity(
         //       We need to understand why we need to send these, and only send capabilities the client have
         requiresBotState: true,
         supportsListening: true,
+        supportsMcpApps: true,
         supportsTts: true,
         type: 'ClientCapabilities'
       }
