@@ -226,6 +226,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - Fixed virtual keyboard should show up on tap after being suppressed, in iOS 26.2, by [@compulim](https://github.com/compulim) in PR [#5678](https://github.com/microsoft/BotFramework-WebChat/pull/5678)
+- Fixed virtual keyboard should be collapsed after being suppressed, in iOS 26.3, by [@compulim](https://github.com/compulim) in PR [#5757](https://github.com/microsoft/BotFramework-WebChat/pull/5757)
 
 ## [4.18.0] - 2024-07-10
 

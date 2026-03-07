@@ -21,8 +21,9 @@
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator({ autoConnect: false });
+        const styleOptions = { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' };
 
-        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+        const App = () => <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />;
 
         render(
           <FluentThemeProvider>
