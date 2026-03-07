@@ -181,10 +181,13 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
 
-  // The HowTo entity (the group root) may carry an explicit `creativeWorkStatus`.
+  // The HowTo entity (the group root) may carry an explicit `creativeWorkStatus` and `abstract`.
   // When present, it takes precedence over status derived from individual messages.
-  const howToStatus = useMemo(
-    () => messages.find(message => message.isPartOf?.creativeWorkStatus)?.isPartOf?.creativeWorkStatus,
+  const [howToStatus, howToAbstract] = useMemo(
+    () => [
+      messages.find(message => message.isPartOf?.creativeWorkStatus)?.isPartOf?.creativeWorkStatus,
+      messages.find(message => message.isPartOf?.creativeWorkStatus)?.isPartOf?.abstract
+    ],
     [messages]
   );
 
@@ -218,13 +221,13 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
           />
         )}
         <CollapsibleGroupingTitle>
-          {currentGroupStatus === 'Incomplete'
-            ? currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
+          {currentGroupStatus === 'Incomplete' || howToAbstract
+            ? howToAbstract || currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
             : localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
       </Fragment>
     ),
-    [classNames, currentGroupStatus, currentMessage?.abstract, defaultWorkStatus, howToStatus, localize]
+    [classNames, currentGroupStatus, currentMessage?.abstract, defaultWorkStatus, howToAbstract, howToStatus, localize]
   );
 
   return (
