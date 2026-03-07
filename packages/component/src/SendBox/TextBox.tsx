@@ -1,5 +1,4 @@
 import { hooks } from 'botframework-webchat-api';
-import { usePonyfill } from 'botframework-webchat-api/hook';
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useRef } from 'react';
 
@@ -17,7 +16,7 @@ import AutoResizeTextArea from './AutoResizeTextArea';
 import type { MutableRefObject } from 'react';
 import testIds from '../testIds';
 
-const { useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
+const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
 
 const DEFAULT_INPUT_MODE = 'text';
 
