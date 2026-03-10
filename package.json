@@ -278,7 +278,7 @@
     "selenium-webdriver": "^4.39.0",
     "serve": "^14.2.5",
     "serve-handler": "^6.1.6",
-    "simple-git": "^3.30.0",
+    "simple-git": "^3.32.3",
     "strip-ansi": "^6.0.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
