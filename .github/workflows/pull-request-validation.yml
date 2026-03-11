@@ -83,6 +83,19 @@ jobs:
           path: docker.zip
           retention-days: 1
 
+      - name: Pack all packages
+        run: npm exec --workspaces -- npm pack
+
+      - name: Tar all tarballs
+        run: find . -type f -name '*.tgz' -not -path '*/node_modules/*' -print0 | tar --null -cvf tarballs.tar --files-from=-
+
+      - uses: actions/upload-artifact@v7
+        with:
+          compression-level: 0
+          name: tarballs
+          path: tarballs.tar
+          retention-days: 1
+
   build-browser:
     name: Build test harness
     runs-on: windows-latest
@@ -134,7 +147,7 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
-      - run: npm run build --if-present
+      # - run: npm run build --if-present
 
       - run: npm run precommit --if-present
 
@@ -153,7 +166,15 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
-      - run: npm run build --if-present
+      - name: Download tarballs
+        uses: actions/download-artifact@v8
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: npm exec --workspaces -- tar --skip-old-files --strip-components=1 -xf *.tgz
+
+      # - run: npm run build --if-present
 
       - name: Run jest --testPathPattern packages/
         run: |
@@ -200,7 +221,15 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
-      - run: npm run build --if-present
+      - name: Download tarballs
+        uses: actions/download-artifact@v8
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: npm exec --workspaces -- tar --skip-old-files --strip-components=1 -xf *.tgz
+
+      # - run: npm run build --if-present
 
       - name: Run tsd under packages/bundle (CJS)
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.ts
