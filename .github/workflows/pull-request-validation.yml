@@ -161,6 +161,9 @@ jobs:
           name: tarballs
 
       - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      - name: Unpack tarballs
         run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
 
       # - run: npm run build --if-present
@@ -190,6 +193,9 @@ jobs:
           name: tarballs
 
       - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      - name: Unpack tarballs
         run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
 
       # - run: npm run build --if-present
@@ -247,6 +253,9 @@ jobs:
           name: tarballs
 
       - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      - name: Unpack tarballs
         run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
 
       # - run: npm run build --if-present
