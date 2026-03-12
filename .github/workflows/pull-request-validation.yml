@@ -166,8 +166,6 @@ jobs:
       - name: Unpack tarballs
         run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
 
-      # - run: npm run build --if-present
-
       - run: npm run precommit --if-present
 
   unit-test:
@@ -198,7 +196,9 @@ jobs:
       - name: Unpack tarballs
         run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
 
-      # - run: npm run build --if-present
+      - name: Build cldr-data # Required for unit testing
+        run: npm run build
+        working-directory: ./packages/support/cldr-data/
 
       - name: Run jest --testPathPattern packages/
         run: |
