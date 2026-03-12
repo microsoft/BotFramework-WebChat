@@ -134,6 +134,8 @@ jobs:
 
   static-code-analysis:
     name: Static code analysis
+    needs:
+      - build # Needed for resolving dependencies across packages
     runs-on: ubuntu-latest
 
     steps:
@@ -147,12 +149,22 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
+      - name: Download tarballs
+        uses: actions/download-artifact@v8
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: npm exec --workspaces -- tar --skip-old-files --strip-components=1 -xf *.tgz
+
       # - run: npm run build --if-present
 
       - run: npm run precommit --if-present
 
   unit-test:
     name: Unit test
+    needs:
+      - build
     runs-on: ubuntu-latest
 
     steps:
@@ -208,6 +220,8 @@ jobs:
 
   type-definitions-test:
     name: Type definitions test
+    needs:
+      - build
     runs-on: ubuntu-latest
 
     steps:
