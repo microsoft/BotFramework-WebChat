@@ -97,8 +97,14 @@ jobs:
           retention-days: 1
 
   build-browser:
-    name: Build test harness
-    runs-on: windows-latest
+    name: Verify build-browser
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
