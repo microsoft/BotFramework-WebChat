@@ -1,4 +1,5 @@
 /.env*
-/dist
-/node_modules
+/*.tgz
+/dist/
+/node_modules/
 /serve.json

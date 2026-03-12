@@ -83,9 +83,28 @@ jobs:
           path: docker.zip
           retention-days: 1
 
+      - name: Pack all packages
+        run: npm exec --workspaces -- npm pack
+
+      - name: Tar all tarballs
+        run: find . -type f -name '*.tgz' -not -path '*/node_modules/*' -print0 | tar --null -cvf tarballs.tar --files-from=-
+
+      - uses: actions/upload-artifact@v7
+        with:
+          compression-level: 0
+          name: tarballs
+          path: tarballs.tar
+          retention-days: 1
+
   build-browser:
-    name: Build test harness
-    runs-on: windows-latest
+    name: Verify build-browser
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
@@ -121,6 +140,8 @@ jobs:
 
   static-code-analysis:
     name: Static code analysis
+    needs:
+      - build # Needed for resolving dependencies across packages
     runs-on: ubuntu-latest
 
     steps:
@@ -134,12 +155,23 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
-      - run: npm run build --if-present
+      - name: Download tarballs
+        uses: actions/download-artifact@v8
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      - name: Unpack tarballs
+        run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
 
       - run: npm run precommit --if-present
 
   unit-test:
     name: Unit test
+    needs:
+      - build
     runs-on: ubuntu-latest
 
     steps:
@@ -153,7 +185,20 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
-      - run: npm run build --if-present
+      - name: Download tarballs
+        uses: actions/download-artifact@v8
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      - name: Unpack tarballs
+        run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
+
+      - name: Build cldr-data # Required for unit testing
+        run: npm run build
+        working-directory: ./packages/support/cldr-data/
 
       - name: Run jest --testPathPattern packages/
         run: |
@@ -187,6 +232,8 @@ jobs:
 
   type-definitions-test:
     name: Type definitions test
+    needs:
+      - build
     runs-on: ubuntu-latest
 
     steps:
@@ -200,7 +247,18 @@ jobs:
 
       - run: npm clean-install --strict-peer-deps
 
-      - run: npm run build --if-present
+      - name: Download tarballs
+        uses: actions/download-artifact@v8
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      - name: Unpack tarballs
+        run: npm exec --call 'tar --skip-old-files --strip-components=1 -xf *.tgz' --workspaces
+
+      # - run: npm run build --if-present
 
       - name: Run tsd under packages/bundle (CJS)
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.ts
