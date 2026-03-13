@@ -286,10 +286,14 @@
       // 2nd is sent with status not set to show the work is in
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), undefined));
 
+      await pageConditions.numActivitiesShown(3);
+
+      // When (copilot): opening the group
+      await host.click(document.querySelector('.collapsible-grouping__toggle'));
+
       // Then: show both activities in the list:
       // 1st with the loading indicator
       // 2nd with an empty status indicator
-      await pageConditions.numActivitiesShown(3);
       await host.snapshot('local');
 
       // When folding the list:
