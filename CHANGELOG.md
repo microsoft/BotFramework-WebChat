@@ -403,6 +403,10 @@ Breaking changes in this release:
 - Fixed virtual keyboard should be collapsed after being suppressed, in iOS 26.3, by [@compulim](https://github.com/compulim) in PR [#5757](https://github.com/microsoft/BotFramework-WebChat/pull/5757)
 - Fixed Fluent/Copilot typing indicator animation background color, in PR [#5770](https://github.com/microsoft/BotFramework-WebChat/pull/5770), by [@OEvgeny](https://github.com/OEvgeny)
 
+# Samples
+
+-  Added [`06.recomposing-ui\f.continuous-speech-recognition`](../../samples/06.recomposing-ui/f.continuous-speech-recognition) for continuous listening recomposing sample, in PR [#5431](https://github.com/microsoft/BotFramework-WebChat/pull/5431), by [@RushikeshGavali](https://github.com/RushikeshGavali)
+
 ## [4.18.0] - 2024-07-10
 
 ### Added
