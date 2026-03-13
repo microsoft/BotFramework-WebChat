@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render({ interactMode: 2 });
+
+          await systemUnderTest.focusChatHistory();
+
+          await host.sendKeys('ARROW_UP');
+
+          // THEN: Should focus on the second message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
+
+          // WHEN: ESCAPE key is pressed
+          await host.sendKeys('ESCAPE');
+
+          // THEN: Should focus on the send box.
+          expect(document.activeElement).toBe(systemUnderTest.sendBoxTextBox);
+
+          // WHEN: New message is added while the focus is on the chat history.
+          window.dispatchEvent(new CustomEvent('addmessage'));
+          await waitFor(() => expect(systemUnderTest.chatMessages).toHaveLength(4));
+
+          // WHEN: SHIFT-TAB key is pressed to move the focus back to chat history.
+          await host.sendShiftTab();
+
+          // THEN: Should focus on the last message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[3]);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

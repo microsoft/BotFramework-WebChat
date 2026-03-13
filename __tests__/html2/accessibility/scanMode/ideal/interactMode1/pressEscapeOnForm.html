@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render();
+
+          systemUnderTest.addressFormTextBox.focus();
+
+          await host.sendKeys('ESCAPE');
+
+          // THEN: Should focus on the last message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
