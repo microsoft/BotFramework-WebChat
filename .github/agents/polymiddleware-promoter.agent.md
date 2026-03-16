@@ -35,3 +35,9 @@ Definition of middleware are scattered around but entrypoint at `packages/api/sr
    2. Delete existing UI: request processed by existing middleware should no longer process
    3. Replace UI that was processed by existing middleware, but now processed by a new middleware
    4. Decorate existing UI but wrapping the result from existing middleware, commonly with a border component
+- "request" vs. "props"
+   - Code processing the request MUST NOT call hooks
+   - Code processing the request decide to render a React component or not
+   - Code processing the props MUST render, minimally, `<Fragment />` or `null`, they are processed by React
+   - Request SHOULD contains information about "should render or not"
+   - Props SHOULD contains information about "how to render"
