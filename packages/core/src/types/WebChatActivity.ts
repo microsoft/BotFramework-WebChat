@@ -133,6 +133,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 type ClientCapabilitiesEntity = {
   requiresBotState?: boolean;
   supportsListening?: boolean;
+  supportsMcpApps?: boolean;
   supportsTts?: boolean;
   type: 'ClientCapabilities';
 };

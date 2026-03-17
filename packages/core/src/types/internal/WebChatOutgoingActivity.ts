@@ -33,6 +33,7 @@ type WebChatOutgoingActivity<Type extends string = string> = {
   entities?: (
     | {
         requiresBotState?: boolean;
+        supportsMcpApps?: boolean;
         supportsListening?: boolean;
         supportsTts?: boolean;
         type: 'ClientCapabilities';
