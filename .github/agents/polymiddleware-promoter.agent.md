@@ -41,3 +41,5 @@ Definition of middleware are scattered around but entrypoint at `packages/api/sr
    - Code processing the props MUST render, minimally, `<Fragment />` or `null`, they are processed by React
    - Request SHOULD contains information about "should render or not"
    - Props SHOULD contains information about "how to render"
+- You MUST NOT remove the existing middleware from `<Composer>`, however, print a deprecation warn-once, then bridge it to the polymiddleware
+- You SHOULD NOT export the `<XXXProvider>`, `XXXProviderProps`, and `extractXXXEnhancer`

@@ -35,6 +35,7 @@
 ### Typing
 
 - TypeScript is best-effort checking, use `valibot` for strict type checking
+- Use TypeScript CLI instead of `tsc`
 - Use `valibot` for runtime type checker, never use `zod`
    - Assume all externally exported functions will receive unsafe/invalid input, always check with `valibot`
 - Avoid `any`
@@ -100,6 +101,7 @@ export { MyComponentPropsSchema, type MyComponentProps };
 - Use `@testduet/given-when-then` package instead of xUnit style `describe`/`before`/`test`/`after`
 - Prefer integration/end-to-end testing than unit testing
 - Use as realistic setup as possible, such as using `msw` than mocking calls
+- Use `emulateIncomingActivity` and `emulateOutgoingActivity` to emulate conversation
 
 ## PR instructions
 
