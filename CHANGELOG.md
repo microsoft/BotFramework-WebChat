@@ -116,7 +116,7 @@ Breaking changes in this release:
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 - Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 - Added blob URL sanitization and ESLint rules, in PR [#5568](https://github.com/microsoft/BotFramework-WebChat/pull/5568), by [@compulim](https://github.com/compulim)
-- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), in PR [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), in PR [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608), by [@OEvgeny](https://github.com/OEvgeny)
+- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), in PR [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), in PR [#5773](https://github.com/microsoft/BotFramework-WebChat/pull/5773), in PR [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608), by [@OEvgeny](https://github.com/OEvgeny)
    - The mode is suitable for providing chain-of-thought reasoning
    - Added visual indication of `creativeWorkStatus` property in `Message` entity:
       - `undefined` - no indicator is shown
@@ -124,6 +124,9 @@ Breaking changes in this release:
       - `'Published'` - show checkmark aside from the message
    - Added a `position` property support for the `Message` entity
       - The `position` property takes precedence over existing sequence ID
+   - Added support for explicit group status via `isPartOf.creativeWorkStatus` and `isPartOf.abstract` on the HowTo entity
+      - When the HowTo entity carries an explicit `creativeWorkStatus`, it takes precedence over status derived from individual messages
+      - When the HowTo entity carries an `abstract`, it is used as the group header title
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
 - Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
 - `fluent-theme`: Changed dependencies to import solely from the "bundle" package, in PR [#5584](https://github.com/microsoft/BotFramework-WebChat/pull/5584), by [@compulim](https://github.com/compulim)
