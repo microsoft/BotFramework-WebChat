@@ -183,13 +183,12 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   // The HowTo entity (the group root) may carry an explicit `creativeWorkStatus` and `abstract`.
   // When present, it takes precedence over status derived from individual messages.
-  const [howToAbstract, howToStatus] = useMemo(
-    () => [
-      messages.find(message => message.isPartOf?.creativeWorkStatus)?.isPartOf?.abstract,
-      messages.find(message => message.isPartOf?.creativeWorkStatus)?.isPartOf?.creativeWorkStatus
-    ],
-    [messages]
-  );
+  const [howToAbstract, howToStatus] = useMemo(() => {
+    const howToMessage = messages.find(message => message.isPartOf?.creativeWorkStatus);
+    const howTo = howToMessage?.isPartOf;
+
+    return [howTo?.abstract, howTo?.creativeWorkStatus];
+  }, [messages]);
 
   const defaultWorkStatus = useMemo(
     () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
