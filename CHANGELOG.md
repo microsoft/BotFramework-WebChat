@@ -116,7 +116,7 @@ Breaking changes in this release:
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 - Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 - Added blob URL sanitization and ESLint rules, in PR [#5568](https://github.com/microsoft/BotFramework-WebChat/pull/5568), by [@compulim](https://github.com/compulim)
-- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), in PR [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), in PR [#5773](https://github.com/microsoft/BotFramework-WebChat/pull/5773), in PR [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608), by [@OEvgeny](https://github.com/OEvgeny)
+- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), in PR [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), in PR [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608), in PR [#5773](https://github.com/microsoft/BotFramework-WebChat/pull/5773), by [@OEvgeny](https://github.com/OEvgeny)
    - The mode is suitable for providing chain-of-thought reasoning
    - Added visual indication of `creativeWorkStatus` property in `Message` entity:
       - `undefined` - no indicator is shown
