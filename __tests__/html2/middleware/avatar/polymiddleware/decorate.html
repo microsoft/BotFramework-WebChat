@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- Tests polymiddleware can decorate the default avatar by wrapping the next result -->
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createElement, memo } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            middleware: { avatarComponent, createAvatarPolymiddleware }
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        // GIVEN: A decoration wrapper component that adds a colored border around the inner avatar.
+        const DecoratedAvatarWrapper = memo(function DecoratedAvatarWrapper({ render }) {
+          return createElement(
+            'div',
+            { style: { border: '3px solid red', borderRadius: '50%', boxSizing: 'border-box', width: 40, height: 40 } },
+            render({})
+          );
+        });
+
+        // GIVEN: Polymiddleware to decorate the existing avatar from core middleware.
+        const polymiddleware = [
+          createAvatarPolymiddleware(next => request => {
+            const innerResult = next(request);
+
+            if (!innerResult) {
+              return undefined;
+            }
+
+            return avatarComponent(DecoratedAvatarWrapper, { render: innerResult.render });
+          })
+        ];
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            polymiddleware,
+            store,
+            styleOptions: {
+              botAvatarInitials: 'WC',
+              userAvatarInitials: 'WW'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({ text: 'Hello from bot.', type: 'message' });
+        await directLine.emulateIncomingActivity({ from: { role: 'user' }, text: 'Hello from user.', type: 'message' });
+
+        await pageConditions.numActivitiesShown(2);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

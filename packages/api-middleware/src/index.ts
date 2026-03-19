@@ -13,6 +13,21 @@ export {
 } from './activityPolymiddleware';
 
 export {
+  __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol,
+  avatarComponent,
+  AvatarPolymiddlewareProxy,
+  createAvatarPolymiddleware,
+  useBuildRenderAvatarCallback,
+  type AvatarPolymiddleware,
+  type AvatarPolymiddlewareHandler,
+  type AvatarPolymiddlewareHandlerResult,
+  type AvatarPolymiddlewareProps,
+  type AvatarPolymiddlewareProxyProps,
+  type AvatarPolymiddlewareRenderer,
+  type AvatarPolymiddlewareRequest
+} from './avatarPolymiddleware';
+
+export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,

@@ -17,6 +17,20 @@ export {
 } from '@msinternal/botframework-webchat-api-middleware';
 
 export {
+  avatarComponent,
+  AvatarPolymiddlewareProxy,
+  createAvatarPolymiddleware,
+  useBuildRenderAvatarCallback,
+  type AvatarPolymiddleware,
+  type AvatarPolymiddlewareHandler,
+  type AvatarPolymiddlewareHandlerResult,
+  type AvatarPolymiddlewareProps,
+  type AvatarPolymiddlewareProxyProps,
+  type AvatarPolymiddlewareRenderer,
+  type AvatarPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
+export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,
@@ -31,3 +45,5 @@ export {
 } from '@msinternal/botframework-webchat-api-middleware';
 
 export { default as createActivityPolymiddlewareFromLegacy } from '../legacy/createActivityPolymiddlewareFromLegacy';
+
+export { default as createAvatarPolymiddlewareFromLegacy } from '../legacy/createAvatarPolymiddlewareFromLegacy';

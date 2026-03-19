@@ -400,7 +400,7 @@ const Composer = ({
   );
 
   const patchedAvatarMiddleware = useMemo(
-    () => [...singleToArray(avatarMiddleware), ...theme.avatarMiddleware, ...createDefaultAvatarMiddleware()],
+    () => [...singleToArray(avatarMiddleware), ...theme.avatarMiddleware],
     [avatarMiddleware, theme.avatarMiddleware]
   );
 
@@ -414,7 +414,14 @@ const Composer = ({
   );
 
   const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
-    () => Object.freeze([...(polymiddleware || []), ...theme.polymiddleware]),
+    () =>
+      Object.freeze([
+        ...(polymiddleware || []),
+        ...theme.polymiddleware,
+        // Polymiddleware has lower priority than legacy middleware.
+        // Later, we should move default middleware to a "default theme."
+        ...createDefaultAvatarMiddleware()
+      ]),
     [polymiddleware, theme.polymiddleware]
   );
 

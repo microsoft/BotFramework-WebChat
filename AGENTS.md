@@ -23,6 +23,7 @@
 - Prefer uppercase for acronyms instead of Pascal case, e.g. `getURL()` over `getUrl()`
    - The only exception is `id`, e.g. `getId()` over `getID()`
 - Use fewer shorthands, only allow `min`, `max`, `num`
+- Prefer ternary operator over one-liner `if` statement
 
 ### Design
 
@@ -108,3 +109,8 @@ export { MyComponentPropsSchema, type MyComponentProps };
 - Run new test and all of them must be green
 - Run `npm run precommit` to make sure it pass all linting process
 - Add changelog entry to `CHANGELOG.md`, follow our existing format
+
+## Code review
+
+- Code should use as much immutable (via `Object.freeze()`) as possible, DO NOT trust `readonly`
+- All inputs SHOULD be validated

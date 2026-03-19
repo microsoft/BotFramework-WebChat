@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- Tests legacy avatar middleware passes through to new polymiddleware via legacy bridge (add new) -->
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createElement, memo } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        // GIVEN: A legacy avatar middleware that renders a custom avatar.
+        // The request processing (here, returning false/render function) is outside React lifecycle.
+        const avatarMiddleware =
+          () =>
+          _next =>
+          ({ fromUser }) =>
+          () =>
+            createElement(
+              'div',
+              {
+                style: {
+                  alignItems: 'center',
+                  backgroundColor: fromUser ? 'Orange' : 'Purple',
+                  borderRadius: '50%',
+                  color: 'White',
+                  display: 'flex',
+                  fontSize: 12,
+                  height: 40,
+                  justifyContent: 'center',
+                  width: 40
+                }
+              },
+              fromUser ? 'USR' : 'BOT'
+            );
+
+        WebChat.renderWebChat(
+          {
+            avatarMiddleware,
+            directLine,
+            store,
+            styleOptions: {
+              botAvatarInitials: 'WC',
+              userAvatarInitials: 'WW'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({ text: 'Hello from bot.', type: 'message' });
+        await directLine.emulateIncomingActivity({ from: { role: 'user' }, text: 'Hello from user.', type: 'message' });
+
+        await pageConditions.numActivitiesShown(2);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

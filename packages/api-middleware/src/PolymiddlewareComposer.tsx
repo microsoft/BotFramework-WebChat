@@ -15,6 +15,7 @@ import {
 } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
+import { AvatarPolymiddlewareProvider, extractAvatarEnhancer } from './avatarPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
@@ -49,6 +50,21 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
+  const avatarEnhancers = useMemoWithPrevious<ReturnType<typeof extractAvatarEnhancer>>(
+    (prevAvatarEnhancers = []) => {
+      const avatarEnhancers = extractAvatarEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevAvatarEnhancers.length === avatarEnhancers.length &&
+        avatarEnhancers.every((middleware, index) => Object.is(middleware, prevAvatarEnhancers.at(index)))
+        ? prevAvatarEnhancers
+        : avatarEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const avatarPolymiddleware = useMemo(() => avatarEnhancers.map(enhancer => () => enhancer), [avatarEnhancers]);
+
   const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
     (prevErrorBoxEnhancers = []) => {
       const errorBoxEnhancers = extractErrorBoxEnhancer(polymiddleware);
@@ -75,7 +91,9 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      <AvatarPolymiddlewareProvider middleware={avatarPolymiddleware}>
+        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      </AvatarPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );
 }

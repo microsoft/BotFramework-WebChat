@@ -6,3 +6,5 @@ export {
 } from './legacy/activityMiddleware';
 
 export { type LegacyAttachmentMiddleware, type LegacyRenderAttachment } from './legacy/attachmentMiddleware';
+
+export { type LegacyAvatarMiddleware, type LegacyAvatarRenderer } from './legacy/avatarMiddleware';

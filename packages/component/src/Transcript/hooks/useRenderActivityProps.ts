@@ -1,4 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
+import { __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol } from 'botframework-webchat-api/internal';
+import { useBuildRenderAvatarCallback } from 'botframework-webchat-api/middleware';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { useMemo, type ReactNode } from 'react';
 
@@ -8,7 +10,7 @@ import useFirstActivityInStatusGroup from '../../Middleware/ActivityGrouping/ui/
 import useLastActivityInStatusGroup from '../../Middleware/ActivityGrouping/ui/StatusGrouping/useLastActivity';
 import isZeroOrPositive from '../../Utils/isZeroOrPositive';
 
-const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useStyleOptions } = hooks;
+const { useCreateActivityStatusRenderer, useStyleOptions } = hooks;
 
 type RenderActivityProps = {
   hideTimestamp: boolean;
@@ -18,13 +20,15 @@ type RenderActivityProps = {
 };
 
 const useRenderActivityProps = (activity: WebChatActivity): RenderActivityProps => {
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
+  const [styleOptions] = useStyleOptions();
   const [firstActivityInSenderGroup] = useFirstActivityInSenderGroup();
   const [firstActivityInStatusGroup] = useFirstActivityInStatusGroup();
   const [lastActivityInSenderGroup] = useLastActivityInSenderGroup();
   const [lastActivityInStatusGroup] = useLastActivityInStatusGroup();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-  const renderAvatar = useCreateAvatarRenderer();
+  const buildRenderAvatar = useBuildRenderAvatarCallback();
+
+  const { bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup } = styleOptions;
 
   const hideAllTimestamps = groupTimestamp === false;
   const isFirstInSenderGroup =
@@ -36,10 +40,20 @@ const useRenderActivityProps = (activity: WebChatActivity): RenderActivityProps 
   const isLastInStatusGroup =
     lastActivityInStatusGroup === activity || typeof lastActivityInStatusGroup === 'undefined';
 
-  const renderAvatarForSenderGroup = useMemo(
-    () => !!renderAvatar && renderAvatar({ activity }),
-    [activity, renderAvatar]
-  );
+  const renderAvatarForSenderGroup = useMemo<false | (() => Exclude<ReactNode, boolean | null | undefined>)>(() => {
+    const fromUser = activity.from?.role === 'user';
+    // Pass styleOptions through the runtime object (not typed in public request) for internal use
+    // by the core middleware and legacy bridge handlers.
+    const renderer = buildRenderAvatar(
+      Object.freeze({
+        [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions,
+        activity,
+        fromUser
+      })
+    );
+
+    return renderer ? (): ReactNode => renderer({}) : false;
+  }, [activity, buildRenderAvatar, styleOptions]);
 
   const isTopSideBotNub = isZeroOrPositive(bubbleNubOffset);
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);

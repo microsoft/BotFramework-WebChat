@@ -13,6 +13,8 @@ export {
   type Polymiddleware
 } from 'botframework-webchat-api/middleware';
 
+export { createActivityPolymiddlewareFromLegacy } from 'botframework-webchat-api/middleware';
+
 export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
@@ -27,4 +29,18 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from 'botframework-webchat-api/middleware';
 
-export { createActivityPolymiddlewareFromLegacy } from 'botframework-webchat-api/middleware';
+export {
+  avatarComponent,
+  AvatarPolymiddlewareProxy,
+  createAvatarPolymiddleware,
+  useBuildRenderAvatarCallback,
+  type AvatarPolymiddleware,
+  type AvatarPolymiddlewareHandler,
+  type AvatarPolymiddlewareHandlerResult,
+  type AvatarPolymiddlewareProps,
+  type AvatarPolymiddlewareProxyProps,
+  type AvatarPolymiddlewareRenderer,
+  type AvatarPolymiddlewareRequest
+} from 'botframework-webchat-api/middleware';
+
+export { createAvatarPolymiddlewareFromLegacy } from 'botframework-webchat-api/middleware';
