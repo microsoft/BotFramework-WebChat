@@ -183,6 +183,12 @@
 
       // Then: show activities with corresponding status indicators
       await pageConditions.numActivitiesShown(4);
+
+      // When (copilot): opening the group
+      if (variant === 'copilot') {
+        await host.click(document.querySelector('.collapsible-grouping__toggle'));
+      }
+
       await host.snapshot('local');
 
       // Test Case 2: Multiple activities being worked on
