@@ -58,15 +58,6 @@ function createAvatarPolymiddlewareFromLegacy(...middlewares: readonly LegacyAva
         // so downstream handlers (e.g. core middleware) can still read it.
         const handler = next(originalRequest);
 
-        // TODO: Warn if the result is wrong. Also add tests.
-        // if (result !== false && typeof result !== 'function') {
-        //   console.warn(
-        //     'botframework-webchat: avatarMiddleware should return a function to render the avatar, or return false if avatar should be hidden. Please refer to HOOKS.md for details.'
-        //   );
-
-        //   return () => result;
-        // }
-
         return !!handler && ((): Exclude<ReactNode, boolean | null | undefined> => handler.render({}));
       }
     );
@@ -87,9 +78,23 @@ function createAvatarPolymiddlewareFromLegacy(...middlewares: readonly LegacyAva
         })
       );
 
-      return legacyResult
-        ? avatarComponent(MemoizedLegacyAvatarBridge, Object.freeze({ renderFn: legacyResult }))
-        : undefined;
+      if (!legacyResult) {
+        return;
+      }
+
+      let props: LegacyAvatarBridgeComponentProps;
+
+      if (typeof legacyResult !== 'function') {
+        console.warn(
+          'botframework-webchat: avatarMiddleware should return a function to render the avatar, or return false if avatar should be hidden. Please refer to HOOKS.md for details.'
+        );
+
+        props = Object.freeze({ renderFn: () => legacyResult });
+      } else {
+        props = Object.freeze({ renderFn: legacyResult });
+      }
+
+      return avatarComponent(MemoizedLegacyAvatarBridge, props);
     };
   });
 }
