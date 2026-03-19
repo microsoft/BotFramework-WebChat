@@ -314,6 +314,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   speechRecognitionContinuous: false,
 
   collapsibleGroupingDefaultOpen: true,
+  linkDefinitionsDefaultOpen: true,
   groupActivitiesBy: ['sender', 'status', 'part'],
 
   // Send box attachment bar

@@ -974,6 +974,13 @@ type StyleOptions = {
   collapsibleGroupingDefaultOpen?: boolean | undefined;
 
   /**
+   * Whether link definitions (citation references) are open by default.
+   *
+   * @default true
+   */
+  linkDefinitionsDefaultOpen?: boolean | undefined;
+
+  /**
    * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status', 'part']` or `sender,status` in CSS.
    *
    * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender`, `status`, and `part`.
