@@ -314,7 +314,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   speechRecognitionContinuous: false,
 
   partGroupDefaultOpen: true,
-  referencesDefaultOpen: true,
+  referenceListDefaultOpen: true,
 
   groupActivitiesBy: ['sender', 'status', 'part'],
 

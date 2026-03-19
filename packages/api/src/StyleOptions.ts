@@ -978,7 +978,7 @@ type StyleOptions = {
    *
    * @default true
    */
-  referencesDefaultOpen?: boolean | undefined;
+  referenceListDefaultOpen?: boolean | undefined;
 
   /**
    * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status', 'part']` or `sender,status` in CSS.

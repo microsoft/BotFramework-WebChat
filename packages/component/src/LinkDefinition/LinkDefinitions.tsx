@@ -55,11 +55,11 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
   const localizeWithPlural = useLocalizer({ plural: true });
   const summaryRef = useRef<HTMLElement>(null);
   const classNames = useStyles(styles);
-  const [{ referencesDefaultOpen }] = useStyleOptions();
+  const [{ referenceListDefaultOpen }] = useStyleOptions();
 
   const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, childrenCount(children));
 
-  const defaultOpenString = useMemo(() => (referencesDefaultOpen ? 'true' : 'false'), [referencesDefaultOpen]);
+  const defaultOpenString = useMemo(() => (referenceListDefaultOpen ? 'true' : 'false'), [referenceListDefaultOpen]);
 
   const handleToggle = useCallback<ReactEventHandler<HTMLDetailsElement>>(event => {
     const summary = summaryRef.current;
@@ -77,7 +77,7 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
       // eslint-disable-next-line react/forbid-dom-props
       id={id}
       onToggle={handleToggle}
-      open={referencesDefaultOpen}
+      open={referenceListDefaultOpen}
     >
       <summary
         aria-controls={id}
