@@ -29,7 +29,6 @@ const defaultAvatarPropsSchema = pipe(
   readonly()
 );
 
-// eslint-disable-next-line react/require-default-props
 type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
 
 function DefaultAvatar(props: DefaultAvatarProps) {
