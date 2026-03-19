@@ -313,8 +313,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Speech recognition
   speechRecognitionContinuous: false,
 
-  collapsibleGroupingDefaultOpen: true,
-  linkDefinitionsDefaultOpen: true,
+  partGroupDefaultOpen: true,
+  referencesDefaultOpen: true,
+
   groupActivitiesBy: ['sender', 'status', 'part'],
 
   // Send box attachment bar

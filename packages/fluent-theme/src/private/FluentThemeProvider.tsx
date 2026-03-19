@@ -104,7 +104,7 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
   const fluentStyleOptions = useMemo(
     () =>
       Object.freeze({
-        ...(variant === 'copilot' && { collapsibleGroupingDefaultOpen: false, linkDefinitionsDefaultOpen: false }),
+        ...(variant === 'copilot' && { partGroupDefaultOpen: false, referencesDefaultOpen: false }),
         feedbackActionsPlacement: 'activity-actions',
         stylesRoot
       }),

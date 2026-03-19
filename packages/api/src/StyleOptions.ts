@@ -967,18 +967,18 @@ type StyleOptions = {
   speechRecognitionContinuous?: boolean | undefined;
 
   /**
-   * Whether collapsible activity groupings ("part" groups) are open by default.
+   * Whether part groups are open by default.
    *
    * @default true
    */
-  collapsibleGroupingDefaultOpen?: boolean | undefined;
+  partGroupDefaultOpen?: boolean | undefined;
 
   /**
-   * Whether link definitions (citation references) are open by default.
+   * Whether references (citation link definitions) are open by default.
    *
    * @default true
    */
-  linkDefinitionsDefaultOpen?: boolean | undefined;
+  referencesDefaultOpen?: boolean | undefined;
 
   /**
    * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status', 'part']` or `sender,status` in CSS.
