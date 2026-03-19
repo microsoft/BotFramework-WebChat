@@ -1,10 +1,15 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 
+import type {
+  __INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol,
+  AvatarPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
 import { StrictStyleOptions } from '../StyleOptions';
 import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
 
 type AvatarComponentFactoryArguments = [
   {
+    [__INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol]: AvatarPolymiddlewareRequest;
     activity: WebChatActivity;
     fromUser: boolean;
     styleOptions: StrictStyleOptions;

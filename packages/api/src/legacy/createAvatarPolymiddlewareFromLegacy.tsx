@@ -1,5 +1,6 @@
 import {
   __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol,
+  __INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol,
   avatarComponent,
   createAvatarPolymiddleware,
   type AvatarPolymiddleware
@@ -46,37 +47,45 @@ function createAvatarPolymiddlewareFromLegacy(...middlewares: readonly LegacyAva
   const legacyEnhancer = composeEnhancer(...middlewares.map(middleware => middleware()));
 
   return createAvatarPolymiddleware(next => {
-    const legacyHandler = legacyEnhancer(({ activity, fromUser, styleOptions }) => {
-      // Pass styleOptions through the polymiddleware chain via the internal runtime extension
-      // so downstream handlers (e.g. core middleware) can still read it.
-      const handler = next(
-        Object.freeze({
-          activity,
-          fromUser,
-          [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions
-        })
-      );
+    const legacyHandler = legacyEnhancer(
+      ({ [__INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol]: originalRequest }) => {
+        if (!originalRequest) {
+          // TODO: Add a test
+          throw new Error('botframework-webchat: `avatarMiddleware` must not modify the request object');
+        }
 
-      // TODO: Warn if the result is wrong. Also add tests.
-      // if (result !== false && typeof result !== 'function') {
-      //   console.warn(
-      //     'botframework-webchat: avatarMiddleware should return a function to render the avatar, or return false if avatar should be hidden. Please refer to HOOKS.md for details.'
-      //   );
+        // Pass styleOptions through the polymiddleware chain via the internal runtime extension
+        // so downstream handlers (e.g. core middleware) can still read it.
+        const handler = next(originalRequest);
 
-      //   return () => result;
-      // }
+        // TODO: Warn if the result is wrong. Also add tests.
+        // if (result !== false && typeof result !== 'function') {
+        //   console.warn(
+        //     'botframework-webchat: avatarMiddleware should return a function to render the avatar, or return false if avatar should be hidden. Please refer to HOOKS.md for details.'
+        //   );
 
-      return !!handler && ((): Exclude<ReactNode, boolean | null | undefined> => handler.render({}));
-    });
+        //   return () => result;
+        // }
+
+        return !!handler && ((): Exclude<ReactNode, boolean | null | undefined> => handler.render({}));
+      }
+    );
 
     return request => {
       const {
+        [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions,
         activity,
-        fromUser,
-        [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions
+        fromUser
       } = request;
 
-      const legacyResult = legacyHandler(Object.freeze({ activity, fromUser, styleOptions }));
+      const legacyResult = legacyHandler(
+        Object.freeze({
+          activity,
+          fromUser,
+          styleOptions,
+          [__INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol]: request
+        })
+      );
 
       return legacyResult
         ? avatarComponent(MemoizedLegacyAvatarBridge, Object.freeze({ renderFn: legacyResult }))
