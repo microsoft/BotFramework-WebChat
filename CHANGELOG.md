@@ -102,7 +102,10 @@ Breaking changes in this release:
 - Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464), by [@compulim](https://github.com/compulim), in PR [#5492](https://github.com/microsoft/BotFramework-WebChat/pull/5492), by [@OEvgeny](https://github.com/OEvgeny)
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
-- Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
+- Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), in PR [#5771](https://github.com/microsoft/BotFramework-WebChat/pull/5771), by [@OEvgeny](https://github.com/OEvgeny)
+   - Added `styleOptions.partGroupDefaultOpen` to configure whether part groups are open by default, defaults to `true`
+   - Added `styleOptions.referenceListDefaultOpen` to configure whether references are open by default, defaults to `true`
+   - In the Fluent theme "copilot" variant, part groups and references now default to closed
 - Added `disableFileUpload` flag to completelly disable file upload feature, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
    - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.

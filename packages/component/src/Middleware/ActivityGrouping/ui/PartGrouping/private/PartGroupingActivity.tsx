@@ -143,7 +143,8 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   const classNames = useStyles(styles);
   const getKeyByActivity = useGetKeyByActivity();
-  const [isGroupOpen, setIsGroupOpen] = useState(true);
+  const [{ partGroupDefaultOpen }] = useStyleOptions();
+  const [isGroupOpen, setIsGroupOpen] = useState(partGroupDefaultOpen);
 
   const messages = useMemo(
     () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(message => !!message),

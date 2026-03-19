@@ -15,7 +15,7 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        renderWebChat(
+        const { isCopilotVariant } = renderWebChat(
           {
             directLine,
             store
@@ -69,6 +69,14 @@
         );
 
         expect(markdownButtons[0].getAttribute('type')).toBe('button');
+
+        // When (copilot): opening the link definitions
+        if (isCopilotVariant) {
+          await host.click(pageElements.linkDefinitions()[0].querySelector('summary'));
+
+          // Then (copilot): the link definitions should be opened
+          await host.snapshot('local');
+        }
 
         const linkDefinitionItems = pageElements.linkDefinitions()[0].querySelectorAll('[role="listitem"] > *');
 

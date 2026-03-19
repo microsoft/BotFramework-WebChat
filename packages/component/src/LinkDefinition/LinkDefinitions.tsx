@@ -5,6 +5,7 @@ import random from 'math-random';
 import React, {
   Children,
   useCallback,
+  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -16,7 +17,7 @@ import { ComponentIcon } from '../Icon';
 
 import styles from './LinkDefinitions.module.css';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 const { count: childrenCount, map: childrenMap } = Children;
 
 type Props<TAccessoryProps> = Readonly<{
@@ -54,8 +55,11 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
   const localizeWithPlural = useLocalizer({ plural: true });
   const summaryRef = useRef<HTMLElement>(null);
   const classNames = useStyles(styles);
+  const [{ referenceListDefaultOpen }] = useStyleOptions();
 
   const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, childrenCount(children));
+
+  const defaultOpenString = useMemo(() => (referenceListDefaultOpen ? 'true' : 'false'), [referenceListDefaultOpen]);
 
   const handleToggle = useCallback<ReactEventHandler<HTMLDetailsElement>>(event => {
     const summary = summaryRef.current;
@@ -73,12 +77,12 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
       // eslint-disable-next-line react/forbid-dom-props
       id={id}
       onToggle={handleToggle}
-      open={true}
+      open={referenceListDefaultOpen}
     >
       <summary
         aria-controls={id}
-        aria-expanded="true"
-        aria-pressed="true"
+        aria-expanded={defaultOpenString}
+        aria-pressed={defaultOpenString}
         className={classNames['link-definitions__header']}
         ref={summaryRef}
         role="button"
