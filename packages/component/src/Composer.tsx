@@ -11,7 +11,7 @@ import {
   type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -368,7 +368,7 @@ const Composer = ({
   const theme = useTheme();
 
   const patchedActivityMiddleware = useMemo(
-    () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware, ...createDefaultActivityMiddleware()],
+    () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware],
     [activityMiddleware, theme.activityMiddleware]
   );
 
@@ -420,6 +420,7 @@ const Composer = ({
         ...theme.polymiddleware,
         // Polymiddleware has lower priority than legacy middleware.
         // Later, we should move default middleware to a "default theme."
+        createActivityPolymiddlewareFromLegacy(...createDefaultActivityMiddleware()),
         ...createDefaultAvatarMiddleware()
       ]),
     [polymiddleware, theme.polymiddleware]

@@ -19,6 +19,8 @@ const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeo
   safeParse(arrayOfFunctionSchema, middleware).success;
 
 const BYPASS_ENHANCER: Enhancer<any, any> = next => request => next(request);
+const DEBUG_ENHANCER_SYMBOL = Symbol('OriginalEnhancer');
+const DEBUG_NAME_SYMBOL = Symbol('MiddlewareName');
 const EMPTY_ARRAY = Object.freeze([]);
 
 // Following @types/react to use {} for props.
@@ -54,7 +56,21 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
     // We enforce middleware to be created using factory function.
     Object.defineProperty(taggedEnhancer, middlewareFactoryTag, { enumerable: false });
 
-    return init => (init === name ? taggedEnhancer : BYPASS_ENHANCER);
+    const middleware: TemplatedMiddleware = init => (init === name ? taggedEnhancer : BYPASS_ENHANCER);
+
+    Object.defineProperty(middleware, DEBUG_ENHANCER_SYMBOL, {
+      configurable: false,
+      value: enhancer,
+      writable: false
+    });
+
+    Object.defineProperty(middleware, DEBUG_NAME_SYMBOL, {
+      configurable: false,
+      value: name,
+      writable: false
+    });
+
+    return middleware;
   };
 
   const warnInvalidExtraction = warnOnce(`Middleware passed for extraction of "${name}" must be an array of function`);
