@@ -36,10 +36,13 @@ function createUpdateRelativeTimestamp(now, { Date }) {
 
 export default function createDirectLineWithTranscript(
   activitiesOrFilename,
-  { overridePostActivity, ponyfill: { Date } = { Date: window.Date } } = {}
+  { overridePostActivity, patchActivity: patchActivityFromOptions, ponyfill: { Date } = { Date: window.Date } } = {}
 ) {
   const now = Date.now();
-  const patchActivity = createUpdateRelativeTimestamp(now, { Date });
+  const patchActivity = activity =>
+    createUpdateRelativeTimestamp(now, { Date })(
+      patchActivityFromOptions ? patchActivityFromOptions(activity) : activity
+    );
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });

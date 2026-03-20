@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
-import ActivityGroupingContext from './ActivityGroupingContext';
 import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
+import ActivityGroupingContext from './ActivityGroupingContext';
 
 // Use React from window (UMD) instead of import.
 const { React: { useEffect, useMemo, useState } = {} } = window;
@@ -22,22 +22,6 @@ const URL_QUERY_MAPPING = {
   w: 'wide',
   wd: 'hide'
 };
-
-function createCustomActivityMiddleware(attachmentLayout) {
-  return () =>
-    next =>
-    (arg0, ...args) =>
-      next(
-        {
-          ...arg0,
-          activity: {
-            ...arg0.activity,
-            ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
-          }
-        },
-        ...args
-      );
-}
 
 function generateURL(state) {
   const params = {};
@@ -143,7 +127,15 @@ const ActivityGroupingSurface = ({ children }) => {
     let directLine;
 
     (async function () {
-      directLine = await createDirectLineWithTranscript(transcriptName);
+      directLine = await createDirectLineWithTranscript(transcriptName, {
+        patchActivity: activity => {
+          if ((attachmentLayout === 'carousel' || attachmentLayout === 'stacked') && activity.from?.role === 'bot') {
+            return Object.freeze({ ...activity, attachmentLayout });
+          }
+
+          return activity;
+        }
+      });
 
       aborted || setDirectLine(directLine);
     })();
@@ -152,15 +144,7 @@ const ActivityGroupingSurface = ({ children }) => {
       aborted = true;
       directLine && directLine.end();
     };
-  }, [setDirectLine, transcriptName]);
-
-  const activityMiddleware = useMemo(
-    () =>
-      attachmentLayout === 'carousel' || attachmentLayout === 'stacked'
-        ? createCustomActivityMiddleware(attachmentLayout)
-        : undefined,
-    [attachmentLayout]
-  );
+  }, [attachmentLayout, setDirectLine, transcriptName]);
 
   const styleOptions = useMemo(
     () => ({
@@ -223,7 +207,6 @@ const ActivityGroupingSurface = ({ children }) => {
   const context = useMemo(
     () => ({
       ...contextState,
-      activityMiddleware,
       directLine,
       setAttachmentLayout,
       setBotAvatarInitials,
@@ -242,7 +225,6 @@ const ActivityGroupingSurface = ({ children }) => {
       url
     }),
     [
-      activityMiddleware,
       contextState,
       directLine,
       setAttachmentLayout,
