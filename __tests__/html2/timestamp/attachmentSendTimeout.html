@@ -5,6 +5,7 @@
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/botframework-webchat@main/dist/webchat-es5.js"></script> -->
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
@@ -91,6 +92,7 @@
           updateProps(props => updateIn(props, ['styleOptions', 'sendTimeoutForAttachments'], () => 130000));
 
           // THEN: It should revive the message and show "Sending" again.
+          expect(pageElements.activities()).toHaveProperty('length', 1);
           await expect(pageElements.activityStatuses()[1].innerText).toBe('Sending');
           await host.snapshot('local');
         },
