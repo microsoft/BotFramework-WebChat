@@ -1,4 +1,4 @@
-import { useMemoWithPrevious } from '@msinternal/botframework-webchat-react-hooks';
+import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import {
@@ -35,46 +35,22 @@ type PolymiddlewareComposerProps = Readonly<InferInput<typeof polymiddlewareComp
 function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   const { children, polymiddleware } = validateProps(polymiddlewareComposerPropsSchema, props);
 
-  const activityEnhancers = useMemoWithPrevious<ReturnType<typeof extractActivityEnhancer>>(
-    (prevActivityEnhancers = []) => {
-      const activityEnhancers = extractActivityEnhancer(polymiddleware);
-
-      // Checks for array equality, return previous version if nothing has changed.
-      return prevActivityEnhancers.length === activityEnhancers.length &&
-        activityEnhancers.every((middleware, index) => Object.is(middleware, prevActivityEnhancers.at(index)))
-        ? prevActivityEnhancers
-        : activityEnhancers;
-    },
+  const activityEnhancers = useMemoIterable<ReturnType<typeof extractActivityEnhancer>>(
+    () => extractActivityEnhancer(polymiddleware),
     [polymiddleware]
   );
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
-  const avatarEnhancers = useMemoWithPrevious<ReturnType<typeof extractAvatarEnhancer>>(
-    (prevAvatarEnhancers = []) => {
-      const avatarEnhancers = extractAvatarEnhancer(polymiddleware);
-
-      // Checks for array equality, return previous version if nothing has changed.
-      return prevAvatarEnhancers.length === avatarEnhancers.length &&
-        avatarEnhancers.every((middleware, index) => Object.is(middleware, prevAvatarEnhancers.at(index)))
-        ? prevAvatarEnhancers
-        : avatarEnhancers;
-    },
+  const avatarEnhancers = useMemoIterable<ReturnType<typeof extractAvatarEnhancer>>(
+    () => extractAvatarEnhancer(polymiddleware),
     [polymiddleware]
   );
 
   const avatarPolymiddleware = useMemo(() => avatarEnhancers.map(enhancer => () => enhancer), [avatarEnhancers]);
 
-  const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
-    (prevErrorBoxEnhancers = []) => {
-      const errorBoxEnhancers = extractErrorBoxEnhancer(polymiddleware);
-
-      // Checks for array equality, return previous version if nothing has changed.
-      return prevErrorBoxEnhancers.length === errorBoxEnhancers.length &&
-        errorBoxEnhancers.every((middleware, index) => Object.is(middleware, prevErrorBoxEnhancers.at(index)))
-        ? prevErrorBoxEnhancers
-        : errorBoxEnhancers;
-    },
+  const errorBoxEnhancers = useMemoIterable<ReturnType<typeof extractErrorBoxEnhancer>>(
+    () => extractErrorBoxEnhancer(polymiddleware),
     [polymiddleware]
   );
 
@@ -97,6 +73,8 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
     </ActivityPolymiddlewareProvider>
   );
 }
+
+PolymiddlewareComposer.displayName = 'PolymiddlewareComposer';
 
 export default memo(PolymiddlewareComposer);
 export { polymiddlewareComposerPropsSchema, type PolymiddlewareComposerProps };

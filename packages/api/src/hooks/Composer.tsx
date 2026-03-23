@@ -4,6 +4,7 @@ import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
+import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
@@ -240,7 +241,7 @@ type ComposerCoreProps = Readonly<{
     quality: number
   ) => Promise<URL>;
   grammars?: any;
-  groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
+  groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware> | undefined;
   locale?: string;
   polymiddleware?: readonly Polymiddleware[];
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
@@ -255,7 +256,7 @@ type ComposerCoreProps = Readonly<{
   sendBoxMiddleware?: readonly SendBoxMiddleware[] | undefined;
   sendBoxToolbarMiddleware?: readonly SendBoxToolbarMiddleware[] | undefined;
   sendTypingIndicator?: boolean;
-  toastMiddleware?: OneOrMany<ToastMiddleware>;
+  toastMiddleware?: OneOrMany<ToastMiddleware> | undefined;
   typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
   /**
    * Sets the state of the UI.
@@ -284,7 +285,7 @@ const ComposerCore = ({
   disabled,
   downscaleImageToDataURL,
   grammars,
-  groupActivitiesMiddleware,
+  groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
   locale,
   onTelemetry,
   overrideLocalizedStrings,
@@ -471,11 +472,17 @@ const ComposerCore = ({
     [attachmentMiddleware]
   );
 
-  const polymiddlewareForLegacyAvatarMiddleware = useMemo<readonly Polymiddleware[]>(
+  const groupActivitiesMiddleware = useMemoIterable<readonly GroupActivitiesMiddleware[] | undefined>(
+    () =>
+      groupActivitiesMiddlewareFromProps ? Object.freeze(singleToArray(groupActivitiesMiddlewareFromProps)) : undefined,
+    [groupActivitiesMiddlewareFromProps]
+  );
+
+  const polymiddlewareForLegacyAvatarMiddleware = useMemo<readonly Polymiddleware[] | undefined>(
     () =>
       avatarMiddleware
         ? Object.freeze([createAvatarPolymiddlewareFromLegacy(...singleToArray(avatarMiddleware))])
-        : EMPTY_ARRAY,
+        : undefined,
     [avatarMiddleware]
   );
 
@@ -520,12 +527,15 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
-  const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[]>(
-    () => Object.freeze([createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware))]),
+  const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[] | undefined>(
+    () =>
+      activityMiddleware
+        ? Object.freeze([createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware))])
+        : undefined,
     [activityMiddleware]
   );
 
-  const polymiddleware = useMemo<readonly Polymiddleware[]>(
+  const polymiddleware = useMemoIterable<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
         // Error box telemetry polymiddleware is special and has a much higher priority.
@@ -551,9 +561,9 @@ const ComposerCore = ({
         //
         // The simplest and logical move is #3: render legacy middleware before polymiddleware.
 
-        ...polymiddlewareForLegacyActivityMiddleware,
-        ...polymiddlewareForLegacyAvatarMiddleware,
-        ...(polymiddlewareFromProps || []),
+        ...(polymiddlewareForLegacyActivityMiddleware ?? []),
+        ...(polymiddlewareForLegacyAvatarMiddleware ?? []),
+        ...(polymiddlewareFromProps ?? []),
         activityFallbackPolymiddleware
       ]),
     [polymiddlewareForLegacyActivityMiddleware, polymiddlewareForLegacyAvatarMiddleware, polymiddlewareFromProps]
@@ -637,7 +647,7 @@ const ComposerCore = ({
             <ActivityTypingComposer>
               <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
                 <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                  <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
+                  <GroupActivitiesComposer groupActivitiesMiddleware={groupActivitiesMiddleware}>
                     <PolymiddlewareComposer polymiddleware={polymiddleware}>
                       <SpeechToSpeechComposer>
                         {typeof children === 'function' ? children(context) : children}

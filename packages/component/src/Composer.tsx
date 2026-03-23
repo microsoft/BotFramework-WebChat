@@ -1,5 +1,6 @@
 /* eslint-disable react/require-default-props */
 
+import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
   Composer as APIComposer,
   extractSendBoxMiddleware,
@@ -11,15 +12,15 @@ import {
   type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { singleToArray } from 'botframework-webchat-core';
+import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
 
-import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
@@ -32,10 +33,10 @@ import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
-import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import defaultActivityPolymiddleware from './Middleware/Activity/defaultActivityPolymiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
-import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
+import defaultAvatarPolymiddleware from './Middleware/Avatar/defaultAvatarPolymiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
@@ -413,15 +414,15 @@ const Composer = ({
     [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
-  const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
+  const patchedPolymiddleware = useMemoIterable<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
         ...(polymiddleware || []),
         ...theme.polymiddleware,
         // Polymiddleware has lower priority than legacy middleware.
         // Later, we should move default middleware to a "default theme."
-        createActivityPolymiddlewareFromLegacy(...createDefaultActivityMiddleware()),
-        ...createDefaultAvatarMiddleware()
+        defaultActivityPolymiddleware,
+        defaultAvatarPolymiddleware
       ]),
     [polymiddleware, theme.polymiddleware]
   );
