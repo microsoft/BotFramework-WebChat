@@ -57,13 +57,18 @@ function AddFullBundle({
 }: AddFullBundleProps) {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
-  const attachmentForScreenReaderMiddleware = useMemoIterable(
-    () => singleToArray(attachmentForScreenReaderMiddlewareFromProps),
+  const attachmentForScreenReaderMiddleware = useMemoIterable<
+    readonly AttachmentForScreenReaderMiddleware[] | undefined
+  >(
+    () =>
+      attachmentForScreenReaderMiddlewareFromProps?.length
+        ? singleToArray(attachmentForScreenReaderMiddlewareFromProps)
+        : undefined,
     [attachmentForScreenReaderMiddlewareFromProps]
   );
 
-  const attachmentMiddleware = useMemoIterable(
-    () => singleToArray(attachmentMiddlewareFromProps),
+  const attachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[] | undefined>(
+    () => (attachmentMiddlewareFromProps?.length ? singleToArray(attachmentMiddlewareFromProps) : undefined),
     [attachmentMiddlewareFromProps]
   );
 
