@@ -9,11 +9,12 @@ import {
   hooks,
   WebSpeechPonyfillFactory,
   type ComposerProps as APIComposerProps,
+  type AvatarMiddleware,
   type SendBoxMiddleware,
   type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -368,49 +369,59 @@ const Composer = ({
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
 
-  const patchedActivityMiddleware = useMemo(
-    () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware],
+  const patchedActivityMiddleware = useMemo<readonly LegacyActivityMiddleware[] | undefined>(
+    () =>
+      activityMiddleware?.length || theme?.activityMiddleware?.length
+        ? Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware])
+        : undefined,
     [activityMiddleware, theme.activityMiddleware]
   );
 
   const patchedActivityStatusMiddleware = useMemo(
-    () => [
-      ...singleToArray(activityStatusMiddleware),
-      ...theme.activityStatusMiddleware,
-      ...createDefaultActivityStatusMiddleware()
-    ],
+    () =>
+      Object.freeze([
+        ...singleToArray(activityStatusMiddleware ?? []),
+        ...theme.activityStatusMiddleware,
+        ...createDefaultActivityStatusMiddleware()
+      ]),
     [activityStatusMiddleware, theme.activityStatusMiddleware]
   );
 
   const patchedAttachmentForScreenReaderMiddleware = useMemo(
-    () => [
-      ...singleToArray(attachmentForScreenReaderMiddleware),
-      ...theme.attachmentForScreenReaderMiddleware,
-      ...createDefaultAttachmentForScreenReaderMiddleware()
-    ],
+    () =>
+      Object.freeze([
+        ...singleToArray(attachmentForScreenReaderMiddleware ?? []),
+        ...theme.attachmentForScreenReaderMiddleware,
+        ...createDefaultAttachmentForScreenReaderMiddleware()
+      ]),
     [attachmentForScreenReaderMiddleware, theme.attachmentForScreenReaderMiddleware]
   );
 
   const patchedAttachmentMiddleware = useMemo(
-    () => [
-      ...singleToArray(attachmentMiddleware),
-      ...theme.attachmentMiddleware,
-      ...createDefaultAttachmentMiddleware()
-    ],
+    () =>
+      Object.freeze([
+        ...singleToArray(attachmentMiddleware ?? []),
+        ...theme.attachmentMiddleware,
+        ...createDefaultAttachmentMiddleware()
+      ]),
     [attachmentMiddleware, theme.attachmentMiddleware]
   );
 
-  const patchedAvatarMiddleware = useMemo(
-    () => [...singleToArray(avatarMiddleware), ...theme.avatarMiddleware],
+  const patchedAvatarMiddleware = useMemo<readonly AvatarMiddleware[] | undefined>(
+    () =>
+      avatarMiddleware?.length || theme?.avatarMiddleware?.length
+        ? Object.freeze([...singleToArray(avatarMiddleware), ...theme.avatarMiddleware])
+        : undefined,
     [avatarMiddleware, theme.avatarMiddleware]
   );
 
   const patchedCardActionMiddleware = useMemo(
-    () => [
-      ...singleToArray(cardActionMiddleware),
-      ...theme.cardActionMiddleware,
-      ...createDefaultCardActionMiddleware()
-    ],
+    () =>
+      Object.freeze([
+        ...singleToArray(cardActionMiddleware),
+        ...theme.cardActionMiddleware,
+        ...createDefaultCardActionMiddleware()
+      ]),
     [cardActionMiddleware, theme.cardActionMiddleware]
   );
 

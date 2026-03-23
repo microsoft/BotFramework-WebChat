@@ -44,6 +44,11 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
 
+export {
+  type LegacyActivityMiddleware,
+  type LegacyAvatarMiddleware
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
+
 export { default as createActivityPolymiddlewareFromLegacy } from '../legacy/createActivityPolymiddlewareFromLegacy';
 
 export { default as createAvatarPolymiddlewareFromLegacy } from '../legacy/createAvatarPolymiddlewareFromLegacy';

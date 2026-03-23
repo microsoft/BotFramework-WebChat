@@ -216,15 +216,15 @@ type ComposerCoreProps = Readonly<{
   /**
    * @deprecated Use `polymiddleware` instead. The `activityMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2027-08-21.
    */
-  activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
-  activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
-  attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
-  attachmentMiddleware?: OneOrMany<LegacyAttachmentMiddleware>;
+  activityMiddleware?: OneOrMany<LegacyActivityMiddleware> | undefined;
+  activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware> | undefined;
+  attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware> | undefined;
+  attachmentMiddleware?: OneOrMany<LegacyAttachmentMiddleware> | undefined;
   /**
    * @deprecated Use `polymiddleware` instead. The `avatarMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2028-03-16.
    */
-  avatarMiddleware?: OneOrMany<AvatarMiddleware>;
-  cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
+  avatarMiddleware?: OneOrMany<AvatarMiddleware> | undefined;
+  cardActionMiddleware?: OneOrMany<CardActionMiddleware> | undefined;
   children?: ReactNode | ((context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode);
   dir?: string;
   directLine: DirectLineJSBotConnection;
@@ -242,7 +242,7 @@ type ComposerCoreProps = Readonly<{
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware> | undefined;
   locale?: string;
-  polymiddleware?: readonly Polymiddleware[];
+  polymiddleware?: readonly Polymiddleware[] | undefined;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (
@@ -250,13 +250,13 @@ type ComposerCoreProps = Readonly<{
     newLineOptions: { markdownRespectCRLF: boolean },
     linkOptions: { externalLinkAlt: string }
   ) => string;
-  scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
+  scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware> | undefined;
   selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
   sendBoxMiddleware?: readonly SendBoxMiddleware[] | undefined;
   sendBoxToolbarMiddleware?: readonly SendBoxToolbarMiddleware[] | undefined;
   sendTypingIndicator?: boolean;
   toastMiddleware?: OneOrMany<ToastMiddleware> | undefined;
-  typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
+  typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware> | undefined;
   /**
    * Sets the state of the UI.
    *
