@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-magic-numbers
 const MAX_ITERATION = 1_000_000;
 
 export default function iterateEquals<T>(x: Iterable<T>, y: Iterable<T>): boolean {
