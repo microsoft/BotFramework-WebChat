@@ -4,6 +4,7 @@ import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
+import { singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
@@ -28,7 +29,6 @@ import {
   setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
-  singleToArray,
   startDictate,
   startSpeakingActivity,
   startVoiceRecording,
@@ -38,7 +38,6 @@ import {
   submitSendBox,
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
-  type OneOrMany,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';

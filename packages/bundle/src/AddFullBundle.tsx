@@ -1,11 +1,10 @@
-import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
+import { singleToArray, warnOnce, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import {
   type AttachmentForScreenReaderMiddleware,
   type AttachmentMiddleware,
   type StyleOptions
 } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
-import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import React, { memo, type ReactNode } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';

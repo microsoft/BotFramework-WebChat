@@ -1,5 +1,6 @@
 /* eslint-disable react/require-default-props */
 
+import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
   Composer as APIComposer,
@@ -13,7 +14,6 @@ import {
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { type Polymiddleware } from 'botframework-webchat-api/middleware';
-import { singleToArray } from 'botframework-webchat-core';
 import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
