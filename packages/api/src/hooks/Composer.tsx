@@ -100,7 +100,6 @@ import useStyleOptions from './useStyleOptions';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
-import type { ActivityMiddleware } from '../../dist/botframework-webchat-api.mjs';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -528,7 +527,7 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
-  const activityMiddleware = useMemoIterable<readonly ActivityMiddleware[]>(
+  const activityMiddleware = useMemoIterable<readonly LegacyActivityMiddleware[]>(
     () => singleToArray(activityMiddlewareFromProps ?? []),
     [activityMiddlewareFromProps]
   );
