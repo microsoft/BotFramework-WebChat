@@ -59,18 +59,17 @@ function AddFullBundle({
 
   const attachmentForScreenReaderMiddleware = useMemoIterable<
     readonly AttachmentForScreenReaderMiddleware[] | undefined
-  >(
-    () =>
-      attachmentForScreenReaderMiddlewareFromProps?.length
-        ? singleToArray(attachmentForScreenReaderMiddlewareFromProps)
-        : undefined,
-    [attachmentForScreenReaderMiddlewareFromProps]
-  );
+  >(() => {
+    const middleware = singleToArray(attachmentForScreenReaderMiddlewareFromProps);
 
-  const attachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[] | undefined>(
-    () => (attachmentMiddlewareFromProps?.length ? singleToArray(attachmentMiddlewareFromProps) : undefined),
-    [attachmentMiddlewareFromProps]
-  );
+    return middleware.length ? middleware : undefined;
+  }, [attachmentForScreenReaderMiddlewareFromProps]);
+
+  const attachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[] | undefined>(() => {
+    const middleware = singleToArray(attachmentMiddlewareFromProps);
+
+    return middleware.length ? middleware : undefined;
+  }, [attachmentMiddlewareFromProps]);
 
   const patchedProps = useComposerProps({
     attachmentForScreenReaderMiddleware,

@@ -342,7 +342,7 @@ const ComposerCore = ({
   const cardActionContext = useMemo(
     () =>
       createCardActionContext({
-        cardActionMiddleware: Object.freeze([...singleToArray(cardActionMiddleware)]),
+        cardActionMiddleware: Object.freeze([...singleToArray(cardActionMiddleware ?? [])]),
         continuous: !!styleOptions.speechRecognitionContinuous,
         directLine,
         dispatch,
@@ -422,7 +422,7 @@ const ComposerCore = ({
       applyMiddlewareForRenderer(
         'activity status',
         { strict: false },
-        ...singleToArray(activityStatusMiddleware),
+        ...singleToArray(activityStatusMiddleware ?? []),
         () => () => () => false
       )({}),
     [activityStatusMiddleware]
@@ -433,7 +433,7 @@ const ComposerCore = ({
       applyMiddlewareForRenderer(
         'attachment for screen reader',
         { strict: true },
-        ...singleToArray(attachmentForScreenReaderMiddleware),
+        ...singleToArray(attachmentForScreenReaderMiddleware ?? []),
         () =>
           () =>
           ({ attachment }) => {
@@ -457,7 +457,7 @@ const ComposerCore = ({
     () =>
       applyMiddlewareForLegacyRenderer(
         'attachment',
-        ...singleToArray(attachmentMiddleware),
+        ...singleToArray(attachmentMiddleware ?? []),
         () =>
           () =>
           ({ attachment }) => {
@@ -473,12 +473,15 @@ const ComposerCore = ({
 
   const groupActivitiesMiddleware = useMemoIterable<readonly GroupActivitiesMiddleware[] | undefined>(
     () =>
-      groupActivitiesMiddlewareFromProps ? Object.freeze(singleToArray(groupActivitiesMiddlewareFromProps)) : undefined,
+      groupActivitiesMiddlewareFromProps
+        ? Object.freeze(singleToArray(groupActivitiesMiddlewareFromProps ?? []))
+        : undefined,
     [groupActivitiesMiddlewareFromProps]
   );
 
   const polymiddlewareForLegacyAvatarMiddleware = useMemo<Polymiddleware | undefined>(
-    () => (avatarMiddleware ? createAvatarPolymiddlewareFromLegacy(...singleToArray(avatarMiddleware)) : undefined),
+    () =>
+      avatarMiddleware ? createAvatarPolymiddlewareFromLegacy(...singleToArray(avatarMiddleware ?? [])) : undefined,
     [avatarMiddleware]
   );
 
@@ -487,7 +490,7 @@ const ComposerCore = ({
       applyMiddlewareForRenderer(
         'toast',
         { strict: false },
-        ...singleToArray(toastMiddleware),
+        ...singleToArray(toastMiddleware ?? []),
         () =>
           () =>
           ({ notification }) => {
@@ -506,7 +509,7 @@ const ComposerCore = ({
       applyMiddlewareForRenderer(
         'typing indicator',
         { strict: false },
-        ...singleToArray(typingIndicatorMiddleware),
+        ...singleToArray(typingIndicatorMiddleware ?? []),
         () => () => () => false
       )({}),
     [typingIndicatorMiddleware]
@@ -517,7 +520,7 @@ const ComposerCore = ({
       applyMiddlewareForRenderer(
         'scroll to end button',
         { strict: true },
-        ...singleToArray(scrollToEndButtonMiddleware),
+        ...singleToArray(scrollToEndButtonMiddleware ?? []),
         () => () => () => false
       )() as any,
     [scrollToEndButtonMiddleware]
@@ -525,7 +528,9 @@ const ComposerCore = ({
 
   const polymiddlewareForLegacyActivityMiddleware = useMemo<Polymiddleware | undefined>(
     () =>
-      activityMiddleware ? createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware)) : undefined,
+      activityMiddleware
+        ? createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware ?? []))
+        : undefined,
     [activityMiddleware]
   );
 

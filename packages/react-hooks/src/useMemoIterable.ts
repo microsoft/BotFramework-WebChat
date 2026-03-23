@@ -6,6 +6,6 @@ export default function useMemoIterable<T extends Iterable<unknown>>(factory: ()
   return useMemoWithPrevious<T>(prevValue => {
     const value = factory();
 
-    return prevValue && iterateEquals(value, prevValue) ? prevValue : value;
+    return typeof prevValue !== 'undefined' && iterateEquals(value, prevValue) ? prevValue : value;
   }, deps);
 }

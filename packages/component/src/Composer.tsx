@@ -406,7 +406,7 @@ const Composer = ({
   );
 
   const patchedAvatarMiddleware = useMemo<readonly AvatarMiddleware[] | undefined>(() => {
-    const middleware = Object.freeze([...singleToArray(avatarMiddleware), ...theme.avatarMiddleware]);
+    const middleware = Object.freeze([...singleToArray(avatarMiddleware ?? []), ...theme.avatarMiddleware]);
 
     return middleware.length ? middleware : undefined;
   }, [avatarMiddleware, theme.avatarMiddleware]);
@@ -414,7 +414,7 @@ const Composer = ({
   const patchedCardActionMiddleware = useMemo(
     () =>
       Object.freeze([
-        ...singleToArray(cardActionMiddleware),
+        ...singleToArray(cardActionMiddleware ?? []),
         ...theme.cardActionMiddleware,
         ...createDefaultCardActionMiddleware()
       ]),
@@ -435,13 +435,13 @@ const Composer = ({
   );
 
   const patchedToastMiddleware = useMemo(
-    () => [...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
+    () => [...singleToArray(toastMiddleware ?? []), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
     [toastMiddleware, theme.toastMiddleware]
   );
 
   const patchedTypingIndicatorMiddleware = useMemo(
     () => [
-      ...singleToArray(typingIndicatorMiddleware),
+      ...singleToArray(typingIndicatorMiddleware ?? []),
       ...theme.typingIndicatorMiddleware,
       ...createDefaultTypingIndicatorMiddleware()
     ],
@@ -452,7 +452,7 @@ const Composer = ({
 
   const patchedScrollToEndButtonMiddleware = useMemo(
     () => [
-      ...singleToArray(scrollToEndButtonMiddleware),
+      ...singleToArray(scrollToEndButtonMiddleware ?? []),
       ...theme.scrollToEndButtonMiddleware,
       ...defaultScrollToEndButtonMiddleware
     ],
