@@ -7,9 +7,9 @@ import {
 } from 'botframework-webchat-core';
 import React from 'react';
 
+import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
-import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
 
 // TODO: [P4] Can we simplify these if-statement to something more readable?
 function shouldFilterActivity(activity, messageThing) {
@@ -36,52 +36,64 @@ function shouldFilterActivity(activity, messageThing) {
   return false;
 }
 
-function createCoreMiddleware(): ActivityMiddleware {
-  return () =>
-    next =>
-    (...args) => {
-      const [{ activity }] = args;
-      const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
+/**
+ * @deprecated Use `defaultActivityPolymiddleware` instead. The `createCoreActivityMiddleware` will be removed on or after 2028-03-18.
+ */
+function createCoreActivityMiddleware(): readonly ActivityMiddleware[] {
+  return Object.freeze([
+    () =>
+      next =>
+      (...args) => {
+        const [{ activity }] = args;
+        const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
 
-      const messageThing = getOrgSchemaMessage(activity.entities);
+        const messageThing = getOrgSchemaMessage(activity.entities);
 
-      // Filter out activities that should not visible.
-      if (shouldFilterActivity(activity, messageThing)) {
-        return false;
-      } else if (isMessageOrTyping || isVoiceTranscriptActivity(activity)) {
-        if (isMessageOrTyping && (activity.attachments?.length || 0) > 1 && activity.attachmentLayout === 'carousel') {
+        // Filter out activities that should not visible.
+        if (shouldFilterActivity(activity, messageThing)) {
+          return false;
+        } else if (isMessageOrTyping || isVoiceTranscriptActivity(activity)) {
+          if (
+            isMessageOrTyping &&
+            (activity.attachments?.length || 0) > 1 &&
+            activity.attachmentLayout === 'carousel'
+          ) {
+            // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
+            // The function signature need to be compatible with older version of activity middleware, which was:
+            //
+            // renderActivity(
+            //   renderAttachment: ({ activity, attachment }) => React.Element
+            // ) => React.Element
+
+            return function renderCarouselLayout(renderAttachment, props) {
+              typeof props === 'undefined' &&
+                console.warn(
+                  'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
+                );
+
+              return <CarouselLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
+            };
+          }
+
           // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
-          // The function signature need to be compatible with older version of activity middleware, which was:
-          //
-          // renderActivity(
-          //   renderAttachment: ({ activity, attachment }) => React.Element
-          // ) => React.Element
-
-          return function renderCarouselLayout(renderAttachment, props) {
+          return function renderStackedLayout(renderAttachment, props) {
             typeof props === 'undefined' &&
               console.warn(
                 'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
               );
 
-            return <CarouselLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
+            return <StackedLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
           };
         }
 
-        // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
-        return function renderStackedLayout(renderAttachment, props) {
-          typeof props === 'undefined' &&
-            console.warn(
-              'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
-            );
-
-          return <StackedLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
-        };
+        return next(...args);
       }
-
-      return next(...args);
-    };
+  ]);
 }
 
-const defaultActivityPolymiddleware: Polymiddleware = createActivityPolymiddlewareFromLegacy(createCoreMiddleware());
+const defaultActivityPolymiddleware: Polymiddleware = createActivityPolymiddlewareFromLegacy(
+  ...createCoreActivityMiddleware()
+);
 
 export default defaultActivityPolymiddleware;
+export { createCoreActivityMiddleware };
