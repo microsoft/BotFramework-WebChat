@@ -4,14 +4,21 @@ import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
   Composer as APIComposer,
+  AttachmentForScreenReaderMiddleware,
   extractSendBoxMiddleware,
   extractSendBoxToolbarMiddleware,
   hooks,
   WebSpeechPonyfillFactory,
+  type ActivityStatusMiddleware,
   type ComposerProps as APIComposerProps,
+  type AttachmentMiddleware,
   type AvatarMiddleware,
+  type CardActionMiddleware,
+  type ScrollToEndButtonMiddleware,
   type SendBoxMiddleware,
-  type SendBoxToolbarMiddleware
+  type SendBoxToolbarMiddleware,
+  type ToastMiddleware,
+  type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware';
@@ -369,13 +376,12 @@ const Composer = ({
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
 
-  const patchedActivityMiddleware = useMemo<readonly LegacyActivityMiddleware[] | undefined>(() => {
-    const middleware = Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware]);
+  const patchedActivityMiddleware = useMemo<readonly LegacyActivityMiddleware[]>(
+    () => Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware]),
+    [activityMiddleware, theme.activityMiddleware]
+  );
 
-    return middleware.length ? middleware : undefined;
-  }, [activityMiddleware, theme.activityMiddleware]);
-
-  const patchedActivityStatusMiddleware = useMemo(
+  const patchedActivityStatusMiddleware = useMemoIterable<readonly ActivityStatusMiddleware[]>(
     () =>
       Object.freeze([
         ...singleToArray(activityStatusMiddleware ?? []),
@@ -385,7 +391,7 @@ const Composer = ({
     [activityStatusMiddleware, theme.activityStatusMiddleware]
   );
 
-  const patchedAttachmentForScreenReaderMiddleware = useMemo(
+  const patchedAttachmentForScreenReaderMiddleware = useMemoIterable<readonly AttachmentForScreenReaderMiddleware[]>(
     () =>
       Object.freeze([
         ...singleToArray(attachmentForScreenReaderMiddleware ?? []),
@@ -395,7 +401,7 @@ const Composer = ({
     [attachmentForScreenReaderMiddleware, theme.attachmentForScreenReaderMiddleware]
   );
 
-  const patchedAttachmentMiddleware = useMemo(
+  const patchedAttachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[]>(
     () =>
       Object.freeze([
         ...singleToArray(attachmentMiddleware ?? []),
@@ -405,13 +411,12 @@ const Composer = ({
     [attachmentMiddleware, theme.attachmentMiddleware]
   );
 
-  const patchedAvatarMiddleware = useMemo<readonly AvatarMiddleware[] | undefined>(() => {
-    const middleware = Object.freeze([...singleToArray(avatarMiddleware ?? []), ...theme.avatarMiddleware]);
+  const patchedAvatarMiddleware = useMemoIterable<readonly AvatarMiddleware[]>(
+    () => Object.freeze([...singleToArray(avatarMiddleware ?? []), ...theme.avatarMiddleware]),
+    [avatarMiddleware, theme.avatarMiddleware]
+  );
 
-    return middleware.length ? middleware : undefined;
-  }, [avatarMiddleware, theme.avatarMiddleware]);
-
-  const patchedCardActionMiddleware = useMemo(
+  const patchedCardActionMiddleware = useMemoIterable<readonly CardActionMiddleware[]>(
     () =>
       Object.freeze([
         ...singleToArray(cardActionMiddleware ?? []),
@@ -434,32 +439,37 @@ const Composer = ({
     [polymiddleware, theme.polymiddleware]
   );
 
-  const patchedToastMiddleware = useMemo(
-    () => [...singleToArray(toastMiddleware ?? []), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
+  const patchedToastMiddleware = useMemoIterable<readonly ToastMiddleware[]>(
+    () =>
+      Object.freeze([
+        ...singleToArray(toastMiddleware ?? []),
+        ...theme.toastMiddleware,
+        ...createDefaultToastMiddleware()
+      ]),
     [toastMiddleware, theme.toastMiddleware]
   );
 
-  const patchedTypingIndicatorMiddleware = useMemo(
-    () => [
-      ...singleToArray(typingIndicatorMiddleware ?? []),
-      ...theme.typingIndicatorMiddleware,
-      ...createDefaultTypingIndicatorMiddleware()
-    ],
+  const patchedTypingIndicatorMiddleware = useMemoIterable<readonly TypingIndicatorMiddleware[]>(
+    () =>
+      Object.freeze([
+        ...singleToArray(typingIndicatorMiddleware ?? []),
+        ...theme.typingIndicatorMiddleware,
+        ...createDefaultTypingIndicatorMiddleware()
+      ]),
     [typingIndicatorMiddleware, theme.typingIndicatorMiddleware]
   );
 
-  const defaultScrollToEndButtonMiddleware = useMemo(() => createDefaultScrollToEndButtonMiddleware(), []);
-
-  const patchedScrollToEndButtonMiddleware = useMemo(
-    () => [
-      ...singleToArray(scrollToEndButtonMiddleware ?? []),
-      ...theme.scrollToEndButtonMiddleware,
-      ...defaultScrollToEndButtonMiddleware
-    ],
-    [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware, theme.scrollToEndButtonMiddleware]
+  const patchedScrollToEndButtonMiddleware = useMemoIterable<readonly ScrollToEndButtonMiddleware[]>(
+    () =>
+      Object.freeze([
+        ...singleToArray(scrollToEndButtonMiddleware ?? []),
+        ...theme.scrollToEndButtonMiddleware,
+        ...createDefaultScrollToEndButtonMiddleware()
+      ]),
+    [scrollToEndButtonMiddleware, theme.scrollToEndButtonMiddleware]
   );
 
-  const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
+  const sendBoxMiddleware = useMemoIterable<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
         ...extractSendBoxMiddleware(sendBoxMiddlewareFromProps),

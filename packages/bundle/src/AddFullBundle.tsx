@@ -57,19 +57,15 @@ function AddFullBundle({
 }: AddFullBundleProps) {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
-  const attachmentForScreenReaderMiddleware = useMemoIterable<
-    readonly AttachmentForScreenReaderMiddleware[] | undefined
-  >(() => {
-    const middleware = singleToArray(attachmentForScreenReaderMiddlewareFromProps);
+  const attachmentForScreenReaderMiddleware = useMemoIterable<readonly AttachmentForScreenReaderMiddleware[]>(
+    () => singleToArray(attachmentForScreenReaderMiddlewareFromProps),
+    [attachmentForScreenReaderMiddlewareFromProps]
+  );
 
-    return middleware.length ? middleware : undefined;
-  }, [attachmentForScreenReaderMiddlewareFromProps]);
-
-  const attachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[] | undefined>(() => {
-    const middleware = singleToArray(attachmentMiddlewareFromProps);
-
-    return middleware.length ? middleware : undefined;
-  }, [attachmentMiddlewareFromProps]);
+  const attachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[]>(
+    () => singleToArray(attachmentMiddlewareFromProps),
+    [attachmentMiddlewareFromProps]
+  );
 
   const patchedProps = useComposerProps({
     attachmentForScreenReaderMiddleware,

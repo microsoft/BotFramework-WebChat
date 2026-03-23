@@ -100,6 +100,7 @@ import useStyleOptions from './useStyleOptions';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
+import type { ActivityMiddleware } from '../../dist/botframework-webchat-api.mjs';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -272,11 +273,11 @@ type ComposerCoreProps = Readonly<{
 }>;
 
 const ComposerCore = ({
-  activityMiddleware,
+  activityMiddleware: activityMiddlewareFromProps,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
-  avatarMiddleware,
+  avatarMiddleware: avatarMiddlewareFromProps,
   cardActionMiddleware,
   children,
   dir,
@@ -472,16 +473,17 @@ const ComposerCore = ({
   );
 
   const groupActivitiesMiddleware = useMemoIterable<readonly GroupActivitiesMiddleware[] | undefined>(
-    () =>
-      groupActivitiesMiddlewareFromProps
-        ? Object.freeze(singleToArray(groupActivitiesMiddlewareFromProps ?? []))
-        : undefined,
+    () => Object.freeze(singleToArray(groupActivitiesMiddlewareFromProps ?? [])),
     [groupActivitiesMiddlewareFromProps]
   );
 
+  const avatarMiddleware = useMemoIterable<readonly AvatarMiddleware[]>(
+    () => singleToArray(avatarMiddlewareFromProps ?? []),
+    [avatarMiddlewareFromProps]
+  );
+
   const polymiddlewareForLegacyAvatarMiddleware = useMemo<Polymiddleware | undefined>(
-    () =>
-      avatarMiddleware ? createAvatarPolymiddlewareFromLegacy(...singleToArray(avatarMiddleware ?? [])) : undefined,
+    () => createAvatarPolymiddlewareFromLegacy(...avatarMiddleware),
     [avatarMiddleware]
   );
 
@@ -526,11 +528,13 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
+  const activityMiddleware = useMemoIterable<readonly ActivityMiddleware[]>(
+    () => singleToArray(activityMiddlewareFromProps ?? []),
+    [activityMiddlewareFromProps]
+  );
+
   const polymiddlewareForLegacyActivityMiddleware = useMemo<Polymiddleware | undefined>(
-    () =>
-      activityMiddleware
-        ? createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware ?? []))
-        : undefined,
+    () => createActivityPolymiddlewareFromLegacy(...activityMiddleware),
     [activityMiddleware]
   );
 
