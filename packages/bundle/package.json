@@ -182,6 +182,7 @@
     "@msinternal/base64-js": "0.0.0-0",
     "@msinternal/botframework-directlinejs": "0.0.0-0",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-react-hooks": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
