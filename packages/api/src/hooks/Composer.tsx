@@ -477,11 +477,8 @@ const ComposerCore = ({
     [groupActivitiesMiddlewareFromProps]
   );
 
-  const polymiddlewareForLegacyAvatarMiddleware = useMemo<readonly Polymiddleware[] | undefined>(
-    () =>
-      avatarMiddleware
-        ? Object.freeze([createAvatarPolymiddlewareFromLegacy(...singleToArray(avatarMiddleware))])
-        : undefined,
+  const polymiddlewareForLegacyAvatarMiddleware = useMemo<Polymiddleware | undefined>(
+    () => (avatarMiddleware ? createAvatarPolymiddlewareFromLegacy(...singleToArray(avatarMiddleware)) : undefined),
     [avatarMiddleware]
   );
 
@@ -526,11 +523,9 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
-  const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[] | undefined>(
+  const polymiddlewareForLegacyActivityMiddleware = useMemo<Polymiddleware | undefined>(
     () =>
-      activityMiddleware
-        ? Object.freeze([createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware))])
-        : undefined,
+      activityMiddleware ? createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware)) : undefined,
     [activityMiddleware]
   );
 
@@ -560,8 +555,8 @@ const ComposerCore = ({
         //
         // The simplest and logical move is #3: render legacy middleware before polymiddleware.
 
-        ...(polymiddlewareForLegacyActivityMiddleware ?? []),
-        ...(polymiddlewareForLegacyAvatarMiddleware ?? []),
+        ...(polymiddlewareForLegacyActivityMiddleware ? [polymiddlewareForLegacyActivityMiddleware] : []),
+        ...(polymiddlewareForLegacyAvatarMiddleware ? [polymiddlewareForLegacyAvatarMiddleware] : []),
         ...(polymiddlewareFromProps ?? []),
         activityFallbackPolymiddleware
       ]),
