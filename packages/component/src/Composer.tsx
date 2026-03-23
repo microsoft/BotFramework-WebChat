@@ -369,13 +369,11 @@ const Composer = ({
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
 
-  const patchedActivityMiddleware = useMemo<readonly LegacyActivityMiddleware[] | undefined>(
-    () =>
-      activityMiddleware?.length || theme?.activityMiddleware?.length
-        ? Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware])
-        : undefined,
-    [activityMiddleware, theme.activityMiddleware]
-  );
+  const patchedActivityMiddleware = useMemo<readonly LegacyActivityMiddleware[] | undefined>(() => {
+    const middleware = Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware]);
+
+    return middleware.length ? middleware : undefined;
+  }, [activityMiddleware, theme.activityMiddleware]);
 
   const patchedActivityStatusMiddleware = useMemo(
     () =>
@@ -407,13 +405,11 @@ const Composer = ({
     [attachmentMiddleware, theme.attachmentMiddleware]
   );
 
-  const patchedAvatarMiddleware = useMemo<readonly AvatarMiddleware[] | undefined>(
-    () =>
-      avatarMiddleware?.length || theme?.avatarMiddleware?.length
-        ? Object.freeze([...singleToArray(avatarMiddleware), ...theme.avatarMiddleware])
-        : undefined,
-    [avatarMiddleware, theme.avatarMiddleware]
-  );
+  const patchedAvatarMiddleware = useMemo<readonly AvatarMiddleware[] | undefined>(() => {
+    const middleware = Object.freeze([...singleToArray(avatarMiddleware), ...theme.avatarMiddleware]);
+
+    return middleware.length ? middleware : undefined;
+  }, [avatarMiddleware, theme.avatarMiddleware]);
 
   const patchedCardActionMiddleware = useMemo(
     () =>
