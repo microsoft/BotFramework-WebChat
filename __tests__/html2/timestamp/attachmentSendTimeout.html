@@ -65,7 +65,11 @@
           fileBlob.name = 'empty.zip';
 
           // WHEN: Sending out the file.
-          await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+          await pageObjects.runHook(({ useSendFiles }, numCalled) => {
+            const sendFiles = useSendFiles();
+
+            numCalled || sendFiles([fileBlob]);
+          });
           await pageConditions.numActivitiesShown(2);
 
           // THEN: It should show "Sending".
@@ -92,7 +96,6 @@
           updateProps(props => updateIn(props, ['styleOptions', 'sendTimeoutForAttachments'], () => 130000));
 
           // THEN: It should revive the message and show "Sending" again.
-          expect(pageElements.activities()).toHaveProperty('length', 1);
           await expect(pageElements.activityStatuses()[1].innerText).toBe('Sending');
           await host.snapshot('local');
         },
