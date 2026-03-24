@@ -1,7 +1,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { any, boolean, custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { any, custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import templatePolymiddleware, {
   type InferHandler,
@@ -28,7 +28,6 @@ const {
   {
     readonly [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: any;
     readonly activity: WebChatActivity;
-    readonly fromUser: boolean;
   },
   { readonly children?: never }
 >('avatar');
@@ -44,8 +43,7 @@ type AvatarPolymiddlewareProviderProps = InferProviderProps<typeof AvatarPolymid
 const avatarPolymiddlewareProxyPropsSchema = pipe(
   object({
     [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: any(),
-    activity: custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success),
-    fromUser: boolean()
+    activity: custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)
   }),
   readonly()
 );
@@ -54,20 +52,16 @@ type AvatarPolymiddlewareProxyProps = Readonly<InferInput<typeof avatarPolymiddl
 
 // A friendlier version than the organic <Proxy>.
 const AvatarPolymiddlewareProxy = memo(function AvatarPolymiddlewareProxy(props: AvatarPolymiddlewareProxyProps) {
-  const {
-    [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions,
-    activity,
-    fromUser
-  } = validateProps(avatarPolymiddlewareProxyPropsSchema, props);
+  const { [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions, activity } =
+    validateProps(avatarPolymiddlewareProxyPropsSchema, props);
 
   const request = useMemo(
     () =>
       Object.freeze({
         [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions,
-        activity,
-        fromUser
+        activity
       }),
-    [activity, fromUser, styleOptions]
+    [activity, styleOptions]
   );
 
   return <Proxy request={request} />;

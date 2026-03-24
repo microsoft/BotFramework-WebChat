@@ -51,7 +51,9 @@ function createAvatarPolymiddlewareFromLegacy(...middlewares: readonly LegacyAva
       ({ [__INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol]: originalRequest }) => {
         if (!originalRequest) {
           // TODO: Add a test
-          throw new Error('botframework-webchat: `avatarMiddleware` must not modify the request object');
+          throw new Error(
+            'botframework-webchat: `avatarMiddleware` must pass the whole request object to downstreamers'
+          );
         }
 
         // Pass styleOptions through the polymiddleware chain via the internal runtime extension
@@ -63,16 +65,13 @@ function createAvatarPolymiddlewareFromLegacy(...middlewares: readonly LegacyAva
     );
 
     return request => {
-      const {
-        [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions,
-        activity,
-        fromUser
-      } = request;
+      const { [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions, activity } =
+        request;
 
       const legacyResult = legacyHandler(
         Object.freeze({
           activity,
-          fromUser,
+          fromUser: activity.from?.role === 'user',
           styleOptions,
           [__INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol]: request
         })
