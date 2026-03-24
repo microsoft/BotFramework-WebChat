@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { avatarComponent, createAvatarPolymiddleware } from 'botframework-webchat/middleware';
+      import { createElement } from 'react';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      testHelpers.hideKnownError();
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const MiddlewareAvatar = ({ activity, children }) => {
+          expect(activity).toHaveProperty('text', 'Hello, World!');
+
+          return createElement(
+            'div',
+            {
+              style: {
+                borderRadius: 40,
+                height: 40,
+                outline: 'dashed 2px green',
+                outlineOffset: 2,
+                overflow: 'hidden',
+                width: 40
+              }
+            },
+            children
+          );
+        };
+
+        const PolymiddlewareAvatar = ({ activity, children }) => {
+          expect(activity).toHaveProperty('text', 'Hello, World!');
+
+          return createElement(
+            'div',
+            {
+              style: {
+                borderRadius: 32,
+                height: 32,
+                margin: 4,
+                outline: 'dotted 2px red',
+                outlineOffset: 2,
+                overflow: 'hidden',
+                width: 32
+              }
+            },
+            children
+          );
+        };
+
+        renderWebChat(
+          {
+            avatarMiddleware: [
+              () => next => request => {
+                const children = next(request);
+
+                expect(Object.getOwnPropertyNames(request)).toEqual(['activity', 'fromUser', 'styleOptions']);
+                expect(request.activity).toHaveProperty('text', 'Hello, World!');
+                expect(request).toHaveProperty('fromUser', false);
+                expect(request.styleOptions).toHaveProperty('botAvatarInitials', 'WC');
+
+                return (...args) => createElement(MiddlewareAvatar, { activity: request.activity }, children(...args));
+              }
+            ],
+            directLine,
+            polymiddleware: Object.freeze([
+              createAvatarPolymiddleware(next => request => {
+                expect('styleOptions' in request).toBe(false);
+                expect(Object.getOwnPropertyNames(request)).toEqual(['activity']);
+                expect(request.activity).toHaveProperty('text', 'Hello, World!');
+
+                const children = next(request)?.render();
+
+                return avatarComponent(PolymiddlewareAvatar, { activity: request.activity, children });
+              })
+            ]),
+            store,
+            styleOptions: {
+              botAvatarInitials: 'WC',
+              botAvatarImage: '/assets/bot-avatar.jpg',
+              userAvatarInitials: 'WW'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: Should show an image with a green outside border with a red inside border.
+        //       Legacy middleware has higher priority than polymiddleware.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
