@@ -40,6 +40,7 @@ Breaking changes in this release:
 - 💥 Root-level (unconnected) `Claim` entity is being deprecated, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim). It will be removed on or after 2027-08-29
    - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - 💥 `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is removed after deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
+- 💥 `avatarMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2028-03-18, related to PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
 
 ### Added
 
@@ -108,8 +109,10 @@ Breaking changes in this release:
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
 - Added support for livestreaming via `entities[type="streaminfo"]` in PR [#5517](https://github.com/microsoft/BotFramework-WebChat/pull/5517) by [@kylerohn](https://github.com/kylerohn) and [@compulim](https://github.com/compulim)
 - Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515) and [#5566](https://github.com/microsoft/BotFramework-WebChat/pull/5566)
+   - Legacy middleware is prioritized over polymiddleware
    - Added `polymiddleware` to `<ThemeProvider>`
    - Currently supports activity middleware and the new error box middleware
+   - Supports avatar middleware, by [@compulim](https://github.com/compulim) in PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
 - New internal packages, by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
    - `@msinternal/botframework-webchat-api-middleware` for middleware branch of API package
    - `@msinternal/botframework-webchat-debug-theme` package for enabling debugging scenarios
@@ -348,6 +351,7 @@ Breaking changes in this release:
 - Removed legacy test harness, in PR [#5655](https://github.com/microsoft/BotFramework-WebChat/issues/5655), by [@compulim](https://github.com/compulim)
    - All tests are now either using `html2` test harness or simple unit tests
    - Legacy and `html` (html1) test harness are all migrated to `html2`
+- `avatarMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2028-03-18, related to PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
 
 ### Fixed
 

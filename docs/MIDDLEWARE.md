@@ -52,6 +52,8 @@ function MyChatUI() {
 The following are supported polymiddleware types:
 
 - Activity (PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515))
+- Avatar (PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779))
+   - [Sample code](__tests__/html2/middleware/avatar/polymiddleware/decorate.html)
 - Error box (PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515))
 
 ## Recipes
@@ -284,7 +286,7 @@ Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all
 
 ### Polyfilling legacy middleware
 
-Legacy middleware passed to deprecating props such as `activityMiddleware` will be upgraded to polymiddleware automatically and placed after other polymiddleware passed via the `polymiddleware` prop. In other words, legacy middleware has lower priority than polymiddleware.
+Legacy middleware passed to deprecating props such as `activityMiddleware` will be upgraded to polymiddleware automatically and placed before other polymiddleware passed via the `polymiddleware` prop. In other words, legacy middleware has higher priority than polymiddleware.
 
 Special polymiddleware factory functions such as `createActivityPolymiddlewareFromLegacy()` allow input of legacy middleware and output as polymiddleware. This helps the transition period. However, these special factory functions is also marked as deprecated.
 
@@ -296,7 +298,7 @@ When multiple legacy middleware are passed as an array to `createActivityPolymid
 
 ### When to use `useBuildRenderXXXCallback()` vs. `<XXXPolymiddlewareProxy>`?
 
-The main differences are:
+We recommend the proxy component if you do not care about empty rendering or element count. For example, empty `<Fragment>` will be emitted by proxy but not rendered by `useBuildRenderXXXCallback()`.
 
 - `useBuildRenderXXXCallback()` allows precise render control
    - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity
@@ -314,8 +316,8 @@ The following table shows how polymiddleware are prioritized.
 | Priority | Type               | Description                                                                                                                                                                                 |
 | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Highest  | Error boundary     | <p>All polymiddleware has an error boundary wrapper to control error propagation.</p><p>Error will be rendered using the `ErrorBox` polymiddleware and reported via `onTelemetry` prop.</p> |
-| Normal   | Polymiddleware     | Polymiddleware passed to the `polymiddleware` prop.                                                                                                                                         |
-| Low      | Legacy middleware  | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                                                             |
+| Normal   | Legacy middleware  | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                                                             |
+| Low      | Polymiddleware     | Polymiddleware passed to the `polymiddleware` prop.                                                                                                                                         |
 | Lowest   | Catch-all as error | Requests not handled by any polymiddleware in the chain will be thrown as an error.                                                                                                         |
 
 ## Deprecation dates
@@ -328,7 +330,7 @@ We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule
 | Activity status              |                                                                         | (TBD)              |
 | Attachment                   |                                                                         | (TBD)              |
 | Attachment for screen reader |                                                                         | (TBD)              |
-| Avatar                       |                                                                         | (TBD)              |
+| Avatar                       | PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779) | 2028-03-18         |
 | Card action                  |                                                                         | (TBD)              |
 | Group activities             |                                                                         | (TBD)              |
 | Scroll to end button         |                                                                         | (TBD)              |
