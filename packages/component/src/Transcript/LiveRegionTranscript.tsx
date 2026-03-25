@@ -132,10 +132,10 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
   useMemo(() => typingIndicator && queueStaticElement(typingIndicator), [queueStaticElement, typingIndicator]);
 
   return (
-    <>
+    <React.Fragment>
       <LiveRegionSendFailed />
       <LiveRegionSendSending />
-    </>
+    </React.Fragment>
   );
 };
 
