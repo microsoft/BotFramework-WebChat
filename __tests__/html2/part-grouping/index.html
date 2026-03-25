@@ -347,6 +347,12 @@ plot_sine_waves()`;
       // 1st with the loading indicator
       // 2nd with an empty status indicator
       await pageConditions.numActivitiesShown(3);
+
+      // When (copilot): opening the group
+      if (variant === 'copilot') {
+        await host.click(document.querySelector('.collapsible-grouping__toggle'));
+      }
+
       await host.snapshot('local');
 
       // When marking the 1st activity as 'Published':

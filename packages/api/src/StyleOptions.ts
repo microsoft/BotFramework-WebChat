@@ -967,6 +967,20 @@ type StyleOptions = {
   speechRecognitionContinuous?: boolean | undefined;
 
   /**
+   * Whether part groups are open by default.
+   *
+   * @default true
+   */
+  partGroupDefaultOpen?: boolean | undefined;
+
+  /**
+   * Whether references (citation link definitions) are open by default.
+   *
+   * @default true
+   */
+  referenceListDefaultOpen?: boolean | undefined;
+
+  /**
    * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status', 'part']` or `sender,status` in CSS.
    *
    * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender`, `status`, and `part`.

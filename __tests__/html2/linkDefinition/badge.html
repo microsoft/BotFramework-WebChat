@@ -181,6 +181,11 @@
 
         await host.snapshot('local');
 
+        // When (copilot): opening the link definitions since they start closed
+        if (variant) {
+          await host.click(pageElements.linkDefinitions()[0].querySelector('summary'));
+        }
+
         const [firstActivityElement] = pageElements.activities();
 
         const linkDefinitions = firstActivityElement.querySelectorAll('.link-definitions__list-item');

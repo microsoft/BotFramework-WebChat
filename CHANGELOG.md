@@ -103,7 +103,10 @@ Breaking changes in this release:
 - Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464), by [@compulim](https://github.com/compulim), in PR [#5492](https://github.com/microsoft/BotFramework-WebChat/pull/5492), by [@OEvgeny](https://github.com/OEvgeny)
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
-- Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
+- Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), in PR [#5771](https://github.com/microsoft/BotFramework-WebChat/pull/5771), by [@OEvgeny](https://github.com/OEvgeny)
+   - Added `styleOptions.partGroupDefaultOpen` to configure whether part groups are open by default, defaults to `true`
+   - Added `styleOptions.referenceListDefaultOpen` to configure whether references are open by default, defaults to `true`
+   - In the Fluent theme "copilot" variant, part groups and references now default to closed
 - Added `disableFileUpload` flag to completelly disable file upload feature, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
    - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
@@ -119,7 +122,7 @@ Breaking changes in this release:
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 - Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 - Added blob URL sanitization and ESLint rules, in PR [#5568](https://github.com/microsoft/BotFramework-WebChat/pull/5568), by [@compulim](https://github.com/compulim)
-- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), in PR [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), in PR [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608), by [@OEvgeny](https://github.com/OEvgeny)
+- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), in PR [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), in PR [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608), in PR [#5773](https://github.com/microsoft/BotFramework-WebChat/pull/5773), by [@OEvgeny](https://github.com/OEvgeny)
    - The mode is suitable for providing chain-of-thought reasoning
    - Added visual indication of `creativeWorkStatus` property in `Message` entity:
       - `undefined` - no indicator is shown
@@ -127,6 +130,9 @@ Breaking changes in this release:
       - `'Published'` - show checkmark aside from the message
    - Added a `position` property support for the `Message` entity
       - The `position` property takes precedence over existing sequence ID
+   - Added support for explicit group status via `isPartOf.creativeWorkStatus` and `isPartOf.abstract` on the HowTo entity
+      - When the HowTo entity carries an explicit `creativeWorkStatus`, it takes precedence over status derived from individual messages
+      - When the HowTo entity carries an `abstract`, it is used as the group header title
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
 - Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
 - `fluent-theme`: Changed dependencies to import solely from the "bundle" package, in PR [#5584](https://github.com/microsoft/BotFramework-WebChat/pull/5584), by [@compulim](https://github.com/compulim)

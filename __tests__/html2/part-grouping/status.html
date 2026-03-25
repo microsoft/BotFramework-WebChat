@@ -146,13 +146,18 @@
         }
       };
 
-      const withModifiers = (activity, { position, status, abstract }) => ({
+      const withModifiers = (activity, { position, status, abstract, howToStatus, howToAbstract }) => ({
         ...activity,
         entities: activity.entities.map(entity => ({
           ...entity,
           ...(typeof abstract !== 'undefined' ? { abstract } : {}),
           ...(typeof position !== 'undefined' ? { position } : {}),
-          creativeWorkStatus: status
+          creativeWorkStatus: status,
+          isPartOf: {
+            ...entity.isPartOf,
+            ...(typeof howToStatus !== 'undefined' ? { creativeWorkStatus: howToStatus } : {}),
+            ...(typeof howToAbstract !== 'undefined' ? { abstract: howToAbstract } : {})
+          }
         }))
       });
 
@@ -178,6 +183,12 @@
 
       // Then: show activities with corresponding status indicators
       await pageConditions.numActivitiesShown(4);
+
+      // When (copilot): opening the group
+      if (variant === 'copilot') {
+        await host.click(document.querySelector('.collapsible-grouping__toggle'));
+      }
+
       await host.snapshot('local');
 
       // Test Case 2: Multiple activities being worked on
@@ -245,6 +256,28 @@
       directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'Published', abstract: 'four done' }));
 
       // Then: all activities should show the 'Published' status indicator
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+
+      // When: folding the list:
+      await host.click(document.querySelector('.collapsible-grouping__toggle'));
+
+      // Then: should show published status in the group header
+      await host.snapshot('local');
+
+      // Test Case 8: HowTo-level status takes precedence
+      // When: setting the HowTo entity's creativeWorkStatus to 'Incomplete' while messages have 'Published'
+      directLine.emulateIncomingActivity(withModifiers(activities.at(0), { status: 'Published', abstract: 'one done', howToStatus: 'Incomplete', howToAbstract: 'HowTo in progress' }));
+
+      // Then: the group header should show 'Incomplete' because the HowTo status takes precedence over derived message status
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+
+      // Test Case 9: HowTo-level status set to 'Published' overrides message-derived status
+      // When: a message is 'Incomplete' but the HowTo entity is explicitly 'Published'
+      directLine.emulateIncomingActivity(withModifiers(activities.at(3), { status: 'Incomplete', abstract: 'four in progress again', howToStatus: 'Published', howToAbstract: 'HowTo completed' }));
+
+      // Then: the group header should show 'Published' from the HowTo, not 'Incomplete' from the message
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
     });
