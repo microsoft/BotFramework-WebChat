@@ -35,6 +35,8 @@ export {
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,
   useBuildRenderErrorBoxCallback,
+  // For type portability only.
+  type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol,
   type ErrorBoxPolymiddleware,
   type ErrorBoxPolymiddlewareHandler,
   type ErrorBoxPolymiddlewareHandlerResult,

@@ -1,5 +1,9 @@
 import type { StyleOptions } from 'botframework-webchat-api';
-import { avatarComponent, createAvatarPolymiddleware } from 'botframework-webchat-api/middleware';
+import {
+  avatarComponent,
+  createAvatarPolymiddleware,
+  type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol
+} from 'botframework-webchat-api/middleware';
 import DefaultAvatar from './DefaultAvatar';
 
 function createDefaultAvatarMiddleware(styleOptions: StyleOptions | undefined) {
