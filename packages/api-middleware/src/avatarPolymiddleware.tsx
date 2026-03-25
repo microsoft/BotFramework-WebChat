@@ -53,6 +53,9 @@ type AvatarPolymiddlewareProxyProps = Readonly<InferInput<typeof avatarPolymiddl
 
 // A friendlier version than the organic <Proxy>.
 const AvatarPolymiddlewareProxy = memo(function AvatarPolymiddlewareProxy(props: AvatarPolymiddlewareProxyProps) {
+  // TODO: [P1] Proxy should not require `styleOptions`, it should read from `useStyleOptions`.
+  //       However the `useStyleOptions` hook is in `api` which is not available in `api-middleware`.
+  //       We should refactor `useStyleOptions` into `api-style-options` so we can make the hook available here.
   const { [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions, activity } =
     validateProps(avatarPolymiddlewareProxyPropsSchema, props);
 
