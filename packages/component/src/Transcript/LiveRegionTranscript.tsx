@@ -9,6 +9,7 @@ import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import { useQueueStaticElement } from '../providers/LiveRegionTwin';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
+import LiveRegionSendSending from './LiveRegion/SendSending';
 import isPresentational from './LiveRegion/isPresentational';
 import useTypistNames from './useTypistNames';
 
@@ -130,7 +131,12 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
 
   useMemo(() => typingIndicator && queueStaticElement(typingIndicator), [queueStaticElement, typingIndicator]);
 
-  return <LiveRegionSendFailed />;
+  return (
+    <>
+      <LiveRegionSendFailed />
+      <LiveRegionSendSending />
+    </>
+  );
 };
 
 LiveRegionTranscript.displayName = 'LiveRegionTranscript';
