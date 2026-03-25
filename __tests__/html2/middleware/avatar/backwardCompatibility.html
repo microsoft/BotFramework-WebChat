@@ -35,44 +35,42 @@
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
 
-        const MiddlewareAvatar = ({ activity, children }) => {
-          expect(activity).toHaveProperty('text', 'Hello, World!');
-
-          return createElement(
+        const MiddlewareAvatar = ({ activity, children, fromUser }) =>
+          createElement(
             'div',
             {
               style: {
                 borderRadius: 40,
                 height: 40,
-                outline: 'dashed 2px green',
+                outlineColor: 'green',
                 outlineOffset: 2,
+                outlineStyle: fromUser ? 'dotted' : 'dashed',
+                outlineWidth: 2,
                 overflow: 'hidden',
                 width: 40
               }
             },
             children
           );
-        };
 
-        const PolymiddlewareAvatar = ({ activity, children }) => {
-          expect(activity).toHaveProperty('text', 'Hello, World!');
-
-          return createElement(
+        const PolymiddlewareAvatar = ({ activity, children }) =>
+          createElement(
             'div',
             {
               style: {
                 borderRadius: 32,
                 height: 32,
                 margin: 4,
-                outline: 'dotted 2px red',
+                outlineColor: 'red',
                 outlineOffset: 2,
+                outlineStyle: activity.from?.role === 'user' ? 'dotted' : 'dashed',
+                outlineWidth: 2,
                 overflow: 'hidden',
                 width: 32
               }
             },
             children
           );
-        };
 
         renderWebChat(
           {
@@ -81,11 +79,14 @@
                 const children = next(request);
 
                 expect(Object.getOwnPropertyNames(request)).toEqual(['activity', 'fromUser', 'styleOptions']);
-                expect(request.activity).toHaveProperty('text', 'Hello, World!');
-                expect(request).toHaveProperty('fromUser', false);
                 expect(request.styleOptions).toHaveProperty('botAvatarInitials', 'WC');
 
-                return (...args) => createElement(MiddlewareAvatar, { activity: request.activity }, children(...args));
+                return (...args) =>
+                  createElement(
+                    MiddlewareAvatar,
+                    { activity: request.activity, fromUser: request.fromUser },
+                    children(...args)
+                  );
               }
             ],
             directLine,
@@ -93,7 +94,6 @@
               createAvatarPolymiddleware(next => request => {
                 expect('styleOptions' in request).toBe(false);
                 expect(Object.getOwnPropertyNames(request)).toEqual(['activity']);
-                expect(request.activity).toHaveProperty('text', 'Hello, World!');
 
                 const children = next(request)?.render();
 
@@ -102,8 +102,9 @@
             ]),
             store,
             styleOptions: {
-              botAvatarInitials: 'WC',
               botAvatarImage: '/assets/bot-avatar.jpg',
+              botAvatarInitials: 'WC',
+              userAvatarImage: '/assets/user-avatar.jpg',
               userAvatarInitials: 'WW'
             }
           },
@@ -112,9 +113,17 @@
 
         await pageConditions.uiConnected();
 
-        directLine.emulateIncomingActivity({
+        await directLine.emulateIncomingActivity({
           from: { role: 'bot' },
+          id: 'a-00001',
           text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'user' },
+          id: 'a-00002',
+          text: 'Aloha!',
           type: 'message'
         });
 
