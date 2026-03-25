@@ -26,6 +26,7 @@ const {
   useBuildRenderCallback: useBuildRenderAvatarCallback
 } = templatePolymiddleware<
   {
+    // TODO: The `styleOptions` is only for legacy middleware.
     readonly [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: any;
     readonly activity: WebChatActivity;
   },

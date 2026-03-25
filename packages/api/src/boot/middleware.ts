@@ -18,17 +18,20 @@ export {
 
 export {
   avatarComponent,
-  AvatarPolymiddlewareProxy,
   createAvatarPolymiddleware,
   useBuildRenderAvatarCallback,
   type AvatarPolymiddleware,
   type AvatarPolymiddlewareHandler,
   type AvatarPolymiddlewareHandlerResult,
   type AvatarPolymiddlewareProps,
-  type AvatarPolymiddlewareProxyProps,
   type AvatarPolymiddlewareRenderer,
   type AvatarPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
+
+export {
+  default as AvatarPolymiddlewareProxy,
+  AvatarPolymiddlewareProxyProps
+} from '../middleware/AvatarPolymiddlewareProxy';
 
 export {
   createErrorBoxPolymiddleware,
