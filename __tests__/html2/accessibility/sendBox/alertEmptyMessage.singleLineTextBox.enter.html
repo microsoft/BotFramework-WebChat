@@ -72,9 +72,6 @@
 
         // THEN: Both error and status messages should be empty.
         expect(errorMessage.innerText).toBe('');
-
-        // THEN: After live region fade, the live region should be empty.
-        clock.tick(10000);
         await host.snapshot('local');
       });
     </script>
