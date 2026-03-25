@@ -41,19 +41,12 @@ const useRenderActivityProps = (activity: WebChatActivity): RenderActivityProps 
     lastActivityInStatusGroup === activity || typeof lastActivityInStatusGroup === 'undefined';
 
   const renderAvatarForSenderGroup = useMemo<false | (() => Exclude<ReactNode, boolean | null | undefined>)>(() => {
-    const fromUser = activity.from?.role === 'user';
     // Pass styleOptions through the runtime object (not typed in public request) for internal use
     // by the core middleware and legacy bridge handlers.
-    const renderer = buildRenderAvatar(
-      Object.freeze({
-        [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: styleOptions,
-        activity,
-        fromUser
-      })
-    );
+    const renderer = buildRenderAvatar(Object.freeze({ activity }));
 
     return renderer ? (): ReactNode => renderer({}) : false;
-  }, [activity, buildRenderAvatar, styleOptions]);
+  }, [activity, buildRenderAvatar]);
 
   const isTopSideBotNub = isZeroOrPositive(bubbleNubOffset);
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);

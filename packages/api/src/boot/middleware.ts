@@ -19,7 +19,6 @@ export {
 export {
   avatarComponent,
   createAvatarPolymiddleware,
-  useBuildRenderAvatarCallback,
   type AvatarPolymiddleware,
   type AvatarPolymiddlewareHandler,
   type AvatarPolymiddlewareHandlerResult,
@@ -32,6 +31,8 @@ export {
   default as AvatarPolymiddlewareProxy,
   AvatarPolymiddlewareProxyProps
 } from '../middleware/AvatarPolymiddlewareProxy';
+
+export { default as useBuildRenderAvatarCallback } from '../middleware/useBuildRenderAvatarCallback';
 
 export {
   createErrorBoxPolymiddleware,
