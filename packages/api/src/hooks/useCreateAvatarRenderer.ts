@@ -18,8 +18,9 @@ type CreateAvatarRendererCallback = ({
  */
 export default function useCreateAvatarRenderer(): CreateAvatarRendererCallback {
   const [styleOptions] = useStyleOptions();
-  const styleOptionsRef = useRefFrom(styleOptions);
   const buildRenderAvatar = useBuildRenderAvatarCallback();
+
+  const styleOptionsRef = useRefFrom(styleOptions);
 
   // TODO: [P1] We should move this function into `api-middleware`.
   //       However, it use `useStyleOptions` which is from `api` package.
