@@ -1,4 +1,19 @@
-<!DOCTYPE html>
+<!--
+  Polymiddleware does not support request modification.
+
+  Thus, modified `renderAttachment()` from legacy activity middleware is not honored.
+
+  This test is testing against "modified attachmentRenderer", thus it is failing.
+
+  Polymiddleware could support modified attachment polymiddleware when we finish the following work:
+
+  - Upgrade to attachment polymiddleware
+  - Support cascaded polymiddleware
+     - Today, polymiddleware are set in <APIComposer>, cascading means we need 2 x <APIComposer>
+     - Tomorrow, we should allow cascading through <ThemeProvider polymiddleware={}>
+        - That also means, default poly/middleware should be materialized in <ThemeProvider>, instead of <APIComposer>
+-->
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -32,57 +47,63 @@
       run(async function () {
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-        const activityMiddleware = () => next => (...renderActivityArgs) => {
-          const [{ activity }] = renderActivityArgs;
+        const activityMiddleware =
+          () =>
+          next =>
+          (...renderActivityArgs) => {
+            const [{ activity }] = renderActivityArgs;
 
-          const renderActivity = next(...renderActivityArgs);
+            const renderActivity = next(...renderActivityArgs);
 
-          if (/^1/.test(activity.id)) {
-            return (children, ...renderAttachmentArgs) => (
-              <div className="decorated-activity">
-                {renderActivity(
-                  (...renderAttachmentArgs) => (
-                    <div className="decorated-attachment">{children(...renderAttachmentArgs)}</div>
-                  ),
+            if (/^1/.test(activity.id)) {
+              return (children, ...renderAttachmentArgs) => (
+                <div className="decorated-activity">
+                  {renderActivity(
+                    (...renderAttachmentArgs) => (
+                      <div className="decorated-attachment">{children(...renderAttachmentArgs)}</div>
+                    ),
+                    ...renderActivityArgs
+                  )}
+                </div>
+              );
+            } else if (/^2/.test(activity.id)) {
+              return (children, ...renderAttachmentArgs) =>
+                renderActivity(
+                  (...renderAttachmentArgs) => {
+                    const [firstArg] = renderAttachmentArgs;
+                    const {
+                      attachment,
+                      attachment: { contentType }
+                    } = firstArg;
+
+                    if (/^image\//.test(contentType)) {
+                      return (
+                        <figure className="attachment-figure">
+                          {children(...renderAttachmentArgs)}
+                          <figcaption className="attachment-figure-caption">
+                            {children(
+                              {
+                                ...firstArg,
+                                attachment: {
+                                  ...attachment,
+                                  contentType: 'application/octet-stream'
+                                }
+                              },
+                              ...renderAttachmentArgs
+                            )}
+                          </figcaption>
+                        </figure>
+                      );
+                    }
+
+                    return children(...renderAttachmentArgs);
+                  },
                   ...renderActivityArgs
-                )}
-              </div>
-            );
-          } else if (/^2/.test(activity.id)) {
-            return (children, ...renderAttachmentArgs) =>
-              renderActivity((...renderAttachmentArgs) => {
-                const [firstArg] = renderAttachmentArgs;
-                const {
-                  attachment,
-                  attachment: { contentType }
-                } = firstArg;
+                );
+            }
 
-                if (/^image\//.test(contentType)) {
-                  return (
-                    <figure className="attachment-figure">
-                      {children(...renderAttachmentArgs)}
-                      <figcaption className="attachment-figure-caption">
-                        {children(
-                          {
-                            ...firstArg,
-                            attachment: {
-                              ...attachment,
-                              contentType: 'application/octet-stream'
-                            }
-                          },
-                          ...renderAttachmentArgs
-                        )}
-                      </figcaption>
-                    </figure>
-                  );
-                }
-
-                return children(...renderAttachmentArgs);
-              }, ...renderActivityArgs);
-          }
-
-          return renderActivity;
-        };
+            return renderActivity;
+          };
 
         WebChat.renderWebChat(
           {
@@ -106,8 +127,7 @@
                   role: 'bot'
                 },
                 id: '1.0',
-                text:
-                  'Decorating activity of **carousel layout**. Also decorate attachment without using attachment middleware.',
+                text: 'Decorating activity of **carousel layout**. Also decorate attachment without using attachment middleware.',
                 timestamp: 0,
                 type: 'message'
               },
@@ -123,8 +143,7 @@
                   role: 'bot'
                 },
                 id: '1.1',
-                text:
-                  'Decorating activity of **stacked layout**. Also decorate attachment without using attachment middleware.',
+                text: 'Decorating activity of **stacked layout**. Also decorate attachment without using attachment middleware.',
                 timestamp: 0,
                 type: 'message'
               },
