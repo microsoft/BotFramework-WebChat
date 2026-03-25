@@ -406,7 +406,7 @@ Breaking changes in this release:
 - Fixed compatibility with `create-react-app` by adding file extension to `core-js` imports, by [@compulim](https://github.com/compulim) in PR [#5680](https://github.com/microsoft/BotFramework-WebChat/pull/5680)
 - Fixed virtual keyboard should be collapsed after being suppressed, in iOS 26.3, by [@compulim](https://github.com/compulim) in PR [#5757](https://github.com/microsoft/BotFramework-WebChat/pull/5757)
 - Fixed Fluent/Copilot typing indicator animation background color, in PR [#5770](https://github.com/microsoft/BotFramework-WebChat/pull/5770), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed `<AddFullBundle>` should not re-render when `attachment[ForScreenReader]Middleware` is updated without noticeable different (`iterateEquals`), by [@compulim](https://github.com/compulim), in PR [#5799](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
+- Fixed `<AddFullBundle>` should not re-render when `attachment[ForScreenReader]Middleware` is updated without noticeable different (`iterateEquals`), by [@compulim](https://github.com/compulim), in PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
 
 ## [4.18.0] - 2024-07-10
 
