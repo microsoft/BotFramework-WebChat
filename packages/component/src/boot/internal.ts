@@ -12,4 +12,4 @@ export { default as parseDocumentFragmentFromString } from '../Utils/parseDocume
 export { default as serializeDocumentFragmentIntoString } from '../Utils/serializeDocumentFragmentIntoString';
 
 // For type portability
-export { __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol } from 'botframework-webchat-api/internal';
+export { type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol } from 'botframework-webchat-api/internal';

@@ -1,5 +1,6 @@
 /* eslint complexity: ["error", 21] */
 import { ActivityMiddleware } from 'botframework-webchat-api';
+import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
 import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
@@ -7,7 +8,6 @@ import {
 } from 'botframework-webchat-core';
 import React from 'react';
 
-import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
@@ -96,4 +96,7 @@ const defaultActivityPolymiddleware: Polymiddleware = createActivityPolymiddlewa
 );
 
 export default defaultActivityPolymiddleware;
-export { createCoreActivityMiddleware };
+export {
+  // Exporting `createCoreActivityMiddleware()` for backward compatibility.
+  createCoreActivityMiddleware
+};

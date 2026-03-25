@@ -376,7 +376,7 @@ const Composer = ({
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
 
-  const patchedActivityMiddleware = useMemo<readonly LegacyActivityMiddleware[]>(
+  const patchedActivityMiddleware = useMemoIterable<readonly LegacyActivityMiddleware[]>(
     () => Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware]),
     [activityMiddleware, theme.activityMiddleware]
   );
@@ -481,7 +481,7 @@ const Composer = ({
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
   );
 
-  const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
+  const sendBoxToolbarMiddleware = useMemoIterable<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
         ...extractSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),

@@ -2,6 +2,7 @@ import type { StyleOptions } from 'botframework-webchat-api';
 import {
   avatarComponent,
   createAvatarPolymiddleware,
+  // For type portability.
   type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol
 } from 'botframework-webchat-api/middleware';
 import DefaultAvatar from './DefaultAvatar';

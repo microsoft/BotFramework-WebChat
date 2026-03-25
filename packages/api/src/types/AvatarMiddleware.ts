@@ -9,6 +9,8 @@ import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
 
 type AvatarComponentFactoryArguments = [
   {
+    // We need to keep the original polymiddleweare request while running inside legacy middleware.
+    // When we transit from legacy middleware back to polymiddleware, we can restore the request object.
     [__INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol]: AvatarPolymiddlewareRequest;
     activity: WebChatActivity;
     fromUser: boolean;
