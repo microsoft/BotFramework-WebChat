@@ -44,7 +44,7 @@ import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative'
 import defaultActivityPolymiddleware from './Middleware/Activity/defaultActivityPolymiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
-import defaultAvatarPolymiddleware from './Middleware/Avatar/defaultAvatarPolymiddleware';
+import createDefaultAvatarMiddleware from './Middleware/Avatar/createDefaultAvatarPolymiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
@@ -426,6 +426,8 @@ const Composer = ({
     [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
+  const defaultAvatarPolymiddleware = useMemo(() => createDefaultAvatarMiddleware(styleOptions), [styleOptions]);
+
   const patchedPolymiddleware = useMemoIterable<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
@@ -436,7 +438,7 @@ const Composer = ({
         defaultActivityPolymiddleware,
         defaultAvatarPolymiddleware
       ]),
-    [polymiddleware, theme.polymiddleware]
+    [defaultAvatarPolymiddleware, polymiddleware, theme.polymiddleware]
   );
 
   const patchedToastMiddleware = useMemoIterable<readonly ToastMiddleware[]>(
