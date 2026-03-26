@@ -18,7 +18,7 @@ const SENDING_ANNOUNCEMENT_DELAY = 3000;
  *
  * Presentational activities (e.g. `event` or `typing`) are excluded to reduce noise.
  */
-const LiveRegionSendSending = () => {
+const LiveRegionLongSend = () => {
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
   const getActivityByKey = useGetActivityByKey();
   const localize = useLocalizer();
@@ -93,6 +93,6 @@ const LiveRegionSendSending = () => {
   return null;
 };
 
-LiveRegionSendSending.displayName = 'LiveRegionSendSending';
+LiveRegionLongSend.displayName = 'LiveRegionLongSend';
 
-export default memo(LiveRegionSendSending);
+export default memo(LiveRegionLongSend);

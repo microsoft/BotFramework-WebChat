@@ -9,7 +9,7 @@ import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import { useQueueStaticElement } from '../providers/LiveRegionTwin';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
-import LiveRegionSendSending from './LiveRegion/SendSending';
+import LiveRegionLongSend from './LiveRegion/LongSend';
 import isPresentational from './LiveRegion/isPresentational';
 import useTypistNames from './useTypistNames';
 
@@ -134,7 +134,7 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
   return (
     <React.Fragment>
       <LiveRegionSendFailed />
-      <LiveRegionSendSending />
+      <LiveRegionLongSend />
     </React.Fragment>
   );
 };
