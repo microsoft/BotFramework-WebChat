@@ -97,6 +97,7 @@
         });
 
         // THEN: Should render the activity.
+        await pageConditions.allImagesLoaded();
         await host.snapshot('local');
       });
     </script>

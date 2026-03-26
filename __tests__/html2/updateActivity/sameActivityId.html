@@ -55,6 +55,7 @@
         // THEN: Bot should reply with 2 messages. However, we change their `activity.id` to be the same value.
         //       Thus, only the second message will be shown. And there are 2 messages in total only.
         await pageConditions.numActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should show 1 outgoing message, and 1 incoming message.
         await host.snapshot('local');
