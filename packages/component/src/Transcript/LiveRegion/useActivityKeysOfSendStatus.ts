@@ -12,19 +12,21 @@ const { useGetActivityByKey, useSendStatusByActivityKey } = hooks;
  *
  * Presentational activities (e.g. `event` or `typing`) are excluded to reduce noise.
  */
-export default function useActivityKeysOfSendStatus(status: SendStatus): Set<string> {
+export default function useActivityKeysOfSendStatus(status: SendStatus): readonly [Set<string>] {
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
   const getActivityByKey = useGetActivityByKey();
 
-  return useMemo<Set<string>>(() => {
-    const keys = new Set<string>();
+  return [
+    useMemo<Set<string>>(() => {
+      const keys = new Set<string>();
 
-    for (const [key, sendStatus] of sendStatusByActivityKey) {
-      if (sendStatus === status && !isPresentational(getActivityByKey(key))) {
-        keys.add(key);
+      for (const [key, sendStatus] of sendStatusByActivityKey) {
+        if (sendStatus === status && !isPresentational(getActivityByKey(key))) {
+          keys.add(key);
+        }
       }
-    }
 
-    return keys;
-  }, [getActivityByKey, sendStatusByActivityKey, status]);
+      return keys;
+    }, [getActivityByKey, sendStatusByActivityKey, status])
+  ] as const;
 }

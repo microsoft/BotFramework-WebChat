@@ -27,7 +27,7 @@ const LiveRegionSendFailed = () => {
    * Activities which are presentational, such as `event` or `typing`, are ignored to reduce confusions.
    * "Failed to send message" should not be narrated for presentational activities.
    */
-  const activityKeysOfSendFailed = useActivityKeysOfSendStatus(SEND_FAILED);
+  const [activityKeysOfSendFailed] = useActivityKeysOfSendStatus(SEND_FAILED);
 
   /** Returns localized "Failed to send message." */
   const liveRegionSendFailedAlt = localize('TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT');

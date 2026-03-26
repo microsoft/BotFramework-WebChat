@@ -31,7 +31,7 @@ const LiveRegionLongSend = () => {
   const [tick, setTick] = useState(0);
 
   /** Keys of outgoing non-presentational activities that are currently in the sending state. */
-  const sendingKeys = useActivityKeysOfSendStatus(SENDING);
+  const [sendingKeys] = useActivityKeysOfSendStatus(SENDING);
 
   /**
    * Arm a per-key timer when a key newly enters `sendingKeys`.
