@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      /* TODO: [P*] Can we eliminate this style? */
+      .fui-FluentProvider,
+      .webchat-fluent {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1,react-dom@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-core": "/__dist__/packages/bundle/static/botframework-webchat-core.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "eventsource-parser": "https://esm.sh/eventsource-parser",
+          "eventsource-parser/": "https://esm.sh/eventsource-parser/",
+          "iter-fest": "https://esm.sh/iter-fest",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "https://esm.sh/react@18.3.1/es2022/react.mjs": "/__dist__/packages/bundle/static/react.js",
+          "https://esm.sh/react@18.3.1/es2022/react-dom.mjs": "/__dist__/packages/bundle/static/react-dom.18.js",
+          "https://esm.sh/react@18.3.1/es2022/react-dom/client.mjs": "/__dist__/packages/bundle/static/react-dom.18/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+      import { createStoreWithOptions, ReactWebChat, renderWebChat, testIds } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { EventSourceParserStream } from 'eventsource-parser/stream';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { forIterator } from './demuxChainOfThought.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      testHelpers.hideKnownError();
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const fluentTheme = {
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
+        };
+
+        // renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        createRoot(document.getElementsByTagName('main')[0]).render(
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: 'fluent' },
+              createElement(ReactWebChat, { directLine, store })
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        async function* fetchChainOfThought() {
+          const res = await fetch('./chainOfThought.txt');
+          const eventStream = res.body.pipeThrough(new TextDecoderStream()).pipeThrough(new EventSourceParserStream());
+          const lines = [];
+
+          for await (const { data, event } of eventStream) {
+            if (event !== 'activity') {
+              continue;
+            }
+
+            yield JSON.parse(data);
+
+            lines.push('event: activity');
+            lines.push(`data: ${JSON.stringify(JSON.parse(data), null, 2)}\n`);
+          }
+
+          // console.log(lines.join('\n'));
+        }
+
+        const activities = [];
+
+        for await (const activity of forIterator({}, fetchChainOfThought())) {
+          activities.push(activity);
+
+          await directLine.emulateIncomingActivity(activity);
+
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+
+        console.log(activities);
+      });
+    </script>
+  </body>
+</html>

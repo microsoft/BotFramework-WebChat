@@ -1,0 +1,1357 @@
+[
+  {
+    "id": "typing-1",
+    "type": "typing",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    }
+  },
+  {
+    "id": "d6cb92a5-1baf-44c2-b6f1-e95919a2fba7",
+    "type": "typing",
+    "text": "Processing",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "d6cb92a5-1baf-44c2-b6f1-e95919a2fba7-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "d6cb92a5-1baf-44c2-b6f1-e95919a2fba7",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "d6cb92a5-1baf-44c2-b6f1-e95919a2fba7",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Researching DSPM market and competitors",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 0
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/0",
+    "text": "Looking into a broad web search for DSPM market comparisons and competitor offerings, including details on market sizes, revenues, and publicly available financial data from specific vendors.",
+    "timestamp": "2026-03-26T00:51:08.987Z",
+    "type": "typing",
+    "channelData": {
+      "streamSequence": 1,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Researching DSPM market and competitors",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 0
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/0/61c53747-b31a-49a5-b4ed-37e0235aec6f-1",
+    "text": "Looking into a broad web search for DSPM market comparisons and competitor offerings, including details on market sizes, revenues, and publicly available financial data from specific vendors.",
+    "timestamp": "2026-03-26T00:51:09.135Z",
+    "type": "typing",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/0",
+      "streamSequence": 2,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Conducting detailed web search",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 1
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/1",
+    "text": "Beginning multi-query searches focusing on DSPM market, revenue figures, and competitor analysis. Will focus on credible data sources and avoid speculation, highlighting estimates where necessary.",
+    "timestamp": "2026-03-26T00:51:09.293Z",
+    "type": "typing",
+    "channelData": {
+      "streamSequence": 1,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Conducting detailed web search",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 1
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/1/77d2f520-be1a-44a8-9dbd-be2b7dc5cc06-1",
+    "text": "Beginning multi-query searches focusing on DSPM market, revenue figures, and competitor analysis. Will focus on credible data sources and avoid speculation, highlighting estimates where necessary.",
+    "timestamp": "2026-03-26T00:51:09.426Z",
+    "type": "typing",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/1",
+      "streamSequence": 2,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "id": "845822a3-b251-4b96-8d77-ec6514274d40",
+    "type": "typing",
+    "text": "OK, I'll search for 'Microsoft Purview DSPM data security posture management for AI announcement'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "845822a3-b251-4b96-8d77-ec6514274d40-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "845822a3-b251-4b96-8d77-ec6514274d40",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "845822a3-b251-4b96-8d77-ec6514274d40",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a87c2fd-3fe4-4d61-9efb-75b08cdbae95",
+    "type": "typing",
+    "text": "OK, I'll search for 'Microsoft Purview data security posture management capabilities overview'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "7a87c2fd-3fe4-4d61-9efb-75b08cdbae95-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "7a87c2fd-3fe4-4d61-9efb-75b08cdbae95",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "7a87c2fd-3fe4-4d61-9efb-75b08cdbae95",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "1c25737e-3258-4d03-9728-25ef9b38a877",
+    "type": "typing",
+    "text": "OK, I'll search for 'Prisma Cloud DSPM Palo Alto Networks data security posture management product page'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "1c25737e-3258-4d03-9728-25ef9b38a877-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "1c25737e-3258-4d03-9728-25ef9b38a877",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "1c25737e-3258-4d03-9728-25ef9b38a877",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "838988c3-f901-49e5-840a-9c12ea689c68",
+    "type": "typing",
+    "text": "OK, I'll search for 'Wiz DSPM data security posture management capabilities'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "838988c3-f901-49e5-840a-9c12ea689c68-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "838988c3-f901-49e5-840a-9c12ea689c68",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "838988c3-f901-49e5-840a-9c12ea689c68",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "c3bd8090-68cc-4e6b-9238-59801eee411b",
+    "type": "typing",
+    "text": "OK, I'll search for 'Rubrik DSPM product Laminar Polar Security acquisition data security posture'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "c3bd8090-68cc-4e6b-9238-59801eee411b-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "c3bd8090-68cc-4e6b-9238-59801eee411b",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "c3bd8090-68cc-4e6b-9238-59801eee411b",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "6d06369b-cdae-4cee-b8b2-4c5709e75c69",
+    "type": "typing",
+    "text": "OK, I'll search for 'Varonis DSPM data security posture management cloud data security'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "6d06369b-cdae-4cee-b8b2-4c5709e75c69-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "6d06369b-cdae-4cee-b8b2-4c5709e75c69",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "6d06369b-cdae-4cee-b8b2-4c5709e75c69",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "5e596cc3-0b6b-4b07-ab0d-ea9f557f4b5b",
+    "type": "typing",
+    "text": "OK, I'll search for 'Securiti DSPM data security posture management product capabilities'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "5e596cc3-0b6b-4b07-ab0d-ea9f557f4b5b-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "5e596cc3-0b6b-4b07-ab0d-ea9f557f4b5b",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "5e596cc3-0b6b-4b07-ab0d-ea9f557f4b5b",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "70994aa2-2b56-4c41-bb30-171b5d8dfe62",
+    "type": "typing",
+    "text": "OK, I'll search for 'BigID DSPM data security posture management product page'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "70994aa2-2b56-4c41-bb30-171b5d8dfe62-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "70994aa2-2b56-4c41-bb30-171b5d8dfe62",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "70994aa2-2b56-4c41-bb30-171b5d8dfe62",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "044a13df-71b5-47f6-a01c-ceac97d54ad8",
+    "type": "typing",
+    "text": "OK, I'll search for 'DSPM market size forecast 2024 2029 data security posture management'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "044a13df-71b5-47f6-a01c-ceac97d54ad8-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "044a13df-71b5-47f6-a01c-ceac97d54ad8",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "044a13df-71b5-47f6-a01c-ceac97d54ad8",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "c3596396-7ea4-4c0b-9f99-58a9a6e374f8",
+    "type": "typing",
+    "text": "OK, I'll search for 'data security posture management market revenue Gartner DSPM market definition 2023 2024'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "c3596396-7ea4-4c0b-9f99-58a9a6e374f8-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "c3596396-7ea4-4c0b-9f99-58a9a6e374f8",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "c3596396-7ea4-4c0b-9f99-58a9a6e374f8",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Searching for revenue data",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 2
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/2",
+    "text": "Looking into competitors' revenue figures by searching for companies like PANW, Varonis, Rubrik, and others, including private companies.",
+    "timestamp": "2026-03-26T00:51:12.441Z",
+    "type": "typing",
+    "channelData": {
+      "streamSequence": 1,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Searching for revenue data",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 2
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/2/60e6f6e7-826a-47f9-a674-ee1c1e876a6f-1",
+    "text": "Looking into competitors' revenue figures by searching for companies like PANW, Varonis, Rubrik, and others, including private companies.",
+    "timestamp": "2026-03-26T00:51:12.595Z",
+    "type": "typing",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/2",
+      "streamSequence": 2,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "id": "8068e188-f6ad-498a-861c-410829b7de7d",
+    "type": "typing",
+    "text": "OK, I'll search for 'Palo Alto Networks fiscal year 2024 total revenue form 10-k amount'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "8068e188-f6ad-498a-861c-410829b7de7d-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "8068e188-f6ad-498a-861c-410829b7de7d",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "8068e188-f6ad-498a-861c-410829b7de7d",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "9df21b90-5fe6-425f-bd80-c54faee7f204",
+    "type": "typing",
+    "text": "OK, I'll search for 'Varonis Systems 2024 total revenue annual report 2024 revenue'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "9df21b90-5fe6-425f-bd80-c54faee7f204-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "9df21b90-5fe6-425f-bd80-c54faee7f204",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "9df21b90-5fe6-425f-bd80-c54faee7f204",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "61ae62fe-b04b-424d-bfd1-806e288e9e97",
+    "type": "typing",
+    "text": "OK, I'll search for 'Rubrik fiscal year 2025 revenue annual report S-1 total revenue'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "61ae62fe-b04b-424d-bfd1-806e288e9e97-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "61ae62fe-b04b-424d-bfd1-806e288e9e97",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "61ae62fe-b04b-424d-bfd1-806e288e9e97",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "30494ef1-de03-4e71-9fa4-ecfc03f7128f",
+    "type": "typing",
+    "text": "OK, I'll search for 'Wiz company annual recurring revenue 2024 2025 sources'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "30494ef1-de03-4e71-9fa4-ecfc03f7128f-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "30494ef1-de03-4e71-9fa4-ecfc03f7128f",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "30494ef1-de03-4e71-9fa4-ecfc03f7128f",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "5418fadc-6884-47aa-bff4-e14e9de5e7fe",
+    "type": "typing",
+    "text": "OK, I'll search for 'BigID revenue 2024 2025 estimate public sources'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "5418fadc-6884-47aa-bff4-e14e9de5e7fe-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "5418fadc-6884-47aa-bff4-e14e9de5e7fe",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "5418fadc-6884-47aa-bff4-e14e9de5e7fe",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "88ea8a29-775c-4d99-8a12-a936cbe660c4",
+    "type": "typing",
+    "text": "OK, I'll search for 'Securiti revenue 2024 estimate'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "88ea8a29-775c-4d99-8a12-a936cbe660c4-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "88ea8a29-775c-4d99-8a12-a936cbe660c4",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "88ea8a29-775c-4d99-8a12-a936cbe660c4",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "9b9bb5fd-a7c1-43e4-bb1c-a417accbaf6f",
+    "type": "typing",
+    "text": "OK, I'll search for 'Cyera annual recurring revenue 2024 2025'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "9b9bb5fd-a7c1-43e4-bb1c-a417accbaf6f-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "9b9bb5fd-a7c1-43e4-bb1c-a417accbaf6f",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "9b9bb5fd-a7c1-43e4-bb1c-a417accbaf6f",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "fd3fb6fc-6476-4ad1-8644-c41b63c82c3e",
+    "type": "typing",
+    "text": "OK, I'll search for 'Sentra revenue ARR 2024 2025'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "fd3fb6fc-6476-4ad1-8644-c41b63c82c3e-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "fd3fb6fc-6476-4ad1-8644-c41b63c82c3e",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "fd3fb6fc-6476-4ad1-8644-c41b63c82c3e",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "59d59aaa-e02b-4cb8-aebb-e28b16946c37",
+    "type": "typing",
+    "text": "OK, I'll search for 'Microsoft Purview revenue data governance revenue not disclosed'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "59d59aaa-e02b-4cb8-aebb-e28b16946c37-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "59d59aaa-e02b-4cb8-aebb-e28b16946c37",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "59d59aaa-e02b-4cb8-aebb-e28b16946c37",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "0596c9fb-a923-4e0a-8aaa-28cd7f043e10",
+    "type": "typing",
+    "text": "OK, I'll search for 'Proofpoint revenue 2024 Thoma Bravo private estimated'...",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "informative",
+      "streamSequence": 1
+    },
+    "entities": [
+      {
+        "streamType": "informative",
+        "streamSequence": 1,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "id": "0596c9fb-a923-4e0a-8aaa-28cd7f043e10-1",
+    "type": "typing",
+    "text": "",
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "conversation": {
+      "id": "d0673538-4471-4240-9cc1-18f9eaf79df0"
+    },
+    "channelData": {
+      "streamType": "streaming",
+      "streamId": "0596c9fb-a923-4e0a-8aaa-28cd7f043e10",
+      "streamSequence": 2
+    },
+    "entities": [
+      {
+        "streamId": "0596c9fb-a923-4e0a-8aaa-28cd7f043e10",
+        "streamType": "streaming",
+        "streamSequence": 2,
+        "type": "streaminfo",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Gathering key sources",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 3
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/3",
+    "text": "Looking into Microsoft Purview DSPM features, I’m selecting sources like Microsoft Learn and TechCommunity, as well as product pages for competitors. I'll also consult a Frost & Sullivan report for market size.",
+    "timestamp": "2026-03-26T00:51:15.637Z",
+    "type": "typing",
+    "channelData": {
+      "streamSequence": 1,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Gathering key sources",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 3
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/3/08d5a150-2914-4aa9-957e-b439cbf9c5a4-1",
+    "text": "Looking into Microsoft Purview DSPM features, I’m selecting sources like Microsoft Learn and TechCommunity, as well as product pages for competitors. I'll also consult a Frost & Sullivan report for market size.",
+    "timestamp": "2026-03-26T00:51:15.792Z",
+    "type": "typing",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/3",
+      "streamSequence": 2,
+      "streamType": "streaming"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Researching DSPM market and competitors",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 0
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/0/final",
+    "text": "Looking into a broad web search for DSPM market comparisons and competitor offerings, including details on market sizes, revenues, and publicly available financial data from specific vendors.",
+    "timestamp": "2026-03-26T00:51:09.135Z",
+    "type": "message",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/0",
+      "streamType": "final"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Conducting detailed web search",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 1
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/1/final",
+    "text": "Beginning multi-query searches focusing on DSPM market, revenue figures, and competitor analysis. Will focus on credible data sources and avoid speculation, highlighting estimates where necessary.",
+    "timestamp": "2026-03-26T00:51:09.426Z",
+    "type": "message",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/1",
+      "streamType": "final"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Searching for revenue data",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 2
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/2/final",
+    "text": "Looking into competitors' revenue figures by searching for companies like PANW, Varonis, Rubrik, and others, including private companies.",
+    "timestamp": "2026-03-26T00:51:12.595Z",
+    "type": "message",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/2",
+      "streamType": "final"
+    }
+  },
+  {
+    "entities": [
+      {
+        "@context": "https://schema.org",
+        "@id": "",
+        "@type": "Message",
+        "type": "https://schema.org/Message",
+        "abstract": "Gathering key sources",
+        "isPartOf": {
+          "@id": "_:e31b61cd-9dcc-4ad2-858f-54f24a17eae5",
+          "@type": "HowTo"
+        },
+        "keywords": [],
+        "position": 3
+      }
+    ],
+    "from": {
+      "id": "Default-e996fb66-b977-4a40-ae92-c5096c0964e4/660ef082-6c28-f111-88b4-000d3a36b21b"
+    },
+    "id": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/3/final",
+    "text": "Looking into Microsoft Purview DSPM features, I’m selecting sources like Microsoft Learn and TechCommunity, as well as product pages for competitors. I'll also consult a Frost & Sullivan report for market size.",
+    "timestamp": "2026-03-26T00:51:15.792Z",
+    "type": "message",
+    "channelData": {
+      "streamId": "e31b61cd-9dcc-4ad2-858f-54f24a17eae5/3",
+      "streamType": "final"
+    }
+  }
+]
