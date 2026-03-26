@@ -1,5 +1,9 @@
+/* eslint-disable complexity */
+/* eslint-disable no-magic-numbers */
 import { cx } from '@emotion/css';
 import { hooks } from 'botframework-webchat-api';
+import type { Definition } from 'mdast';
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { useRefFrom } from 'use-ref-from';
@@ -14,15 +18,15 @@ const { useLocalizer, useStyleOptions } = hooks;
 
 type MarkdownLinkDefinition = Readonly<{
   identifier: string;
-  label: string;
-  title: string;
+  label?: string;
+  title?: string;
   url: string;
 }>;
 
 type StreamingRenderResult = Readonly<{
   definitions: readonly MarkdownLinkDefinition[];
   fragment: DocumentFragment;
-  numFrozenBlocks: number;
+  activeBlockMarker: Comment | null;
 }>;
 
 type StreamingRenderer = Readonly<{
@@ -54,8 +58,8 @@ export default function useStreamingMarkdownWithDefinitions(
   );
 
   const hasStreamingSupport = !!renderMarkdown?.createStreamingRenderer;
+  console.warn('[useStreamingMarkdownWithDefinitions] Streaming support:', hasStreamingSupport);
 
-  // Create the streaming renderer instance once per renderMarkdown identity.
   const streamingRenderer = useMemo<StreamingRenderer | undefined>(() => {
     if (renderMarkdown?.createStreamingRenderer) {
       return renderMarkdown.createStreamingRenderer(styleOptionsRef.current, { externalLinkAlt });
@@ -72,7 +76,6 @@ export default function useStreamingMarkdownWithDefinitions(
     return streamingRenderer.update(markdown);
   }, [markdown, streamingRenderer]);
 
-  // Fallback path: render via legacy renderMarkdown → full HTML string.
   const fallbackHTML = useMemo<string | undefined>(() => {
     if (hasStreamingSupport || !renderMarkdown || !markdown) {
       return undefined;
@@ -81,16 +84,25 @@ export default function useStreamingMarkdownWithDefinitions(
     return renderMarkdown(markdown, styleOptionsRef.current, { externalLinkAlt });
   }, [externalLinkAlt, hasStreamingSupport, markdown, renderMarkdown, styleOptionsRef]);
 
-  const definitions = streamingResult?.definitions ?? EMPTY_DEFINITIONS;
+  const fallbackDefinitions = useMemo(
+    () =>
+      hasStreamingSupport
+        ? EMPTY_DEFINITIONS
+        : fromMarkdown(markdown).children.filter((node): node is Definition => node.type === 'definition'),
+    [hasStreamingSupport, markdown]
+  );
 
-  // Track DOM state for incremental updates.
+  const definitions = streamingResult?.definitions ?? fallbackDefinitions;
+
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const committedBlockCountRef = useRef(0);
 
-  // Streaming DOM management in useLayoutEffect.
-  // The full HTML is sanitized as one unit (preserving inter-block whitespace),
-  // then split into frozen blocks (already committed to DOM) and an active block
-  // (last element, which may still be receiving content).
+  // Saved raw child-node index from the previous parser result.
+  // It points to where the active tail started on the previous turn.
+  const previousActiveStartIndexRef = useRef(0);
+
+  // Boundary comment inside the live DOM. Everything after it is the mutable tail.
+  const activeBoundaryRef = useRef<Comment | null>(null);
+
   useLayoutEffect(() => {
     if (!streamingResult) {
       return;
@@ -102,91 +114,90 @@ export default function useStreamingMarkdownWithDefinitions(
       return;
     }
 
-    const { fragment, numFrozenBlocks } = streamingResult;
+    const { activeBlockMarker, fragment } = streamingResult;
+    const rawNodes = Array.from(fragment.childNodes);
+    const currentMarkerIndex = activeBlockMarker ? rawNodes.indexOf(activeBlockMarker) : -1;
+    const currentActiveStartIndex = currentMarkerIndex >= 0 ? currentMarkerIndex : 0;
+    const previousActiveStartIndex = previousActiveStartIndexRef.current;
 
-    // Ensure wrapper div exists.
     let wrapper = wrapperRef.current;
 
     if (!wrapper || !container.contains(wrapper)) {
       wrapper = document.createElement('div');
-      containerClassName && wrapper.classList.add(...containerClassName.split(' ').filter(Boolean));
       container.textContent = '';
       container.appendChild(wrapper);
       wrapperRef.current = wrapper;
-      committedBlockCountRef.current = 0;
+      activeBoundaryRef.current = null;
+      previousActiveStartIndexRef.current = 0;
     }
 
-    // Sanitize/transform the fragment as one unit so inter-block whitespace is preserved.
-    const fullFragment = transformHTMLContent(fragment);
+    wrapper.className = containerClassName || '';
 
-    // Count element children in the sanitized fragment.
-    const elementChildren: Element[] = [];
+    let activeBoundary = activeBoundaryRef.current;
 
-    for (const child of fullFragment.childNodes) {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        elementChildren.push(child as Element);
-      }
+    if (!activeBoundary || !wrapper.contains(activeBoundary)) {
+      activeBoundary = null;
+      activeBoundaryRef.current = null;
     }
 
-    // If frozen block count decreased, we need to rebuild.
-    if (numFrozenBlocks < committedBlockCountRef.current) {
-      wrapper.textContent = '';
-      committedBlockCountRef.current = 0;
+    const canIncrement = !!activeBoundary && currentMarkerIndex >= 0 && currentMarkerIndex >= previousActiveStartIndex;
+
+    console.warn(
+      '[useStreamingMarkdownWithDefinitions] Incremental update:',
+      canIncrement
+        ? 'Yes'
+        : !activeBoundary
+          ? 'No (active boundary lost)'
+          : !(currentMarkerIndex >= 0)
+            ? 'No (not found in current nodes)'
+            : !(currentMarkerIndex >= previousActiveStartIndex)
+              ? 'No (current marker index is before previous active start index)'
+              : 'No (wtf)',
+      '|',
+      'Current marker index:',
+      currentMarkerIndex,
+      '|',
+      'Previous active start index:',
+      previousActiveStartIndex
+    );
+
+    if (!canIncrement) {
+      const transformedFragment = transformHTMLContent(fragment);
+      wrapper.replaceChildren(transformedFragment);
+    } else {
+      const activeNodes = Array.from(fragment.childNodes).slice(previousActiveStartIndex);
+      const activeFragment = document.createDocumentFragment();
+      activeFragment.append(...activeNodes);
+      const transformedFragment = transformHTMLContent(activeFragment);
+
+      const range = document.createRange();
+      range.setStartBefore(activeBoundary);
+      range.setEndAfter(wrapper.lastChild);
+      range.deleteContents();
+
+      wrapper.append(transformedFragment);
     }
 
-    // Determine how many element blocks we can keep in the DOM.
-    // committed blocks are already in the wrapper and don't change.
-    const keepCount = Math.min(committedBlockCountRef.current, numFrozenBlocks);
+    previousActiveStartIndexRef.current = currentActiveStartIndex;
 
-    // Remove everything after the kept blocks (active block + trailing text nodes from previous render).
-    // We track by counting Element children to skip text nodes between them.
-    let elementsSeen = 0;
-    let cutoffNode: ChildNode | null = null;
-
-    for (const child of Array.from(wrapper.childNodes)) {
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        elementsSeen++;
-      }
-
-      if (elementsSeen > keepCount) {
-        cutoffNode = child;
-        break;
-      }
+    activeBoundaryRef.current = null;
+    if (!activeBlockMarker) {
+      return;
     }
 
-    // Remove from the cutoff point onward.
-    if (cutoffNode) {
-      while (wrapper.lastChild && wrapper.lastChild !== cutoffNode) {
-        wrapper.lastChild.remove();
-      }
-
-      cutoffNode.remove();
+    let boundary = wrapper.lastChild;
+    while (
+      boundary &&
+      (boundary.nodeType !== Node.COMMENT_NODE || boundary.nodeValue !== activeBlockMarker.nodeValue)
+    ) {
+      boundary = boundary.previousSibling;
     }
 
-    // Consume the corresponding nodes from the sanitized fragment (we skip committed ones).
-    let fragmentElementsSeen = 0;
-
-    while (fullFragment.firstChild) {
-      if (fullFragment.firstChild.nodeType === Node.ELEMENT_NODE) {
-        fragmentElementsSeen++;
-      }
-
-      // Skip nodes belonging to already committed blocks.
-      if (fragmentElementsSeen <= keepCount) {
-        fullFragment.firstChild.remove();
-        continue;
-      }
-
-      break;
+    if (boundary) {
+      activeBoundaryRef.current = boundary as Comment;
     }
-
-    // Append the remaining fragment (new frozen blocks + active block + whitespace) to wrapper.
-    wrapper.appendChild(fullFragment);
-
-    committedBlockCountRef.current = numFrozenBlocks;
   }, [containerClassName, containerRef, streamingResult, transformHTMLContent]);
 
-  // Fallback DOM management: full replacement, matching the original dangerouslySetInnerHTML behavior.
   useLayoutEffect(() => {
     if (streamingResult || fallbackHTML === undefined) {
       return;
@@ -201,15 +212,17 @@ export default function useStreamingMarkdownWithDefinitions(
     const documentFragment = transformHTMLContent(parseDocumentFragmentFromString(fallbackHTML));
     const wrapper = document.createElement('div');
 
-    containerClassName && wrapper.classList.add(...containerClassName.split(' ').filter(Boolean));
+    wrapper.className = containerClassName || '';
     wrapper.append(...documentFragment.childNodes);
 
     container.textContent = '';
     container.appendChild(wrapper);
+
     wrapperRef.current = wrapper;
+    activeBoundaryRef.current = null;
+    previousActiveStartIndexRef.current = 0;
   }, [containerClassName, containerRef, fallbackHTML, streamingResult, transformHTMLContent]);
 
-  // Clear container when there is no content at all.
   useLayoutEffect(() => {
     if (streamingResult || fallbackHTML !== undefined) {
       return;
@@ -223,13 +236,14 @@ export default function useStreamingMarkdownWithDefinitions(
 
     container.textContent = '';
     wrapperRef.current = null;
-    committedBlockCountRef.current = 0;
+    activeBoundaryRef.current = null;
+    previousActiveStartIndexRef.current = 0;
   }, [containerRef, fallbackHTML, streamingResult]);
 
-  // Reset committed blocks when streaming renderer changes.
   useLayoutEffect(() => {
-    committedBlockCountRef.current = 0;
     wrapperRef.current = null;
+    activeBoundaryRef.current = null;
+    previousActiveStartIndexRef.current = 0;
   }, [streamingRenderer]);
 
   return Object.freeze({ definitions });

@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import katex from 'katex';
 import { compile, parse, postprocess, preprocess } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
@@ -21,7 +22,7 @@ type StreamingRenderOptions = Readonly<{
 type StreamingRenderResult = Readonly<{
   definitions: readonly MarkdownLinkDefinition[];
   fragment: DocumentFragment;
-  numFrozenBlocks: number;
+  activeBlockMarker: Comment | null;
 }>;
 
 type StreamingRenderer = Readonly<{
@@ -49,24 +50,29 @@ export default function createStreamingRenderer(
   };
 
   let previousMarkdown = '';
-  let previousNumFrozenBlocks = 0;
+  let previousHTML = '';
+  const domParser = new DOMParser();
+
+  const id = Math.random().toString(36).slice(2);
 
   return Object.freeze({
     update(fullMarkdown: string): StreamingRenderResult {
       const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown);
 
-      // If content was edited (not a pure append), invalidate frozen blocks.
       if (!isAppendOnly) {
-        previousNumFrozenBlocks = 0;
+        previousHTML = '';
       }
 
       previousMarkdown = fullMarkdown;
 
       if (!fullMarkdown) {
+        previousMarkdown = '';
+        previousHTML = '';
+
         return Object.freeze({
           definitions: Object.freeze([]),
           fragment: document.createDocumentFragment(),
-          numFrozenBlocks: 0
+          activeBlockMarker: null
         });
       }
 
@@ -84,30 +90,34 @@ export default function createStreamingRenderer(
       const rawHTML = compile(micromarkOptions)(postprocess(events));
       const definitions = extractDefinitionsFromEvents(events);
 
+      const isAppendHtml = !!previousHTML && rawHTML.startsWith(previousHTML);
+      previousHTML = rawHTML;
+
       // Apply betterLinkDocumentMod to the full HTML.
-      const domParser = new DOMParser();
       const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
       const fragment = parsedDocument.createDocumentFragment();
 
-      fragment.append(...parsedDocument.body.childNodes);
+      fragment.append(...Array.from(parsedDocument.body.childNodes));
 
       const decorate = createDecorate(definitions, externalLinkAlt);
 
       betterLinkDocumentMod(fragment, decorate);
 
-      const totalBlocks = fragment.children.length;
+      // Insert marker before the last top-level element indicating active block.
+      let activeBlockMarker = null;
+      if (isAppendHtml) {
+        const lastElement = fragment.lastElementChild;
 
-      // All blocks except the last are frozen (they won't change with future appends).
-      const numFrozenBlocks = isAppendOnly
-        ? Math.max(previousNumFrozenBlocks, Math.max(0, totalBlocks - 1))
-        : Math.max(0, totalBlocks - 1);
-
-      previousNumFrozenBlocks = numFrozenBlocks;
+        if (lastElement) {
+          activeBlockMarker = parsedDocument.createComment(`webchat-html-stream-active-boundary-${id}`);
+          fragment.insertBefore(activeBlockMarker, lastElement);
+        }
+      }
 
       return Object.freeze({
         definitions,
         fragment,
-        numFrozenBlocks
+        activeBlockMarker
       });
     }
   });
