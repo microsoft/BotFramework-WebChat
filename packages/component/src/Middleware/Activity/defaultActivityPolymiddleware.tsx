@@ -37,7 +37,7 @@ function shouldFilterActivity(activity, messageThing) {
 }
 
 /**
- * @deprecated Use `defaultActivityPolymiddleware` instead. The `createCoreActivityMiddleware` will be removed on or after 2028-03-18.
+ * @deprecated Use `defaultActivityPolymiddleware` instead. The `createCoreActivityMiddleware` will be removed on or after 2028-03-16.
  */
 function createCoreActivityMiddleware(): readonly ActivityMiddleware[] {
   return Object.freeze([

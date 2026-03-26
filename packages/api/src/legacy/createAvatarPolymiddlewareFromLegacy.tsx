@@ -39,7 +39,7 @@ const MemoizedLegacyAvatarBridge = memo(LegacyAvatarBridge);
 /**
  * Polyfill legacy avatar middleware into a polymiddleware.
  *
- * @deprecated Use `polymiddleware` instead. Legacy avatar middleware is being deprecated and will be removed on or after 2027-08-16.
+ * @deprecated Use `polymiddleware` instead. Legacy avatar middleware is being deprecated and will be removed on or after 2028-03-16.
  * @param middleware An array of legacy avatar middleware.
  * @returns A polymiddleware composed by legacy avatar middleware.
  */

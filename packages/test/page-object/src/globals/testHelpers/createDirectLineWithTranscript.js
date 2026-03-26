@@ -39,10 +39,9 @@ export default function createDirectLineWithTranscript(
   { overridePostActivity, patchActivity: patchActivityFromOptions, ponyfill: { Date } = { Date: window.Date } } = {}
 ) {
   const now = Date.now();
+  const updateRelativeTimestamp = createUpdateRelativeTimestamp(now, { Date });
   const patchActivity = activity =>
-    createUpdateRelativeTimestamp(now, { Date })(
-      patchActivityFromOptions ? patchActivityFromOptions(activity) : activity
-    );
+    updateRelativeTimestamp(patchActivityFromOptions ? patchActivityFromOptions(activity) : activity);
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });

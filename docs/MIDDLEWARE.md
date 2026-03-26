@@ -330,7 +330,7 @@ We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule
 | Activity status              |                                                                         | (TBD)              |
 | Attachment                   |                                                                         | (TBD)              |
 | Attachment for screen reader |                                                                         | (TBD)              |
-| Avatar                       | PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779) | 2028-03-18         |
+| Avatar                       | PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779) | 2028-03-16         |
 | Card action                  |                                                                         | (TBD)              |
 | Group activities             |                                                                         | (TBD)              |
 | Scroll to end button         |                                                                         | (TBD)              |

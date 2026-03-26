@@ -40,7 +40,7 @@ Breaking changes in this release:
 - 💥 Root-level (unconnected) `Claim` entity is being deprecated, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim). It will be removed on or after 2027-08-29
    - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - 💥 `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is removed after deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
-- 💥 `avatarMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2028-03-18, related to PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
+- 💥 `avatarMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2028-03-16, related to PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
 
 ### Added
 
@@ -357,7 +357,7 @@ Breaking changes in this release:
 - Removed legacy test harness, in PR [#5655](https://github.com/microsoft/BotFramework-WebChat/issues/5655), by [@compulim](https://github.com/compulim)
    - All tests are now either using `html2` test harness or simple unit tests
    - Legacy and `html` (html1) test harness are all migrated to `html2`
-- `avatarMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2028-03-18, related to PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
+- `avatarMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2028-03-16, related to PR [#5779](https://github.com/microsoft/BotFramework-WebChat/pull/5779)
 
 ### Fixed
 

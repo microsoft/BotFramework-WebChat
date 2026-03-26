@@ -4,7 +4,7 @@ import { type ReactNode } from 'react';
 import type { AvatarPolymiddlewareRequest } from '../avatarPolymiddleware';
 
 // Polymiddleware requires immutable request object.
-// When bridging between legacy and polymiddlware, this symbol helps keeping the original object.
+// When bridging between legacy and polymiddleware, this symbol helps keeping the original object.
 const __INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol = Symbol();
 
 type LegacyAvatarComponentFactoryArguments = {
