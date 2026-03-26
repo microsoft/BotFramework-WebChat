@@ -12,15 +12,15 @@ import styles from './RenderMarkdown.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
+type RenderMarkdownAsHTMLFn = (
+  markdown: string,
+  styleOptions?: Readonly<StrictStyleOptions>,
+  options?: Readonly<{ externalLinkAlt: string }>
+) => string;
+
 export default function useRenderMarkdownAsHTML(
   mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'message activity' = 'message activity'
-):
-  | ((
-      markdown: string,
-      styleOptions?: Readonly<StrictStyleOptions>,
-      options?: Readonly<{ externalLinkAlt: string }>
-    ) => string)
-  | undefined {
+): RenderMarkdownAsHTMLFn | undefined {
   const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
   const localize = useLocalizer();
@@ -41,6 +41,8 @@ export default function useRenderMarkdownAsHTML(
     [classNames, mode]
   );
 
+  // For 'message activity' mode, streaming rendering is available via useStreamingMarkdownWithDefinitions hook.
+  // This hook still returns a full-render function for backward compatibility and other consumers.
   return useMemo(
     () =>
       renderMarkdown &&
