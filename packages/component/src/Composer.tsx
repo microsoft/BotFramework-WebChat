@@ -443,11 +443,7 @@ const Composer = ({
 
   const patchedToastMiddleware = useMemoIterable<readonly ToastMiddleware[]>(
     () =>
-      Object.freeze([
-        ...singleToArray(toastMiddleware),
-        ...theme.toastMiddleware,
-        ...createDefaultToastMiddleware()
-      ]),
+      Object.freeze([...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()]),
     [toastMiddleware, theme.toastMiddleware]
   );
 
