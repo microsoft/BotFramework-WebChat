@@ -70,6 +70,13 @@
         expect(consoleError.mock.calls[0][0].message).toBe('No renderer for activity of type "x-unknown-activity"');
 
         // THEN: Should emit as exception event.
+        // The telemetry event fires asynchronously; wait for it to appear.
+        await pageConditions.became(
+          'telemetry exception event for unknown activity',
+          () => onTelemetry.mock.calls.some(call => call[0]?.type === 'exception'),
+          2000
+        );
+
         const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
 
         expect(exceptionEvent).toBeTruthy();
