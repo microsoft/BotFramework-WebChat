@@ -4,9 +4,9 @@ import { memo, useMemo } from 'react';
 import usePrevious from '../../hooks/internal/usePrevious';
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
 import { SEND_FAILED } from '../../types/internal/SendStatus';
-import isPresentational from './isPresentational';
+import useActivityKeysOfSendStatus from './useActivityKeysOfSendStatus';
 
-const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
+const { useLocalizer } = hooks;
 
 /**
  * React component to on-demand narrate "Failed to send message" at the end of the live region.
@@ -19,8 +19,6 @@ const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
  * Thus, we need to use a live region "footnote" to indicate the message was failed to send.
  */
 const LiveRegionSendFailed = () => {
-  const [sendStatusByActivityKey] = useSendStatusByActivityKey();
-  const getActivityByKey = useGetActivityByKey();
   const localize = useLocalizer();
 
   /**
@@ -29,17 +27,7 @@ const LiveRegionSendFailed = () => {
    * Activities which are presentational, such as `event` or `typing`, are ignored to reduce confusions.
    * "Failed to send message" should not be narrated for presentational activities.
    */
-  const activityKeysOfSendFailed = useMemo<Set<string>>(
-    () =>
-      Array.from(sendStatusByActivityKey).reduce(
-        (activityKeysOfSendFailed, [key, sendStatus]) =>
-          sendStatus === SEND_FAILED && !isPresentational(getActivityByKey(key))
-            ? activityKeysOfSendFailed.add(key)
-            : activityKeysOfSendFailed,
-        new Set<string>()
-      ),
-    [getActivityByKey, sendStatusByActivityKey]
-  );
+  const activityKeysOfSendFailed = useActivityKeysOfSendStatus(SEND_FAILED);
 
   /** Returns localized "Failed to send message." */
   const liveRegionSendFailedAlt = localize('TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT');

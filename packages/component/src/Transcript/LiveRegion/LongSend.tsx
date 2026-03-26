@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
 import { SENDING } from '../../types/internal/SendStatus';
-import isPresentational from './isPresentational';
+import useActivityKeysOfSendStatus from './useActivityKeysOfSendStatus';
 
-const { useGetActivityByKey, useLocalizer, usePonyfill, useSendStatusByActivityKey } = hooks;
+const { useLocalizer, usePonyfill } = hooks;
 
 const SENDING_ANNOUNCEMENT_DELAY = 3000;
 
@@ -19,8 +19,6 @@ const SENDING_ANNOUNCEMENT_DELAY = 3000;
  * Presentational activities (e.g. `event` or `typing`) are excluded to reduce noise.
  */
 const LiveRegionLongSend = () => {
-  const [sendStatusByActivityKey] = useSendStatusByActivityKey();
-  const getActivityByKey = useGetActivityByKey();
   const localize = useLocalizer();
   const [{ clearTimeout, setTimeout }] = usePonyfill();
 
@@ -33,21 +31,7 @@ const LiveRegionLongSend = () => {
   const [tick, setTick] = useState(0);
 
   /** Keys of outgoing non-presentational activities that are currently in the sending state. */
-  const sendingKeys = useMemo<Set<string>>(() => {
-    const keys = new Set<string>();
-
-    for (const [key, sendStatus] of sendStatusByActivityKey) {
-      if (sendStatus !== SENDING) {
-        continue;
-      }
-
-      if (!isPresentational(getActivityByKey(key))) {
-        keys.add(key);
-      }
-    }
-
-    return keys;
-  }, [getActivityByKey, sendStatusByActivityKey]);
+  const sendingKeys = useActivityKeysOfSendStatus(SENDING);
 
   /**
    * Arm a per-key timer when a key newly enters `sendingKeys`.
