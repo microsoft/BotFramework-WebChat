@@ -37,7 +37,9 @@ const LiveRegionSendSending = () => {
     const keys = new Set<string>();
 
     for (const [key, sendStatus] of sendStatusByActivityKey) {
-      if (sendStatus !== SENDING) continue;
+      if (sendStatus !== SENDING) {
+        continue;
+      }
 
       if (!isPresentational(getActivityByKey(key))) {
         keys.add(key);
@@ -60,15 +62,21 @@ const LiveRegionSendSending = () => {
       }
     }
 
-    if (!sendingKeys.size) return;
+    if (!sendingKeys.size) {
+      return;
+    }
 
     const timeouts: ReturnType<typeof setTimeout>[] = [];
 
     for (const key of sendingKeys) {
-      if (announcedKeysRef.current.has(key)) continue;
+      if (announcedKeysRef.current.has(key)) {
+        continue;
+      }
 
       const timeout = setTimeout(() => {
-        if (!sendingKeys.has(key)) return;
+        if (!sendingKeys.has(key)) {
+          return;
+        }
 
         announcedKeysRef.current.add(key);
         setTick(t => t + 1);
