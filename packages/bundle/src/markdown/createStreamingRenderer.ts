@@ -1,7 +1,7 @@
 import katex from 'katex';
 import { compile, parse, postprocess, preprocess } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
-import type { Chunk, Event, Options, TokenizeContext } from 'micromark-util-types';
+import type { Options } from 'micromark-util-types';
 
 import { math, mathHtml } from './mathExtension';
 import betterLinkDocumentMod from './private/betterLinkDocumentMod';
@@ -40,17 +40,47 @@ function parseDocumentFragmentFromString(html: string): DocumentFragment {
   return fragment;
 }
 
-const serializer = new XMLSerializer();
-function serializeNodeString(node: Node): string {
-  return serializer.serializeToString(node).trim();
+function serializeDocumentFragment(fragment: DocumentFragment): string {
+  const wrapper = fragment.ownerDocument?.createElement('div') ?? document.createElement('div');
+
+  wrapper.append(...Array.from(fragment.childNodes));
+
+  const html = wrapper.innerHTML;
+
+  // Move children back to fragment.
+  fragment.append(...Array.from(wrapper.childNodes));
+
+  return html;
 }
 
+/**
+ * Splits compiled HTML into root-level block elements.
+ *
+ * Trailing whitespace text nodes (e.g. `\n` between `</p>` and `<p>`) are
+ * attached to the preceding element block so that `textContent` of the
+ * reconstructed DOM preserves inter-block newlines.
+ */
 function splitIntoBlocks(html: string): readonly string[] {
-  const documentFragment = parseDocumentFragmentFromString(html);
+  const parsedDocument = domParser.parseFromString(html, 'text/html');
+  const children = Array.from(parsedDocument.body.childNodes);
   const blocks: string[] = [];
 
-  for (const child of Array.from(documentFragment.childNodes)) {
-    blocks.push(serializeNodeString(child));
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+
+    if (!(child instanceof Element)) {
+      continue;
+    }
+
+    let blockHTML = child.outerHTML;
+
+    // Absorb trailing whitespace text nodes to preserve inter-block newlines.
+    while (i + 1 < children.length && children[i + 1]?.nodeType === Node.TEXT_NODE) {
+      blockHTML += children[i + 1]?.nodeValue ?? '';
+      i++;
+    }
+
+    blocks.push(blockHTML);
   }
 
   return blocks;
@@ -78,144 +108,66 @@ export default function createStreamingRenderer(
     ]
   };
 
-  let committedBlockCount = 0;
-  let previousDefinitionCount = 0;
-
-  // Persistent state for incremental tokenization.
-  // `parse(options).document()` returns a `TokenizeContext` with `.write()` and `.events`.
-  let preprocessor = preprocess();
-  let parser = parse(micromarkOptions);
-  let tokenizerContext: TokenizeContext = parser.document();
-
   let previousMarkdown = '';
+  let committedBlockCount = 0;
 
   const frozenBlockHTMLs: string[] = [];
 
-  function fullReparse(fullMarkdown: string): StreamingRenderResult {
-    // Reset all state.
-    committedBlockCount = 0;
-    previousDefinitionCount = 0;
-    previousMarkdown = fullMarkdown;
-    frozenBlockHTMLs.length = 0;
-
-    // Reset incremental tokenizer state.
-    preprocessor = preprocess();
-    parser = parse(micromarkOptions);
-    tokenizerContext = parser.document();
-
-    let processedMarkdown = fullMarkdown;
+  function oneshotCompile(markdown: string): {
+    readonly html: string;
+    readonly definitions: readonly MarkdownLinkDefinition[];
+  } {
+    let processedMarkdown = markdown;
 
     if (markdownRespectCRLF) {
       processedMarkdown = respectCRLFPre(processedMarkdown);
     }
 
-    // Feed to the persistent tokenizer (for future incremental use).
-    const persistChunks = preprocessor(processedMarkdown, undefined, false);
+    const preprocessor = preprocess();
+    const parser = parse(micromarkOptions);
+    const tokenizerContext = parser.document();
+    const chunks = preprocessor(processedMarkdown, undefined, true);
+    const events = tokenizerContext.write(chunks);
+    const html = compile(micromarkOptions)(postprocess(events));
+    const definitions = extractDefinitionsFromEvents(events);
 
-    tokenizerContext.write(persistChunks);
-
-    // One-shot full compile.
-    const compileToHTML = compile(micromarkOptions);
-    const oneshotPreprocessor = preprocess();
-    const oneshotParser = parse(micromarkOptions);
-    const oneshotTokenizer = oneshotParser.document();
-    const oneshotChunks = oneshotPreprocessor(processedMarkdown, undefined, true);
-    const oneshotEvents = oneshotTokenizer.write(oneshotChunks);
-    const html = compileToHTML(postprocess(oneshotEvents));
-
-    const definitions = extractDefinitionsFromEvents(oneshotEvents);
-
-    previousDefinitionCount = definitions.length;
-
-    const blockHTMLs = splitIntoBlocks(html);
-    const decorate = createDecorate(definitions, externalLinkAlt);
-
-    for (const blockHTML of blockHTMLs.slice(0, blockHTMLs.length - 1)) {
-      const blockFragment = parseDocumentFragmentFromString(blockHTML);
-
-      betterLinkDocumentMod(blockFragment, decorate);
-      frozenBlockHTMLs.push(serializeNodeString(blockFragment));
-    }
-
-    committedBlockCount = Math.max(0, blockHTMLs.length - 1);
-
-    let activeBlockHTML = '';
-
-    if (blockHTMLs.length) {
-      const lastBlockHTML = blockHTMLs[blockHTMLs.length - 1];
-      const activeFragment = parseDocumentFragmentFromString(lastBlockHTML);
-
-      betterLinkDocumentMod(activeFragment, decorate);
-      activeBlockHTML = serializeNodeString(activeFragment);
-    }
-
-    return Object.freeze({
-      activeBlockHTML,
-      definitions,
-      frozenBlockHTMLs: Object.freeze([...frozenBlockHTMLs])
-    });
+    return Object.freeze({ html, definitions });
   }
 
   return Object.freeze({
     update(fullMarkdown: string): StreamingRenderResult {
-      // Detect if this is a pure append or if earlier content changed.
-      if (!previousMarkdown || !fullMarkdown.startsWith(previousMarkdown)) {
-        // First call or content changed non-append. Reset and re-parse.
-        return fullReparse(fullMarkdown);
-      }
+      const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown);
 
-      // Feed only the delta to preprocessor → tokenizer (incremental parse).
-      const delta = fullMarkdown.slice(previousMarkdown.length);
-
-      previousMarkdown = fullMarkdown;
-
-      if (!delta.length) {
-        return Object.freeze({
-          activeBlockHTML: '',
-          definitions: Object.freeze(extractDefinitionsFromEvents(tokenizerContext.events)),
-          frozenBlockHTMLs: Object.freeze([...frozenBlockHTMLs])
-        });
-      }
-
-      const processedDelta = markdownRespectCRLF ? respectCRLFPre(delta) : delta;
-
-      // Incremental preprocess + tokenize (only the new delta).
-      const chunks: Chunk[] = preprocessor(processedDelta, undefined, false);
-
-      tokenizerContext.write(chunks);
-
-      // Extract definitions from accumulated events.
-      const definitions = extractDefinitionsFromEvents(tokenizerContext.events);
-
-      // If definitions changed, invalidate frozen blocks.
-      if (definitions.length !== previousDefinitionCount) {
-        previousDefinitionCount = definitions.length;
+      // If content was edited (not a pure append), invalidate all frozen blocks.
+      if (!isAppendOnly) {
         committedBlockCount = 0;
         frozenBlockHTMLs.length = 0;
       }
 
-      // Deep-clone events for postprocess → compile.
-      // Shallow array clone is insufficient: subtokenize (called by postprocess) sets
-      // `token._tokenizer = undefined` on each content token after expanding it.
-      // Since tokens are shared references, that mutation would destroy the persistent
-      // tokenizer's ability to re-expand inline content on subsequent updates.
-      // Cloning each token object isolates the mutation to this compile pass.
-      const eventsClone: Event[] = tokenizerContext.events.map(
-        ([action, token, context]) => [action, { ...token }, context] as Event
-      );
-      const postprocessedEvents = postprocess(eventsClone);
-      const compileToHTML = compile(micromarkOptions);
-      const fullHTML = compileToHTML(postprocessedEvents);
+      previousMarkdown = fullMarkdown;
 
-      // Split HTML into root-level block elements.
-      const blockHTMLs = splitIntoBlocks(fullHTML);
+      if (!fullMarkdown) {
+        return Object.freeze({
+          activeBlockHTML: '',
+          definitions: Object.freeze([]),
+          frozenBlockHTMLs: Object.freeze([...frozenBlockHTMLs])
+        });
+      }
+
+      const { html, definitions } = oneshotCompile(fullMarkdown);
+
+      const blockHTMLs = splitIntoBlocks(html);
       const totalBlocks = blockHTMLs.length;
-
-      // Apply betterLinkDocumentMod to newly frozen and active blocks.
       const decorate = createDecorate(definitions, externalLinkAlt);
 
-      // Newly frozen: blocks [committedBlockCount .. totalBlocks - 2]
-      for (const blockHTML of blockHTMLs.slice(committedBlockCount, totalBlocks - 1)) {
+      // If total blocks shrank below our committed count, reset.
+      if (totalBlocks - 1 < committedBlockCount) {
+        committedBlockCount = 0;
+        frozenBlockHTMLs.length = 0;
+      }
+
+      // Freeze newly completed blocks (all except the last).
+      for (const blockHTML of blockHTMLs.slice(committedBlockCount, Math.max(0, totalBlocks - 1))) {
         const blockFragment = parseDocumentFragmentFromString(blockHTML);
 
         betterLinkDocumentMod(blockFragment, decorate);
@@ -224,7 +176,7 @@ export default function createStreamingRenderer(
 
       committedBlockCount = Math.max(0, totalBlocks - 1);
 
-      // Active block: the last one, always re-transform.
+      // Last block is always active (may still be receiving content).
       let activeBlockHTML = '';
 
       if (totalBlocks > 0) {
