@@ -19,74 +19,14 @@ type StreamingRenderOptions = Readonly<{
 }>;
 
 type StreamingRenderResult = Readonly<{
-  activeBlockHTML: string;
   definitions: readonly MarkdownLinkDefinition[];
-  frozenBlockHTMLs: readonly string[];
+  fragment: DocumentFragment;
+  numFrozenBlocks: number;
 }>;
 
 type StreamingRenderer = Readonly<{
   update: (fullMarkdown: string) => StreamingRenderResult;
 }>;
-
-// #region DOM parsing and serialization utilities for block-level HTML elements.
-// We maintain own utilities here to avoid parser instances recreation and fragment recreation
-const domParser = new DOMParser();
-function parseDocumentFragmentFromString(html: string): DocumentFragment {
-  const parsedDocument = domParser.parseFromString(html, 'text/html');
-  const fragment = parsedDocument.createDocumentFragment();
-
-  fragment.append(...parsedDocument.body.childNodes);
-
-  return fragment;
-}
-
-function serializeDocumentFragment(fragment: DocumentFragment): string {
-  const wrapper = fragment.ownerDocument?.createElement('div') ?? document.createElement('div');
-
-  wrapper.append(...Array.from(fragment.childNodes));
-
-  const html = wrapper.innerHTML;
-
-  // Move children back to fragment.
-  fragment.append(...Array.from(wrapper.childNodes));
-
-  return html;
-}
-
-/**
- * Splits compiled HTML into root-level block elements.
- *
- * Trailing whitespace text nodes (e.g. `\n` between `</p>` and `<p>`) are
- * attached to the preceding element block so that `textContent` of the
- * reconstructed DOM preserves inter-block newlines.
- */
-function splitIntoBlocks(html: string): readonly string[] {
-  const parsedDocument = domParser.parseFromString(html, 'text/html');
-  const children = Array.from(parsedDocument.body.childNodes);
-  const blocks: string[] = [];
-
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-
-    if (!(child instanceof Element)) {
-      continue;
-    }
-
-    let blockHTML = child.outerHTML;
-
-    // Absorb trailing whitespace text nodes to preserve inter-block newlines.
-    while (i + 1 < children.length && children[i + 1]?.nodeType === Node.TEXT_NODE) {
-      blockHTML += children[i + 1]?.nodeValue ?? '';
-      i++;
-    }
-
-    blocks.push(blockHTML);
-  }
-
-  return blocks;
-}
-
-// #endregion
 
 export default function createStreamingRenderer(
   { markdownRenderHTML, markdownRespectCRLF }: StreamingRenderOptions,
@@ -109,88 +49,65 @@ export default function createStreamingRenderer(
   };
 
   let previousMarkdown = '';
-  let committedBlockCount = 0;
-
-  const frozenBlockHTMLs: string[] = [];
-
-  function oneshotCompile(markdown: string): {
-    readonly html: string;
-    readonly definitions: readonly MarkdownLinkDefinition[];
-  } {
-    let processedMarkdown = markdown;
-
-    if (markdownRespectCRLF) {
-      processedMarkdown = respectCRLFPre(processedMarkdown);
-    }
-
-    const preprocessor = preprocess();
-    const parser = parse(micromarkOptions);
-    const tokenizerContext = parser.document();
-    const chunks = preprocessor(processedMarkdown, undefined, true);
-    const events = tokenizerContext.write(chunks);
-    const html = compile(micromarkOptions)(postprocess(events));
-    const definitions = extractDefinitionsFromEvents(events);
-
-    return Object.freeze({ html, definitions });
-  }
+  let previousNumFrozenBlocks = 0;
 
   return Object.freeze({
     update(fullMarkdown: string): StreamingRenderResult {
       const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown);
 
-      // If content was edited (not a pure append), invalidate all frozen blocks.
+      // If content was edited (not a pure append), invalidate frozen blocks.
       if (!isAppendOnly) {
-        committedBlockCount = 0;
-        frozenBlockHTMLs.length = 0;
+        previousNumFrozenBlocks = 0;
       }
 
       previousMarkdown = fullMarkdown;
 
       if (!fullMarkdown) {
         return Object.freeze({
-          activeBlockHTML: '',
           definitions: Object.freeze([]),
-          frozenBlockHTMLs: Object.freeze([...frozenBlockHTMLs])
+          fragment: document.createDocumentFragment(),
+          numFrozenBlocks: 0
         });
       }
 
-      const { html, definitions } = oneshotCompile(fullMarkdown);
+      let processedMarkdown = fullMarkdown;
 
-      const blockHTMLs = splitIntoBlocks(html);
-      const totalBlocks = blockHTMLs.length;
+      if (markdownRespectCRLF) {
+        processedMarkdown = respectCRLFPre(processedMarkdown);
+      }
+
+      const preprocessor = preprocess();
+      const parser = parse(micromarkOptions);
+      const tokenizerContext = parser.document();
+      const chunks = preprocessor(processedMarkdown, undefined, true);
+      const events = tokenizerContext.write(chunks);
+      const rawHTML = compile(micromarkOptions)(postprocess(events));
+      const definitions = extractDefinitionsFromEvents(events);
+
+      // Apply betterLinkDocumentMod to the full HTML.
+      const domParser = new DOMParser();
+      const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
+      const fragment = parsedDocument.createDocumentFragment();
+
+      fragment.append(...parsedDocument.body.childNodes);
+
       const decorate = createDecorate(definitions, externalLinkAlt);
 
-      // If total blocks shrank below our committed count, reset.
-      if (totalBlocks - 1 < committedBlockCount) {
-        committedBlockCount = 0;
-        frozenBlockHTMLs.length = 0;
-      }
+      betterLinkDocumentMod(fragment, decorate);
 
-      // Freeze newly completed blocks (all except the last).
-      for (const blockHTML of blockHTMLs.slice(committedBlockCount, Math.max(0, totalBlocks - 1))) {
-        const blockFragment = parseDocumentFragmentFromString(blockHTML);
+      const totalBlocks = fragment.children.length;
 
-        betterLinkDocumentMod(blockFragment, decorate);
-        frozenBlockHTMLs.push(serializeNodeString(blockFragment));
-      }
+      // All blocks except the last are frozen (they won't change with future appends).
+      const numFrozenBlocks = isAppendOnly
+        ? Math.max(previousNumFrozenBlocks, Math.max(0, totalBlocks - 1))
+        : Math.max(0, totalBlocks - 1);
 
-      committedBlockCount = Math.max(0, totalBlocks - 1);
-
-      // Last block is always active (may still be receiving content).
-      let activeBlockHTML = '';
-
-      if (totalBlocks > 0) {
-        const lastBlockHTML = blockHTMLs[totalBlocks - 1] ?? '';
-        const activeFragment = parseDocumentFragmentFromString(lastBlockHTML);
-
-        betterLinkDocumentMod(activeFragment, decorate);
-        activeBlockHTML = serializeNodeString(activeFragment);
-      }
+      previousNumFrozenBlocks = numFrozenBlocks;
 
       return Object.freeze({
-        activeBlockHTML,
         definitions,
-        frozenBlockHTMLs: Object.freeze([...frozenBlockHTMLs])
+        fragment,
+        numFrozenBlocks
       });
     }
   });

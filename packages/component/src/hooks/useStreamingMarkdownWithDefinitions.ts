@@ -20,9 +20,9 @@ type MarkdownLinkDefinition = Readonly<{
 }>;
 
 type StreamingRenderResult = Readonly<{
-  activeBlockHTML: string;
   definitions: readonly MarkdownLinkDefinition[];
-  frozenBlockHTMLs: readonly string[];
+  fragment: DocumentFragment;
+  numFrozenBlocks: number;
 }>;
 
 type StreamingRenderer = Readonly<{
@@ -88,8 +88,9 @@ export default function useStreamingMarkdownWithDefinitions(
   const committedBlockCountRef = useRef(0);
 
   // Streaming DOM management in useLayoutEffect.
-  // A wrapper div is created inside the container to match the original DOM structure:
-  //   div.text-content__markdown > div.render-markdown > block elements
+  // The full HTML is sanitized as one unit (preserving inter-block whitespace),
+  // then split into frozen blocks (already committed to DOM) and an active block
+  // (last element, which may still be receiving content).
   useLayoutEffect(() => {
     if (!streamingResult) {
       return;
@@ -101,7 +102,7 @@ export default function useStreamingMarkdownWithDefinitions(
       return;
     }
 
-    const { activeBlockHTML, frozenBlockHTMLs } = streamingResult;
+    const { fragment, numFrozenBlocks } = streamingResult;
 
     // Ensure wrapper div exists.
     let wrapper = wrapperRef.current;
@@ -115,32 +116,74 @@ export default function useStreamingMarkdownWithDefinitions(
       committedBlockCountRef.current = 0;
     }
 
-    // If frozen block count decreased (definitions changed, etc.), clear and rebuild.
-    if (frozenBlockHTMLs.length < committedBlockCountRef.current) {
+    // Sanitize/transform the fragment as one unit so inter-block whitespace is preserved.
+    const fullFragment = transformHTMLContent(fragment);
+
+    // Count element children in the sanitized fragment.
+    const elementChildren: Element[] = [];
+
+    for (const child of fullFragment.childNodes) {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        elementChildren.push(child as Element);
+      }
+    }
+
+    // If frozen block count decreased, we need to rebuild.
+    if (numFrozenBlocks < committedBlockCountRef.current) {
       wrapper.textContent = '';
       committedBlockCountRef.current = 0;
     }
 
-    // Remove old active block (everything after committed blocks).
-    while (wrapper.children.length > committedBlockCountRef.current) {
-      wrapper.lastChild?.remove();
+    // Determine how many element blocks we can keep in the DOM.
+    // committed blocks are already in the wrapper and don't change.
+    const keepCount = Math.min(committedBlockCountRef.current, numFrozenBlocks);
+
+    // Remove everything after the kept blocks (active block + trailing text nodes from previous render).
+    // We track by counting Element children to skip text nodes between them.
+    let elementsSeen = 0;
+    let cutoffNode: ChildNode | null = null;
+
+    for (const child of Array.from(wrapper.childNodes)) {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        elementsSeen++;
+      }
+
+      if (elementsSeen > keepCount) {
+        cutoffNode = child;
+        break;
+      }
     }
 
-    // Append newly frozen blocks.
-    for (const frozenBlockHTML of frozenBlockHTMLs.slice(committedBlockCountRef.current)) {
-      const blockFragment = transformHTMLContent(parseDocumentFragmentFromString(frozenBlockHTML));
+    // Remove from the cutoff point onward.
+    if (cutoffNode) {
+      while (wrapper.lastChild && wrapper.lastChild !== cutoffNode) {
+        wrapper.lastChild.remove();
+      }
 
-      wrapper.appendChild(blockFragment);
+      cutoffNode.remove();
     }
 
-    committedBlockCountRef.current = frozenBlockHTMLs.length;
+    // Consume the corresponding nodes from the sanitized fragment (we skip committed ones).
+    let fragmentElementsSeen = 0;
 
-    // Append the active block.
-    if (activeBlockHTML) {
-      const activeFragment = transformHTMLContent(parseDocumentFragmentFromString(activeBlockHTML));
+    while (fullFragment.firstChild) {
+      if (fullFragment.firstChild.nodeType === Node.ELEMENT_NODE) {
+        fragmentElementsSeen++;
+      }
 
-      wrapper.appendChild(activeFragment);
+      // Skip nodes belonging to already committed blocks.
+      if (fragmentElementsSeen <= keepCount) {
+        fullFragment.firstChild.remove();
+        continue;
+      }
+
+      break;
     }
+
+    // Append the remaining fragment (new frozen blocks + active block + whitespace) to wrapper.
+    wrapper.appendChild(fullFragment);
+
+    committedBlockCountRef.current = numFrozenBlocks;
   }, [containerClassName, containerRef, streamingResult, transformHTMLContent]);
 
   // Fallback DOM management: full replacement, matching the original dangerouslySetInnerHTML behavior.
