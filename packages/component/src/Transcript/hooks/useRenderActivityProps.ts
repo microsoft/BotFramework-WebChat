@@ -1,5 +1,4 @@
 import { hooks } from 'botframework-webchat-api';
-import { __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol } from 'botframework-webchat-api/internal';
 import { useBuildRenderAvatarCallback } from 'botframework-webchat-api/middleware';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { useMemo, type ReactNode } from 'react';

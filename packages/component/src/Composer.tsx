@@ -377,14 +377,14 @@ const Composer = ({
   const theme = useTheme();
 
   const patchedActivityMiddleware = useMemoIterable<readonly LegacyActivityMiddleware[]>(
-    () => Object.freeze([...singleToArray(activityMiddleware ?? []), ...theme.activityMiddleware]),
+    () => Object.freeze([...singleToArray(activityMiddleware), ...theme.activityMiddleware]),
     [activityMiddleware, theme.activityMiddleware]
   );
 
   const patchedActivityStatusMiddleware = useMemoIterable<readonly ActivityStatusMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(activityStatusMiddleware ?? []),
+        ...singleToArray(activityStatusMiddleware),
         ...theme.activityStatusMiddleware,
         ...createDefaultActivityStatusMiddleware()
       ]),
@@ -394,7 +394,7 @@ const Composer = ({
   const patchedAttachmentForScreenReaderMiddleware = useMemoIterable<readonly AttachmentForScreenReaderMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(attachmentForScreenReaderMiddleware ?? []),
+        ...singleToArray(attachmentForScreenReaderMiddleware),
         ...theme.attachmentForScreenReaderMiddleware,
         ...createDefaultAttachmentForScreenReaderMiddleware()
       ]),
@@ -404,7 +404,7 @@ const Composer = ({
   const patchedAttachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(attachmentMiddleware ?? []),
+        ...singleToArray(attachmentMiddleware),
         ...theme.attachmentMiddleware,
         ...createDefaultAttachmentMiddleware()
       ]),
@@ -412,14 +412,14 @@ const Composer = ({
   );
 
   const patchedAvatarMiddleware = useMemoIterable<readonly AvatarMiddleware[]>(
-    () => Object.freeze([...singleToArray(avatarMiddleware ?? []), ...theme.avatarMiddleware]),
+    () => Object.freeze([...singleToArray(avatarMiddleware), ...theme.avatarMiddleware]),
     [avatarMiddleware, theme.avatarMiddleware]
   );
 
   const patchedCardActionMiddleware = useMemoIterable<readonly CardActionMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(cardActionMiddleware ?? []),
+        ...singleToArray(cardActionMiddleware),
         ...theme.cardActionMiddleware,
         ...createDefaultCardActionMiddleware()
       ]),
@@ -444,7 +444,7 @@ const Composer = ({
   const patchedToastMiddleware = useMemoIterable<readonly ToastMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(toastMiddleware ?? []),
+        ...singleToArray(toastMiddleware),
         ...theme.toastMiddleware,
         ...createDefaultToastMiddleware()
       ]),
@@ -454,7 +454,7 @@ const Composer = ({
   const patchedTypingIndicatorMiddleware = useMemoIterable<readonly TypingIndicatorMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(typingIndicatorMiddleware ?? []),
+        ...singleToArray(typingIndicatorMiddleware),
         ...theme.typingIndicatorMiddleware,
         ...createDefaultTypingIndicatorMiddleware()
       ]),
@@ -464,7 +464,7 @@ const Composer = ({
   const patchedScrollToEndButtonMiddleware = useMemoIterable<readonly ScrollToEndButtonMiddleware[]>(
     () =>
       Object.freeze([
-        ...singleToArray(scrollToEndButtonMiddleware ?? []),
+        ...singleToArray(scrollToEndButtonMiddleware),
         ...theme.scrollToEndButtonMiddleware,
         ...createDefaultScrollToEndButtonMiddleware()
       ]),
