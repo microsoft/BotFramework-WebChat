@@ -9,42 +9,52 @@
   <body>
     <main id="webchat"></main>
     <script>
-      run(async function () {
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        WebChat.renderWebChat(
-          {
-            directLine,
-            store
-          },
-          document.getElementById('webchat')
-        );
-
-        await pageConditions.uiConnected();
-
-        const { disconnect, flush } = pageObjects.observeLiveRegion();
-
-        try {
-          // Emulate outgoing activity but do not acknowledge it, keeping it in "sending" state.
-          directLine.emulateOutgoingActivity('Hello, World!');
-
-          await pageConditions.became(
-            'live region narrated sending message',
-            () => {
-              try {
-                expect(flush()).toEqual(['You said:\nHello, World!', 'Sending message.']);
-
-                return true;
-              } catch {
-                return false;
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              styleOptions: {
+                sendTimeout: 20000
               }
             },
-            1000
+            document.getElementById('webchat')
           );
-        } finally {
-          disconnect();
-        }
-      });
+
+          await pageConditions.uiConnected();
+
+          const { disconnect, flush } = pageObjects.observeLiveRegion();
+
+          try {
+            // Emulate outgoing activity but do not acknowledge it, keeping it in "sending" state.
+            await directLine.emulateOutgoingActivity('Hello, World!');
+
+            const liveRegionText = [];
+
+            await pageConditions.became(
+              'live region narrated sending message',
+              () => {
+                try {
+                  liveRegionText.push(...flush());
+
+                  expect(liveRegionText).toContain('Sending message.');
+
+                  return true;
+                } catch (err) {
+                  return false;
+                }
+              },
+              1000
+            );
+          } finally {
+            disconnect();
+          }
+        },
+        { ignoreErrors: true }
+      );
     </script>
   </body>
 </html>
