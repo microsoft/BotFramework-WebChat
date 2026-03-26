@@ -34,8 +34,22 @@ export default function useRoleModEffect(
   adaptiveCard: AdaptiveCard
 ): readonly [(cardElement: HTMLElement) => void, () => void] {
   const modder = useMemo(
-    () => (_, cardElement: HTMLElement) =>
-      setOrRemoveAttributeIfFalseWithUndo(
+    () => (_, cardElement: HTMLElement) => {
+      // If the card doesn't have an aria-label (i.e. no "speak" property was set),
+      // derive one from the card's visible text content so screen readers can announce it.
+      let undoAriaLabel: () => void = () => {};
+
+      if (!cardElement.getAttribute('aria-label')) {
+        const textContent = (cardElement.textContent || '').replace(/\s+/g, ' ').trim();
+
+        if (textContent) {
+          const label = textContent.length > 200 ? textContent.slice(0, 200) + '\u2026' : textContent;
+
+          undoAriaLabel = setOrRemoveAttributeIfFalseWithUndo(cardElement, 'aria-label', label);
+        }
+      }
+
+      const undoRole = setOrRemoveAttributeIfFalseWithUndo(
         cardElement,
         'role',
         // "form" role requires either "aria-label", "aria-labelledby", or "title".
@@ -44,7 +58,13 @@ export default function useRoleModEffect(
           cardElement.getAttribute('title')
           ? 'form'
           : 'figure'
-      ),
+      );
+
+      return () => {
+        undoRole();
+        undoAriaLabel();
+      };
+    },
     []
   );
 

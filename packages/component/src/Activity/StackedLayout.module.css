@@ -52,6 +52,16 @@
   .stacked-layout__attachment-row {
     margin-block-start: var(--webchat__padding--regular);
     width: 100%;
+
+    &:focus {
+      outline: 0;
+    }
+
+    &:focus-visible {
+      outline: var(--webchat__border-width--transcript-visual-keyboard-indicator)
+        var(--webchat__border-style--transcript-visual-keyboard-indicator)
+        var(--webchat__color--transcript-visual-keyboard-indicator);
+    }
   }
 
   &.stacked-layout--no-message .stacked-layout__attachment-list .stacked-layout__attachment-row:first-child {
