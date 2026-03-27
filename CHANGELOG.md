@@ -336,6 +336,7 @@ Breaking changes in this release:
 - (Experimental) Added custom variants support for `botframework-webchat-fluent-theme` package, in PR [#5675](https://github.com/microsoft/BotFramework-WebChat/pull/5675), by [@OEvgeny](https://github.com/OEvgeny)
 - Improved adaptive cards rendering in copilot variant, in PR [#5682](https://github.com/microsoft/BotFramework-WebChat/pull/5682), by [@OEvgeny](https://github.com/OEvgeny)
 - Bumped to [`botframework-directlinejs@0.15.8`](https://www.npmjs.com/package/botframework-directlinejs/v/0.15.8) to include support for the new `streaming` property, by [@pranavjoshi001](https://github.com/pranavjoshi001), in PR [#5686](https://github.com/microsoft/BotFramework-WebChat/pull/5686)
+- Removed unused deps `simple-git`, by [@compulim](https://github.com/compulim), in PR [#5786](https://github.com/microsoft/BotFramework-WebChat/pull/5786)
 
 ### Deprecated
 
