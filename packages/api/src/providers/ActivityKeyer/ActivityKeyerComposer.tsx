@@ -115,12 +115,19 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
 
       prevActivitiesRef.current = activities;
 
-      if (!newKeys.length) {
-        return prevActivityKeysStateRef.current;
+      if (newKeys.length) {
+        const nextKeys = Object.freeze([...prevActivityKeysStateRef.current[0], ...newKeys]);
+        const result = Object.freeze([nextKeys]) as readonly [readonly string[]];
+
+        prevActivityKeysStateRef.current = result;
+
+        return result;
       }
 
-      const nextKeys = Object.freeze([...prevActivityKeysStateRef.current[0], ...newKeys]);
-      const result = Object.freeze([nextKeys]) as readonly [readonly string[]];
+      // New activities were added to existing keys — no new keys, but the keyToActivitiesMap
+      // was mutated. Return a new tuple reference so context consumers re-render and see the
+      // updated activities-per-key via getActivitiesByKey.
+      const result = Object.freeze([prevActivityKeysStateRef.current[0]]) as readonly [readonly string[]];
 
       prevActivityKeysStateRef.current = result;
 
