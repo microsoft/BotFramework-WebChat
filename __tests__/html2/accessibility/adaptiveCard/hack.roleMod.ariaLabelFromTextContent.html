@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    type: 'TextBlock',
+                    text: 'Flight Status Update'
+                  },
+                  {
+                    type: 'TextBlock',
+                    text: 'Flight AA1234 from Seattle to New York'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                speak: 'Custom speak text for screen readers',
+                body: [
+                  {
+                    type: 'TextBlock',
+                    text: 'This text should not be the aria-label'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    type: 'Input.Text',
+                    id: 'name',
+                    label: 'Your Name',
+                    placeholder: 'Enter your name'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ]
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [cardNoSpeak, cardWithSpeak, cardFormNoSpeak] = Array.from(
+          document.querySelectorAll('.ac-adaptiveCard')
+        );
+
+        // Card without speak: aria-label should be derived from visible text content.
+        expect(cardNoSpeak.getAttribute('aria-label')).toContain('Flight Status Update');
+        expect(cardNoSpeak.getAttribute('aria-label')).toContain('Flight AA1234');
+        expect(cardNoSpeak.getAttribute('role')).toBe('figure');
+
+        // Card with speak: aria-label should use the speak property value.
+        expect(cardWithSpeak.getAttribute('aria-label')).toBe('Custom speak text for screen readers');
+        expect(cardWithSpeak.getAttribute('role')).toBe('figure');
+
+        // Card with form inputs and no speak: aria-label should be derived from text content,
+        // and role should be "form" because it has inputs and an aria-label.
+        expect(cardFormNoSpeak.getAttribute('aria-label')).toBeTruthy();
+        expect(cardFormNoSpeak.getAttribute('role')).toBe('form');
+      });
+    </script>
+  </body>
+</html>

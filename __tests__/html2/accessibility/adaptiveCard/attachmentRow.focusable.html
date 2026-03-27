@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    type: 'TextBlock',
+                    text: 'First card content'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ]
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    type: 'TextBlock',
+                    text: 'Second card content'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ]
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        const attachmentRows = document.querySelectorAll('[aria-roledescription="attachment"]');
+
+        // Both attachment rows should be focusable via tabIndex.
+        expect(attachmentRows).toHaveProperty('length', 2);
+        expect(attachmentRows[0].getAttribute('tabindex')).toBe('0');
+        expect(attachmentRows[1].getAttribute('tabindex')).toBe('0');
+
+        // Both should have role="group".
+        expect(attachmentRows[0].getAttribute('role')).toBe('group');
+        expect(attachmentRows[1].getAttribute('role')).toBe('group');
+
+        // Focus on the first attachment row and verify it receives focus.
+        attachmentRows[0].focus();
+
+        await pageConditions.became(
+          'focus is on the first attachment row',
+          () => document.activeElement === attachmentRows[0],
+          1000
+        );
+
+        // The Adaptive Card inside should have an aria-label derived from text content.
+        const card = attachmentRows[0].querySelector('.ac-adaptiveCard');
+
+        expect(card.getAttribute('aria-label')).toContain('First card content');
+        expect(card.getAttribute('role')).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>
