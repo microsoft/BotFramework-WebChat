@@ -40,6 +40,9 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
 
   const [activities] = useActivities();
 
+  // TODO: [P0]  We should remove the mapping in favor of `localId`, 
+  // the id should represent the latest available activity in the stream
+  //
   // Maps are intentionally mutable so the incremental fast path can append to them in-place.
   const activityIdToKeyMapRef = useRef<ActivityIdToKeyMap>(new Map());
   const activityToKeyMapRef = useRef<ActivityToKeyMap>(new Map());
