@@ -55,9 +55,11 @@ export default function createStreamingRenderer(
 
   const id = Math.random().toString(36).slice(2);
 
+  let definitions: readonly MarkdownLinkDefinition[] = Object.freeze([]);
+
   return Object.freeze({
-    update(fullMarkdown: string): StreamingRenderResult {
-      const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown);
+    update(fullMarkdown: string, finalize = false): StreamingRenderResult {
+      const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown) && !finalize;
 
       if (!isAppendOnly) {
         previousHTML = '';
@@ -88,9 +90,7 @@ export default function createStreamingRenderer(
       const chunks = preprocessor(processedMarkdown, undefined, true);
       const events = tokenizerContext.write(chunks);
       const rawHTML = compile(micromarkOptions)(postprocess(events));
-      const definitions = extractDefinitionsFromEvents(events);
-
-      const isAppendHtml = !!previousHTML && rawHTML.startsWith(previousHTML);
+      const isAppendHtml = (!!previousHTML && rawHTML.startsWith(previousHTML)) || (true && !finalize);
       previousHTML = rawHTML;
 
       // Apply betterLinkDocumentMod to the full HTML.
@@ -99,8 +99,11 @@ export default function createStreamingRenderer(
 
       fragment.append(...Array.from(parsedDocument.body.childNodes));
 
-      const decorate = createDecorate(definitions, externalLinkAlt);
+      if (finalize) {
+        definitions = extractDefinitionsFromEvents(events);
+      }
 
+      const decorate = createDecorate(definitions, externalLinkAlt);
       betterLinkDocumentMod(fragment, decorate);
 
       // Insert marker before the last top-level element indicating active block.

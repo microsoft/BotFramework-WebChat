@@ -88,7 +88,11 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
   const showModal = useShowModal();
 
-  const { definitions: markdownDefinitions } = useStreamingMarkdownWithDefinitions(contentRef, markdown);
+  const { definitions: markdownDefinitions } = useStreamingMarkdownWithDefinitions(
+    contentRef,
+    markdown,
+    activity.type === 'message'
+  );
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 

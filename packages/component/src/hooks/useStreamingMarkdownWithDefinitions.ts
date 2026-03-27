@@ -30,14 +30,15 @@ type StreamingRenderResult = Readonly<{
 }>;
 
 type StreamingRenderer = Readonly<{
-  update: (fullMarkdown: string) => StreamingRenderResult;
+  update: (fullMarkdown: string, finalize?: boolean) => StreamingRenderResult;
 }>;
 
 const EMPTY_DEFINITIONS: readonly MarkdownLinkDefinition[] = Object.freeze([]);
 
 export default function useStreamingMarkdownWithDefinitions(
   containerRef: Readonly<{ current: HTMLDivElement | null }>,
-  markdown: string
+  markdown: string,
+  finalize = false
 ): { readonly definitions: readonly MarkdownLinkDefinition[] } {
   const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
@@ -73,8 +74,8 @@ export default function useStreamingMarkdownWithDefinitions(
       return undefined;
     }
 
-    return streamingRenderer.update(markdown);
-  }, [markdown, streamingRenderer]);
+    return streamingRenderer.update(markdown, finalize);
+  }, [markdown, finalize, streamingRenderer]);
 
   const fallbackHTML = useMemo<string | undefined>(() => {
     if (hasStreamingSupport || !renderMarkdown || !markdown) {
