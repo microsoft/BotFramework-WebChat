@@ -61,6 +61,7 @@
       outline: var(--webchat__border-width--transcript-visual-keyboard-indicator)
         var(--webchat__border-style--transcript-visual-keyboard-indicator)
         var(--webchat__color--transcript-visual-keyboard-indicator);
+      outline-offset: calc(-1 * var(--webchat__border-width--transcript-visual-keyboard-indicator));
     }
   }
 
