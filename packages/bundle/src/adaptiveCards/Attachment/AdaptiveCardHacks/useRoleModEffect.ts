@@ -7,9 +7,6 @@ import type { AdaptiveCard } from 'adaptivecards';
 
 const ARIA_LABEL_MAX_LENGTH = 200;
 
-// eslint-disable-next-line no-empty-function -- initialized as no-op, reassigned when aria-label is set
-const noOp = () => {};
-
 /**
  * Accessibility: "role" attribute must be set if "aria-label" is set.
  *
@@ -42,7 +39,7 @@ export default function useRoleModEffect(
     () => (_, cardElement: HTMLElement) => {
       // If the card doesn't have an aria-label (i.e. no "speak" property was set),
       // derive one from the card's visible text content so screen readers can announce it.
-      let undoAriaLabel: () => void = noOp;
+      let undoAriaLabel: (() => void) | undefined;
 
       if (!cardElement.getAttribute('aria-label')) {
         const textContent = (cardElement.textContent || '').replace(/\s+/gu, ' ').trim();
@@ -70,7 +67,7 @@ export default function useRoleModEffect(
 
       return () => {
         undoRole();
-        undoAriaLabel();
+        undoAriaLabel?.();
       };
     },
     []
