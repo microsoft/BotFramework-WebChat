@@ -58,10 +58,10 @@
 
         const attachmentRows = document.querySelectorAll('[aria-roledescription="attachment"]');
 
-        // Both attachment rows should be focusable via tabIndex.
+        // Both attachment rows should be programmatically focusable via tabIndex="-1".
         expect(attachmentRows).toHaveProperty('length', 2);
-        expect(attachmentRows[0].getAttribute('tabindex')).toBe('0');
-        expect(attachmentRows[1].getAttribute('tabindex')).toBe('0');
+        expect(attachmentRows[0].getAttribute('tabindex')).toBe('-1');
+        expect(attachmentRows[1].getAttribute('tabindex')).toBe('-1');
 
         // Both should have role="group".
         expect(attachmentRows[0].getAttribute('role')).toBe('group');

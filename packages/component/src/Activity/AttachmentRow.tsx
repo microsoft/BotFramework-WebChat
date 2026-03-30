@@ -39,7 +39,7 @@ function AttachmentRow(props: AttachmentRowProps) {
       aria-roledescription="attachment"
       className={classNames['stacked-layout__attachment-row']}
       role="group"
-      tabIndex={0}
+      tabIndex={-1}
     >
       <ScreenReaderText text={attachedAlt} />
       {showBubble ? (
