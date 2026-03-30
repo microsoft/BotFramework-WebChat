@@ -1,5 +1,4 @@
-import { type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
-
+import type { StrictStyleOptions, default as StyleOptions } from '../../../StyleOptions';
 import normalizeStyleOptions from '../../../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../../../patchStyleOptionsFromDeprecatedProps';
 

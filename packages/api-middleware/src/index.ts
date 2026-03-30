@@ -13,6 +13,21 @@ export {
 } from './activityPolymiddleware';
 
 export {
+  __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol,
+  avatarComponent,
+  AvatarPolymiddlewareProxy,
+  createAvatarPolymiddleware,
+  useBuildRenderAvatarCallback,
+  type AvatarPolymiddleware,
+  type AvatarPolymiddlewareHandler,
+  type AvatarPolymiddlewareHandlerResult,
+  type AvatarPolymiddlewareProps,
+  type AvatarPolymiddlewareProxyProps,
+  type AvatarPolymiddlewareRenderer,
+  type AvatarPolymiddlewareRequest
+} from './avatarPolymiddleware';
+
+export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,
@@ -27,5 +42,6 @@ export {
 } from './errorBoxPolymiddleware';
 
 // TODO: [P0] Add tests for nesting `polymiddleware`.
+export { __INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol } from './legacy/avatarMiddleware';
 export { default as PolymiddlewareComposer } from './PolymiddlewareComposer';
 export { type Polymiddleware } from './types/Polymiddleware';

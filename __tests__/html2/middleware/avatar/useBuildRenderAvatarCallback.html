@@ -1,0 +1,146 @@
+ <!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { Composer } from 'botframework-webchat/component';
+      import {
+        avatarComponent,
+        createAvatarPolymiddleware,
+        useBuildRenderAvatarCallback
+      } from 'botframework-webchat/middleware';
+      import { createElement, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      testHelpers.hideKnownError();
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const MiddlewareAvatar = ({ activity, children, fromUser }) =>
+          createElement(
+            'div',
+            {
+              style: {
+                borderRadius: 40,
+                height: 40,
+                outlineColor: 'green',
+                outlineOffset: 2,
+                outlineStyle: fromUser ? 'dotted' : 'dashed',
+                outlineWidth: 2,
+                overflow: 'hidden',
+                width: 40
+              }
+            },
+            children
+          );
+
+        const PolymiddlewareAvatar = ({ activity, children }) =>
+          createElement(
+            'div',
+            {
+              style: {
+                borderRadius: 32,
+                height: 32,
+                margin: 4,
+                outlineColor: 'red',
+                outlineOffset: 2,
+                outlineStyle: activity.from?.role === 'user' ? 'dotted' : 'dashed',
+                outlineWidth: 2,
+                overflow: 'hidden',
+                width: 32
+              }
+            },
+            children
+          );
+
+        const RenderAvatar = memo(({ activity }) => {
+          const renderAvatar = useBuildRenderAvatarCallback()
+
+          return createElement(renderAvatar({ activity }));
+        });
+
+        RenderAvatar.displayName = 'RenderAvatar';
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            Composer,
+            {
+              avatarMiddleware: [
+                () => next => request => {
+                  const children = next(request);
+
+                  return (...args) =>
+                    createElement(
+                      MiddlewareAvatar,
+                      { activity: request.activity, fromUser: request.fromUser },
+                      children(...args)
+                    );
+                }
+              ],
+              directLine,
+              polymiddleware: Object.freeze([
+                createAvatarPolymiddleware(next => request => {
+                  const children = next(request)?.render();
+
+                  return avatarComponent(PolymiddlewareAvatar, { activity: request.activity, children });
+                })
+              ]),
+              store,
+              styleOptions: {
+                botAvatarImage: '/assets/bot-avatar.jpg',
+                botAvatarInitials: 'WC',
+                userAvatarImage: '/assets/user-avatar.jpg',
+                userAvatarInitials: 'WW'
+              }
+            },
+            createElement(
+              'div',
+              {
+                style: {
+                  margin: 4
+                }
+              },
+              createElement(RenderAvatar, {
+                activity: {
+                  from: { role: 'bot' },
+                  id: 'a-00001',
+                  text: 'Hello, World!',
+                  type: 'message'
+                }
+              })
+            )
+          )
+        );
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

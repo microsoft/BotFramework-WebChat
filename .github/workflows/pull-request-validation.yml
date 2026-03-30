@@ -101,7 +101,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-latest
+          - macos-26
           - ubuntu-latest
           - windows-latest
     runs-on: ${{ matrix.os }}

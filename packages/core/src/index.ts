@@ -6,6 +6,7 @@ import markActivity from './actions/markActivity';
 import muteVoiceRecording from './actions/muteVoiceRecording';
 import postActivity from './actions/postActivity';
 import postVoiceActivity from './actions/postVoiceActivity';
+import type { VoiceHandler } from './actions/registerVoiceHandler';
 import registerVoiceHandler from './actions/registerVoiceHandler';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
@@ -20,6 +21,7 @@ import setSendBox from './actions/setSendBox';
 import setSendBoxAttachments from './actions/setSendBoxAttachments';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
+import type { VoiceState } from './actions/setVoiceState';
 import setVoiceState from './actions/setVoiceState';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
@@ -36,7 +38,6 @@ import createStore, {
   withDevTools as createStoreWithDevTools,
   withOptions as createStoreWithOptions
 } from './createStore';
-import OneOrMany from './types/OneOrMany';
 import { parseAction } from './types/external/OrgSchema/Action';
 import { parseClaim } from './types/external/OrgSchema/Claim';
 import { parseCreativeWork } from './types/external/OrgSchema/CreativeWork';
@@ -47,13 +48,10 @@ import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
 import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import onErrorResumeNext from './utils/onErrorResumeNext';
-import singleToArray from './utils/singleToArray';
-import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
-import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
 import getVoiceActivityRole from './utils/voiceActivity/getVoiceActivityRole';
 import getVoiceActivityText from './utils/voiceActivity/getVoiceActivityText';
-import type { VoiceState } from './actions/setVoiceState';
-import type { VoiceHandler } from './actions/registerVoiceHandler';
+import isVoiceActivity from './utils/voiceActivity/isVoiceActivity';
+import isVoiceTranscriptActivity from './utils/voiceActivity/isVoiceTranscriptActivity';
 
 export {
   isForbiddenPropertyName,
@@ -100,6 +98,9 @@ import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Pro
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
 
+/** @deprecated */
+export { singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
+
 const Constants = { ActivityClientState, DictateState };
 
 export {
@@ -144,7 +145,6 @@ export {
   setSendTimeout,
   setSendTypingIndicator,
   setVoiceState,
-  singleToArray,
   startDictate,
   startSpeakingActivity,
   startVoiceRecording,
@@ -172,7 +172,6 @@ export type {
   DirectLineVideoCard,
   GlobalScopePonyfill,
   Observable,
-  OneOrMany,
   OrgSchemaAction,
   OrgSchemaClaim,
   OrgSchemaCreativeWork,

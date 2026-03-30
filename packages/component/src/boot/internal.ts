@@ -10,3 +10,6 @@ export { default as ScreenReaderText } from '../ScreenReaderText';
 export { default as createIconComponent } from '../Utils/createIconComponent';
 export { default as parseDocumentFragmentFromString } from '../Utils/parseDocumentFragmentFromString';
 export { default as serializeDocumentFragmentIntoString } from '../Utils/serializeDocumentFragmentIntoString';
+
+// For type portability
+export { type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol } from 'botframework-webchat-api/internal';

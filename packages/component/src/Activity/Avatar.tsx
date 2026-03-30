@@ -2,7 +2,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { DefaultAvatar } from '../Middleware/Avatar/createCoreMiddleware';
+import DefaultAvatar from '../Middleware/Avatar/DefaultAvatar';
 
 const avatarPropsSchema = pipe(
   object({

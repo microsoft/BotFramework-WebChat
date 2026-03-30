@@ -64,7 +64,11 @@
           fileBlob.name = 'empty.zip';
 
           // WHEN: Sending out the file.
-          await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+          await pageObjects.runHook(({ useSendFiles }, numCalled) => {
+            const sendFiles = useSendFiles();
+
+            numCalled || sendFiles([fileBlob]);
+          });
           await pageConditions.numActivitiesShown(2);
 
           // THEN: It should show "Sending".

@@ -1,8 +1,7 @@
-import { AvatarMiddleware } from 'botframework-webchat-api';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, never, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
@@ -22,7 +21,8 @@ const ROOT_STYLE = {
 
 const defaultAvatarPropsSchema = pipe(
   object({
-    'aria-hidden': optional(boolean()),
+    'aria-hidden': optional(boolean(), true),
+    children: optional(never()),
     className: optional(string()),
     fromUser: boolean()
   }),
@@ -32,7 +32,7 @@ const defaultAvatarPropsSchema = pipe(
 type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
 
 function DefaultAvatar(props: DefaultAvatarProps) {
-  const { 'aria-hidden': ariaHidden = true, className, fromUser } = validateProps(defaultAvatarPropsSchema, props);
+  const { 'aria-hidden': ariaHidden, className, fromUser } = validateProps(defaultAvatarPropsSchema, props, 'strict');
 
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -54,22 +54,8 @@ function DefaultAvatar(props: DefaultAvatarProps) {
   );
 }
 
-export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
-  return [
-    () =>
-      () =>
-      ({ fromUser, styleOptions }) => {
-        const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
+DefaultAvatar.displayName = 'DefaultAvatar';
 
-        if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
-          return () => <DefaultAvatar fromUser={fromUser} />;
-        }
+export default memo(DefaultAvatar);
 
-        return false;
-      }
-  ];
-}
-
-const MemoizedDefaultAvatar = memo(DefaultAvatar);
-
-export { MemoizedDefaultAvatar as DefaultAvatar, defaultAvatarPropsSchema, type DefaultAvatarProps };
+export { defaultAvatarPropsSchema, type DefaultAvatarProps };

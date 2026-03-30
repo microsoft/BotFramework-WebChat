@@ -11,7 +11,6 @@ import { createContext } from 'react';
 
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
 import { PerformCardAction } from '../../types/CardActionMiddleware';
 import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../../types/LocalizedStrings';
@@ -25,7 +24,6 @@ export type WebChatAPIContextType = {
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: LegacyRenderAttachment;
-  avatarRenderer: AvatarComponentFactory;
   clearSuggestedActions?: () => void;
   dir?: string;
   directLine?: DirectLineJSBotConnection;

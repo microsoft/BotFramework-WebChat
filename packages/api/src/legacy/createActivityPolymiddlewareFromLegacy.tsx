@@ -27,6 +27,7 @@ import {
 
 import LegacyActivityBridge from './LegacyActivityBridge';
 
+const DEBUG_ORIGINAL_LEGACY_MIDDLEWARE_SYMBOL = Symbol('OriginalLegacyMiddleware');
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
 
 type LegacyRenderFunction = (
@@ -87,7 +88,7 @@ function createActivityPolymiddlewareFromLegacy(
 ): ActivityPolymiddleware {
   const legacyEnhancer = composeEnhancer(...middleware.map(middleware => middleware()));
 
-  return createActivityPolymiddleware(next => {
+  const polymiddleware = createActivityPolymiddleware(next => {
     const legacyHandler = legacyEnhancer(request => {
       const handler = next(request);
 
@@ -102,6 +103,14 @@ function createActivityPolymiddlewareFromLegacy(
         : undefined;
     };
   });
+
+  Object.defineProperty(polymiddleware, DEBUG_ORIGINAL_LEGACY_MIDDLEWARE_SYMBOL, {
+    configurable: false,
+    value: Object.freeze([...middleware]),
+    writable: false
+  });
+
+  return polymiddleware;
 }
 
 export default createActivityPolymiddlewareFromLegacy;

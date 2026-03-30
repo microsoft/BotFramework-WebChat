@@ -1,5 +1,6 @@
 /* eslint complexity: ["error", 21] */
 import { ActivityMiddleware } from 'botframework-webchat-api';
+import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
 import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
@@ -35,8 +36,11 @@ function shouldFilterActivity(activity, messageThing) {
   return false;
 }
 
-export default function createCoreMiddleware(): ActivityMiddleware[] {
-  return [
+/**
+ * @deprecated Use `defaultActivityPolymiddleware` instead. The `createCoreActivityMiddleware` will be removed on or after 2028-03-16.
+ */
+function createCoreActivityMiddleware(): readonly ActivityMiddleware[] {
+  return Object.freeze([
     () =>
       next =>
       (...args) => {
@@ -84,5 +88,15 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
 
         return next(...args);
       }
-  ];
+  ]);
 }
+
+const defaultActivityPolymiddleware: Polymiddleware = createActivityPolymiddlewareFromLegacy(
+  ...createCoreActivityMiddleware()
+);
+
+export default defaultActivityPolymiddleware;
+export {
+  // Exporting `createCoreActivityMiddleware()` for backward compatibility.
+  createCoreActivityMiddleware
+};

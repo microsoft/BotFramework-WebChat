@@ -72,4 +72,6 @@ function LegacyActivityBridge(props: LegacyActivityBridgeComponentProps) {
   return <Fragment>{children}</Fragment>;
 }
 
+LegacyActivityBridge.displayName = 'LegacyActivityBridge';
+
 export default memo(LegacyActivityBridge);
