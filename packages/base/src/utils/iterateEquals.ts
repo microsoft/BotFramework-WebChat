@@ -8,7 +8,6 @@ export default function iterateEquals<T>(x: Iterable<T>, y: Iterable<T>): boolea
     throw new Error('Must not pass same instance twice');
   }
 
-  // eslint-disable-next-line no-magic-numbers
   for (let count = 0; count < MAX_ITERATION; count++) {
     const resultX = xIterator.next();
     const resultY = yIterator.next();
