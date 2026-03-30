@@ -31,6 +31,6 @@
   "localDependencies": {},
   "dependencies": {
     "@ast-grep/napi": "0.41.0",
-    "yaml": "2.8.2"
+    "yaml": "2.8.3"
   }
 }
