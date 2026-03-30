@@ -45,4 +45,40 @@ describe.each([['normal'], ['flip']])('with %s order', mode => {
   test('null should be treated as an element', () => {
     expect(fn([].values(), [null].values())).toBe(false);
   });
+
+  test('generator should return true', () => {
+    const generator = function* () {
+      yield 1;
+      yield 2;
+      yield 3;
+    };
+
+    expect(fn(generator(), generator())).toBe(true);
+  });
+
+  test('generator should return false if more than 1M iterations', () => {
+    const generator = function* () {
+      for (let count = 0; count < 1_000_001; count++) {
+        if (count === 1_000_000) {
+          throw new Error('Should not iterate after 1M iterations');
+        }
+
+        yield count;
+      }
+    };
+
+    expect(fn(generator(), generator())).toBe(false);
+  });
+
+  test('should ignore return value from generator', () => {
+    const generator = function* (returnValue: number) {
+      yield 1;
+      yield 2;
+      yield 3;
+
+      return returnValue;
+    };
+
+    expect(fn(generator(4), generator(5))).toBe(true);
+  });
 });
