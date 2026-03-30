@@ -4,15 +4,21 @@ export default function iterateEquals<T>(x: Iterable<T>, y: Iterable<T>): boolea
   const xIterator = x[Symbol.iterator]();
   const yIterator = y[Symbol.iterator]();
 
+  if (Object.is(xIterator, yIterator)) {
+    throw new Error('Must not pass same instance twice');
+  }
+
+  // eslint-disable-next-line no-magic-numbers
   for (let count = 0; count < MAX_ITERATION; count++) {
     const resultX = xIterator.next();
     const resultY = yIterator.next();
 
-    if (resultX.done && resultY.done) {
-      return true;
-    }
+    const { done: xDone } = resultX;
+    const { done: yDone } = resultY;
 
-    if (!Object.is(resultX.value, resultY.value)) {
+    if (xDone && yDone) {
+      return true;
+    } else if (xDone || yDone || !Object.is(resultX.value, resultY.value)) {
       break;
     }
   }
