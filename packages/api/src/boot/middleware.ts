@@ -30,4 +30,18 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
 
+export {
+  createHeroCardPolymiddleware,
+  heroCardComponent,
+  HeroCardPolymiddlewareProxy,
+  useBuildRenderHeroCardCallback,
+  type HeroCardPolymiddleware,
+  type HeroCardPolymiddlewareHandler,
+  type HeroCardPolymiddlewareHandlerResult,
+  type HeroCardPolymiddlewareProps,
+  type HeroCardPolymiddlewareProxyProps,
+  type HeroCardPolymiddlewareRenderer,
+  type HeroCardPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
 export { default as createActivityPolymiddlewareFromLegacy } from '../legacy/createActivityPolymiddlewareFromLegacy';

@@ -16,6 +16,7 @@ import {
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
+import { extractHeroCardEnhancer, HeroCardPolymiddlewareProvider } from './heroCardPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
 const polymiddlewareComposerPropsSchema = pipe(
@@ -64,6 +65,21 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);
 
+  const heroCardEnhancers = useMemoWithPrevious<ReturnType<typeof extractHeroCardEnhancer>>(
+    (prevHeroCardEnhancers = []) => {
+      const heroCardEnhancers = extractHeroCardEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevHeroCardEnhancers.length === heroCardEnhancers.length &&
+        heroCardEnhancers.every((middleware, index) => Object.is(middleware, prevHeroCardEnhancers.at(index)))
+        ? prevHeroCardEnhancers
+        : heroCardEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const heroCardPolymiddleware = useMemo(() => heroCardEnhancers.map(enhancer => () => enhancer), [heroCardEnhancers]);
+
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
   // 1. <XXXProvider> for every type of middleware
@@ -75,7 +91,9 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
+        <HeroCardPolymiddlewareProvider middleware={heroCardPolymiddleware}>{children}</HeroCardPolymiddlewareProvider>
+      </ErrorBoxPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );
 }

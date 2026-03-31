@@ -1,10 +1,11 @@
-import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware } from 'botframework-webchat-api';
+import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware, Polymiddleware } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
 import { useMemo } from 'react';
 
 import createAdaptiveCardsAttachmentForScreenReaderMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
+import createDefaultHeroCardPolymiddleware from './heroCard/createDefaultHeroCardPolymiddleware';
 import createHTMLContentTransformMiddleware from './markdown/createHTMLContentTransformMiddleware';
 import defaultRenderMarkdown from './markdown/renderMarkdown';
 
@@ -31,6 +32,7 @@ export default function useComposerProps({
   attachmentMiddleware: AttachmentMiddleware[];
   extraStyleSet: any;
   htmlContentTransformMiddleware: readonly HTMLContentTransformMiddleware[];
+  polymiddleware: readonly Polymiddleware[];
   renderMarkdown: (
     markdown: string,
     newLineOptions: { markdownRespectCRLF: boolean },
@@ -63,11 +65,17 @@ export default function useComposerProps({
     [htmlContentTransformMiddleware]
   );
 
+  const polymiddleware = useMemo<readonly Polymiddleware[]>(
+    () => Object.freeze([createDefaultHeroCardPolymiddleware()]),
+    []
+  );
+
   return Object.freeze({
     attachmentForScreenReaderMiddleware: patchedAttachmentForScreenReaderMiddleware,
     attachmentMiddleware: patchedAttachmentMiddleware,
     extraStyleSet,
     htmlContentTransformMiddleware: patchedHTMLContentTransformMiddleware,
+    polymiddleware,
     renderMarkdown: patchedRenderMarkdown
   });
 }
