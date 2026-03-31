@@ -28,6 +28,17 @@ export {
 } from '@msinternal/botframework-webchat-api-middleware';
 
 export {
+  createHeroCardPolymiddleware,
+  heroCardComponent,
+  type HeroCardPolymiddleware,
+  type HeroCardPolymiddlewareHandler,
+  type HeroCardPolymiddlewareHandlerResult,
+  type HeroCardPolymiddlewareProps,
+  type HeroCardPolymiddlewareRenderer,
+  type HeroCardPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
+export {
   default as AvatarPolymiddlewareProxy,
   AvatarPolymiddlewareProxyProps
 } from '../middleware/AvatarPolymiddlewareProxy';

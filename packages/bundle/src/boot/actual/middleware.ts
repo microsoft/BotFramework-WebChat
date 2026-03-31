@@ -44,3 +44,17 @@ export {
 } from 'botframework-webchat-api/middleware';
 
 export { createAvatarPolymiddlewareFromLegacy } from 'botframework-webchat-api/middleware';
+
+export {
+  createHeroCardPolymiddleware,
+  heroCardComponent,
+  HeroCardPolymiddlewareProxy,
+  useBuildRenderHeroCardCallback,
+  type HeroCardPolymiddleware,
+  type HeroCardPolymiddlewareHandler,
+  type HeroCardPolymiddlewareHandlerResult,
+  type HeroCardPolymiddlewareProps,
+  type HeroCardPolymiddlewareProxyProps,
+  type HeroCardPolymiddlewareRenderer,
+  type HeroCardPolymiddlewareRequest
+} from 'botframework-webchat-api/middleware';
