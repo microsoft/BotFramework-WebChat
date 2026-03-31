@@ -363,10 +363,8 @@ Breaking changes in this release:
 
 ### Fixed
 
-- Fixed screen reader (Narrator/NVDA) not announcing Adaptive Card content when focused in stacked layout, by [@uzirthapa](https://github.com/uzirthapa)
-   - Made stacked layout attachment rows keyboard-focusable with `tabIndex={0}`
-   - Added focus-visible styling for stacked attachment rows
-   - Adaptive Cards without `speak` property now derive `aria-label` from visible text content
+- Fixed screen reader (Narrator/NVDA) not announcing Adaptive Card content in stacked layout, by [@uzirthapa](https://github.com/uzirthapa)
+   - Adaptive Cards without `speak` property now derive `aria-label` from visible text content so screen readers can announce card content
 - Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
 - Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234](https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal) and [@OEvgeny](https://github.com/OEvgeny)
 - Fixes [#5268](https://github.com/microsoft/BotFramework-WebChat/issues/5268). Concluded livestream is sealed and activities received afterwards are ignored, and `streamSequence` is not required in final activity, in PR [#5273](https://github.com/microsoft/BotFramework-WebChat/pull/5273), by [@compulim](https://github.com/compulim)

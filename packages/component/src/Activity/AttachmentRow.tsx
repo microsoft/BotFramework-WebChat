@@ -35,12 +35,7 @@ function AttachmentRow(props: AttachmentRowProps) {
   const classNames = useStyles(styles);
 
   return (
-    <div
-      aria-roledescription="attachment"
-      className={classNames['stacked-layout__attachment-row']}
-      role="group"
-      tabIndex={-1}
-    >
+    <div aria-roledescription="attachment" className={classNames['stacked-layout__attachment-row']} role="group">
       <ScreenReaderText text={attachedAlt} />
       {showBubble ? (
         <Bubble

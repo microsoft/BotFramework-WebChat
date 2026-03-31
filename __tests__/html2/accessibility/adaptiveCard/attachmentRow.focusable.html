@@ -58,29 +58,20 @@
 
         const attachmentRows = document.querySelectorAll('[aria-roledescription="attachment"]');
 
-        // Both attachment rows should be programmatically focusable via tabIndex="-1".
+        // Both attachment rows should exist with proper a11y attributes.
         expect(attachmentRows).toHaveProperty('length', 2);
-        expect(attachmentRows[0].getAttribute('tabindex')).toBe('-1');
-        expect(attachmentRows[1].getAttribute('tabindex')).toBe('-1');
-
-        // Both should have role="group".
         expect(attachmentRows[0].getAttribute('role')).toBe('group');
         expect(attachmentRows[1].getAttribute('role')).toBe('group');
 
-        // Focus on the first attachment row and verify it receives focus.
-        attachmentRows[0].focus();
+        // The Adaptive Cards inside should have aria-labels derived from text content.
+        const firstCard = attachmentRows[0].querySelector('.ac-adaptiveCard');
+        const secondCard = attachmentRows[1].querySelector('.ac-adaptiveCard');
 
-        await pageConditions.became(
-          'focus is on the first attachment row',
-          () => document.activeElement === attachmentRows[0],
-          1000
-        );
+        expect(firstCard.getAttribute('aria-label')).toContain('First card content');
+        expect(firstCard.getAttribute('role')).toBe('figure');
 
-        // The Adaptive Card inside should have an aria-label derived from text content.
-        const card = attachmentRows[0].querySelector('.ac-adaptiveCard');
-
-        expect(card.getAttribute('aria-label')).toContain('First card content');
-        expect(card.getAttribute('role')).toBeTruthy();
+        expect(secondCard.getAttribute('aria-label')).toContain('Second card content');
+        expect(secondCard.getAttribute('role')).toBe('figure');
       });
     </script>
   </body>
