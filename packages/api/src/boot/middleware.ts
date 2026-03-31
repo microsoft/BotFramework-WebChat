@@ -29,11 +29,14 @@ export {
 
 export {
   createHeroCardPolymiddleware,
+  HeroCardPolymiddlewareProxy,
   heroCardComponent,
+  useBuildRenderHeroCardCallback,
   type HeroCardPolymiddleware,
   type HeroCardPolymiddlewareHandler,
   type HeroCardPolymiddlewareHandlerResult,
   type HeroCardPolymiddlewareProps,
+  type HeroCardPolymiddlewareProxyProps,
   type HeroCardPolymiddlewareRenderer,
   type HeroCardPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
