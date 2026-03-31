@@ -86,9 +86,9 @@
         expect(cardWithSpeak.getAttribute('role')).toBe('figure');
 
         // Card with form inputs and no speak: aria-label should be derived from text content,
-        // and role should be "form" because it has inputs and an aria-label.
+        // but role should be "figure" (not "form") to avoid duplicate form landmarks on the page.
         expect(cardFormNoSpeak.getAttribute('aria-label')).toBeTruthy();
-        expect(cardFormNoSpeak.getAttribute('role')).toBe('form');
+        expect(cardFormNoSpeak.getAttribute('role')).toBe('figure');
       });
     </script>
   </body>
