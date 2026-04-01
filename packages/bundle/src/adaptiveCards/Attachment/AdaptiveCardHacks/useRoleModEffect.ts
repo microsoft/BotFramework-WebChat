@@ -41,7 +41,7 @@ export default function useRoleModEffect(
       const hasOriginalAriaLabel = !!cardElement.getAttribute('aria-label');
 
       // If the card doesn't have an aria-label (i.e. no "speak" property was set),
-      // derive one from the card's visible text content so screen readers can announce it.
+      // derive one from the card's text content so screen readers can announce it.
       let undoAriaLabel: (() => void) | undefined;
 
       if (!hasOriginalAriaLabel) {
