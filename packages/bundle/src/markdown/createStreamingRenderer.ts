@@ -42,7 +42,8 @@ const TOP_LEVEL_BLOCK_TYPES: ReadonlySet<string> = new Set([
   'listUnordered',
   'setextHeading',
   'table',
-  'thematicBreak'
+  'thematicBreak',
+  'math'
 ]);
 
 type BlockBoundary = {
@@ -102,9 +103,9 @@ export default function createStreamingRenderer(
   const id = Math.random().toString(36).slice(2);
 
   let activeBlockStartOffset = 0;
-  let committedHTML = '';
-  let definitions: readonly MarkdownLinkDefinition[] = Object.freeze([]);
+  let previousFragment: DocumentFragment | null = null;
   let previousMarkdown = '';
+  const emptyDefinitions: readonly MarkdownLinkDefinition[] = Object.freeze([]);
 
   function parseEvents(source: string): Event[] {
     return postprocess(
@@ -114,38 +115,25 @@ export default function createStreamingRenderer(
     );
   }
 
-  function rebuildCache(events: ReadonlyArray<Event>): void {
-    const blocks = findTopLevelBlocks(events);
-
-    if (blocks.length < 2) {
-      activeBlockStartOffset = 0;
-      committedHTML = '';
-
-      return;
-    }
-
-    activeBlockStartOffset = blocks[blocks.length - 1].startOffset;
-
-    const committedEvents = events.filter(([, token]) => token.start.offset < activeBlockStartOffset);
-
-    committedHTML = compile(micromarkOptions)(committedEvents);
-  }
-
   return Object.freeze({
+    next(chunk: string): StreamingRenderResult {
+      return this.update(previousMarkdown + chunk);
+    },
     update(fullMarkdown: string, finalize = false): StreamingRenderResult {
       const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown) && !finalize;
 
       if (!isAppendOnly) {
         activeBlockStartOffset = 0;
-        committedHTML = '';
+        previousFragment = null;
       }
 
       previousMarkdown = fullMarkdown;
 
+      // empty input
       if (!fullMarkdown) {
         previousMarkdown = '';
         activeBlockStartOffset = 0;
-        committedHTML = '';
+        previousFragment = null;
 
         return Object.freeze({
           activeBlockMarker: null,
@@ -160,66 +148,131 @@ export default function createStreamingRenderer(
         processedMarkdown = respectCRLFPre(processedMarkdown);
       }
 
-      let rawHTML: string;
-      let fullEvents: Event[] | undefined;
-
       if (isAppendOnly && activeBlockStartOffset > 0) {
         // Partial parse: only re-parse from the last committed block boundary.
         const tailEvents = parseEvents(processedMarkdown.slice(activeBlockStartOffset));
         const tailBlocks = findTopLevelBlocks(tailEvents);
+        const tailHTML = compile(micromarkOptions)(tailEvents);
+
+        let remainingHTML: string;
 
         if (tailBlocks.length <= 1) {
           // Fast path: the active block grew but no new blocks appeared.
-          rawHTML = committedHTML + compile(micromarkOptions)(tailEvents);
+          remainingHTML = tailHTML;
         } else {
           // New block boundary appeared in the tail — update cache incrementally.
           const newActiveOffsetInTail = tailBlocks[tailBlocks.length - 1].startOffset;
-
-          const tailHTML = compile(micromarkOptions)(tailEvents);
-
-          rawHTML = committedHTML + tailHTML;
-
-          // Extend committedHTML with the newly committed portion of the tail.
           const committedTailEvents = tailEvents.filter(([, token]) => token.start.offset < newActiveOffsetInTail);
+          const committedTailHTML = compile(micromarkOptions)(committedTailEvents);
 
-          committedHTML += compile(micromarkOptions)(committedTailEvents);
           activeBlockStartOffset += newActiveOffsetInTail;
-        }
-      } else {
-        fullEvents = parseEvents(processedMarkdown);
-        rawHTML = compile(micromarkOptions)(fullEvents);
 
-        if (!finalize) {
-          rebuildCache(fullEvents);
+          const committedTailDoc = domParser.parseFromString(committedTailHTML, 'text/html');
+          const committedTailFrag = committedTailDoc.createDocumentFragment();
+
+          committedTailFrag.append(...Array.from(committedTailDoc.body.childNodes));
+          betterLinkDocumentMod(committedTailFrag, createDecorate(emptyDefinitions, externalLinkAlt));
+
+          if (previousFragment) {
+            previousFragment.append(...Array.from(committedTailFrag.childNodes));
+          } else {
+            previousFragment = committedTailFrag;
+          }
+
+          remainingHTML = tailHTML.slice(committedTailHTML.length);
         }
+
+        const remainingDoc = domParser.parseFromString(remainingHTML, 'text/html');
+        const remainingFragment = remainingDoc.createDocumentFragment();
+
+        remainingFragment.append(...Array.from(remainingDoc.body.childNodes));
+        betterLinkDocumentMod(remainingFragment, createDecorate(emptyDefinitions, externalLinkAlt));
+
+        const fragment = document.createDocumentFragment();
+
+        fragment.append(previousFragment.cloneNode(true), remainingFragment);
+
+        let activeBlockMarker: Comment | null = null;
+        const lastElement = fragment.lastElementChild;
+
+        if (lastElement) {
+          activeBlockMarker = document.createComment(`webchat-html-stream-active-boundary-${id}`);
+          fragment.insertBefore(activeBlockMarker, lastElement);
+        }
+
+        return Object.freeze({
+          activeBlockMarker,
+          definitions: emptyDefinitions,
+          fragment
+        });
       }
 
+      // Full reparse path.
+      const fullEvents = parseEvents(processedMarkdown);
+      const rawHTML = compile(micromarkOptions)(fullEvents);
       const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
       const fragment = parsedDocument.createDocumentFragment();
 
       fragment.append(...Array.from(parsedDocument.body.childNodes));
 
-      if (finalize && fullEvents) {
-        definitions = extractDefinitionsFromEvents(fullEvents);
+      if (finalize) {
+        const definitions = extractDefinitionsFromEvents(fullEvents);
+        betterLinkDocumentMod(fragment, createDecorate(definitions, externalLinkAlt));
+
+        return Object.freeze({
+          activeBlockMarker: null,
+          definitions,
+          fragment
+        });
       }
 
-      const decorate = createDecorate(definitions, externalLinkAlt);
-      betterLinkDocumentMod(fragment, decorate);
+      // Non-finalize full reparse: split committed and remaining at block boundary.
+      const blocks = findTopLevelBlocks(fullEvents);
+
+      if (blocks.length >= 2) {
+        activeBlockStartOffset = blocks[blocks.length - 1].startOffset;
+
+        const range = document.createRange();
+        range.setStartBefore(fragment.firstChild);
+        range.setEndBefore(fragment.lastElementChild);
+        previousFragment = range.extractContents();
+
+        const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
+
+        betterLinkDocumentMod(previousFragment, decorate);
+
+        // fragment now contains only the remaining (active) nodes.
+        betterLinkDocumentMod(fragment, decorate);
+
+        const outputFragment = document.createDocumentFragment();
+        const activeBlockMarker = document.createComment(`webchat-html-stream-active-boundary-${id}`);
+
+        outputFragment.append(previousFragment.cloneNode(true), activeBlockMarker, fragment);
+
+        return Object.freeze({
+          activeBlockMarker,
+          definitions: emptyDefinitions,
+          fragment: outputFragment
+        });
+      }
+
+      // Single block — mod everything.
+      activeBlockStartOffset = 0;
+      previousFragment = null;
+
+      betterLinkDocumentMod(fragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
       let activeBlockMarker: Comment | null = null;
+      const lastElement = fragment.lastElementChild;
 
-      if (!finalize) {
-        const lastElement = fragment.lastElementChild;
-
-        if (lastElement) {
-          activeBlockMarker = parsedDocument.createComment(`webchat-html-stream-active-boundary-${id}`);
-          fragment.insertBefore(activeBlockMarker, lastElement);
-        }
+      if (lastElement) {
+        activeBlockMarker = parsedDocument.createComment(`webchat-html-stream-active-boundary-${id}`);
+        fragment.insertBefore(activeBlockMarker, lastElement);
       }
 
       return Object.freeze({
         activeBlockMarker,
-        definitions,
+        definitions: emptyDefinitions,
         fragment
       });
     }
