@@ -24,11 +24,13 @@ type VoiceActivityActions =
   | VoiceUnregisterHandlerAction;
 
 interface VoiceActivityState {
+  microphoneMuted: boolean;
   voiceState: VoiceState;
   voiceHandlers: Map<string, VoiceHandler>;
 }
 
 const DEFAULT_STATE: VoiceActivityState = {
+  microphoneMuted: false,
   voiceState: 'idle',
   voiceHandlers: new Map()
 };
@@ -39,15 +41,15 @@ export default function voiceActivity(
 ): VoiceActivityState {
   switch (action.type) {
     case VOICE_MUTE_RECORDING:
-      // Only allow muting when in listening state
-      if (state.voiceState !== 'listening') {
-        console.warn(`botframework-webchat: Cannot mute from "${state.voiceState}" state, must be "listening"`);
+      // Only allow muting when in recording state
+      if (state.voiceState === 'idle') {
+        console.warn(`botframework-webchat: Cannot mute from "${state.voiceState}" state, must be in recording state.`);
         return state;
       }
 
       return {
         ...state,
-        voiceState: 'muted'
+        microphoneMuted: true
       };
 
     case VOICE_REGISTER_HANDLER: {
@@ -87,17 +89,14 @@ export default function voiceActivity(
     case VOICE_STOP_RECORDING:
       return {
         ...state,
+        microphoneMuted: false,
         voiceState: 'idle'
       };
 
     case VOICE_UNMUTE_RECORDING:
-      if (state.voiceState !== 'muted') {
-        console.warn(`botframework-webchat: Should not transit from "${state.voiceState}" to "listening"`);
-      }
-
       return {
         ...state,
-        voiceState: 'listening'
+        microphoneMuted: false
       };
 
     default:
