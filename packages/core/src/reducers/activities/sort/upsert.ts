@@ -19,6 +19,13 @@ import {
   type State
 } from './types';
 
+// @ts-ignore No @types/core-js-pure
+import { default as toSpliced_ } from 'core-js-pure/features/array/to-spliced.js';
+
+function toSpliced<T>(array: readonly T[], start: number, deleteCount: number, ...items: T[]): T[] {
+  return toSpliced_(array, start, deleteCount, ...items);
+}
+
 // Honoring timestamp or not:
 //
 // - Update activity
@@ -41,6 +48,8 @@ import {
 // - Always copy timestamp, except when it's a livestream of 2...N-1 revision
 // - Part grouping timestamp is copied from upserting entry (either livestream session or activity)
 
+const POSITION_INCREMENT = 1_000;
+
 const INITIAL_STATE = Object.freeze({
   activityIdToLocalIdMap: Object.freeze(new Map()),
   activityMap: Object.freeze(new Map()),
@@ -58,15 +67,145 @@ const INITIAL_STATE = Object.freeze({
 // - Duplicate timestamps: activities without timestamp can't be sort deterministically with quick sort
 
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
+  const activityLocalId = getLocalIdFromActivity(activity);
+  const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
+  const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
+
+  // #region Streaming fast path
+  //
+  // For revision 2..N-1 of an existing, non-finalized livestream session without HowTo grouping:
+  // skip O(n) Map copies, sortedChatHistoryList recomputation, computeSortedActivities, and
+  // full position sequencing. This turns each streaming revision from O(n) to O(session_revisions).
+  if (activityLivestreamingMetadata) {
+    const sessionId = activityLivestreamingMetadata.sessionId as LivestreamSessionId;
+    const existingSession = state.livestreamSessionMap.get(sessionId);
+    const finalized = activityLivestreamingMetadata.type === 'final activity';
+
+    if (
+      existingSession &&
+      !existingSession.finalized &&
+      !finalized &&
+      !getPartGroupingMetadataMap(activity).has('HowTo')
+    ) {
+      // 1. activityIdToLocalIdMap: +1 entry for activity.id (if present).
+      const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
+
+      if (typeof activity.id !== 'undefined') {
+        nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
+      }
+
+      // 2. activityMap: +1 entry.
+      const nextActivityMap = new Map(state.activityMap);
+
+      nextActivityMap.set(
+        activityLocalId,
+        Object.freeze({ activity, activityLocalId, logicalTimestamp, type: 'activity' as const })
+      );
+
+      // 3. clientActivityIdToLocalIdMap: reuse if no clientActivityID, copy + add otherwise.
+      const { clientActivityID } = activity.channelData;
+      let nextClientActivityIdToLocalIdMap = state.clientActivityIdToLocalIdMap;
+
+      if (typeof clientActivityID !== 'undefined') {
+        nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
+        nextClientActivityIdToLocalIdMap.set(clientActivityID, activityLocalId);
+      }
+
+      // 4. livestreamSessionMap: append revision to the existing session.
+      //    Timestamp is NOT updated for rev 2..N-1 (only for first and final).
+      const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
+
+      const nextSessionEntry: LivestreamSessionMapEntry = {
+        activities: Object.freeze(
+          insertSorted<LivestreamSessionMapEntryActivityEntry>(
+            existingSession.activities,
+            Object.freeze({
+              activityLocalId,
+              logicalTimestamp,
+              sequenceNumber: activityLivestreamingMetadata.sequenceNumber,
+              type: 'activity'
+            }),
+            ({ sequenceNumber: x }, { sequenceNumber: y }) =>
+              typeof x === 'undefined' || typeof y === 'undefined'
+                ? // eslint-disable-next-line no-magic-numbers
+                  -1
+                : x - y
+          )
+        ),
+        finalized: false,
+        logicalTimestamp: existingSession.logicalTimestamp
+      };
+
+      nextLivestreamSessionMap.set(sessionId, Object.freeze(nextSessionEntry));
+
+      // 5. sortedActivities: insert the new revision into the session's block.
+      //    Find where the session's last activity lives in the sorted array and splice after it.
+      // eslint-disable-next-line no-magic-numbers
+      const prevLastSessionActivity = existingSession.activities.at(-1);
+      let insertIndex = state.sortedActivities.length;
+
+      if (prevLastSessionActivity) {
+        for (let i = state.sortedActivities.length - 1; i >= 0; i--) {
+          // eslint-disable-next-line security/detect-object-injection
+          if (getLocalIdFromActivity(state.sortedActivities[i]!) === prevLastSessionActivity.activityLocalId) {
+            insertIndex = i + 1;
+            break;
+          }
+        }
+      }
+
+      // 6. Position: assign the new activity a position based on its neighbors.
+      const prevPosition =
+        insertIndex > 0 ? (queryPositionFromActivity(state.sortedActivities[insertIndex - 1]!) ?? 0) : 0;
+
+      const nextSiblingPosition =
+        insertIndex < state.sortedActivities.length
+          ? queryPositionFromActivity(state.sortedActivities[+insertIndex]!)
+          : undefined;
+
+      let newPosition = prevPosition + POSITION_INCREMENT;
+
+      // Squeeze if the default increment would collide with the next sibling.
+      if (typeof nextSiblingPosition !== 'undefined' && newPosition >= nextSiblingPosition) {
+        newPosition = prevPosition + 1;
+      }
+
+      // If position is valid (no collision), return fast path result.
+      // Otherwise fall through to slow path for full re-sequencing.
+      if (typeof nextSiblingPosition === 'undefined' || newPosition < nextSiblingPosition) {
+        const positionedActivity = setPositionInActivity(activity, newPosition);
+
+        const positionedEntry: ActivityMapEntry = Object.freeze({
+          activity: positionedActivity,
+          activityLocalId,
+          logicalTimestamp,
+          type: 'activity'
+        });
+
+        nextActivityMap.set(activityLocalId, positionedEntry);
+
+        return Object.freeze({
+          activityIdToLocalIdMap: Object.freeze(nextActivityIdToLocalIdMap),
+          activityMap: Object.freeze(nextActivityMap),
+          clientActivityIdToLocalIdMap: Object.freeze(nextClientActivityIdToLocalIdMap),
+          howToGroupingMap: state.howToGroupingMap,
+          livestreamSessionMap: Object.freeze(nextLivestreamSessionMap),
+          sortedActivities: Object.freeze(toSpliced(state.sortedActivities, insertIndex, 0, positionedActivity)),
+          sortedChatHistoryList: state.sortedChatHistoryList
+        } satisfies State);
+      }
+    }
+  }
+
+  // #endregion
+
+  // Slow path: full recalculation for non-streaming, first/final revisions, reorders, or HowTo grouping.
   const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
   const nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
   const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
   const nextHowToGroupingMap = new Map(state.howToGroupingMap);
   let nextSortedChatHistoryList = Array.from(state.sortedChatHistoryList);
-
-  const activityLocalId = getLocalIdFromActivity(activity);
-  const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
 
   if (typeof activity.id !== 'undefined') {
     nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
@@ -95,8 +234,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   };
 
   // #region Livestreaming
-
-  const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
   if (activityLivestreamingMetadata) {
     const sessionId = activityLivestreamingMetadata.sessionId as LivestreamSessionId;
@@ -279,7 +416,6 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   // #region Sequence sorted activities
 
   let lastPosition = 0;
-  const POSITION_INCREMENT = 1_000;
 
   for (
     let index = 0, { length: nextSortedActivitiesLength } = nextSortedActivities;

@@ -1,8 +1,9 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
-import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react';
 
 import reduceIterable from '../../hooks/private/reduceIterable';
 import useActivities from '../../hooks/useActivities';
+import usePonyfill from '../Ponyfill/usePonyfill';
 import type { ActivityKeyerContextType } from './private/Context';
 import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
@@ -16,6 +17,12 @@ type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<WebChatActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
 type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
+
+/** After this many ms of no activity changes, verify that the frozen portion was not modified. */
+const FROZEN_CHECK_TIMEOUT = 10_000;
+
+/** Only the last N activities are compared reference-by-reference on each render. */
+const MUTABLE_ACTIVITY_WINDOW = 1_000;
 
 /**
  * React context composer component to assign a perma-key to every activity.
@@ -32,6 +39,7 @@ type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
 const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
+  const [{ cancelIdleCallback, clearTimeout, requestIdleCallback, setTimeout }] = usePonyfill();
   const existingContext = useActivityKeyerContext(false);
 
   if (existingContext) {
@@ -49,20 +57,36 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
   const prevActivityKeysStateRef = useRef<readonly [readonly string[]]>(
     Object.freeze([Object.freeze([])]) as readonly [readonly string[]]
   );
+  const pendingFrozenCheckRef = useRef<
+    | {
+        readonly current: readonly WebChatActivity[];
+        readonly frozenBoundary: number;
+        readonly prev: readonly WebChatActivity[];
+      }
+    | undefined
+  >();
+  const warnedPositionsRef = useRef<Set<number>>(new Set());
 
   // Incremental keying: the fast path only processes newly-appended activities (O(delta) per render)
   // instead of re-iterating all activities (O(n) per render, O(n²) total for n streaming pushes).
   const activityKeysState = useMemo<readonly [readonly string[]]>(() => {
     const prevActivities = prevActivitiesRef.current;
 
-    // Detect how many leading activities are identical (same reference) to the previous render.
-    let commonPrefixLength = 0;
+    // Only the last MUTABLE_ACTIVITY_WINDOW activities are compared each render.
+    // Activities before the frozen boundary are assumed unchanged — O(1) instead of O(n).
+    const frozenBoundary = Math.max(0, Math.min(prevActivities.length, activities.length) - MUTABLE_ACTIVITY_WINDOW);
+    let commonPrefixLength = frozenBoundary;
     const maxPrefix = Math.min(prevActivities.length, activities.length);
 
     // eslint-disable-next-line security/detect-object-injection
     while (commonPrefixLength < maxPrefix && prevActivities[commonPrefixLength] === activities[commonPrefixLength]) {
       commonPrefixLength++;
     }
+
+    // Schedule deferred verification of the frozen portion if any was skipped.
+    pendingFrozenCheckRef.current = frozenBoundary
+      ? Object.freeze({ current: activities, frozenBoundary, prev: prevActivities })
+      : undefined;
 
     const isAppendOnly = commonPrefixLength === prevActivities.length;
 
@@ -170,6 +194,10 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     keyToActivitiesMapRef.current = nextKeyToActivitiesMap;
     prevActivitiesRef.current = activities;
 
+    // Slow path did a full recalculation — no frozen check needed, reset warnings.
+    pendingFrozenCheckRef.current = undefined;
+    warnedPositionsRef.current.clear();
+
     const nextKeys = Object.freeze([...nextActivityKeys.values()]);
     const result = Object.freeze([nextKeys]) as readonly [readonly string[]];
 
@@ -182,9 +210,52 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     activityToKeyMapRef,
     clientActivityIdToKeyMapRef,
     keyToActivitiesMapRef,
+    pendingFrozenCheckRef,
     prevActivitiesRef,
-    prevActivityKeysStateRef
+    prevActivityKeysStateRef,
+    warnedPositionsRef
   ]);
+
+  // Deferred verification: after FROZEN_CHECK_TIMEOUT of quiet, validate that activities
+  // inside the frozen portion have not actually changed. Warn once per position if they did.
+  // Uses requestIdleCallback inside the timeout to avoid contending with the first post-stream repaint.
+  useEffect(() => {
+    const pending = pendingFrozenCheckRef.current;
+
+    if (!pending) {
+      return;
+    }
+
+    let idleHandle: ReturnType<NonNullable<typeof requestIdleCallback>> | undefined;
+
+    const runCheck = () => {
+      const { current: currentActivities, frozenBoundary, prev: prevFrozenActivities } = pending;
+
+      for (let i = 0; i < frozenBoundary; i++) {
+        // eslint-disable-next-line security/detect-object-injection
+        if (prevFrozenActivities[i] !== currentActivities[i] && !warnedPositionsRef.current.has(i)) {
+          warnedPositionsRef.current.add(i);
+
+          console.warn(
+            `botframework-webchat internal: change in activity at position ${i} was not applied because it is outside the mutable window of ${MUTABLE_ACTIVITY_WINDOW}.`
+          );
+        }
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (requestIdleCallback) {
+        idleHandle = requestIdleCallback(runCheck);
+      } else {
+        runCheck();
+      }
+    }, FROZEN_CHECK_TIMEOUT);
+
+    return () => {
+      clearTimeout(timer);
+      idleHandle !== undefined && cancelIdleCallback?.(idleHandle);
+    };
+  }, [activities, cancelIdleCallback, clearTimeout, requestIdleCallback, setTimeout]);
 
   const getActivitiesByKey: (key?: string | undefined) => readonly WebChatActivity[] | undefined = useCallback(
     (key?: string | undefined): readonly WebChatActivity[] | undefined => key && keyToActivitiesMapRef.current.get(key),
