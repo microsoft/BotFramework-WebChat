@@ -5,8 +5,6 @@ import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 
 import type { AdaptiveCard } from 'adaptivecards';
 
-const ARIA_LABEL_MAX_LENGTH = 200;
-
 /**
  * Accessibility: "role" attribute must be set if "aria-label" is set.
  *
@@ -48,12 +46,7 @@ export default function useRoleModEffect(
         const textContent = (cardElement.textContent || '').replace(/\s+/gu, ' ').trim();
 
         if (textContent) {
-          const label =
-            textContent.length > ARIA_LABEL_MAX_LENGTH
-              ? textContent.slice(0, ARIA_LABEL_MAX_LENGTH) + '\u2026'
-              : textContent;
-
-          undoAriaLabel = setOrRemoveAttributeIfFalseWithUndo(cardElement, 'aria-label', label);
+          undoAriaLabel = setOrRemoveAttributeIfFalseWithUndo(cardElement, 'aria-label', textContent);
         }
       }
 
