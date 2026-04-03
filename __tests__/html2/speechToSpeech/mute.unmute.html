@@ -20,7 +20,8 @@
       2. When muted during listening, chunks contain all zeros (silent audio)
       3. When unmuted, chunks contain real audio
       4. Mute resets to false when recording stops
-      5. Uses useVoiceRecordingMuted hook for mute/unmute control
+      5. Stopping while muted does NOT re-acquire microphone (cleanup order test)
+      6. Uses useVoiceRecordingMuted hook for mute/unmute control
     -->
     <script type="module">
       import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
@@ -51,6 +52,14 @@
           }
           return bytes.every(byte => byte === 0);
         }
+
+        // Wrap getUserMedia to track call count for cleanup order test
+        let getUserMediaCallCount = 0;
+        const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+        navigator.mediaDevices.getUserMedia = (...args) => {
+          getUserMediaCallCount++;
+          return originalGetUserMedia(...args);
+        };
 
         const audioChunks = [];
         let currentVoiceState = 'idle';
@@ -204,6 +213,50 @@
         );
         
         expect(muteControlRef.muted).toBe(false); // microphoneMuted resets on stop
+
+        // ===== TEST 8: Stopping while muted should NOT re-acquire microphone =====
+        // This test verifies the effect cleanup order in VoiceRecorderBridge:
+        // Recording effect cleanup must run BEFORE mute effect cleanup.
+        // Otherwise, unmute cleanup would call acquireAndConnectMediaStream().
+        
+        // Start fresh recording
+        await host.click(micButton);
+        await pageConditions.became(
+          'Voice state is listening for cleanup test',
+          () => getVoiceState() === 'listening',
+          2000
+        );
+
+        // Record the getUserMedia call count before mute
+        const callCountBeforeMute = getUserMediaCallCount;
+
+        // Mute (this will stop the MediaStream)
+        muteControlRef.setMuted(true);
+        await pageConditions.became(
+          'Muted for cleanup test',
+          () => getMicrophoneMuted() === true,
+          1000
+        );
+
+        // Record call count after mute (should be same, mute stops mic but doesn't acquire)
+        const callCountAfterMute = getUserMediaCallCount;
+        expect(callCountAfterMute).toBe(callCountBeforeMute);
+
+        // Stop recording while still muted
+        await host.click(micButton);
+        await pageConditions.became(
+          'Voice state is idle after stopping while muted',
+          () => getVoiceState() === 'idle',
+          2000
+        );
+
+        // Wait a bit to ensure any erroneous async mic acquisition would have happened
+        await new Promise(r => setTimeout(r, 300));
+
+        // Verify getUserMedia was NOT called again
+        // If cleanup order was wrong, unmute would have called acquireAndConnectMediaStream()
+        const callCountAfterStop = getUserMediaCallCount;
+        expect(callCountAfterStop).toBe(callCountAfterMute);
       });
     </script>
   </body>
