@@ -198,16 +198,10 @@ export default function createStreamingRenderer(
         } else {
           // New block boundary in tail: commit newly-finished blocks, replace active.
           const newActiveOffsetInTail = tailBlocks[tailBlocks.length - 1].startOffset;
+          const committedTailEvents = tailEvents.filter(([, token]) => token.start.offset < newActiveOffsetInTail);
+          const committedTailHTML = compile(micromarkOptions)(committedTailEvents);
 
           activeBlockStartOffset += newActiveOffsetInTail;
-
-          // Split at the micromark-event level so that blocks which compile to
-          // multiple sibling DOM nodes (e.g. htmlFlow) are kept whole.
-          const committedTailEvents = tailEvents.filter(([, token]) => token.start.offset < newActiveOffsetInTail);
-          const activeTailEvents = tailEvents.filter(([, token]) => token.start.offset >= newActiveOffsetInTail);
-
-          const committedTailHTML = compile(micromarkOptions)(committedTailEvents);
-          const activeTailHTML = compile(micromarkOptions)(activeTailEvents);
 
           const committedDoc = domParser.parseFromString(committedTailHTML, 'text/html');
           const committedFragment = committedDoc.createDocumentFragment();
@@ -215,7 +209,8 @@ export default function createStreamingRenderer(
           committedFragment.append(...Array.from(committedDoc.body.childNodes));
           betterLinkDocumentMod(committedFragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
-          const activeDoc = domParser.parseFromString(activeTailHTML, 'text/html');
+          const remainingHTML = tailHTML.slice(committedTailHTML.length);
+          const activeDoc = domParser.parseFromString(remainingHTML, 'text/html');
           const activeFragment = activeDoc.createDocumentFragment();
 
           activeFragment.append(...Array.from(activeDoc.body.childNodes));
@@ -248,35 +243,27 @@ export default function createStreamingRenderer(
 
     // Full reparse path.
     const fullEvents = parseEvents(processedMarkdown);
+    const rawHTML = compile(micromarkOptions)(fullEvents);
+    const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
+    const fragment = parsedDocument.createDocumentFragment();
+
+    fragment.append(...Array.from(parsedDocument.body.childNodes));
+
     const blocks = findTopLevelBlocks(fullEvents);
 
     if (blocks.length >= 2) {
-      const lastBlock = blocks[blocks.length - 1];
+      activeBlockStartOffset = blocks[blocks.length - 1].startOffset;
 
-      activeBlockStartOffset = lastBlock.startOffset;
+      const range = document.createRange();
 
-      // Split at the micromark-event level so that blocks which compile to
-      // multiple sibling DOM nodes (e.g. htmlFlow) are kept whole.
-      const committedEvents = fullEvents.filter(([, token]) => token.start.offset < lastBlock.startOffset);
-      const activeEvents = fullEvents.filter(([, token]) => token.start.offset >= lastBlock.startOffset);
+      range.setStartBefore(fragment.firstChild!);
+      range.setEndBefore(fragment.lastElementChild!);
 
-      const committedHTML = compile(micromarkOptions)(committedEvents);
-      const activeHTML = compile(micromarkOptions)(activeEvents);
-
-      const committedDoc = domParser.parseFromString(committedHTML, 'text/html');
-      const committedFragment = committedDoc.createDocumentFragment();
-
-      committedFragment.append(...Array.from(committedDoc.body.childNodes));
-
-      const activeDoc = domParser.parseFromString(activeHTML, 'text/html');
-      const activeFragment = activeDoc.createDocumentFragment();
-
-      activeFragment.append(...Array.from(activeDoc.body.childNodes));
-
+      const committedFragment = range.extractContents();
       const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
 
       betterLinkDocumentMod(committedFragment, decorate);
-      betterLinkDocumentMod(activeFragment, decorate);
+      betterLinkDocumentMod(fragment, decorate);
 
       const wrapper = ensureWrapper(options.container, options.containerClassName);
 
@@ -285,7 +272,7 @@ export default function createStreamingRenderer(
       wrapper.replaceChildren(
         applyTransform(committedFragment, options.transformFragment),
         activeSentinel,
-        applyTransform(activeFragment, options.transformFragment)
+        applyTransform(fragment, options.transformFragment)
       );
 
       return;
@@ -294,12 +281,6 @@ export default function createStreamingRenderer(
     // Single block — full replace, no sentinel.
     activeBlockStartOffset = 0;
     activeSentinel = null;
-
-    const rawHTML = compile(micromarkOptions)(fullEvents);
-    const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
-    const fragment = parsedDocument.createDocumentFragment();
-
-    fragment.append(...Array.from(parsedDocument.body.childNodes));
 
     betterLinkDocumentMod(fragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
