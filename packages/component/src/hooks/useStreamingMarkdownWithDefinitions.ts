@@ -78,6 +78,14 @@ export default function useStreamingMarkdownWithDefinitions(
 
   const [definitions, setDefinitions] = useState<readonly MarkdownLinkDefinition[]>(EMPTY_DEFINITIONS);
 
+  // Reset definitions and markdown ref when the streaming renderer changes.
+  // This must run before the main streaming effect so that a fresh renderer
+  // starts clean, but the streaming effect can still set definitions on the same commit.
+  useLayoutEffect(() => {
+    previousMarkdownRef.current = '';
+    setDefinitions(EMPTY_DEFINITIONS);
+  }, [streamingRenderer]);
+
   useLayoutEffect(() => {
     if (!streamingRenderer) {
       return;
@@ -176,11 +184,6 @@ export default function useStreamingMarkdownWithDefinitions(
 
     container.textContent = '';
   }, [containerRef, fallbackHTML, streamingRenderer]);
-
-  useLayoutEffect(() => {
-    previousMarkdownRef.current = '';
-    setDefinitions(EMPTY_DEFINITIONS);
-  }, [streamingRenderer]);
 
   return Object.freeze({ definitions: definitions ?? fallbackDefinitions });
 }
