@@ -30,6 +30,7 @@ import useGetKeyByActivityId from './useGetKeyByActivityId';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
 import useGroupTimestamp from './useGroupTimestamp';
+import useIsSending from './useIsSending';
 import useLanguage from './useLanguage';
 import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
 import useLastReadActivityKey from './useLastReadActivityKey';
@@ -113,6 +114,7 @@ export {
   useGroupActivities,
   useGroupActivitiesByName,
   useGroupTimestamp,
+  useIsSending,
   useLanguage,
   useLastAcknowledgedActivityKey,
   useLastReadActivityKey,

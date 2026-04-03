@@ -32,6 +32,7 @@ export {
   useGroupActivities,
   useGroupActivitiesByName,
   useGroupTimestamp,
+  useIsSending,
   useLanguage,
   useLastAcknowledgedActivityKey,
   useLastReadActivityKey,

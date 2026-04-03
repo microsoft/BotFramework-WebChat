@@ -1,76 +1,38 @@
 import { hooks } from 'botframework-webchat-api';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
-import { SENDING } from '../../types/internal/SendStatus';
-import useActivityKeysOfSendStatus from './useActivityKeysOfSendStatus';
 
-const { useLocalizer, usePonyfill } = hooks;
+const { useIsSending, useLocalizer, usePonyfill } = hooks;
 
-const SENDING_ANNOUNCEMENT_DELAY = 3000;
+const SENDING_ANNOUNCEMENT_INTERVAL = 3_000;
 
 /**
- * React component to narrate "Sending message." into the live region, but only when the
- * outgoing activity has been stuck in the `sending` state for at least 3 seconds.
+ * React component to narrate "Sending message." into the live region repeatedly every 3 seconds,
+ * but only while there are outgoing activities stuck in the `sending` state with none timed out.
  *
  * Fast sends (acknowledged by the server within 3 seconds) stay silent to avoid noisy
  * announcements. Slow or stalled sends get narrated so the user knows what is happening.
- *
- * Presentational activities (e.g. `event` or `typing`) are excluded to reduce noise.
  */
 const LiveRegionLongSend = () => {
+  const [{ clearInterval, setInterval }] = usePonyfill();
+  const [isSending] = useIsSending();
   const localize = useLocalizer();
-  const [{ clearTimeout, setTimeout }] = usePonyfill();
 
   const liveRegionSendSendingAlt = localize('TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT');
 
-  /** Keys we have already announced "Sending message." for — prevents repeated announcements. */
-  const announcedKeysRef = useRef<Set<string>>(new Set());
+  // Invalidate will queue the announcement.
+  const [tick, setTick] = useState<object | undefined>();
 
-  /** Monotonic counter; incrementing it causes `useLiveRegion` to queue the announcement. */
-  const [tick, setTick] = useState(0);
-
-  /** Keys of outgoing non-presentational activities that are currently in the sending state. */
-  const [sendingKeys] = useActivityKeysOfSendStatus(SENDING);
-
-  /**
-   * Arm a per-key timer when a key newly enters `sendingKeys`.
-   * Cancel all pending timers when a key leaves (cleanup handles this via deps change).
-   * Clean up the `announcedKeysRef` for keys that are no longer sending.
-   */
   useEffect(() => {
-    // Prune announced keys that are no longer sending.
-    for (const key of Array.from(announcedKeysRef.current)) {
-      if (!sendingKeys.has(key)) {
-        announcedKeysRef.current.delete(key);
-      }
-    }
-
-    if (!sendingKeys.size) {
+    if (!isSending) {
       return;
     }
 
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    const interval = setInterval(() => setTick({}), SENDING_ANNOUNCEMENT_INTERVAL);
 
-    for (const key of sendingKeys) {
-      if (announcedKeysRef.current.has(key)) {
-        continue;
-      }
-
-      const timeout = setTimeout(() => {
-        if (!sendingKeys.has(key)) {
-          return;
-        }
-
-        announcedKeysRef.current.add(key);
-        setTick(t => t + 1);
-      }, SENDING_ANNOUNCEMENT_DELAY);
-
-      timeouts.push(timeout);
-    }
-
-    return () => timeouts.forEach(id => clearTimeout(id));
-  }, [clearTimeout, sendingKeys, setTimeout]);
+    return () => clearInterval(interval);
+  }, [clearInterval, isSending, setInterval]);
 
   useLiveRegion(() => (tick ? liveRegionSendSendingAlt : false), [liveRegionSendSendingAlt, tick]);
 

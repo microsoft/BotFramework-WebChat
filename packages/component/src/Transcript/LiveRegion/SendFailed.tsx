@@ -1,12 +1,12 @@
 import { hooks } from 'botframework-webchat-api';
+import { isPresentational } from 'botframework-webchat-core/internal';
 import { memo, useMemo } from 'react';
 
 import usePrevious from '../../hooks/internal/usePrevious';
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
 import { SEND_FAILED } from '../../types/internal/SendStatus';
-import useActivityKeysOfSendStatus from './useActivityKeysOfSendStatus';
 
-const { useLocalizer } = hooks;
+const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
 
 /**
  * React component to on-demand narrate "Failed to send message" at the end of the live region.
@@ -19,6 +19,8 @@ const { useLocalizer } = hooks;
  * Thus, we need to use a live region "footnote" to indicate the message was failed to send.
  */
 const LiveRegionSendFailed = () => {
+  const [sendStatusByActivityKey] = useSendStatusByActivityKey();
+  const getActivityByKey = useGetActivityByKey();
   const localize = useLocalizer();
 
   /**
@@ -27,7 +29,21 @@ const LiveRegionSendFailed = () => {
    * Activities which are presentational, such as `event` or `typing`, are ignored to reduce confusions.
    * "Failed to send message" should not be narrated for presentational activities.
    */
-  const [activityKeysOfSendFailed] = useActivityKeysOfSendStatus(SEND_FAILED);
+  const activityKeysOfSendFailed = useMemo<Set<string>>(
+    () =>
+      Array.from(sendStatusByActivityKey).reduce((activityKeysOfSendFailed, [key, sendStatus]) => {
+        if (sendStatus === SEND_FAILED) {
+          const activity = getActivityByKey(key);
+
+          if (activity && !isPresentational(activity)) {
+            activityKeysOfSendFailed.add(key);
+          }
+        }
+
+        return activityKeysOfSendFailed;
+      }, new Set<string>()),
+    [getActivityByKey, sendStatusByActivityKey]
+  );
 
   /** Returns localized "Failed to send message." */
   const liveRegionSendFailedAlt = localize('TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT');
