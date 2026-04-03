@@ -133,17 +133,41 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       nextLivestreamSessionMap.set(sessionId, Object.freeze(nextSessionEntry));
 
       // 5. sortedActivities: insert the new revision into the session's block.
-      //    Find where the session's last activity lives in the sorted array and splice after it.
-      // eslint-disable-next-line no-magic-numbers
-      const prevLastSessionActivity = existingSession.activities.at(-1);
+      //    The session's activities are sorted by sequence number via insertSorted.
+      //    Find where the new activity landed in that list and locate the correct
+      //    insertion point in sortedActivities relative to its session neighbors.
+      const newIndexInSession = nextSessionEntry.activities.findIndex(
+        entry => entry.activityLocalId === activityLocalId
+      );
+
+      const successorInSession =
+        newIndexInSession + 1 < nextSessionEntry.activities.length
+          ? nextSessionEntry.activities[newIndexInSession + 1]
+          : undefined;
+
       let insertIndex = state.sortedActivities.length;
 
-      if (prevLastSessionActivity) {
-        for (let i = state.sortedActivities.length - 1; i >= 0; i--) {
+      if (successorInSession) {
+        // Insert before the successor activity in sortedActivities.
+        for (let i = 0; i < state.sortedActivities.length; i++) {
           // eslint-disable-next-line security/detect-object-injection
-          if (getLocalIdFromActivity(state.sortedActivities[i]!) === prevLastSessionActivity.activityLocalId) {
-            insertIndex = i + 1;
+          if (getLocalIdFromActivity(state.sortedActivities[i]!) === successorInSession.activityLocalId) {
+            insertIndex = i;
             break;
+          }
+        }
+      } else {
+        // New activity is last in the session; insert after the previous last activity.
+        // eslint-disable-next-line no-magic-numbers
+        const prevLastSessionActivity = existingSession.activities.at(-1);
+
+        if (prevLastSessionActivity) {
+          for (let i = state.sortedActivities.length - 1; i >= 0; i--) {
+            // eslint-disable-next-line security/detect-object-injection
+            if (getLocalIdFromActivity(state.sortedActivities[i]!) === prevLastSessionActivity.activityLocalId) {
+              insertIndex = i + 1;
+              break;
+            }
           }
         }
       }
