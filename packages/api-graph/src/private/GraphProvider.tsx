@@ -76,17 +76,21 @@ function GraphProvider(props: GraphProviderProps) {
     };
   }, [graph, setOrderedActivityNodes]);
 
-  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
-    () =>
-      Object.freeze([
-        Object.freeze(
-          orderedActivityNodes.map(
-            node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
-          )
-        )
-      ] as const),
-    [orderedActivityNodes]
-  );
+  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(() => {
+    // Filter out stale graph nodes for activities no longer in Redux (e.g. pruned livestream revisions).
+    // The graph does not support deletion, so stale nodes linger after computeSortedActivities prunes them.
+    const { activities: storeActivities } = store.getState();
+    const validActivitySet = new Set<WebChatActivity>(storeActivities);
+    const activities: WebChatActivity[] = [];
+
+    for (const node of orderedActivityNodes) {
+      const activity = node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity;
+
+      validActivitySet.has(activity) && activities.push(activity);
+    }
+
+    return Object.freeze([Object.freeze(activities)] as const);
+  }, [orderedActivityNodes, store]);
 
   const context = useMemo<GraphContextType>(
     () =>
