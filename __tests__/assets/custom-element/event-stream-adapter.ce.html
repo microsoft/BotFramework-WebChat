@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Stream Adapter Custom Element</title>
+</head>
+<body>
+  <script type="module">
+    import { customElement } from '/assets/custom-element/custom-element.js';
+    import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
+    import { EventSourceParserStream } from 'eventsource-parser/stream';
+    import createStreamCoalescer from '/assets/esm/adapter/createStreamCoalescer.js';
+    import { forIterator } from '/assets/esm/adapter/demuxChainOfThought.js';
+
+    function createObservable(subscribe) {
+      return Object.freeze({ subscribe });
+    }
+
+    customElement('event-stream-adapter', currentDocument =>
+      class EventStreamAdapterElement extends HTMLElement {
+        static get observedAttributes() { return ['compat', 'href']; }
+
+        #abortController = null;
+        #activities = [];
+        #activityBuffer = [];
+        #activityObservers = [];
+        #directLine;
+
+        constructor() {
+          super();
+
+          const self = this;
+
+          this.#directLine = Object.freeze({
+            activity$: createObservable(observerOrNext => {
+              const observer = typeof observerOrNext === 'function'
+                ? { next: observerOrNext }
+                : observerOrNext;
+
+              for (const activity of self.#activityBuffer) {
+                observer.next(activity);
+              }
+
+              self.#activityObservers.push(observer);
+
+              return Object.freeze({
+                unsubscribe() {
+                  const i = self.#activityObservers.indexOf(observer);
+                  i !== -1 && self.#activityObservers.splice(i, 1);
+                }
+              });
+            }),
+
+            connectionStatus$: createObservable(observerOrNext => {
+              const observer = typeof observerOrNext === 'function'
+                ? { next: observerOrNext }
+                : observerOrNext;
+
+              observer.next(0);
+              observer.next(1);
+              observer.next(2);
+
+              return Object.freeze({ unsubscribe() {} });
+            }),
+
+            end() {},
+
+            postActivity() {
+              return createObservable(observerOrNext => {
+                const observer = typeof observerOrNext === 'function'
+                  ? { next: observerOrNext }
+                  : observerOrNext;
+
+                observer.next(crypto.randomUUID());
+                observer.complete?.();
+
+                return Object.freeze({ unsubscribe() {} });
+              });
+            }
+          });
+        }
+
+        get compat() {
+          return this.getAttribute('compat') || 'webchat';
+        }
+
+        get directLine() {
+          return this.#directLine;
+        }
+
+        connectedCallback() {
+          this.#load();
+        }
+
+        disconnectedCallback() {
+          this.#abortController?.abort();
+          this.#abortController = null;
+        }
+
+        #emitToAdapter(activity) {
+          this.#activityBuffer.push(activity);
+
+          for (const observer of this.#activityObservers) {
+            observer.next(activity);
+          }
+        }
+
+        #emitEvent(activity) {
+          this.#activities.push(activity);
+
+          const meta = getActivityLivestreamingMetadata(activity);
+          const allActivities = this.#activities;
+          const detail = { activity };
+
+          meta && Object.defineProperty(detail, 'activities', {
+            enumerable: true,
+            get: () => allActivities.values()
+          });
+
+          this.dispatchEvent(new CustomEvent('activity', {
+            bubbles: true,
+            detail: Object.freeze(detail)
+          }));
+        }
+
+        async #load() {
+          const href = this.getAttribute('href');
+
+          if (!href) {
+            return;
+          }
+
+          this.#abortController?.abort();
+          this.#abortController = new AbortController();
+
+          const { signal } = this.#abortController;
+          const compat = this.compat;
+          const useAdapter = compat === 'webchat' || compat === 'both';
+          const useEvents = compat === 'events' || compat === 'both';
+
+          try {
+            for await (const activity of forIterator({}, this.#fetchStreamed(href, signal))) {
+              if (signal.aborted) {
+                break;
+              }
+
+              useAdapter && this.#emitToAdapter(activity);
+              useEvents && this.#emitEvent(activity);
+            }
+          } catch (error) {
+            signal.aborted || console.error('event-stream-adapter:', error);
+          }
+        }
+
+        async *#fetchStreamed(href, signal) {
+          const typingMap = new Map();
+          const res = await fetch(new URL(href, location.href), { signal });
+
+          yield* res.body
+            .pipeThrough(new TextDecoderStream())
+            .pipeThrough(new EventSourceParserStream())
+            .pipeThrough(
+              new TransformStream({
+                transform({ data, event }, controller) {
+                  if (event === 'end') {
+                    controller.terminate();
+                    return;
+                  }
+
+                  if (event !== 'activity') {
+                    return;
+                  }
+
+                  const activity = JSON.parse(data);
+
+                  if (
+                    activity.type === 'typing' &&
+                    activity.text &&
+                    activity.channelData?.streamType === 'streaming'
+                  ) {
+                    const streamId = activity.channelData?.streamId || activity.id;
+                    let accumulated = typingMap.get(streamId) || '';
+
+                    if (activity.channelData?.chunkType === 'delta') {
+                      accumulated += activity.text;
+                      activity.text = accumulated;
+                    } else {
+                      accumulated = activity.text;
+                    }
+
+                    typingMap.set(streamId, accumulated);
+                  }
+
+                  controller.enqueue(activity);
+                }
+              })
+            )
+            .pipeThrough(createStreamCoalescer());
+        }
+      }
+    );
+  </script>
+</body>
+</html>
