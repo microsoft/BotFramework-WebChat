@@ -83,10 +83,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       !finalized &&
       !getPartGroupingMetadataMap(activity).has('HowTo')
     ) {
-      // 1. activityIdToLocalIdMap: +1 entry for activity.id (if present).
-      const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
+      // 1. activityIdToLocalIdMap: reuse if no activity.id, copy + add otherwise.
+      let nextActivityIdToLocalIdMap = state.activityIdToLocalIdMap;
 
       if (typeof activity.id !== 'undefined') {
+        nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
         nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
       }
 
