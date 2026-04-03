@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <title>Streaming markdown rendering via createStreamingRenderer</title>
+  <style type="text/css">
+    body {
+      margin: 0;
+    }
+
+    #output {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 720px;
+      padding: 20px;
+      overflow: auto;
+      max-height: 50vh;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+        "botframework-webchat-core": "/__dist__/packages/bundle/static/botframework-webchat-core.js",
+        "eventsource-parser": "https://esm.sh/eventsource-parser",
+        "eventsource-parser/": "https://esm.sh/eventsource-parser/",
+        "iter-fest": "https://esm.sh/iter-fest",
+        "react": "https://esm.sh/react@18",
+        "react-dom": "https://esm.sh/react-dom@18",
+        "react-dom/": "https://esm.sh/react-dom@18/",
+        "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <event-stream-adapter id="adapter" href="./stream-12k.txt" compat="events"></event-stream-adapter>
+  <main id="output"></main>
+  <script type="module">
+    import { run, host } from '/assets/esm/test.js';
+
+    import { registerElements } from '/assets/custom-element/custom-element.js';
+    import { renderMarkdown } from 'botframework-webchat';
+    import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
+
+    const renderer = renderMarkdown.createStreamingRenderer(
+      { markdownRespectCRLF: false },
+      { externalLinkAlt: 'Opens in a new window' }
+    );
+
+    const options = { container: output };
+
+    run(async () => {
+      await registerElements('event-stream-adapter');
+
+      const listen = async ({ detail }) => {
+        const { activities } = detail;
+        if (!activities) {
+          return;
+        }
+
+        adapter.removeEventListener('activity', listen);
+
+        for await (const activity of activities) {
+          if (!activity.text) {
+            continue;
+          }
+
+          const meta = getActivityLivestreamingMetadata(activity);
+          const isFinal = !meta || meta.type === 'final activity';
+
+          const isAppendOnly = activity.channelData?.chunkType === 'delta';
+          const chunk = activity.text;
+
+          if (!isAppendOnly) {
+            renderer.reset();
+          }
+
+          if (chunk) {
+            renderer.next(chunk, options);
+          }
+
+          isFinal && renderer.finalize(options);
+
+          if (isFinal) {
+            await host.snapshot('local');
+          }
+        }
+      };
+      adapter.addEventListener('activity', listen);
+    });
+  </script>
+</body>
+
+</html>

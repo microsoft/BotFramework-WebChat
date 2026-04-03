@@ -24,6 +24,7 @@
         #activities = [];
         #activityBuffer = [];
         #activityObservers = [];
+        #activityWaiters = new Set();
         #directLine;
 
         constructor() {
@@ -108,19 +109,48 @@
         #emitEvent(activity) {
           this.#activities.push(activity);
 
+          for (const resolve of this.#activityWaiters) {
+            resolve();
+          }
+
+          this.#activityWaiters.clear();
+
           const meta = getActivityLivestreamingMetadata(activity);
-          const allActivities = this.#activities;
+          const element = this;
           const detail = { activity };
 
           meta && Object.defineProperty(detail, 'activities', {
             enumerable: true,
-            get: () => allActivities.values()
+            get: () => element.#iterateStreamActivities(meta.sessionId)
           });
 
           this.dispatchEvent(new CustomEvent('activity', {
             bubbles: true,
             detail: Object.freeze(detail)
           }));
+        }
+
+        async *#iterateStreamActivities(sessionId) {
+          let cursor = 0;
+
+          for (;;) {
+            while (cursor < this.#activities.length) {
+              const activity = this.#activities[cursor++];
+              const activityMeta = getActivityLivestreamingMetadata(activity);
+
+              if (!activityMeta || activityMeta.sessionId !== sessionId) {
+                continue;
+              }
+
+              yield activity;
+
+              if (activityMeta.type === 'final activity') {
+                return;
+              }
+            }
+
+            await new Promise(resolve => this.#activityWaiters.add(resolve));
+          }
         }
 
         async #load() {
@@ -145,7 +175,7 @@
               }
 
               useAdapter && this.#emitToAdapter(activity);
-              useEvents && this.#emitEvent(activity);
+              useEvents && this.#emitEvent(activity.raw);
             }
           } catch (error) {
             signal.aborted || console.error('event-stream-adapter:', error);
@@ -172,6 +202,8 @@
                   }
 
                   const activity = JSON.parse(data);
+
+                  activity.raw = { ...activity };
 
                   if (
                     activity.type === 'typing' &&
