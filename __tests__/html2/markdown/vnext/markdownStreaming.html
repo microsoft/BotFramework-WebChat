@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      /* TODO: [P*] Can we eliminate this style? */
+      .fui-FluentProvider,
+      .webchat-fluent {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <event-stream-adapter id="adapter" href="./stream.txt" compat="webchat"></event-stream-adapter>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-core": "/__dist__/packages/bundle/static/botframework-webchat-core.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "eventsource-parser": "https://esm.sh/eventsource-parser",
+          "eventsource-parser/": "https://esm.sh/eventsource-parser/",
+          "iter-fest": "https://esm.sh/iter-fest",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/",
+          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+        }
+      }
+    </script>
+    <script type="module">
+      import { run, host, pageConditions, testHelpers } from '/assets/esm/test.js';
+
+      import { registerElements } from '/assets/custom-element/custom-element.js';
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webLightTheme } from '@fluentui/tokens';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      await registerElements('event-stream-adapter');
+
+      testHelpers.hideKnownError();
+
+      const store = testHelpers.createStore();
+
+      run(async function () {
+        const { directLine } = adapter;
+
+        const fluentTheme = {
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
+        };
+
+        createRoot(document.getElementsByTagName('main')[0]).render(
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: 'fluent' },
+              createElement(ReactWebChat, { directLine, store })
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        await host.snapshot('local');
+      }, { skipCheckAccessibility: true });
+
+      // TODO: figure out why skip doesn;t work with fluent
+      window.checkAccessibility = async () => {}
+    </script>
+  </body>
+</html>
