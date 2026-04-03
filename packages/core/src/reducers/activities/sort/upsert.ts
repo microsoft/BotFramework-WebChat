@@ -83,35 +83,13 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
       !finalized &&
       !getPartGroupingMetadataMap(activity).has('HowTo')
     ) {
-      // 1. activityIdToLocalIdMap: reuse if no activity.id, copy + add otherwise.
-      let nextActivityIdToLocalIdMap = state.activityIdToLocalIdMap;
+      // Defer all Map cloning until after the position-collision check succeeds.
+      // First build the next session entry (needed to determine insertIndex), then
+      // locate the insertion point in sortedActivities, compute the new position,
+      // and only clone Maps when we know the fast path will be taken.
 
-      if (typeof activity.id !== 'undefined') {
-        nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
-        nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
-      }
-
-      // 2. activityMap: +1 entry.
-      const nextActivityMap = new Map(state.activityMap);
-
-      nextActivityMap.set(
-        activityLocalId,
-        Object.freeze({ activity, activityLocalId, logicalTimestamp, type: 'activity' as const })
-      );
-
-      // 3. clientActivityIdToLocalIdMap: reuse if no clientActivityID, copy + add otherwise.
-      const { clientActivityID } = activity.channelData;
-      let nextClientActivityIdToLocalIdMap = state.clientActivityIdToLocalIdMap;
-
-      if (typeof clientActivityID !== 'undefined') {
-        nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
-        nextClientActivityIdToLocalIdMap.set(clientActivityID, activityLocalId);
-      }
-
-      // 4. livestreamSessionMap: append revision to the existing session.
+      // 1. Compute the next session entry (needed to find insertIndex).
       //    Timestamp is NOT updated for rev 2..N-1 (only for first and final).
-      const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
-
       const nextSessionEntry: LivestreamSessionMapEntry = {
         activities: Object.freeze(
           insertSorted<LivestreamSessionMapEntryActivityEntry>(
@@ -133,9 +111,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         logicalTimestamp: existingSession.logicalTimestamp
       };
 
-      nextLivestreamSessionMap.set(sessionId, Object.freeze(nextSessionEntry));
-
-      // 5. sortedActivities: insert the new revision into the session's block.
+      // 2. sortedActivities: find the insertion point before cloning anything.
       //    The session's activities are sorted by sequence number via insertSorted.
       //    Find where the new activity landed in that list and locate the correct
       //    insertion point in sortedActivities relative to its session neighbors.
@@ -175,7 +151,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         }
       }
 
-      // 6. Position: assign the new activity a position based on its neighbors.
+      // 3. Position: assign the new activity a position based on its neighbors.
       const prevPosition =
         insertIndex > 0 ? (queryPositionFromActivity(state.sortedActivities[insertIndex - 1]!) ?? 0) : 0;
 
@@ -191,19 +167,40 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         newPosition = prevPosition + 1;
       }
 
-      // If position is valid (no collision), return fast path result.
+      // If position is valid (no collision), clone Maps and return fast path result.
       // Otherwise fall through to slow path for full re-sequencing.
       if (typeof nextSiblingPosition === 'undefined' || newPosition < nextSiblingPosition) {
         const positionedActivity = setPositionInActivity(activity, newPosition);
 
-        const positionedEntry: ActivityMapEntry = Object.freeze({
-          activity: positionedActivity,
-          activityLocalId,
-          logicalTimestamp,
-          type: 'activity'
-        });
+        // 4. activityIdToLocalIdMap: reuse if no activity.id, copy + add otherwise.
+        let nextActivityIdToLocalIdMap = state.activityIdToLocalIdMap;
 
-        nextActivityMap.set(activityLocalId, positionedEntry);
+        if (typeof activity.id !== 'undefined') {
+          nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
+          nextActivityIdToLocalIdMap.set(activity.id, activityLocalId);
+        }
+
+        // 5. activityMap: +1 entry with the positioned activity.
+        const nextActivityMap = new Map(state.activityMap);
+
+        nextActivityMap.set(
+          activityLocalId,
+          Object.freeze({ activity: positionedActivity, activityLocalId, logicalTimestamp, type: 'activity' as const })
+        );
+
+        // 6. clientActivityIdToLocalIdMap: reuse if no clientActivityID, copy + add otherwise.
+        const { clientActivityID } = activity.channelData;
+        let nextClientActivityIdToLocalIdMap = state.clientActivityIdToLocalIdMap;
+
+        if (typeof clientActivityID !== 'undefined') {
+          nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
+          nextClientActivityIdToLocalIdMap.set(clientActivityID, activityLocalId);
+        }
+
+        // 7. livestreamSessionMap: record the updated session.
+        const nextLivestreamSessionMap = new Map(state.livestreamSessionMap);
+
+        nextLivestreamSessionMap.set(sessionId, Object.freeze(nextSessionEntry));
 
         return Object.freeze({
           activityIdToLocalIdMap: Object.freeze(nextActivityIdToLocalIdMap),
