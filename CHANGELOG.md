@@ -161,6 +161,7 @@ Breaking changes in this release:
 - Added pull-based capabilities system for dynamically discovering adapter capabilities at runtime, in PR [#5679](https://github.com/microsoft/BotFramework-WebChat/pull/5679), by [@pranavjoshi001](https://github.com/pranavjoshi001)
 - Added Speech-to-Speech (S2S) support for real-time voice conversations, in PR [#5654](https://github.com/microsoft/BotFramework-WebChat/pull/5654), by [@pranavjoshi](https://github.com/pranavjoshi001)
 - Added core mute/unmute functionality for speech-to-speech via `useRecorder` hook (silent chunks keep server connection alive), in PR [#5688](https://github.com/microsoft/BotFramework-WebChat/pull/5688), by [@pranavjoshi](https://github.com/pranavjoshi001)
+- 🧪 Added incremental streaming Markdown renderer for livestreaming, in PR [#5799](https://github.com/microsoft/BotFramework-WebChat/pull/5799), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
