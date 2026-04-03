@@ -86,11 +86,6 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
       commonPrefixLength++;
     }
 
-    // Schedule deferred verification of the frozen portion if any was skipped.
-    pendingFrozenCheckRef.current = frozenBoundary
-      ? Object.freeze({ current: activities, frozenBoundary, prev: prevActivities })
-      : undefined;
-
     const isAppendOnly = commonPrefixLength === prevActivities.length;
 
     if (isAppendOnly) {
@@ -100,6 +95,12 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
         prevActivitiesRef.current = activities;
 
         return prevActivityKeysStateRef.current;
+      }
+
+      // Schedule deferred verification of the frozen portion only now that we know:
+      // (1) the update is append-only and (2) there are actual content changes.
+      if (frozenBoundary) {
+        pendingFrozenCheckRef.current = Object.freeze({ current: activities, frozenBoundary, prev: prevActivities });
       }
 
       const { current: activityIdToKeyMap } = activityIdToKeyMapRef;
