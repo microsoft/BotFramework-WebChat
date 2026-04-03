@@ -8,9 +8,10 @@ import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
 import createStreamingRenderer, {
+  type StreamingNextOptions,
+  type StreamingNextResult,
   type StreamingRenderer,
-  type StreamingRenderOptions,
-  type StreamingRenderResult
+  type StreamingRenderOptions
 } from './createStreamingRenderer';
 import { math, mathHtml } from './mathExtension';
 import betterLinkDocumentMod from './private/betterLinkDocumentMod';
@@ -68,4 +69,4 @@ export default function render(
 
 render.createStreamingRenderer = createStreamingRenderer;
 
-export { type StreamingRenderer, type StreamingRenderOptions, type StreamingRenderResult };
+export { type StreamingNextOptions, type StreamingNextResult, type StreamingRenderer, type StreamingRenderOptions };

@@ -1,10 +1,8 @@
-/* eslint-disable complexity */
-/* eslint-disable no-magic-numbers */
 import { cx } from '@emotion/css';
 import { hooks } from 'botframework-webchat-api';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -23,14 +21,20 @@ type MarkdownLinkDefinition = Readonly<{
   url: string;
 }>;
 
-type StreamingRenderResult = Readonly<{
+type StreamingNextOptions = Readonly<{
+  container: HTMLElement;
+  containerClassName?: string | undefined;
+  transformFragment?: ((fragment: DocumentFragment) => DocumentFragment) | undefined;
+}>;
+
+type StreamingNextResult = Readonly<{
   definitions: readonly MarkdownLinkDefinition[];
-  fragment: DocumentFragment;
-  activeBlockMarker: Comment | null;
 }>;
 
 type StreamingRenderer = Readonly<{
-  update: (fullMarkdown: string, finalize?: boolean) => StreamingRenderResult;
+  finalize: (options: StreamingNextOptions) => StreamingNextResult;
+  next: (chunk: string, options: StreamingNextOptions) => void;
+  reset: () => void;
 }>;
 
 const EMPTY_DEFINITIONS: readonly MarkdownLinkDefinition[] = Object.freeze([]);
@@ -59,9 +63,12 @@ export default function useStreamingMarkdownWithDefinitions(
   );
 
   const hasStreamingSupport = !!renderMarkdown?.createStreamingRenderer;
-  console.warn('[useStreamingMarkdownWithDefinitions] Streaming support:', hasStreamingSupport);
+
+  const previousMarkdownRef = useRef('');
 
   const streamingRenderer = useMemo<StreamingRenderer | undefined>(() => {
+    previousMarkdownRef.current = '';
+
     if (renderMarkdown?.createStreamingRenderer) {
       return renderMarkdown.createStreamingRenderer(styleOptionsRef.current, { externalLinkAlt });
     }
@@ -69,13 +76,55 @@ export default function useStreamingMarkdownWithDefinitions(
     return undefined;
   }, [externalLinkAlt, renderMarkdown, styleOptionsRef]);
 
-  const streamingResult = useMemo<StreamingRenderResult | undefined>(() => {
-    if (!streamingRenderer || !markdown) {
-      return undefined;
+  const [definitions, setDefinitions] = useState<readonly MarkdownLinkDefinition[]>(EMPTY_DEFINITIONS);
+
+  useLayoutEffect(() => {
+    if (!streamingRenderer) {
+      return;
     }
 
-    return streamingRenderer.update(markdown, finalize);
-  }, [markdown, finalize, streamingRenderer]);
+    const container = containerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    if (!markdown) {
+      streamingRenderer.reset();
+      previousMarkdownRef.current = '';
+      container.textContent = '';
+
+      return;
+    }
+
+    const prev = previousMarkdownRef.current;
+    const isAppendOnly = !!prev && markdown.startsWith(prev);
+
+    if (!isAppendOnly) {
+      streamingRenderer.reset();
+    }
+
+    const chunk = isAppendOnly ? markdown.slice(prev.length) : markdown;
+    const options: StreamingNextOptions = {
+      container,
+      containerClassName,
+      transformFragment: transformHTMLContent
+    };
+
+    previousMarkdownRef.current = markdown;
+
+    if (finalize) {
+      if (chunk) {
+        streamingRenderer.next(chunk, options);
+      }
+
+      const { definitions } = streamingRenderer.finalize(options);
+
+      setDefinitions(definitions);
+    } else {
+      streamingRenderer.next(chunk, options);
+    }
+  }, [containerClassName, containerRef, finalize, markdown, streamingRenderer, transformHTMLContent]);
 
   const fallbackHTML = useMemo<string | undefined>(() => {
     if (hasStreamingSupport || !renderMarkdown || !markdown) {
@@ -93,114 +142,8 @@ export default function useStreamingMarkdownWithDefinitions(
     [hasStreamingSupport, markdown]
   );
 
-  const definitions = streamingResult?.definitions ?? fallbackDefinitions;
-
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-
-  // Saved raw child-node index from the previous parser result.
-  // It points to where the active tail started on the previous turn.
-  const previousActiveStartIndexRef = useRef(0);
-
-  // Boundary comment inside the live DOM. Everything after it is the mutable tail.
-  const activeBoundaryRef = useRef<Comment | null>(null);
-
   useLayoutEffect(() => {
-    if (!streamingResult) {
-      return;
-    }
-
-    const container = containerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    const { activeBlockMarker, fragment } = streamingResult;
-    const rawNodes = Array.from(fragment.childNodes);
-    const currentMarkerIndex = activeBlockMarker ? rawNodes.indexOf(activeBlockMarker) : -1;
-    const currentActiveStartIndex = currentMarkerIndex >= 0 ? currentMarkerIndex : 0;
-    const previousActiveStartIndex = previousActiveStartIndexRef.current;
-
-    let wrapper = wrapperRef.current;
-
-    if (!wrapper || !container.contains(wrapper)) {
-      wrapper = document.createElement('div');
-      container.textContent = '';
-      container.appendChild(wrapper);
-      wrapperRef.current = wrapper;
-      activeBoundaryRef.current = null;
-      previousActiveStartIndexRef.current = 0;
-    }
-
-    wrapper.className = containerClassName || '';
-
-    let activeBoundary = activeBoundaryRef.current;
-
-    if (!activeBoundary || !wrapper.contains(activeBoundary)) {
-      activeBoundary = null;
-      activeBoundaryRef.current = null;
-    }
-
-    const canIncrement = !!activeBoundary && currentMarkerIndex >= 0 && currentMarkerIndex >= previousActiveStartIndex;
-
-    console.warn(
-      '[useStreamingMarkdownWithDefinitions] Incremental update:',
-      canIncrement
-        ? 'Yes'
-        : !activeBoundary
-          ? 'No (active boundary lost)'
-          : !(currentMarkerIndex >= 0)
-            ? 'No (not found in current nodes)'
-            : !(currentMarkerIndex >= previousActiveStartIndex)
-              ? 'No (current marker index is before previous active start index)'
-              : 'No (wtf)',
-      '|',
-      'Current marker index:',
-      currentMarkerIndex,
-      '|',
-      'Previous active start index:',
-      previousActiveStartIndex
-    );
-
-    if (!canIncrement) {
-      const transformedFragment = transformHTMLContent(fragment);
-      wrapper.replaceChildren(transformedFragment);
-    } else {
-      const activeNodes = Array.from(fragment.childNodes).slice(previousActiveStartIndex);
-      const activeFragment = document.createDocumentFragment();
-      activeFragment.append(...activeNodes);
-      const transformedFragment = transformHTMLContent(activeFragment);
-
-      const range = document.createRange();
-      range.setStartBefore(activeBoundary);
-      range.setEndAfter(wrapper.lastChild);
-      range.deleteContents();
-
-      wrapper.append(transformedFragment);
-    }
-
-    previousActiveStartIndexRef.current = currentActiveStartIndex;
-
-    activeBoundaryRef.current = null;
-    if (!activeBlockMarker) {
-      return;
-    }
-
-    let boundary = wrapper.lastChild;
-    while (
-      boundary &&
-      (boundary.nodeType !== Node.COMMENT_NODE || boundary.nodeValue !== activeBlockMarker.nodeValue)
-    ) {
-      boundary = boundary.previousSibling;
-    }
-
-    if (boundary) {
-      activeBoundaryRef.current = boundary as Comment;
-    }
-  }, [containerClassName, containerRef, streamingResult, transformHTMLContent]);
-
-  useLayoutEffect(() => {
-    if (streamingResult || fallbackHTML === undefined) {
+    if (streamingRenderer || fallbackHTML === undefined) {
       return;
     }
 
@@ -218,14 +161,10 @@ export default function useStreamingMarkdownWithDefinitions(
 
     container.textContent = '';
     container.appendChild(wrapper);
-
-    wrapperRef.current = wrapper;
-    activeBoundaryRef.current = null;
-    previousActiveStartIndexRef.current = 0;
-  }, [containerClassName, containerRef, fallbackHTML, streamingResult, transformHTMLContent]);
+  }, [containerClassName, containerRef, fallbackHTML, streamingRenderer, transformHTMLContent]);
 
   useLayoutEffect(() => {
-    if (streamingResult || fallbackHTML !== undefined) {
+    if (streamingRenderer || fallbackHTML !== undefined) {
       return;
     }
 
@@ -236,18 +175,14 @@ export default function useStreamingMarkdownWithDefinitions(
     }
 
     container.textContent = '';
-    wrapperRef.current = null;
-    activeBoundaryRef.current = null;
-    previousActiveStartIndexRef.current = 0;
-  }, [containerRef, fallbackHTML, streamingResult]);
+  }, [containerRef, fallbackHTML, streamingRenderer]);
 
   useLayoutEffect(() => {
-    wrapperRef.current = null;
-    activeBoundaryRef.current = null;
-    previousActiveStartIndexRef.current = 0;
+    previousMarkdownRef.current = '';
+    setDefinitions(EMPTY_DEFINITIONS);
   }, [streamingRenderer]);
 
-  return Object.freeze({ definitions });
+  return Object.freeze({ definitions: definitions ?? fallbackDefinitions });
 }
 
 export { type MarkdownLinkDefinition };

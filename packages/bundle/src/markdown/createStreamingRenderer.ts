@@ -19,14 +19,20 @@ type StreamingRenderOptions = Readonly<{
   markdownRespectCRLF: boolean;
 }>;
 
-type StreamingRenderResult = Readonly<{
+type StreamingNextOptions = Readonly<{
+  container: HTMLElement;
+  containerClassName?: string | undefined;
+  transformFragment?: ((fragment: DocumentFragment) => DocumentFragment) | undefined;
+}>;
+
+type StreamingNextResult = Readonly<{
   definitions: readonly MarkdownLinkDefinition[];
-  fragment: DocumentFragment;
-  activeBlockMarker: Comment | null;
 }>;
 
 type StreamingRenderer = Readonly<{
-  update: (fullMarkdown: string) => StreamingRenderResult;
+  finalize: (options: StreamingNextOptions) => StreamingNextResult;
+  next: (chunk: string, options: StreamingNextOptions) => void;
+  reset: () => void;
 }>;
 
 // Top-level block token types emitted by micromark.
@@ -100,12 +106,15 @@ export default function createStreamingRenderer(
   };
 
   const domParser = new DOMParser();
-  const id = Math.random().toString(36).slice(2);
 
+  // Parser state.
   let activeBlockStartOffset = 0;
-  let previousFragment: DocumentFragment | null = null;
   let previousMarkdown = '';
   const emptyDefinitions: readonly MarkdownLinkDefinition[] = Object.freeze([]);
+
+  // DOM reconciliation state.
+  let wrapperDiv: HTMLDivElement | null = null;
+  let activeSentinel: Comment | null = null;
 
   function parseEvents(source: string): Event[] {
     return postprocess(
@@ -115,99 +124,187 @@ export default function createStreamingRenderer(
     );
   }
 
-  return Object.freeze({
-    next(chunk: string): StreamingRenderResult {
-      return this.update(previousMarkdown + chunk);
-    },
-    update(fullMarkdown: string, finalize = false): StreamingRenderResult {
-      const isAppendOnly = !!previousMarkdown && fullMarkdown.startsWith(previousMarkdown) && !finalize;
+  function applyTransform(
+    fragment: DocumentFragment,
+    transformFragment: ((fragment: DocumentFragment) => DocumentFragment) | undefined
+  ): DocumentFragment {
+    return transformFragment ? transformFragment(fragment) : fragment;
+  }
 
-      if (!isAppendOnly) {
-        activeBlockStartOffset = 0;
-        previousFragment = null;
-      }
+  function ensureWrapper(container: HTMLElement, containerClassName: string | undefined): HTMLDivElement {
+    if (wrapperDiv && container.contains(wrapperDiv)) {
+      wrapperDiv.className = containerClassName || '';
 
-      previousMarkdown = fullMarkdown;
+      return wrapperDiv;
+    }
 
-      // empty input
-      if (!fullMarkdown) {
-        previousMarkdown = '';
-        activeBlockStartOffset = 0;
-        previousFragment = null;
+    const wrapper = document.createElement('div');
 
-        return Object.freeze({
-          activeBlockMarker: null,
-          definitions: Object.freeze([]),
-          fragment: document.createDocumentFragment()
-        });
-      }
+    wrapper.className = containerClassName || '';
+    container.textContent = '';
+    container.appendChild(wrapper);
+    wrapperDiv = wrapper;
+    activeSentinel = null;
 
-      let processedMarkdown = fullMarkdown;
+    return wrapper;
+  }
 
-      if (markdownRespectCRLF) {
-        processedMarkdown = respectCRLFPre(processedMarkdown);
-      }
+  function renderNext(chunk: string, options: StreamingNextOptions): void {
+    previousMarkdown += chunk;
 
-      if (isAppendOnly && activeBlockStartOffset > 0) {
-        // Partial parse: only re-parse from the last committed block boundary.
+    if (!previousMarkdown) {
+      activeBlockStartOffset = 0;
+      activeSentinel = null;
+
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+      wrapper.replaceChildren();
+
+      return;
+    }
+
+    let processedMarkdown = previousMarkdown;
+
+    if (markdownRespectCRLF) {
+      processedMarkdown = respectCRLFPre(processedMarkdown);
+    }
+
+    // Incremental path: re-parse only from the last committed block boundary.
+    // Guard: if sentinel was lost (e.g. container changed), fall back to full reparse.
+    if (activeBlockStartOffset > 0) {
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+      if (activeSentinel && wrapper.contains(activeSentinel)) {
         const tailEvents = parseEvents(processedMarkdown.slice(activeBlockStartOffset));
         const tailBlocks = findTopLevelBlocks(tailEvents);
         const tailHTML = compile(micromarkOptions)(tailEvents);
 
-        let remainingHTML: string;
-
         if (tailBlocks.length <= 1) {
-          // Fast path: the active block grew but no new blocks appeared.
-          remainingHTML = tailHTML;
+          // Fast path: active block grew, no new committed blocks.
+          // Replace only the active zone (after sentinel).
+          const activeDoc = domParser.parseFromString(tailHTML, 'text/html');
+          const activeFragment = activeDoc.createDocumentFragment();
+
+          activeFragment.append(...Array.from(activeDoc.body.childNodes));
+          betterLinkDocumentMod(activeFragment, createDecorate(emptyDefinitions, externalLinkAlt));
+
+          const activeRange = document.createRange();
+
+          activeRange.setStartAfter(activeSentinel);
+          activeRange.setEndAfter(wrapper.lastChild!);
+          activeRange.deleteContents();
+
+          wrapper.append(applyTransform(activeFragment, options.transformFragment));
         } else {
-          // New block boundary appeared in the tail — update cache incrementally.
+          // New block boundary in tail: commit newly-finished blocks, replace active.
           const newActiveOffsetInTail = tailBlocks[tailBlocks.length - 1].startOffset;
           const committedTailEvents = tailEvents.filter(([, token]) => token.start.offset < newActiveOffsetInTail);
           const committedTailHTML = compile(micromarkOptions)(committedTailEvents);
 
           activeBlockStartOffset += newActiveOffsetInTail;
 
-          const committedTailDoc = domParser.parseFromString(committedTailHTML, 'text/html');
-          const committedTailFrag = committedTailDoc.createDocumentFragment();
+          const committedDoc = domParser.parseFromString(committedTailHTML, 'text/html');
+          const committedFragment = committedDoc.createDocumentFragment();
 
-          committedTailFrag.append(...Array.from(committedTailDoc.body.childNodes));
-          betterLinkDocumentMod(committedTailFrag, createDecorate(emptyDefinitions, externalLinkAlt));
+          committedFragment.append(...Array.from(committedDoc.body.childNodes));
+          betterLinkDocumentMod(committedFragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
-          if (previousFragment) {
-            previousFragment.append(...Array.from(committedTailFrag.childNodes));
-          } else {
-            previousFragment = committedTailFrag;
-          }
+          const remainingHTML = tailHTML.slice(committedTailHTML.length);
+          const activeDoc = domParser.parseFromString(remainingHTML, 'text/html');
+          const activeFragment = activeDoc.createDocumentFragment();
 
-          remainingHTML = tailHTML.slice(committedTailHTML.length);
+          activeFragment.append(...Array.from(activeDoc.body.childNodes));
+          betterLinkDocumentMod(activeFragment, createDecorate(emptyDefinitions, externalLinkAlt));
+
+          // Remove old sentinel and active zone.
+          const tailRange = document.createRange();
+
+          tailRange.setStartBefore(activeSentinel);
+          tailRange.setEndAfter(wrapper.lastChild!);
+          tailRange.deleteContents();
+
+          // Append newly committed, new sentinel, active.
+          activeSentinel = document.createComment('');
+
+          wrapper.append(
+            applyTransform(committedFragment, options.transformFragment),
+            activeSentinel,
+            applyTransform(activeFragment, options.transformFragment)
+          );
         }
 
-        const remainingDoc = domParser.parseFromString(remainingHTML, 'text/html');
-        const remainingFragment = remainingDoc.createDocumentFragment();
-
-        remainingFragment.append(...Array.from(remainingDoc.body.childNodes));
-        betterLinkDocumentMod(remainingFragment, createDecorate(emptyDefinitions, externalLinkAlt));
-
-        const fragment = document.createDocumentFragment();
-
-        fragment.append(previousFragment.cloneNode(true), remainingFragment);
-
-        let activeBlockMarker: Comment | null = null;
-        const lastElement = fragment.lastElementChild;
-
-        if (lastElement) {
-          activeBlockMarker = document.createComment(`webchat-html-stream-active-boundary-${id}`);
-          fragment.insertBefore(activeBlockMarker, lastElement);
-        }
-
-        return Object.freeze({
-          activeBlockMarker,
-          definitions: emptyDefinitions,
-          fragment
-        });
+        return;
       }
 
-      // Full reparse path.
+      // Sentinel lost — reset and fall through to full reparse.
+      activeBlockStartOffset = 0;
+      activeSentinel = null;
+    }
+
+    // Full reparse path.
+    const fullEvents = parseEvents(processedMarkdown);
+    const rawHTML = compile(micromarkOptions)(fullEvents);
+    const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
+    const fragment = parsedDocument.createDocumentFragment();
+
+    fragment.append(...Array.from(parsedDocument.body.childNodes));
+
+    const blocks = findTopLevelBlocks(fullEvents);
+
+    if (blocks.length >= 2) {
+      activeBlockStartOffset = blocks[blocks.length - 1].startOffset;
+
+      const range = document.createRange();
+
+      range.setStartBefore(fragment.firstChild!);
+      range.setEndBefore(fragment.lastElementChild!);
+
+      const committedFragment = range.extractContents();
+      const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
+
+      betterLinkDocumentMod(committedFragment, decorate);
+      betterLinkDocumentMod(fragment, decorate);
+
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+      activeSentinel = document.createComment('');
+
+      wrapper.replaceChildren(
+        applyTransform(committedFragment, options.transformFragment),
+        activeSentinel,
+        applyTransform(fragment, options.transformFragment)
+      );
+
+      return;
+    }
+
+    // Single block — full replace, no sentinel.
+    activeBlockStartOffset = 0;
+    activeSentinel = null;
+
+    betterLinkDocumentMod(fragment, createDecorate(emptyDefinitions, externalLinkAlt));
+
+    const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+    wrapper.replaceChildren(applyTransform(fragment, options.transformFragment));
+  }
+
+  return Object.freeze({
+    finalize(options: StreamingNextOptions): StreamingNextResult {
+      if (!previousMarkdown) {
+        const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+        wrapper.replaceChildren();
+
+        return Object.freeze({ definitions: Object.freeze([]) });
+      }
+
+      let processedMarkdown = previousMarkdown;
+
+      if (markdownRespectCRLF) {
+        processedMarkdown = respectCRLFPre(processedMarkdown);
+      }
+
       const fullEvents = parseEvents(processedMarkdown);
       const rawHTML = compile(micromarkOptions)(fullEvents);
       const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
@@ -215,68 +312,39 @@ export default function createStreamingRenderer(
 
       fragment.append(...Array.from(parsedDocument.body.childNodes));
 
-      if (finalize) {
-        const definitions = extractDefinitionsFromEvents(fullEvents);
-        betterLinkDocumentMod(fragment, createDecorate(definitions, externalLinkAlt));
+      const definitions = extractDefinitionsFromEvents(fullEvents);
 
-        return Object.freeze({
-          activeBlockMarker: null,
-          definitions,
-          fragment
-        });
-      }
+      betterLinkDocumentMod(fragment, createDecorate(definitions, externalLinkAlt));
 
-      // Non-finalize full reparse: split committed and remaining at block boundary.
-      const blocks = findTopLevelBlocks(fullEvents);
-
-      if (blocks.length >= 2) {
-        activeBlockStartOffset = blocks[blocks.length - 1].startOffset;
-
-        const range = document.createRange();
-        range.setStartBefore(fragment.firstChild);
-        range.setEndBefore(fragment.lastElementChild);
-        previousFragment = range.extractContents();
-
-        const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
-
-        betterLinkDocumentMod(previousFragment, decorate);
-
-        // fragment now contains only the remaining (active) nodes.
-        betterLinkDocumentMod(fragment, decorate);
-
-        const outputFragment = document.createDocumentFragment();
-        const activeBlockMarker = document.createComment(`webchat-html-stream-active-boundary-${id}`);
-
-        outputFragment.append(previousFragment.cloneNode(true), activeBlockMarker, fragment);
-
-        return Object.freeze({
-          activeBlockMarker,
-          definitions: emptyDefinitions,
-          fragment: outputFragment
-        });
-      }
-
-      // Single block — mod everything.
       activeBlockStartOffset = 0;
-      previousFragment = null;
+      activeSentinel = null;
 
-      betterLinkDocumentMod(fragment, createDecorate(emptyDefinitions, externalLinkAlt));
+      // Full replace on finalize — no incremental path needed.
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
+      const transformedFragment = applyTransform(fragment, options.transformFragment);
 
-      let activeBlockMarker: Comment | null = null;
-      const lastElement = fragment.lastElementChild;
+      wrapper.replaceChildren(transformedFragment);
 
-      if (lastElement) {
-        activeBlockMarker = parsedDocument.createComment(`webchat-html-stream-active-boundary-${id}`);
-        fragment.insertBefore(activeBlockMarker, lastElement);
-      }
+      return Object.freeze({ definitions });
+    },
 
-      return Object.freeze({
-        activeBlockMarker,
-        definitions: emptyDefinitions,
-        fragment
-      });
+    next(chunk: string, options: StreamingNextOptions): void {
+      renderNext(chunk, options);
+    },
+
+    reset(): void {
+      previousMarkdown = '';
+      activeBlockStartOffset = 0;
+      activeSentinel = null;
+      wrapperDiv = null;
     }
   });
 }
 
-export { type MarkdownLinkDefinition, type StreamingRenderer, type StreamingRenderOptions, type StreamingRenderResult };
+export {
+  type MarkdownLinkDefinition,
+  type StreamingNextOptions,
+  type StreamingNextResult,
+  type StreamingRenderer,
+  type StreamingRenderOptions
+};
