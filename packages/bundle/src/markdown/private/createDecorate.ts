@@ -17,6 +17,8 @@ export function createDecorate(
     })
   );
 
+  const allowedSchemas = ALLOWED_SCHEMES.map(scheme => `${scheme}:`);
+
   return (href: string, textContent: string): BetterLinkDocumentModDecoration => {
     const decoration: BetterLinkDocumentModDecoration = {
       rel: 'noopener noreferrer',
@@ -43,7 +45,7 @@ export function createDecorate(
     // eslint-disable-next-line no-script-url
     if (protocol !== 'javascript:') {
       // For links that would be sanitized out, let's turn them into a button so we could handle them later.
-      if (!ALLOWED_SCHEMES.map(scheme => `${scheme}:`).includes(protocol)) {
+      if (!allowedSchemas.includes(protocol)) {
         decoration.asButton = true;
 
         classes.add('render-markdown__citation');
