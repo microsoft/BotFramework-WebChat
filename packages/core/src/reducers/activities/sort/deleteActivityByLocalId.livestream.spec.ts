@@ -100,11 +100,11 @@ scenario('deleting an activity', bdd => {
       expect(state.activityMap).toHaveProperty('size', 3);
       expect(state.howToGroupingMap).toHaveProperty('size', 0);
       expect(state.livestreamSessionMap).toHaveProperty('size', 1);
-      expect(state.sortedActivities).toHaveLength(3);
+      expect(state.sortedActivities).toHaveLength(1);
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .when('the last activity is delete', (_, state) =>
-      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[2]))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]))
     )
     .then('should have 2 activities', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 2);

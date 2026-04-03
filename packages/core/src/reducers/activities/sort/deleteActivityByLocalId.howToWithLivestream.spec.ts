@@ -136,11 +136,11 @@ scenario('delete livestream activities in part grouping', bdd => {
       expect(state.activityMap).toHaveProperty('size', 4);
       expect(state.howToGroupingMap).toHaveProperty('size', 1);
       expect(state.livestreamSessionMap).toHaveProperty('size', 1);
-      expect(state.sortedActivities).toHaveLength(4);
+      expect(state.sortedActivities).toHaveLength(2);
       expect(state.sortedChatHistoryList).toHaveLength(1);
     })
     .when('the last livestream activity is delete', (_, state) =>
-      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[2]))
+      deleteActivityByLocalId(state, getLocalIdFromActivity(state.sortedActivities[0]))
     )
     .then('should have 3 activities', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 3);
