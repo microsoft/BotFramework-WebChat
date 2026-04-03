@@ -132,7 +132,7 @@ scenario('delete livestream activities in part grouping', bdd => {
         activity4
       )
     )
-    .then('should have 4 activities', (_, state) => {
+    .then('should have 4 activities in map, 2 visible', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 4);
       expect(state.howToGroupingMap).toHaveProperty('size', 1);
       expect(state.livestreamSessionMap).toHaveProperty('size', 1);

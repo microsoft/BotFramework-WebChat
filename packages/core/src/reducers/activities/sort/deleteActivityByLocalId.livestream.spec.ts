@@ -96,7 +96,7 @@ scenario('deleting an activity', bdd => {
     .when('3 activities are upserted', state =>
       upsert({ Date }, upsert({ Date }, upsert({ Date }, state, activity1), activity2), activity3)
     )
-    .then('should have 3 activities', (_, state) => {
+    .then('should have 3 activities in map, 1 visible', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 3);
       expect(state.howToGroupingMap).toHaveProperty('size', 0);
       expect(state.livestreamSessionMap).toHaveProperty('size', 1);
