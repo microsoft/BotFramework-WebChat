@@ -9,7 +9,7 @@ import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
  * Creates a `TransformStream` that coalesces interim livestream activities.
  *
  * All activities from one network chunk arrive as a burst of microtasks.
- * Buffering interims until the next macrotask (`setTimeout(0)`) collapses
+ * Buffering interims until the next macrotask (`setTimeout(32)`) collapses
  * the burst into a single latest-per-session activity.
  *
  * Non-interim activities (first-in-session, informative, contentless, final)
@@ -45,9 +45,6 @@ export default function createStreamCoalescer() {
 
     flushScheduled = true;
 
-    // setTimeout(0) defers to the macrotask queue.
-    // All stream-internal microtasks (transform calls from one network chunk)
-    // complete before this fires, enabling effective batching.
     flushTimer = setTimeout(flushPending, 32);
   }
 
