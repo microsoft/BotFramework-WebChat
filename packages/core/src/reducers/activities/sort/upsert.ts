@@ -68,8 +68,10 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
   // #region Streaming fast path
   //
   // For revision 2..N-1 of an existing, non-finalized livestream session without HowTo grouping:
-  // skip O(n) Map copies, sortedChatHistoryList recomputation, computeSortedActivities, and
-  // full position sequencing. This turns each streaming revision from O(n) to O(session_revisions).
+  // avoid the heavier full rebuild path, including sortedChatHistoryList recomputation,
+  // computeSortedActivities, and full position resequencing. This is still not constant-time:
+  // the fast path continues to clone Maps and update sortedActivities, but it avoids the
+  // broader recomputation required for the general case.
   if (activityLivestreamingMetadata) {
     const sessionId = activityLivestreamingMetadata.sessionId as LivestreamSessionId;
     const existingSession = state.livestreamSessionMap.get(sessionId);
