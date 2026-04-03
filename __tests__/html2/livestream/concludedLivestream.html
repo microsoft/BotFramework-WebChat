@@ -137,7 +137,7 @@
         await host.snapshot('local');
 
         // THEN: Should have 1 activity key only.
-        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00002']]]);
 
         // THEN: Should have no active typing.
         expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
