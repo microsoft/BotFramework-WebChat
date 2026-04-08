@@ -164,6 +164,7 @@ Breaking changes in this release:
 
 ### Changed
 
+- Added streaming fast path in activity upsert to skip recomputation for mid-stream revisions, in PR [#5796](https://github.com/microsoft/BotFramework-WebChat/pull/5796), by [@OEvgeny](https://github.com/OEvgeny)
 - Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
 - Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
 - Reworked pre-chat activity layout to use author entity for improved consistency and flexibility, in PR [#5274](https://github.com/microsoft/BotFramework-WebChat/pull/5274), by [@OEvgeny](https://github.com/OEvgeny)
@@ -340,8 +341,10 @@ Breaking changes in this release:
 - Improved adaptive cards rendering in copilot variant, in PR [#5682](https://github.com/microsoft/BotFramework-WebChat/pull/5682), by [@OEvgeny](https://github.com/OEvgeny)
 - Bumped to [`botframework-directlinejs@0.15.8`](https://www.npmjs.com/package/botframework-directlinejs/v/0.15.8) to include support for the new `streaming` property, by [@pranavjoshi001](https://github.com/pranavjoshi001), in PR [#5686](https://github.com/microsoft/BotFramework-WebChat/pull/5686)
 - Removed unused deps `simple-git`, by [@compulim](https://github.com/compulim), in PR [#5786](https://github.com/microsoft/BotFramework-WebChat/pull/5786)
-- Improved `ActivityKeyerComposer` performance for append scenarios by adding an incremental fast path that only processes newly-appended activities, in PR [#5790](https://github.com/microsoft/BotFramework-WebChat/pull/5790), by [@OEvgeny](https://github.com/OEvgeny)
+- Improved `ActivityKeyerComposer` performance for append scenarios by adding an incremental fast path that only processes newly-appended activities, in PR [#5790](https://github.com/microsoft/BotFramework-WebChat/pull/5790), in PR [#5797](https://github.com/microsoft/BotFramework-WebChat/pull/5797), by [@OEvgeny](https://github.com/OEvgeny)
+   - Added frozen window optimization to limit reference comparisons to the last 1,000 activities with deferred verification of the frozen portion, in PR [#5797](https://github.com/microsoft/BotFramework-WebChat/pull/5797), by [@OEvgeny](https://github.com/OEvgeny)
 - Improved livestream performance by pruning intermediate revision activities after a stream session is finalized, in PR [#5798](https://github.com/microsoft/BotFramework-WebChat/pull/5798), by [@OEvgeny](https://github.com/OEvgeny)
+- Bumped to [`adaptivecards@3.0.6`](https://www.npmjs.com/package/adaptivecards/v/3.0.6) in PR [#5800](https://github.com/microsoft/BotFramework-WebChat/pull/5800) by [@compulim](https://github.com/compulim)
 
 ### Deprecated
 
