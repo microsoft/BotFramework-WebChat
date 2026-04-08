@@ -244,26 +244,36 @@ export default function createStreamingRenderer(
     // Full reparse path.
     const fullEvents = parseEvents(processedMarkdown);
     const rawHTML = compile(micromarkOptions)(fullEvents);
-    const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
-    const fragment = parsedDocument.createDocumentFragment();
-
-    fragment.append(...Array.from(parsedDocument.body.childNodes));
-
     const blocks = findTopLevelBlocks(fullEvents);
 
     if (blocks.length >= 2) {
-      activeBlockStartOffset = blocks[blocks.length - 1].startOffset;
+      const lastBlock = blocks[blocks.length - 1];
 
-      const range = document.createRange();
+      activeBlockStartOffset = lastBlock.startOffset;
 
-      range.setStartBefore(fragment.firstChild!);
-      range.setEndBefore(fragment.lastElementChild!);
+      // Compile the active (last block) portion first — it is always a single
+      // block and therefore cheap.  Then derive the committed HTML by slicing
+      // the already-compiled full output so that inter-block whitespace
+      // (produced by lineEnding events the compiler only flushes mid-stream)
+      // is preserved in the committed fragment.
+      const activeEvents = fullEvents.filter(([, token]) => token.start.offset >= lastBlock.startOffset);
+      const activeHTML = compile(micromarkOptions)(activeEvents);
+      const committedHTML = rawHTML.slice(0, rawHTML.length - activeHTML.length);
 
-      const committedFragment = range.extractContents();
+      const committedDoc = domParser.parseFromString(committedHTML, 'text/html');
+      const committedFragment = committedDoc.createDocumentFragment();
+
+      committedFragment.append(...Array.from(committedDoc.body.childNodes));
+
+      const activeDoc = domParser.parseFromString(activeHTML, 'text/html');
+      const activeFragment = activeDoc.createDocumentFragment();
+
+      activeFragment.append(...Array.from(activeDoc.body.childNodes));
+
       const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
 
       betterLinkDocumentMod(committedFragment, decorate);
-      betterLinkDocumentMod(fragment, decorate);
+      betterLinkDocumentMod(activeFragment, decorate);
 
       const wrapper = ensureWrapper(options.container, options.containerClassName);
 
@@ -272,7 +282,7 @@ export default function createStreamingRenderer(
       wrapper.replaceChildren(
         applyTransform(committedFragment, options.transformFragment),
         activeSentinel,
-        applyTransform(fragment, options.transformFragment)
+        applyTransform(activeFragment, options.transformFragment)
       );
 
       return;
@@ -281,6 +291,11 @@ export default function createStreamingRenderer(
     // Single block — full replace, no sentinel.
     activeBlockStartOffset = 0;
     activeSentinel = null;
+
+    const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
+    const fragment = parsedDocument.createDocumentFragment();
+
+    fragment.append(...Array.from(parsedDocument.body.childNodes));
 
     betterLinkDocumentMod(fragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
