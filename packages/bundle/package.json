@@ -136,7 +136,7 @@
       "uuid@9 emit non-ES5 build because of default parameters"
     ],
     "adaptivecards": [
-      "3.0.5",
+      "3.0.6",
       "we should bump manually"
     ],
     "shiki": [
@@ -217,7 +217,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.28.6",
-    "adaptivecards": "3.0.5",
+    "adaptivecards": "3.0.6",
     "botframework-directlinejs": "0.15.8",
     "botframework-directlinespeech-sdk": "0.0.0-0",
     "botframework-webchat-api": "0.0.0-0",
