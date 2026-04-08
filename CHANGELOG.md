@@ -341,6 +341,7 @@ Breaking changes in this release:
 - Bumped to [`botframework-directlinejs@0.15.8`](https://www.npmjs.com/package/botframework-directlinejs/v/0.15.8) to include support for the new `streaming` property, by [@pranavjoshi001](https://github.com/pranavjoshi001), in PR [#5686](https://github.com/microsoft/BotFramework-WebChat/pull/5686)
 - Removed unused deps `simple-git`, by [@compulim](https://github.com/compulim), in PR [#5786](https://github.com/microsoft/BotFramework-WebChat/pull/5786)
 - Improved `ActivityKeyerComposer` performance for append scenarios by adding an incremental fast path that only processes newly-appended activities, in PR [#5790](https://github.com/microsoft/BotFramework-WebChat/pull/5790), by [@OEvgeny](https://github.com/OEvgeny)
+- Bumped to [`adaptivecards@3.0.6`](https://www.npmjs.com/package/adaptivecards/v/3.0.6) in PR [#5800](https://github.com/microsoft/BotFramework-WebChat/pull/5800) by [@compulim](https://github.com/compulim)
 
 ### Deprecated
 
