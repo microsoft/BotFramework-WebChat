@@ -342,6 +342,7 @@ Breaking changes in this release:
 - Removed unused deps `simple-git`, by [@compulim](https://github.com/compulim), in PR [#5786](https://github.com/microsoft/BotFramework-WebChat/pull/5786)
 - Improved `ActivityKeyerComposer` performance for append scenarios by adding an incremental fast path that only processes newly-appended activities, in PR [#5790](https://github.com/microsoft/BotFramework-WebChat/pull/5790), in PR [#5797](https://github.com/microsoft/BotFramework-WebChat/pull/5797), by [@OEvgeny](https://github.com/OEvgeny)
    - Added frozen window optimization to limit reference comparisons to the last 1,000 activities with deferred verification of the frozen portion, in PR [#5797](https://github.com/microsoft/BotFramework-WebChat/pull/5797), by [@OEvgeny](https://github.com/OEvgeny)
+- Bumped to [`adaptivecards@3.0.6`](https://www.npmjs.com/package/adaptivecards/v/3.0.6) in PR [#5800](https://github.com/microsoft/BotFramework-WebChat/pull/5800) by [@compulim](https://github.com/compulim)
 
 ### Deprecated
 

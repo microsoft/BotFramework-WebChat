@@ -21,7 +21,7 @@
   },
   "pinDependencies": {
     "adaptivecards": [
-      "3.0.5",
+      "3.0.6",
       "Bump manually to ensure compatibility"
     ]
   },
@@ -30,6 +30,6 @@
     "esbuild": "^0.27.3"
   },
   "dependencies": {
-    "adaptivecards": "3.0.5"
+    "adaptivecards": "3.0.6"
   }
 }
