@@ -164,6 +164,7 @@ Breaking changes in this release:
 
 ### Changed
 
+- Added streaming fast path in activity upsert to skip recomputation for mid-stream revisions, in PR [#5796](https://github.com/microsoft/BotFramework-WebChat/pull/5796), by [@OEvgeny](https://github.com/OEvgeny)
 - Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
 - Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
 - Reworked pre-chat activity layout to use author entity for improved consistency and flexibility, in PR [#5274](https://github.com/microsoft/BotFramework-WebChat/pull/5274), by [@OEvgeny](https://github.com/OEvgeny)
