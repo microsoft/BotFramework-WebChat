@@ -112,13 +112,14 @@ describe('createStreamingRenderer', () => {
       expect(split![1]).toBe('<p>Second paragraph</p>');
     });
 
-    test('should preserve both paragraphs in textContent', () => {
+    test('should preserve newline between paragraphs in textContent', () => {
       const { container, nextOptions, renderer } = setup();
 
       renderer.next('First\n\nSecond', nextOptions());
 
       expect(container.textContent).toContain('First');
       expect(container.textContent).toContain('Second');
+      expect(container.textContent).toMatch(/First\s+Second/u);
     });
 
     test('should split three paragraphs with two committed and one active', () => {
@@ -132,6 +133,15 @@ describe('createStreamingRenderer', () => {
       expect(split![0]).toContain('Block A');
       expect(split![0]).toContain('Block B');
       expect(split![1]).toBe('<p>Block C</p>');
+    });
+
+    test('should preserve newline in textContent for code span followed by paragraph', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('`t=undefined`\n\nA quick', nextOptions());
+
+      // The \n between the two <p> blocks must survive the committed/active split.
+      expect(container.textContent).toMatch(/t=undefined\nA quick/u);
     });
   });
 
