@@ -264,7 +264,7 @@
         // THEN: Should have 2 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [expect.any(String), ['a-00001']],
-          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003', 't-00004']]
+          [firstTypingActivityKey, ['t-00004']]
         ]);
 
         // THEN: Should have no active typing.
@@ -287,7 +287,7 @@
         // THEN: Should have 2 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [expect.any(String), ['a-00001']],
-          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003', 't-00004']],
+          [firstTypingActivityKey, ['t-00004']],
           [expect.any(String), ['a-00002']]
         ]);
 
