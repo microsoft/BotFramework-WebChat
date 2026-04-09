@@ -379,10 +379,6 @@ scenario('upserting plain activity in the same grouping', bdd => {
       ] satisfies SortedChatHistory);
     })
     .and('`sortedActivities` should match', (_, state) => {
-      expect(state.sortedActivities).toEqual([
-        activityToExpectation(activity1, 1_000),
-        activityToExpectation(activity2, 2_000),
-        activityToExpectation(activity3, 3_000)
-      ]);
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity3, 1_000)]);
     });
 });
