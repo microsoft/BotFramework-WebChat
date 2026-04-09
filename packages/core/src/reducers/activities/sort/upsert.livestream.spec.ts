@@ -413,11 +413,6 @@ scenario('upserting a livestream session', bdd => {
       ]);
     })
     .and('`sortedActivities` should match snapshot', (_, state) => {
-      expect(state.sortedActivities).toEqual([
-        activityToExpectation(activity1, 1_000),
-        activityToExpectation(activity3, 1_001),
-        activityToExpectation(activity2, 2_000),
-        activityToExpectation(activity4, 3_000)
-      ]);
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity4, 1_000)]);
     });
 });

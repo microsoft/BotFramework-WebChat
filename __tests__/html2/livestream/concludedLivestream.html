@@ -137,7 +137,7 @@
         await host.snapshot('local');
 
         // THEN: Should have 1 activity key only.
-        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00002']]]);
 
         // THEN: Should have no active typing.
         expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
@@ -167,8 +167,8 @@
         );
         await host.snapshot('local');
 
-        // THEN: Should have 1 activity key associated with 2 activity IDs only.
-        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+        // THEN: Should have 1 activity key associated with a single activity ID only.
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00002']]]);
 
         // THEN: Should have no active typing.
         expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
@@ -198,8 +198,8 @@
         );
         await host.snapshot('local');
 
-        // THEN: Should have 1 activity key associated with 2 activity IDs only.
-        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+        // THEN: Should have 1 activity key associated with 1 activity ID only (intermediate revisions pruned).
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00002']]]);
 
         // THEN: Should have no active typing.
         expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
