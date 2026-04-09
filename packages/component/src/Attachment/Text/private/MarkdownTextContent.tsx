@@ -9,8 +9,6 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import cx from 'classnames';
-import type { Definition } from 'mdast';
-import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
@@ -19,7 +17,9 @@ import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
-import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
+import useStreamingMarkdownWithDefinitions, {
+  type MarkdownLinkDefinition
+} from '../../../hooks/useStreamingMarkdownWithDefinitions';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
 import ActivityCopyButton from './ActivityCopyButton';
@@ -39,7 +39,7 @@ type Entry = {
   claim?: OrgSchemaClaim | undefined;
   /** Do not use the key as URL, it is not sanitized. */
   key: string;
-  markdownDefinition: Definition;
+  markdownDefinition: MarkdownLinkDefinition;
 } & (
   | {
       // Inline citation.
@@ -86,26 +86,17 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
   const showModal = useShowModal();
+
+  const { definitions: markdownDefinitions } = useStreamingMarkdownWithDefinitions(
+    contentRef,
+    markdown,
+    activity.type === 'message'
+  );
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 
   const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
-
-  if (!renderMarkdownAsHTML) {
-    throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
-  }
-
-  const dangerouslySetInnerHTML = useMemo(
-    () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
-    [renderMarkdownAsHTML, markdown]
-  );
-
-  const markdownDefinitions = useMemo(
-    () => fromMarkdown(markdown).children.filter((node): node is Definition => node.type === 'definition'),
-    [markdown]
-  );
 
   const showClaimModal = useCallback(
     (title, text, altText) => {
@@ -283,13 +274,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
   return (
     <div className={cx(textContentClassNames['text-content'], textContentClassNames['text-content--is-markdown'])}>
-      <div
-        className={cx(textContentClassNames['text-content__markdown'])}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-        onClick={handleClick}
-        ref={contentRef}
-      />
+      <div className={cx(textContentClassNames['text-content__markdown'])} onClick={handleClick} ref={contentRef} />
       {children}
       {!!entries.length && (
         <LinkDefinitions<MessageSensitivityLabelProps>
