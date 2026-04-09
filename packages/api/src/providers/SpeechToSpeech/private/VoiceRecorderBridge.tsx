@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useRecorder } from './useRecorder';
 import usePostVoiceActivity from '../../../hooks/internal/usePostVoiceActivity';
+import useVoiceRecordingMuted from '../../../hooks/useVoiceRecordingMuted';
 import useVoiceState from '../../../hooks/useVoiceState';
 
 /**
@@ -8,10 +9,10 @@ import useVoiceState from '../../../hooks/useVoiceState';
  * with the actual microphone recording functionality.
  */
 export function VoiceRecorderBridge(): null {
+  const [muted] = useVoiceRecordingMuted();
   const [voiceState] = useVoiceState();
   const postVoiceActivity = usePostVoiceActivity();
 
-  const muted = voiceState === 'muted';
   // Derive recording state from voiceState - recording is active when not idle
   const recording = voiceState !== 'idle';
 
@@ -33,16 +34,16 @@ export function VoiceRecorderBridge(): null {
   const { mute, record } = useRecorder(handleAudioChunk);
 
   useEffect(() => {
-    if (muted) {
-      return mute();
-    }
-  }, [muted, mute]);
-
-  useEffect(() => {
     if (recording) {
       return record();
     }
   }, [record, recording]);
+
+  useEffect(() => {
+    if (muted) {
+      return mute();
+    }
+  }, [muted, mute]);
 
   return null;
 }

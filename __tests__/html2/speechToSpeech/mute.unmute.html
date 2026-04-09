@@ -16,10 +16,13 @@
       Test: Mute/Unmute functionality for Speech-to-Speech
       
       This test validates:
-      1. Listening state can transition to muted and back to listening
-      2. Other states (idle) cannot transition to muted
-      3. Muted chunks contain all zeros (silent audio)
-      4. Uses useVoiceRecordingMuted hook via Composer pattern for mute/unmute control
+      1. Mute is independent of voiceState - can be toggled anytime
+      2. Starting recording while muted should reset and start recording always unmuted.
+      3. When muted during listening, chunks contain all zeros (silent audio)
+      4. When unmuted, chunks contain real audio
+      5. Mute resets to false when recording stops
+      6. Stopping while muted does NOT re-acquire microphone (cleanup order test)
+      7. Uses useVoiceRecordingMuted hook for mute/unmute control
     -->
     <script type="module">
       import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
@@ -51,26 +54,26 @@
           return bytes.every(byte => byte === 0);
         }
 
-        // Helper to check if audio has non-zero data (real audio)
-        function hasNonZeroAudio(base64Content) {
-          const binaryString = atob(base64Content);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          return bytes.some(byte => byte !== 0);
-        }
+        // Wrap getUserMedia to track call count for cleanup order test
+        let getUserMediaCallCount = 0;
+        const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+        navigator.mediaDevices.getUserMedia = (...args) => {
+          getUserMediaCallCount++;
+          return originalGetUserMedia(...args);
+        };
 
         const audioChunks = [];
         let currentVoiceState = 'idle';
+        let currentMicrophoneMuted = false;
 
         // Setup Web Chat with Speech-to-Speech
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
 
-        // Track voiceState changes
+        // Track voiceState and microphoneMuted changes
         store.subscribe(() => {
           currentVoiceState = store.getState().voice?.voiceState || 'idle';
+          currentMicrophoneMuted = store.getState().voice?.microphoneMuted || false;
         });
 
         // Intercept postActivity to capture outgoing voice chunks
@@ -79,7 +82,8 @@
           if (activity.name === 'media.chunk' && activity.type === 'event') {
             audioChunks.push({
               content: activity.value?.content,
-              voiceState: currentVoiceState
+              voiceState: currentVoiceState,
+              microphoneMuted: currentMicrophoneMuted
             });
           }
           return originalPostActivity(activity);
@@ -103,6 +107,7 @@
 
         // Helper to get voice state from store
         const getVoiceState = () => store.getState().voice?.voiceState;
+        const getMicrophoneMuted = () => store.getState().voice?.microphoneMuted;
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -119,7 +124,7 @@
         const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
         expect(micButton).toBeTruthy();
 
-        // ===== TEST 1: Muting from idle state should be no-op =====
+        // ===== TEST 1: Muting from idle state should work as independent from voice state =====
         expect(getVoiceState()).toBe('idle');
         expect(muteControlRef.muted).toBe(false);
 
@@ -127,9 +132,9 @@
         await new Promise(r => setTimeout(r, 100));
 
         expect(getVoiceState()).toBe('idle'); // Still idle, not muted
-        expect(muteControlRef.muted).toBe(false);
+        expect(muteControlRef.muted).toBe(true);
 
-        // ===== TEST 2: Start recording → listening state =====
+        // ===== TEST 2: Start recording → listening state, microphoneMuted resets to false =====
         await host.click(micButton);
         
         await pageConditions.became(
@@ -138,44 +143,49 @@
           2000
         );
 
+        // Starting recording resets microphoneMuted to false.
+        // This ensures a clean slate - recording always starts unmuted.
+        expect(muteControlRef.muted).toBe(false);
+
         // Wait for some listening chunks
         await pageConditions.became(
           'At least 2 listening chunks received',
-          () => audioChunks.filter(c => c.voiceState === 'listening').length >= 2,
+          () => audioChunks.filter(c => c.voiceState === 'listening' && !c.microphoneMuted).length >= 2,
           2000
         );
 
-        // ===== TEST 3: Mute from listening state → muted state =====
+        // ===== TEST 3: Mute while listening → microphoneMuted true, voiceState stays listening =====
         muteControlRef.setMuted(true);
         
         await pageConditions.became(
-          'Voice state is muted',
-          () => getVoiceState() === 'muted',
+          'microphoneMuted is true',
+          () => getMicrophoneMuted() === true,
           1000
         );
         
         expect(muteControlRef.muted).toBe(true);
+        expect(getVoiceState()).toBe('listening'); // voiceState stays listening
 
         // Wait for muted chunks
         await pageConditions.became(
           'At least 2 muted chunks received',
-          () => audioChunks.filter(c => c.voiceState === 'muted').length >= 2,
+          () => audioChunks.filter(c => c.microphoneMuted).length >= 2,
           2000
         );
 
         // ===== TEST 4: Verify muted chunks are all zeros =====
-        const mutedChunks = audioChunks.filter(c => c.voiceState === 'muted');
+        const mutedChunks = audioChunks.filter(c => c.microphoneMuted);
         expect(mutedChunks.length).toBeGreaterThanOrEqual(2);
         for (const chunk of mutedChunks) {
           expect(isAudioAllZeros(chunk.content)).toBe(true);
         }
 
-        // ===== TEST 5: Unmute → back to listening state =====
+        // ===== TEST 5: Unmute → microphoneMuted false =====
         muteControlRef.setMuted(false);
         
         await pageConditions.became(
-          'Voice state is listening after unmute',
-          () => getVoiceState() === 'listening',
+          'microphoneMuted is false after unmute',
+          () => getMicrophoneMuted() === false,
           1000
         );
         
@@ -190,15 +200,15 @@
         );
 
         // ===== TEST 6: Verify listening chunks contain real (non-zero) audio =====
-        const listeningChunks = audioChunks.filter(c => c.voiceState === 'listening');
+        const listeningChunks = audioChunks.filter(c => c.voiceState === 'listening' && !c.microphoneMuted);
         expect(listeningChunks.length).toBeGreaterThanOrEqual(4); // At least 2 before mute + 2 after unmute
         
         // Verify listening audio is non-zero (real audio)
         for (const chunk of listeningChunks) {
-          expect(hasNonZeroAudio(chunk.content)).toBe(true);
+          expect(isAudioAllZeros(chunk.content)).toBe(false);
         }
 
-        // ===== TEST 7: Stop recording =====
+        // ===== TEST 7: Stop recording → microphoneMuted resets to false =====
         await host.click(micButton);
         
         await pageConditions.became(
@@ -207,7 +217,51 @@
           2000
         );
         
-        expect(muteControlRef.muted).toBe(false);
+        expect(muteControlRef.muted).toBe(false); // microphoneMuted resets on stop
+
+        // ===== TEST 8: Stopping while muted should NOT re-acquire microphone =====
+        // This test verifies the effect cleanup order in VoiceRecorderBridge:
+        // Recording effect cleanup must run BEFORE mute effect cleanup.
+        // Otherwise, unmute cleanup would call acquireAndConnectMediaStream().
+        
+        // Start fresh recording
+        await host.click(micButton);
+        await pageConditions.became(
+          'Voice state is listening for cleanup test',
+          () => getVoiceState() === 'listening',
+          2000
+        );
+
+        // Record the getUserMedia call count before mute
+        const callCountBeforeMute = getUserMediaCallCount;
+
+        // Mute (this will stop the MediaStream)
+        muteControlRef.setMuted(true);
+        await pageConditions.became(
+          'Muted for cleanup test',
+          () => getMicrophoneMuted() === true,
+          1000
+        );
+
+        // Record call count after mute (should be same, mute stops mic but doesn't acquire)
+        const callCountAfterMute = getUserMediaCallCount;
+        expect(callCountAfterMute).toBe(callCountBeforeMute);
+
+        // Stop recording while still muted
+        await host.click(micButton);
+        await pageConditions.became(
+          'Voice state is idle after stopping while muted',
+          () => getVoiceState() === 'idle',
+          2000
+        );
+
+        // Wait a bit to ensure any erroneous async mic acquisition would have happened
+        await new Promise(r => setTimeout(r, 300));
+
+        // Verify getUserMedia was NOT called again
+        // If cleanup order was wrong, unmute would have called acquireAndConnectMediaStream()
+        const callCountAfterStop = getUserMediaCallCount;
+        expect(callCountAfterStop).toBe(callCountAfterMute);
       });
     </script>
   </body>
