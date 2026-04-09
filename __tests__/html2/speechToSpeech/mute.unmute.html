@@ -16,12 +16,13 @@
       Test: Mute/Unmute functionality for Speech-to-Speech
       
       This test validates:
-      1. Mute is allowed from all state except idle
-      2. When muted during listening, chunks contain all zeros (silent audio)
-      3. When unmuted, chunks contain real audio
-      4. Mute resets to false when recording stops
-      5. Stopping while muted does NOT re-acquire microphone (cleanup order test)
-      6. Uses useVoiceRecordingMuted hook for mute/unmute control
+      1. Mute is independent of voiceState - can be toggled anytime
+      2. Starting recording while muted should reset and start recording always unmuted.
+      3. When muted during listening, chunks contain all zeros (silent audio)
+      4. When unmuted, chunks contain real audio
+      5. Mute resets to false when recording stops
+      6. Stopping while muted does NOT re-acquire microphone (cleanup order test)
+      7. Uses useVoiceRecordingMuted hook for mute/unmute control
     -->
     <script type="module">
       import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
@@ -123,7 +124,7 @@
         const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
         expect(micButton).toBeTruthy();
 
-        // ===== TEST 1: Muting from idle state should be no-op =====
+        // ===== TEST 1: Muting from idle state should work as independent from voice state =====
         expect(getVoiceState()).toBe('idle');
         expect(muteControlRef.muted).toBe(false);
 
@@ -131,9 +132,9 @@
         await new Promise(r => setTimeout(r, 100));
 
         expect(getVoiceState()).toBe('idle'); // Still idle, not muted
-        expect(muteControlRef.muted).toBe(false);
+        expect(muteControlRef.muted).toBe(true);
 
-        // ===== TEST 2: Start recording → listening state =====
+        // ===== TEST 2: Start recording → listening state, microphoneMuted resets to false =====
         await host.click(micButton);
         
         await pageConditions.became(
@@ -141,6 +142,10 @@
           () => getVoiceState() === 'listening',
           2000
         );
+
+        // Starting recording resets microphoneMuted to false.
+        // This ensures a clean slate - recording always starts unmuted.
+        expect(muteControlRef.muted).toBe(false);
 
         // Wait for some listening chunks
         await pageConditions.became(

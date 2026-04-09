@@ -41,12 +41,6 @@ export default function voiceActivity(
 ): VoiceActivityState {
   switch (action.type) {
     case VOICE_MUTE_RECORDING:
-      // Only allow muting when in recording state
-      if (state.voiceState === 'idle') {
-        console.warn(`botframework-webchat: Cannot mute from "${state.voiceState}" state, must be in recording state.`);
-        return state;
-      }
-
       return {
         ...state,
         microphoneMuted: true
@@ -83,6 +77,7 @@ export default function voiceActivity(
 
       return {
         ...state,
+        microphoneMuted: false,
         voiceState: 'listening'
       };
 
