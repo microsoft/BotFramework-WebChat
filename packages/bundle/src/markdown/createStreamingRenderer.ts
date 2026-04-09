@@ -182,7 +182,7 @@ export default function createStreamingRenderer(
         if (tailBlocks.length <= 1) {
           // Fast path: active block grew, no new committed blocks.
           // Replace only the active zone (after sentinel).
-          const activeDoc = domParser.parseFromString(tailHTML, 'text/html');
+          const activeDoc = domParser.parseFromString(tailHTML.trim(), 'text/html');
           const activeFragment = activeDoc.createDocumentFragment();
 
           activeFragment.append(...Array.from(activeDoc.body.childNodes));
@@ -210,7 +210,7 @@ export default function createStreamingRenderer(
           betterLinkDocumentMod(committedFragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
           const remainingHTML = tailHTML.slice(committedTailHTML.length);
-          const activeDoc = domParser.parseFromString(remainingHTML, 'text/html');
+          const activeDoc = domParser.parseFromString(remainingHTML.trim(), 'text/html');
           const activeFragment = activeDoc.createDocumentFragment();
 
           activeFragment.append(...Array.from(activeDoc.body.childNodes));
@@ -265,7 +265,7 @@ export default function createStreamingRenderer(
 
       committedFragment.append(...Array.from(committedDoc.body.childNodes));
 
-      const activeDoc = domParser.parseFromString(activeHTML, 'text/html');
+      const activeDoc = domParser.parseFromString(activeHTML.trim(), 'text/html');
       const activeFragment = activeDoc.createDocumentFragment();
 
       activeFragment.append(...Array.from(activeDoc.body.childNodes));
@@ -292,7 +292,7 @@ export default function createStreamingRenderer(
     activeBlockStartOffset = 0;
     activeSentinel = null;
 
-    const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
+    const parsedDocument = domParser.parseFromString(rawHTML.trim(), 'text/html');
     const fragment = parsedDocument.createDocumentFragment();
 
     fragment.append(...Array.from(parsedDocument.body.childNodes));
@@ -322,7 +322,7 @@ export default function createStreamingRenderer(
 
       const fullEvents = parseEvents(processedMarkdown);
       const rawHTML = compile(micromarkOptions)(fullEvents);
-      const parsedDocument = domParser.parseFromString(rawHTML, 'text/html');
+      const parsedDocument = domParser.parseFromString(rawHTML.trim(), 'text/html');
       const fragment = parsedDocument.createDocumentFragment();
 
       fragment.append(...Array.from(parsedDocument.body.childNodes));

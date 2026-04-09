@@ -75,6 +75,8 @@
 
         await pageConditions.uiConnected();
 
+        await pageConditions.scrollStabilized();
+
         await host.snapshot('local');
       }, { skipCheckAccessibility: true });
 
