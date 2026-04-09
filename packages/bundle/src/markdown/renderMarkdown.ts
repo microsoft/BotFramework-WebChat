@@ -64,7 +64,7 @@ export default function render(
 
   betterLinkDocumentMod(documentFragmentAfterMarkdown, decorate);
 
-  return serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
+  return serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown).trim();
 }
 
 render.createStreamingRenderer = createStreamingRenderer;
