@@ -1,5 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, {
   type ChangeEventHandler,
   type FocusEventHandler,
@@ -9,6 +10,19 @@ import React, {
   type ReactEventHandler,
   useRef
 } from 'react';
+import {
+  boolean,
+  custom,
+  type InferInput,
+  literal,
+  number,
+  object,
+  optional,
+  picklist,
+  pipe,
+  readonly,
+  string
+} from 'valibot';
 
 import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 
@@ -30,84 +44,90 @@ import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-type AccessibleInputTextProps = Readonly<{
-  'aria-errormessage'?: string;
-  className?: string | undefined;
-  'data-id'?: string | undefined;
-  'data-testid'?: string | undefined;
-  disabled?: boolean | undefined;
-  enterKeyHint?: string | undefined;
-  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
-  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
-  onClick?: MouseEventHandler<HTMLInputElement> | undefined;
-  onFocus?: FocusEventHandler<HTMLInputElement> | undefined;
-  onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
-  onKeyDownCapture?: KeyboardEventHandler<HTMLInputElement> | undefined;
-  onKeyPress?: KeyboardEventHandler<HTMLInputElement> | undefined;
-  onSelect?: ReactEventHandler<HTMLInputElement> | undefined;
-  placeholder?: string | undefined;
-  readOnly?: boolean | undefined;
-  tabIndex?: number | undefined;
-  type: 'text';
-  value?: string | undefined;
-}>;
-
-const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProps>(
-  (
-    {
-      'aria-errormessage': ariaErrorMessage,
-      className,
-      'data-id': dataId,
-      'data-testid': dataTestId,
-      disabled,
-      enterKeyHint,
-      onChange,
-      onClick,
-      onFocus,
-      onKeyDown,
-      onKeyDownCapture,
-      onKeyPress,
-      onSelect,
-      placeholder,
-      readOnly,
-      tabIndex,
-      value,
-      ...props
-    },
-    forwardedRef
-  ) => {
-    const targetRef = useRef();
-
-    const ref = forwardedRef || targetRef;
-
-    useEnterKeyHint(ref, enterKeyHint);
-
-    return (
-      <input
-        aria-disabled={disabled || undefined}
-        aria-errormessage={ariaErrorMessage}
-        className={className}
-        data-id={dataId}
-        data-testid={dataTestId}
-        onChange={disabled ? undefined : onChange}
-        onClick={onClick}
-        onFocus={disabled ? undefined : onFocus}
-        onKeyDown={disabled ? undefined : onKeyDown}
-        onKeyDownCapture={disabled ? undefined : onKeyDownCapture}
-        onKeyPress={disabled ? undefined : onKeyPress}
-        onSelect={disabled ? undefined : onSelect}
-        placeholder={placeholder}
-        readOnly={readOnly || disabled}
-        ref={ref}
-        tabIndex={disabled ? -1 : tabIndex}
-        value={value}
-        {...props}
-        type="text"
-      />
-    );
-  }
+const AccessibleInputTextPropsSchema = pipe(
+  object({
+    'aria-errormessage': optional(string()),
+    'aria-label': optional(string()),
+    className: optional(string()),
+    'data-id': optional(string()),
+    'data-testid': optional(string()),
+    disabled: optional(boolean()),
+    enterKeyHint: optional(string()),
+    inputMode: optional(picklist(['decimal', 'email', 'none', 'numeric', 'search', 'tel', 'text', 'url'])),
+    onChange: optional(custom<ChangeEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    onClick: optional(custom<MouseEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    onFocus: optional(custom<FocusEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    onKeyDown: optional(custom<KeyboardEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    onKeyDownCapture: optional(custom<KeyboardEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    onKeyPress: optional(custom<KeyboardEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    onSelect: optional(custom<ReactEventHandler<HTMLInputElement>>(value => typeof value === 'function')),
+    placeholder: optional(string()),
+    readOnly: optional(boolean()),
+    tabIndex: optional(number()),
+    type: literal('text'),
+    value: optional(string())
+  }),
+  readonly()
 );
+
+type AccessibleInputTextProps = InferInput<typeof AccessibleInputTextPropsSchema>;
+
+const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProps>((rawProps, forwardedRef) => {
+  const {
+    'aria-errormessage': ariaErrorMessage,
+    'aria-label': ariaLabel,
+    className,
+    'data-id': dataId,
+    'data-testid': dataTestId,
+    disabled,
+    enterKeyHint,
+    onChange,
+    onClick,
+    onFocus,
+    onKeyDown,
+    onKeyDownCapture,
+    onKeyPress,
+    onSelect,
+    placeholder,
+    readOnly,
+    tabIndex,
+    value,
+    ...props
+  } = validateProps(AccessibleInputTextPropsSchema, rawProps);
+
+  const targetRef = useRef<HTMLInputElement>(null);
+
+  const ref = forwardedRef || targetRef;
+
+  useEnterKeyHint(ref, enterKeyHint);
+
+  return (
+    <input
+      aria-disabled={disabled || undefined}
+      aria-errormessage={ariaErrorMessage}
+      aria-label={ariaLabel}
+      className={className}
+      data-id={dataId}
+      data-testid={dataTestId}
+      onChange={disabled ? undefined : onChange}
+      onClick={onClick}
+      onFocus={disabled ? undefined : onFocus}
+      onKeyDown={disabled ? undefined : onKeyDown}
+      onKeyDownCapture={disabled ? undefined : onKeyDownCapture}
+      onKeyPress={disabled ? undefined : onKeyPress}
+      onSelect={disabled ? undefined : onSelect}
+      placeholder={placeholder}
+      readOnly={readOnly || disabled}
+      ref={ref}
+      tabIndex={disabled ? -1 : tabIndex}
+      value={value}
+      {...props}
+      type="text"
+    />
+  );
+});
 
 AccessibleInputText.displayName = 'AccessibleInputText';
 
 export default AccessibleInputText;
+export { AccessibleInputTextPropsSchema, type AccessibleInputTextProps };
