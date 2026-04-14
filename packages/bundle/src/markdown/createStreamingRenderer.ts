@@ -197,9 +197,18 @@ export default function createStreamingRenderer(
           wrapper.append(applyTransform(activeFragment, options.transformFragment));
         } else {
           // New block boundary in tail: commit newly-finished blocks, replace active.
+          // We must compile the committed and active portions as separate substrings
+          // (not filtered events) because reference links like [1] require their
+          // definitions to be present in the same compilation unit.
           const newActiveOffsetInTail = tailBlocks[tailBlocks.length - 1].startOffset;
-          const committedTailEvents = tailEvents.filter(([, token]) => token.start.offset < newActiveOffsetInTail);
-          const committedTailHTML = compile(micromarkOptions)(committedTailEvents);
+          const committedTailMarkdown = processedMarkdown.slice(
+            activeBlockStartOffset,
+            activeBlockStartOffset + newActiveOffsetInTail
+          );
+          const activeTailMarkdown = processedMarkdown.slice(activeBlockStartOffset + newActiveOffsetInTail);
+
+          const committedTailHTML = compile(micromarkOptions)(parseEvents(committedTailMarkdown));
+          const activeTailHTML = compile(micromarkOptions)(parseEvents(activeTailMarkdown));
 
           activeBlockStartOffset += newActiveOffsetInTail;
 
@@ -209,8 +218,7 @@ export default function createStreamingRenderer(
           committedFragment.append(...Array.from(committedDoc.body.childNodes));
           betterLinkDocumentMod(committedFragment, createDecorate(emptyDefinitions, externalLinkAlt));
 
-          const remainingHTML = tailHTML.slice(committedTailHTML.length);
-          const activeDoc = domParser.parseFromString(remainingHTML.trim(), 'text/html');
+          const activeDoc = domParser.parseFromString(activeTailHTML.trim(), 'text/html');
           const activeFragment = activeDoc.createDocumentFragment();
 
           activeFragment.append(...Array.from(activeDoc.body.childNodes));
@@ -251,14 +259,14 @@ export default function createStreamingRenderer(
 
       activeBlockStartOffset = lastBlock.startOffset;
 
-      // Compile the active (last block) portion first — it is always a single
-      // block and therefore cheap.  Then derive the committed HTML by slicing
-      // the already-compiled full output so that inter-block whitespace
-      // (produced by lineEnding events the compiler only flushes mid-stream)
-      // is preserved in the committed fragment.
-      const activeEvents = fullEvents.filter(([, token]) => token.start.offset >= lastBlock.startOffset);
-      const activeHTML = compile(micromarkOptions)(activeEvents);
-      const committedHTML = rawHTML.slice(0, rawHTML.length - activeHTML.length);
+      // Compile the committed and active portions as separate substrings
+      // (not filtered events) because reference links like [1] require their
+      // definitions to be present in the same compilation unit.
+      const committedMarkdown = processedMarkdown.slice(0, lastBlock.startOffset);
+      const activeMarkdown = processedMarkdown.slice(lastBlock.startOffset);
+
+      const committedHTML = compile(micromarkOptions)(parseEvents(committedMarkdown));
+      const activeHTML = compile(micromarkOptions)(parseEvents(activeMarkdown));
 
       const committedDoc = domParser.parseFromString(committedHTML, 'text/html');
       const committedFragment = committedDoc.createDocumentFragment();
