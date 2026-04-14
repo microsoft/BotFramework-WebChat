@@ -1,5 +1,5 @@
-import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import React, {
   forwardRef,
@@ -8,23 +8,23 @@ import React, {
   useRef,
   type FormEventHandler,
   type KeyboardEventHandler,
-  type MouseEventHandler,
-  type ReactNode
+  type MouseEventHandler
 } from 'react';
+import { boolean, custom, number, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import styles from './TextArea.module.css';
 
 const { useUIState } = hooks;
 
-const TextArea = forwardRef<
-  HTMLTextAreaElement,
-  Readonly<{
-    'aria-describedby'?: string | undefined;
-    'aria-labelledby'?: string | undefined;
-    className?: string | undefined;
-    completion?: ReactNode | undefined;
-    'data-testid'?: string | undefined;
-
+const TextAreaPropsSchema = pipe(
+  object({
+    'aria-describedby': optional(string()),
+    'aria-label': optional(string()),
+    'aria-labelledby': optional(string()),
+    className: optional(string()),
+    completion: optional(reactNode()),
+    'data-testid': optional(string()),
     /**
      * `true`, if the text area should be hidden but stay in the DOM, otherwise, `false`.
      *
@@ -33,15 +33,22 @@ const TextArea = forwardRef<
      * - When the DTMF keypad is going away, we need to send focus to the text area before we unmount DTMF keypad,
      *   This ensures the flow of focus did not sent to document body
      */
-    hidden?: boolean | undefined;
-    onClick?: MouseEventHandler<HTMLTextAreaElement> | undefined;
-    onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
-    placeholder?: string | undefined;
-    readOnly?: boolean | undefined;
-    startRows?: number | undefined;
-    value?: string | undefined;
-  }>
->((props, ref) => {
+    hidden: optional(boolean()),
+    onClick: optional(custom<MouseEventHandler<HTMLTextAreaElement>>(value => typeof value === 'function')),
+    onInput: optional(custom<FormEventHandler<HTMLTextAreaElement>>(value => typeof value === 'function')),
+    placeholder: optional(string()),
+    readOnly: optional(boolean()),
+    startRows: optional(number()),
+    value: optional(string())
+  }),
+  readonly()
+);
+
+type TextAreaProps = InferInput<typeof TextAreaPropsSchema>;
+
+const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((rawProps, ref) => {
+  const props = validateProps(TextAreaPropsSchema, rawProps);
+
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const isInCompositionRef = useRef<boolean>(false);
@@ -84,11 +91,12 @@ const TextArea = forwardRef<
       ) : (
         <Fragment>
           <div className={cx(classNames['text-area-doppelganger'], classNames['text-area-shared'])}>
-            {props.completion ? props.completion : props.value}{' '}
+            {props.completion || props.value}{' '}
           </div>
           <textarea
             aria-describedby={props['aria-describedby']}
             aria-disabled={disabled}
+            aria-label={props['aria-label']}
             aria-labelledby={props['aria-labelledby']}
             aria-placeholder={props.placeholder}
             className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
@@ -115,3 +123,4 @@ const TextArea = forwardRef<
 TextArea.displayName = 'TextArea';
 
 export default TextArea;
+export { TextAreaPropsSchema, type TextAreaProps };
