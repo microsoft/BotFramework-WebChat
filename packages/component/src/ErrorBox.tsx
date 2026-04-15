@@ -42,7 +42,7 @@ function ErrorBox(props: ErrorBoxProps) {
     if (error instanceof Error) {
       rectifiedError = error;
     } else {
-      rectifiedError = new Error('Unknown error occured');
+      rectifiedError = new Error('Unknown error occurred');
       rectifiedError.cause = error;
     }
 
