@@ -173,6 +173,7 @@ export default function createStreamingRenderer(
     const doc = parse(micromarkOptions).document();
     const prep = preprocess();
 
+    // Ensure definitions are resolved during parse phase
     if (knownDefinitions.size) {
       for (const definition of knownDefinitions) {
         doc.write(prep(definition, undefined, false));
@@ -196,20 +197,27 @@ export default function createStreamingRenderer(
   function commit(block: BlockBoundary): string {
     const compiler = compile(micromarkOptions);
 
-    // Rather than dealing with state restore, parse and fed definitions to compiler before actual markdown
+    // Extract all available definitions to prevent compiler crashes
+    // on definitions appearing after the block boundary.
     extractDefinitions(stepEvents);
-    const doc = parse(micromarkOptions).document();
-    const prep = preprocess();
 
-    for (const definition of knownDefinitions) {
-      doc.write(prep(definition, undefined, false));
+    // Rather than trying to restore compiler state, we parse and fed the definitions
+    // back to the compiler as if they appear in the markdown.
+    if (knownDefinitions.size) {
+      const doc = parse(micromarkOptions).document();
+      const prep = preprocess();
+      for (const definition of knownDefinitions) {
+        doc.write(prep(definition, undefined, false));
+      }
+
+      compiler(postprocess(doc.write(prep('', undefined, true))));
     }
-
-    compiler(postprocess(doc.write(prep('', undefined, true))));
 
     const newCommittedOffset = block.startOffset;
     const newCommittedEvents = stepEvents.filter(([, token]) => token.start.offset < newCommittedOffset);
 
+    // Offset the committed block by the provided boundary start
+    // excluding the offset of definitions upserted during the step.
     lastCommittedBlockEndOffset += newCommittedOffset - lastStepDefinitionOffset;
 
     return compiler(newCommittedEvents);
