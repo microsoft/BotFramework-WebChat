@@ -172,6 +172,7 @@ export default function createStreamingRenderer(
     const doc = parse(micromarkOptions).document();
     const prep = preprocess();
     const events = [];
+
     if (knownDefinitions.size) {
       for (const definition of knownDefinitions) {
         events.push(...doc.write(prep(definition, undefined, false)));
