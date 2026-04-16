@@ -386,13 +386,14 @@ export default function createStreamingRenderer(
 
       const fullEvents = parseEvents(processedMarkdown);
       const rawHTML = compile(micromarkOptions)(fullEvents);
-      const parsedDocument = domParser.parseFromString(rawHTML.trim(), 'text/html');
-      const fragment = parsedDocument.createDocumentFragment();
+      const finalDoc = domParser.parseFromString(rawHTML.trim(), 'text/html');
+      const fragment = finalDoc.createDocumentFragment();
+
       const definitions = extractDefinitionsFromEvents(fullEvents);
       const wrapper = ensureWrapper(options.container, options.containerClassName);
       const decorate = createDecorate(definitions, externalLinkAlt);
 
-      fragment.append(...Array.from(parsedDocument.body.childNodes));
+      fragment.append(...Array.from(finalDoc.body.childNodes));
       betterLinkDocumentMod(fragment, decorate);
 
       activeSentinel = null;
