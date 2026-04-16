@@ -235,6 +235,7 @@ export default function createStreamingRenderer(
       cleanup();
 
       const wrapper = ensureWrapper(options.container, options.containerClassName);
+
       wrapper.replaceChildren();
 
       return;
@@ -318,6 +319,7 @@ export default function createStreamingRenderer(
     cleanup();
     const fullEvents = step(processedMarkdown);
     const blocks = findTopLevelBlocks(fullEvents);
+    const wrapper = ensureWrapper(options.container, options.containerClassName);
     const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
 
     try {
@@ -336,8 +338,6 @@ export default function createStreamingRenderer(
 
         activeFragment.append(...Array.from(activeDoc.body.childNodes));
         betterLinkDocumentMod(activeFragment, decorate);
-
-        const wrapper = ensureWrapper(options.container, options.containerClassName);
 
         activeSentinel = document.createComment('');
 
@@ -363,10 +363,7 @@ export default function createStreamingRenderer(
     const fragment = parsedDocument.createDocumentFragment();
 
     fragment.append(...Array.from(parsedDocument.body.childNodes));
-
     betterLinkDocumentMod(fragment, decorate);
-
-    const wrapper = ensureWrapper(options.container, options.containerClassName);
 
     wrapper.replaceChildren(applyTransform(fragment, options.transformFragment));
   }
@@ -391,21 +388,17 @@ export default function createStreamingRenderer(
       const rawHTML = compile(micromarkOptions)(fullEvents);
       const parsedDocument = domParser.parseFromString(rawHTML.trim(), 'text/html');
       const fragment = parsedDocument.createDocumentFragment();
-
-      fragment.append(...Array.from(parsedDocument.body.childNodes));
-
       const definitions = extractDefinitionsFromEvents(fullEvents);
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
       const decorate = createDecorate(definitions, externalLinkAlt);
 
+      fragment.append(...Array.from(parsedDocument.body.childNodes));
       betterLinkDocumentMod(fragment, decorate);
 
       activeSentinel = null;
 
       // Full replace on finalize — no incremental path needed.
-      const wrapper = ensureWrapper(options.container, options.containerClassName);
-      const transformedFragment = applyTransform(fragment, options.transformFragment);
-
-      wrapper.replaceChildren(transformedFragment);
+      wrapper.replaceChildren(applyTransform(fragment, options.transformFragment));
 
       return Object.freeze({ definitions });
     },
