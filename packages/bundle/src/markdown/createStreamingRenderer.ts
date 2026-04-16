@@ -172,12 +172,18 @@ export default function createStreamingRenderer(
     const doc = parse(micromarkOptions).document();
     const prep = preprocess();
     const events = [];
-    for (const definition of knownDefinitions) {
-      events.push(...doc.write(prep(definition, undefined, false)));
+    if (knownDefinitions.size) {
+      for (const definition of knownDefinitions) {
+        events.push(...doc.write(prep(definition, undefined, false)));
+      }
+      const lastDefinitionTokenOffset = doc.events.at(-1)?.[1].end.offset;
+      if (typeof lastDefinitionTokenOffset !== 'number') {
+        throw new Error('Failed to extract definition token offset');
+      }
+      lastStepDefinitionOffset = lastDefinitionTokenOffset;
+    } else {
+      lastStepDefinitionOffset = 0;
     }
-
-    const lastDefinitionTokenOffset = doc.events.at(-1)?.[1].end.offset;
-    lastStepDefinitionOffset = lastDefinitionTokenOffset || 0;
 
     const tailEvents = doc.write(prep(markdownTail, undefined, true));
     return postprocess(events.concat(tailEvents));
@@ -297,15 +303,13 @@ export default function createStreamingRenderer(
 
           return;
         }
-
-        // Sentinel lost — reset and fall through to full reparse.
-        cleanup();
       }
     } catch (error) {
       setError(error, ensureWrapper(options.container, options.containerClassName));
     }
 
     // Full reparse path.
+    cleanup();
     const fullEvents = step(processedMarkdown);
     const blocks = findTopLevelBlocks(fullEvents);
 
