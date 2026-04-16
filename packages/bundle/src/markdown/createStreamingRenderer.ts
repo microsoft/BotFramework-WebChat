@@ -171,23 +171,24 @@ export default function createStreamingRenderer(
 
     const doc = parse(micromarkOptions).document();
     const prep = preprocess();
-    const events = [];
 
     if (knownDefinitions.size) {
       for (const definition of knownDefinitions) {
-        events.push(...doc.write(prep(definition, undefined, false)));
+        doc.write(prep(definition, undefined, false));
       }
+
       const lastDefinitionTokenOffset = doc.events.at(-1)?.[1].end.offset;
       if (typeof lastDefinitionTokenOffset !== 'number') {
         throw new Error('Failed to extract definition token offset');
       }
+
       lastStepDefinitionOffset = lastDefinitionTokenOffset;
     } else {
       lastStepDefinitionOffset = 0;
     }
 
     const tailEvents = doc.write(prep(markdownTail, undefined, true));
-    return postprocess(events.concat(tailEvents));
+    return postprocess(tailEvents);
   }
 
   function commit(chunkEvents: Event[], lastBlock: BlockBoundary): string {
@@ -197,14 +198,12 @@ export default function createStreamingRenderer(
     extractDefinitions(chunkEvents);
     const doc = parse(micromarkOptions).document();
     const prep = preprocess();
-    const events = [];
 
     for (const definition of knownDefinitions) {
-      events.push(...doc.write(prep(definition, undefined, false)));
+      doc.write(prep(definition, undefined, false));
     }
-    // Compiler wants eof token
-    events.push(...doc.write(prep('', undefined, true)));
-    compiler(postprocess(events));
+
+    compiler(postprocess(doc.write(prep('', undefined, true))));
 
     const newCommittedOffset = lastBlock.startOffset;
     const newCommittedEvents = chunkEvents.filter(([, token]) => token.start.offset < newCommittedOffset);
@@ -219,6 +218,7 @@ export default function createStreamingRenderer(
   }
 
   function cleanup() {
+    revert();
     activeSentinel = null;
     lastCommittedBlockEndOffset = 0;
     knownDefinitions.clear();
