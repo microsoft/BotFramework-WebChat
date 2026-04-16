@@ -166,6 +166,7 @@ export default function createStreamingRenderer(
 
   let lastStepDefinitionOffset = 0;
   let lastCommittedBlockEndOffset = 0;
+  let stepEvents: Event[] = [];
   function step(markdown: string): Event[] {
     const markdownTail = markdown.slice(lastCommittedBlockEndOffset);
 
@@ -188,14 +189,15 @@ export default function createStreamingRenderer(
     }
 
     const tailEvents = doc.write(prep(markdownTail, undefined, true));
-    return postprocess(tailEvents);
+    stepEvents = postprocess(tailEvents);
+    return stepEvents;
   }
 
-  function commit(chunkEvents: Event[], lastBlock: BlockBoundary): string {
+  function commit(block: BlockBoundary): string {
     const compiler = compile(micromarkOptions);
 
     // Rather than dealing with state restore, parse and fed definitions to compiler before actual markdown
-    extractDefinitions(chunkEvents);
+    extractDefinitions(stepEvents);
     const doc = parse(micromarkOptions).document();
     const prep = preprocess();
 
@@ -205,8 +207,8 @@ export default function createStreamingRenderer(
 
     compiler(postprocess(doc.write(prep('', undefined, true))));
 
-    const newCommittedOffset = lastBlock.startOffset;
-    const newCommittedEvents = chunkEvents.filter(([, token]) => token.start.offset < newCommittedOffset);
+    const newCommittedOffset = block.startOffset;
+    const newCommittedEvents = stepEvents.filter(([, token]) => token.start.offset < newCommittedOffset);
 
     lastCommittedBlockEndOffset += newCommittedOffset - lastStepDefinitionOffset;
 
@@ -215,6 +217,7 @@ export default function createStreamingRenderer(
 
   function revert() {
     lastStepDefinitionOffset = 0;
+    stepEvents = [];
   }
 
   function cleanup() {
@@ -251,16 +254,17 @@ export default function createStreamingRenderer(
         if (activeSentinel && wrapper.contains(activeSentinel)) {
           const tailEvents = step(processedMarkdown);
           const tailBlocks = findTopLevelBlocks(tailEvents);
-          const tailHTML = compile(micromarkOptions)(tailEvents);
+          const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
 
           if (tailBlocks.length <= 1) {
             // Fast path: active block grew, no new committed blocks.
             // Replace only the active zone (after sentinel).
+            const tailHTML = compile(micromarkOptions)(tailEvents);
             const activeDoc = domParser.parseFromString(tailHTML.trim(), 'text/html');
             const activeFragment = activeDoc.createDocumentFragment();
 
             activeFragment.append(...Array.from(activeDoc.body.childNodes));
-            betterLinkDocumentMod(activeFragment, createDecorate(emptyDefinitions, externalLinkAlt));
+            betterLinkDocumentMod(activeFragment, decorate);
 
             const activeRange = document.createRange();
 
@@ -271,20 +275,20 @@ export default function createStreamingRenderer(
             wrapper.append(applyTransform(activeFragment, options.transformFragment));
           } else {
             // New block boundary in tail: commit newly-finished blocks, replace active.
-            const committedTailHTML = commit(tailEvents, tailBlocks.at(-1));
-
+            const committedTailHTML = commit(tailBlocks.at(-1));
             const committedDoc = domParser.parseFromString(committedTailHTML, 'text/html');
             const committedFragment = committedDoc.createDocumentFragment();
 
-            committedFragment.append(...Array.from(committedDoc.body.childNodes));
-            betterLinkDocumentMod(committedFragment, createDecorate(emptyDefinitions, externalLinkAlt));
-
-            const remainingHTML = tailHTML.slice(committedTailHTML.length);
-            const activeDoc = domParser.parseFromString(remainingHTML.trim(), 'text/html');
+            const activeEvents = step(processedMarkdown);
+            const activeHTML = compile(micromarkOptions)(activeEvents);
+            const activeDoc = domParser.parseFromString(activeHTML.trim(), 'text/html');
             const activeFragment = activeDoc.createDocumentFragment();
 
+            committedFragment.append(...Array.from(committedDoc.body.childNodes));
+            betterLinkDocumentMod(committedFragment, decorate);
+
             activeFragment.append(...Array.from(activeDoc.body.childNodes));
-            betterLinkDocumentMod(activeFragment, createDecorate(emptyDefinitions, externalLinkAlt));
+            betterLinkDocumentMod(activeFragment, decorate);
 
             // Remove old sentinel and active zone.
             const tailRange = document.createRange();
@@ -314,27 +318,23 @@ export default function createStreamingRenderer(
     cleanup();
     const fullEvents = step(processedMarkdown);
     const blocks = findTopLevelBlocks(fullEvents);
+    const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
 
     try {
       if (blocks.length >= 2) {
-        const lastBlock = blocks.at(-1);
-        const committedHTML = commit(fullEvents, lastBlock);
-        const activeEvents = step(processedMarkdown);
-        const activeHTML = compile(micromarkOptions)(activeEvents);
-
+        const committedHTML = commit(blocks.at(-1));
         const committedDoc = domParser.parseFromString(committedHTML, 'text/html');
         const committedFragment = committedDoc.createDocumentFragment();
 
-        committedFragment.append(...Array.from(committedDoc.body.childNodes));
-
+        const activeEvents = step(processedMarkdown);
+        const activeHTML = compile(micromarkOptions)(activeEvents);
         const activeDoc = domParser.parseFromString(activeHTML.trim(), 'text/html');
         const activeFragment = activeDoc.createDocumentFragment();
 
-        activeFragment.append(...Array.from(activeDoc.body.childNodes));
-
-        const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
-
+        committedFragment.append(...Array.from(committedDoc.body.childNodes));
         betterLinkDocumentMod(committedFragment, decorate);
+
+        activeFragment.append(...Array.from(activeDoc.body.childNodes));
         betterLinkDocumentMod(activeFragment, decorate);
 
         const wrapper = ensureWrapper(options.container, options.containerClassName);
@@ -364,7 +364,7 @@ export default function createStreamingRenderer(
 
     fragment.append(...Array.from(parsedDocument.body.childNodes));
 
-    betterLinkDocumentMod(fragment, createDecorate(emptyDefinitions, externalLinkAlt));
+    betterLinkDocumentMod(fragment, decorate);
 
     const wrapper = ensureWrapper(options.container, options.containerClassName);
 
@@ -395,8 +395,9 @@ export default function createStreamingRenderer(
       fragment.append(...Array.from(parsedDocument.body.childNodes));
 
       const definitions = extractDefinitionsFromEvents(fullEvents);
+      const decorate = createDecorate(definitions, externalLinkAlt);
 
-      betterLinkDocumentMod(fragment, createDecorate(definitions, externalLinkAlt));
+      betterLinkDocumentMod(fragment, decorate);
 
       activeSentinel = null;
 
