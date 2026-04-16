@@ -177,7 +177,7 @@ export default function createStreamingRenderer(
     }
 
     const lastDefinitionTokenOffset = doc.events.at(-1)?.[1].end.offset;
-    lastStepDefinitionOffset = lastDefinitionTokenOffset ? lastDefinitionTokenOffset + 1 : 0;
+    lastStepDefinitionOffset = lastDefinitionTokenOffset || 0;
 
     const tailEvents = doc.write(prep(markdownTail, undefined, true));
     return postprocess(events.concat(tailEvents));
