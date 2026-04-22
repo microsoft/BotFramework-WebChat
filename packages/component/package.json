@@ -142,7 +142,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.0",
+    "@babel/preset-env": "^7.29.2",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
@@ -150,17 +150,17 @@
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/dom-speech-recognition": "^0.0.7",
+    "@types/dom-speech-recognition": "^0.0.9",
     "@types/jest": "^29.5.14",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^25.3.3",
+    "@types/node": "^25.6.0",
     "@types/react": "^16.14.69",
-    "babel-plugin-istanbul": "^7.0.1",
+    "babel-plugin-istanbul": "^8.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "core-js": "^3.48.0",
+    "core-js": "^3.49.0",
     "cross-env": "^10.1.0",
-    "type-fest": "^5.4.4",
-    "typescript": "^5.9.3"
+    "type-fest": "^5.6.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@emotion/css": "11.13.5",
@@ -190,7 +190,7 @@
     "use-reduce-memo": "0.1.0",
     "use-ref-from": "0.2.1",
     "use-state-with-ref": "0.2.1",
-    "valibot": "1.2.0"
+    "valibot": "1.3.1"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

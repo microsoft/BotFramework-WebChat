@@ -24,7 +24,7 @@
   "localDependencies": {},
   "devDependencies": {
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "selfsigned": "5.5.0",
