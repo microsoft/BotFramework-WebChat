@@ -223,6 +223,9 @@
       "strip-ansi@7 dropped support of CommonJS"
     ]
   },
+  "localDependencies": {
+    "@msinternal/vibe-grep": "development"
+  },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
