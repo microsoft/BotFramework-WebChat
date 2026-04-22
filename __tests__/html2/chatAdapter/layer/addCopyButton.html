@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import isActivitySentFromBot from './asset/isActivitySentFromBot.js';
+      import transformActivity from './asset/transformActivity.js';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      testHelpers.hideKnownError();
+
+      function isOrgSchemaMessage(entity) {
+        if (
+          entity &&
+          typeof entity === 'object' &&
+          '@context' in entity &&
+          entity['@context'] === 'https://schema.org' &&
+          '@id' in entity &&
+          entity['@id'] === '' &&
+          '@type' in entity &&
+          entity['@type'] === 'Message'
+        ) {
+          return entity;
+        }
+      }
+
+      function* updateOrgSchemaMessageEntity(entities, updater) {
+        let foundOrgSchemaMessage = false;
+
+        for (const entity of entities) {
+          if (isOrgSchemaMessage(entity)) {
+            foundOrgSchemaMessage = true;
+
+            yield updater(entity);
+          } else {
+            yield entity;
+          }
+        }
+
+        if (!foundOrgSchemaMessage) {
+          yield updater({
+            '@context': 'https://schema.org',
+            '@id': '',
+            '@type': 'Message',
+            type: 'https://schema.org/Message'
+          });
+        }
+      }
+
+      function addToArray(array, value) {
+        if (array.includes(value)) {
+          return array;
+        } else {
+          return [...array, value];
+        }
+      }
+
+      run(async function () {
+        const { directLine: rawDirectLine, store } = testHelpers.createDirectLineEmulator();
+
+        const directLine = transformActivity(rawDirectLine, function* (value) {
+          if (!isActivitySentFromBot(value)) {
+            yield value;
+
+            return;
+          }
+
+          yield {
+            ...value,
+            entities: Array.from(
+              updateOrgSchemaMessageEntity(
+                'entities' in value && value.entities && Array.isArray(value.entities) ? value.entities : [],
+                entity => ({
+                  ...entity,
+                  keywords: addToArray(
+                    'keywords' in entity && Array.isArray(entity.keywords) ? entity.keywords : [],
+                    'AllowCopy'
+                  )
+                })
+              )
+            )
+          };
+        });
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'user', role: 'user' },
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AIGeneratedContent'],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          from: { id: 'bot', role: 'bot' },
+          text: 'With AI-generated content badge',
+          type: 'message'
+        });
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

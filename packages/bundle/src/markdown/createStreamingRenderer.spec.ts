@@ -1,7 +1,7 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import createStreamingRenderer from './createStreamingRenderer';
+import createStreamingRenderer, { STREAMING_ERROR } from './createStreamingRenderer';
 
 const OPTIONS: Parameters<typeof createStreamingRenderer>[0] = {
   markdownRespectCRLF: false
@@ -11,12 +11,16 @@ const INIT: Parameters<typeof createStreamingRenderer>[1] = {
   externalLinkAlt: 'Opens in a new window'
 };
 
+let currentContainer: HTMLElement | null = null;
+
 function setup() {
   const container = document.createElement('div');
 
   document.body.appendChild(container);
 
   const renderer = createStreamingRenderer(OPTIONS, INIT);
+
+  currentContainer = container;
 
   const nextOptions = () => ({ container });
 
@@ -77,6 +81,25 @@ function splitBySentinel(container: HTMLElement): [string, string] | null {
 }
 
 describe('createStreamingRenderer', () => {
+  afterEach(() => {
+    if (!currentContainer) {
+      return;
+    }
+
+    const wrapper = currentContainer.firstElementChild as HTMLElement | null;
+
+    // eslint-disable-next-line security/detect-object-injection
+    if (wrapper[STREAMING_ERROR]) {
+      // eslint-disable-next-line security/detect-object-injection
+      console.warn('Streaming renderer error gonna fail the test:', wrapper[STREAMING_ERROR]);
+    }
+
+    expect(wrapper?.dataset.renderError).toBeUndefined();
+    expect(wrapper?.dataset.renderErrorCount).toBeUndefined();
+
+    currentContainer = null;
+  });
+
   describe('single block', () => {
     test('should render a paragraph without sentinel', () => {
       const { container, nextOptions, renderer } = setup();
@@ -110,6 +133,21 @@ describe('createStreamingRenderer', () => {
       expect(split).not.toBeNull();
       expect(split![0]).toBe('<p>First paragraph</p>');
       expect(split![1]).toBe('<p>Second paragraph</p>');
+    });
+
+    test('should extract link definitions during full reparse path', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('See [link][1]\n\n[1]: https://example.com "Example"', nextOptions());
+
+      expect(getSentinel(container)).not.toBeNull();
+      expect(container.querySelector('a[href="https://example.com"]')?.textContent).toBe('link');
+
+      const { definitions } = renderer.finalize(nextOptions());
+
+      expect(definitions).toEqual([
+        expect.objectContaining({ identifier: '1', url: 'https://example.com', title: 'Example' })
+      ]);
     });
 
     test('should preserve newline between paragraphs in textContent', () => {
@@ -222,6 +260,21 @@ describe('createStreamingRenderer', () => {
       expect(split2![1]).toBe('<p>Partial more text</p>');
     });
 
+    test('should resolve active references using committed definitions during active growth', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('First paragraph\n\n[1]: https://example.com "Example"\n\nSecond [link', nextOptions());
+
+      expect(getSentinel(container)).not.toBeNull();
+      expect(container.querySelector('a[href="https://example.com"]')).toBeNull();
+
+      renderer.next('][1]', nextOptions());
+
+      expect(getSentinel(container)).not.toBeNull();
+
+      expect(container.querySelector('a[href="https://example.com"]')?.textContent).toBe('link');
+    });
+
     test('should commit additional blocks during incremental streaming', () => {
       const { container, nextOptions, renderer } = setup();
 
@@ -241,6 +294,126 @@ describe('createStreamingRenderer', () => {
       expect(split2![0]).toContain('Block A');
       expect(split2![0]).toContain('Block B');
       expect(split2![1]).toBe('<p>Block C</p>');
+    });
+
+    test('should keep incremental split when committed block references a later definition', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('First paragraph [first][1]\n\nSecond paragraph [first][1]', nextOptions());
+
+      expect(getSentinel(container)).not.toBeNull();
+      expect(container.querySelector('a[href="https://example.com"]')).toBeNull();
+
+      renderer.next('\n\n[1]: https://example.com "Example"', nextOptions());
+
+      expect(getSentinel(container)).not.toBeNull();
+      expect(container.querySelectorAll('a[href="https://example.com"]').length).toBe(1);
+      expect(container.querySelector('a[href="https://example.com"]')?.textContent).toBe('first');
+    });
+
+    test('should extract link definitions when active tail grows', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('See [link][1]\n\n', nextOptions());
+      renderer.next('[1]: https://example.com "Example"', nextOptions());
+
+      expect(getSentinel(container)).not.toBeNull();
+      expect(container.querySelector('a[href="https://example.com"]')?.textContent).toBe('link');
+
+      const { definitions } = renderer.finalize(nextOptions());
+
+      expect(definitions).toEqual([
+        expect.objectContaining({ identifier: '1', url: 'https://example.com', title: 'Example' })
+      ]);
+    });
+
+    test('should extract link definitions when definition block becomes committed', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('See [link][1]\n\n', nextOptions());
+      renderer.next('[1]: https://example.com "Example"\n\nTrailing', nextOptions());
+
+      const split = splitBySentinel(container);
+
+      expect(split).not.toBeNull();
+      expect(split![1]).toBe('<p>Trailing</p>');
+      expect(container.querySelector('a[href="https://example.com"]')?.textContent).toBe('link');
+
+      const { definitions } = renderer.finalize(nextOptions());
+
+      expect(definitions).toEqual([
+        expect.objectContaining({ identifier: '1', url: 'https://example.com', title: 'Example' })
+      ]);
+    });
+
+    test('should extract definitions across committed and active paragraphs with shared link definitions', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next(
+        'First paragraph [first][1]\n\n[1]: https://example.com "Example"\n\n' +
+          'Second paragraph [first][1] [second][2]\n\n',
+        nextOptions()
+      );
+
+      expect(getWrapperHTML(container)).toContain('First paragraph');
+      expect(getWrapperHTML(container)).toContain('Second paragraph');
+
+      expect(container.querySelectorAll('a[href="https://example.com"]').length).toBe(2);
+      expect(container.querySelector('a[href="https://example.org"]')).toBeNull();
+
+      renderer.next('[2]: https://example.org "Other"', nextOptions());
+
+      expect(container.querySelector('a[href="https://example.org"]')?.textContent).toBe('second');
+
+      const { definitions } = renderer.finalize(nextOptions());
+
+      expect(definitions).toEqual([
+        expect.objectContaining({ identifier: '1', url: 'https://example.com', title: 'Example' }),
+        expect.objectContaining({ identifier: '2', url: 'https://example.org', title: 'Other' })
+      ]);
+    });
+
+    test('should preserve definitions for later blocks committed through incremental boundary', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next(
+        ['First [first][1]\n\n[1]: https://example.com "Example"\n\n', 'Second [first][1]\n\n'].join(''),
+        nextOptions()
+      );
+
+      expect(container.querySelectorAll('a[href="https://example.com"]').length).toBe(2);
+      expect(getSentinel(container)).not.toBeNull();
+
+      renderer.next('Third [first][1]', nextOptions());
+
+      expect(container.querySelectorAll('a[href="https://example.com"]').length).toBe(3);
+
+      const split = splitBySentinel(container);
+
+      expect(split).not.toBeNull();
+      expect(split![0]).toContain('First');
+      expect(split![0]).toContain('Second');
+      expect(split![1]).toContain('Third');
+      expect(container.querySelectorAll('a[href="https://example.com"]').length).toBe(3);
+      expect(container.querySelectorAll('a[href="https://example.com"]').item(0)?.textContent).toBe('first');
+    });
+
+    test('should extract link definitions after streaming content', () => {
+      const { container, nextOptions, renderer } = setup();
+
+      renderer.next('See [link][1]\n\n', nextOptions());
+      renderer.next('[1]: https://example.com "Example"', nextOptions());
+
+      const { definitions } = renderer.finalize(nextOptions());
+
+      expect(definitions).toEqual([
+        expect.objectContaining({ identifier: '1', url: 'https://example.com', title: 'Example' })
+      ]);
+
+      const linkElement = container.querySelector('a[href="https://example.com"]');
+
+      expect(linkElement).not.toBeNull();
+      expect(linkElement?.textContent).toBe('link');
     });
   });
 
