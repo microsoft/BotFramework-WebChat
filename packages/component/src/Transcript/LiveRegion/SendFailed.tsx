@@ -1,10 +1,10 @@
-import { hooks } from 'botframework-webchat-api';
 import { memo, useMemo } from 'react';
 
-import usePrevious from '../../hooks/internal/usePrevious';
-import { useLiveRegion } from '../../providers/LiveRegionTwin';
 import { SEND_FAILED } from '../../types/internal/SendStatus';
+import { hooks } from 'botframework-webchat-api';
 import isPresentational from './isPresentational';
+import { useLiveRegion } from '../../providers/LiveRegionTwin';
+import usePrevious from '../../hooks/internal/usePrevious';
 
 const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
 
@@ -44,12 +44,16 @@ const LiveRegionSendFailed = () => {
   /** Returns localized "Failed to send message." */
   const liveRegionSendFailedAlt = localize('TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT');
 
-  const prevActivityKeysOfSendFailed = usePrevious(activityKeysOfSendFailed);
+  const prevActivityKeysOfSendFailed = usePrevious(activityKeysOfSendFailed, new Set<string>());
 
   /** True, if one or more non-presentational activities start appears as "send failed", otherwise, false. */
   const hasNewSendFailed = useMemo<boolean>(() => {
     if (activityKeysOfSendFailed === prevActivityKeysOfSendFailed) {
       return false;
+    }
+
+    if (!prevActivityKeysOfSendFailed) {
+      return true;
     }
 
     for (const key of activityKeysOfSendFailed.keys()) {
