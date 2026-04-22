@@ -27,12 +27,12 @@
     ]
   },
   "dependencies": {
-    "botframework-webchat": "^4.18.1-main.20250804.93043a9",
-    "botframework-webchat-api": "^4.18.1-main.20250804.93043a9",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "botframework-webchat": "4.18.1-main.20260416.88357ae",
+    "botframework-webchat-api": "4.18.1-main.20260416.88357ae",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   },
   "devDependencies": {
-    "esbuild": "^0.27.2"
+    "esbuild": "^0.28.0"
   }
 }
