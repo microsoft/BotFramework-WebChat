@@ -54,6 +54,10 @@
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
+    ],
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
     ]
   },
   "localDependencies": {

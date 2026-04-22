@@ -72,6 +72,10 @@
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../react-hooks/package.json\" \"../react-valibot/package.json\""
   },
   "pinDependencies": {
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ],
     "react-wrap-with": [
       "0.1.0",
       "0.2.0 is having compatibility issues with preact@10.25.4"

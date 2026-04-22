@@ -70,7 +70,12 @@
     "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../base/package.json\""
   },
-  "pinDependencies": {},
+  "pinDependencies": {
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ]
+  },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-tsconfig": "development"
