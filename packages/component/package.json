@@ -112,6 +112,14 @@
       "13",
       "markdown-it@14.1.0 has module field and it is breaking Webpack 4 because cross loading CJS and ESM"
     ],
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-dom": [
+      "16.8.6",
+      "using react-dom@16.8.6 to make sure this is the minimum supported version"
+    ],
     "react-redux": [
       "7"
     ],
