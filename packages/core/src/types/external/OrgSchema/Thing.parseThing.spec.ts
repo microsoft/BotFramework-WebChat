@@ -1,9 +1,11 @@
-import { parseThing } from './Thing';
+import { describe, expect, test } from '@jest/globals';
+import { parse } from 'valibot';
+import { thingSchema } from './Thing';
 
 describe('Thing', () => {
   test('should parse', () => {
     expect(
-      parseThing({
+      parse(thingSchema, {
         '@type': 'Thing',
         name: 'John Doe'
       })
@@ -15,7 +17,7 @@ describe('Thing', () => {
 
   test('should parse unknown @type', () => {
     expect(
-      parseThing({
+      parse(thingSchema, {
         '@type': 'Unknown',
         name: 'John Doe'
       })
@@ -30,7 +32,7 @@ describe('Thing', () => {
   // If unknown properties are removed, we will remove properties that are solely for CreativeWork.
   test('should not remove unknown properties', () => {
     expect(
-      parseThing({
+      parse(thingSchema, {
         '@type': 'Thing',
         something: 1
       })
@@ -42,7 +44,7 @@ describe('Thing', () => {
 
   test('should set invalid properties to undefined', () => {
     expect(
-      parseThing({
+      parse(thingSchema, {
         '@type': 'Thing',
         name: 1
       })

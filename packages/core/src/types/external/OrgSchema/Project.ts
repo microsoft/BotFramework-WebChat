@@ -1,14 +1,7 @@
-import { parse, string, type ObjectEntries } from 'valibot';
+import { intersect, looseObject, pipe, readonly, string } from 'valibot';
 
-import { thing, type Thing } from './Thing';
-import orgSchemaProperty from './private/orgSchemaProperty';
-
-export const project = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
-  thing({
-    slogan: orgSchemaProperty(string()),
-
-    ...entries
-  });
+import orgSchemaProperties from './private/orgSchemaProperties';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
@@ -17,13 +10,51 @@ export const project = <TEntries extends ObjectEntries>(entries?: TEntries | und
  *
  * @see https://schema.org/Project
  */
-export type Project = Thing & {
+type ProjectInput = ThingInput & {
   /**
    * A slogan or motto associated with the item.
    *
    * @see https://schema.org/slogan
    */
-  slogan?: string | undefined;
+  readonly slogan: string | readonly string[] | undefined;
 };
 
-export const parseProject = (data: unknown): Project => parse(project(), data);
+/**
+ * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
+ *
+ * This is partial implementation of https://schema.org/Project.
+ *
+ * @see https://schema.org/Project
+ */
+type ProjectOutput = ThingOutput & {
+  /**
+   * A slogan or motto associated with the item.
+   *
+   * @see https://schema.org/slogan
+   */
+  readonly slogan: readonly string[] | undefined;
+};
+
+/**
+ * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
+ *
+ * This is partial implementation of https://schema.org/Project.
+ *
+ * @see https://schema.org/Project
+ */
+const projectSchema = intersect([
+  thingSchema,
+  pipe(
+    looseObject({
+      /**
+       * A slogan or motto associated with the item.
+       *
+       * @see https://schema.org/slogan
+       */
+      slogan: orgSchemaProperties(string())
+    }),
+    readonly()
+  )
+]);
+
+export { projectSchema, type ProjectInput, type ProjectOutput };

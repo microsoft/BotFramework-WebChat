@@ -38,13 +38,6 @@ import createStore, {
   withDevTools as createStoreWithDevTools,
   withOptions as createStoreWithOptions
 } from './createStore';
-import { parseAction } from './types/external/OrgSchema/Action';
-import { parseClaim } from './types/external/OrgSchema/Claim';
-import { parseCreativeWork } from './types/external/OrgSchema/CreativeWork';
-import { parseDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
-import { parseProject } from './types/external/OrgSchema/Project';
-import { parseThing } from './types/external/OrgSchema/Thing';
-import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
 import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -90,13 +83,13 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { Observable } from './types/external/Observable';
-import type { Action as OrgSchemaAction } from './types/external/OrgSchema/Action';
-import type { Claim as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
-import type { CreativeWork as OrgSchemaCreativeWork } from './types/external/OrgSchema/CreativeWork';
-import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
-import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
-import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
-import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
+import type { ActionOutput as OrgSchemaAction } from './types/external/OrgSchema/Action';
+import type { ClaimOutput as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
+import type { CreativeWorkOutput as OrgSchemaCreativeWork } from './types/external/OrgSchema/CreativeWork';
+import type { DefinedTermOutput as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
+import type { ProjectOutput as OrgSchemaProject } from './types/external/OrgSchema/Project';
+import type { ThingOutput as OrgSchemaThing } from './types/external/OrgSchema/Thing';
+import type { UserReviewOutput as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
 
 /** @deprecated */
 export { singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
@@ -121,13 +114,6 @@ export {
   markActivity,
   muteVoiceRecording,
   onErrorResumeNext,
-  parseAction,
-  parseClaim,
-  parseCreativeWork,
-  parseDefinedTerm,
-  parseProject,
-  parseThing,
-  parseVoteAction,
   postActivity,
   postVoiceActivity,
   registerVoiceHandler,

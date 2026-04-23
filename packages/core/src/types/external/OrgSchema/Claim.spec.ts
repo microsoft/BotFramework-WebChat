@@ -1,9 +1,11 @@
-import { parseClaim } from './Claim';
+import { describe, expect, test } from '@jest/globals';
+import { parse } from 'valibot';
+import { claimSchema } from './Claim';
 
 describe('Claim', () => {
   test('should parse appearance', () =>
     expect(
-      parseClaim({
+      parse(claimSchema, {
         '@type': 'Claim',
         appearance: {
           '@type': 'Book',
@@ -20,7 +22,7 @@ describe('Claim', () => {
 
   test('should parse claimInterpreter', () =>
     expect(
-      parseClaim({
+      parse(claimSchema, {
         '@type': 'Claim',
         claimInterpreter: {
           '@type': 'Project',
@@ -37,9 +39,12 @@ describe('Claim', () => {
 
   describe('should parse position', () => {
     test('as a number', () =>
-      expect(parseClaim({ '@type': 'Claim', position: 1 })).toEqual({ '@type': 'Claim', position: 1 }));
+      expect(parse(claimSchema, { '@type': 'Claim', position: 1 })).toEqual({ '@type': 'Claim', position: 1 }));
 
     test('as a string', () =>
-      expect(parseClaim({ '@type': 'Claim', position: 'First' })).toEqual({ '@type': 'Claim', position: 'First' }));
+      expect(parse(claimSchema, { '@type': 'Claim', position: 'First' })).toEqual({
+        '@type': 'Claim',
+        position: 'First'
+      }));
   });
 });
