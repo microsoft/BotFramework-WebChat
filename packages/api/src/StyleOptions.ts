@@ -6,37 +6,37 @@ type StyleOptions = {
    */
 
   /** Web Chat component accent color */
-  accent?: string;
+  accent?: string | undefined;
 
   /**
    * Transcript background color
    */
-  backgroundColor?: string;
+  backgroundColor?: string | undefined;
 
   /**
    * Secondary component color
    */
-  subtle?: string;
+  subtle?: string | undefined;
 
   /**
    * Default padding used in most visual components
    */
-  paddingRegular?: number;
+  paddingRegular?: number | undefined;
 
   /**
    * Padding used for suggestedAction buttons
    */
-  paddingWide?: number;
+  paddingWide?: number | undefined;
 
   /**
    * The duration to be used for transitions
    */
-  transitionDuration?: string;
+  transitionDuration?: string | undefined;
 
   /**
    * The easing function to be used for transitions
    */
-  transitionEasing?: string;
+  transitionEasing?: string | undefined;
 
   /**
    * Fonts
@@ -46,28 +46,28 @@ type StyleOptions = {
   /**
    * Font size used for secondary components such as sendStatus
    */
-  fontSizeSmall?: number | string;
+  fontSizeSmall?: number | string | undefined;
 
   /**
    * Font used for ErrorBox
    * comma-space separated string
    */
-  monospaceFont?: string;
+  monospaceFont?: string | undefined;
 
   /**
    * Font used in most visual components
    * comma-space separated string
    */
-  primaryFont?: string;
+  primaryFont?: string | undefined;
 
-  rootHeight?: number | string;
+  rootHeight?: number | string | undefined;
 
-  rootWidth?: number | string;
+  rootWidth?: number | string | undefined;
 
   /**
    * "z-index" for the root container of Web Chat. This will form a new stacking context so "z-index" used in children won't pollute.
    */
-  rootZIndex?: number;
+  rootZIndex?: number | undefined;
 
   /**
    * Avatar styling
@@ -76,46 +76,46 @@ type StyleOptions = {
   /**
    * Border radius used for both bot and user avatar
    */
-  avatarBorderRadius?: number | string;
+  avatarBorderRadius?: number | string | undefined;
 
   /**
    * Height and width of avatar
    */
-  avatarSize?: number;
+  avatarSize?: number | undefined;
 
   /**
    * Background color defaults to accent
    */
-  botAvatarBackgroundColor?: string;
+  botAvatarBackgroundColor?: string | undefined;
 
   /**
    * URL string. Can be data URI or blob
    * botAvatarInitials must be set to empty string
    */
-  botAvatarImage?: string;
+  botAvatarImage?: string | undefined;
 
   /**
    * Typically rendered as two letters, e.g. 'WC'
    * Empty string is required when setting botAvatarImage
    */
-  botAvatarInitials?: string;
+  botAvatarInitials?: string | undefined;
 
   /**
    * Background color defaults to accent
    */
-  userAvatarBackgroundColor?: string;
+  userAvatarBackgroundColor?: string | undefined;
 
   /**
    * URL string. Can be data URI or blob
    * userAvatarInitials must be set to empty string
    */
-  userAvatarImage?: string;
+  userAvatarImage?: string | undefined;
 
   /**
    * Typically rendered as two letters, i.e. 'WC'
    * Empty string is required when setting userAvatarImage
    */
-  userAvatarInitials?: string;
+  userAvatarInitials?: string | undefined;
 
   /**
    * Avatar grouping can be set at 3 different levels:
@@ -123,23 +123,23 @@ type StyleOptions = {
    * Show avatar on activities sharing the same status ('status'; default)
    * Show avatar on every activity (true)
    */
-  showAvatarInGroup?: true | 'sender' | 'status';
+  showAvatarInGroup?: true | 'sender' | 'status' | undefined;
 
   /**
    *  Bubble styling
    * 'Bubble' refers to the container of the activit(ies) from the bot and user. Below, non-'fromUser' props refer to styling for the bot activities.
    */
 
-  bubbleBackground?: string;
-  bubbleBorderColor?: string;
-  bubbleBorderRadius?: number;
-  bubbleBorderStyle?: string;
-  bubbleBorderWidth?: number;
-  bubbleFromUserBackground?: string;
-  bubbleFromUserBorderColor?: string;
-  bubbleFromUserBorderRadius?: number;
-  bubbleFromUserBorderStyle?: string;
-  bubbleFromUserBorderWidth?: number;
+  bubbleBackground?: string | undefined;
+  bubbleBorderColor?: string | undefined;
+  bubbleBorderRadius?: number | undefined;
+  bubbleBorderStyle?: string | undefined;
+  bubbleBorderWidth?: number | undefined;
+  bubbleFromUserBackground?: string | undefined;
+  bubbleFromUserBorderColor?: string | undefined;
+  bubbleFromUserBorderRadius?: number | undefined;
+  bubbleFromUserBorderStyle?: string | undefined;
+  bubbleFromUserBorderWidth?: number | undefined;
 
   /**
    * Nub offset 'bottom' will render nub at the bottom
@@ -147,14 +147,14 @@ type StyleOptions = {
    * "top" is equivalent to positive zero.
    * "bottom" is equivalent to negative zero.
    */
-  bubbleFromUserNubOffset?: number | 'bottom' | 'top';
+  bubbleFromUserNubOffset?: number | 'bottom' | 'top' | undefined;
 
   /**
    * Nub size 0 will render a sharp corner
    */
-  bubbleFromUserNubSize?: number;
+  bubbleFromUserNubSize?: number | undefined;
 
-  bubbleFromUserTextColor?: string;
+  bubbleFromUserTextColor?: string | undefined;
 
   /**
    * Specifies the fixed height of the bubble for image, default to unset.
@@ -191,7 +191,7 @@ type StyleOptions = {
   bubbleMessageMaxWidth?: number | undefined;
   bubbleMessageMinWidth?: number | undefined;
 
-  bubbleMinHeight?: number;
+  bubbleMinHeight?: number | undefined;
 
   /**
    * Nub offset ''bottom' will render nub at the bottom
@@ -199,33 +199,33 @@ type StyleOptions = {
    * "top" is equivalent to positive zero.
    * "bottom" is equivalent to negative zero.
    */
-  bubbleNubOffset?: number | 'bottom' | 'top';
+  bubbleNubOffset?: number | 'bottom' | 'top' | undefined;
 
   /**
    * Nub size 0 will render a sharp corner
    */
-  bubbleNubSize?: number;
+  bubbleNubSize?: number | undefined;
 
-  bubbleTextColor?: string;
+  bubbleTextColor?: string | undefined;
 
-  messageActivityWordBreak?: 'normal' | 'break-all' | 'break-word' | 'keep-all';
+  messageActivityWordBreak?: 'normal' | 'break-all' | 'break-word' | 'keep-all' | undefined;
 
   /**
    * Connectivity UI styling
    */
 
-  connectivityIconPadding?: number;
-  connectivityMarginLeftRight?: number;
-  connectivityMarginTopBottom?: number;
-  connectivityTextSize?: number | string;
-  failedConnectivity?: number | string;
-  slowConnectivity?: string;
-  notificationText?: string;
+  connectivityIconPadding?: number | undefined;
+  connectivityMarginLeftRight?: number | undefined;
+  connectivityMarginTopBottom?: number | undefined;
+  connectivityTextSize?: number | string | undefined;
+  failedConnectivity?: number | string | undefined;
+  slowConnectivity?: string | undefined;
+  notificationText?: string | undefined;
 
   /**
    * Slow connection status will render after x amount of time with no service response
    */
-  slowConnectionAfter?: number;
+  slowConnectionAfter?: number | undefined;
 
   /**
    * Emoji styling
@@ -234,19 +234,19 @@ type StyleOptions = {
    * key: emoticon
    * value: unicode emoji
    */
-  emojiSet?: boolean | Record<string, string>;
+  emojiSet?: boolean | Record<string, string> | undefined;
 
   /**
    * Live region - Accessibility
    * New activities will be rendered in the non-visual live region and removed after a certain amount of time. Modify this property to change fade time.
    */
-  internalLiveRegionFadeAfter?: number;
+  internalLiveRegionFadeAfter?: number | undefined;
 
   /**
    * Markdown styling
    * Parse markdown to ensure carriage return is respected
    */
-  markdownRespectCRLF?: boolean;
+  markdownRespectCRLF?: boolean | undefined;
 
   /**
    * Render HTML inside Markdown.
@@ -255,12 +255,12 @@ type StyleOptions = {
    *
    * New in 4.17: This option is enabled by default.
    */
-  markdownRenderHTML?: boolean;
+  markdownRenderHTML?: boolean | undefined;
 
   /**
    * Assign new image for anchor links to indicate external
    */
-  markdownExternalLinkIconImage?: string;
+  markdownExternalLinkIconImage?: string | undefined;
 
   /**
    * Scroll behavior styling
@@ -272,36 +272,36 @@ type StyleOptions = {
    * @deprecated Since 4.14.0: To hide the scroll to end button, please set `scrollToEndButtonBehavior` to `false`.
    */
   // TODO: [P4] Will be removed on or after 2023-06-02.
-  hideScrollToEndButton?: boolean;
+  hideScrollToEndButton?: boolean | undefined;
 
   /**
    * Snap to activity to 'snap-point'
    * If true, scrolling will pause after 1 activity is received.
    * Specifying a number will pause after X number of activities
    */
-  autoScrollSnapOnActivity?: boolean | number;
+  autoScrollSnapOnActivity?: boolean | number | undefined;
 
   /**
    * Specify number of pixels to overscroll or underscroll after pause
    */
-  autoScrollSnapOnActivityOffset?: number;
+  autoScrollSnapOnActivityOffset?: number | undefined;
 
   /**
    * If true, scrolling will pause after activities have filled the page.
    * Specifying a number (0 to 1) will pause after % of page is filled
    */
-  autoScrollSnapOnPage?: boolean | number;
+  autoScrollSnapOnPage?: boolean | number | undefined;
 
   /**
    * Specify number of pixels to overscroll or underscroll after pause
    */
-  autoScrollSnapOnPageOffset?: number;
+  autoScrollSnapOnPageOffset?: number | undefined;
 
   /**
    * Send box styling
    */
 
-  hideSendBox?: boolean;
+  hideSendBox?: boolean | undefined;
 
   /**
    * Indicates if the upload file button should be hidden.
@@ -310,7 +310,7 @@ type StyleOptions = {
    *
    * @deprecated deprecated since 4.18.0: obsolated by {@linkcode disableFileUpload}. This option will be removed on or after 2027-07-14.
    */
-  hideUploadButton?: boolean;
+  hideUploadButton?: boolean | undefined;
 
   /**
    * (EXPERIMENTAL) `true`, if the telephone keypad button should be shown, otherwise, `false`. Defaults to `true`.
@@ -319,152 +319,152 @@ type StyleOptions = {
    */
   hideTelephoneKeypadButton?: boolean | undefined;
 
-  microphoneButtonColorOnDictate?: string;
-  sendBoxBackground?: string;
+  microphoneButtonColorOnDictate?: string | undefined;
+  sendBoxBackground?: string | undefined;
 
   /**
    * The comma-delimited file types that the upload button should accept.
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept
    * @example 'image/*,.pdf'
    */
-  uploadAccept?: string;
+  uploadAccept?: string | undefined;
   /**
    * If true, the upload button will accept multiple files.
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#multiple
    */
-  uploadMultiple?: boolean;
+  uploadMultiple?: boolean | undefined;
 
   /**
    * If set to `send` (default), attachment will be sent when the send button is clicked, or when the message is being sent.
    *
    * Otherwise, if set to `attach`, attachment will be sent immediately after file is selected.
    */
-  sendAttachmentOn?: 'attach' | 'send';
+  sendAttachmentOn?: 'attach' | 'send' | undefined;
 
   /** Send box button: Icon color, defaults to subtle */
-  sendBoxButtonColor?: string;
+  sendBoxButtonColor?: string | undefined;
 
   /**
    * Send box button: Shade border radius
    *
    * @default 2
    */
-  sendBoxButtonShadeBorderRadius?: number;
+  sendBoxButtonShadeBorderRadius?: number | undefined;
 
   /** Send box button: Shade color */
-  sendBoxButtonShadeColor?: string;
+  sendBoxButtonShadeColor?: string | undefined;
 
   /**
    * Send box button: Shade inset
    *
    * @default 2
    */
-  sendBoxButtonShadeInset?: number;
+  sendBoxButtonShadeInset?: number | undefined;
 
   /** Send box button (while `:active`): Icon color */
-  sendBoxButtonColorOnActive?: string;
+  sendBoxButtonColorOnActive?: string | undefined;
 
   /**
    * Send box button (while `:active`): Shade color
    *
    * @default '#EDEBE9'
    */
-  sendBoxButtonShadeColorOnActive?: string;
+  sendBoxButtonShadeColorOnActive?: string | undefined;
 
   /**
    * Send box button (while `:disabled`): Icon color
    *
    * @default '#A19F9D'
    */
-  sendBoxButtonColorOnDisabled?: string;
+  sendBoxButtonColorOnDisabled?: string | undefined;
 
   /**
    * Send box button (while `:disabled`): Shade color
    *
    * @default '#F3F2F1'
    */
-  sendBoxButtonShadeColorOnDisabled?: string;
+  sendBoxButtonShadeColorOnDisabled?: string | undefined;
 
   /** Send box button (while `:focus`): Icon color */
-  sendBoxButtonColorOnFocus?: string;
+  sendBoxButtonColorOnFocus?: string | undefined;
 
   /** Send box button (while `:focus`): Shade color */
-  sendBoxButtonShadeColorOnFocus?: string;
+  sendBoxButtonShadeColorOnFocus?: string | undefined;
 
   /** Send box button (while `:hover`): Icon color */
-  sendBoxButtonColorOnHover?: string;
+  sendBoxButtonColorOnHover?: string | undefined;
 
   /**
    * Send box button (while `:hover`): Shade color
    *
    * @default '#F3F2F1'
    */
-  sendBoxButtonShadeColorOnHover?: string;
+  sendBoxButtonShadeColorOnHover?: string | undefined;
 
   /**
    * Send box button (while `:focus-visible`): Keyboard focus indicator border color
    *
    * @default '#605E5C'
    */
-  sendBoxButtonKeyboardFocusIndicatorBorderColor?: string;
+  sendBoxButtonKeyboardFocusIndicatorBorderColor?: string | undefined;
 
   /**
    * Send box button (while `:focus-visible`): Keyboard focus indicator border radius
    *
    * @default 0
    */
-  sendBoxButtonKeyboardFocusIndicatorBorderRadius?: number | string;
+  sendBoxButtonKeyboardFocusIndicatorBorderRadius?: number | string | undefined;
 
   /**
    * Send box button (while `:focus-visible`): Keyboard focus indicator border style
    *
    * @default 'solid'
    */
-  sendBoxButtonKeyboardFocusIndicatorBorderStyle?: string;
+  sendBoxButtonKeyboardFocusIndicatorBorderStyle?: string | undefined;
 
   /**
    * Send box button (while` :focus-visible`): Keyboard focus indicator border width
    *
    * @default 4
    */
-  sendBoxButtonKeyboardFocusIndicatorBorderWidth?: number;
+  sendBoxButtonKeyboardFocusIndicatorBorderWidth?: number | undefined;
 
   /**
    * Send box button (while `:focus-visible`): Keyboard focus indicator inset
    *
    * @default 4
    */
-  sendBoxButtonKeyboardFocusIndicatorInset?: number;
+  sendBoxButtonKeyboardFocusIndicatorInset?: number | undefined;
 
   /**
    * Disabled text color defaults to subtle
    */
-  sendBoxDisabledTextColor?: string;
+  sendBoxDisabledTextColor?: string | undefined;
 
-  sendBoxHeight?: number | string;
-  sendBoxMaxHeight?: number | string;
-  sendBoxTextColor?: string;
-  sendBoxBorderBottom?: number | string;
-  sendBoxBorderLeft?: number | string;
-  sendBoxBorderRight?: number | string;
-  sendBoxBorderTop?: number | string;
-  sendBoxPlaceholderColor?: string;
-  sendBoxTextWrap?: boolean;
-  sendBoxButtonAlignment?: 'bottom' | 'stretch' | 'top';
+  sendBoxHeight?: number | string | undefined;
+  sendBoxMaxHeight?: number | string | undefined;
+  sendBoxTextColor?: string | undefined;
+  sendBoxBorderBottom?: number | string | undefined;
+  sendBoxBorderLeft?: number | string | undefined;
+  sendBoxBorderRight?: number | string | undefined;
+  sendBoxBorderTop?: number | string | undefined;
+  sendBoxPlaceholderColor?: string | undefined;
+  sendBoxTextWrap?: boolean | undefined;
+  sendBoxButtonAlignment?: 'bottom' | 'stretch' | 'top' | undefined;
 
   /**
    * Show spoken text
    */
-  showSpokenText?: boolean;
+  showSpokenText?: boolean | undefined;
 
   /**
    * Spinner animation styling
    */
 
-  spinnerAnimationBackgroundImage?: string;
-  spinnerAnimationHeight?: number | string;
-  spinnerAnimationWidth?: number | string;
-  spinnerAnimationPadding?: number | string;
+  spinnerAnimationBackgroundImage?: string | undefined;
+  spinnerAnimationHeight?: number | string | undefined;
+  spinnerAnimationWidth?: number | string | undefined;
+  spinnerAnimationPadding?: number | string | undefined;
 
   /**
    * Suggested Actions
@@ -475,225 +475,225 @@ type StyleOptions = {
    *
    * @default 0
    */
-  suggestedActionBorderRadius?: number | string;
+  suggestedActionBorderRadius?: number | string | undefined;
 
   /**
    * Suggested action: Background
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColor` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionBackground?: string;
+  suggestedActionBackground?: string | undefined;
 
   /**
    * Suggested action: Background color
    *
    * @default 'White'
    */
-  suggestedActionBackgroundColor?: string;
+  suggestedActionBackgroundColor?: string | undefined;
 
   /** Suggested action: Border color, defaults to accent color */
-  suggestedActionBorderColor?: string;
+  suggestedActionBorderColor?: string | undefined;
 
   /**
    * Suggested action: Border style
    *
    * @default 'solid'
    */
-  suggestedActionBorderStyle?: string;
+  suggestedActionBorderStyle?: string | undefined;
 
   /**
    * Suggested action: Border width
    *
    * @default 2
    */
-  suggestedActionBorderWidth?: number;
+  suggestedActionBorderWidth?: number | undefined;
 
   /** Suggested action: Text color, defaults to accent color */
-  suggestedActionTextColor?: string;
+  suggestedActionTextColor?: string | undefined;
 
   /** Suggested action (while `:disabled`): Background color, defaults to suggestedActionBackground */
-  suggestedActionBackgroundColorOnDisabled?: string;
+  suggestedActionBackgroundColorOnDisabled?: string | undefined;
 
   /**
    * Suggested action (while `:disabled`): Border color
    *
    * @default '#E6E6E6'
    */
-  suggestedActionBorderColorOnDisabled?: string;
+  suggestedActionBorderColorOnDisabled?: string | undefined;
 
   /** Suggested action (while `:disabled`): Border style */
-  suggestedActionBorderStyleOnDisabled?: string;
+  suggestedActionBorderStyleOnDisabled?: string | undefined;
 
   /** Suggested action (while `:disabled`): Border width */
-  suggestedActionBorderWidthOnDisabled?: number;
+  suggestedActionBorderWidthOnDisabled?: number | undefined;
 
   /** Suggested action (while `:disabled`): Foreground color, defaults to subtle color */
-  suggestedActionTextColorOnDisabled?: string;
+  suggestedActionTextColorOnDisabled?: string | undefined;
 
   /**
    * Suggested action (while `:active`): Background color
    *
    * @default '#EDEBE9'
    */
-  suggestedActionBackgroundColorOnActive?: string;
+  suggestedActionBackgroundColorOnActive?: string | undefined;
 
   /** Suggested action (while `:active`): Border color */
-  suggestedActionBorderColorOnActive?: string;
+  suggestedActionBorderColorOnActive?: string | undefined;
 
   /** Suggested action (while `:active`): Border style */
-  suggestedActionBorderStyleOnActive?: string;
+  suggestedActionBorderStyleOnActive?: string | undefined;
 
   /** Suggested action (while `:active`): Border width */
-  suggestedActionBorderWidthOnActive?: number;
+  suggestedActionBorderWidthOnActive?: number | undefined;
 
   /** Suggested action (while `:active`): Text color */
-  suggestedActionTextColorOnActive?: string;
+  suggestedActionTextColorOnActive?: string | undefined;
 
   /** Suggested action (while `:focus`): Background color */
-  suggestedActionBackgroundColorOnFocus?: string;
+  suggestedActionBackgroundColorOnFocus?: string | undefined;
 
   /** Suggested action (while `:focus`): Border color */
-  suggestedActionBorderColorOnFocus?: string;
+  suggestedActionBorderColorOnFocus?: string | undefined;
 
   /** Suggested action (while `:focus`): Border style */
-  suggestedActionBorderStyleOnFocus?: string;
+  suggestedActionBorderStyleOnFocus?: string | undefined;
 
   /** Suggested action (while `:focus`): Border width */
-  suggestedActionBorderWidthOnFocus?: number;
+  suggestedActionBorderWidthOnFocus?: number | undefined;
 
   /** Suggested action (while `:focus`): Text color */
-  suggestedActionTextColorOnFocus?: string;
+  suggestedActionTextColorOnFocus?: string | undefined;
 
   /**
    * Suggested action (while `:hover`): Background color
    *
    * @default '#F3F2F1'
    */
-  suggestedActionBackgroundColorOnHover?: string;
+  suggestedActionBackgroundColorOnHover?: string | undefined;
 
   /** Suggested action (while `:hover`): Border color */
-  suggestedActionBorderColorOnHover?: string;
+  suggestedActionBorderColorOnHover?: string | undefined;
 
   /** Suggested action (while `:hover`): Border style */
-  suggestedActionBorderStyleOnHover?: string;
+  suggestedActionBorderStyleOnHover?: string | undefined;
 
   /** Suggested action (while `:hover`): Border width */
-  suggestedActionBorderWidthOnHover?: number;
+  suggestedActionBorderWidthOnHover?: number | undefined;
 
   /** Suggested action (while `:hover`): Text color */
-  suggestedActionTextColorOnHover?: string;
+  suggestedActionTextColorOnHover?: string | undefined;
 
   /**
    * Suggested action (while `:disabled`): Background, defaults to suggestedActionBackground.
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionDisabledBackground?: string;
+  suggestedActionDisabledBackground?: string | undefined;
 
   /**
    * Suggested action (while `:disabled`): Border color
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBorderColorOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionDisabledBorderColor?: string;
+  suggestedActionDisabledBorderColor?: string | undefined;
 
   /**
    * Suggested action (while `:disabled`): Border style
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBorderStyleOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionDisabledBorderStyle?: string;
+  suggestedActionDisabledBorderStyle?: string | undefined;
 
   /**
    * Suggested action (while `:disabled`): Border width
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBorderWidthOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionDisabledBorderWidth?: number;
+  suggestedActionDisabledBorderWidth?: number | undefined;
 
   /**
    * Suggested action (while `:disabled`): Foreground color, defaults to subtle color
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionTextColorOnDisabled` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionDisabledTextColor?: string;
+  suggestedActionDisabledTextColor?: string | undefined;
 
   /**
    * Suggested action: Height
    *
    * @default 40
    */
-  suggestedActionHeight?: number | string;
+  suggestedActionHeight?: number | string | undefined;
 
   /**
    * Suggested action: Image height
    *
    * @default 20
    */
-  suggestedActionImageHeight?: number | string;
+  suggestedActionImageHeight?: number | string | undefined;
 
   /**
    * Suggested action: Layout type
    *
    * @default 'carousel'
    */
-  suggestedActionLayout?: 'carousel' | 'flow' | 'stacked';
+  suggestedActionLayout?: 'carousel' | 'flow' | 'stacked' | undefined;
 
   /**
    * Suggested action (while `:focus-visible`): Keyboard focus indicator border color
    *
    * @default '#605E5C'
    */
-  suggestedActionKeyboardFocusIndicatorBorderColor?: string;
+  suggestedActionKeyboardFocusIndicatorBorderColor?: string | undefined;
 
   /**
    * Suggested action (while `:focus-visible`): Keyboard focus indicator border radius
    *
    * @default 0
    */
-  suggestedActionKeyboardFocusIndicatorBorderRadius?: number | string;
+  suggestedActionKeyboardFocusIndicatorBorderRadius?: number | string | undefined;
 
   /**
    * Suggested action (while `:focus-visible`): Keyboard focus indicator border style
    *
    * @default 'solid'
    */
-  suggestedActionKeyboardFocusIndicatorBorderStyle?: string;
+  suggestedActionKeyboardFocusIndicatorBorderStyle?: string | undefined;
 
   /**
    * Suggested action (while `:focus-visible`): Keyboard focus indicator border width
    *
    * @default 1
    */
-  suggestedActionKeyboardFocusIndicatorBorderWidth?: number;
+  suggestedActionKeyboardFocusIndicatorBorderWidth?: number | undefined;
 
   /**
    * Suggested action (while `:focus-visible`): Keyboard focus indicator inset
    *
    * @default 2
    */
-  suggestedActionKeyboardFocusIndicatorInset?: number;
+  suggestedActionKeyboardFocusIndicatorInset?: number | undefined;
 
   /**
    * Suggested action (while `:active`): background
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnActive` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionActiveBackground?: string;
+  suggestedActionActiveBackground?: string | undefined;
 
   /**
    * Suggested action (while `:focus`): background
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnFocus` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionFocusBackground?: string;
+  suggestedActionFocusBackground?: string | undefined;
 
   /**
    * Suggested action (while `:hover`): background
    *
    * @deprecated Since 4.15.0: Please use `suggestedActionBackgroundColorOnHover` instead. This option will be removed on or after 2023-09-16.
    */
-  suggestedActionHoverBackground?: string;
+  suggestedActionHoverBackground?: string | undefined;
 
   /**
    * Suggested actions carousel layout
@@ -702,23 +702,23 @@ type StyleOptions = {
   /**
    * Cursor when mouseover on flipper
    */
-  suggestedActionsCarouselFlipperCursor?: string;
+  suggestedActionsCarouselFlipperCursor?: string | undefined;
 
   /**
    * Flipper bounding box size
    */
-  suggestedActionsCarouselFlipperBoxWidth?: number;
+  suggestedActionsCarouselFlipperBoxWidth?: number | undefined;
 
   /**
    * Flipper button's visible size
    */
-  suggestedActionsCarouselFlipperSize?: number;
+  suggestedActionsCarouselFlipperSize?: number | undefined;
 
   /**
    * Suggested actions flow layout
    * Default value is 'auto',
    */
-  suggestedActionsFlowMaxHeight?: undefined;
+  suggestedActionsFlowMaxHeight?: number | undefined;
 
   /**
    * Suggested actions stacked layout
@@ -727,31 +727,31 @@ type StyleOptions = {
   /**
    * Stacked height container's max height. Default value is 'auto'
    */
-  suggestedActionsStackedHeight?: number | 'auto';
+  suggestedActionsStackedHeight?: number | 'auto' | undefined;
 
   /**
    * Stacked overflow default value is 'auto'
    */
-  suggestedActionsStackedOverflow?: 'auto' | 'hidden' | 'scroll' | 'visible';
+  suggestedActionsStackedOverflow?: 'auto' | 'hidden' | 'scroll' | 'visible' | undefined;
 
   /**
    * Button max height default value is 100% if suggestedActionsStackedLayoutButtonTextWrap is true
    */
-  suggestedActionsStackedLayoutButtonMaxHeight?: number | string;
+  suggestedActionsStackedLayoutButtonMaxHeight?: number | string | undefined;
 
   /**
    * Button Text Wrap, if set to true, will wrap long text in buttons in STACKED mode ONLY
    */
-  suggestedActionsStackedLayoutButtonTextWrap?: boolean;
+  suggestedActionsStackedLayoutButtonTextWrap?: boolean | undefined;
 
   /** Suggested actions: Visual keyboard indicator color for the container. */
-  suggestedActionsVisualKeyboardIndicatorColor?: string;
+  suggestedActionsVisualKeyboardIndicatorColor?: string | undefined;
 
   /** Suggested actions: Visual keyboard indicator style for the container. */
-  suggestedActionsVisualKeyboardIndicatorStyle?: string;
+  suggestedActionsVisualKeyboardIndicatorStyle?: string | undefined;
 
   /** Suggested actions: Visual keyboard indicator width for the container. */
-  suggestedActionsVisualKeyboardIndicatorWidth?: number;
+  suggestedActionsVisualKeyboardIndicatorWidth?: number | undefined;
 
   /**
    * Timestamp
@@ -764,34 +764,34 @@ type StyleOptions = {
    * `false` - never group timestamps
    * `true` - group all timestamps
    */
-  groupTimestamp?: boolean | number;
+  groupTimestamp?: boolean | number | undefined;
 
-  sendTimeout?: number | ((activity: WebChatActivity) => number);
-  sendTimeoutForAttachments?: number;
+  sendTimeout?: number | ((activity: WebChatActivity) => number) | undefined;
+  sendTimeoutForAttachments?: number | undefined;
 
   /**
    * Timestamp color default value is subtle
    */
-  timestampColor?: string;
+  timestampColor?: string | undefined;
 
-  timestampFormat?: 'absolute' | 'relative';
+  timestampFormat?: 'absolute' | 'relative' | undefined;
 
   /**
    * Transcript styling
    */
 
-  transcriptTerminatorBackgroundColor?: string;
-  transcriptTerminatorBorderRadius?: number | string;
-  transcriptTerminatorColor?: string;
-  transcriptTerminatorFontSize?: number | string;
+  transcriptTerminatorBackgroundColor?: string | undefined;
+  transcriptTerminatorBorderRadius?: number | string | undefined;
+  transcriptTerminatorColor?: string | undefined;
+  transcriptTerminatorFontSize?: number | string | undefined;
 
-  transcriptActivityVisualKeyboardIndicatorColor?: string;
-  transcriptActivityVisualKeyboardIndicatorStyle?: string;
-  transcriptActivityVisualKeyboardIndicatorWidth?: number | string;
+  transcriptActivityVisualKeyboardIndicatorColor?: string | undefined;
+  transcriptActivityVisualKeyboardIndicatorStyle?: string | undefined;
+  transcriptActivityVisualKeyboardIndicatorWidth?: number | string | undefined;
 
-  transcriptVisualKeyboardIndicatorColor?: string;
-  transcriptVisualKeyboardIndicatorStyle?: string;
-  transcriptVisualKeyboardIndicatorWidth?: number | string;
+  transcriptVisualKeyboardIndicatorColor?: string | undefined;
+  transcriptVisualKeyboardIndicatorStyle?: string | undefined;
+  transcriptVisualKeyboardIndicatorWidth?: number | string | undefined;
 
   /**
    * Transcript overlay button
@@ -805,10 +805,10 @@ type StyleOptions = {
    * - `"any"` will show when there are any offscreen messages
    * - `false` will always hide the button
    */
-  scrollToEndButtonBehavior?: false | 'any' | 'unread';
+  scrollToEndButtonBehavior?: false | 'any' | 'unread' | undefined;
 
   /** Font size of the new message button. */
-  scrollToEndButtonFontSize?: number | string;
+  scrollToEndButtonFontSize?: number | string | undefined;
 
   /**
    * Font size of the new message button.
@@ -816,24 +816,24 @@ type StyleOptions = {
    * @deprecated Since 4.14.0: Renamed to {@linkcode scrollToEndButtonFontSize}.
    */
   // TODO: [P4] Will be removed on or after 2023-06-02.
-  newMessagesButtonFontSize?: number | string;
+  newMessagesButtonFontSize?: number | string | undefined;
 
-  transcriptOverlayButtonBackground?: string;
-  transcriptOverlayButtonBackgroundOnDisabled?: string;
-  transcriptOverlayButtonBackgroundOnFocus?: string;
-  transcriptOverlayButtonBackgroundOnHover?: string;
-  transcriptOverlayButtonColor?: string;
-  transcriptOverlayButtonColorOnDisabled?: string;
-
-  /**
-   * Default value is transcriptOverlayButtonColor
-   */
-  transcriptOverlayButtonColorOnFocus?: string;
+  transcriptOverlayButtonBackground?: string | undefined;
+  transcriptOverlayButtonBackgroundOnDisabled?: string | undefined;
+  transcriptOverlayButtonBackgroundOnFocus?: string | undefined;
+  transcriptOverlayButtonBackgroundOnHover?: string | undefined;
+  transcriptOverlayButtonColor?: string | undefined;
+  transcriptOverlayButtonColorOnDisabled?: string | undefined;
 
   /**
    * Default value is transcriptOverlayButtonColor
    */
-  transcriptOverlayButtonColorOnHover?: string;
+  transcriptOverlayButtonColorOnFocus?: string | undefined;
+
+  /**
+   * Default value is transcriptOverlayButtonColor
+   */
+  transcriptOverlayButtonColorOnHover?: string | undefined;
 
   /**
    * Toast UI
@@ -842,64 +842,64 @@ type StyleOptions = {
   /**
    * New debounce timeout value only affects new notifications.
    */
-  notificationDebounceTimeout?: number;
+  notificationDebounceTimeout?: number | undefined;
 
-  hideToaster?: boolean;
-  toasterHeight?: number | string;
-  toasterMaxHeight?: number | string;
-  toasterSingularMaxHeight?: number | string;
-  toastFontSize?: number | string;
-  toastIconWidth?: number | string;
-  toastSeparatorColor?: string;
-  toastTextPadding?: number | string;
+  hideToaster?: boolean | undefined;
+  toasterHeight?: number | string | undefined;
+  toasterMaxHeight?: number | string | undefined;
+  toasterSingularMaxHeight?: number | string | undefined;
+  toastFontSize?: number | string | undefined;
+  toastIconWidth?: number | string | undefined;
+  toastSeparatorColor?: string | undefined;
+  toastTextPadding?: number | string | undefined;
 
-  toastErrorBackgroundColor?: string;
-  toastErrorColor?: string;
-  toastInfoBackgroundColor?: string;
-  toastInfoColor?: string;
-  toastSuccessBackgroundColor?: string;
-  toastSuccessColor?: string;
-  toastWarnBackgroundColor?: string;
-  toastWarnColor?: string;
+  toastErrorBackgroundColor?: string | undefined;
+  toastErrorColor?: string | undefined;
+  toastInfoBackgroundColor?: string | undefined;
+  toastInfoColor?: string | undefined;
+  toastSuccessBackgroundColor?: string | undefined;
+  toastSuccessColor?: string | undefined;
+  toastWarnBackgroundColor?: string | undefined;
+  toastWarnColor?: string | undefined;
 
   /**
    * Typing animation
    */
 
-  typingAnimationBackgroundImage?: string;
-  typingAnimationDuration?: number;
-  typingAnimationHeight?: number | string;
-  typingAnimationWidth?: number | string;
+  typingAnimationBackgroundImage?: string | undefined;
+  typingAnimationDuration?: number | undefined;
+  typingAnimationHeight?: number | string | undefined;
+  typingAnimationWidth?: number | string | undefined;
 
   /**
    * Upload thumbnail
    */
 
-  enableUploadThumbnail?: boolean;
-  uploadThumbnailContentType?: string;
-  uploadThumbnailHeight?: number;
-  uploadThumbnailQuality?: number;
-  uploadThumbnailWidth?: number;
+  enableUploadThumbnail?: boolean | undefined;
+  uploadThumbnailContentType?: string | undefined;
+  uploadThumbnailHeight?: number | undefined;
+  uploadThumbnailQuality?: number | undefined;
+  uploadThumbnailWidth?: number | undefined;
 
   /**
    * Video
    */
 
-  videoHeight?: number | string;
+  videoHeight?: number | string | undefined;
 
   /**
    * Maximum message length in characters
    *
    * @default 2000
    */
-  maxMessageLength?: number;
+  maxMessageLength?: number | undefined;
 
   /**
    * The node to place Web Chat styles into. Needed when using as a Web Component.
    *
    * @default document.head
    */
-  stylesRoot?: Node;
+  stylesRoot?: Node | undefined;
 
   /**
    * Border animation
@@ -912,7 +912,7 @@ type StyleOptions = {
    *
    * New in 4.19.0.
    */
-  borderAnimationColor1?: string;
+  borderAnimationColor1?: string | undefined;
   /**
    * Border animation 2nd color
    *
@@ -920,7 +920,7 @@ type StyleOptions = {
    *
    * New in 4.19.0.
    */
-  borderAnimationColor2?: string;
+  borderAnimationColor2?: string | undefined;
   /**
    * Border animation 3rd color
    *
@@ -928,7 +928,7 @@ type StyleOptions = {
    *
    * New in 4.19.0.
    */
-  borderAnimationColor3?: string;
+  borderAnimationColor3?: string | undefined;
 
   /**
    * Code block theme
@@ -940,7 +940,7 @@ type StyleOptions = {
    *
    * New in 4.19.0.
    */
-  codeBlockTheme?: 'github-light-default' | 'github-dark-default';
+  codeBlockTheme?: 'github-light-default' | 'github-dark-default' | undefined;
 
   /**
    * (EXPERIMENTAL) Feedback buttons placement
@@ -954,7 +954,7 @@ type StyleOptions = {
    *
    * New in 4.19.0.
    */
-  feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
+  feedbackActionsPlacement?: 'activity-actions' | 'activity-status' | undefined;
 
   /**
    * Use continuous mode for speech recognition. Default to `false`.
@@ -995,14 +995,14 @@ type StyleOptions = {
    *
    * @default 114
    */
-  sendBoxAttachmentBarMaxHeight?: number;
+  sendBoxAttachmentBarMaxHeight?: number | undefined;
 
   /**
    * Send box: maximum number of attachment item to preview as thumbnail before showing as list item.
    *
    * @default 3
    */
-  sendBoxAttachmentBarMaxThumbnail?: number;
+  sendBoxAttachmentBarMaxThumbnail?: number | undefined;
 
   /**
    * Indicates if file upload should be disabled.
@@ -1011,7 +1011,7 @@ type StyleOptions = {
    *
    * New in 4.19.0.
    */
-  disableFileUpload?: boolean;
+  disableFileUpload?: boolean | undefined;
   /**
    * Controls microphone button visibility in Fluent theme send box.
    *
@@ -1020,7 +1020,7 @@ type StyleOptions = {
    *
    * @default 'auto'
    */
-  showMicrophoneButton?: 'auto' | 'hide';
+  showMicrophoneButton?: 'auto' | 'hide' | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
