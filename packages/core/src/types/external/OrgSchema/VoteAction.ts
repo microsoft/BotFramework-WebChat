@@ -1,4 +1,4 @@
-import { intersect, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -40,7 +40,7 @@ type VoteActionOutput = ActionOutput & {
 };
 
 const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = intersect([
-  actionSchema,
+  lazy(() => actionSchema),
   pipe(
     looseObject({
       actionOption: orgSchemaProperties(string())

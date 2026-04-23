@@ -1,4 +1,4 @@
-import { intersect, looseObject, parse, pipe, readonly, string } from 'valibot';
+import { intersect, lazy, looseObject, parse, pipe, readonly, string } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
@@ -43,7 +43,7 @@ type ProjectOutput = ThingOutput & {
  * @see https://schema.org/Project
  */
 const projectSchema = intersect([
-  thingSchema,
+  lazy(() => thingSchema),
   pipe(
     looseObject({
       /**

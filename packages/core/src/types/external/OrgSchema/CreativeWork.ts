@@ -176,7 +176,7 @@ type CreativeWorkOutput = ThingOutput & {
 };
 
 const creativeWorkSchema: GenericSchema<CreativeWorkInput, CreativeWorkOutput> = intersect([
-  thingSchema,
+  lazy(() => thingSchema),
   pipe(
     looseObject({
       // For forward compatibility, we did not enforce @type must be "CreativeWork" or any other subtypes.
