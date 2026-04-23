@@ -117,6 +117,10 @@ export {
   type ProjectOutput as OrgSchemaProject
 } from './types/external/OrgSchema/Project';
 export {
+  softwareSourceCodeSchema as orgSchemaSoftwareSourceCodeSchema,
+  type SoftwareSourceCodeOutput as OrgSchemaSoftwareSourceCode
+} from './types/external/OrgSchema/SoftwareSourceCode';
+export {
   thingSchema as orgSchemaThingSchema,
   type ThingOutput as OrgSchemaThing
 } from './types/external/OrgSchema/Thing';

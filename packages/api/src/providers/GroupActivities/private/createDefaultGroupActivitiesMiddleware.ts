@@ -97,8 +97,8 @@ export default function createDefaultGroupActivitiesMiddleware({
               return {
                 ...next({ activities }),
                 part: bin(messages, ([last], [current]) => {
-                  const lastPartIdResult = safeParse(IdentifierSchema, last?.isPartOf?.['@id']);
-                  const currentPartIdResult = safeParse(IdentifierSchema, current?.isPartOf?.['@id']);
+                  const lastPartIdResult = safeParse(IdentifierSchema, last?.isPartOf[0]?.['@id']);
+                  const currentPartIdResult = safeParse(IdentifierSchema, current?.isPartOf[0]?.['@id']);
 
                   return (
                     lastPartIdResult.success &&

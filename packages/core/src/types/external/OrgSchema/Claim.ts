@@ -44,14 +44,14 @@ type ClaimOutput = CreativeWorkOutput & {
    *
    * @see https://schema.org/appearance.
    */
-  readonly appearance?: readonly CreativeWorkOutput[] | undefined;
+  readonly appearance: readonly CreativeWorkOutput[];
 
   /**
    * For a [Claim](https://schema.org/Claim) interpreted from [MediaObject](https://schema.org/MediaObject) content sed to indicate a claim contained, implied or refined from the content of a [MediaObject](https://schema.org/MediaObject).
    *
    * @see https://schema.org/claimInterpreter.
    */
-  readonly claimInterpreter?: readonly ProjectOutput[] | undefined;
+  readonly claimInterpreter: readonly ProjectOutput[];
 };
 
 const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([

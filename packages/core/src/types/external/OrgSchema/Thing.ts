@@ -56,13 +56,6 @@ type ThingInput = {
    * @see https://schema.org/url
    */
   readonly url?: string | readonly string[] | undefined;
-
-  /**
-   * Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
-   *
-   * @see https://schema.org/isPartOf
-   */
-  readonly isPartOf?: ThingInput | readonly ThingInput[] | undefined;
 };
 
 /**
@@ -82,49 +75,42 @@ type ThingOutput = {
    *
    * @see https://schema.org/additionalType
    */
-  readonly additionalType?: readonly string[] | undefined;
+  readonly additionalType: readonly string[];
 
   /**
    * An alias for the item.
    *
    * @see https://schema.org/alternateName
    */
-  readonly alternateName?: readonly string[] | undefined;
+  readonly alternateName: readonly string[];
 
   /**
    * A description of the item.
    *
    * @see https://schema.org/description
    */
-  readonly description?: readonly string[] | undefined;
+  readonly description: readonly string[];
 
   /**
    * The name of the item.
    *
    * @see https://schema.org/name
    */
-  readonly name?: readonly string[] | undefined;
+  readonly name: readonly string[];
 
   /**
    * Indicates a potential Action, which describes an idealized action in which this thing would play an 'object' role.
    *
    * @see https://schema.org/potentialAction
    */
-  readonly potentialAction?: readonly ActionOutput[] | undefined;
+  readonly potentialAction: readonly ActionOutput[];
 
   /**
    * URL of the item.
    *
    * @see https://schema.org/url
    */
-  readonly url?: readonly string[] | undefined;
-
-  /**
-   * Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
-   *
-   * @see https://schema.org/isPartOf
-   */
-  readonly isPartOf?: readonly ThingOutput[] | undefined;
+  readonly url: readonly string[];
 };
 
 /**
@@ -152,7 +138,6 @@ const thingSchema: GenericSchema<ThingInput, ThingOutput> =
       additionalType: orgSchemaProperties(string()),
       alternateName: orgSchemaProperties(string()),
       description: orgSchemaProperties(string()),
-      isPartOf: orgSchemaProperties(lazy(() => thingSchema)),
       name: orgSchemaProperties(string()),
       potentialAction: orgSchemaProperties(lazy(() => actionSchema)),
       url: orgSchemaProperties(string())

@@ -2,7 +2,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
-  parseAction,
+  orgSchemaActionSchema,
   type OrgSchemaAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
@@ -11,7 +11,7 @@ import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, typ
 import { wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
-import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import canActionResubmit from '../private/canActionResubmit';
@@ -113,13 +113,13 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         actions = actions.map(action =>
           action.result
             ? action
-            : {
+            : parse(orgSchemaActionSchema, {
                 ...action,
                 result: {
                   '@type': 'UserReview',
                   description: deprecatedFeedbackLoopChannelData?.disclaimer
                 }
-              }
+              })
         );
       }
 
@@ -141,7 +141,9 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       }
 
       const voteActions = Object.freeze(
-        graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction)
+        graph
+          .filter(({ type }) => type === 'https://schema.org/VoteAction')
+          .map(action => parse(orgSchemaActionSchema, action))
         // TODO: Instead of processing VoteAction, convert it to LikeAction/DislikeAction.
         // .map(action => ({
         //   ...action,
@@ -162,14 +164,15 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   useMemo(() => {
     const activeOrCompletedAction = rawActions.find(
-      (action): action is OrgSchemaAction & { actionStatus: 'ActiveActionStatus' | 'CompletedActionStatus' } =>
-        action.actionStatus === 'ActiveActionStatus' || action.actionStatus === 'CompletedActionStatus'
+      (action): action is OrgSchemaAction & { actionStatus: ['ActiveActionStatus' | 'CompletedActionStatus'] } =>
+        action.actionStatus?.length === 1 &&
+        (action.actionStatus[0] === 'ActiveActionStatus' || action.actionStatus[0] === 'CompletedActionStatus')
     );
 
     actionStateRef.current = activeOrCompletedAction
       ? {
           actionId: activeOrCompletedAction['@id'],
-          actionStatus: activeOrCompletedAction.actionStatus
+          actionStatus: activeOrCompletedAction.actionStatus?.[0]
         }
       : undefined;
   }, [rawActions]);
@@ -177,15 +180,15 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   // Workaround ESLint on saying actionStateRef.current is redundant when using it directly.
   const actionStateForActions = actionStateRef.current;
 
-  const actions = useMemo(
+  const actions = useMemo<readonly OrgSchemaAction[]>(
     () =>
       Object.freeze(
         rawActions.map(action =>
           actionStateForActions && actionStateForActions.actionId === action['@id']
-            ? Object.freeze({ ...action, actionStatus: actionStateForActions.actionStatus })
-            : action.actionStatus === 'PotentialActionStatus'
+            ? Object.freeze({ ...action, actionStatus: [actionStateForActions.actionStatus] } satisfies OrgSchemaAction)
+            : action.actionStatus?.length === 1 && action.actionStatus?.[0] === 'PotentialActionStatus'
               ? action
-              : Object.freeze({ ...action, actionStatus: 'PotentialActionStatus' })
+              : Object.freeze({ ...action, actionStatus: ['PotentialActionStatus'] } satisfies OrgSchemaAction)
         )
       ),
     [actionStateForActions, rawActions]
@@ -196,7 +199,8 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const postActivity = usePostActivity();
 
   const hasSubmitted = useMemo<boolean>(
-    () => actions.some(action => action.actionStatus === 'CompletedActionStatus'),
+    () =>
+      actions.some(action => action.actionStatus?.length === 1 && action.actionStatus?.[0] === 'CompletedActionStatus'),
     [actions]
   );
 
@@ -248,7 +252,9 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
     () =>
       actions.find(
-        ({ actionStatus }) => actionStatus === 'ActiveActionStatus' || actionStatus === 'CompletedActionStatus'
+        ({ actionStatus }) =>
+          actionStatus?.length === 1 &&
+          (actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus')
       ),
     [actions]
   );

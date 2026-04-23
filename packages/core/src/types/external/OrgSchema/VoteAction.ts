@@ -36,7 +36,7 @@ type VoteActionOutput = ActionOutput & {
    *
    * @see https://schema.org/VoteAction
    */
-  readonly actionOption?: readonly string[] | undefined;
+  readonly actionOption: readonly string[];
 };
 
 const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = intersect([
