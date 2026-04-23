@@ -38,13 +38,6 @@ import createStore, {
   withDevTools as createStoreWithDevTools,
   withOptions as createStoreWithOptions
 } from './createStore';
-import { parseAction } from './types/external/OrgSchema/Action';
-import { parseClaim } from './types/external/OrgSchema/Claim';
-import { parseCreativeWork } from './types/external/OrgSchema/CreativeWork';
-import { parseDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
-import { parseProject } from './types/external/OrgSchema/Project';
-import { parseThing } from './types/external/OrgSchema/Thing';
-import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
 import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -94,18 +87,22 @@ import type { Observable } from './types/external/Observable';
 // #region Schema.org
 export {
   actionSchema as orgSchemaActionSchema,
+  parseAction,
   type ActionOutput as OrgSchemaAction
 } from './types/external/OrgSchema/Action';
 export {
   claimSchema as orgSchemaClaimSchema,
+  parseClaim,
   type ClaimOutput as OrgSchemaClaim
 } from './types/external/OrgSchema/Claim';
 export {
   creativeWorkSchema as orgSchemaCreativeWorkSchema,
+  parseCreativeWork,
   type CreativeWorkOutput as OrgSchemaCreativeWork
 } from './types/external/OrgSchema/CreativeWork';
 export {
   definedTermSchema as orgSchemaDefinedTermSchema,
+  parseDefinedTerm,
   type DefinedTermOutput as OrgSchemaDefinedTerm
 } from './types/external/OrgSchema/DefinedTerm';
 export {
@@ -114,6 +111,7 @@ export {
 } from './types/external/OrgSchema/Person';
 export {
   projectSchema as orgSchemaProjectSchema,
+  parseProject,
   type ProjectOutput as OrgSchemaProject
 } from './types/external/OrgSchema/Project';
 export {
@@ -122,12 +120,18 @@ export {
 } from './types/external/OrgSchema/SoftwareSourceCode';
 export {
   thingSchema as orgSchemaThingSchema,
+  parseThing,
   type ThingOutput as OrgSchemaThing
 } from './types/external/OrgSchema/Thing';
 export {
   userReviewSchema as orgSchemaUserReviewSchema,
   type UserReviewOutput as OrgSchemaUserReview
 } from './types/external/OrgSchema/UserReview';
+export {
+  voteActionSchema as orgSchemaVoteActionSchema,
+  parseVoteAction,
+  type VoteActionOutput as OrgSchemaVoteAction
+} from './types/external/OrgSchema/VoteAction';
 // #endregion
 
 /** @deprecated */
@@ -153,13 +157,6 @@ export {
   markActivity,
   muteVoiceRecording,
   onErrorResumeNext,
-  parseAction,
-  parseClaim,
-  parseCreativeWork,
-  parseDefinedTerm,
-  parseProject,
-  parseThing,
-  parseVoteAction,
   postActivity,
   postVoiceActivity,
   registerVoiceHandler,

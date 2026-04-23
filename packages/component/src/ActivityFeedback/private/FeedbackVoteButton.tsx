@@ -1,9 +1,21 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
+import { onErrorResumeNext, orgSchemaVoteActionSchema, type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, literal, object, optional, pipe, readonly, safeParse, string, union, type InferInput } from 'valibot';
+import {
+  custom,
+  literal,
+  object,
+  optional,
+  parse,
+  pipe,
+  readonly,
+  safeParse,
+  string,
+  union,
+  type InferInput
+} from 'valibot';
 
 import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
@@ -52,7 +64,7 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
     if (
       action['@type'] === 'DislikeAction' ||
       (action['@type'] === 'VoteAction' &&
-        onErrorResumeNext(() => parseVoteAction(action))?.actionOption === 'downvote')
+        onErrorResumeNext(() => parse(orgSchemaVoteActionSchema, action))?.actionOption[0] === 'downvote')
     ) {
       return 'down';
     }
