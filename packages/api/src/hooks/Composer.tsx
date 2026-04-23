@@ -45,7 +45,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNod
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
-import type StyleOptions from '../StyleOptions';
+import { type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
@@ -297,7 +297,7 @@ const ComposerCore = ({
   sendTypingIndicator,
   toastMiddleware,
   typingIndicatorMiddleware,
-  uiState,
+  uiState: rawUIState,
   userID,
   username
 }: ComposerCoreProps) => {
@@ -310,7 +310,7 @@ const ComposerCore = ({
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
 
-  uiState = parseUIState(uiState, disabled);
+  const uiState = parseUIState(rawUIState, disabled);
 
   useEffect(() => {
     dispatch(setLanguage(locale));
