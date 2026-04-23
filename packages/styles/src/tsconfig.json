@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "checkJs": false
+    "checkJs": false,
+    "ignoreDeprecations": "6.0" // Required for tsup@8.5.1 to work in typescript@6.0.3
   },
   "extends": ["@msinternal/botframework-webchat-tsconfig/current", "./build/tsconfig.json"]
 }
