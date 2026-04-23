@@ -83,6 +83,8 @@ export default function useStreamingMarkdownWithDefinitions(
   // starts clean, but the streaming effect can still set definitions on the same commit.
   useLayoutEffect(() => {
     previousMarkdownRef.current = '';
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDefinitions(EMPTY_DEFINITIONS);
   }, [streamingRenderer]);
 
