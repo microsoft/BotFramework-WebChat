@@ -1,4 +1,4 @@
-import type { StrictStyleOptions, default as StyleOptions } from '../../../StyleOptions';
+import type { StrictStyleOptions, StyleOptions } from '../../../StyleOptions';
 import normalizeStyleOptions from '../../../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../../../patchStyleOptionsFromDeprecatedProps';
 
