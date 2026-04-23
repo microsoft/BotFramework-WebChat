@@ -63,7 +63,8 @@ function eitherChannelDataOrEntities<
           check(value => !!value)
         )
       }),
-      transform(({ entities, ...value }) => ({ ...value, streamInfoEntity: entities }))
+      // This is quite hacky, we should not mutate the parse output to ease metadata extractions.
+      transform(({ entities, ...value }) => ({ ...value, streamInfoEntity: entities! }))
     )
   ]);
 }
