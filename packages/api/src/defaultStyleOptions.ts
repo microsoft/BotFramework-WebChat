@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: "off" */
 import StyleOptions from './StyleOptions';
 
-function fontFamily(fonts) {
+function fontFamily(fonts: readonly string[]): string {
   return fonts.map(font => `'${font}'`).join(', ');
 }
 
