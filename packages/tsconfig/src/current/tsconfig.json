@@ -6,8 +6,7 @@
     "moduleResolution": "Bundler",
     "noEmit": true,
     "skipLibCheck": true,
-    "target": "ESNext",
-    "types": [] // Platform neutrality: disable loading default types
+    "target": "ESNext"
   },
   "extends": "@tsconfig/strictest/tsconfig.json"
 }
