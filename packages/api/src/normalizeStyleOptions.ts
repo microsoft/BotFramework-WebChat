@@ -1,7 +1,7 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 
 import defaultStyleOptions from './defaultStyleOptions';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
 
 const bubbleImageHeightDeprecation = warnOnce(
   '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'
@@ -15,37 +15,26 @@ const bubbleMinWidthDeprecation = warnOnce(
   '"styleOptions.bubbleMinWidth" has been deprecated. Use "styleOptions.bubbleAttachmentMinWidth" and "styleOptions.bubbleMessageMinWidth" instead. This deprecation migration will be removed on or after 2026-07-05.'
 );
 
-const hideScrollToEndButtonDeprecation = warnOnce(
-  '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2023-06-02.'
-);
-
-const newMessagesButtonFontSizeDeprecation = warnOnce(
-  '"styleOptions.newMessagesButtonFontSize" has been renamed to "styleOptions.scrollToEndButtonFontSize". This deprecation migration will be removed on or after 2023-06-02.'
-);
-
-const suggestedActionBackgroundDeprecation = warnOnce(
-  '"styleOptions.suggestedActionBackground" has been deprecated. Please use "styleOptions.suggestedActionBackgroundColor" instead. This deprecation migration will be removed on or after 2021-09-16.'
-);
-
-const suggestedActionXXXBackgroundDeprecation = warnOnce(
-  '"styleOptions.suggestedActionXXXBackground" has been deprecated. Please use "styleOptions.suggestedActionBackgroundColorOnXXX" instead. This deprecation migration will be removed on or after 2021-09-16.'
-);
-
-const suggestedActionDisabledDeprecation = warnOnce(
-  '"styleOptions.suggestedActionDisabledXXX" has been renamed to "styleOptions.suggestedActionXXXOnDisabled". This deprecation migration will be removed on or after 2021-09-16.'
-);
-
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
 // eslint-disable-next-line complexity
 export default function normalizeStyleOptions({
-  hideScrollToEndButton,
-  newMessagesButtonFontSize,
+  bubbleImageHeight,
+  bubbleMaxWidth,
+  bubbleMinWidth,
+  hideUploadButton: _hideUploadButton,
   ...options
 }: StyleOptions = {}): StrictStyleOptions {
-  const filledOptions: Required<StyleOptions> = { ...defaultStyleOptions, ...options };
+  const filledOptions: Required<StyleOptions> = {
+    ...defaultStyleOptions,
+    bubbleImageHeight: undefined,
+    bubbleMaxWidth: undefined,
+    bubbleMinWidth: undefined,
+    hideUploadButton: undefined,
+    ...options
+  };
 
   // Keep this list flat (no nested style) and serializable (no functions)
   const { bubbleFromUserNubOffset, bubbleNubOffset, emojiSet } = filledOptions;
@@ -105,13 +94,6 @@ export default function normalizeStyleOptions({
     normalizedEmojiSet = emojiSet;
   }
 
-  if (hideScrollToEndButton) {
-    hideScrollToEndButtonDeprecation();
-
-    filledOptions.scrollToEndButtonBehavior = false;
-    filledOptions.hideScrollToEndButton = undefined;
-  }
-
   let patchedScrollToEndButtonBehavior = filledOptions.scrollToEndButtonBehavior;
 
   if (patchedScrollToEndButtonBehavior !== 'any' && patchedScrollToEndButtonBehavior !== false) {
@@ -123,107 +105,27 @@ export default function normalizeStyleOptions({
     patchedScrollToEndButtonBehavior = 'unread';
   }
 
-  if (newMessagesButtonFontSize) {
-    newMessagesButtonFontSizeDeprecation();
-
-    // Only set if the "scrollToEndButtonFontSize" is not set.
-    filledOptions.scrollToEndButtonFontSize = newMessagesButtonFontSize;
-    filledOptions.newMessagesButtonFontSize = undefined;
-  }
-
-  options.suggestedActionBackground && suggestedActionBackgroundDeprecation();
-
-  if (options.suggestedActionActiveBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnActive = options.suggestedActionActiveBackground;
-    filledOptions.suggestedActionActiveBackground = undefined;
-  }
-
-  if (options.suggestedActionFocusBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnFocus = options.suggestedActionFocusBackground;
-    filledOptions.suggestedActionFocusBackground = undefined;
-  }
-
-  if (options.suggestedActionHoverBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnHover = options.suggestedActionHoverBackground;
-    filledOptions.suggestedActionHoverBackground = undefined;
-  }
-
-  if (options.suggestedActionDisabledBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnDisabled = options.suggestedActionDisabledBackground;
-    filledOptions.suggestedActionDisabledBackground = undefined;
-  }
-
-  if (options.suggestedActionDisabledBorderColor) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionBorderColorOnDisabled = options.suggestedActionDisabledBorderColor;
-    filledOptions.suggestedActionDisabledBorderColor = undefined;
-  }
-
-  if (options.suggestedActionDisabledBorderStyle) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionBorderStyleOnDisabled = options.suggestedActionDisabledBorderStyle;
-    filledOptions.suggestedActionDisabledBorderStyle = undefined;
-  }
-
-  if (options.suggestedActionDisabledBorderWidth) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionBorderWidthOnDisabled = options.suggestedActionDisabledBorderWidth;
-    filledOptions.suggestedActionDisabledBorderWidth = undefined;
-  }
-
-  if (options.suggestedActionDisabledTextColor) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionTextColorOnDisabled = options.suggestedActionDisabledTextColor;
-    filledOptions.suggestedActionDisabledTextColor = undefined;
-  }
-
-  if (options.bubbleImageHeight) {
+  if (bubbleImageHeight) {
     bubbleImageHeightDeprecation();
 
-    filledOptions.bubbleImageMaxHeight = options.bubbleImageHeight;
-    filledOptions.bubbleImageMinHeight = options.bubbleImageHeight;
+    filledOptions.bubbleImageMaxHeight = bubbleImageHeight;
+    filledOptions.bubbleImageMinHeight = bubbleImageHeight;
 
     filledOptions.bubbleImageHeight = undefined;
   }
 
-  if (options.bubbleMaxWidth) {
+  if (bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
 
-    filledOptions.bubbleAttachmentMaxWidth = options.bubbleMaxWidth;
-    filledOptions.bubbleMaxWidth = undefined;
+    filledOptions.bubbleAttachmentMaxWidth = bubbleMaxWidth;
+    filledOptions.bubbleMessageMaxWidth = bubbleMaxWidth;
   }
 
-  if (options.bubbleMinWidth) {
+  if (bubbleMinWidth) {
     bubbleMinWidthDeprecation();
 
-    filledOptions.bubbleAttachmentMinWidth = options.bubbleMinWidth;
-    filledOptions.bubbleMinWidth = undefined;
-  }
-
-  if (options.bubbleMaxWidth) {
-    bubbleMaxWidthDeprecation();
-
-    filledOptions.bubbleMessageMaxWidth = options.bubbleMaxWidth;
-    filledOptions.bubbleMaxWidth = undefined;
-  }
-
-  if (options.bubbleMinWidth) {
-    bubbleMinWidthDeprecation();
-
-    filledOptions.bubbleMessageMinWidth = options.bubbleMinWidth;
-    filledOptions.bubbleMinWidth = undefined;
+    filledOptions.bubbleAttachmentMinWidth = bubbleMinWidth;
+    filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
 
   return {

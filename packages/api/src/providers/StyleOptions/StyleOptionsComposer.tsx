@@ -2,7 +2,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
-import type StyleOptions from '../../StyleOptions';
+import { type StyleOptions } from '../../StyleOptions';
 import StyleOptionsContext, { StyleOptionsContextType, useStyleOptionsContext } from './private/StyleOptionsContext';
 import rectifyStyleOptions from './private/rectifyStyleOptions';
 
