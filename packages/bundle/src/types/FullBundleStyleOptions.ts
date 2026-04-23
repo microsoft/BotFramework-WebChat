@@ -8,5 +8,4 @@ import {
 type FullBundleStyleOptions = StyleOptions & AdaptiveCardsStyleOptions;
 type StrictFullBundleStyleOptions = StrictStyleOptions & StrictAdaptiveCardsStyleOptions;
 
-export default FullBundleStyleOptions;
-export { StrictFullBundleStyleOptions };
+export type { FullBundleStyleOptions, StrictFullBundleStyleOptions };
