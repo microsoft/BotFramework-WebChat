@@ -1,7 +1,7 @@
 import { lazy, literal, looseObject, optional, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
-import orgSchemaProperties from './private/orgSchemaProperties';
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
+import orgSchemaProperties from './private/orgSchemaProperties';
 
 /**
  * The most generic type of item.

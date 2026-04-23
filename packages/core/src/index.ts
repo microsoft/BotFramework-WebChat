@@ -38,6 +38,13 @@ import createStore, {
   withDevTools as createStoreWithDevTools,
   withOptions as createStoreWithOptions
 } from './createStore';
+import { parseAction } from './types/external/OrgSchema/Action';
+import { parseClaim } from './types/external/OrgSchema/Claim';
+import { parseCreativeWork } from './types/external/OrgSchema/CreativeWork';
+import { parseDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
+import { parseProject } from './types/external/OrgSchema/Project';
+import { parseThing } from './types/external/OrgSchema/Thing';
+import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
 import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -114,6 +121,13 @@ export {
   markActivity,
   muteVoiceRecording,
   onErrorResumeNext,
+  parseAction,
+  parseClaim,
+  parseCreativeWork,
+  parseDefinedTerm,
+  parseProject,
+  parseThing,
+  parseVoteAction,
   postActivity,
   postVoiceActivity,
   registerVoiceHandler,
