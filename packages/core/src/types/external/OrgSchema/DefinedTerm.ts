@@ -1,15 +1,7 @@
-import { parse, string, type ObjectEntries } from 'valibot';
+import { intersect, looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
 
-import { thing, type Thing } from './Thing';
-import orgSchemaProperty from './private/orgSchemaProperty';
-
-export const definedTerm = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
-  thing({
-    inDefinedTermSet: orgSchemaProperty(string()),
-    termCode: orgSchemaProperty(string()),
-
-    ...entries
-  });
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import orgSchemaProperties from './private/orgSchemaProperties';
 
 /**
  * A word, name, acronym, phrase, etc. with a formal definition. Often used in the context of category or subject classification, glossaries or dictionaries, product or creative work types, etc. Use the name property for the term being defined, use termCode if the term has an alpha-numeric code allocated, use description to provide the definition of the term.
@@ -18,20 +10,54 @@ export const definedTerm = <TEntries extends ObjectEntries>(entries?: TEntries |
  *
  * @see https://schema.org/DefinedTerm
  */
-export type DefinedTerm = Thing & {
+type DefinedTermInput = ThingInput & {
   /**
    * A [DefinedTermSet](https://schema.org/DefinedTermSet) that contains this term.
    *
    * @see https://schema.org/inDefinedTermSet
    */
-  inDefinedTermSet?: string | undefined;
+  readonly inDefinedTermSet?: string | readonly string[] | undefined;
 
   /**
    * A code that identifies this [DefinedTerm](https://schema.org/DefinedTerm) within a [DefinedTermSet](https://schema.org/DefinedTermSet).
    *
    * @see https://schema.org/termCode
    */
-  termCode?: string | undefined;
+  readonly termCode?: string | readonly string[] | undefined;
 };
 
-export const parseDefinedTerm = (data: unknown): DefinedTerm => parse(definedTerm(), data);
+/**
+ * A word, name, acronym, phrase, etc. with a formal definition. Often used in the context of category or subject classification, glossaries or dictionaries, product or creative work types, etc. Use the name property for the term being defined, use termCode if the term has an alpha-numeric code allocated, use description to provide the definition of the term.
+ *
+ * This is partial implementation of https://schema.org/DefinedTerm.
+ *
+ * @see https://schema.org/DefinedTerm
+ */
+type DefinedTermOutput = ThingOutput & {
+  /**
+   * A [DefinedTermSet](https://schema.org/DefinedTermSet) that contains this term.
+   *
+   * @see https://schema.org/inDefinedTermSet
+   */
+  readonly inDefinedTermSet?: readonly string[] | undefined;
+
+  /**
+   * A code that identifies this [DefinedTerm](https://schema.org/DefinedTerm) within a [DefinedTermSet](https://schema.org/DefinedTermSet).
+   *
+   * @see https://schema.org/termCode
+   */
+  readonly termCode?: readonly string[] | undefined;
+};
+
+const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([
+  thingSchema,
+  pipe(
+    looseObject({
+      inDefinedTermSet: orgSchemaProperties(string()),
+      termCode: orgSchemaProperties(string())
+    }),
+    readonly()
+  )
+]);
+
+export { definedTermSchema, type DefinedTermInput, type DefinedTermOutput };

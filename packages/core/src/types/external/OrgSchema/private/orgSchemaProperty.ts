@@ -1,7 +1,23 @@
-import { array, fallback, optional, pipe, transform, union, type BaseSchema } from 'valibot';
+import {
+  array,
+  fallback,
+  optional,
+  pipe,
+  transform,
+  union,
+  type BaseSchema,
+  type Fallback,
+  type GenericSchema,
+  type InferOutput
+} from 'valibot';
 
-const orgSchemaProperty = <T extends BaseSchema<unknown, unknown, any>>(schema: T) =>
-  fallback(
+type ArrayToSingularSchema<T extends BaseSchema<unknown, unknown, any>> = GenericSchema<
+  InferOutput<T> | InferOutput<T>[] | undefined,
+  InferOutput<T> | undefined
+>;
+
+const orgSchemaProperty = <T extends BaseSchema<unknown, unknown, any>>(schema: T): ArrayToSingularSchema<T> =>
+  fallback<ArrayToSingularSchema<T>, Fallback<ArrayToSingularSchema<T>>>(
     optional(
       union([
         pipe(

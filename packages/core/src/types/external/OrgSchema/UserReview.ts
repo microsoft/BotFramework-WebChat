@@ -1,7 +1,7 @@
-import { parse, string, type ObjectEntries } from 'valibot';
+import { intersect, looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import orgSchemaProperty from './private/orgSchemaProperty';
-import { thing, type Thing } from './Thing';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
@@ -10,18 +10,35 @@ import { thing, type Thing } from './Thing';
  *
  * @see https://schema.org/UserReview
  */
-export type UserReview = Thing & {
+type UserReviewInput = ThingInput & {
   /**
    * This Review or Rating is relevant to this part or facet of the itemReviewed.
    */
-  reviewAspect?: string | undefined;
+  readonly reviewAspect?: string | readonly string[] | undefined;
 };
 
-export const userReview = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
-  thing({
-    reviewAspect: orgSchemaProperty(string()),
+/**
+ * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
+ *
+ * This is partial implementation of https://schema.org/UserReview.
+ *
+ * @see https://schema.org/UserReview
+ */
+type UserReviewOutput = ThingOutput & {
+  /**
+   * This Review or Rating is relevant to this part or facet of the itemReviewed.
+   */
+  readonly reviewAspect?: string | readonly string[] | undefined;
+};
 
-    ...entries
-  });
+const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
+  thingSchema,
+  pipe(
+    looseObject({
+      reviewAspect: orgSchemaProperty(string())
+    }),
+    readonly()
+  )
+]);
 
-export const parseUserReview = (data: unknown): UserReview => parse(userReview(), data);
+export { userReviewSchema, type UserReviewInput, type UserReviewOutput };
