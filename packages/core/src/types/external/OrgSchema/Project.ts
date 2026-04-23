@@ -1,4 +1,4 @@
-import { intersect, looseObject, pipe, readonly, string } from 'valibot';
+import { intersect, looseObject, parse, pipe, readonly, string } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
@@ -57,4 +57,7 @@ const projectSchema = intersect([
   )
 ]);
 
-export { projectSchema, type ProjectInput, type ProjectOutput };
+/** @deprecated Use Valibot.parse(projectSchema) instead. Will be removed on or after 2028-04-23. */
+const parseProject = (project: ProjectInput): ProjectOutput => parse(projectSchema, project);
+
+export { parseProject, projectSchema, type ProjectInput, type ProjectOutput };

@@ -1,4 +1,4 @@
-import { lazy, literal, looseObject, optional, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { lazy, literal, looseObject, optional, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
@@ -160,4 +160,7 @@ const thingSchema: GenericSchema<ThingInput, ThingOutput> =
     readonly()
   );
 
-export { thingSchema, type ThingInput, type ThingOutput };
+/** @deprecated Use Valibot.parse(thingSchema) instead. Will be removed on or after 2028-04-23. */
+const parseThing = (thing: ThingInput): ThingOutput => parse(thingSchema, thing);
+
+export { parseThing, thingSchema, type ThingInput, type ThingOutput };
