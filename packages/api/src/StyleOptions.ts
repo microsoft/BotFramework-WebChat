@@ -718,7 +718,7 @@ type StyleOptions = {
    * Suggested actions flow layout
    * Default value is 'auto',
    */
-  suggestedActionsFlowMaxHeight?: undefined | undefined;
+  suggestedActionsFlowMaxHeight?: number | undefined;
 
   /**
    * Suggested actions stacked layout
