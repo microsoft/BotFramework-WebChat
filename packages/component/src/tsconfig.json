@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "downlevelIteration": true,
+    "strict": false,
     "types": ["dom-speech-recognition"]
   },
   "extends": [
