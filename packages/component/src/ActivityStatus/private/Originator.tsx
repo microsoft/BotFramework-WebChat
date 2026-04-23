@@ -1,9 +1,9 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { type OrgSchemaProject } from 'botframework-webchat-core';
+import { orgSchemaProjectSchema } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { object, pipe, readonly, type InferInput } from 'valibot';
 
 import useSanitizeHrefCallback from '../../hooks/internal/useSanitizeHrefCallback';
 
@@ -11,18 +11,7 @@ import styles from '../ActivityStatus.module.css';
 
 const originatorPropsSchema = pipe(
   object({
-    // TODO: [P1] We should build this schema into `OrgSchemaProject` instead, or build a Schema.org query library.
-    project: custom<OrgSchemaProject>(
-      value =>
-        safeParse(
-          object({
-            name: optional(string()),
-            slogan: optional(string()),
-            url: optional(string())
-          }),
-          value
-        ).success
-    )
+    project: orgSchemaProjectSchema
   }),
   readonly()
 );
@@ -39,8 +28,8 @@ const Originator = memo(function Originator(props: OriginatorProps) {
   const sanitizeHref = useSanitizeHrefCallback();
   const classNames = useStyles(styles);
 
-  const { sanitizedHref } = sanitizeHref(url);
-  const text = slogan || name;
+  const { sanitizedHref } = sanitizeHref(url[0]);
+  const text = slogan[0] || name[0];
 
   return sanitizedHref ? (
     // Link is sanitized.

@@ -48,19 +48,11 @@ export default function createSuggestedActionStyle({
   suggestedActionHeight,
   suggestedActionImageHeight,
   suggestedActionsStackedLayoutButtonMaxHeight,
-  subtle,
-
-  // Deprecated
-  suggestedActionActiveBackground,
-  suggestedActionBackground,
-  suggestedActionDisabledBackground,
-  suggestedActionFocusBackground,
-  suggestedActionHoverBackground
+  subtle
 }: StrictStyleOptions) {
   return {
     '&.webchat__suggested-action': {
       alignItems: 'center',
-      background: suggestedActionBackground, // Deprecated as of 4.15.0. Remove on or after 2021-09-16.
       backgroundColor: suggestedActionBackgroundColor,
       borderColor: suggestedActionBorderColor || accent,
       borderRadius: suggestedActionBorderRadius,
@@ -82,7 +74,6 @@ export default function createSuggestedActionStyle({
       // Order of style preferences (based on effort of user gesture): disabled > active > hover > focus.
       // Keyboard focus indicator styles applied by :focus-visible do not conflict with :active/:hover/:focus, so it is not included here.
       '&:disabled, &[aria-disabled="true"]': {
-        background: suggestedActionDisabledBackground,
         backgroundColor: suggestedActionBackgroundColorOnDisabled,
         borderColor: suggestedActionBorderColorOnDisabled,
         borderStyle: suggestedActionBorderStyleOnDisabled,
@@ -92,7 +83,6 @@ export default function createSuggestedActionStyle({
 
       '&:not(:disabled):not([aria-disabled="true"])': {
         '&:active': {
-          background: suggestedActionActiveBackground,
           backgroundColor: suggestedActionBackgroundColorOnActive,
           borderColor: suggestedActionBorderColorOnActive,
           borderStyle: suggestedActionBorderStyleOnActive,
@@ -102,7 +92,6 @@ export default function createSuggestedActionStyle({
 
         '&:not(:active)': {
           '&:hover': {
-            background: suggestedActionHoverBackground,
             backgroundColor: suggestedActionBackgroundColorOnHover,
             borderColor: suggestedActionBorderColorOnHover,
             borderStyle: suggestedActionBorderStyleOnHover,
@@ -112,7 +101,6 @@ export default function createSuggestedActionStyle({
 
           '&:not(:hover)': {
             '&:focus': {
-              background: suggestedActionFocusBackground,
               backgroundColor: suggestedActionBackgroundColorOnFocus,
               borderColor: suggestedActionBorderColorOnFocus,
               borderStyle: suggestedActionBorderStyleOnFocus,

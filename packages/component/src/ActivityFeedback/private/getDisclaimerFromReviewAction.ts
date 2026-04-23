@@ -1,9 +1,8 @@
-import { type OrgSchemaAction, type OrgSchemaThing, type OrgSchemaUserReview } from 'botframework-webchat-core';
-
-function isUserReview(thing: OrgSchemaThing | undefined): thing is OrgSchemaUserReview {
-  return thing?.['@type'] === 'UserReview';
-}
+import { orgSchemaUserReviewSchema, type OrgSchemaAction } from 'botframework-webchat-core';
+import { safeParse } from 'valibot';
 
 export default function getDisclaimerFromActivity(action: OrgSchemaAction): string | undefined {
-  return isUserReview(action.result) ? action.result.reviewAspect : undefined;
+  const userReview = safeParse(orgSchemaUserReviewSchema, action.result);
+
+  return userReview.success ? userReview.output.reviewAspect[0] : undefined;
 }
