@@ -39,7 +39,8 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
 
   const isInGroup = useMemo(
     () =>
-      restActivities.length > 0 || !!(activity?.entities && getOrgSchemaMessage(activity.entities)?.isPartOf?.['@id']),
+      restActivities.length > 0 ||
+      !!(activity?.entities && getOrgSchemaMessage(activity.entities)?.isPartOf?.[0]?.['@id']),
     [activity, restActivities.length]
   );
 
