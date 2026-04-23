@@ -41,6 +41,21 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from './errorBoxPolymiddleware';
 
+export {
+  createHeroCardPolymiddleware,
+  extractHeroCardEnhancer,
+  heroCardComponent,
+  HeroCardPolymiddlewareProxy,
+  useBuildRenderHeroCardCallback,
+  type HeroCardPolymiddleware,
+  type HeroCardPolymiddlewareHandler,
+  type HeroCardPolymiddlewareHandlerResult,
+  type HeroCardPolymiddlewareProps,
+  type HeroCardPolymiddlewareProxyProps,
+  type HeroCardPolymiddlewareRenderer,
+  type HeroCardPolymiddlewareRequest
+} from './heroCardPolymiddleware';
+
 // TODO: [P0] Add tests for nesting `polymiddleware`.
 export { __INTERNAL_DO_NOT_USE__legacyAvatarMiddlewareOriginalRequestSymbol } from './legacy/avatarMiddleware';
 export { default as PolymiddlewareComposer } from './PolymiddlewareComposer';

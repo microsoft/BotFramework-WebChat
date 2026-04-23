@@ -17,6 +17,7 @@ import {
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
 import { AvatarPolymiddlewareProvider, extractAvatarEnhancer } from './avatarPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
+import { extractHeroCardEnhancer, HeroCardPolymiddlewareProvider } from './heroCardPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
 const polymiddlewareComposerPropsSchema = pipe(
@@ -56,6 +57,13 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);
 
+  const heroCardEnhancers = useMemoIterable<ReturnType<typeof extractHeroCardEnhancer>>(
+    () => extractHeroCardEnhancer(polymiddleware),
+    [polymiddleware]
+  );
+
+  const heroCardPolymiddleware = useMemo(() => heroCardEnhancers.map(enhancer => () => enhancer), [heroCardEnhancers]);
+
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
   // 1. <XXXProvider> for every type of middleware
@@ -66,11 +74,15 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   //    - <Proxy> will need to be rebuilt, as it uses a different `useBuildRenderCallback()`
 
   return (
-    <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <AvatarPolymiddlewareProvider middleware={avatarPolymiddleware}>
-        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
-      </AvatarPolymiddlewareProvider>
-    </ActivityPolymiddlewareProvider>
+    <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
+      <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
+        <AvatarPolymiddlewareProvider middleware={avatarPolymiddleware}>
+          <HeroCardPolymiddlewareProvider middleware={heroCardPolymiddleware}>
+            {children}
+          </HeroCardPolymiddlewareProvider>
+        </AvatarPolymiddlewareProvider>
+      </ActivityPolymiddlewareProvider>
+    </ErrorBoxPolymiddlewareProvider>
   );
 }
 
