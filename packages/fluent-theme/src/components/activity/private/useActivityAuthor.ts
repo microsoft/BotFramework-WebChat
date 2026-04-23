@@ -5,9 +5,7 @@ import { parse } from 'valibot';
 
 export default function useActivityAuthor(activity?: WebChatActivity | undefined): OrgSchemaPerson | undefined {
   return useMemo(() => {
-    const entity = getOrgSchemaMessage(activity?.entities || []);
-
-    const [firstAuthor] = entity?.author ?? [];
+    const firstAuthor = getOrgSchemaMessage(activity?.entities || [])?.author[0];
 
     return typeof firstAuthor === 'string'
       ? parse(orgSchemaPersonSchema, {

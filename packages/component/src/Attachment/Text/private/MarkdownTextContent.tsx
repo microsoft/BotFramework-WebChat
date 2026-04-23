@@ -4,14 +4,14 @@ import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
-  parseClaim,
+  orgSchemaClaimSchema,
   type OrgSchemaClaim,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { custom, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
@@ -21,17 +21,16 @@ import useStreamingMarkdownWithDefinitions, {
   type MarkdownLinkDefinition
 } from '../../../hooks/useStreamingMarkdownWithDefinitions';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
-import { type PropsOf } from '../../../types/PropsOf';
 import ActivityCopyButton from './ActivityCopyButton';
 import ActivityViewCodeButton from './ActivityViewCodeButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isAIGeneratedActivity from './isAIGeneratedActivity';
-import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
-import citationModalStyles from './CitationModal.module.css';
+import getFirstBaseOfSoftwareSourceCode from '../../../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textContentStyles from '../TextContent.module.css';
+import citationModalStyles from './CitationModal.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -73,7 +72,7 @@ function isCitingInline(claim: OrgSchemaClaim): claim is OrgSchemaClaim & {
     url?: undefined;
   };
 } {
-  return !!claim.appearance && !claim.appearance.url;
+  return !!claim.appearance?.length && !claim.appearance?.[0].url;
 }
 
 function MarkdownTextContent(props: MarkdownTextContentProps) {
@@ -116,13 +115,13 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
         markdownDefinitions
           .map<Entry | undefined>(markdownDefinition => {
             let messageCitation: OrgSchemaClaim | undefined = messageThing?.citation
-              ?.map(parseClaim)
-              .find(({ position }) => '' + position === markdownDefinition.identifier);
+              ?.map(claim => parse(orgSchemaClaimSchema, claim))
+              .find(({ position }) => '' + position?.[0] === markdownDefinition.identifier);
 
             if (!messageCitation) {
               const rootLevelClaim = graph
                 .filter(({ type }) => type === 'https://schema.org/Claim')
-                .map(parseClaim)
+                .map(claim => parse(orgSchemaClaimSchema, claim))
                 .find(({ '@id': id }) => id === markdownDefinition.url);
 
               if (rootLevelClaim) {
@@ -130,22 +129,24 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                   'botframework-webchat: Root-level `Claim` thing is deprecated, please use `Message[@id=""].citation[@type="Claim"]` instead. It will be removed on or after 2027-08-29.'
                 );
 
-                messageCitation = {
+                messageCitation = parse(orgSchemaClaimSchema, {
                   '@context': 'https://schema.org',
                   '@id': markdownDefinition.url,
                   '@type': 'Claim',
                   alternateName: rootLevelClaim.alternateName,
-                  appearance: isCitationURL(rootLevelClaim['@id'])
-                    ? {
-                        '@type': 'DigitalDocument',
-                        name: rootLevelClaim.name,
-                        text: rootLevelClaim.text
-                      }
-                    : {
-                        '@type': 'DigitalDocument',
-                        url: markdownDefinition.url
-                      }
-                };
+                  appearance: [
+                    isCitationURL(rootLevelClaim['@id'])
+                      ? {
+                          '@type': 'DigitalDocument',
+                          name: rootLevelClaim.name[0],
+                          text: rootLevelClaim.text[0]
+                        }
+                      : {
+                          '@type': 'DigitalDocument',
+                          url: [markdownDefinition.url]
+                        }
+                  ]
+                } satisfies InferInput<typeof orgSchemaClaimSchema>);
               }
             }
 
@@ -165,8 +166,8 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                   key: url,
                   handleClick: () =>
                     showClaimModal(
-                      appearance.name ?? markdownDefinition.title,
-                      appearance.text,
+                      appearance[0]?.name[0] ?? markdownDefinition.title[0],
+                      appearance[0]?.text[0],
                       messageCitation.alternateName
                     ),
                   markdownDefinition
@@ -175,14 +176,14 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
               // Not inline citation, we care about the URL.
               // Warn if it break single source of truth principle, we still use the URL from Markdown.
-              if (messageCitation.appearance?.url && messageCitation.appearance.url !== url) {
+              if (messageCitation.appearance?.[0]?.url?.[0] && messageCitation.appearance?.[0]?.url?.[0] !== url) {
                 console.warn(
                   'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
                   {
                     citation: messageCitation,
                     markdownDefinition,
                     url: {
-                      citation: messageCitation.appearance.url,
+                      citation: messageCitation.appearance[0]?.url[0],
                       markdown: url
                     }
                   }
@@ -242,35 +243,37 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     [entriesRef]
   );
 
-  const messageSensitivityLabelProps = useMemo<PropsOf<typeof MessageSensitivityLabel> | undefined>(() => {
-    const usageInfo = messageThing?.usageInfo;
+  const messageSensitivityLabelProps = useMemo<MessageSensitivityLabelProps | undefined>(() => {
+    const usageInfo = messageThing?.usageInfo?.[0];
 
     if (usageInfo) {
-      const { pattern } = usageInfo;
+      const pattern = usageInfo?.pattern?.[0];
       const encryptionStatus = !!usageInfo.keywords?.find(keyword => keyword === 'encrypted-content');
 
       return {
         color:
           pattern &&
-          pattern.inDefinedTermSet === 'https://www.w3.org/TR/css-color-4/' &&
-          pattern.name === 'color' &&
-          pattern.termCode,
+          pattern.inDefinedTermSet?.[0] === 'https://www.w3.org/TR/css-color-4/' &&
+          pattern.name?.[0] === 'color' &&
+          pattern.termCode?.[0],
         isEncrypted: encryptionStatus,
-        name: usageInfo.name,
-        title: usageInfo.description
-      };
+        name: usageInfo.name?.[0],
+        title: usageInfo.description?.[0]
+      } satisfies MessageSensitivityLabelProps;
     }
   }, [messageThing]);
 
   // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
-  const getEntryMainText = (entry: Entry) =>
-    entry.claim?.name ?? entry.claim?.appearance?.name ?? (entry.markdownDefinition.title || undefined);
+  const getEntryMainText = (entry: Entry): string | undefined =>
+    entry.claim?.name?.[0] ?? entry.claim?.appearance?.[0]?.name?.[0] ?? (entry.markdownDefinition.title || undefined);
 
   // Optional alternate name for the entry, used as a subtitle beneath the link
-  const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.usageInfo?.name;
+  const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.[0]?.usageInfo?.[0]?.name?.[0];
 
   // Secondary text describing the citation, used in the a11y description (i.e. the div's title attribute)
-  const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.usageInfo?.description;
+  const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.[0]?.usageInfo?.[0]?.description?.[0];
+
+  const firstSoftwareSourceCodeBase = useMemo(() => getFirstBaseOfSoftwareSourceCode(messageThing), [messageThing]);
 
   return (
     <div className={cx(textContentClassNames['text-content'], textContentClassNames['text-content--is-markdown'])}>
@@ -296,15 +299,14 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
       )}
       <div className={textContentClassNames['text-content__activity-actions']}>
         {activity.type === 'message' &&
-        isBasedOnSoftwareSourceCode(messageThing) &&
-        messageThing.isBasedOn.text &&
+        firstSoftwareSourceCodeBase?.text &&
         !messageThing.keywords?.includes?.('Collapsible') ? (
           <ActivityViewCodeButton
             className="text-content__activity-view-code-button"
-            code={messageThing.isBasedOn.text}
+            code={firstSoftwareSourceCodeBase.text[0]}
             isAIGenerated={isAIGeneratedActivity(activity)}
-            language={messageThing.isBasedOn.programmingLanguage}
-            title={messageThing.isBasedOn.programmingLanguage}
+            language={firstSoftwareSourceCodeBase.programmingLanguage[0]}
+            title={firstSoftwareSourceCodeBase.programmingLanguage[0]}
           />
         ) : null}
         {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (

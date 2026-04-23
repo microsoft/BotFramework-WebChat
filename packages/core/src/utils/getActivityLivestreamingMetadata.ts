@@ -183,7 +183,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
             type: !(
               output.text ||
               output.attachments?.length ||
-              ('entities' in output && getOrgSchemaMessage(output.entities)?.abstract)
+              ('entities' in output && getOrgSchemaMessage(output.entities)?.abstract[0])
             )
               ? 'contentless'
               : livestreamMetadata.streamType === 'informative'

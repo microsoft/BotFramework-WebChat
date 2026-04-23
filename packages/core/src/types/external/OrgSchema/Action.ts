@@ -54,26 +54,26 @@ type ActionOutput = ThingOutput & {
   /**
    * A sub property of object. The options subject to this action. Supersedes [`option`](https://schema.org/option).
    */
-  readonly actionOption?: readonly (string | ThingOutput)[] | undefined;
+  readonly actionOption: readonly (string | ThingOutput)[];
 
   /**
    * Indicates the current disposition of the Action.
    *
    * @see https://schema.org/actionStatus
    */
-  readonly actionStatus?: readonly ActionStatusOutput[] | undefined;
+  readonly actionStatus: readonly ActionStatusOutput[];
 
   /**
    * The service provider, service operator, or service performer; the goods producer. Another party (a seller) may offer those services or goods on behalf of the provider. A provider may also serve as the seller. Supersedes [carrier](https://schema.org/carrier).
    *
    * @see https://schema.org/provider
    */
-  readonly provider?: readonly ProjectOutput[] | undefined;
+  readonly provider: readonly ProjectOutput[];
 
   /**
    * The result produced in the action. E.g. John wrote *a book*.
    */
-  readonly result?: readonly (ThingOutput | UserReviewOutput)[] | undefined;
+  readonly result: readonly (ThingOutput | UserReviewOutput)[];
 };
 
 const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([

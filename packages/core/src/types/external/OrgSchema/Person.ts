@@ -2,16 +2,40 @@ import { intersect, lazy, looseObject, parse, pipe, readonly, string, type Gener
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import orgSchemaProperties from './private/orgSchemaProperties';
 
+/**
+ * A person (alive, dead, undead, or fictional).
+ *
+ * This is partial implementation of https://schema.org/Person.
+ *
+ * @see https://schema.org/Person
+ */
 type PersonInput = ThingInput & {
-  readonly description?: string | readonly string[] | undefined;
+  /**
+   * An image of the item. This can be a [URL](https://schema.org/URL) or a fully described [ImageObject](https://schema.org/ImageObject).
+   *
+   * Note: `ImageObject` is not supported.
+   *
+   * @see https://schema.org/image
+   */
   readonly image?: string | readonly string[] | undefined;
-  readonly name?: string | readonly string[] | undefined;
 };
 
+/**
+ * A person (alive, dead, undead, or fictional).
+ *
+ * This is partial implementation of https://schema.org/Person.
+ *
+ * @see https://schema.org/Person
+ */
 type PersonOutput = ThingOutput & {
-  readonly description?: readonly string[] | undefined;
-  readonly image?: readonly string[] | undefined;
-  readonly name?: readonly string[] | undefined;
+  /**
+   * An image of the item. This can be a [URL](https://schema.org/URL) or a fully described [ImageObject](https://schema.org/ImageObject).
+   *
+   * Note: `ImageObject` is not supported.
+   *
+   * @see https://schema.org/image
+   */
+  readonly image: readonly string[];
 };
 
 const personSchema: GenericSchema<PersonInput, PersonOutput> = intersect([

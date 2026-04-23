@@ -50,7 +50,7 @@ function PartGrouping(props: PartGroupingProps) {
     [activities, lastActivity]
   );
 
-  const isGroup = activities.length > 1 || safeParse(IdentifierSchema, lastMessage?.isPartOf?.['@id']).success;
+  const isGroup = activities.length > 1 || safeParse(IdentifierSchema, lastMessage?.isPartOf[0]?.['@id']).success;
 
   return isGroup ? (
     <PartGroupingActivity activities={activities}>{children}</PartGroupingActivity>

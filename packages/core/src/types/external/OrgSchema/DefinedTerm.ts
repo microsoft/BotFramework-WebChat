@@ -39,14 +39,14 @@ type DefinedTermOutput = ThingOutput & {
    *
    * @see https://schema.org/inDefinedTermSet
    */
-  readonly inDefinedTermSet?: readonly string[] | undefined;
+  readonly inDefinedTermSet: readonly string[];
 
   /**
    * A code that identifies this [DefinedTerm](https://schema.org/DefinedTerm) within a [DefinedTermSet](https://schema.org/DefinedTermSet).
    *
    * @see https://schema.org/termCode
    */
-  readonly termCode?: readonly string[] | undefined;
+  readonly termCode: readonly string[];
 };
 
 const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([

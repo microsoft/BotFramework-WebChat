@@ -16,7 +16,7 @@ type ProjectInput = ThingInput & {
    *
    * @see https://schema.org/slogan
    */
-  readonly slogan: string | readonly string[] | undefined;
+  readonly slogan?: string | readonly string[] | undefined;
 };
 
 /**
@@ -32,7 +32,7 @@ type ProjectOutput = ThingOutput & {
    *
    * @see https://schema.org/slogan
    */
-  readonly slogan: readonly string[] | undefined;
+  readonly slogan: readonly string[];
 };
 
 /**
