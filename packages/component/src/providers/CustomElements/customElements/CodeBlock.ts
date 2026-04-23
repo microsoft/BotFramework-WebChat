@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-// eslint-disable-next-line max-classes-per-file
 import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { ReactNode, useMemo, useRef } from 'react';
@@ -12,23 +11,10 @@ import styles from './CodeBlock.module.css';
 
 const { useStyleOptions, useLocalizer } = hooks;
 
-abstract class CodeBlockBase extends HTMLElement {
-  copyButtonElement: HTMLElement;
-
-  abstract get code(): string;
-  abstract get theme(): string;
-  abstract set theme(value: string);
-  abstract get language(): string;
-  abstract set language(value: string);
-  abstract get options(): { readonly theme: string };
-
-  abstract scheduleUpdate(): void;
-  abstract update(): void;
-  abstract highlightCode(...args: Parameters<HighlightCodeFn>): DocumentFragment | string;
-}
-
-class CodeBlock extends CodeBlockBase {
+class CodeBlock extends HTMLElement {
   static observedAttributes = ['theme', 'language'];
+
+  copyButtonElement: HTMLElement;
 
   #connected = false;
   #originalFragment: DocumentFragment = undefined;
@@ -163,12 +149,12 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
   );
 };
 
-export default function useReactCodeBlockClass(copyButtonTagName: string) {
+export default function useReactCodeBlockClass(copyButtonTagName: string): typeof HTMLElement {
   const [codeBlockTarget, codeBlockPropsRef] = useCodeBlockProps(copyButtonTagName);
 
   const classNames = useStyles(styles);
 
-  return useMemo<typeof CodeBlockBase>(
+  return useMemo<typeof HTMLElement>(
     () =>
       class ReactCodeBlock extends CodeBlock {
         static observedAttributes = CodeBlock.observedAttributes;
