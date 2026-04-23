@@ -19,7 +19,6 @@ const bubbleMinWidthDeprecation = warnOnce(
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
-// eslint-disable-next-line complexity
 export default function normalizeStyleOptions({
   bubbleImageHeight,
   bubbleMaxWidth,
