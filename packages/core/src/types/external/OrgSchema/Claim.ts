@@ -55,7 +55,7 @@ type ClaimOutput = CreativeWorkOutput & {
 };
 
 const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
-  creativeWorkSchema,
+  lazy(() => creativeWorkSchema),
   pipe(
     looseObject({
       appearance: orgSchemaProperties(lazy(() => creativeWorkSchema)),

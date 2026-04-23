@@ -77,7 +77,7 @@ type ActionOutput = ThingOutput & {
 };
 
 const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
-  thingSchema,
+  lazy(() => thingSchema),
   pipe(
     looseObject({
       actionOption: orgSchemaProperties(string()),
