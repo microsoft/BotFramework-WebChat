@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
+import { isPresentational } from 'botframework-webchat-core/internal';
 import { memo, useMemo } from 'react';
 
 import usePrevious from '../../hooks/internal/usePrevious';
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
 import { SEND_FAILED } from '../../types/internal/SendStatus';
-import isPresentational from './isPresentational';
 
 const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
 
@@ -31,13 +31,17 @@ const LiveRegionSendFailed = () => {
    */
   const activityKeysOfSendFailed = useMemo<Set<string>>(
     () =>
-      Array.from(sendStatusByActivityKey).reduce(
-        (activityKeysOfSendFailed, [key, sendStatus]) =>
-          sendStatus === SEND_FAILED && !isPresentational(getActivityByKey(key))
-            ? activityKeysOfSendFailed.add(key)
-            : activityKeysOfSendFailed,
-        new Set<string>()
-      ),
+      Array.from(sendStatusByActivityKey).reduce((activityKeysOfSendFailed, [key, sendStatus]) => {
+        if (sendStatus === SEND_FAILED) {
+          const activity = getActivityByKey(key);
+
+          if (activity && !isPresentational(activity)) {
+            activityKeysOfSendFailed.add(key);
+          }
+        }
+
+        return activityKeysOfSendFailed;
+      }, new Set<string>()),
     [getActivityByKey, sendStatusByActivityKey]
   );
 
