@@ -90,13 +90,41 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { Observable } from './types/external/Observable';
-import type { ActionOutput as OrgSchemaAction } from './types/external/OrgSchema/Action';
-import type { ClaimOutput as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
-import type { CreativeWorkOutput as OrgSchemaCreativeWork } from './types/external/OrgSchema/CreativeWork';
-import type { DefinedTermOutput as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
-import type { ProjectOutput as OrgSchemaProject } from './types/external/OrgSchema/Project';
-import type { ThingOutput as OrgSchemaThing } from './types/external/OrgSchema/Thing';
-import type { UserReviewOutput as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
+
+// #region Schema.org
+export {
+  actionSchema as orgSchemaActionSchema,
+  type ActionOutput as OrgSchemaAction
+} from './types/external/OrgSchema/Action';
+export {
+  claimSchema as orgSchemaClaimSchema,
+  type ClaimOutput as OrgSchemaClaim
+} from './types/external/OrgSchema/Claim';
+export {
+  creativeWorkSchema as orgSchemaCreativeWorkSchema,
+  type CreativeWorkOutput as OrgSchemaCreativeWork
+} from './types/external/OrgSchema/CreativeWork';
+export {
+  definedTermSchema as orgSchemaDefinedTermSchema,
+  type DefinedTermOutput as OrgSchemaDefinedTerm
+} from './types/external/OrgSchema/DefinedTerm';
+export {
+  personSchema as orgSchemaPersonSchema,
+  type PersonOutput as OrgSchemaPerson
+} from './types/external/OrgSchema/Person';
+export {
+  projectSchema as orgSchemaProjectSchema,
+  type ProjectOutput as OrgSchemaProject
+} from './types/external/OrgSchema/Project';
+export {
+  thingSchema as orgSchemaThingSchema,
+  type ThingOutput as OrgSchemaThing
+} from './types/external/OrgSchema/Thing';
+export {
+  userReviewSchema as orgSchemaUserReviewSchema,
+  type UserReviewOutput as OrgSchemaUserReview
+} from './types/external/OrgSchema/UserReview';
+// #endregion
 
 /** @deprecated */
 export { singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
@@ -172,13 +200,6 @@ export type {
   DirectLineVideoCard,
   GlobalScopePonyfill,
   Observable,
-  OrgSchemaAction,
-  OrgSchemaClaim,
-  OrgSchemaCreativeWork,
-  OrgSchemaDefinedTerm,
-  OrgSchemaProject,
-  OrgSchemaThing,
-  OrgSchemaUserReview,
   SendBoxAttachment,
   VoiceHandler,
   VoiceState,
