@@ -1,4 +1,4 @@
-import { intersect, looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -49,4 +49,7 @@ const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = inter
   )
 ]);
 
-export { voteActionSchema, type VoteActionInput, type VoteActionOutput };
+/** @deprecated Use Valibot.parse(voteActionSchema) instead. Will be removed on or after 2028-04-23. */
+const parseVoteAction = (voteAction: VoteActionInput): VoteActionOutput => parse(voteActionSchema, voteAction);
+
+export { parseVoteAction, voteActionSchema, type VoteActionInput, type VoteActionOutput };

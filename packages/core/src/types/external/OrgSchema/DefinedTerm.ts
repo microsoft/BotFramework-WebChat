@@ -1,4 +1,4 @@
-import { intersect, looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -60,4 +60,7 @@ const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = in
   )
 ]);
 
-export { definedTermSchema, type DefinedTermInput, type DefinedTermOutput };
+/** @deprecated Use Valibot.parse(definedTermSchema) instead. Will be removed on or after 2028-04-23. */
+const parseDefinedTerm = (definedTerm: DefinedTermInput): DefinedTermOutput => parse(definedTermSchema, definedTerm);
+
+export { definedTermSchema, parseDefinedTerm, type DefinedTermInput, type DefinedTermOutput };

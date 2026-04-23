@@ -1,4 +1,4 @@
-import { intersect, lazy, looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -89,4 +89,7 @@ const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
   )
 ]);
 
-export { actionSchema, type ActionInput, type ActionOutput };
+/** @deprecated Use Valibot.parse(actionSchema) instead. Will be removed on or after 2028-04-23. */
+const parseAction = (action: ActionInput): ActionOutput => parse(actionSchema, action);
+
+export { actionSchema, parseAction, type ActionInput, type ActionOutput };

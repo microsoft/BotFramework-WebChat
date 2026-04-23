@@ -1,4 +1,4 @@
-import { intersect, looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import orgSchemaProperties from './private/orgSchemaProperties';
 
@@ -26,4 +26,7 @@ const personSchema: GenericSchema<PersonInput, PersonOutput> = intersect([
   )
 ]);
 
-export { personSchema, type PersonInput, type PersonOutput };
+/** @deprecated Use Valibot.parse(personSchema) instead. Will be removed on or after 2028-04-23. */
+const parsePerson = (person: PersonInput): PersonOutput => parse(personSchema, person);
+
+export { parsePerson, personSchema, type PersonInput, type PersonOutput };
