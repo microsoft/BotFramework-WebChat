@@ -153,8 +153,6 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
             const { url } = markdownDefinition;
             const { sanitizedHref } = sanitizeHref(markdownDefinition.url);
 
-            console.log('------------', { messageCitation, sanitizedHref, url });
-
             // After HTML content transform (or sanitization), the link could be gone.
             // In that case, Markdown will not render the link. We also need to remove it from citation.
             if (messageCitation) {
