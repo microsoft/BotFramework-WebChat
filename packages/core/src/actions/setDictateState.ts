@@ -1,8 +1,6 @@
-import type { DictateState } from '../constants/DictateState';
-
 const SET_DICTATE_STATE = 'WEB_CHAT/SET_DICTATE_STATE';
 
-export default function setDictateState(dictateState: DictateState) {
+export default function setDictateState(dictateState: number) {
   return {
     type: SET_DICTATE_STATE,
     payload: { dictateState }
