@@ -1,4 +1,6 @@
 import { expect, test } from '@jest/globals';
+import { parse } from 'valibot';
+import { creativeWorkSchema } from '../types/external/OrgSchema/CreativeWork';
 import getOrgSchemaMessage from './getOrgSchemaMessage';
 
 test('should get message', () => {
@@ -9,7 +11,7 @@ test('should get message', () => {
     type: 'https://schema.org/Message'
   };
 
-  expect(getOrgSchemaMessage([expected])).toEqual(expected);
+  expect(getOrgSchemaMessage([expected])).toEqual(parse(creativeWorkSchema, expected));
 });
 
 test('should not get message without @id of empty string', () => {
