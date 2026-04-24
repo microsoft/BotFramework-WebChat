@@ -12,9 +12,9 @@ import { safeParse } from 'valibot';
  * @returns A `SoftwareSourceCode` if found, otherwise, `undefined`.
  */
 export default function getFirstBaseOfSoftwareSourceCode(
-  messageThing: OrgSchemaCreativeWork
+  messageThing: OrgSchemaCreativeWork | undefined
 ): OrgSchemaSoftwareSourceCode | undefined {
-  for (const base of messageThing.isBasedOn) {
+  for (const base of messageThing?.isBasedOn ?? []) {
     const result = safeParse(orgSchemaSoftwareSourceCodeSchema, base);
 
     if (result.success) {

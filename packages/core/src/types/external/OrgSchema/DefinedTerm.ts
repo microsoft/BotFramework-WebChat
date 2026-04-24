@@ -1,4 +1,4 @@
-import { intersect, lazy, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -52,7 +52,7 @@ type DefinedTermOutput = ThingOutput & {
 const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([
   lazy(() => thingSchema),
   pipe(
-    looseObject({
+    object({
       inDefinedTermSet: orgSchemaProperties(string()),
       termCode: orgSchemaProperties(string())
     }),

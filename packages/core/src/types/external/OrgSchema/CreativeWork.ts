@@ -1,15 +1,4 @@
-import {
-  intersect,
-  lazy,
-  looseObject,
-  number,
-  parse,
-  pipe,
-  readonly,
-  string,
-  union,
-  type GenericSchema
-} from 'valibot';
+import { intersect, lazy, number, object, parse, string, union, type GenericSchema } from 'valibot';
 
 import {
   creativeWorkStatusSchema,
@@ -191,25 +180,22 @@ type CreativeWorkOutput = ThingOutput & {
 
 const creativeWorkSchema: GenericSchema<CreativeWorkInput, CreativeWorkOutput> = intersect([
   lazy(() => thingSchema),
-  pipe(
-    looseObject({
-      // For forward compatibility, we did not enforce @type must be "CreativeWork" or any other subtypes.
-      // In future, if Schema.org introduced a new subtype of CreativeWork, we should still able to parse that one as a CreativeWork.
+  object({
+    // For forward compatibility, we did not enforce @type must be "CreativeWork" or any other subtypes.
+    // In future, if Schema.org introduced a new subtype of CreativeWork, we should still able to parse that one as a CreativeWork.
 
-      abstract: orgSchemaProperties(string()),
-      author: orgSchemaProperties(union([personSchema, string()])),
-      citation: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-      creativeWorkStatus: orgSchemaProperties(creativeWorkStatusSchema),
-      isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-      isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-      keywords: orgSchemaProperties(union([lazy(() => definedTermSchema), string()])),
-      pattern: orgSchemaProperties(lazy(() => definedTermSchema)),
-      position: orgSchemaProperties(union([number(), string()])),
-      text: orgSchemaProperties(string()),
-      usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema))
-    }),
-    readonly()
-  )
+    abstract: orgSchemaProperties(string()),
+    author: orgSchemaProperties(union([lazy(() => personSchema), string()])),
+    citation: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+    creativeWorkStatus: orgSchemaProperties(creativeWorkStatusSchema),
+    isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+    isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+    keywords: orgSchemaProperties(union([lazy(() => definedTermSchema), string()])),
+    pattern: orgSchemaProperties(lazy(() => definedTermSchema)),
+    position: orgSchemaProperties(union([number(), string()])),
+    text: orgSchemaProperties(string()),
+    usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema))
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(creativeWorkSchema) instead. Will be removed on or after 2028-04-23. */
