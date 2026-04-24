@@ -1,22 +1,27 @@
-import { parse } from 'valibot';
+import { parse, safeParse } from 'valibot';
 import { creativeWorkSchema, type CreativeWorkOutput } from '../types/external/OrgSchema/CreativeWork';
-import { thingSchema } from '../types/external/OrgSchema/Thing';
 import { type WebChatActivity } from '../types/WebChatActivity';
 
 type EntityType = NonNullable<WebChatActivity['entities']>[number];
 
 export default function getOrgSchemaMessage(graph: readonly EntityType[]): CreativeWorkOutput | undefined {
-  const messageEntity = (graph || []).find(entity => {
-    const isThing = entity.type?.startsWith('https://schema.org/');
+  for (const entity of graph ?? []) {
+    const isPossiblySelfMessage =
+      entity &&
+      typeof entity === 'object' &&
+      'type' in entity &&
+      entity.type?.startsWith('https://schema.org/') &&
+      '@id' in entity &&
+      entity['@id'] === '';
 
-    if (isThing) {
-      const thing = parse(thingSchema, entity);
+    if (isPossiblySelfMessage) {
+      try {
+        return parse(creativeWorkSchema, entity);
+      } catch (error) {
+        console.error(safeParse(creativeWorkSchema, entity).issues);
 
-      return thing['@id'] === '';
+        throw error;
+      }
     }
-  });
-
-  const message = messageEntity && parse(creativeWorkSchema, messageEntity);
-
-  return message && parse(creativeWorkSchema, message);
+  }
 }

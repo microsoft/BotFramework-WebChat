@@ -1,4 +1,4 @@
-import { lazy, literal, looseObject, optional, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { lazy, literal, object, optional, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -121,20 +121,53 @@ type ThingOutput = {
  * @see https://schema.org/Thing
  */
 const thingSchema: GenericSchema<ThingInput, ThingOutput> =
-  // Forward compatibility is the reason why we use looseObject() here and not adhere to JSON-LD which drop unknown fields.
-  //
-  // Example:
-  // - CreativeWork.editor must be type of Person (or any of its subtypes, Patient)
-  // - Without looseObject(), when we parse the CreativeWork, we will drop Patient.diagnosis
-  // - That means, CreativeWork.editor.diagnosis will be unset despite CreativeWork.editor is of type Patient
-  //
-  // We can drop looseObject() if there is a way to keep CreativeWork.editor.diagnosis.
-  // It is okay to drop future/unsupported properties. But not today/supported properties.
+  // We cannot use looseObject() to futureproof properties.
+
+  // The following code will result in error:
+
+  // parse(
+  //   intersect([
+  //     looseObject({ one: number() }),
+  //     looseObject({
+  //       two: pipe(
+  //         number(),
+  //         transform(value => '' + value)
+  //       )
+  //     })
+  //   ]),
+  //   {
+  //     one: 1,
+  //     two: 2
+  //   }
+  // );
+
+  // {
+  //   kind: 'schema',
+  //   type: 'intersect',
+  //   input: {
+  //     one: 1,
+  //     two: 2
+  //   },
+  //   expected: 'Object',
+  //   received: 'unknown',
+  //   message: 'Invalid type: Expected Object but received unknown'
+  // };
+
+  // This is due to how intersect works.
+  // Intersection kicks-in after both looseObject() is done.
+  // When trying to intersect { one: 1, two: 2 } and { one: 1, two: '2' }, it would fail.
+
+  // In our code, we are literally doing `intersect(lazy(() => looseObject({})), looseObject({}))`.
+
+  // We cannot use object().entries because we need to use lazy() which requires GenericSchema.
+  // We could write out the GenericSchema as ObjectSchema but it will be very cumbersome.
+  // At the end of the day, it is easier to keep object() than looseObject().
+
   pipe(
-    looseObject({
+    object({
       '@context': optional(pipe(literal('https://schema.org'))),
       '@id': optional(string()),
-      '@type': string(),
+      '@type': optional(string()),
       additionalType: orgSchemaProperties(string()),
       alternateName: orgSchemaProperties(string()),
       description: orgSchemaProperties(string()),

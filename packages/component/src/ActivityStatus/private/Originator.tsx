@@ -1,9 +1,8 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { orgSchemaProjectSchema } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo } from 'react';
-import { object, pipe, readonly, type InferInput } from 'valibot';
+import { object, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
 import useSanitizeHrefCallback from '../../hooks/internal/useSanitizeHrefCallback';
 
@@ -11,7 +10,9 @@ import styles from '../ActivityStatus.module.css';
 
 const originatorPropsSchema = pipe(
   object({
-    project: orgSchemaProjectSchema
+    name: undefinedable(string()),
+    slogan: undefinedable(string()),
+    url: undefinedable(string())
   }),
   readonly()
 );
@@ -21,15 +22,13 @@ type OriginatorProps = InferInput<typeof originatorPropsSchema>;
 // Regular function is better for React function component.
 // eslint-disable-next-line prefer-arrow-callback
 const Originator = memo(function Originator(props: OriginatorProps) {
-  const {
-    project: { name, slogan, url }
-  } = validateProps(originatorPropsSchema, props);
+  const { name, slogan, url } = validateProps(originatorPropsSchema, props);
 
   const sanitizeHref = useSanitizeHrefCallback();
   const classNames = useStyles(styles);
 
-  const { sanitizedHref } = sanitizeHref(url[0]);
-  const text = slogan[0] || name[0];
+  const { sanitizedHref } = sanitizeHref(url);
+  const text = slogan || name;
 
   return sanitizedHref ? (
     // Link is sanitized.

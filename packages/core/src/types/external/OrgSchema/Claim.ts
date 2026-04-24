@@ -1,4 +1,4 @@
-import { intersect, lazy, looseObject, parse, pipe, readonly, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, pipe, readonly, type GenericSchema } from 'valibot';
 
 import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
@@ -57,7 +57,7 @@ type ClaimOutput = CreativeWorkOutput & {
 const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
   lazy(() => creativeWorkSchema),
   pipe(
-    looseObject({
+    object({
       appearance: orgSchemaProperties(lazy(() => creativeWorkSchema)),
       claimInterpreter: orgSchemaProperties(lazy(() => projectSchema))
     }),

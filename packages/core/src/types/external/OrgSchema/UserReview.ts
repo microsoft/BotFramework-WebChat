@@ -1,4 +1,4 @@
-import { intersect, lazy, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
@@ -34,7 +34,7 @@ type UserReviewOutput = ThingOutput & {
 const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
   lazy(() => thingSchema),
   pipe(
-    looseObject({
+    object({
       reviewAspect: orgSchemaProperties(string())
     }),
     readonly()

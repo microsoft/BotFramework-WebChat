@@ -78,7 +78,12 @@ const OthersActivityStatus = memo(({ activity, className, slotted }: Props) => {
       )}
       {claimInterpreter && (
         <StatusSlot>
-          <Originator key="originator" project={claimInterpreter} />
+          <Originator
+            key="originator"
+            name={claimInterpreter.name[0]}
+            slogan={claimInterpreter.slogan[0]}
+            url={claimInterpreter.url[0]}
+          />
         </StatusSlot>
       )}
       {feedbackActionsPlacement === 'activity-status' && (

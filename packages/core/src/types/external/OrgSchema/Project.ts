@@ -1,4 +1,4 @@
-import { intersect, lazy, looseObject, parse, pipe, readonly, string } from 'valibot';
+import { intersect, lazy, object, parse, pipe, readonly, string } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
@@ -45,7 +45,7 @@ type ProjectOutput = ThingOutput & {
 const projectSchema = intersect([
   lazy(() => thingSchema),
   pipe(
-    looseObject({
+    object({
       /**
        * A slogan or motto associated with the item.
        *
