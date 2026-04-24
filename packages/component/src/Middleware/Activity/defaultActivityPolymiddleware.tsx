@@ -1,6 +1,6 @@
 /* eslint complexity: ["error", 21] */
 import { ActivityMiddleware } from 'botframework-webchat-api';
-import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,

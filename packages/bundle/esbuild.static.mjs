@@ -148,7 +148,14 @@ const IGNORED_OWN_PACKAGES = [
     }
 
     for (const key of getKeysRecursive(packageJson.exports)) {
-      key.startsWith('.') && allOwnExports.add(`${packageJson.name}${key.slice(1)}`);
+      if (key.startsWith('.')) {
+        if (key === '.') {
+          allOwnExports.add(`${packageJson.name}`);
+        } else if (key.endsWith('.js')) {
+          // ./filename.js -> /filename
+          allOwnExports.add(`${packageJson.name}${key.slice(1, -3)}`);
+        }
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat';
-import { Timestamp } from 'botframework-webchat/component';
-import { getVoiceActivityRole, getVoiceActivityText, type WebChatActivity } from 'botframework-webchat/internal';
+import { Timestamp } from 'botframework-webchat/component.js';
+import { getVoiceActivityRole, getVoiceActivityText, type WebChatActivity } from 'botframework-webchat/internal.js';
 import React, { Fragment, memo } from 'react';
 
 import { useStyles } from '../../styles';

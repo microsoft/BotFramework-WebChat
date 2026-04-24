@@ -10,7 +10,13 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat-api.graph': './src/boot/graph.ts',
     'botframework-webchat-api.hook': './src/boot/hook.ts',
     'botframework-webchat-api.internal': './src/boot/internal.ts',
-    'botframework-webchat-api.middleware': './src/boot/middleware.ts'
+    'botframework-webchat-api.middleware': './src/boot/middleware.ts',
+    // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
+    'botframework-webchat-api.deprecated.decorator': './src/boot/deprecated/decorator.ts',
+    'botframework-webchat-api.deprecated.graph': './src/boot/deprecated/graph.ts',
+    'botframework-webchat-api.deprecated.hook': './src/boot/deprecated/hook.ts',
+    'botframework-webchat-api.deprecated.internal': './src/boot/deprecated/internal.ts',
+    'botframework-webchat-api.deprecated.middleware': './src/boot/deprecated/middleware.ts'
   }
 }));
 

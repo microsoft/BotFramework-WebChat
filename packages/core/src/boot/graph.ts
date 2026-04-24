@@ -15,4 +15,4 @@ export {
   type SlantNode,
   type WritableGraph
 } from '@msinternal/botframework-webchat-core-graph';
-export { default as createGraphFromStore } from './createGraphFromStore';
+export { default as createGraphFromStore } from '../graph/createGraphFromStore';

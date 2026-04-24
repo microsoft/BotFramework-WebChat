@@ -1,8 +1,8 @@
 import { getOrgSchemaMessage, type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
-import { IdentifierSchema } from 'botframework-webchat-core/graph';
+import { IdentifierSchema } from 'botframework-webchat-core/graph.js';
 import { safeParse } from 'valibot';
 
-import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity';
+import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
 import type GroupActivitiesMiddleware from '../../../types/GroupActivitiesMiddleware';
 import { type SendStatus } from '../../../types/SendStatus';
 

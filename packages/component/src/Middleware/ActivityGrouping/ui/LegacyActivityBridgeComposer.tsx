@@ -1,6 +1,6 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { LegacyActivityContextProvider, type LegacyActivityContextType } from 'botframework-webchat-api/internal';
+import { LegacyActivityContextProvider, type LegacyActivityContextType } from 'botframework-webchat-api/internal.js';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';

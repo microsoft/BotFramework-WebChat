@@ -4,7 +4,7 @@
 import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal';
+} from 'botframework-webchat-component/internal.js';
 import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
 

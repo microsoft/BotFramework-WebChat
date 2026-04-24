@@ -4,7 +4,7 @@ import {
   createActivityBorderMiddleware,
   DecoratorComposer,
   type DecoratorMiddleware
-} from 'botframework-webchat-api/decorator';
+} from 'botframework-webchat-api/decorator.js';
 import React, { Fragment, memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 

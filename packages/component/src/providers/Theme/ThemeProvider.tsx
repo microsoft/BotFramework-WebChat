@@ -17,8 +17,8 @@ import {
   type ToastMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
-import { StyleOptionsComposer } from 'botframework-webchat-api/internal';
-import { type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { StyleOptionsComposer } from 'botframework-webchat-api/internal.js';
+import { type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
 import { array, custom, function_, object, optional, pipe, readonly, safeParse } from 'valibot';
 
