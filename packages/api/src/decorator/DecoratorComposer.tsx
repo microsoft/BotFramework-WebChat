@@ -15,7 +15,7 @@ const decoratorComposerPropsSchema = pipe(
 );
 
 const warnInvalidMiddlewarePropsSchema = optional(
-  array(custom(value => value && value[middlewareFactoryMarker satisfies symbol] === middlewareFactoryMarker))
+  array(custom(value => value[middlewareFactoryMarker satisfies symbol] === middlewareFactoryMarker))
 );
 
 type DecoratorComposerProps = Omit<InferInput<typeof decoratorComposerPropsSchema>, 'middleware'> & {

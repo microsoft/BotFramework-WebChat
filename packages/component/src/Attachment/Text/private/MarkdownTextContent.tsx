@@ -17,6 +17,7 @@ import { custom, object, optional, parse, pipe, readonly, string, type InferInpu
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
+import getFirstBaseOfSoftwareSourceCode from '../../../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
 import useStreamingMarkdownWithDefinitions, {
   type MarkdownLinkDefinition
@@ -29,7 +30,6 @@ import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './Me
 import isAIGeneratedActivity from './isAIGeneratedActivity';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
-import getFirstBaseOfSoftwareSourceCode from '../../../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textContentStyles from '../TextContent.module.css';
 import citationModalStyles from './CitationModal.module.css';
 
@@ -114,7 +114,6 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
         markdownDefinitions
           .map<Entry | undefined>(markdownDefinition => {
             let messageCitation: OrgSchemaClaim | undefined = messageThing?.citation
-              // .filter(claim => claim['@type'] === 'Claim')
               .map(claim => parse(orgSchemaClaimSchema, claim))
               .find(({ position }) => '' + position[0] === markdownDefinition.identifier);
 
@@ -143,7 +142,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                         }
                       : {
                           '@type': 'DigitalDocument',
-                          url: [markdownDefinition.url]
+                          url: markdownDefinition.url
                         }
                   ]
                 } satisfies InferInput<typeof orgSchemaClaimSchema>);
@@ -265,13 +264,14 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
   // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
   const getEntryMainText = (entry: Entry): string | undefined =>
-    entry.claim?.name?.[0] ?? entry.claim?.appearance?.[0]?.name?.[0] ?? (entry.markdownDefinition.title || undefined);
+    entry.claim?.name[0] ?? entry.claim?.appearance[0]?.name[0] ?? (entry.markdownDefinition.title || undefined);
 
   // Optional alternate name for the entry, used as a subtitle beneath the link
-  const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.[0]?.usageInfo?.[0]?.name?.[0];
+  const getEntryBadgeName = (entry: Entry): string | undefined => entry.claim?.appearance[0]?.usageInfo[0]?.name[0];
 
   // Secondary text describing the citation, used in the a11y description (i.e. the div's title attribute)
-  const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.[0]?.usageInfo?.[0]?.description?.[0];
+  const getEntryDescription = (entry: Entry): string | undefined =>
+    entry.claim?.appearance[0]?.usageInfo[0]?.description[0];
 
   const firstSoftwareSourceCodeBase = useMemo(() => getFirstBaseOfSoftwareSourceCode(messageThing), [messageThing]);
 
@@ -300,7 +300,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
       <div className={textContentClassNames['text-content__activity-actions']}>
         {activity.type === 'message' &&
         firstSoftwareSourceCodeBase?.text &&
-        !messageThing?.keywords.includes?.('Collapsible') ? (
+        !messageThing?.keywords.includes('Collapsible') ? (
           <ActivityViewCodeButton
             className="text-content__activity-view-code-button"
             code={firstSoftwareSourceCodeBase.text[0]}

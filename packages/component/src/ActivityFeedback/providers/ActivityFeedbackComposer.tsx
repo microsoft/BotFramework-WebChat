@@ -163,14 +163,13 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   useMemo(() => {
     const activeOrCompletedAction = rawActions.find(
       (action): action is OrgSchemaAction & { actionStatus: ['ActiveActionStatus' | 'CompletedActionStatus'] } =>
-        action.actionStatus?.length === 1 &&
-        (action.actionStatus[0] === 'ActiveActionStatus' || action.actionStatus[0] === 'CompletedActionStatus')
+        action.actionStatus[0] === 'ActiveActionStatus' || action.actionStatus[0] === 'CompletedActionStatus'
     );
 
     actionStateRef.current = activeOrCompletedAction
       ? {
           actionId: activeOrCompletedAction['@id'],
-          actionStatus: activeOrCompletedAction.actionStatus?.[0]
+          actionStatus: activeOrCompletedAction.actionStatus[0]
         }
       : undefined;
   }, [rawActions]);
@@ -184,7 +183,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         rawActions.map(action =>
           actionStateForActions && actionStateForActions.actionId === action['@id']
             ? Object.freeze({ ...action, actionStatus: [actionStateForActions.actionStatus] } satisfies OrgSchemaAction)
-            : action.actionStatus?.length === 1 && action.actionStatus?.[0] === 'PotentialActionStatus'
+            : action.actionStatus[0] === 'PotentialActionStatus'
               ? action
               : Object.freeze({ ...action, actionStatus: ['PotentialActionStatus'] } satisfies OrgSchemaAction)
         )
@@ -197,8 +196,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const postActivity = usePostActivity();
 
   const hasSubmitted = useMemo<boolean>(
-    () =>
-      actions.some(action => action.actionStatus?.length === 1 && action.actionStatus?.[0] === 'CompletedActionStatus'),
+    () => actions.some(action => action.actionStatus[0] === 'CompletedActionStatus'),
     [actions]
   );
 
@@ -250,9 +248,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
     () =>
       actions.find(
-        ({ actionStatus }) =>
-          actionStatus?.length === 1 &&
-          (actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus')
+        ({ actionStatus }) => actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus'
       ),
     [actions]
   );
