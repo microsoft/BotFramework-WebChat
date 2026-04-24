@@ -147,7 +147,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [isGroupOpen, setIsGroupOpen] = useState(partGroupDefaultOpen);
 
   const messages = useMemo(
-    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(message => !!message),
+    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(Boolean),
     [activities]
   );
   // eslint-disable-next-line no-magic-numbers

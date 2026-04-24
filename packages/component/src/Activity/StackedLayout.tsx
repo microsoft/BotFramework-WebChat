@@ -136,6 +136,7 @@ const StackedLayout = ({
   const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
   const isCollapsible = useMemo(() => messageThing?.keywords?.includes('Collapsible'), [messageThing]);
 
+  const creativeWorkStatus = messageThing?.creativeWorkStatus[0];
   const isLivestreaming = !!getActivityLivestreamingMetadata(activity);
   const activityDisplayText = isMessageOrTyping
     ? messageBackDisplayText || activity.text
@@ -164,14 +165,12 @@ const StackedLayout = ({
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = !isInGroup && showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
-  const showStatus = !!messageThing?.creativeWorkStatus[0] || isInGroup;
+  const showStatus = !!creativeWorkStatus || isInGroup;
 
   const renderMainBubbleContent = useCallback(
     (title = '', withStatus = true) => (
       <div className={classNames['stacked-layout__bubble']}>
-        {withStatus && showStatus && (
-          <StackedLayoutMessageStatus creativeWorkStatus={messageThing?.creativeWorkStatus[0]} />
-        )}
+        {withStatus && showStatus && <StackedLayoutMessageStatus creativeWorkStatus={creativeWorkStatus} />}
         {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
         {activityDisplayText &&
           renderAttachment({
@@ -183,7 +182,7 @@ const StackedLayout = ({
           })}
       </div>
     ),
-    [activity, activityDisplayText, classNames, messageThing?.creativeWorkStatus, renderAttachment, showStatus]
+    [activity, activityDisplayText, classNames, creativeWorkStatus, renderAttachment, showStatus]
   );
 
   const attachmentChildren = useMemo(() => {
@@ -265,7 +264,7 @@ const StackedLayout = ({
   const renderCollapsibleBubbleContent = useCallback(
     (title = '') => (
       <div className={classNames['stacked-layout__bubble']}>
-        {showStatus && <StackedLayoutMessageStatus creativeWorkStatus={messageThing?.creativeWorkStatus?.[0]} />}
+        {showStatus && <StackedLayoutMessageStatus creativeWorkStatus={creativeWorkStatus} />}
         <CollapsibleContent
           summary={title}
           summaryClassName={cx(classNames['stacked-layout__title'], classNames['stacked-layout__title--collapsible'])}
@@ -274,7 +273,7 @@ const StackedLayout = ({
         </CollapsibleContent>
       </div>
     ),
-    [attachmentChildren, classNames, messageThing?.creativeWorkStatus, showStatus]
+    [attachmentChildren, classNames, creativeWorkStatus, showStatus]
   );
 
   const renderBubbleContent = isCollapsible ? renderCollapsibleBubbleContent : renderMainBubbleContent;

@@ -6,6 +6,7 @@ import {
   onErrorResumeNext,
   orgSchemaClaimSchema,
   type OrgSchemaClaim,
+  type OrgSchemaCreativeWork,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import cx from 'classnames';
@@ -68,11 +69,9 @@ function isCitationURL(url: string): boolean {
 }
 
 function isCitingInline(claim: OrgSchemaClaim): claim is OrgSchemaClaim & {
-  appearance: {
-    url?: undefined;
-  };
+  appearance: [OrgSchemaCreativeWork & { readonly url: never[] }];
 } {
-  return !!claim.appearance?.length && !claim.appearance?.[0].url;
+  return !!claim.appearance.length && !claim.appearance[0].url.length;
 }
 
 function MarkdownTextContent(props: MarkdownTextContentProps) {
@@ -98,7 +97,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
 
   const showClaimModal = useCallback(
-    (title, text, altText) => {
+    (title: string | undefined, text: string, altText: string | undefined) => {
       showModal(() => <CitationModalContext headerText={title} markdown={text} />, {
         'aria-label': altText || title || citationModalDialogLabel,
         className: citationModalClassNames['citation-modal-dialog']
@@ -115,8 +114,9 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
         markdownDefinitions
           .map<Entry | undefined>(markdownDefinition => {
             let messageCitation: OrgSchemaClaim | undefined = messageThing?.citation
-              ?.map(claim => parse(orgSchemaClaimSchema, claim))
-              .find(({ position }) => '' + position?.[0] === markdownDefinition.identifier);
+              // .filter(claim => claim['@type'] === 'Claim')
+              .map(claim => parse(orgSchemaClaimSchema, claim))
+              .find(({ position }) => '' + position[0] === markdownDefinition.identifier);
 
             if (!messageCitation) {
               const rootLevelClaim = graph
@@ -138,8 +138,8 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                     isCitationURL(rootLevelClaim['@id'])
                       ? {
                           '@type': 'DigitalDocument',
-                          name: rootLevelClaim.name[0],
-                          text: rootLevelClaim.text[0]
+                          name: rootLevelClaim.name,
+                          text: rootLevelClaim.text
                         }
                       : {
                           '@type': 'DigitalDocument',
@@ -152,6 +152,8 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
             const { url } = markdownDefinition;
             const { sanitizedHref } = sanitizeHref(markdownDefinition.url);
+
+            console.log('------------', { messageCitation, sanitizedHref, url });
 
             // After HTML content transform (or sanitization), the link could be gone.
             // In that case, Markdown will not render the link. We also need to remove it from citation.
@@ -166,9 +168,9 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                   key: url,
                   handleClick: () =>
                     showClaimModal(
-                      appearance[0]?.name[0] ?? markdownDefinition.title[0],
+                      appearance[0]?.name[0] ?? markdownDefinition.title,
                       appearance[0]?.text[0],
-                      messageCitation.alternateName
+                      messageCitation.alternateName[0]
                     ),
                   markdownDefinition
                 };
@@ -176,7 +178,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
               // Not inline citation, we care about the URL.
               // Warn if it break single source of truth principle, we still use the URL from Markdown.
-              if (messageCitation.appearance?.[0]?.url?.[0] && messageCitation.appearance?.[0]?.url?.[0] !== url) {
+              if (messageCitation.appearance[0]?.url[0] && messageCitation.appearance[0]?.url[0] !== url) {
                 console.warn(
                   'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
                   {
@@ -244,21 +246,21 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   );
 
   const messageSensitivityLabelProps = useMemo<MessageSensitivityLabelProps | undefined>(() => {
-    const usageInfo = messageThing?.usageInfo?.[0];
+    const usageInfo = messageThing?.usageInfo[0];
 
     if (usageInfo) {
-      const pattern = usageInfo?.pattern?.[0];
+      const [pattern] = usageInfo.pattern;
       const encryptionStatus = !!usageInfo.keywords?.find(keyword => keyword === 'encrypted-content');
 
       return {
         color:
           pattern &&
-          pattern.inDefinedTermSet?.[0] === 'https://www.w3.org/TR/css-color-4/' &&
-          pattern.name?.[0] === 'color' &&
-          pattern.termCode?.[0],
+          pattern.inDefinedTermSet[0] === 'https://www.w3.org/TR/css-color-4/' &&
+          pattern.name[0] === 'color' &&
+          pattern.termCode[0],
         isEncrypted: encryptionStatus,
-        name: usageInfo.name?.[0],
-        title: usageInfo.description?.[0]
+        name: usageInfo.name[0],
+        title: usageInfo.description[0]
       } satisfies MessageSensitivityLabelProps;
     }
   }, [messageThing]);
@@ -300,7 +302,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
       <div className={textContentClassNames['text-content__activity-actions']}>
         {activity.type === 'message' &&
         firstSoftwareSourceCodeBase?.text &&
-        !messageThing.keywords?.includes?.('Collapsible') ? (
+        !messageThing?.keywords.includes?.('Collapsible') ? (
           <ActivityViewCodeButton
             className="text-content__activity-view-code-button"
             code={firstSoftwareSourceCodeBase.text[0]}
@@ -309,7 +311,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
             title={firstSoftwareSourceCodeBase.programmingLanguage[0]}
           />
         ) : null}
-        {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
+        {activity.type === 'message' && activity.text && messageThing?.keywords.includes('AllowCopy') ? (
           <ActivityCopyButton className="text-content__activity-copy-button" targetRef={contentRef} />
         ) : null}
         {activity.type === 'message' && feedbackActionsPlacement === 'activity-actions' && (
