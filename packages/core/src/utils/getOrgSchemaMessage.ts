@@ -15,13 +15,7 @@ export default function getOrgSchemaMessage(graph: readonly EntityType[]): Creat
       entity['@id'] === '';
 
     if (isPossiblySelfMessage) {
-      try {
-        return parse(creativeWorkSchema, entity);
-      } catch (error) {
-        console.error(safeParse(creativeWorkSchema, entity).issues);
-
-        throw error;
-      }
+      return parse(creativeWorkSchema, entity);
     }
   }
 }

@@ -54,7 +54,7 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
   });
 
   const isCompleted = useMemo<boolean>(
-    () => actions.some(action => action.actionStatus?.[0] === 'CompletedActionStatus'),
+    () => actions.some(action => action.actionStatus[0] === 'CompletedActionStatus'),
     [actions]
   );
 
@@ -73,7 +73,7 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
           actions.map(action =>
             action === target
               ? Object.freeze({ ...action, actionStatus: ['ActiveActionStatus'] } satisfies OrgSchemaAction)
-              : action.actionStatus?.[0] === 'ActiveActionStatus'
+              : action.actionStatus[0] === 'ActiveActionStatus'
                 ? Object.freeze({ ...action, actionStatus: ['PotentialActionStatus'] } satisfies OrgSchemaAction)
                 : action
           )
@@ -107,8 +107,7 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
   const selectedAction = useMemo(
     () =>
       actions.find(
-        ({ actionStatus }) =>
-          actionStatus?.[0] === 'ActiveActionStatus' || actionStatus?.[0] === 'CompletedActionStatus'
+        ({ actionStatus }) => actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus'
       ),
     [actions]
   );
