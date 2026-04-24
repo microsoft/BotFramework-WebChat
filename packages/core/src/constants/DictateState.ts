@@ -7,6 +7,4 @@ const DICTATING = 3 as const;
 // eslint-disable-next-line no-magic-numbers
 const STOPPING = 4 as const;
 
-type DictateState = typeof DICTATING | typeof IDLE | typeof STARTING | typeof STOPPING | typeof WILL_START;
-
-export { DICTATING, IDLE, STARTING, STOPPING, WILL_START, type DictateState };
+export { DICTATING, IDLE, STARTING, STOPPING, WILL_START };
