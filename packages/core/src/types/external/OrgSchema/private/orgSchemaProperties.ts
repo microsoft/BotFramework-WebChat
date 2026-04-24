@@ -2,7 +2,6 @@ import {
   any,
   array,
   fallback,
-  is,
   optional,
   pipe,
   safeParse,
