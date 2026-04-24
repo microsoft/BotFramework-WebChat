@@ -145,7 +145,7 @@ Breaking changes in this release:
    - Added support for `botframework-webchat-fluent-theme` package, by [@compulim](https://github.com/compulim) in PR [#5593](https://github.com/microsoft/BotFramework-WebChat/pull/5593)
    - Bundling vendor chunks, by [@compulim](https://github.com/compulim) in PR [#5595](https://github.com/microsoft/BotFramework-WebChat/pull/5595)
    - Added deprecation notes for legacy imports, by [@compulim](https://github.com/compulim) in PR [#5600](https://github.com/microsoft/BotFramework-WebChat/pull/5600)
-      - `import { hooks } from 'botframework-webchat'` should be replaced by `import * as hooks from 'botframework-webchat/hook'`
+      - `import { hooks } from 'botframework-webchat'` should be replaced by `import * as hooks from 'botframework-webchat/hook.js'`
    - Added target to Chrome 100 and re-enable Lightning CSS for ESM builds, by [@compulim](https://github.com/compulim) in PR [#5602](https://github.com/microsoft/BotFramework-WebChat/pull/5602)
 - Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 - Cleaned up `<ThemeProvider>` and various CSS related code, in PR [#5611](https://github.com/microsoft/BotFramework-WebChat/pull/5611), by [@compulim](https://github.com/compulim)
