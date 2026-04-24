@@ -37,8 +37,8 @@ function CopilotMessageHeader(props: CopilotMessageHeaderProps) {
   );
 
   const author = useActivityAuthor(activity);
-  const avatarImage = author?.image?.[0] || botAvatarImage;
-  const botTitle = author?.name?.[0] || activity?.from?.name?.[0];
+  const avatarImage = author?.image[0] || botAvatarImage;
+  const botTitle = author?.name[0] || activity?.from?.name;
 
   return (
     <div className={cx(classNames['copilot-message-header'], className)}>
