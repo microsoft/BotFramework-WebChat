@@ -2,6 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
 import { thingSchema } from './Thing';
 
+const thingTemplate = parse(thingSchema, {});
+
 describe('Thing', () => {
   test('should parse', () => {
     expect(
@@ -10,8 +12,9 @@ describe('Thing', () => {
         name: 'John Doe'
       })
     ).toEqual({
+      ...thingTemplate,
       '@type': 'Thing',
-      name: 'John Doe'
+      name: ['John Doe']
     });
   });
 
@@ -22,8 +25,9 @@ describe('Thing', () => {
         name: 'John Doe'
       })
     ).toEqual({
+      ...thingTemplate,
       '@type': 'Unknown',
-      name: 'John Doe'
+      name: ['John Doe']
     });
   });
 
@@ -37,6 +41,7 @@ describe('Thing', () => {
         something: 1
       })
     ).toEqual({
+      ...thingTemplate,
       '@type': 'Thing',
       something: 1
     });
@@ -49,8 +54,9 @@ describe('Thing', () => {
         name: 1
       })
     ).toEqual({
+      ...thingTemplate,
       '@type': 'Thing',
-      name: undefined
+      name: []
     });
   });
 });

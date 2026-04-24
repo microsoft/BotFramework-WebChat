@@ -1,4 +1,8 @@
-import { parseVoteAction } from './VoteAction';
+import { describe, expect, test } from '@jest/globals';
+import { parseVoteAction, voteActionSchema } from './VoteAction';
+import { parse } from 'valibot';
+
+const voteActionTemplate = parse(voteActionSchema, {});
 
 describe('VoteAction', () => {
   describe('actionOption', () => {
@@ -9,8 +13,9 @@ describe('VoteAction', () => {
           actionOption: 'upvote'
         })
       ).toEqual({
+        ...voteActionTemplate,
         '@type': 'VoteAction',
-        actionOption: 'upvote'
+        actionOption: ['upvote']
       }));
 
     test('should change invalid into undefined', () => {
@@ -18,14 +23,17 @@ describe('VoteAction', () => {
         expect(
           parseVoteAction({
             '@type': 'Action',
+            // @ts-expect-error
             actionOption: 123
           })
         ).toEqual({
+          ...voteActionTemplate,
           '@type': 'Action',
-          actionOption: undefined
+          actionOption: []
         });
       } catch (err) {
         console.error(err);
+        // @ts-expect-error
         console.error(err.issues[0].input);
 
         throw err;

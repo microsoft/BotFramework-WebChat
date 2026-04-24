@@ -10,15 +10,15 @@ describe('orgSchemaProperties', () => {
     });
 
     test('should turn item of invalid type into undefined', () => {
-      expect(parse(orgSchemaProperties(string()), 0)).toBeUndefined();
+      expect(parse(orgSchemaProperties(string()), 0)).toEqual([]);
     });
 
     test('should turn null into undefined', () => {
-      expect(parse(orgSchemaProperties(string()), null)).toBeUndefined();
+      expect(parse(orgSchemaProperties(string()), null)).toEqual([]);
     });
 
     test('should keep undefined as-is', () => {
-      expect(parse(orgSchemaProperties(string()), undefined)).toBeUndefined();
+      expect(parse(orgSchemaProperties(string()), undefined)).toEqual([]);
     });
   });
 
