@@ -30,9 +30,7 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
       const messageThing = getOrgSchemaMessage(graph);
 
       const reactActions = Object.freeze(
-        (messageThing?.potentialAction || []).filter(
-          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-        )
+        messageThing?.potentialAction.filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
       );
 
       if (reactActions.length) {

@@ -39,7 +39,7 @@ const OthersActivityStatus = memo(({ activity, className, slotted }: Props) => {
   const claimInterpreter = useMemo<OrgSchemaProject | undefined>(() => {
     try {
       if (messageThing) {
-        return parse(orgSchemaClaimSchema, (messageThing?.citation || [])[0])?.claimInterpreter?.[0];
+        return parse(orgSchemaClaimSchema, messageThing?.citation[0])?.claimInterpreter[0];
       }
 
       const [firstClaim] = graph
@@ -49,7 +49,7 @@ const OthersActivityStatus = memo(({ activity, className, slotted }: Props) => {
       if (firstClaim) {
         warnRootLevelThings();
 
-        return firstClaim?.claimInterpreter?.[0];
+        return firstClaim?.claimInterpreter[0];
       }
 
       const replyAction = parse(

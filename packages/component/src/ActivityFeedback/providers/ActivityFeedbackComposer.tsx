@@ -131,9 +131,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const messageThing = getOrgSchemaMessage(graph);
 
       const reactActions = Object.freeze(
-        (messageThing?.potentialAction || []).filter(
-          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-        )
+        messageThing?.potentialAction.filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
       );
 
       if (reactActions.length) {
