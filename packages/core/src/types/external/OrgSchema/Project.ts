@@ -1,7 +1,7 @@
-import { intersect, lazy, object, parse, pipe, readonly, string } from 'valibot';
+import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
@@ -35,29 +35,14 @@ type ProjectOutput = ThingOutput & {
   readonly slogan: readonly string[];
 };
 
-/**
- * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
- *
- * This is partial implementation of https://schema.org/Project.
- *
- * @see https://schema.org/Project
- */
-const projectSchema = intersect([
-  lazy(() => thingSchema),
-  pipe(
-    object({
-      /**
-       * A slogan or motto associated with the item.
-       *
-       * @see https://schema.org/slogan
-       */
-      slogan: orgSchemaProperties(string())
-    }),
-    readonly()
-  )
-]);
+const projectEntries = {
+  ...thingEntries,
+  slogan: orgSchemaProperties(string())
+};
+
+const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = pipe(looseObject(projectEntries), readonly());
 
 /** @deprecated Use Valibot.parse(projectSchema) instead. Will be removed on or after 2028-04-23. */
 const parseProject = (project: ProjectInput): ProjectOutput => parse(projectSchema, project);
 
-export { parseProject, projectSchema, type ProjectInput, type ProjectOutput };
+export { projectEntries, parseProject, projectSchema, type ProjectInput, type ProjectOutput };

@@ -1,5 +1,5 @@
-import { intersect, lazy, object, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
 import orgSchemaProperties from './private/orgSchemaProperties';
 
 /**
@@ -38,17 +38,14 @@ type PersonOutput = ThingOutput & {
   readonly image: readonly string[];
 };
 
-const personSchema: GenericSchema<PersonInput, PersonOutput> = intersect([
-  lazy(() => thingSchema),
-  pipe(
-    object({
-      description: orgSchemaProperties(string()),
-      image: orgSchemaProperties(string()),
-      name: orgSchemaProperties(string())
-    }),
-    readonly()
-  )
-]);
+const personEntries = {
+  ...thingEntries,
+  description: orgSchemaProperties(string()),
+  image: orgSchemaProperties(string()),
+  name: orgSchemaProperties(string())
+};
+
+const personSchema: GenericSchema<PersonInput, PersonOutput> = pipe(looseObject(personEntries), readonly());
 
 /** @deprecated Use Valibot.parse(personSchema) instead. Will be removed on or after 2028-04-23. */
 const parsePerson = (person: PersonInput): PersonOutput => parse(personSchema, person);

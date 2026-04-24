@@ -1,6 +1,6 @@
-import { intersect, lazy, object, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
 import orgSchemaProperties from './private/orgSchemaProperties';
 
 /**
@@ -49,18 +49,18 @@ type DefinedTermOutput = ThingOutput & {
   readonly termCode: readonly string[];
 };
 
-const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([
-  lazy(() => thingSchema),
-  pipe(
-    object({
-      inDefinedTermSet: orgSchemaProperties(string()),
-      termCode: orgSchemaProperties(string())
-    }),
-    readonly()
-  )
-]);
+const definedTermEntries = {
+  ...thingEntries,
+  inDefinedTermSet: orgSchemaProperties(string()),
+  termCode: orgSchemaProperties(string())
+};
+
+const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = pipe(
+  looseObject(definedTermEntries),
+  readonly()
+);
 
 /** @deprecated Use Valibot.parse(definedTermSchema) instead. Will be removed on or after 2028-04-23. */
 const parseDefinedTerm = (definedTerm: DefinedTermInput): DefinedTermOutput => parse(definedTermSchema, definedTerm);
 
-export { definedTermSchema, parseDefinedTerm, type DefinedTermInput, type DefinedTermOutput };
+export { definedTermEntries, definedTermSchema, parseDefinedTerm, type DefinedTermInput, type DefinedTermOutput };

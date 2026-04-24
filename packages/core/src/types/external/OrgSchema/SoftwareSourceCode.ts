@@ -1,6 +1,6 @@
-import { intersect, lazy, object, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
 
-import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
+import { creativeWorkEntries, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 import orgSchemaProperties from './private/orgSchemaProperties';
 
 /**
@@ -35,14 +35,19 @@ type SoftwareSourceCodeOutput = CreativeWorkOutput & {
   readonly programmingLanguage: readonly string[];
 };
 
-const softwareSourceCodeSchema: GenericSchema<SoftwareSourceCodeInput, SoftwareSourceCodeOutput> = intersect([
-  lazy(() => creativeWorkSchema),
-  pipe(
-    object({
-      programmingLanguage: orgSchemaProperties(string())
-    }),
-    readonly()
-  )
-]);
+const softwareSourceCodeEntries = {
+  ...creativeWorkEntries,
+  programmingLanguage: orgSchemaProperties(string())
+};
 
-export { softwareSourceCodeSchema, type SoftwareSourceCodeInput, type SoftwareSourceCodeOutput };
+const softwareSourceCodeSchema: GenericSchema<SoftwareSourceCodeInput, SoftwareSourceCodeOutput> = pipe(
+  looseObject(softwareSourceCodeEntries),
+  readonly()
+);
+
+export {
+  softwareSourceCodeEntries,
+  softwareSourceCodeSchema,
+  type SoftwareSourceCodeInput,
+  type SoftwareSourceCodeOutput
+};

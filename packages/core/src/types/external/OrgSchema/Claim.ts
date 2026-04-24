@@ -1,6 +1,11 @@
-import { intersect, lazy, object, parse, pipe, readonly, type GenericSchema } from 'valibot';
+import { lazy, looseObject, parse, pipe, readonly, type GenericSchema } from 'valibot';
 
-import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
+import {
+  creativeWorkEntries,
+  creativeWorkSchema,
+  type CreativeWorkInput,
+  type CreativeWorkOutput
+} from './CreativeWork';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
 import orgSchemaProperties from './private/orgSchemaProperties';
 
@@ -54,18 +59,15 @@ type ClaimOutput = CreativeWorkOutput & {
   readonly claimInterpreter: readonly ProjectOutput[];
 };
 
-const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
-  lazy(() => creativeWorkSchema),
-  pipe(
-    object({
-      appearance: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-      claimInterpreter: orgSchemaProperties(lazy(() => projectSchema))
-    }),
-    readonly()
-  )
-]);
+const claimEntries = {
+  ...creativeWorkEntries,
+  appearance: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+  claimInterpreter: orgSchemaProperties(lazy(() => projectSchema))
+};
+
+const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = pipe(looseObject(claimEntries), readonly());
 
 /** @deprecated Use Valibot.parse(claimSchema) instead. Will be removed on or after 2028-04-23. */
 const parseClaim = (claim: ClaimInput): ClaimOutput => parse(claimSchema, claim);
 
-export { claimSchema, parseClaim, type ClaimInput, type ClaimOutput };
+export { claimEntries, claimSchema, parseClaim, type ClaimInput, type ClaimOutput };
