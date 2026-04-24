@@ -1,4 +1,4 @@
-import { intersect, lazy, number, object, parse, string, union, type GenericSchema } from 'valibot';
+import { lazy, looseObject, number, parse, pipe, readonly, string, union, type GenericSchema } from 'valibot';
 
 import {
   creativeWorkStatusSchema,
@@ -8,7 +8,7 @@ import {
 import { definedTermSchema, type DefinedTermInput, type DefinedTermOutput } from './DefinedTerm';
 import { personSchema, type PersonInput, type PersonOutput } from './Person';
 import orgSchemaProperties from './private/orgSchemaProperties';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * The most generic kind of creative work, including books, movies, photographs, software programs, etc.
@@ -178,28 +178,29 @@ type CreativeWorkOutput = ThingOutput & {
   readonly usageInfo: readonly CreativeWorkOutput[];
 };
 
-const creativeWorkSchema: GenericSchema<CreativeWorkInput, CreativeWorkOutput> = intersect([
-  lazy(() => thingSchema),
-  object({
-    // For forward compatibility, we did not enforce @type must be "CreativeWork" or any other subtypes.
-    // In future, if Schema.org introduced a new subtype of CreativeWork, we should still able to parse that one as a CreativeWork.
+// Cyclic dependency.
+// eslint-disable-next-line prefer-const
+let creativeWorkSchema: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
 
-    abstract: orgSchemaProperties(string()),
-    author: orgSchemaProperties(union([lazy(() => personSchema), string()])),
-    citation: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-    creativeWorkStatus: orgSchemaProperties(creativeWorkStatusSchema),
-    isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-    isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-    keywords: orgSchemaProperties(union([lazy(() => definedTermSchema), string()])),
-    pattern: orgSchemaProperties(lazy(() => definedTermSchema)),
-    position: orgSchemaProperties(union([number(), string()])),
-    text: orgSchemaProperties(string()),
-    usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema))
-  })
-]);
+const creativeWorkEntries = {
+  ...thingEntries,
+  abstract: orgSchemaProperties(string()),
+  author: orgSchemaProperties(union([lazy(() => personSchema), string()])),
+  citation: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+  creativeWorkStatus: orgSchemaProperties(creativeWorkStatusSchema),
+  isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+  isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+  keywords: orgSchemaProperties(union([lazy(() => definedTermSchema), string()])),
+  pattern: orgSchemaProperties(lazy(() => definedTermSchema)),
+  position: orgSchemaProperties(union([number(), string()])),
+  text: orgSchemaProperties(string()),
+  usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema))
+};
+
+creativeWorkSchema = pipe(looseObject(creativeWorkEntries), readonly());
 
 /** @deprecated Use Valibot.parse(creativeWorkSchema) instead. Will be removed on or after 2028-04-23. */
 const parseCreativeWork = (creativeWork: CreativeWorkInput): CreativeWorkOutput =>
   parse(creativeWorkSchema, creativeWork);
 
-export { creativeWorkSchema, parseCreativeWork, type CreativeWorkInput, type CreativeWorkOutput };
+export { creativeWorkEntries, creativeWorkSchema, parseCreativeWork, type CreativeWorkInput, type CreativeWorkOutput };

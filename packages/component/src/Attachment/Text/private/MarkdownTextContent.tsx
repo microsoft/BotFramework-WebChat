@@ -121,7 +121,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
               const rootLevelClaim = graph
                 .filter(({ type }) => type === 'https://schema.org/Claim')
                 .map(claim => parse(orgSchemaClaimSchema, claim))
-                .find(({ '@id': id }) => id === markdownDefinition.url);
+                .find(claim => claim['@id'] === markdownDefinition.url);
 
               if (rootLevelClaim) {
                 console.warn(
@@ -247,7 +247,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
     if (usageInfo) {
       const [pattern] = usageInfo.pattern;
-      const encryptionStatus = !!usageInfo.keywords?.find(keyword => keyword === 'encrypted-content');
+      const encryptionStatus = !!usageInfo.keywords.find(keyword => keyword === 'encrypted-content');
 
       return {
         color:

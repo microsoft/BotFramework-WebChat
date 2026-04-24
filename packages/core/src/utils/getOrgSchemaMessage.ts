@@ -1,4 +1,4 @@
-import { parse, safeParse } from 'valibot';
+import { parse } from 'valibot';
 import { creativeWorkSchema, type CreativeWorkOutput } from '../types/external/OrgSchema/CreativeWork';
 import { type WebChatActivity } from '../types/WebChatActivity';
 

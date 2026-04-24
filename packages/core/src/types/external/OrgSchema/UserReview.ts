@@ -1,7 +1,7 @@
-import { intersect, lazy, object, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import orgSchemaProperties from './private/orgSchemaProperties';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
@@ -31,17 +31,17 @@ type UserReviewOutput = ThingOutput & {
   readonly reviewAspect: readonly string[];
 };
 
-const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
-  lazy(() => thingSchema),
-  pipe(
-    object({
-      reviewAspect: orgSchemaProperties(string())
-    }),
-    readonly()
-  )
-]);
+const userReviewEntries = {
+  ...thingEntries,
+  reviewAspect: orgSchemaProperties(string())
+};
+
+const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = pipe(
+  looseObject(userReviewEntries),
+  readonly()
+);
 
 /** @deprecated Use Valibot.parse(userReviewSchema) instead. Will be removed on or after 2028-04-23. */
 const parseUserReview = (userReview: UserReviewInput): UserReviewOutput => parse(userReviewSchema, userReview);
 
-export { parseUserReview, userReviewSchema, type UserReviewInput, type UserReviewOutput };
+export { parseUserReview, userReviewEntries, userReviewSchema, type UserReviewInput, type UserReviewOutput };

@@ -1,9 +1,9 @@
-import { intersect, lazy, object, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { lazy, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
 
 import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
 import orgSchemaProperties from './private/orgSchemaProperties';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
 import { userReviewSchema, type UserReviewInput, type UserReviewOutput } from './UserReview';
 
 /**
@@ -76,20 +76,17 @@ type ActionOutput = ThingOutput & {
   readonly result: readonly (ThingOutput | UserReviewOutput)[];
 };
 
-const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
-  lazy(() => thingSchema),
-  pipe(
-    object({
-      actionOption: orgSchemaProperties(string()),
-      actionStatus: orgSchemaProperties(actionStatusSchema),
-      provider: orgSchemaProperties(lazy(() => projectSchema)),
-      result: orgSchemaProperties(userReviewSchema)
-    }),
-    readonly()
-  )
-]);
+const actionEntries = {
+  ...thingEntries,
+  actionOption: orgSchemaProperties(string()),
+  actionStatus: orgSchemaProperties(actionStatusSchema),
+  provider: orgSchemaProperties(lazy(() => projectSchema)),
+  result: orgSchemaProperties(userReviewSchema)
+};
+
+const actionSchema: GenericSchema<ActionInput, ActionOutput> = pipe(looseObject(actionEntries), readonly());
 
 /** @deprecated Use Valibot.parse(actionSchema) instead. Will be removed on or after 2028-04-23. */
 const parseAction = (action: ActionInput): ActionOutput => parse(actionSchema, action);
 
-export { actionSchema, parseAction, type ActionInput, type ActionOutput };
+export { actionEntries, actionSchema, parseAction, type ActionInput, type ActionOutput };
