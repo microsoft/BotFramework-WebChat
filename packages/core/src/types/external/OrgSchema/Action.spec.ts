@@ -1,4 +1,8 @@
-import { parseAction } from './Action';
+import { describe, expect, test } from '@jest/globals';
+import { actionSchema, parseAction } from './Action';
+import { parse } from 'valibot';
+
+const actionTemplate = parse(actionSchema, {});
 
 describe('Action', () => {
   describe('actionStatus', () => {
@@ -9,8 +13,9 @@ describe('Action', () => {
           actionStatus: 'ActiveActionStatus'
         })
       ).toEqual({
+        ...actionTemplate,
         '@type': 'Action',
-        actionStatus: 'ActiveActionStatus'
+        actionStatus: ['ActiveActionStatus']
       }));
 
     test('should change invalid into undefined', () => {
@@ -18,14 +23,17 @@ describe('Action', () => {
         expect(
           parseAction({
             '@type': 'Action',
+            // @ts-expect-error
             actionStatus: 'ABC'
           })
         ).toEqual({
+          ...actionTemplate,
           '@type': 'Action',
-          actionStatus: undefined
+          actionStatus: []
         });
       } catch (err) {
         console.error(err);
+        // @ts-expect-error
         console.error(err.issues[0].input);
 
         throw err;
