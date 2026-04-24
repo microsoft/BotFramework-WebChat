@@ -1,0 +1,22 @@
+export {
+  orgSchemaActionSchema,
+  orgSchemaClaimSchema,
+  orgSchemaCreativeWorkSchema,
+  orgSchemaDefinedTermSchema,
+  orgSchemaPersonSchema,
+  orgSchemaProjectSchema,
+  orgSchemaSoftwareSourceCodeSchema,
+  orgSchemaUserReviewSchema,
+  orgSchemaVoteActionSchema,
+  orgSchemaThingSchema,
+  type OrgSchemaThing,
+  type OrgSchemaAction,
+  type OrgSchemaClaim,
+  type OrgSchemaCreativeWork,
+  type OrgSchemaDefinedTerm,
+  type OrgSchemaPerson,
+  type OrgSchemaProject,
+  type OrgSchemaSoftwareSourceCode,
+  type OrgSchemaUserReview,
+  type OrgSchemaVoteAction
+} from 'botframework-webchat-core';

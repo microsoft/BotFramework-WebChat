@@ -180,27 +180,30 @@ type CreativeWorkOutput = ThingOutput & {
 
 // Cyclic dependency.
 // eslint-disable-next-line prefer-const
-let creativeWorkSchema: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
+let creativeWorkSchema_: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
 
 const creativeWorkEntries = {
   ...thingEntries,
   abstract: orgSchemaProperties(string()),
   author: orgSchemaProperties(union([lazy(() => personSchema), string()])),
-  citation: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+  citation: orgSchemaProperties(lazy(() => creativeWorkSchema_)),
   creativeWorkStatus: orgSchemaProperties(creativeWorkStatusSchema),
-  isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema)),
-  isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema)),
+  isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema_)),
+  isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema_)),
   keywords: orgSchemaProperties(union([lazy(() => definedTermSchema), string()])),
   pattern: orgSchemaProperties(lazy(() => definedTermSchema)),
   position: orgSchemaProperties(union([number(), string()])),
   text: orgSchemaProperties(string()),
-  usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema))
+  usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema_))
 };
 
-creativeWorkSchema = pipe(looseObject(creativeWorkEntries), readonly());
+creativeWorkSchema_ = pipe(looseObject(creativeWorkEntries), readonly());
+
+// Constantize here, so we are exporting a const than a let.
+const creativeWorkSchema = creativeWorkSchema_;
 
 /** @deprecated Use Valibot.parse(creativeWorkSchema) instead. Will be removed on or after 2028-04-23. */
 const parseCreativeWork = (creativeWork: CreativeWorkInput): CreativeWorkOutput =>
-  parse(creativeWorkSchema, creativeWork);
+  parse(creativeWorkSchema_, creativeWork);
 
 export { creativeWorkEntries, creativeWorkSchema, parseCreativeWork, type CreativeWorkInput, type CreativeWorkOutput };

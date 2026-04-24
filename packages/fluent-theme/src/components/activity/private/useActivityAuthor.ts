@@ -1,5 +1,5 @@
-import { orgSchemaPersonSchema, type OrgSchemaPerson } from 'botframework-webchat-core';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat/internal';
+import { orgSchemaPersonSchema, type OrgSchemaPerson } from 'botframework-webchat/schema';
 import { useMemo } from 'react';
 import { parse } from 'valibot';
 
