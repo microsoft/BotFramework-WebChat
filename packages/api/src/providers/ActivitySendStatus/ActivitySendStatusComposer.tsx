@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
-import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity';
+import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
 
 import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';

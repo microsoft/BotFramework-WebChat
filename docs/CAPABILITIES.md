@@ -7,7 +7,7 @@ Web Chat supports dynamic capability discovery from adapters. Capabilities allow
 Use the `useCapabilities` hook with a selector to access specific capabilities:
 
 ```js
-import { useCapabilities } from 'botframework-webchat/hook';
+import { useCapabilities } from 'botframework-webchat/hook.js';
 
 // Get voice configuration
 const voiceConfig = useCapabilities(caps => caps.voiceConfiguration);

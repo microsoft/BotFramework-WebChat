@@ -4,7 +4,7 @@ import {
   getVoiceActivityRole,
   PartGrouping,
   type WebChatActivity
-} from 'botframework-webchat/internal';
+} from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';

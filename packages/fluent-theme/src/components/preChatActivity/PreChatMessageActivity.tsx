@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat';
-import { type WebChatActivity } from 'botframework-webchat/internal';
+import { type WebChatActivity } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 

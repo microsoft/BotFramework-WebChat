@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { useBuildRenderAvatarCallback } from 'botframework-webchat-api/middleware';
+import { useBuildRenderAvatarCallback } from 'botframework-webchat-api/middleware.js';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { useMemo, type ReactNode } from 'react';
 

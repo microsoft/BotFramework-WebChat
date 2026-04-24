@@ -1,4 +1,4 @@
-import { RestrictedDebugAPI } from 'botframework-webchat-core/internal';
+import { RestrictedDebugAPI } from 'botframework-webchat-core/internal.js';
 import type { ArrayElement } from 'type-fest';
 
 const BREAKPOINT_NAMES = ['render'] as const;

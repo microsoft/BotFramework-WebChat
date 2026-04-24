@@ -8,7 +8,7 @@ import createSagas from './createSagas';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import { StoreDebugAPIRegistry } from './internal';
+import StoreDebugAPIRegistry from './internal/StoreDebugAPIRegistry';
 
 type CreateStoreOptions = {
   /**

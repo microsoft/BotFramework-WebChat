@@ -27,7 +27,13 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat.hook': './src/boot/exports/hook.ts',
     'botframework-webchat.internal': './src/boot/exports/internal.ts',
     'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
-    'botframework-webchat.schema': './src/boot/exports/schema.ts'
+    'botframework-webchat.schema': './src/boot/exports/schema.ts',
+    // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
+    'botframework-webchat.deprecated.component': './src/boot/exports/deprecated/component.ts',
+    'botframework-webchat.deprecated.decorator': './src/boot/exports/deprecated/decorator.ts',
+    'botframework-webchat.deprecated.hook': './src/boot/exports/deprecated/hook.ts',
+    'botframework-webchat.deprecated.internal': './src/boot/exports/deprecated/internal.ts',
+    'botframework-webchat.deprecated.middleware': './src/boot/exports/deprecated/middleware.ts'
   },
   env: {
     ...config.env,
@@ -53,7 +59,11 @@ const commonConfig = applyConfig(config => ({
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),
     injectCSSPlugin({
-      ignoreCSSEntries: ['dist/botframework-webchat.component.css'],
+      ignoreCSSEntries: [
+        'dist/botframework-webchat.component.css',
+        // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
+        'dist/botframework-webchat.deprecated.component.css'
+      ],
       stylesPlaceholder: bundleStyleContentPlaceholder
     })
   ]

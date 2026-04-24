@@ -17,6 +17,16 @@
     },
     "./activity": {
       "import": {
+        "types": "./dist/botframework-webchat-core.deprecated.activity.d.mts",
+        "default": "./dist/botframework-webchat-core.deprecated.activity.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.deprecated.activity.d.ts",
+        "default": "./dist/botframework-webchat-core.deprecated.activity.js"
+      }
+    },
+    "./activity.js": {
+      "import": {
         "types": "./dist/botframework-webchat-core.activity.d.mts",
         "default": "./dist/botframework-webchat-core.activity.mjs"
       },
@@ -27,6 +37,16 @@
     },
     "./graph": {
       "import": {
+        "types": "./dist/botframework-webchat-core.deprecated.graph.d.mts",
+        "default": "./dist/botframework-webchat-core.deprecated.graph.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.deprecated.graph.d.ts",
+        "default": "./dist/botframework-webchat-core.deprecated.graph.js"
+      }
+    },
+    "./graph.js": {
+      "import": {
         "types": "./dist/botframework-webchat-core.graph.d.mts",
         "default": "./dist/botframework-webchat-core.graph.mjs"
       },
@@ -36,6 +56,16 @@
       }
     },
     "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.deprecated.internal.d.mts",
+        "default": "./dist/botframework-webchat-core.deprecated.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.deprecated.internal.d.ts",
+        "default": "./dist/botframework-webchat-core.deprecated.internal.js"
+      }
+    },
+    "./internal.js": {
       "import": {
         "types": "./dist/botframework-webchat-core.internal.d.mts",
         "default": "./dist/botframework-webchat-core.internal.mjs"

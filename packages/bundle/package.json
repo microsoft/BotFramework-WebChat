@@ -17,6 +17,16 @@
     },
     "./component": {
       "import": {
+        "types": "./dist/botframework-webchat.deprecated.component.d.mts",
+        "default": "./dist/botframework-webchat.deprecated.component.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.deprecated.component.d.ts",
+        "default": "./dist/botframework-webchat.deprecated.component.js"
+      }
+    },
+    "./component.js": {
+      "import": {
         "types": "./dist/botframework-webchat.component.d.mts",
         "default": "./dist/botframework-webchat.component.mjs"
       },
@@ -26,6 +36,16 @@
       }
     },
     "./decorator": {
+      "import": {
+        "types": "./dist/botframework-webchat.deprecated.decorator.d.mts",
+        "default": "./dist/botframework-webchat.deprecated.decorator.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.deprecated.decorator.d.ts",
+        "default": "./dist/botframework-webchat.deprecated.decorator.js"
+      }
+    },
+    "./decorator.js": {
       "import": {
         "types": "./dist/botframework-webchat.decorator.d.mts",
         "default": "./dist/botframework-webchat.decorator.mjs"
@@ -37,6 +57,16 @@
     },
     "./hook": {
       "import": {
+        "types": "./dist/botframework-webchat.deprecated.hook.d.mts",
+        "default": "./dist/botframework-webchat.deprecated.hook.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.deprecated.hook.d.ts",
+        "default": "./dist/botframework-webchat.deprecated.hook.js"
+      }
+    },
+    "./hook.js": {
+      "import": {
         "types": "./dist/botframework-webchat.hook.d.mts",
         "default": "./dist/botframework-webchat.hook.mjs"
       },
@@ -46,6 +76,16 @@
       }
     },
     "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat.deprecated.internal.d.mts",
+        "default": "./dist/botframework-webchat.deprecated.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.deprecated.internal.d.ts",
+        "default": "./dist/botframework-webchat.deprecated.internal.js"
+      }
+    },
+    "./internal.js": {
       "import": {
         "types": "./dist/botframework-webchat.internal.d.mts",
         "default": "./dist/botframework-webchat.internal.mjs"
@@ -57,6 +97,16 @@
     },
     "./middleware": {
       "import": {
+        "types": "./dist/botframework-webchat.deprecated.middleware.d.mts",
+        "default": "./dist/botframework-webchat.deprecated.middleware.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.deprecated.middleware.d.ts",
+        "default": "./dist/botframework-webchat.deprecated.middleware.js"
+      }
+    },
+    "./middleware.js": {
+      "import": {
         "types": "./dist/botframework-webchat.middleware.d.mts",
         "default": "./dist/botframework-webchat.middleware.mjs"
       },
@@ -65,7 +115,7 @@
         "default": "./dist/botframework-webchat.middleware.js"
       }
     },
-    "./schema": {
+    "./schema.js": {
       "import": {
         "types": "./dist/botframework-webchat.schema.d.mts",
         "default": "./dist/botframework-webchat.schema.mjs"

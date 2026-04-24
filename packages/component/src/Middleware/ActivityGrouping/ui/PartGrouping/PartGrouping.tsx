@@ -1,6 +1,6 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import { IdentifierSchema } from 'botframework-webchat-core/graph';
+import { IdentifierSchema } from 'botframework-webchat-core/graph.js';
 import React, { Fragment, memo, useMemo } from 'react';
 import {
   array,

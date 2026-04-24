@@ -1,4 +1,4 @@
-import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat/internal';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat/internal.js';
 
 export default function isPreChatMessageActivity(
   activity: undefined | WebChatActivity

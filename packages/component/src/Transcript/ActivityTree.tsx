@@ -1,4 +1,4 @@
-import { ActivityGroupingDecorator } from 'botframework-webchat-api/decorator';
+import { ActivityGroupingDecorator } from 'botframework-webchat-api/decorator.js';
 import React, { Fragment, memo } from 'react';
 
 import { type GroupedRenderingActivities } from '../providers/GroupedRenderingActivities/GroupedRenderingActivities';

@@ -20,9 +20,9 @@ import {
   type ToastMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
-import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware';
-import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
+import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator.js';
+import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
+import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal.js';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';

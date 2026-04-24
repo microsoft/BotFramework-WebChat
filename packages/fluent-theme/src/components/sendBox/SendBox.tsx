@@ -1,5 +1,5 @@
 import { Components, hooks } from 'botframework-webchat';
-import { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat/internal';
+import { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, {
   memo,

@@ -1,7 +1,7 @@
 // TODO: [P2] This component can be replaced by `bindProps`.
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyleOptions } from 'botframework-webchat/hook';
-import { InjectStyleElements } from 'botframework-webchat/internal';
+import { useStyleOptions } from 'botframework-webchat/hook.js';
+import { InjectStyleElements } from 'botframework-webchat/internal.js';
 import React, { memo, type FunctionComponent } from 'react';
 import { never, object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 

@@ -87,7 +87,7 @@ import {
    activityComponent,
    createActivityPolymiddleware,
    type ActivityPolymiddlewareProps
-} from 'botframework-webchat/middleware';
+} from 'botframework-webchat/middleware.js';
 import React, { memo } from 'react';
 import { render } from 'react-dom';
 
@@ -138,7 +138,7 @@ import {
    createActivityPolymiddleware,
    type ActivityPolymiddlewareProps,
    type ActivityPolymiddlewareRenderer
-} from 'botframework-webchat/middleware';
+} from 'botframework-webchat/middleware.js';
 import React, { Fragment, memo, useMemo } from 'react';
 import { render } from 'react-dom';
 

@@ -3,7 +3,7 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import type { RenderAttachment } from 'botframework-webchat-api';
 import { hooks } from 'botframework-webchat-api';
-import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
+import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator.js';
 import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
