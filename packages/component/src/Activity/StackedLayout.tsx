@@ -17,6 +17,7 @@ import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
+import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useUniqueId from '../hooks/internal/useUniqueId';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
@@ -30,7 +31,6 @@ import StackedLayoutRoot from './StackedLayoutRoot';
 import StackedLayoutStatus from './StackedLayoutStatus';
 
 import styles from './StackedLayout.module.css';
-import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useGetKeyByActivity, useStyleOptions } = hooks;
 
