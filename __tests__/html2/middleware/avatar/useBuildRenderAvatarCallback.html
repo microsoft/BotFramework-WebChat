@@ -22,12 +22,12 @@
       import '/test-page-object.mjs';
 
       import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
-      import { Composer } from 'botframework-webchat/component';
+      import { Composer } from 'botframework-webchat/component.js';
       import {
         avatarComponent,
         createAvatarPolymiddleware,
         useBuildRenderAvatarCallback
-      } from 'botframework-webchat/middleware';
+      } from 'botframework-webchat/middleware.js';
       import { createElement, memo } from 'react';
       import { createRoot } from 'react-dom/client';
 
