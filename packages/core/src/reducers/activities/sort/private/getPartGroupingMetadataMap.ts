@@ -13,12 +13,14 @@ function getPartGroupingMetadataMap(activity: WebChatActivity): ReadonlyMap<stri
 
   if (message) {
     for (const item of message.isPartOf) {
-      if (item['@id'] && item['@type'] && typeof message.position[0] === 'number') {
+      if (item['@id'] && item['@type']) {
+        const [firstPosition] = message.position;
+
         metadataMap.set(
           item['@type'],
           Object.freeze({
             groupingId: item['@id'],
-            position: message.position[0]
+            position: typeof firstPosition === 'number' ? firstPosition : undefined
           })
         );
       }
