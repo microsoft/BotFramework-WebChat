@@ -1,9 +1,10 @@
-import { lazy, looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { any, intersect, lazy, objectWithRest, parse, string, type GenericSchema } from 'valibot';
 
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
-import orgSchemaProperties from './private/orgSchemaProperties';
-import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
-import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { projectSchema, type ProjectInput } from './Project';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import { userReviewSchema, type UserReviewInput, type UserReviewOutput } from './UserReview';
 
 /**
@@ -68,7 +69,6 @@ type ActionOutput = ThingOutput & {
    *
    * @see https://schema.org/provider
    */
-  readonly provider: readonly ProjectOutput[];
 
   /**
    * The result produced in the action. E.g. John wrote *a book*.
@@ -77,14 +77,17 @@ type ActionOutput = ThingOutput & {
 };
 
 const actionEntries = {
-  ...thingEntries,
-  actionOption: orgSchemaProperties(string()),
-  actionStatus: orgSchemaProperties(actionStatusSchema),
-  provider: orgSchemaProperties(lazy(() => projectSchema)),
-  result: orgSchemaProperties(userReviewSchema)
+  ...jsonLinkedDataEntries,
+  actionOption: jsonLinkedDataProperty(string()),
+  actionStatus: jsonLinkedDataProperty(actionStatusSchema),
+  provider: jsonLinkedDataProperty(lazy(() => projectSchema)),
+  result: jsonLinkedDataProperty(userReviewSchema)
 };
 
-const actionSchema: GenericSchema<ActionInput, ActionOutput> = pipe(looseObject(actionEntries), readonly());
+const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
+  lazy(() => thingSchema),
+  objectWithRest(actionEntries, jsonLinkedDataProperty(any()))
+]);
 
 /** @deprecated Use Valibot.parse(actionSchema) instead. Will be removed on or after 2028-04-23. */
 const parseAction = (action: ActionInput): ActionOutput => parse(actionSchema, action);

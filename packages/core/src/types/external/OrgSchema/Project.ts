@@ -1,7 +1,8 @@
-import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
-import orgSchemaProperties from './private/orgSchemaProperties';
-import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
@@ -36,13 +37,16 @@ type ProjectOutput = ThingOutput & {
 };
 
 const projectEntries = {
-  ...thingEntries,
-  slogan: orgSchemaProperties(string())
+  ...jsonLinkedDataEntries,
+  slogan: jsonLinkedDataProperty(string())
 };
 
-const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = pipe(looseObject(projectEntries), readonly());
+const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = intersect([
+  lazy(() => thingSchema),
+  object(projectEntries)
+]);
 
 /** @deprecated Use Valibot.parse(projectSchema) instead. Will be removed on or after 2028-04-23. */
 const parseProject = (project: ProjectInput): ProjectOutput => parse(projectSchema, project);
 
-export { projectEntries, parseProject, projectSchema, type ProjectInput, type ProjectOutput };
+export { parseProject, projectEntries, projectSchema, type ProjectInput, type ProjectOutput };

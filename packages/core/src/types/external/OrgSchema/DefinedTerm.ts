@@ -1,7 +1,8 @@
-import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
-import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
-import orgSchemaProperties from './private/orgSchemaProperties';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * A word, name, acronym, phrase, etc. with a formal definition. Often used in the context of category or subject classification, glossaries or dictionaries, product or creative work types, etc. Use the name property for the term being defined, use termCode if the term has an alpha-numeric code allocated, use description to provide the definition of the term.
@@ -50,15 +51,15 @@ type DefinedTermOutput = ThingOutput & {
 };
 
 const definedTermEntries = {
-  ...thingEntries,
-  inDefinedTermSet: orgSchemaProperties(string()),
-  termCode: orgSchemaProperties(string())
+  ...jsonLinkedDataEntries,
+  inDefinedTermSet: jsonLinkedDataProperty(string()),
+  termCode: jsonLinkedDataProperty(string())
 };
 
-const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = pipe(
-  looseObject(definedTermEntries),
-  readonly()
-);
+const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([
+  lazy(() => thingSchema),
+  object(definedTermEntries)
+]);
 
 /** @deprecated Use Valibot.parse(definedTermSchema) instead. Will be removed on or after 2028-04-23. */
 const parseDefinedTerm = (definedTerm: DefinedTermInput): DefinedTermOutput => parse(definedTermSchema, definedTerm);

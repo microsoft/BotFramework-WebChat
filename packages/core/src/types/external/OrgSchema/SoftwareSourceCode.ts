@@ -1,7 +1,8 @@
-import { looseObject, pipe, readonly, string, type GenericSchema } from 'valibot';
+import { any, intersect, lazy, objectWithRest, string, type GenericSchema } from 'valibot';
 
-import { creativeWorkEntries, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
-import orgSchemaProperties from './private/orgSchemaProperties';
+import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * Computer programming source code. Example: Full (compile ready) solutions, code snippet samples, scripts, templates.
@@ -36,14 +37,14 @@ type SoftwareSourceCodeOutput = CreativeWorkOutput & {
 };
 
 const softwareSourceCodeEntries = {
-  ...creativeWorkEntries,
-  programmingLanguage: orgSchemaProperties(string())
+  ...jsonLinkedDataEntries,
+  programmingLanguage: jsonLinkedDataProperty(string())
 };
 
-const softwareSourceCodeSchema: GenericSchema<SoftwareSourceCodeInput, SoftwareSourceCodeOutput> = pipe(
-  looseObject(softwareSourceCodeEntries),
-  readonly()
-);
+const softwareSourceCodeSchema: GenericSchema<SoftwareSourceCodeInput, SoftwareSourceCodeOutput> = intersect([
+  lazy(() => creativeWorkSchema),
+  objectWithRest(softwareSourceCodeEntries, jsonLinkedDataProperty(any()))
+]);
 
 export {
   softwareSourceCodeEntries,

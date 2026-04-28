@@ -1,14 +1,16 @@
-import { lazy, looseObject, number, parse, pipe, readonly, string, union, type GenericSchema } from 'valibot';
+import { intersect, lazy, number, object, parse, string, union, type GenericSchema } from 'valibot';
 
+import { claimSchema } from './Claim';
 import {
   creativeWorkStatusSchema,
   type CreativeWorkStatusInput,
   type CreativeWorkStatusOutput
 } from './CreativeWorkStatus';
 import { definedTermSchema, type DefinedTermInput, type DefinedTermOutput } from './DefinedTerm';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 import { personSchema, type PersonInput, type PersonOutput } from './Person';
-import orgSchemaProperties from './private/orgSchemaProperties';
-import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * The most generic kind of creative work, including books, movies, photographs, software programs, etc.
@@ -183,21 +185,25 @@ type CreativeWorkOutput = ThingOutput & {
 let creativeWorkSchema_: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
 
 const creativeWorkEntries = {
-  ...thingEntries,
-  abstract: orgSchemaProperties(string()),
-  author: orgSchemaProperties(union([lazy(() => personSchema), string()])),
-  citation: orgSchemaProperties(lazy(() => creativeWorkSchema_)),
-  creativeWorkStatus: orgSchemaProperties(creativeWorkStatusSchema),
-  isBasedOn: orgSchemaProperties(lazy(() => creativeWorkSchema_)),
-  isPartOf: orgSchemaProperties(lazy(() => creativeWorkSchema_)),
-  keywords: orgSchemaProperties(union([lazy(() => definedTermSchema), string()])),
-  pattern: orgSchemaProperties(lazy(() => definedTermSchema)),
-  position: orgSchemaProperties(union([number(), string()])),
-  text: orgSchemaProperties(string()),
-  usageInfo: orgSchemaProperties(lazy(() => creativeWorkSchema_))
+  ...jsonLinkedDataEntries,
+  abstract: jsonLinkedDataProperty(string()),
+  author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
+  citation: jsonLinkedDataProperty(lazy(() => claimSchema)),
+  creativeWorkStatus: jsonLinkedDataProperty(creativeWorkStatusSchema),
+  isBasedOn: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
+  isPartOf: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
+  keywords: jsonLinkedDataProperty(union([lazy(() => definedTermSchema), string()])),
+  pattern: jsonLinkedDataProperty(lazy(() => definedTermSchema)),
+  position: jsonLinkedDataProperty(union([number(), string()])),
+  text: jsonLinkedDataProperty(string()),
+  usageInfo: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_))
 };
 
-creativeWorkSchema_ = pipe(looseObject(creativeWorkEntries), readonly());
+creativeWorkSchema_ = intersect([
+  lazy(() => thingSchema),
+  object(creativeWorkEntries)
+  // objectWithRest(creativeWorkEntries, jsonLinkedDataProperty(any(), 'CREATIVE WORK'))
+]);
 
 // Constantize here, so we are exporting a const than a let.
 const creativeWorkSchema = creativeWorkSchema_;

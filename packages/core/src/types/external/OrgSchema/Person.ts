@@ -1,6 +1,7 @@
-import { looseObject, parse, pipe, readonly, string, type GenericSchema } from 'valibot';
-import { thingEntries, type ThingInput, type ThingOutput } from './Thing';
-import orgSchemaProperties from './private/orgSchemaProperties';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 
 /**
  * A person (alive, dead, undead, or fictional).
@@ -39,13 +40,16 @@ type PersonOutput = ThingOutput & {
 };
 
 const personEntries = {
-  ...thingEntries,
-  description: orgSchemaProperties(string()),
-  image: orgSchemaProperties(string()),
-  name: orgSchemaProperties(string())
+  ...jsonLinkedDataEntries,
+  description: jsonLinkedDataProperty(string()),
+  image: jsonLinkedDataProperty(string()),
+  name: jsonLinkedDataProperty(string())
 };
 
-const personSchema: GenericSchema<PersonInput, PersonOutput> = pipe(looseObject(personEntries), readonly());
+const personSchema: GenericSchema<PersonInput, PersonOutput> = intersect([
+  lazy(() => thingSchema),
+  object(personEntries)
+]);
 
 /** @deprecated Use Valibot.parse(personSchema) instead. Will be removed on or after 2028-04-23. */
 const parsePerson = (person: PersonInput): PersonOutput => parse(personSchema, person);
