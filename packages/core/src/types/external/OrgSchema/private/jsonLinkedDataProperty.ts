@@ -62,7 +62,8 @@ export default function jsonLinkedDataProperty<T extends BaseSchema<unknown, unk
           return result;
         }, []);
 
-        return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
+        return nextValue.length ? nextValue : [];
+        // return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
       }),
       readonly()
     ),
