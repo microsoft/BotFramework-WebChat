@@ -36,13 +36,31 @@ import type { WebChatActivity } from '../types/WebChatActivity';
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
 const HARD_SEND_TIMEOUT = 300000;
 
+/**
+ * Checks if the DirectLine adapter supports voice (WebSocket-only mode).
+ * When voice is enabled, we use optimistic updates without waiting for echo back.
+ */
+function isVoiceEnabled(directLine: DirectLineJSBotConnection): boolean {
+  if (typeof directLine.getIsVoiceModeEnabled === 'function') {
+    try {
+      const isVoiceEnabled = directLine.getIsVoiceModeEnabled();
+      return Boolean(isVoiceEnabled);
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
+}
+
 function* postActivity(
   directLine: DirectLineJSBotConnection,
   userID: string,
   username: string,
   numActivitiesPosted: number,
   { meta: { method }, payload: { activity } }: PostActivityAction,
-  ponyfill: GlobalScopePonyfill
+  ponyfill: GlobalScopePonyfill,
+  waitForEchoBack: boolean
 ) {
   const attachments = (activity.type === 'message' && activity.attachments) || [];
   const clientActivityID = uniqueID();
@@ -55,6 +73,8 @@ function* postActivity(
   // In the future, we should warn if the outgoing activity is not matching the type.
   let outgoingActivity: WebChatOutgoingActivity = {
     ...deleteKey(activity, 'id'),
+    // this is to show timestamp below user transcript.
+    ...(!waitForEchoBack ? { timestamp: now.toISOString() } : {}),
     channelData: {
       // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
       // Please refer to #4362 for details. Remove on or after 2024-07-31.
@@ -122,57 +142,72 @@ function* postActivity(
   let echoed: boolean | undefined;
 
   try {
-    // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
-    //         So, we setup expectation first, then postActivity afterward
+    if (waitForEchoBack) {
+      // Quirks: We might receive INCOMING_ACTIVITY before the postActivity call completed
+      //         So, we setup expectation first, then postActivity afterward
 
-    const echoBackCall = call(function* () {
-      for (;;) {
-        const {
-          payload: { activity }
-        }: IncomingActivityAction = yield take(INCOMING_ACTIVITY);
-        if (activity.channelData?.clientActivityID === clientActivityID && activity.id) {
-          echoed = true;
+      const echoBackCall = call(function* () {
+        for (;;) {
+          const {
+            payload: { activity }
+          }: IncomingActivityAction = yield take(INCOMING_ACTIVITY);
+          if (activity.channelData?.clientActivityID === clientActivityID && activity.id) {
+            echoed = true;
 
-          return activity;
+            return activity;
+          }
         }
-      }
-    });
+      });
 
-    // Timeout could be due to either:
-    // - Post activity call may take too long time to complete
-    //   - Direct Line service only respond on HTTP after bot respond to Direct Line
-    // - Activity may take too long time to echo back
+      // Timeout could be due to either:
+      // - Post activity call may take too long time to complete
+      //   - Direct Line service only respond on HTTP after bot respond to Direct Line
+      // - Activity may take too long time to echo back
 
-    const sendTimeout: number = yield select(sendTimeoutSelector);
+      const sendTimeout: number = yield select(sendTimeoutSelector);
 
-    const {
-      send: { echoBack }
-    }: { send: { echoBack: WebChatActivity } } = yield race({
-      send: all({
-        echoBack: echoBackCall,
-        postActivity: observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity))
-      }),
-      timeout: call(function* () {
-        yield call(sleep, sendTimeout, ponyfill);
+      const {
+        send: { echoBack }
+      }: { send: { echoBack: WebChatActivity } } = yield race({
+        send: all({
+          echoBack: echoBackCall,
+          postActivity: observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity))
+        }),
+        timeout: call(function* () {
+          yield call(sleep, sendTimeout, ponyfill);
 
-        // The IMPEDED action is for backward compatibility by changing `channelData.state` to "send failed".
-        // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
-        // Please refer to #4362 for details. Remove on or after 2024-07-31.
-        yield put({
-          type: POST_ACTIVITY_IMPEDED,
-          meta,
-          payload: { activity: outgoingActivity }
-        } as PostActivityImpededAction);
+          // The IMPEDED action is for backward compatibility by changing `channelData.state` to "send failed".
+          // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+          // Please refer to #4362 for details. Remove on or after 2024-07-31.
+          yield put({
+            type: POST_ACTIVITY_IMPEDED,
+            meta,
+            payload: { activity: outgoingActivity }
+          } as PostActivityImpededAction);
 
-        yield call(sleep, HARD_SEND_TIMEOUT - sendTimeout, ponyfill);
+          yield call(sleep, HARD_SEND_TIMEOUT - sendTimeout, ponyfill);
 
-        throw !echoed
-          ? new Error('timed out while waiting for outgoing message to echo back')
-          : new Error('timed out while waiting for postActivity to return any values');
-      })
-    });
+          throw !echoed
+            ? new Error('timed out while waiting for outgoing message to echo back')
+            : new Error('timed out while waiting for postActivity to return any values');
+        })
+      });
 
-    yield put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } } as PostActivityFulfilledAction);
+      yield put({
+        type: POST_ACTIVITY_FULFILLED,
+        meta,
+        payload: { activity: echoBack }
+      } as PostActivityFulfilledAction);
+    } else {
+      // Optimistic mode: mark as fulfilled immediately after send
+      yield observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity));
+
+      yield put({
+        type: POST_ACTIVITY_FULFILLED,
+        meta,
+        payload: { activity: outgoingActivity }
+      } as PostActivityFulfilledAction);
+    }
   } catch (err) {
     console.error('botframework-webchat: Failed to post activity to chat adapter.', err);
 
@@ -206,8 +241,11 @@ export default function* postActivitySaga(ponyfill: GlobalScopePonyfill) {
   }) {
     let numActivitiesPosted = 0;
 
+    // When voice is enabled, use optimistic mode (no echo back wait)
+    const waitForEchoBack = !isVoiceEnabled(directLine);
+
     yield takeEvery(POST_ACTIVITY, function* postActivityWrapper(action: PostActivityAction) {
-      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action, ponyfill);
+      yield* postActivity(directLine, userID, username, numActivitiesPosted++, action, ponyfill, waitForEchoBack);
     });
   });
 }

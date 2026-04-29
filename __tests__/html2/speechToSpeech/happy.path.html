@@ -30,8 +30,10 @@
         // GIVEN: Web Chat with Speech-to-Speech enabled
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // Set voice configuration capability to enable microphone button
+        // Server announces audio modality (mic shows up) and the consumer opted into the
+        // multi-modal experience: outgoing activities go over WebSocket without echo back.
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        directLine.setCapability('getIsVoiceModeEnabled', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -137,20 +139,21 @@
         expect(activities[0]).toHaveProperty('textContent', 'What is the weather today?');
         expect(activities[1]).toHaveProperty('textContent', 'The weather today is sunny with a high of 75 degrees.');
 
-        // THEN: Verify activity status for voice transcripts
+        // THEN: Verify activity status for voice transcripts.
+        // New design: every transcript renders just `Just now | <icon>` — no role label,
+        // bot uses the audio-playing icon, user uses the microphone icon.
         const activityStatuses = pageElements.activityStatuses();
         expect(activityStatuses.length).toBe(2);
 
-        // THEN: User transcript should have timestamp but NO "Agent" label
         const userActivityStatus = activityStatuses[0];
-        expect(userActivityStatus.innerText).not.toContain('Agent');
         expect(userActivityStatus.innerText).toContain('Just now');
+        expect(userActivityStatus.innerText).toContain('|');
+        expect(userActivityStatus.querySelector('[class*="icon--microphone"]')).toBeTruthy();
 
-        // THEN: Bot transcript should have "Agent" label AND timestamp
         const botActivityStatus = activityStatuses[1];
-        expect(botActivityStatus.innerText).toContain('Agent');
-        expect(botActivityStatus.innerText).toContain('|');
         expect(botActivityStatus.innerText).toContain('Just now');
+        expect(botActivityStatus.innerText).toContain('|');
+        expect(botActivityStatus.querySelector('[class*="icon--audio-playing"]')).toBeTruthy();
 
         // WHEN: User stops recording by clicking microphone button again
         await host.click(micButton);

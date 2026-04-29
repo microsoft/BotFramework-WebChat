@@ -2,6 +2,7 @@
  * All capabilities are optional as they depend on adapter/server support.
  */
 type Capabilities = Readonly<{
+  isVoiceModeEnabled?: boolean | undefined;
   voiceConfiguration?: VoiceConfiguration | undefined;
 }>;
 

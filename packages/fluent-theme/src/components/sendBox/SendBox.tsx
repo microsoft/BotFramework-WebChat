@@ -77,16 +77,14 @@ function SendBox(props: Props) {
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
   const isBlueprint = uiState === 'blueprint';
 
+  // Disable text input and send button when mic is active to prevent race conditions and as per design
+  const isVoiceRecording = recording && showMicrophoneButton;
+
   const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
   const shouldShowMessageLength = useMemo(
-    () =>
-      !isBlueprint &&
-      !telephoneKeypadShown &&
-      !!maxMessageLength &&
-      isFinite(maxMessageLength) &&
-      !showMicrophoneButton,
-    [isBlueprint, telephoneKeypadShown, maxMessageLength, showMicrophoneButton]
+    () => !isBlueprint && !telephoneKeypadShown && !!maxMessageLength && isFinite(maxMessageLength),
+    [isBlueprint, telephoneKeypadShown, maxMessageLength]
   );
   const shouldShowTelephoneKeypad = !isBlueprint && telephoneKeypadShown;
 
@@ -223,9 +221,9 @@ function SendBox(props: Props) {
           onClick={handleClick}
           onInput={handleMessageChange}
           placeholder={
-            props.placeholder ?? (showMicrophoneButton ? speechStateMessage : localize('TEXT_INPUT_PLACEHOLDER'))
+            props.placeholder ?? (isVoiceRecording ? speechStateMessage : localize('TEXT_INPUT_PLACEHOLDER'))
           }
-          readOnly={showMicrophoneButton}
+          readOnly={isVoiceRecording}
           ref={inputRef}
           value={message}
         />
@@ -257,19 +255,17 @@ function SendBox(props: Props) {
           <Toolbar>
             {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
             {!disableFileUpload && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
+            {showMicrophoneButton && <MicrophoneToolbarButton />}
             <ToolbarSeparator />
-            {showMicrophoneButton ? (
-              <MicrophoneToolbarButton />
-            ) : (
-              <ToolbarButton
-                aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
-                data-testid={testIds.sendBoxSendButton}
-                disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad}
-                type="submit"
-              >
-                <FluentIcon appearance="text" icon="send" />
-              </ToolbarButton>
-            )}
+
+            <ToolbarButton
+              aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
+              data-testid={testIds.sendBoxSendButton}
+              disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad || isVoiceRecording}
+              type="submit"
+            >
+              <FluentIcon appearance="text" icon="send" />
+            </ToolbarButton>
           </Toolbar>
         </div>
         {!disableFileUpload && <DropZone onFilesAdded={handleAddFiles} />}
