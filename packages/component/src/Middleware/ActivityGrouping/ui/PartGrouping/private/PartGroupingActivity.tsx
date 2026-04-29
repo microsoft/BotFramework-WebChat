@@ -222,7 +222,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         )}
         <CollapsibleGroupingTitle>
           {currentGroupStatus === 'Incomplete' || howToAbstract
-            ? howToAbstract || currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
+            ? howToAbstract || currentMessage?.abstract[0] || localize('COLLAPSIBLE_GROUPING_TITLE')
             : localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
       </Fragment>
