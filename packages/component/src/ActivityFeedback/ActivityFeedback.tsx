@@ -57,7 +57,7 @@ function InternalActivityFeedback() {
 
   // Hide feedback form if feedback has already been submitted or it does not require UserReview.
   const isExpanded = useMemo(
-    () => !hasSubmitted && selectedAction?.result?.['@type'] === 'UserReview',
+    () => !hasSubmitted && selectedAction?.result[0]?.['@type'] === 'UserReview',
     [hasSubmitted, selectedAction]
   );
 
