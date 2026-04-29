@@ -189,25 +189,22 @@ type CreativeWorkOutput = ThingOutput & {
 // eslint-disable-next-line prefer-const
 let creativeWorkSchema_: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
 
-const creativeWorkEntries = {
-  ...jsonLinkedDataEntries,
-  abstract: jsonLinkedDataProperty(string()),
-  author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
-  citation: jsonLinkedDataProperty(lazy(() => claimSchema)),
-  creativeWorkStatus: jsonLinkedDataProperty(creativeWorkStatusSchema),
-  isBasedOn: jsonLinkedDataProperty(lazy(() => softwareSourceCodeSchema)),
-  isPartOf: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
-  keywords: jsonLinkedDataProperty(union([lazy(() => definedTermSchema), string()])),
-  pattern: jsonLinkedDataProperty(lazy(() => definedTermSchema)),
-  position: jsonLinkedDataProperty(union([number(), string()])),
-  text: jsonLinkedDataProperty(string()),
-  usageInfo: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_))
-};
-
 creativeWorkSchema_ = intersect([
   lazy(() => thingSchema),
-  object(creativeWorkEntries)
-  // objectWithRest(creativeWorkEntries, jsonLinkedDataProperty(any(), 'CREATIVE WORK'))
+  object({
+    ...jsonLinkedDataEntries,
+    abstract: jsonLinkedDataProperty(string()),
+    author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
+    citation: jsonLinkedDataProperty(lazy(() => claimSchema)),
+    creativeWorkStatus: jsonLinkedDataProperty(creativeWorkStatusSchema),
+    isBasedOn: jsonLinkedDataProperty(lazy(() => softwareSourceCodeSchema)),
+    isPartOf: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
+    keywords: jsonLinkedDataProperty(union([lazy(() => definedTermSchema), string()])),
+    pattern: jsonLinkedDataProperty(lazy(() => definedTermSchema)),
+    position: jsonLinkedDataProperty(union([number(), string()])),
+    text: jsonLinkedDataProperty(string()),
+    usageInfo: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_))
+  })
 ]);
 
 // Constantize here, so we are exporting a const than a let.
@@ -217,4 +214,4 @@ const creativeWorkSchema = creativeWorkSchema_;
 const parseCreativeWork = (creativeWork: CreativeWorkInput): CreativeWorkOutput =>
   parse(creativeWorkSchema_, creativeWork);
 
-export { creativeWorkEntries, creativeWorkSchema, parseCreativeWork, type CreativeWorkInput, type CreativeWorkOutput };
+export { creativeWorkSchema, parseCreativeWork, type CreativeWorkInput, type CreativeWorkOutput };

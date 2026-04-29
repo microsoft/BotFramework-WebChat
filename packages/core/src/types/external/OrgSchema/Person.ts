@@ -39,16 +39,14 @@ type PersonOutput = ThingOutput & {
   readonly image: readonly string[];
 };
 
-const personEntries = {
-  ...jsonLinkedDataEntries,
-  description: jsonLinkedDataProperty(string()),
-  image: jsonLinkedDataProperty(string()),
-  name: jsonLinkedDataProperty(string())
-};
-
 const personSchema: GenericSchema<PersonInput, PersonOutput> = intersect([
   lazy(() => thingSchema),
-  object(personEntries)
+  object({
+    ...jsonLinkedDataEntries,
+    description: jsonLinkedDataProperty(string()),
+    image: jsonLinkedDataProperty(string()),
+    name: jsonLinkedDataProperty(string())
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(personSchema) instead. Will be removed on or after 2028-04-23. */

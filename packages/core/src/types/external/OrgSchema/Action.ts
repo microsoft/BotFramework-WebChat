@@ -1,4 +1,4 @@
-import { any, intersect, lazy, objectWithRest, parse, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
 import { jsonLinkedDataEntries } from './JSONLinkedData';
 import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
@@ -76,20 +76,18 @@ type ActionOutput = ThingOutput & {
   readonly result: readonly (ThingOutput | UserReviewOutput)[];
 };
 
-const actionEntries = {
-  ...jsonLinkedDataEntries,
-  actionOption: jsonLinkedDataProperty(string()),
-  actionStatus: jsonLinkedDataProperty(actionStatusSchema),
-  provider: jsonLinkedDataProperty(lazy(() => projectSchema)),
-  result: jsonLinkedDataProperty(userReviewSchema)
-};
-
 const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
   lazy(() => thingSchema),
-  objectWithRest(actionEntries, jsonLinkedDataProperty(any()))
+  object({
+    ...jsonLinkedDataEntries,
+    actionOption: jsonLinkedDataProperty(string()),
+    actionStatus: jsonLinkedDataProperty(actionStatusSchema),
+    provider: jsonLinkedDataProperty(lazy(() => projectSchema)),
+    result: jsonLinkedDataProperty(userReviewSchema)
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(actionSchema) instead. Will be removed on or after 2028-04-23. */
 const parseAction = (action: ActionInput): ActionOutput => parse(actionSchema, action);
 
-export { actionEntries, actionSchema, parseAction, type ActionInput, type ActionOutput };
+export { actionSchema, parseAction, type ActionInput, type ActionOutput };

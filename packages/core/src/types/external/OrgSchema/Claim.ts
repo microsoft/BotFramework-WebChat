@@ -55,18 +55,16 @@ type ClaimOutput = CreativeWorkOutput & {
   readonly claimInterpreter: readonly ProjectOutput[];
 };
 
-const claimEntries = {
-  ...jsonLinkedDataEntries,
-  appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
-  claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
-};
-
 const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
   lazy(() => creativeWorkSchema),
-  object(claimEntries)
+  object({
+    ...jsonLinkedDataEntries,
+    appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
+    claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(claimSchema) instead. Will be removed on or after 2028-04-23. */
 const parseClaim = (claim: ClaimInput): ClaimOutput => parse(claimSchema, claim);
 
-export { claimEntries, claimSchema, parseClaim, type ClaimInput, type ClaimOutput };
+export { claimSchema, parseClaim, type ClaimInput, type ClaimOutput };

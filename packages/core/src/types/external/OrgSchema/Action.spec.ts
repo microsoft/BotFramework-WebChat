@@ -39,5 +39,20 @@ describe('Action', () => {
         throw err;
       }
     });
+
+    test('should match snapshot', () => {
+      expect(
+        parse(actionSchema, {
+          '@type': 'LikeAction',
+          actionStatus: 'PotentialActionStatus',
+          result: [
+            {
+              '@type': 'UserReview',
+              reviewAspect: 'Hello, World!'
+            }
+          ]
+        })
+      ).toEqual({});
+    });
   });
 });
