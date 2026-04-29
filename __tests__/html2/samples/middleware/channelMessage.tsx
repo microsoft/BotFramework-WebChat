@@ -12,7 +12,7 @@ import {
   activityComponent,
   createActivityPolymiddleware,
   type ActivityPolymiddlewareProps
-} from 'botframework-webchat/middleware';
+} from 'botframework-webchat/middleware.js';
 import React, { memo } from 'react';
 import { render } from 'react-dom';
 // #endregion Sample code

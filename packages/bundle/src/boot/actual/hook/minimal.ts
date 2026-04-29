@@ -101,4 +101,4 @@ export {
   useVoiceState,
   useWebSpeechPonyfill,
   type SendBoxFocusOptions
-} from 'botframework-webchat-component/hook';
+} from 'botframework-webchat-component/hook.js';

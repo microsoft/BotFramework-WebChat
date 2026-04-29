@@ -1,6 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat';
-import { type WebChatActivity } from 'botframework-webchat/internal';
+import { type WebChatActivity } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
 import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
@@ -37,8 +37,8 @@ function CopilotMessageHeader(props: CopilotMessageHeaderProps) {
   );
 
   const author = useActivityAuthor(activity);
-  const avatarImage = author?.image || botAvatarImage;
-  const botTitle = author?.name || activity?.from?.name;
+  const avatarImage = author?.image[0] || botAvatarImage;
+  const botTitle = author?.name[0] || activity?.from?.name;
 
   return (
     <div className={cx(classNames['copilot-message-header'], className)}>

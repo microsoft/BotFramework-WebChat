@@ -39,11 +39,15 @@ export function composePipeline<
     return StageWrapper;
   }, PassthroughComponent);
 
-  return memo(function Pipeline(props: PipelineProps<Request, Props>) {
+  const Pipeline: PipelineComponent<Props, Request> = function Pipeline(props: PipelineProps<Request, Props>) {
     const { request, ...restProps } = props;
 
     return <ComposedPipeline request={request} {...(restProps as unknown as Props)} originalRequest={request} />;
-  });
+  };
+
+  Pipeline.displayName = 'Pipeline';
+
+  return memo(Pipeline);
 }
 
-export type { NextComponent, PipelineProps, PipelineComponent, StageComponent };
+export type { NextComponent, PipelineComponent, PipelineProps, StageComponent };

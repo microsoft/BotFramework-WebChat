@@ -35,4 +35,4 @@ export {
   type BasicWebChatProps,
   type ComposerProps,
   type ReactWebChatProps
-} from 'botframework-webchat-component/component';
+} from 'botframework-webchat-component/component.js';

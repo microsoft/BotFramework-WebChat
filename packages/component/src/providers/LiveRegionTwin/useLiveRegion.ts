@@ -22,6 +22,6 @@ export default function useLiveRegion(
     const node = createNodeRef?.current();
 
     node && queueStaticElement(node);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
   }, [...deps, createNodeRef, queueStaticElement]);
 }

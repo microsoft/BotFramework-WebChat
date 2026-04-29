@@ -20,9 +20,9 @@ import {
   type ToastMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
-import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware';
-import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal';
+import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator.js';
+import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
+import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal.js';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
@@ -250,11 +250,17 @@ const ComposerCore = ({
 
   const getActivityByKey = useGetActivityByKey();
 
+  // This is expected.
+  // The mutation is for preventing sending duplicates to the registered callback observers.
+  // eslint-disable-next-line react-hooks/immutability
   const dispatchTranscriptFocusByActivityKey = useMemo(() => {
     let prevActivityKey: string | symbol | undefined = Symbol();
 
     return activityKey => {
       if (activityKey !== prevActivityKey) {
+        // This is expected.
+        // The mutation is for preventing sending duplicates to the registered callback observers.
+        // eslint-disable-next-line react-hooks/immutability
         prevActivityKey = activityKey;
 
         const event = { activity: getActivityByKey(activityKey) };

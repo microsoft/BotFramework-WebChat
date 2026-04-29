@@ -1,9 +1,21 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
+import { onErrorResumeNext, orgSchemaActionSchema, orgSchemaVoteActionSchema } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, literal, object, optional, pipe, readonly, safeParse, string, union, type InferInput } from 'valibot';
+import {
+  intersect,
+  literal,
+  object,
+  parse,
+  picklist,
+  pipe,
+  readonly,
+  string,
+  tuple,
+  union,
+  type InferInput
+} from 'valibot';
 
 import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
@@ -15,21 +27,21 @@ const { useLocalizer, useStyleOptions } = hooks;
 
 const feedbackVoteButtonPropsSchema = pipe(
   object({
-    action: custom<OrgSchemaAction>(
-      value =>
-        safeParse(
-          union([
-            object({
-              '@type': union([literal('DislikeAction'), literal('LikeAction')])
-            }),
-            object({
-              '@type': literal('VoteAction'),
-              actionOption: optional(union([literal('downvote'), literal('upvote')]))
-            })
-          ]),
-          value
-        ).success
-    ),
+    action: union([
+      intersect([
+        orgSchemaActionSchema,
+        object({
+          '@type': picklist(['DislikeAction', 'LikeAction'])
+        })
+      ]),
+      intersect([
+        orgSchemaVoteActionSchema,
+        object({
+          '@type': literal('VoteAction'),
+          actionOption: tuple([picklist(['downvote', 'upvote'])])
+        })
+      ])
+    ]),
     as: union([literal('button'), literal('radio')]),
     name: string()
   }),
@@ -52,7 +64,7 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
     if (
       action['@type'] === 'DislikeAction' ||
       (action['@type'] === 'VoteAction' &&
-        onErrorResumeNext(() => parseVoteAction(action))?.actionOption === 'downvote')
+        onErrorResumeNext(() => parse(orgSchemaVoteActionSchema, action))?.actionOption[0] === 'downvote')
     ) {
       return 'down';
     }

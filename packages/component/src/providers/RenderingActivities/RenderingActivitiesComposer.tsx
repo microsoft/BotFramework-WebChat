@@ -1,7 +1,7 @@
 import {
   useBuildRenderActivityCallback,
   type ActivityPolymiddlewareRenderer
-} from 'botframework-webchat-api/middleware';
+} from 'botframework-webchat-api/middleware.js';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';

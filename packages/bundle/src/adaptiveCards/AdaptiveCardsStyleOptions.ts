@@ -1,32 +1,32 @@
 /**
  * Adaptive Cards styling
  */
-type AdaptiveCardsStyleOptions = {
+type StrictAdaptiveCardsStyleOptions = {
   /** Adaptive Cards: Specify the maximum schema version supported by the Adaptive Card serializer. */
-  adaptiveCardsParserMaxVersion?: string;
+  adaptiveCardsParserMaxVersion: string | undefined;
 
   /**
    * Adaptive Cards styling for 'emphasis' container style
    */
-  cardEmphasisBackgroundColor?: string;
+  cardEmphasisBackgroundColor: string | undefined;
 
   /**
    * Adaptive Cards: background color of Adaptive Cards button with status of 'aria-pressed'
    */
-  cardPushButtonBackgroundColor?: string;
+  cardPushButtonBackgroundColor: string | undefined;
 
   /**
    * Adaptive Cards: text color of Adaptive Cards button with status of 'aria-pressed'
    */
-  cardPushButtonTextColor?: string;
+  cardPushButtonTextColor: string | undefined;
 
   /**
    * Cards: Rich Cards
    * Enable title (and subtitle) wrapping
    */
-  richCardWrapTitle?: boolean;
+  richCardWrapTitle: boolean | undefined;
 };
 
-type StrictAdaptiveCardsStyleOptions = Required<AdaptiveCardsStyleOptions>;
+type AdaptiveCardsStyleOptions = Partial<StrictAdaptiveCardsStyleOptions>;
 
 export type { AdaptiveCardsStyleOptions, StrictAdaptiveCardsStyleOptions };

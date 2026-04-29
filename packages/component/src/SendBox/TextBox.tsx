@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { usePonyfill } from 'botframework-webchat-api/hook';
+import { usePonyfill } from 'botframework-webchat-api/hook.js';
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useRef } from 'react';
 

@@ -4,7 +4,7 @@
 
 import { render, type RenderResult } from '@testing-library/react';
 import type { WebChatActivity } from 'botframework-webchat-core';
-import type { LocalId } from 'botframework-webchat-core/activity';
+import type { LocalId } from 'botframework-webchat-core/activity.js';
 import React, { type ComponentType } from 'react';
 import { type useActivities as UseActivitiesType } from '../../../hooks';
 import type UseReduceActivitiesType from './useReduceActivities';

@@ -1,14 +1,8 @@
-import { parse, string, type ObjectEntries } from 'valibot';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
-import { thing, type Thing } from './Thing';
-import orgSchemaProperty from './private/orgSchemaProperty';
-
-export const project = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
-  thing({
-    slogan: orgSchemaProperty(string()),
-
-    ...entries
-  });
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
@@ -17,13 +11,40 @@ export const project = <TEntries extends ObjectEntries>(entries?: TEntries | und
  *
  * @see https://schema.org/Project
  */
-export type Project = Thing & {
+type ProjectInput = ThingInput & {
   /**
    * A slogan or motto associated with the item.
    *
    * @see https://schema.org/slogan
    */
-  slogan?: string | undefined;
+  readonly slogan?: string | readonly string[] | undefined;
 };
 
-export const parseProject = (data: unknown): Project => parse(project(), data);
+/**
+ * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
+ *
+ * This is partial implementation of https://schema.org/Project.
+ *
+ * @see https://schema.org/Project
+ */
+type ProjectOutput = ThingOutput & {
+  /**
+   * A slogan or motto associated with the item.
+   *
+   * @see https://schema.org/slogan
+   */
+  readonly slogan: readonly string[];
+};
+
+const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = intersect([
+  lazy(() => thingSchema),
+  object({
+    ...jsonLinkedDataEntries,
+    slogan: jsonLinkedDataProperty(string())
+  })
+]);
+
+/** @deprecated Use Valibot.parse(projectSchema) instead. Will be removed on or after 2028-04-23. */
+const parseProject = (project: ProjectInput): ProjectOutput => parse(projectSchema, project);
+
+export { parseProject, projectSchema, type ProjectInput, type ProjectOutput };

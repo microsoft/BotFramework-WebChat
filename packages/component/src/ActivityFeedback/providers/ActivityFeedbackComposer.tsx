@@ -2,7 +2,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
-  parseAction,
+  orgSchemaActionSchema,
   type OrgSchemaAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
@@ -11,7 +11,7 @@ import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, typ
 import { wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
-import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import canActionResubmit from '../private/canActionResubmit';
@@ -39,6 +39,46 @@ type ActionState = Readonly<{
 }>;
 
 const DEBOUNCE_TIMEOUT = 500;
+
+/**
+ * Patch `OrgSchemaAction` for simpler logic down the road:
+ *
+ * 1. If no `@id`, generate a random `@id`
+ * 2. If `channelData.feedbackLoop.disclaimer` presents (a deprecated property), move it to `action.result.description`
+ *
+ * @param activity Activity to read `channelData`
+ * @param actions Actions to patch
+ * @returns New instances of patched actions
+ */
+function patchActions(activity: WebChatActivity, actions: readonly OrgSchemaAction[]): readonly OrgSchemaAction[] {
+  actions = actions.map(action =>
+    // eslint-disable-next-line no-magic-numbers
+    action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
+  );
+
+  const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
+
+  if (deprecatedFeedbackLoopChannelData) {
+    // TODO: Find the date we deprecated the channelData.
+    console.warn(
+      'botframework-webchat: `channelData.feedbackLoop` is deprecated, use `entities[@type="Message"][@id=""].potentialAction[@type="Action"].result[@type="UserReview"].description instead. It will be removed on or after YYYY-MM-DD.'
+    );
+
+    actions = actions.map(action =>
+      action.result
+        ? action
+        : parse(orgSchemaActionSchema, {
+            ...action,
+            result: {
+              '@type': 'UserReview',
+              reviewAspect: deprecatedFeedbackLoopChannelData.disclaimer
+            }
+          })
+    );
+  }
+
+  return Object.freeze(actions);
+}
 
 function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const { children, activity: activityFromProps } = validateProps(activityFeedbackComposerPropsSchema, props);
@@ -101,47 +141,32 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   );
 
   const rawActions = useMemo<readonly OrgSchemaAction[]>(() => {
-    function patchActions(actions: readonly OrgSchemaAction[]) {
-      actions = actions.map(action =>
-        // eslint-disable-next-line no-magic-numbers
-        action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
-      );
-
-      const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
-
-      if (deprecatedFeedbackLoopChannelData) {
-        actions = actions.map(action =>
-          action.result
-            ? action
-            : {
-                ...action,
-                result: {
-                  '@type': 'UserReview',
-                  description: deprecatedFeedbackLoopChannelData?.disclaimer
-                }
-              }
-        );
-      }
-
-      return actions;
-    }
-
     try {
       const graph = dereferenceBlankNodes(activity.entities || []);
       const messageThing = getOrgSchemaMessage(graph);
 
-      const reactActions = Object.freeze(
-        (messageThing?.potentialAction || []).filter(
+      const reactActions: readonly OrgSchemaAction[] = Object.freeze(
+        messageThing?.potentialAction.filter(
           ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-        )
+        ) ?? []
       );
 
       if (reactActions.length) {
-        return patchActions(reactActions);
+        return patchActions(activity, reactActions);
       }
 
       const voteActions = Object.freeze(
-        graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction)
+        graph.reduce<OrgSchemaAction[]>((result, item) => {
+          const parseResult = safeParse(orgSchemaActionSchema, item);
+
+          if (parseResult.success) {
+            const { output } = parseResult;
+
+            output.actionOption[0] && result.push(output);
+          }
+
+          return result;
+        }, [])
         // TODO: Instead of processing VoteAction, convert it to LikeAction/DislikeAction.
         // .map(action => ({
         //   ...action,
@@ -151,10 +176,11 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       if (voteActions.length) {
         // VoteAction is deprecated and was never published publicly.
-        return patchActions(voteActions);
+        return patchActions(activity, voteActions);
       }
-    } catch {
+    } catch (error) {
       // Intentionally left blank.
+      console.warn('botframework-webchat: Internal error in <ActivityFeedbackComposer>', error);
     }
 
     return Object.freeze([]);
@@ -162,14 +188,14 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   useMemo(() => {
     const activeOrCompletedAction = rawActions.find(
-      (action): action is OrgSchemaAction & { actionStatus: 'ActiveActionStatus' | 'CompletedActionStatus' } =>
-        action.actionStatus === 'ActiveActionStatus' || action.actionStatus === 'CompletedActionStatus'
+      (action): action is OrgSchemaAction & { actionStatus: ['ActiveActionStatus' | 'CompletedActionStatus'] } =>
+        action.actionStatus[0] === 'ActiveActionStatus' || action.actionStatus[0] === 'CompletedActionStatus'
     );
 
     actionStateRef.current = activeOrCompletedAction
       ? {
           actionId: activeOrCompletedAction['@id'],
-          actionStatus: activeOrCompletedAction.actionStatus
+          actionStatus: activeOrCompletedAction.actionStatus[0]
         }
       : undefined;
   }, [rawActions]);
@@ -177,15 +203,15 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   // Workaround ESLint on saying actionStateRef.current is redundant when using it directly.
   const actionStateForActions = actionStateRef.current;
 
-  const actions = useMemo(
+  const actions = useMemo<readonly OrgSchemaAction[]>(
     () =>
       Object.freeze(
         rawActions.map(action =>
           actionStateForActions && actionStateForActions.actionId === action['@id']
-            ? Object.freeze({ ...action, actionStatus: actionStateForActions.actionStatus })
-            : action.actionStatus === 'PotentialActionStatus'
+            ? Object.freeze({ ...action, actionStatus: [actionStateForActions.actionStatus] } satisfies OrgSchemaAction)
+            : action.actionStatus[0] === 'PotentialActionStatus'
               ? action
-              : Object.freeze({ ...action, actionStatus: 'PotentialActionStatus' })
+              : Object.freeze({ ...action, actionStatus: ['PotentialActionStatus'] } satisfies OrgSchemaAction)
         )
       ),
     [actionStateForActions, rawActions]
@@ -196,7 +222,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const postActivity = usePostActivity();
 
   const hasSubmitted = useMemo<boolean>(
-    () => actions.some(action => action.actionStatus === 'CompletedActionStatus'),
+    () => actions.some(action => action.actionStatus[0] === 'CompletedActionStatus'),
     [actions]
   );
 
@@ -235,8 +261,16 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           }
         } as any);
       } else {
+        const entity = isLegacyAction ? rest : action;
+
         postActivity({
-          entities: [isLegacyAction ? rest : action],
+          entities: [
+            {
+              ...entity,
+              actionOption: entity.actionOption[0], // TODO: Service should accept plural.
+              type: new URL(entity['@type'] ?? '', entity['@context'] ?? 'https://schema.org').href
+            }
+          ],
           name: 'webchat:activity-status/feedback',
           type: 'event'
         } as any);
@@ -248,7 +282,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
     () =>
       actions.find(
-        ({ actionStatus }) => actionStatus === 'ActiveActionStatus' || actionStatus === 'CompletedActionStatus'
+        ({ actionStatus }) => actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus'
       ),
     [actions]
   );

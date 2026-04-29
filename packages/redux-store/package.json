@@ -49,6 +49,10 @@
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
+    ],
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
     ]
   },
   "localDependencies": {
@@ -61,11 +65,11 @@
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/react": "^16.14.69",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
-    "valibot": "1.2.0"
+    "valibot": "1.3.1"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"

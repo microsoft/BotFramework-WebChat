@@ -2,7 +2,7 @@ import { type HTMLContentTransformMiddleware } from 'botframework-webchat-compon
 import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal';
+} from 'botframework-webchat-component/internal.js';
 import sanitizeHTML from 'sanitize-html';
 
 const BASE_SANITIZE_HTML_OPTIONS = Object.freeze({

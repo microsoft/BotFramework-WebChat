@@ -147,7 +147,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [isGroupOpen, setIsGroupOpen] = useState(partGroupDefaultOpen);
 
   const messages = useMemo(
-    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(message => !!message),
+    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(Boolean),
     [activities]
   );
   // eslint-disable-next-line no-magic-numbers
@@ -168,7 +168,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const lastActivity = activities.at(-1);
 
   const currentMessage = useMemo(
-    () => messages.find(message => message.creativeWorkStatus === 'Incomplete') || lastMessage,
+    () => messages.find(message => message.creativeWorkStatus[0] === 'Incomplete') || lastMessage,
     [messages, lastMessage]
   );
 
@@ -184,15 +184,14 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   // The HowTo entity (the group root) may carry an explicit `creativeWorkStatus` and `abstract`.
   // When present, it takes precedence over status derived from individual messages.
-  const [howToAbstract, howToStatus] = useMemo(() => {
-    const howToMessage = messages.find(message => message.isPartOf?.creativeWorkStatus);
-    const howTo = howToMessage?.isPartOf;
+  const [howToAbstract, howToStatus] = useMemo<[string | undefined, string | undefined]>(() => {
+    const howTo = messages.find(message => message.isPartOf[0]?.creativeWorkStatus[0])?.isPartOf[0];
 
-    return [howTo?.abstract, howTo?.creativeWorkStatus];
+    return [howTo?.abstract[0], howTo?.creativeWorkStatus[0]];
   }, [messages]);
 
-  const defaultWorkStatus = useMemo(
-    () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
+  const defaultWorkStatus = useMemo<'Incomplete' | undefined>(
+    () => (messages.some(message => message.creativeWorkStatus[0]) ? 'Incomplete' : undefined),
     [messages]
   );
 
@@ -200,7 +199,8 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   // 1. If the HowTo entity has an explicit `creativeWorkStatus`, use it.
   // 2. Otherwise, derive from the active message: find the first 'Incomplete' message's status.
   // 3. Fall back to `defaultWorkStatus` which is 'Incomplete' if any message has a `creativeWorkStatus` property.
-  const currentGroupStatus = howToStatus || currentMessage?.creativeWorkStatus || defaultWorkStatus;
+  const currentGroupStatus: string | undefined =
+    howToStatus || currentMessage?.creativeWorkStatus[0] || defaultWorkStatus;
 
   /**
    * The idea behind group header is that it displays the state of the entire group:
@@ -222,7 +222,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         )}
         <CollapsibleGroupingTitle>
           {currentGroupStatus === 'Incomplete' || howToAbstract
-            ? howToAbstract || currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
+            ? howToAbstract || currentMessage?.abstract[0] || localize('COLLAPSIBLE_GROUPING_TITLE')
             : localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
       </Fragment>

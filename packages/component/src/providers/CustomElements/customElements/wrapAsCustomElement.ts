@@ -10,7 +10,7 @@ const ConnectionState = {
 export default function wrapAsCustomElement<Props extends { [key: string]: string | undefined } & { children?: never }>(
   component: ComponentType<Props>,
   propKeys: (keyof Props)[]
-) {
+): typeof HTMLElement {
   type AttributeName = keyof { [K in keyof Props as K extends 'className' ? 'class' : K]: Props[K] } & string;
 
   const attributeNames = propKeys.map(key => (key === 'className' ? 'class' : key)) as AttributeName[];

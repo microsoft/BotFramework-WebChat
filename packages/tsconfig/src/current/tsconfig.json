@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0", // Required for tsup@8.5.1 to work in typescript@6.0.3
     "jsx": "react",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
     "skipLibCheck": true,
-    "target": "ESNext",
-    "types": [] // Platform neutrality: disable loading default types
+    "target": "ESNext"
   },
   "extends": "@tsconfig/strictest/tsconfig.json"
 }

@@ -1,4 +1,4 @@
-import { CodeHighlighterComposer, type HighlightCodeFn } from 'botframework-webchat-component/internal';
+import { CodeHighlighterComposer, type HighlightCodeFn } from 'botframework-webchat-component/internal.js';
 import React, { memo, ReactNode, useEffect, useState } from 'react';
 import { type HighlighterCore } from 'shiki';
 

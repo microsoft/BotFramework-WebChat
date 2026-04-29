@@ -1,10 +1,12 @@
 /* eslint complexity: ["error", 21] */
 import { ActivityMiddleware } from 'botframework-webchat-api';
-import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
-  isVoiceTranscriptActivity
+  isVoiceTranscriptActivity,
+  type OrgSchemaCreativeWork,
+  type WebChatActivity
 } from 'botframework-webchat-core';
 import React from 'react';
 
@@ -12,7 +14,7 @@ import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
 // TODO: [P4] Can we simplify these if-statement to something more readable?
-function shouldFilterActivity(activity, messageThing) {
+function shouldFilterActivity(activity: WebChatActivity, messageThing: OrgSchemaCreativeWork): boolean {
   const { type } = activity;
   if (
     type === 'conversationUpdate' ||
@@ -21,14 +23,14 @@ function shouldFilterActivity(activity, messageThing) {
     // Do not show content for contentless livestream interims, or finalized activity without content.
     (type === 'typing' &&
       (getActivityLivestreamingMetadata(activity)?.type === 'contentless' ||
-        !(activity['text'] || activity.attachments?.length > 0 || messageThing?.abstract))) ||
+        !(activity['text'] || activity.attachments?.length > 0 || messageThing?.abstract.length))) ||
     (type === 'message' &&
       // Do not show postback
       (activity.channelData?.postBack ||
         // Do not show messageBack if displayText is undefined
         (activity.channelData?.messageBack && !activity.channelData.messageBack.displayText) ||
         // Do not show empty bubbles (no text and attachments)
-        !(activity.text || activity.attachments?.length || messageThing?.abstract)))
+        !(activity.text || activity.attachments?.length || messageThing?.abstract.length)))
   ) {
     return true;
   }

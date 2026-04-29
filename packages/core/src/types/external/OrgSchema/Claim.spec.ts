@@ -1,9 +1,17 @@
-import { parseClaim } from './Claim';
+import { describe, expect, test } from '@jest/globals';
+import { parse } from 'valibot';
+import { claimSchema } from './Claim';
+import { creativeWorkSchema } from './CreativeWork';
+import { projectSchema } from './Project';
+
+const claimTemplate = parse(claimSchema, {});
+const creativeWorkTemplate = parse(creativeWorkSchema, {});
+const projectTemplate = parse(projectSchema, {});
 
 describe('Claim', () => {
   test('should parse appearance', () =>
     expect(
-      parseClaim({
+      parse(claimSchema, {
         '@type': 'Claim',
         appearance: {
           '@type': 'Book',
@@ -11,16 +19,20 @@ describe('Claim', () => {
         }
       })
     ).toEqual({
+      ...claimTemplate,
       '@type': 'Claim',
-      appearance: {
-        '@type': 'Book',
-        name: 'Business @ the Speed of Thought'
-      }
+      appearance: [
+        {
+          ...creativeWorkTemplate,
+          '@type': 'Book',
+          name: ['Business @ the Speed of Thought']
+        }
+      ]
     }));
 
   test('should parse claimInterpreter', () =>
     expect(
-      parseClaim({
+      parse(claimSchema, {
         '@type': 'Claim',
         claimInterpreter: {
           '@type': 'Project',
@@ -28,18 +40,40 @@ describe('Claim', () => {
         }
       })
     ).toEqual({
+      ...claimTemplate,
       '@type': 'Claim',
-      claimInterpreter: {
-        '@type': 'Project',
-        slogan: 'Empower every person and every organization on the planet to achieve more.'
-      }
+      claimInterpreter: [
+        {
+          ...projectTemplate,
+          '@type': 'Project',
+          slogan: ['Empower every person and every organization on the planet to achieve more.']
+        }
+      ]
     }));
 
   describe('should parse position', () => {
     test('as a number', () =>
-      expect(parseClaim({ '@type': 'Claim', position: 1 })).toEqual({ '@type': 'Claim', position: 1 }));
+      expect(
+        parse(claimSchema, {
+          '@type': 'Claim',
+          position: 1
+        })
+      ).toEqual({
+        ...claimTemplate,
+        '@type': 'Claim',
+        position: [1]
+      }));
 
     test('as a string', () =>
-      expect(parseClaim({ '@type': 'Claim', position: 'First' })).toEqual({ '@type': 'Claim', position: 'First' }));
+      expect(
+        parse(claimSchema, {
+          '@type': 'Claim',
+          position: 'First'
+        })
+      ).toEqual({
+        ...claimTemplate,
+        '@type': 'Claim',
+        position: ['First']
+      }));
   });
 });

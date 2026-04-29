@@ -46,6 +46,9 @@ function replaceAnchorWithButton(markdownTokens) {
 const InlineMarkdown = ({ children, onReference, references }) => {
   if (typeof children !== 'string') {
     console.warn('botframework-webchat: "children" prop passed to <InlineMarkdown> must be of type string.');
+
+    // Shortcut for disabling invalid props.
+    // eslint-disable-next-line react-hooks/immutability
     children = '';
   }
 
@@ -80,6 +83,8 @@ const InlineMarkdown = ({ children, onReference, references }) => {
   );
 
   // Markdown-It only support references in uppercase.
+  // Re-shaping input.
+  // eslint-disable-next-line react-hooks/immutability
   references = references.map(reference => reference.toUpperCase());
 
   const { hrefToRef, refToHref } = references.reduce(

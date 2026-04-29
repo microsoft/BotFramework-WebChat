@@ -148,7 +148,14 @@ const IGNORED_OWN_PACKAGES = [
     }
 
     for (const key of getKeysRecursive(packageJson.exports)) {
-      key.startsWith('.') && allOwnExports.add(`${packageJson.name}${key.slice(1)}`);
+      if (key.startsWith('.')) {
+        if (key === '.') {
+          allOwnExports.add(`${packageJson.name}`);
+        } else if (key.endsWith('.js')) {
+          // ./filename.js -> /filename
+          allOwnExports.add(`${packageJson.name}${key.slice(1, -3)}`);
+        }
+      }
     }
   }
 
@@ -165,6 +172,7 @@ const IGNORED_OWN_PACKAGES = [
     'botframework-webchat/hook': './src/boot/exports/hook.ts',
     'botframework-webchat/internal': './src/boot/exports/internal.ts',
     'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
+    'botframework-webchat/schema': './src/boot/exports/schema.ts',
     // TODO: [P2] We can remove the `Array.from()` after bumping Node.js.
     ...Array.from(allOwnExports.keys()).reduce((entryPoints, key) => ({ ...entryPoints, [key]: key }), {})
   };

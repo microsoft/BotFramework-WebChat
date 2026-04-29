@@ -1,7 +1,8 @@
-import { parse, string, type ObjectEntries } from 'valibot';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
-import orgSchemaProperty from './private/orgSchemaProperty';
-import { thing, type Thing } from './Thing';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
@@ -10,18 +11,36 @@ import { thing, type Thing } from './Thing';
  *
  * @see https://schema.org/UserReview
  */
-export type UserReview = Thing & {
+type UserReviewInput = ThingInput & {
   /**
    * This Review or Rating is relevant to this part or facet of the itemReviewed.
    */
-  reviewAspect?: string | undefined;
+  readonly reviewAspect?: string | readonly string[] | undefined;
 };
 
-export const userReview = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
-  thing({
-    reviewAspect: orgSchemaProperty(string()),
+/**
+ * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
+ *
+ * This is partial implementation of https://schema.org/UserReview.
+ *
+ * @see https://schema.org/UserReview
+ */
+type UserReviewOutput = ThingOutput & {
+  /**
+   * This Review or Rating is relevant to this part or facet of the itemReviewed.
+   */
+  readonly reviewAspect: readonly string[];
+};
 
-    ...entries
-  });
+const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
+  lazy(() => thingSchema),
+  object({
+    ...jsonLinkedDataEntries,
+    reviewAspect: jsonLinkedDataProperty(string())
+  })
+]);
 
-export const parseUserReview = (data: unknown): UserReview => parse(userReview(), data);
+/** @deprecated Use Valibot.parse(userReviewSchema) instead. Will be removed on or after 2028-04-23. */
+const parseUserReview = (userReview: UserReviewInput): UserReviewOutput => parse(userReviewSchema, userReview);
+
+export { parseUserReview, userReviewSchema, type UserReviewInput, type UserReviewOutput };

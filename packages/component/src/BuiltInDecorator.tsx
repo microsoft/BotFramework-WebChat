@@ -1,4 +1,4 @@
-import { LowPriorityDecoratorComposer } from 'botframework-webchat-api/internal';
+import { LowPriorityDecoratorComposer } from 'botframework-webchat-api/internal.js';
 import React, { memo, type ReactNode } from 'react';
 
 import createDefaultActivityGroupingDecoratorMiddleware from './Middleware/ActivityGrouping/createDefaultActivityGroupingDecoratorMiddleware';
