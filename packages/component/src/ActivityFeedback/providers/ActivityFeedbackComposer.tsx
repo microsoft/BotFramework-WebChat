@@ -59,6 +59,11 @@ function patchActions(activity: WebChatActivity, actions: readonly OrgSchemaActi
   const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
 
   if (deprecatedFeedbackLoopChannelData) {
+    // TODO: Find the date we deprecated the channelData.
+    console.warn(
+      'botframework-webchat: `channelData.feedbackLoop` is deprecated, use `entities[@type="Message"][@id=""].potentialAction[@type="Action"].result[@type="UserReview"].description instead. It will be removed on or after YYYY-MM-DD.'
+    );
+
     actions = actions.map(action =>
       action.result
         ? action
@@ -66,7 +71,7 @@ function patchActions(activity: WebChatActivity, actions: readonly OrgSchemaActi
             ...action,
             result: {
               '@type': 'UserReview',
-              description: deprecatedFeedbackLoopChannelData?.disclaimer
+              reviewAspect: deprecatedFeedbackLoopChannelData.disclaimer
             }
           })
     );

@@ -5,7 +5,7 @@ type JSONLinkedDataInput = {
   readonly '@context'?: 'https://schema.org' | undefined;
   readonly '@id'?: string | string[] | undefined;
   // readonly '@type'?: string | string[] | undefined;
-  readonly '@type'?: string | string[] | undefined;
+  readonly '@type'?: string | undefined;
 };
 
 type JSONLinkedDataOutput = {
