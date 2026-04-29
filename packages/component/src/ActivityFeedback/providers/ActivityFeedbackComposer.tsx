@@ -40,6 +40,41 @@ type ActionState = Readonly<{
 
 const DEBOUNCE_TIMEOUT = 500;
 
+/**
+ * Patch `OrgSchemaAction` for simpler logic down the road:
+ *
+ * 1. If no `@id`, generate a random `@id`
+ * 2. If `channelData.feedbackLoop.disclaimer` presents (a deprecated property), move it to `action.result.description`
+ *
+ * @param activity Activity to read `channelData`
+ * @param actions Actions to patch
+ * @returns New instances of patched actions
+ */
+function patchActions(activity: WebChatActivity, actions: readonly OrgSchemaAction[]): readonly OrgSchemaAction[] {
+  actions = actions.map(action =>
+    // eslint-disable-next-line no-magic-numbers
+    action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
+  );
+
+  const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
+
+  if (deprecatedFeedbackLoopChannelData) {
+    actions = actions.map(action =>
+      action.result
+        ? action
+        : parse(orgSchemaActionSchema, {
+            ...action,
+            result: {
+              '@type': 'UserReview',
+              description: deprecatedFeedbackLoopChannelData?.disclaimer
+            }
+          })
+    );
+  }
+
+  return Object.freeze(actions);
+}
+
 function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const { children, activity: activityFromProps } = validateProps(activityFeedbackComposerPropsSchema, props);
 
@@ -101,47 +136,32 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   );
 
   const rawActions = useMemo<readonly OrgSchemaAction[]>(() => {
-    function patchActions(actions: readonly OrgSchemaAction[]) {
-      actions = actions.map(action =>
-        // eslint-disable-next-line no-magic-numbers
-        action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
-      );
-
-      const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
-
-      if (deprecatedFeedbackLoopChannelData) {
-        actions = actions.map(action =>
-          action.result
-            ? action
-            : parse(orgSchemaActionSchema, {
-                ...action,
-                result: {
-                  '@type': 'UserReview',
-                  description: deprecatedFeedbackLoopChannelData?.disclaimer
-                }
-              })
-        );
-      }
-
-      return actions;
-    }
-
     try {
       const graph = dereferenceBlankNodes(activity.entities || []);
       const messageThing = getOrgSchemaMessage(graph);
 
-      const reactActions = Object.freeze(
-        messageThing?.potentialAction.filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
+      const reactActions: readonly OrgSchemaAction[] = Object.freeze(
+        messageThing?.potentialAction.filter(
+          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
+        ) ?? []
       );
 
       if (reactActions.length) {
-        return patchActions(reactActions);
+        return patchActions(activity, reactActions);
       }
 
       const voteActions = Object.freeze(
-        graph
-          .filter(({ type }) => type === 'https://schema.org/VoteAction')
-          .map(action => parse(orgSchemaActionSchema, action))
+        graph.reduce<OrgSchemaAction[]>((result, item) => {
+          const parseResult = safeParse(orgSchemaActionSchema, item);
+
+          if (parseResult.success) {
+            const { output } = parseResult;
+
+            output.actionOption[0] && result.push(output);
+          }
+
+          return result;
+        }, [])
         // TODO: Instead of processing VoteAction, convert it to LikeAction/DislikeAction.
         // .map(action => ({
         //   ...action,
@@ -151,10 +171,11 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       if (voteActions.length) {
         // VoteAction is deprecated and was never published publicly.
-        return patchActions(voteActions);
+        return patchActions(activity, voteActions);
       }
-    } catch {
+    } catch (error) {
       // Intentionally left blank.
+      console.warn('botframework-webchat: Internal error in <ActivityFeedbackComposer>', error);
     }
 
     return Object.freeze([]);
