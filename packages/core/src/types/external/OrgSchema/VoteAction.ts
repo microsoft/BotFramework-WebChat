@@ -1,8 +1,8 @@
 import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
-import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 import { jsonLinkedDataEntries } from './JSONLinkedData';
+import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 
 /**
  * An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.
@@ -40,18 +40,15 @@ type VoteActionOutput = ActionOutput & {
   readonly actionOption: readonly string[];
 };
 
-const voteActionEntries = {
-  ...jsonLinkedDataEntries,
-  // ...actionEntries,
-  actionOption: jsonLinkedDataProperty(string())
-};
-
 const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = intersect([
   lazy(() => actionSchema),
-  object(voteActionEntries)
+  object({
+    ...jsonLinkedDataEntries,
+    actionOption: jsonLinkedDataProperty(string())
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(voteActionSchema) instead. Will be removed on or after 2028-04-23. */
 const parseVoteAction = (voteAction: VoteActionInput): VoteActionOutput => parse(voteActionSchema, voteAction);
 
-export { parseVoteAction, voteActionEntries, voteActionSchema, type VoteActionInput, type VoteActionOutput };
+export { parseVoteAction, voteActionSchema, type VoteActionInput, type VoteActionOutput };

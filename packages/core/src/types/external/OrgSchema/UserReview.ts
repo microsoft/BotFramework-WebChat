@@ -32,17 +32,15 @@ type UserReviewOutput = ThingOutput & {
   readonly reviewAspect: readonly string[];
 };
 
-const userReviewEntries = {
-  ...jsonLinkedDataEntries,
-  reviewAspect: jsonLinkedDataProperty(string())
-};
-
 const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
   lazy(() => thingSchema),
-  object(userReviewEntries)
+  object({
+    ...jsonLinkedDataEntries,
+    reviewAspect: jsonLinkedDataProperty(string())
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(userReviewSchema) instead. Will be removed on or after 2028-04-23. */
 const parseUserReview = (userReview: UserReviewInput): UserReviewOutput => parse(userReviewSchema, userReview);
 
-export { parseUserReview, userReviewEntries, userReviewSchema, type UserReviewInput, type UserReviewOutput };
+export { parseUserReview, userReviewSchema, type UserReviewInput, type UserReviewOutput };

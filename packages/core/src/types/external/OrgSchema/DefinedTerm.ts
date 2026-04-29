@@ -50,18 +50,16 @@ type DefinedTermOutput = ThingOutput & {
   readonly termCode: readonly string[];
 };
 
-const definedTermEntries = {
-  ...jsonLinkedDataEntries,
-  inDefinedTermSet: jsonLinkedDataProperty(string()),
-  termCode: jsonLinkedDataProperty(string())
-};
-
 const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([
   lazy(() => thingSchema),
-  object(definedTermEntries)
+  object({
+    ...jsonLinkedDataEntries,
+    inDefinedTermSet: jsonLinkedDataProperty(string()),
+    termCode: jsonLinkedDataProperty(string())
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(definedTermSchema) instead. Will be removed on or after 2028-04-23. */
 const parseDefinedTerm = (definedTerm: DefinedTermInput): DefinedTermOutput => parse(definedTermSchema, definedTerm);
 
-export { definedTermEntries, definedTermSchema, parseDefinedTerm, type DefinedTermInput, type DefinedTermOutput };
+export { definedTermSchema, parseDefinedTerm, type DefinedTermInput, type DefinedTermOutput };

@@ -36,17 +36,15 @@ type ProjectOutput = ThingOutput & {
   readonly slogan: readonly string[];
 };
 
-const projectEntries = {
-  ...jsonLinkedDataEntries,
-  slogan: jsonLinkedDataProperty(string())
-};
-
 const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = intersect([
   lazy(() => thingSchema),
-  object(projectEntries)
+  object({
+    ...jsonLinkedDataEntries,
+    slogan: jsonLinkedDataProperty(string())
+  })
 ]);
 
 /** @deprecated Use Valibot.parse(projectSchema) instead. Will be removed on or after 2028-04-23. */
 const parseProject = (project: ProjectInput): ProjectOutput => parse(projectSchema, project);
 
-export { parseProject, projectEntries, projectSchema, type ProjectInput, type ProjectOutput };
+export { parseProject, projectSchema, type ProjectInput, type ProjectOutput };

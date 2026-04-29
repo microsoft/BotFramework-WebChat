@@ -106,7 +106,7 @@ type ThingOutput = JSONLinkedDataOutput & {
   readonly url: readonly string[];
 };
 
-const thingEntries = {
+const thingSchema: GenericSchema<ThingInput, ThingOutput> = object({
   ...jsonLinkedDataEntries,
   additionalType: jsonLinkedDataProperty(string()),
   alternateName: jsonLinkedDataProperty(string()),
@@ -114,11 +114,9 @@ const thingEntries = {
   name: jsonLinkedDataProperty(string()),
   potentialAction: jsonLinkedDataProperty(lazy(() => actionSchema)),
   url: jsonLinkedDataProperty(string())
-};
-
-const thingSchema: GenericSchema<ThingInput, ThingOutput> = object(thingEntries);
+});
 
 /** @deprecated Use Valibot.parse(thingSchema) instead. Will be removed on or after 2028-04-23. */
 const parseThing = (thing: ThingInput): ThingOutput => parse(thingSchema, thing);
 
-export { parseThing, thingEntries, thingSchema, type ThingInput, type ThingOutput };
+export { parseThing, thingSchema, type ThingInput, type ThingOutput };
