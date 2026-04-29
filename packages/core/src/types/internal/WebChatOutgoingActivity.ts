@@ -49,6 +49,7 @@ type WebChatOutgoingActivity<Type extends string = string> = {
   locale: string;
   localTimestamp: string;
   localTimezone?: string;
+  timestamp?: string;
 } & (Type extends 'event'
   ? OutgoingEventActivityEssence
   : Type extends 'message'

@@ -62,8 +62,9 @@
         // GIVEN: Web Chat with Speech-to-Speech enabled and CSP headers
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // Set voice configuration capability to enable microphone button
+        // Multi-modal experience: server announces audio, consumer opted into voice mode.
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        directLine.setCapability('getIsVoiceModeEnabled', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -71,6 +72,10 @@
               directLine={directLine}
               store={store}
               nonce="WEB_CHAT_NONCE"
+              styleOptions={{
+                // TODO: Use blob url instead of raw data URI and remove this workaround
+                voiceProcessingSound: false
+              }}
             />
           </FluentThemeProvider>,
           document.getElementById('webchat')

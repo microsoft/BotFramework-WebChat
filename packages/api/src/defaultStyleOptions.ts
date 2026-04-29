@@ -1,5 +1,6 @@
 /* eslint no-magic-numbers: "off" */
 import StyleOptions from './StyleOptions';
+import VOICE_PROCESSING_SOUND_DATA_URI from './assets/voiceProcessingSound';
 
 function fontFamily(fonts) {
   return fonts.map(font => `'${font}'`).join(', ');
@@ -323,7 +324,12 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   sendBoxAttachmentBarMaxThumbnail: 3,
 
   // Speech-to-speech options
-  showMicrophoneButton: 'auto'
+  showMicrophoneButton: 'auto',
+
+  // Voice processing sound (played during voice state is 'processing')
+  voiceProcessingSound: VOICE_PROCESSING_SOUND_DATA_URI,
+  voiceProcessingSoundLoop: true,
+  voiceProcessingSoundVolume: 0.5
 };
 
 export default DEFAULT_OPTIONS;

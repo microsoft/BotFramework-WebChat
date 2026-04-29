@@ -1021,6 +1021,31 @@ type StyleOptions = {
    * @default 'auto'
    */
   showMicrophoneButton?: 'auto' | 'hide';
+
+  /**
+   * Sound played while voice state is in `'processing'` state.
+   *
+   * - `string` — a URL, data URI, or blob URL of the audio to play.
+   * - `false` — disables the sound cue entirely.
+   *
+   * @default A bundled default sound (data URI)
+   */
+  voiceProcessingSound?: string | false;
+
+  /**
+   * Whether the voice processing sound should loop while in `'processing'` state.
+   *
+   * @default true
+   */
+  voiceProcessingSoundLoop?: boolean;
+
+  /**
+   * Volume of the voice processing sound. A number between `0` (muted) and `1` (full).
+   * Lets consumers tune loudness so the cue stays audible without overpowering the bot's spoken response or the user's environment.
+   *
+   * @default 0.5
+   */
+  voiceProcessingSoundVolume?: number;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
