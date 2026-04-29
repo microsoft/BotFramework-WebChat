@@ -191,7 +191,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   }, [messages]);
 
   const defaultWorkStatus = useMemo<'Incomplete' | undefined>(
-    () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
+    () => (messages.some(message => message.creativeWorkStatus[0]) ? 'Incomplete' : undefined),
     [messages]
   );
 
