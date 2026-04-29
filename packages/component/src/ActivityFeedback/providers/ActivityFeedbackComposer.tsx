@@ -261,8 +261,16 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           }
         } as any);
       } else {
+        const entity = isLegacyAction ? rest : action;
+
         postActivity({
-          entities: [isLegacyAction ? rest : action],
+          entities: [
+            {
+              ...entity,
+              actionOption: entity.actionOption[0], // TODO: Service should accept plural.
+              type: new URL(entity['@type'] ?? '', entity['@context'] ?? 'https://schema.org').href
+            }
+          ],
           name: 'webchat:activity-status/feedback',
           type: 'event'
         } as any);

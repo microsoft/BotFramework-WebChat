@@ -70,12 +70,12 @@
           'activity',
           expect.objectContaining({
             entities: expect.arrayContaining([
-              {
+              expect.objectContaining({
                 '@context': 'https://schema.org',
                 '@type': 'VoteAction',
-                type: 'https://schema.org/VoteAction',
-                actionOption: 'upvote'
-              }
+                actionOption: 'upvote',
+                type: 'https://schema.org/VoteAction'
+              })
             ]),
             name: 'webchat:activity-status/feedback',
             type: 'event'
@@ -97,12 +97,12 @@
           'activity',
           expect.objectContaining({
             entities: expect.arrayContaining([
-              {
+              expect.objectContaining({
                 '@context': 'https://schema.org',
                 '@type': 'VoteAction',
                 type: 'https://schema.org/VoteAction',
                 actionOption: 'downvote'
-              }
+              })
             ]),
             name: 'webchat:activity-status/feedback',
             type: 'event'
@@ -125,12 +125,12 @@
           'activity',
           expect.objectContaining({
             entities: expect.arrayContaining([
-              {
+              expect.objectContaining({
                 '@context': 'https://schema.org',
                 '@type': 'VoteAction',
                 type: 'https://schema.org/VoteAction',
                 actionOption: 'downvote'
-              }
+              })
             ]),
             name: 'webchat:activity-status/feedback',
             type: 'event'
