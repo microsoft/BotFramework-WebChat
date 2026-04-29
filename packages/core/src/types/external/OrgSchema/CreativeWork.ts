@@ -10,6 +10,11 @@ import { definedTermSchema, type DefinedTermInput, type DefinedTermOutput } from
 import { jsonLinkedDataEntries } from './JSONLinkedData';
 import { personSchema, type PersonInput, type PersonOutput } from './Person';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import {
+  softwareSourceCodeSchema,
+  type SoftwareSourceCodeInput,
+  type SoftwareSourceCodeOutput
+} from './SoftwareSourceCode';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
 /**
@@ -51,7 +56,7 @@ type CreativeWorkInput = ThingInput & {
   /**
    * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
    */
-  readonly isBasedOn?: CreativeWorkInput | readonly CreativeWorkInput[] | undefined;
+  readonly isBasedOn?: SoftwareSourceCodeInput | readonly SoftwareSourceCodeInput[] | undefined;
 
   /**
    * Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
@@ -135,7 +140,7 @@ type CreativeWorkOutput = ThingOutput & {
   /**
    * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
    */
-  readonly isBasedOn: readonly CreativeWorkOutput[];
+  readonly isBasedOn: readonly SoftwareSourceCodeOutput[];
 
   /**
    * Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
@@ -190,7 +195,7 @@ const creativeWorkEntries = {
   author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
   citation: jsonLinkedDataProperty(lazy(() => claimSchema)),
   creativeWorkStatus: jsonLinkedDataProperty(creativeWorkStatusSchema),
-  isBasedOn: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
+  isBasedOn: jsonLinkedDataProperty(lazy(() => softwareSourceCodeSchema)),
   isPartOf: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
   keywords: jsonLinkedDataProperty(union([lazy(() => definedTermSchema), string()])),
   pattern: jsonLinkedDataProperty(lazy(() => definedTermSchema)),

@@ -1,9 +1,4 @@
-import {
-  orgSchemaSoftwareSourceCodeSchema,
-  type OrgSchemaCreativeWork,
-  type OrgSchemaSoftwareSourceCode
-} from 'botframework-webchat-core';
-import { safeParse } from 'valibot';
+import { type OrgSchemaCreativeWork, type OrgSchemaSoftwareSourceCode } from 'botframework-webchat-core';
 
 /**
  * Finds the first `isBasedOf` element that is of type `SoftwareSourceCode`.
@@ -14,11 +9,7 @@ import { safeParse } from 'valibot';
 export default function getFirstBaseOfSoftwareSourceCode(
   messageThing: OrgSchemaCreativeWork | undefined
 ): OrgSchemaSoftwareSourceCode | undefined {
-  for (const base of messageThing?.isBasedOn ?? []) {
-    const result = safeParse(orgSchemaSoftwareSourceCodeSchema, base);
-
-    if (result.success) {
-      return result.output;
-    }
-  }
+  return (messageThing?.isBasedOn ?? []).find(
+    ({ '@type': jsonLinkedDataType }) => jsonLinkedDataType === 'SoftwareSourceCode'
+  );
 }

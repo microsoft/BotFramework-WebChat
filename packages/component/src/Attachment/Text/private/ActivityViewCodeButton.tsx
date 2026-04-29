@@ -19,7 +19,7 @@ const activityViewCodeButtonPropsSchema = pipe(
     code: string(),
     language: optional(string()),
     isAIGenerated: boolean(),
-    title: string()
+    title: optional(string())
   }),
   readonly()
 );

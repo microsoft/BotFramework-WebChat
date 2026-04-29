@@ -7,6 +7,7 @@ import {
   orgSchemaClaimSchema,
   type OrgSchemaClaim,
   type OrgSchemaCreativeWork,
+  type OrgSchemaSoftwareSourceCode,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import cx from 'classnames';
@@ -273,7 +274,13 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const getEntryDescription = (entry: Entry): string | undefined =>
     entry.claim?.appearance[0]?.usageInfo[0]?.description[0];
 
-  const firstSoftwareSourceCodeBase = useMemo(() => getFirstBaseOfSoftwareSourceCode(messageThing), [messageThing]);
+  const firstSoftwareSourceCodeBase = useMemo<OrgSchemaSoftwareSourceCode | undefined>(() => {
+    const firstSoftwareSourceCodeBase = getFirstBaseOfSoftwareSourceCode(messageThing);
+
+    if (firstSoftwareSourceCodeBase?.programmingLanguage[0]) {
+      return firstSoftwareSourceCodeBase;
+    }
+  }, [messageThing]);
 
   return (
     <div className={cx(textContentClassNames['text-content'], textContentClassNames['text-content--is-markdown'])}>
