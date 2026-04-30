@@ -1027,10 +1027,11 @@ type StyleOptions = {
    *
    * - `string` — a URL, data URI, or blob URL of the audio to play.
    * - `false` — disables the sound cue entirely.
+   * - `undefined` — uses a bundled default sound (lazily materialized to a `blob:` URL).
    *
-   * @default A bundled default sound (data URI)
+   * @default undefined
    */
-  voiceProcessingSound?: string | false;
+  voiceProcessingSound?: string | false | undefined;
 
   /**
    * Whether the voice processing sound should loop while in `'processing'` state.

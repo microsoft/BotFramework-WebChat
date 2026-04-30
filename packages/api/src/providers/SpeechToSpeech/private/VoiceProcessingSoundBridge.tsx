@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
+import getVoiceProcessingSound from './voiceProcessingSound';
+import useShouldShowMicrophoneButton from '../../../hooks/internal/useShouldShowMicrophoneButton';
 import useStyleOptions from '../../../hooks/useStyleOptions';
 import useVoiceState from '../../../hooks/useVoiceState';
 
@@ -31,26 +33,33 @@ const play = (audio: HTMLAudioElement) => {
  * Plays a (looping) audio cue while voice mode is `'processing'`.
  *
  * Style options:
- * - `voiceProcessingSound`       — URL/data-URI; `false` disables.
+ * - `voiceProcessingSound`       — URL/data-URI; `false` disables; when unset uses the bundled default.
  * - `voiceProcessingSoundLoop`   — defaults to `true`.
  * - `voiceProcessingSoundVolume` — `0`–`1`, defaults to `0.5`.
+ *
+ * Skipped entirely when the microphone button is hidden — no mic means no voice flow to cue.
  */
 export const VoiceProcessingSoundBridge = () => {
   const [{ voiceProcessingSound, voiceProcessingSoundLoop, voiceProcessingSoundVolume }] = useStyleOptions();
   const [voiceState] = useVoiceState();
+  const shouldShowMicrophoneButton = useShouldShowMicrophoneButton();
+
+  // Resolve the source: explicit `false` disables; an explicit string is used as-is;
+  // `undefined` falls back to the lazily-created default `blob:` URL.
+  const source = voiceProcessingSound === false ? undefined : (voiceProcessingSound ?? getVoiceProcessingSound());
 
   const audio = useMemo(() => {
-    if (!voiceProcessingSound) {
+    if (!shouldShowMicrophoneButton || !source) {
       return undefined;
     }
 
-    const instance = new Audio(voiceProcessingSound);
+    const instance = new Audio(source);
 
     instance.loop = voiceProcessingSoundLoop ?? true;
     instance.volume = clamp(voiceProcessingSoundVolume ?? DEFAULT_VOLUME, MIN_VOLUME, MAX_VOLUME);
 
     return instance;
-  }, [voiceProcessingSound, voiceProcessingSoundLoop, voiceProcessingSoundVolume]);
+  }, [shouldShowMicrophoneButton, source, voiceProcessingSoundLoop, voiceProcessingSoundVolume]);
 
   useEffect(() => {
     if (audio && voiceState === 'processing') {
