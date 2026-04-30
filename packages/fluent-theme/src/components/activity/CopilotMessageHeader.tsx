@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat';
 import { type WebChatActivity } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { custom, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyles } from '../../styles';
 import styles from './CopilotMessageHeader.module.css';
@@ -15,7 +15,7 @@ const { useLocalizer } = hooks;
 
 const copilotMessageHeaderPropsSchema = pipe(
   object({
-    activity: optional(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)),
+    activity: optional(custom<Readonly<WebChatActivity>>(value => is(object({}), value))),
     className: optional(string())
   }),
   readonly()

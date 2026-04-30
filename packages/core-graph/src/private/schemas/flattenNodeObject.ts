@@ -1,7 +1,7 @@
 // TODO: [P0] This flattening can probably fold into `colorNode()` as it has slanted view of the system.
 
 import { v4 } from 'uuid';
-import { assert, check, looseObject, object, optional, parse, pipe, safeParse } from 'valibot';
+import { assert, check, is, looseObject, object, optional, parse, pipe, safeParse } from 'valibot';
 
 import { FlatNodeObjectSchema, type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
 import { IdentifierSchema, type Identifier } from './Identifier';
@@ -75,7 +75,7 @@ function flattenNodeObject_(
   input = input as object;
 
   // Array is allowed by valibot.object({}), we need to check for plain object first.
-  if (!isPlainObject(input) || !safeParse(object({}), input).success) {
+  if (!isPlainObject(input) || !is(object({}), input)) {
     // TODO: [P0] For "undefined", maybe we just want to remove it or just set it to null.
     //       Or we should consolidate `colorNode` here as `colorNode` will handle that.
     const error = new Error(

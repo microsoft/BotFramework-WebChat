@@ -11,7 +11,7 @@ import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, typ
 import { wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
-import { custom, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, is, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import canActionResubmit from '../private/canActionResubmit';
@@ -25,7 +25,7 @@ const { usePonyfill, usePostActivity } = hooks;
 
 const activityFeedbackComposerPropsSchema = pipe(
   object({
-    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success),
+    activity: custom<WebChatActivity>(value => is(object({}), value)),
     children: optional(reactNode())
   }),
   readonly()

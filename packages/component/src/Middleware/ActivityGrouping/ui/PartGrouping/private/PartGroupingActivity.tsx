@@ -4,18 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
 import cx from 'classnames';
-import {
-  array,
-  custom,
-  minLength,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  type InferOutput
-} from 'valibot';
+import { array, custom, is, minLength, object, optional, pipe, readonly, string, type InferOutput } from 'valibot';
 
 import StackedLayoutMain from '../../../../../Activity/StackedLayoutMain';
 import StackedLayoutMessageStatus from '../../../../../Activity/StackedLayoutMessageStatus';
@@ -48,7 +37,7 @@ const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useStyleOptions } = 
 const partGroupingActivityPropsSchema = pipe(
   object({
     activities: pipe(
-      array(pipe(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success))),
+      array(pipe(custom<Readonly<WebChatActivity>>(value => is(object({}), value)))),
       minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
       readonly()
     ),
@@ -61,7 +50,7 @@ type PartGroupingActivityProps = InferOutput<typeof partGroupingActivityPropsSch
 
 const partGroupingFocusableActivityPropsSchema = pipe(
   object({
-    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success),
+    activity: custom<WebChatActivity>(value => is(object({}), value)),
     children: optional(reactNode()),
     className: optional(string()),
     groupKey: string()

@@ -1,6 +1,6 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import { type StyleOptions } from '../../StyleOptions';
 import StyleOptionsContext, { StyleOptionsContextType, useStyleOptionsContext } from './private/StyleOptionsContext';
@@ -9,7 +9,7 @@ import rectifyStyleOptions from './private/rectifyStyleOptions';
 const styleOptionsComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    styleOptions: optional(custom<StyleOptions>(value => safeParse(object({}), value).success))
+    styleOptions: optional(custom<StyleOptions>(value => is(object({}), value)))
   }),
   readonly()
 );

@@ -1,10 +1,10 @@
 import {
   any,
   check,
+  is,
   object,
   pipe,
   readonly,
-  safeParse,
   type BaseIssue,
   type BaseSchema,
   type ErrorMessage,
@@ -33,7 +33,7 @@ function refObject<
 ): BaseSchema<unknown, { get current(): InferOutput<TInput> }, BaseIssue<TMessage>> {
   return pipe(
     any(),
-    check(value => safeParse(pipe(object({ current: baseSchema }, message), readonly()), value).success)
+    check(value => is(pipe(object({ current: baseSchema }, message), readonly()), value))
   );
 }
 

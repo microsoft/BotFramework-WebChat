@@ -4,12 +4,12 @@ import {
   custom,
   function_,
   instance,
+  is,
   nullable,
   object,
   optional,
   pipe,
   readonly,
-  safeParse,
   string,
   type InferInput
 } from 'valibot';
@@ -28,7 +28,7 @@ import mutableRefObject from '../types/internal/mutableRefObject';
 const focusRedirectorPropsSchema = pipe(
   object({
     className: optional(string()),
-    onFocus: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    onFocus: optional(custom<() => void>(value => is(function_(), value))),
     redirectRef: optional(mutableRefObject(nullable(instance(HTMLElement))))
   }),
   readonly()

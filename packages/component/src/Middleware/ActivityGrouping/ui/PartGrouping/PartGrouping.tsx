@@ -5,13 +5,13 @@ import React, { Fragment, memo, useMemo } from 'react';
 import {
   array,
   custom,
+  is,
   minLength,
   object,
   optional,
   parse,
   pipe,
   readonly,
-  safeParse,
   type InferOutput
 } from 'valibot';
 
@@ -20,7 +20,7 @@ import PartGroupingActivity from './private/PartGroupingActivity';
 const partGroupingPropsSchema = pipe(
   object({
     activities: pipe(
-      array(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)),
+      array(custom<Readonly<WebChatActivity>>(value => is(object({}), value))),
       minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
       readonly()
     ),
@@ -50,7 +50,7 @@ function PartGrouping(props: PartGroupingProps) {
     [activities, lastActivity]
   );
 
-  const isGroup = activities.length > 1 || safeParse(IdentifierSchema, lastMessage?.isPartOf[0]?.['@id']).success;
+  const isGroup = activities.length > 1 || is(IdentifierSchema, lastMessage?.isPartOf[0]?.['@id']);
 
   return isGroup ? (
     <PartGroupingActivity activities={activities}>{children}</PartGroupingActivity>

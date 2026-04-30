@@ -2,18 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo, useRef, type MouseEventHandler } from 'react';
-import {
-  boolean,
-  custom,
-  function_,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  type InferInput
-} from 'valibot';
+import { boolean, custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useStyleSet from '../hooks/useStyleSet';
@@ -28,7 +17,7 @@ const iconButtonPropsSchema = pipe(
     className: optional(string()),
     'data-testid': optional(string()),
     disabled: optional(boolean()),
-    onClick: optional(custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success))
+    onClick: optional(custom<MouseEventHandler<HTMLButtonElement>>(value => is(function_(), value)))
   }),
   readonly()
 );

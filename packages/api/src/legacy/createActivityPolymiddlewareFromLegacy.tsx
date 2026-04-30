@@ -14,13 +14,13 @@ import {
   boolean,
   custom,
   function_,
+  is,
   literal,
   never,
   object,
   optional,
   pipe,
   readonly,
-  safeParse,
   union,
   type InferInput
 } from 'valibot';
@@ -28,7 +28,7 @@ import {
 import LegacyActivityBridge from './LegacyActivityBridge';
 
 const DEBUG_ORIGINAL_LEGACY_MIDDLEWARE_SYMBOL = Symbol('OriginalLegacyMiddleware');
-const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
+const webChatActivitySchema = custom<WebChatActivity>(value => is(object({}), value));
 
 type LegacyRenderFunction = (
   renderAttachment: LegacyRenderAttachment,
@@ -44,17 +44,17 @@ const legacyActivityBridgeComponentPropsSchema = pipe(
   object({
     activity: webChatActivitySchema,
     children: optional(never()),
-    render: custom<LegacyRenderFunction>(value => safeParse(function_(), value).success),
+    render: custom<LegacyRenderFunction>(value => is(function_(), value)),
 
     // The following extraneous props should be removed once `useCreateActivityRenderer()` is removed.
     hideTimestamp: optional(boolean()),
     renderActivityStatus: optional(
-      custom<(options: { hideTimestamp: boolean }) => ReactNode>(value => safeParse(function_(), value).success)
+      custom<(options: { hideTimestamp: boolean }) => ReactNode>(value => is(function_(), value))
     ),
     renderAvatar: optional(
       union([
         literal(false),
-        custom<() => Exclude<ReactNode, boolean | null | undefined>>(value => safeParse(function_(), value).success)
+        custom<() => Exclude<ReactNode, boolean | null | undefined>>(value => is(function_(), value))
       ])
     ),
     showCallout: optional(boolean())

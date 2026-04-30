@@ -11,12 +11,12 @@ import {
   type ProviderProps,
   type ProxyProps
 } from 'react-chain-of-responsibility/preview';
-import { array, check, function_, literal, parse, pipe, safeParse, union, type InferOutput } from 'valibot';
+import { array, check, function_, is, literal, parse, pipe, union, type InferOutput } from 'valibot';
 
 const arrayOfFunctionSchema = array(function_());
 
 const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
-  safeParse(arrayOfFunctionSchema, middleware).success;
+  is(arrayOfFunctionSchema, middleware);
 
 const BYPASS_ENHANCER: Enhancer<any, any> = next => request => next(request);
 const DEBUG_ENHANCER_SYMBOL = Symbol('OriginalEnhancer');
@@ -43,9 +43,7 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
       function_(),
       check(value => value === BYPASS_ENHANCER || middlewareFactoryTag in value)
     ),
-    literal(false)
-  ]);
-
+    literal(false)true
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     parse(function_(`botframework-webchat: ${name} enhancer must be of type function.`), enhancer);
 
@@ -89,7 +87,7 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
                 console.warn(`botframework-webchat: ${name}.middleware must return enhancer function or false`);
 
                 return false;
-              } else if (!safeParse(middlewareSchema, result).success) {
+              } else if (!is(middlewareSchema, result)) {
                 console.warn(`botframework-webchat: ${name}.middleware must be created using factory function`);
 
                 return false;

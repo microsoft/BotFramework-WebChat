@@ -7,11 +7,11 @@ import {
   boolean,
   custom,
   function_,
+  is,
   object,
   optional,
   pipe,
   readonly,
-  safeParse,
   string,
   type InferInput
 } from 'valibot';
@@ -30,7 +30,7 @@ const activityButtonPropsSchema = pipe(
     'data-testid': optional(string()),
     disabled: optional(boolean()),
     icon: componentIconPropsSchema.entries.icon,
-    onClick: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    onClick: optional(custom<() => void>(value => is(function_(), value))),
     text: optional(string())
   }),
   readonly()

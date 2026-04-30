@@ -5,12 +5,12 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, type MutableRefOb
 import {
   custom,
   function_,
+  is,
   literal,
   object,
   optional,
   pipe,
   readonly,
-  safeParse,
   union,
   type InferInput
 } from 'valibot';
@@ -22,7 +22,7 @@ type ItemRef = MutableRefObject<HTMLElement | undefined>;
 const rovingTabIndexContextProps = pipe(
   object({
     children: optional(reactNode()),
-    onEscapeKey: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    onEscapeKey: optional(custom<() => void>(value => is(function_(), value))),
     orientation: optional(union([literal('horizontal'), literal('vertical')]), 'horizontal')
   }),
   readonly()

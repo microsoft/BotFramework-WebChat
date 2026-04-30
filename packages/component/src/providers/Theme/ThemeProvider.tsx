@@ -20,47 +20,35 @@ import {
 import { StyleOptionsComposer } from 'botframework-webchat-api/internal.js';
 import { type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
-import { array, custom, function_, object, optional, pipe, readonly, safeParse } from 'valibot';
+import { array, custom, function_, is, object, optional, pipe, readonly } from 'valibot';
 
 import Context, { type ThemeContextType } from './private/Context';
 
 const themeProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    styleOptions: optional(custom<StyleOptions>(value => safeParse(object({}), value).success)),
+    styleOptions: optional(custom<StyleOptions>(value => is(object({}), value))),
 
     /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
-    activityMiddleware: optional(
-      pipe(array(custom<ActivityMiddleware>(value => safeParse(function_(), value).success)))
-    ),
-    activityStatusMiddleware: optional(
-      pipe(array(custom<ActivityStatusMiddleware>(value => safeParse(function_(), value).success)))
-    ),
+    activityMiddleware: optional(pipe(array(custom<ActivityMiddleware>(value => is(function_(), value))))),
+    activityStatusMiddleware: optional(pipe(array(custom<ActivityStatusMiddleware>(value => is(function_(), value))))),
     attachmentForScreenReaderMiddleware: optional(
-      pipe(array(custom<AttachmentForScreenReaderMiddleware>(value => safeParse(function_(), value).success)))
+      pipe(array(custom<AttachmentForScreenReaderMiddleware>(value => is(function_(), value))))
     ),
-    attachmentMiddleware: optional(
-      pipe(array(custom<AttachmentMiddleware>(value => safeParse(function_(), value).success)))
-    ),
-    avatarMiddleware: optional(pipe(array(custom<AvatarMiddleware>(value => safeParse(function_(), value).success)))),
-    cardActionMiddleware: optional(
-      pipe(array(custom<CardActionMiddleware>(value => safeParse(function_(), value).success)))
-    ),
+    attachmentMiddleware: optional(pipe(array(custom<AttachmentMiddleware>(value => is(function_(), value))))),
+    avatarMiddleware: optional(pipe(array(custom<AvatarMiddleware>(value => is(function_(), value))))),
+    cardActionMiddleware: optional(pipe(array(custom<CardActionMiddleware>(value => is(function_(), value))))),
     groupActivitiesMiddleware: optional(
-      pipe(array(custom<GroupActivitiesMiddleware>(value => safeParse(function_(), value).success)))
+      pipe(array(custom<GroupActivitiesMiddleware>(value => is(function_(), value))))
     ),
-    polymiddleware: optional(pipe(array(custom<Polymiddleware>(value => safeParse(function_(), value).success)))),
+    polymiddleware: optional(pipe(array(custom<Polymiddleware>(value => is(function_(), value))))),
     scrollToEndButtonMiddleware: optional(
-      pipe(array(custom<ScrollToEndButtonMiddleware>(value => safeParse(function_(), value).success)))
+      pipe(array(custom<ScrollToEndButtonMiddleware>(value => is(function_(), value))))
     ),
-    sendBoxMiddleware: optional(pipe(array(custom<SendBoxMiddleware>(value => safeParse(function_(), value).success)))),
-    sendBoxToolbarMiddleware: optional(
-      pipe(array(custom<SendBoxToolbarMiddleware>(value => safeParse(function_(), value).success)))
-    ),
-    toastMiddleware: optional(pipe(array(custom<ToastMiddleware>(value => safeParse(function_(), value).success)))),
-    typingIndicatorMiddleware: optional(
-      pipe(array(custom<TypingIndicatorMiddleware>(value => safeParse(function_(), value).success)))
-    )
+    sendBoxMiddleware: optional(pipe(array(custom<SendBoxMiddleware>(value => is(function_(), value))))),
+    sendBoxToolbarMiddleware: optional(pipe(array(custom<SendBoxToolbarMiddleware>(value => is(function_(), value))))),
+    toastMiddleware: optional(pipe(array(custom<ToastMiddleware>(value => is(function_(), value))))),
+    typingIndicatorMiddleware: optional(pipe(array(custom<TypingIndicatorMiddleware>(value => is(function_(), value)))))
   }),
   readonly()
 );

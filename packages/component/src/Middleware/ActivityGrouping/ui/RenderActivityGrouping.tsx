@@ -2,7 +2,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo } from 'react';
-import { array, custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { array, custom, is, object, pipe, readonly, type InferInput } from 'valibot';
 
 import useActivityRendererMap from '../../../providers/RenderingActivities/useActivityRendererMap';
 import RenderActivity from './RenderActivity';
@@ -11,7 +11,7 @@ const { useGetKeyByActivity } = hooks;
 
 const renderActivityGroupingPropsSchema = pipe(
   object({
-    activities: pipe(array(custom<WebChatActivity>(value => safeParse(object({}), value).success)), readonly())
+    activities: pipe(array(custom<WebChatActivity>(value => is(object({}), value))), readonly())
   }),
   readonly()
 );
