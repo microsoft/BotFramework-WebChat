@@ -69,6 +69,7 @@
         // Setup Web Chat with Speech-to-Speech
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        directLine.setCapability('getIsVoiceModeEnabled', true, { emitEvent: false });
 
         // Track voiceState and microphoneMuted changes
         store.subscribe(() => {

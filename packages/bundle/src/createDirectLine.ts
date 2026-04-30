@@ -5,6 +5,7 @@ type CreateDirectLineOptions = {
   conversationId?: string;
   conversationStartProperties?: any;
   domain?: string;
+  enableVoiceMode?: boolean;
   fetch?: typeof window.fetch;
   pollingInterval?: number;
   secret?: string;
@@ -20,6 +21,7 @@ export default function createDirectLine({
   conversationId,
   conversationStartProperties,
   domain,
+  enableVoiceMode,
   fetch,
   pollingInterval,
   secret,
@@ -35,6 +37,7 @@ export default function createDirectLine({
     conversationId,
     conversationStartProperties,
     domain,
+    enableVoiceMode,
     fetch,
     pollingInterval,
     secret,

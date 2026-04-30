@@ -1,12 +1,10 @@
-import { hooks } from 'botframework-webchat';
 import { Timestamp } from 'botframework-webchat/component';
 import { getVoiceActivityRole, getVoiceActivityText, type WebChatActivity } from 'botframework-webchat/internal';
-import React, { Fragment, memo } from 'react';
+import React, { memo } from 'react';
 
+import { FluentIcon } from '../icon';
 import { useStyles } from '../../styles';
 import styles from './VoiceTranscriptActivityStatus.module.css';
-
-const { useLocalizer } = hooks;
 
 type VoiceTranscriptActivityStatusProps = Readonly<{
   activity: WebChatActivity;
@@ -14,26 +12,19 @@ type VoiceTranscriptActivityStatusProps = Readonly<{
 
 function VoiceTranscriptActivityStatus({ activity }: VoiceTranscriptActivityStatusProps) {
   const classNames = useStyles(styles);
-  const localize = useLocalizer();
   const { timestamp } = activity;
-  const role = getVoiceActivityRole(activity);
-  const text = getVoiceActivityText(activity);
 
-  const agentLabel = localize('ACTIVITY_STATUS_VOICE_TRANSCRIPT_AGENT_LABEL');
-
-  if (!text) {
+  if (!getVoiceActivityText(activity)) {
     return null;
   }
 
+  const icon = getVoiceActivityRole(activity) === 'bot' ? 'audio-playing' : 'microphone-regular';
+
   return (
     <span className={classNames['voice-transcript-activity-status']}>
-      {role === 'bot' && (
-        <Fragment>
-          <span className={classNames['voice-transcript-activity-status__agent-label']}>{agentLabel}</span>
-          {timestamp && <span className={classNames['voice-transcript-activity-status__divider']}>{'|'}</span>}
-        </Fragment>
-      )}
       {timestamp && <Timestamp timestamp={timestamp} />}
+      {timestamp && <span className={classNames['voice-transcript-activity-status__divider']}>{'|'}</span>}
+      <FluentIcon appearance="text" className={classNames['voice-transcript-activity-status__icon']} icon={icon} />
     </span>
   );
 }

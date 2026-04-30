@@ -323,7 +323,12 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   sendBoxAttachmentBarMaxThumbnail: 3,
 
   // Speech-to-speech options
-  showMicrophoneButton: 'auto'
+  showMicrophoneButton: 'auto',
+
+  // Voice processing sound (played during voice state is 'processing')
+  voiceProcessingSound: undefined,
+  voiceProcessingSoundLoop: true,
+  voiceProcessingSoundVolume: 0.5
 };
 
 export default DEFAULT_OPTIONS;

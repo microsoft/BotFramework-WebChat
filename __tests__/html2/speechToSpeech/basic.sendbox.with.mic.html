@@ -12,6 +12,13 @@
   </head>
   <body>
     <main id="webchat"></main>
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
     <script type="text/babel">
       run(async function () {
         const {
@@ -23,8 +30,9 @@
         // GIVEN: Web Chat with Fluent Theme and microphone button enabled
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // Set voice configuration capability to enable microphone button
+        // Multi-modal experience: server announces audio, consumer opted into voice mode.
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        directLine.setCapability('getIsVoiceModeEnabled', true, { emitEvent: false });
 
         render(
           <FluentThemeProvider variant="fluent">
@@ -50,16 +58,51 @@
         const keypadButton = document.querySelector(`[data-testid="${testIds.sendBoxTelephoneKeypadToolbarButton}"]`);
         expect(keypadButton).toBeTruthy();
 
-        // THEN: Text counter should NOT be present
-        const textCounter = document.querySelector('.sendbox__text-counter');
-        expect(textCounter).toBeFalsy();
-
-        // THEN: Send button should NOT be present
+        // THEN: Multi-modal design: send button coexists with mic. While idle it is enabled
+        // so the user can also send text without leaving voice mode.
         const sendButton = document.querySelector(`[data-testid="${testIds.sendBoxSendButton}"]`);
-        expect(sendButton).toBeFalsy();
+        const textArea = document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`);
+        const isSendDisabled = () => sendButton.getAttribute('aria-disabled') === 'true';
+        expect(sendButton).toBeTruthy();
+        expect(isSendDisabled()).toBe(false);
+        expect(textArea.hasAttribute('readonly')).toBe(false);
 
-        // THEN: Should show sendbox with microphone and keypad buttons
+        // THEN: Should show sendbox with microphone, keypad and send buttons
         await host.snapshot('local');
+
+        // WHEN: User starts recording
+        await host.click(micButton);
+
+        // First wait for the voice toggle to actually flip on so we know recording started.
+        await pageConditions.became(
+          'Recording started',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone on'),
+          2000
+        );
+
+        // THEN: Send button is disabled and text input becomes read-only — voice and text
+        // are mutually exclusive while the mic is open.
+        await pageConditions.became(
+          'Send button disabled while recording',
+          () => isSendDisabled() && textArea.hasAttribute('readonly'),
+          2000
+        );
+
+        // WHEN: User stops recording
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording stopped',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone off'),
+          2000
+        );
+
+        // THEN: Send button and text input are re-enabled — back to free text entry.
+        await pageConditions.became(
+          'Send button re-enabled after stopping recording',
+          () => !isSendDisabled() && !textArea.hasAttribute('readonly'),
+          2000
+        );
 
         // WHEN: Voice configuration is removed from directLine
         directLine.setCapability('getVoiceConfiguration', undefined);

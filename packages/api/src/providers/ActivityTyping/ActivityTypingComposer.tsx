@@ -1,4 +1,8 @@
-import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import {
+  getActivityLivestreamingMetadata,
+  isVoiceTranscriptActivity,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import { queryReceivedAtFromActivity } from 'botframework-webchat-core/activity';
 import { iteratorFind } from 'iter-fest';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
@@ -92,6 +96,9 @@ const ActivityTypingComposer = ({ children }: Props) => {
           firstReceivedAt: mutableEntry.typingIndicator?.firstReceivedAt ?? receivedAt,
           lastReceivedAt: receivedAt
         });
+      } else if (isVoiceTranscriptActivity(activity)) {
+        // Voice transcript (media.end with transcription) clears typing indicator.
+        mutableEntry.typingIndicator = undefined;
       }
 
       typingState.set(id, Object.freeze(mutableEntry));

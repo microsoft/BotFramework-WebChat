@@ -8,10 +8,38 @@ import activitiesSelector, { ofType as activitiesOfType } from '../selectors/act
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
 
+import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 
 // We will hold up the replying activity if the originating activity did not arrive, up to 5 seconds.
 const REPLY_TIMEOUT = 5000;
+
+/**
+ * Returns whether the DirectLine adapter is operating in voice (bi-directional WebSocket) mode.
+ *
+ * In text mode we delay rendering a bot reply until the activity it references via `replyToId`
+ * appears in the transcript — this keeps the visual order accessible.
+ *
+ * Voice mode invalidates that assumption:
+ * - The client does not send an `activity.id`, and the server-assigned id is never echoed back,
+ *   so `replyToId` on incoming activities never matches anything already in the transcript.
+ * - Traffic is bi-directional over the same WebSocket, so an incoming activity always arrives
+ *   after the outgoing one — visual order is implicitly correct.
+ *
+ * Therefore, when voice mode is enabled we skip the `replyToId` wait to avoid blocking the UI
+ * for an activity that will never arrive.
+ */
+function isVoiceEnabled(directLine: DirectLineJSBotConnection): boolean {
+  if (typeof directLine.getIsVoiceModeEnabled === 'function') {
+    try {
+      return Boolean(directLine.getIsVoiceModeEnabled());
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
+}
 
 function* takeEveryAndSelect(actionType, selector, fn) {
   // select() will free up the code execution.
@@ -51,7 +79,12 @@ function* waitForActivityId(replyToId, initialActivities) {
   }
 }
 
-function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: GlobalScopePonyfill) {
+function* queueIncomingActivity(
+  { directLine, userID }: { directLine: DirectLineJSBotConnection; userID: string },
+  ponyfill: GlobalScopePonyfill
+) {
+  const voiceModeEnabled = isVoiceEnabled(directLine);
+
   yield takeEveryAndSelect(
     QUEUE_INCOMING_ACTIVITY,
     activitiesSelector,
@@ -64,7 +97,7 @@ function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: Global
       // To speed up the first activity render time, we do not delay the first activity from the bot.
       // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
       // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
-      if (replyToId && initialBotActivities.length) {
+      if (replyToId && initialBotActivities.length && !voiceModeEnabled) {
         // Either the activity replied to is in the transcript or after timeout.
         const result = yield race({
           _: waitForActivityId(replyToId, initialActivities),

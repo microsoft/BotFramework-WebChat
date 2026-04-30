@@ -41,8 +41,9 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // Set voice configuration capability to enable microphone button
+        // Multi-modal experience: server announces audio, consumer opted into voice mode.
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        directLine.setCapability('getIsVoiceModeEnabled', true, { emitEvent: false });
         
         // Intercept postActivity to capture outgoing voice chunks
         const capturedChunks = [];

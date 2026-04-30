@@ -38,11 +38,14 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
     connectionStatusDeferredObservable.next(2);
   });
 
+  // Generic capabilities storage
+  const capabilities = new Map();
+
   const postActivityCallDeferreds = [];
   const postActivity = outgoingActivity => {
     // Auto-handle voice activities (continuous sending by mic) without requiring actPostActivity
-    // Voice activities are fire-and-forget and don't echo back
-    if (outgoingActivity.type === 'event' && outgoingActivity.name.includes('media')) {
+    // Voice mode uses fire-and-forget and don't echo back
+    if (capabilities.get('getIsVoiceModeEnabled')) {
       const id = uniqueId();
 
       return new Observable(observer => {
@@ -117,9 +120,6 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   };
 
   autoConnect && connectedWithResolvers.resolve();
-
-  // Generic capabilities storage
-  const capabilities = new Map();
 
   // EventTarget for capability change notifications
   const eventTarget = new EventTarget();

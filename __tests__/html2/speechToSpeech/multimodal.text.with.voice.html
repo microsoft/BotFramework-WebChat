@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      Test: Multi-modal experience — text and voice coexist in the same send box.
+
+      Verifies the realistic interleaving:
+        1. Server announces audio capability + consumer opts into voice mode (`enableVoiceMode`).
+        2. Text turn: user types → bot replies as text. Both ride the WebSocket fire-and-forget,
+           saga renders user message optimistically, bot text arrives as a normal incoming activity.
+        3. Voice turn: user clicks mic → user speaks → bot replies via media.end transcript.
+           While recording, the text input is read-only and the send button is disabled.
+        4. Mic toggled off → text turn again (user types → bot replies as text).
+        5. Snapshot captures the full mixed transcript.
+    -->
+    <script type="module">
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+      import { setupMockAudioPlayback } from '/assets/esm/speechToSpeech/mockAudioPlayback.js';
+
+      setupMockMediaDevices();
+      setupMockAudioPlayback();
+    </script>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // Mirror real DirectLine when `enableVoiceMode` is true: server announces audio,
+        // and outgoing traffic flows over the WebSocket without echo back.
+        directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
+        directLine.setCapability('getIsVoiceModeEnabled', true, { emitEvent: false });
+
+        // Capture outgoing activities to assert WebSocket-style fire-and-forget delivery.
+        const outgoingActivities = [];
+        const originalPostActivity = directLine.postActivity.bind(directLine);
+        directLine.postActivity = activity => {
+          outgoingActivities.push(activity);
+          return originalPostActivity(activity);
+        };
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <ReactWebChat directLine={directLine} store={store} />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        const sendButton = document.querySelector(`[data-testid="${testIds.sendBoxSendButton}"]`);
+        const textArea = document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`);
+        const isSendDisabled = () => sendButton.getAttribute('aria-disabled') === 'true';
+
+        // GIVEN: Multi-modal idle — mic, send button and a writable text box all coexist.
+        expect(micButton).toBeTruthy();
+        expect(sendButton).toBeTruthy();
+        expect(isSendDisabled()).toBe(false);
+        expect(textArea.hasAttribute('readonly')).toBe(false);
+
+        // ===== TURN 1: Text in → Text out =====
+        await pageObjects.sendMessageViaSendBox('What is the weather today?', { waitForSend: false });
+
+        await pageConditions.became(
+          'Outgoing text activity captured',
+          () => outgoingActivities.some(a => a.type === 'message' && a.text === 'What is the weather today?'),
+          1000
+        );
+
+        await pageConditions.numActivitiesShown(1);
+
+        await directLine.emulateIncomingActivity('The weather today is sunny with a high of 75 degrees.');
+
+        await pageConditions.numActivitiesShown(2);
+
+        // ===== TURN 2: Voice in → Voice out =====
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording started',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone on'),
+          2000
+        );
+
+        // While recording, text path is locked down.
+        await pageConditions.became(
+          'Recording active disables text path',
+          () => isSendDisabled() && textArea.hasAttribute('readonly'),
+          2000
+        );
+
+        // User speech is identified, processed, then transcript arrives.
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'detected', message: 'Your request is identified' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'request.update',
+          from: { role: 'bot' },
+          value: { state: 'processing', message: 'Your request is being processed' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.state'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          value: { transcription: 'Will it rain tomorrow?', origin: 'user' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+
+        // Bot replies as voice (audio chunk + transcript).
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.chunk',
+          from: { role: 'bot' },
+          value: { content: 'AAAAAA==', contentType: 'audio/webm' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.chunk'
+        });
+
+        await directLine.emulateIncomingVoiceActivity({
+          type: 'event',
+          name: 'media.end',
+          from: { role: 'bot' },
+          value: { transcription: 'No rain expected tomorrow.', origin: 'agent' },
+          valueType: 'application/vnd.microsoft.activity.azure.directline.audio.transcript'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        // Toggle mic off — back to idle text mode.
+        await host.click(micButton);
+
+        await pageConditions.became(
+          'Recording stopped',
+          () => micButton.getAttribute('aria-label')?.includes('Microphone off'),
+          2000
+        );
+
+        await pageConditions.became(
+          'Idle re-enables text path',
+          () => !isSendDisabled() && !textArea.hasAttribute('readonly'),
+          2000
+        );
+
+        // ===== TURN 3: Text in → Text out =====
+        await pageObjects.sendMessageViaSendBox('Thanks!', { waitForSend: false });
+
+        await pageConditions.became(
+          'Second outgoing text captured',
+          () => outgoingActivities.some(a => a.type === 'message' && a.text === 'Thanks!'),
+          1000
+        );
+
+        await pageConditions.numActivitiesShown(5);
+
+        await directLine.emulateIncomingActivity("You're welcome!");
+
+        await pageConditions.numActivitiesShown(6);
+
+        // ===== Verify final transcript order =====
+        const activities = pageElements.activityContents();
+        expect(activities[0]).toHaveProperty('textContent', 'What is the weather today?');
+        expect(activities[1]).toHaveProperty('textContent', 'The weather today is sunny with a high of 75 degrees.');
+        expect(activities[2]).toHaveProperty('textContent', 'Will it rain tomorrow?');
+        expect(activities[3]).toHaveProperty('textContent', 'No rain expected tomorrow.');
+        expect(activities[4]).toHaveProperty('textContent', 'Thanks!');
+        expect(activities[5]).toHaveProperty('textContent', "You're welcome!");
+
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

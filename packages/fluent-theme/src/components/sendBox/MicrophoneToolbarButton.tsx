@@ -47,7 +47,16 @@ function MicrophoneToolbarButton() {
       onClick={handleMicrophoneClick}
       type="button"
     >
-      <FluentIcon appearance="text" icon={voiceState === 'bot_speaking' ? 'audio-playing' : 'microphone'} />
+      <FluentIcon
+        appearance="text"
+        icon={
+          voiceState === 'bot_speaking'
+            ? 'audio-playing'
+            : voiceState === 'idle'
+              ? 'microphone-regular'
+              : 'microphone-filled'
+        }
+      />
     </ToolbarButton>
   );
 }
