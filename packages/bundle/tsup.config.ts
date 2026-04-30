@@ -53,11 +53,7 @@ const commonConfig = applyConfig(config => ({
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),
     injectCSSPlugin({
-      ignoreCSSEntries: [
-        'dist/botframework-webchat.component.css',
-        // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
-        'dist/botframework-webchat.deprecated.component.css'
-      ],
+      ignoreCSSEntries: ['dist/botframework-webchat.component.css'],
       stylesPlaceholder: bundleStyleContentPlaceholder
     })
   ]

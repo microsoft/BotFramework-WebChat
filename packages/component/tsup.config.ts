@@ -19,18 +19,11 @@ const commonConfig = applyConfig(config => ({
     injectCSSPlugin({
       // esbuild does not fully support CSS code splitting, every entry point has its own CSS file.
       // Related to https://github.com/evanw/esbuild/issues/608.
-      ignoreCSSEntries: [
-        'dist/botframework-webchat-component.component.css',
-        // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
-        'dist/botframework-webchat-component.deprecated.component.css'
-      ],
+      ignoreCSSEntries: ['dist/botframework-webchat-component.component.css'],
       stylesPlaceholder: componentStyleContentPlaceholder
     }),
     injectCSSPlugin({
-      ignoreCSSEntries: [
-        // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
-        'dist/botframework-webchat-component.deprecated.decorator.css'
-      ],
+      ignoreCSSEntries: [],
       stylesPlaceholder: decoratorStyleContentPlaceholder
     })
   ]
