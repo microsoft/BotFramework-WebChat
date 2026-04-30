@@ -38,9 +38,7 @@ const sendBoxAttachmentBarItemPropsSchema = pipe(
     ),
     mode: picklist(['list item', 'thumbnail']),
     onDelete: optional(
-      custom<(event: Readonly<{ attachment: SendBoxAttachment }>) => void>(
-        value => is(function_(), value)
-      )
+      custom<(event: Readonly<{ attachment: SendBoxAttachment }>) => void>(value => is(function_(), value))
     )
   }),
   readonly()
