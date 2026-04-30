@@ -21,7 +21,7 @@ The inline component simulates a third-party feedback library that only mounts w
    -  Click thumbs up or thumbs down on the bot reply
    -  Observe the inline feedback host replacing the native textarea form
 -  Submit feedback from the simulated third-party widget
-  -  Observe Web Chat still submit the existing feedback invoke payload for the selected vote
+  -  Observe Web Chat still submits the existing feedback invoke payload for the selected vote
 
 # Code
 
@@ -188,7 +188,7 @@ ReactDOM.render(
     <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function () {
         const { ReactWebChat } = window.WebChat;
-        const { useEffect, useRef, useState } = window.React;
+        const { useEffect, useRef } = window.React;
 
         function handleFeedbackSubmitClick({ container, onCancel, onSubmit, reaction }) {
           function ThirdPartyFeedback() {

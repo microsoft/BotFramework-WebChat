@@ -117,14 +117,11 @@
 
         function InlineFeedbackHost({ onDismiss, onSubmit, selectedAction }) {
           const containerRef = useRef(null);
-          const hasMountedRef = useRef(false);
 
           useEffect(() => {
-            if (!containerRef.current || hasMountedRef.current) {
+            if (!containerRef.current) {
               return;
             }
-
-            hasMountedRef.current = true;
 
             const dispose = handleFeedbackSubmitClick({
               container: containerRef.current,
