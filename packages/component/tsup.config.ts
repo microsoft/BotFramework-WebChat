@@ -22,10 +22,7 @@ const commonConfig = applyConfig(config => ({
       ignoreCSSEntries: ['dist/botframework-webchat-component.component.css'],
       stylesPlaceholder: componentStyleContentPlaceholder
     }),
-    injectCSSPlugin({
-      ignoreCSSEntries: [],
-      stylesPlaceholder: decoratorStyleContentPlaceholder
-    })
+    injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
   ]
 }));
 
