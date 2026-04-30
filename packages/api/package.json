@@ -17,12 +17,10 @@
     },
     "./decorator": {
       "import": {
-        "types": "./dist/botframework-webchat-api.deprecated.decorator.d.mts",
-        "default": "./dist/botframework-webchat-api.deprecated.decorator.mjs"
+        "default": "./boot/deprecated/decorator.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-api.deprecated.decorator.d.ts",
-        "default": "./dist/botframework-webchat-api.deprecated.decorator.js"
+        "default": "./boot/deprecated/decorator.js"
       }
     },
     "./decorator.js": {
@@ -35,14 +33,30 @@
         "default": "./dist/botframework-webchat-api.decorator.js"
       }
     },
-    "./hook": {
+    "./graph": {
       "import": {
-        "types": "./dist/botframework-webchat-api.deprecated.hook.d.mts",
-        "default": "./dist/botframework-webchat-api.deprecated.hook.mjs"
+        "default": "./boot/deprecated/graph.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-api.deprecated.hook.d.ts",
-        "default": "./dist/botframework-webchat-api.deprecated.hook.js"
+        "default": "./boot/deprecated/graph.js"
+      }
+    },
+    "./graph.js": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.graph.d.mts",
+        "default": "./dist/botframework-webchat-api.graph.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.graph.d.ts",
+        "default": "./dist/botframework-webchat-api.graph.js"
+      }
+    },
+    "./hook": {
+      "import": {
+        "default": "./boot/deprecated/hook.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/hook.js"
       }
     },
     "./hook.js": {
@@ -57,12 +71,10 @@
     },
     "./internal": {
       "import": {
-        "types": "./dist/botframework-webchat-api.deprecated.internal.d.mts",
-        "default": "./dist/botframework-webchat-api.deprecated.internal.mjs"
+        "default": "./boot/deprecated/internal.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-api.deprecated.internal.d.ts",
-        "default": "./dist/botframework-webchat-api.deprecated.internal.js"
+        "default": "./boot/deprecated/internal.js"
       }
     },
     "./internal.js": {
@@ -77,12 +89,10 @@
     },
     "./middleware": {
       "import": {
-        "types": "./dist/botframework-webchat-api.deprecated.middleware.d.mts",
-        "default": "./dist/botframework-webchat-api.deprecated.middleware.mjs"
+        "default": "./boot/deprecated/middleware.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-api.deprecated.middleware.d.ts",
-        "default": "./dist/botframework-webchat-api.deprecated.middleware.js"
+        "default": "./boot/deprecated/middleware.js"
       }
     },
     "./middleware.js": {
@@ -110,6 +120,7 @@
   },
   "files": [
     "./*.js",
+    "./boot/**/*",
     "./dist/**/*",
     "./src/**/*"
   ],

@@ -12,12 +12,7 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat-component.component': './src/boot/component.ts',
     'botframework-webchat-component.decorator': './src/boot/decorator.ts',
     'botframework-webchat-component.hook': './src/boot/hook.ts',
-    'botframework-webchat-component.internal': './src/boot/internal.ts',
-    // Deprecated entrypoint without .js, to be removed on or after 2028-04-24.
-    'botframework-webchat-component.deprecated.component': './src/boot/deprecated/component.ts',
-    'botframework-webchat-component.deprecated.decorator': './src/boot/deprecated/decorator.ts',
-    'botframework-webchat-component.deprecated.hook': './src/boot/deprecated/hook.ts',
-    'botframework-webchat-component.deprecated.internal': './src/boot/deprecated/internal.ts'
+    'botframework-webchat-component.internal': './src/boot/internal.ts'
   },
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),

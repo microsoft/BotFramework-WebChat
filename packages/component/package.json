@@ -17,12 +17,10 @@
     },
     "./component": {
       "import": {
-        "types": "./dist/botframework-webchat-component.deprecated.component.d.mts",
-        "default": "./dist/botframework-webchat-component.deprecated.component.mjs"
+        "default": "./boot/deprecated/component.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-component.deprecated.component.d.ts",
-        "default": "./dist/botframework-webchat-component.deprecated.component.js"
+        "default": "./boot/deprecated/component.js"
       }
     },
     "./component.js": {
@@ -37,12 +35,10 @@
     },
     "./decorator": {
       "import": {
-        "types": "./dist/botframework-webchat-component.deprecated.decorator.d.mts",
-        "default": "./dist/botframework-webchat-component.deprecated.decorator.mjs"
+        "default": "./boot/deprecated/decorator.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-component.deprecated.decorator.d.ts",
-        "default": "./dist/botframework-webchat-component.deprecated.decorator.js"
+        "default": "./boot/deprecated/decorator.js"
       }
     },
     "./decorator.js": {
@@ -57,12 +53,10 @@
     },
     "./hook": {
       "import": {
-        "types": "./dist/botframework-webchat-component.deprecated.hook.d.mts",
-        "default": "./dist/botframework-webchat-component.deprecated.hook.mjs"
+        "default": "./boot/deprecated/hook.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-component.deprecated.hook.d.ts",
-        "default": "./dist/botframework-webchat-component.deprecated.hook.js"
+        "default": "./boot/deprecated/hook.js"
       }
     },
     "./hook.js": {
@@ -77,12 +71,10 @@
     },
     "./internal": {
       "import": {
-        "types": "./dist/botframework-webchat-component.deprecated.internal.d.mts",
-        "default": "./dist/botframework-webchat-component.deprecated.internal.mjs"
+        "default": "./boot/deprecated/internal.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-component.deprecated.internal.d.ts",
-        "default": "./dist/botframework-webchat-component.deprecated.internal.js"
+        "default": "./boot/deprecated/internal.js"
       }
     },
     "./internal.js": {
@@ -110,6 +102,7 @@
   },
   "files": [
     "./*.js",
+    "./boot/**/*",
     "./dist/**/*",
     "./src/**/*"
   ],

@@ -17,12 +17,10 @@
     },
     "./activity": {
       "import": {
-        "types": "./dist/botframework-webchat-core.deprecated.activity.d.mts",
-        "default": "./dist/botframework-webchat-core.deprecated.activity.mjs"
+        "default": "./boot/deprecated/activity.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-core.deprecated.activity.d.ts",
-        "default": "./dist/botframework-webchat-core.deprecated.activity.js"
+        "default": "./boot/deprecated/activity.js"
       }
     },
     "./activity.js": {
@@ -37,12 +35,10 @@
     },
     "./graph": {
       "import": {
-        "types": "./dist/botframework-webchat-core.deprecated.graph.d.mts",
-        "default": "./dist/botframework-webchat-core.deprecated.graph.mjs"
+        "default": "./boot/deprecated/graph.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-core.deprecated.graph.d.ts",
-        "default": "./dist/botframework-webchat-core.deprecated.graph.js"
+        "default": "./boot/deprecated/graph.js"
       }
     },
     "./graph.js": {
@@ -57,12 +53,10 @@
     },
     "./internal": {
       "import": {
-        "types": "./dist/botframework-webchat-core.deprecated.internal.d.mts",
-        "default": "./dist/botframework-webchat-core.deprecated.internal.mjs"
+        "default": "./boot/deprecated/internal.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-core.deprecated.internal.d.ts",
-        "default": "./dist/botframework-webchat-core.deprecated.internal.js"
+        "default": "./boot/deprecated/internal.js"
       }
     },
     "./internal.js": {
@@ -90,6 +84,7 @@
   },
   "files": [
     "./*.js",
+    "./boot/**/*",
     "./dist/**/*",
     "./src/**/*"
   ],

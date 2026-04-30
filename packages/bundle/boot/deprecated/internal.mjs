@@ -1,4 +1,4 @@
-export * from '../internal';
+export * from '../dist/botframework-webchat.internal.mjs';
 
 console.warn(
   'Import from "botframework-webchat/internal" is deprecated, please import from "botframework-webchat/internal.js" instead. This entrypoint will be removed on or after 2028-04-24.'
