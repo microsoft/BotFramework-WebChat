@@ -43,7 +43,9 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
       function_(),
       check(value => value === BYPASS_ENHANCER || middlewareFactoryTag in value)
     ),
-    literal(false)true
+    literal(false)
+  ]);
+
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     parse(function_(`botframework-webchat: ${name} enhancer must be of type function.`), enhancer);
 
@@ -87,7 +89,7 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
                 console.warn(`botframework-webchat: ${name}.middleware must return enhancer function or false`);
 
                 return false;
-              } else if (!is(middlewareSchema, result)) {
+              } else if (!is(middlewareSchema, result) satisfies boolean) {
                 console.warn(`botframework-webchat: ${name}.middleware must be created using factory function`);
 
                 return false;
