@@ -163,15 +163,18 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   useMemo(() => {
     const activeOrCompletedAction = rawActions.find(
       (action): action is OrgSchemaAction & { actionStatus: 'ActiveActionStatus' | 'CompletedActionStatus' } =>
-        action.actionStatus === 'ActiveActionStatus' || action.actionStatus === 'CompletedActionStatus'
+        !!action['@id'] &&
+        (action.actionStatus === 'ActiveActionStatus' || action.actionStatus === 'CompletedActionStatus')
     );
+    const activeOrCompletedActionId = activeOrCompletedAction?.['@id'];
 
-    actionStateRef.current = activeOrCompletedAction
-      ? {
-          actionId: activeOrCompletedAction['@id'],
-          actionStatus: activeOrCompletedAction.actionStatus
-        }
-      : undefined;
+    actionStateRef.current =
+      activeOrCompletedAction && activeOrCompletedActionId
+        ? {
+            actionId: activeOrCompletedActionId,
+            actionStatus: activeOrCompletedAction.actionStatus
+          }
+        : undefined;
   }, [rawActions]);
 
   // Workaround ESLint on saying actionStateRef.current is redundant when using it directly.
@@ -204,6 +207,10 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const submit = useCallback(
     (action: OrgSchemaAction) => {
+      if (!action['@id']) {
+        return console.warn('botframework-webchat internal: Cannot submit an action without id, ignoring the call.');
+      }
+
       if (actionStateRef.current?.actionStatus === 'CompletedActionStatus') {
         return console.warn(
           'botframework-webchat internal: useFeedbackActions().submitCallback() must not be called after feedback is completed, ignoring the call.'
@@ -257,6 +264,10 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const setSelectedAction = useCallback(
     (action: OrgSchemaAction | undefined) => {
+      if (action && !action['@id']) {
+        return console.warn('botframework-webchat internal: Cannot select an action without id, ignoring the call.');
+      }
+
       // If the action require a UserReview, do not allow resubmit.
       const shouldAllowResubmit = canActionResubmit(action);
 
@@ -270,10 +281,12 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         );
       }
 
+      const selectedActionId = action?.['@id'];
+
       setActionStateWithRefresh(
-        action
+        selectedActionId
           ? Object.freeze({
-              actionId: action['@id'],
+              actionId: selectedActionId,
               actionStatus: 'ActiveActionStatus'
             })
           : undefined
@@ -283,10 +296,11 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         clearTimeout(autoSubmitTimeoutRef.current);
 
         if (action?.['@id']) {
-          autoSubmitTimeoutRef.current = setTimeout(
-            () => submit(actionsRef.current.find(({ '@id': id }) => id === action['@id'])),
-            DEBOUNCE_TIMEOUT
-          );
+          autoSubmitTimeoutRef.current = setTimeout(() => {
+            const actionToSubmit = actionsRef.current.find(({ '@id': id }) => id === action['@id']);
+
+            actionToSubmit && submit(actionToSubmit);
+          }, DEBOUNCE_TIMEOUT);
         }
       }
     },
@@ -294,7 +308,11 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   );
 
   const selectedActionState = useMemo<readonly [OrgSchemaAction, (action: OrgSchemaAction) => void]>(
-    () => Object.freeze([selectedAction, setSelectedAction]),
+    () =>
+      Object.freeze([selectedAction, setSelectedAction]) as readonly [
+        OrgSchemaAction,
+        (action: OrgSchemaAction) => void
+      ],
     [selectedAction, setSelectedAction]
   );
 
@@ -304,7 +322,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   );
 
   const feedbackTextState = useMemo<readonly [string, Dispatch<SetStateAction<string>>]>(
-    () => Object.freeze([feedbackText, setFeedbackText]),
+    () => Object.freeze([feedbackText, setFeedbackText]) as readonly [string, Dispatch<SetStateAction<string>>],
     [feedbackText, setFeedbackText]
   );
 

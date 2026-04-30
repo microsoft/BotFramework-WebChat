@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      dialog {
+        backdrop-filter: blur(2px);
+        border: 2px solid #0078d4;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        min-width: 300px;
+      }
+
+      dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+    </style>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          React: { createElement, useEffect, useRef },
+          ReactDOM: { render, createPortal },
+          WebChat: { ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        window.__feedbackOverrideLaunches = [];
+
+        function InlineFeedbackHost({ onDismiss, onSubmit, selectedAction }) {
+          const hasLaunchedRef = useRef(false);
+          const dialogRef = useRef(null);
+          const textareaRef = useRef(null);
+
+          const isLike = selectedAction['@type'] === 'LikeAction';
+
+          useEffect(() => {
+            if (!hasLaunchedRef.current) {
+              hasLaunchedRef.current = true;
+              window.__feedbackOverrideLaunches.push(selectedAction['@type']);
+            }
+          }, [selectedAction]);
+
+          useEffect(() => {
+            dialogRef.current?.showModal();
+            setTimeout(() => textareaRef.current?.focus(), 0);
+          }, []);
+
+          const handleDismiss = () => {
+            dialogRef.current?.close();
+            onDismiss();
+          };
+
+          const handleSubmit = () => {
+            dialogRef.current?.close();
+            onSubmit();
+          };
+
+          const dialogElement = createElement(
+            'dialog',
+            { 'data-testid': 'inline feedback override host', ref: dialogRef },
+            createElement(
+              'form',
+              { style: { width: '400px' }, onSubmit: (e) => { e.preventDefault(); handleSubmit(); } },
+              createElement('h2', { style: { margin: '0 0 16px 0', fontSize: '18px' } }, 'Send Feedback'),
+              createElement(
+                'div',
+                { style: { marginBottom: '16px', padding: '12px', backgroundColor: isLike ? '#d4edda' : '#f8d7da', borderRadius: '4px', textAlign: 'center' } },
+                createElement('div', { style: { fontSize: '24px', marginBottom: '8px' } }, isLike ? '👍' : '👎'),
+                createElement('div', { style: { fontWeight: 'bold' } }, isLike ? 'Helpful' : 'Not Helpful')
+              ),
+              createElement(
+                'div',
+                { style: { marginBottom: '16px' } },
+                createElement('label', { style: { display: 'block', marginBottom: '8px', fontWeight: 'bold' } }, 'Tell us more (optional):'),
+                createElement('textarea', {
+                  ref: textareaRef,
+                  'data-testid': 'feedback textarea',
+                  placeholder: 'Please share your thoughts...',
+                  style: {
+                    width: '100%',
+                    height: '100px',
+                    padding: '8px',
+                    fontFamily: 'system-ui, -apple-system, sans-serif',
+                    fontSize: '14px',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    boxSizing: 'border-box',
+                    resize: 'none'
+                  }
+                })
+              ),
+              createElement(
+                'div',
+                { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } },
+                createElement('button', {
+                  'data-testid': 'inline feedback override cancel',
+                  onClick: handleDismiss,
+                  type: 'button',
+                  style: {
+                    padding: '8px 16px',
+                    backgroundColor: '#f0f0f0',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }
+                }, 'Cancel'),
+                createElement('button', {
+                  'data-testid': 'inline feedback override submit',
+                  type: 'submit',
+                  style: {
+                    padding: '8px 16px',
+                    backgroundColor: '#0078d4',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }
+                }, 'Submit')
+              )
+            )
+          );
+
+          // Render dialog as a portal to the body
+          return createPortal(dialogElement, document.body);
+        }
+
+        render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: {
+              feedbackActionsPlacement: 'activity-actions',
+              renderFeedbackFormOverrideComponent: ({ onDismiss, onSubmit, selectedAction }) =>
+                createElement(InlineFeedbackHost, { onDismiss, onSubmit, selectedAction })
+            }
+          }),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          id: 'a-00002',
+          timestamp: 0,
+          text: 'This is a change-mind middleware test message',
+          from: {
+            role: 'bot'
+          },
+          locale: 'en-US',
+          entities: [],
+          channelData: {
+            feedbackLoop: {
+              type: 'default',
+              disclaimer: 'This disclaimer should not be shown by the native form.'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.click(pageElements.allByTestId(testIds.feedbackButton)[0]);
+
+        await waitFor(() => expect(document.querySelector('[data-testid="inline feedback override host"]')).toBeTruthy());
+
+        expect(window.__feedbackOverrideLaunches).toEqual(['LikeAction']);
+
+        await host.click(document.querySelector('[data-testid="inline feedback override cancel"]'));
+
+        await waitFor(() => expect(document.querySelector('[data-testid="inline feedback override host"]')).toBeFalsy());
+
+        expect(document.activeElement).toBe(pageElements.allByTestId(testIds.feedbackButton)[0]);
+        expect(Array.from(pageElements.allByTestId(testIds.feedbackButton)).map(element => element.checked)).toEqual([
+          false,
+          false
+        ]);
+
+        await host.click(pageElements.allByTestId(testIds.feedbackButton)[1]);
+
+        await waitFor(() => expect(document.querySelector('[data-testid="inline feedback override host"]')).toBeTruthy());
+
+        expect(window.__feedbackOverrideLaunches).toEqual(['LikeAction', 'DislikeAction']);
+
+        const { activity } = await directLine.actPostActivity(async () => {
+          await host.click(document.querySelector('[data-testid="inline feedback override submit"]'));
+        });
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            type: 'invoke',
+            name: 'message/submitAction',
+            value: expect.objectContaining({
+              actionName: 'feedback',
+              actionValue: expect.objectContaining({ reaction: 'dislike' })
+            })
+          })
+        );
+      });
+    </script>
+  </body>
+</html>
