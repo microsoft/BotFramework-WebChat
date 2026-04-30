@@ -1,8 +1,8 @@
-import { lazy, object, parse, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
-import { jsonLinkedDataEntries, type JSONLinkedDataInput, type JSONLinkedDataOutput } from './JSONLinkedData';
+import { jsonLinkedDataSchema, type JSONLinkedDataInput, type JSONLinkedDataOutput } from './JSONLinkedData';
 
 /**
  * The most generic type of item.
@@ -106,15 +106,17 @@ type ThingOutput = JSONLinkedDataOutput & {
   readonly url: readonly string[];
 };
 
-const thingSchema: GenericSchema<ThingInput, ThingOutput> = object({
-  ...jsonLinkedDataEntries,
-  additionalType: jsonLinkedDataProperty(string()),
-  alternateName: jsonLinkedDataProperty(string()),
-  description: jsonLinkedDataProperty(string()),
-  name: jsonLinkedDataProperty(string()),
-  potentialAction: jsonLinkedDataProperty(lazy(() => actionSchema)),
-  url: jsonLinkedDataProperty(string())
-});
+const thingSchema: GenericSchema<ThingInput, ThingOutput> = intersect([
+  lazy(() => jsonLinkedDataSchema),
+  object({
+    additionalType: jsonLinkedDataProperty(string()),
+    alternateName: jsonLinkedDataProperty(string()),
+    description: jsonLinkedDataProperty(string()),
+    name: jsonLinkedDataProperty(string()),
+    potentialAction: jsonLinkedDataProperty(lazy(() => actionSchema)),
+    url: jsonLinkedDataProperty(string())
+  })
+]);
 
 /** @deprecated Use Valibot.parse(thingSchema) instead. Will be removed on or after 2028-04-23. */
 const parseThing = (thing: ThingInput): ThingOutput => parse(thingSchema, thing);

@@ -1,5 +1,4 @@
 import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
-import { jsonLinkedDataEntries } from './JSONLinkedData';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 
@@ -42,7 +41,6 @@ type PersonOutput = ThingOutput & {
 const personSchema: GenericSchema<PersonInput, PersonOutput> = intersect([
   lazy(() => thingSchema),
   object({
-    ...jsonLinkedDataEntries,
     description: jsonLinkedDataProperty(string()),
     image: jsonLinkedDataProperty(string()),
     name: jsonLinkedDataProperty(string())

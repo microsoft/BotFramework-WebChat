@@ -7,7 +7,6 @@ import {
   type CreativeWorkStatusOutput
 } from './CreativeWorkStatus';
 import { definedTermSchema, type DefinedTermInput, type DefinedTermOutput } from './DefinedTerm';
-import { jsonLinkedDataEntries } from './JSONLinkedData';
 import { personSchema, type PersonInput, type PersonOutput } from './Person';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 import {
@@ -185,14 +184,13 @@ type CreativeWorkOutput = ThingOutput & {
   readonly usageInfo: readonly CreativeWorkOutput[];
 };
 
-// Cyclic dependency.
-// eslint-disable-next-line prefer-const
 let creativeWorkSchema_: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
 
+// This is for cyclic dependency.
+// eslint-disable-next-line prefer-const
 creativeWorkSchema_ = intersect([
   lazy(() => thingSchema),
   object({
-    ...jsonLinkedDataEntries,
     abstract: jsonLinkedDataProperty(string()),
     author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
     citation: jsonLinkedDataProperty(lazy(() => claimSchema)),

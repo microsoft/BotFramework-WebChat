@@ -2,7 +2,6 @@ import { intersect, lazy, object, parse, string, type GenericSchema } from 'vali
 
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
-import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
@@ -35,7 +34,6 @@ type UserReviewOutput = ThingOutput & {
 const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
   lazy(() => thingSchema),
   object({
-    ...jsonLinkedDataEntries,
     reviewAspect: jsonLinkedDataProperty(string())
   })
 ]);

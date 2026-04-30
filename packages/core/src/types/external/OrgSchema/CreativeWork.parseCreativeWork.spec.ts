@@ -1,7 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { creativeWorkSchema, parseCreativeWork } from './CreativeWork';
 import { parse } from 'valibot';
+import { claimSchema } from './Claim';
+import { creativeWorkSchema, parseCreativeWork } from './CreativeWork';
 
+const claimTemplate = parse(claimSchema, {});
 const creativeWorkTemplate = parse(creativeWorkSchema, {});
 
 describe('CreativeWork', () => {
@@ -42,7 +44,7 @@ describe('CreativeWork', () => {
       name: ['Business @ the Speed of Thought'],
       citation: [
         {
-          ...creativeWorkTemplate,
+          ...claimTemplate,
           '@type': 'Book',
           name: ['The Road Ahead']
         }
@@ -62,7 +64,7 @@ describe('CreativeWork', () => {
       name: ['Business @ the Speed of Thought'],
       citation: [
         {
-          ...creativeWorkTemplate,
+          ...claimTemplate,
           '@type': 'Book',
           name: ['The Road Ahead']
         }

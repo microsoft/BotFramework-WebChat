@@ -3,7 +3,6 @@ import { intersect, lazy, object, parse, type GenericSchema } from 'valibot';
 import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
-import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * A [Claim](https://schema.org/Claim) in Schema.org represents a specific, factually-oriented claim that could be the [itemReviewed](https://schema.org/itemReviewed) in a [ClaimReview](https://schema.org/ClaimReview). The content of a claim can be summarized with the [text](https://schema.org/text) property. Variations on well known claims can have their common identity indicated via [sameAs](https://schema.org/sameAs) links, and summarized with a name. Ideally, a [Claim](https://schema.org/Claim) description includes enough contextual information to minimize the risk of ambiguity or inclarity. In practice, many claims are better understood in the context in which they appear or the interpretations provided by claim reviews.
@@ -58,7 +57,6 @@ type ClaimOutput = CreativeWorkOutput & {
 const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
   lazy(() => creativeWorkSchema),
   object({
-    ...jsonLinkedDataEntries,
     appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
     claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
   })

@@ -2,7 +2,6 @@ import { intersect, lazy, object, parse, string, type GenericSchema } from 'vali
 
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
-import { jsonLinkedDataEntries } from './JSONLinkedData';
 
 /**
  * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
@@ -39,7 +38,6 @@ type ProjectOutput = ThingOutput & {
 const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = intersect([
   lazy(() => thingSchema),
   object({
-    ...jsonLinkedDataEntries,
     slogan: jsonLinkedDataProperty(string())
   })
 ]);

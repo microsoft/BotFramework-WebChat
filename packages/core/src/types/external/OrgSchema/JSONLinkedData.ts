@@ -1,4 +1,4 @@
-import { literal, optional, string } from 'valibot';
+import { literal, object, optional, string } from 'valibot';
 // import jsonLinkedDataProperties from './private/jsonLinkedDataProperties';
 
 type JSONLinkedDataInput = {
@@ -15,12 +15,12 @@ type JSONLinkedDataOutput = {
   readonly '@type'?: string | undefined;
 };
 
-const jsonLinkedDataEntries = {
+const jsonLinkedDataSchema = object({
   '@context': optional(literal('https://schema.org')),
   '@id': optional(string()),
   // We should move to multiple @type soon.
   // '@type': jsonLinkedDataProperties(string())
   '@type': optional(string())
-};
+});
 
-export { jsonLinkedDataEntries, type JSONLinkedDataInput, type JSONLinkedDataOutput };
+export { jsonLinkedDataSchema, type JSONLinkedDataInput, type JSONLinkedDataOutput };

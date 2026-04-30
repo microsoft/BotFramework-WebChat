@@ -1,7 +1,6 @@
 import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
 
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
-import { jsonLinkedDataEntries } from './JSONLinkedData';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 
 /**
@@ -43,7 +42,6 @@ type VoteActionOutput = ActionOutput & {
 const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = intersect([
   lazy(() => actionSchema),
   object({
-    ...jsonLinkedDataEntries,
     actionOption: jsonLinkedDataProperty(string())
   })
 ]);

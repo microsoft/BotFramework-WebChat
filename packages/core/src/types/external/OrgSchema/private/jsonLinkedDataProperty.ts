@@ -63,6 +63,9 @@ export default function jsonLinkedDataProperty<T extends BaseSchema<unknown, unk
         }, []);
 
         return nextValue.length ? nextValue : [];
+
+        // TODO: Should use frozen array but `intersect()` seems doesn't like it.
+        //       Write a test case to proof this is an issue in valibot.
         // return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
       }),
       readonly()
