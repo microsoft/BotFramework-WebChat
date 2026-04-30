@@ -1,4 +1,19 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import type { ReactNode } from 'react';
+import type { OrgSchemaAction, WebChatActivity } from 'botframework-webchat-core';
+
+/**
+ * Context passed to a host-provided feedback form override component.
+ *
+ * @see StyleOptions.renderFeedbackFormOverrideComponent
+ */
+export type RenderFeedbackFormOverrideComponentContext = {
+  /** The currently selected vote action (e.g., LikeAction or DislikeAction). */
+  selectedAction: OrgSchemaAction;
+  /** Call to submit the currently selected vote. */
+  onSubmit: () => void;
+  /** Call to dismiss/cancel the feedback form. Resets the vote selection. */
+  onDismiss: () => void;
+};
 
 type StyleOptions = {
   /**
@@ -955,6 +970,49 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
+
+  /**
+   * (EXPERIMENTAL) Host-provided feedback form override component.
+   *
+   * When set, replaces the native feedback text form with a host-provided React component.
+   * The native vote buttons (thumbs up/down) still render and manage selection state.
+   * Only the feedback form (text area + submit/cancel) is replaced.
+   *
+   * Useful when the host wants to render an external/imperative feedback surface
+   * (e.g., a portal-mounted dialog or modal owned by the host application). In that
+   * case the host can perform side effects in a hook and return `null` to render
+   * nothing inline within Web Chat.
+   *
+   * The renderer receives an object with the current feedback state and callbacks:
+   * - `selectedAction` — the currently selected vote action
+   * - `onSubmit` — call to submit the currently selected vote. Web Chat will post
+   *   the invoke activity to the bot and mark feedback as submitted.
+   * - `onDismiss` — call to cancel/dismiss the feedback form. Web Chat will clear
+   *   the vote selection so the user can vote again.
+   *
+   * Hosts SHOULD call exactly one of `onSubmit` or `onDismiss` when their external
+   * surface is closed. If neither is called, the bot will not receive the vote and
+   * the thumb will remain selected, preventing the user from re-voting.
+   *
+   * Return a React node to render in place of the native form, or `null` to render nothing.
+   *
+   * @example
+   * // Side-effect-only renderer: launch external dialog, wire its callbacks.
+   * renderFeedbackFormOverrideComponent: ({ selectedAction, onSubmit, onDismiss }) => {
+   *   useEffect(() => {
+   *     openExternalFeedbackDialog({
+   *       onSuccess: () => onSubmit(),
+   *       onCancel:  () => onDismiss(), // clear thumb selection
+   *     });
+   *   }, []);
+   *   return null;
+   * }
+   *
+   * @default undefined (uses native feedback form)
+   *
+   * New in 4.19.0.
+   */
+  renderFeedbackFormOverrideComponent?: (context: RenderFeedbackFormOverrideComponentContext) => ReactNode | null;
 
   /**
    * Use continuous mode for speech recognition. Default to `false`.

@@ -1,5 +1,15 @@
+import { hooks } from 'botframework-webchat-api';
+import type { OrgSchemaAction } from 'botframework-webchat-core';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import React, { memo, useCallback, useMemo, type FormEventHandler, type KeyboardEventHandler } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useMemo,
+  type Dispatch,
+  type FormEventHandler,
+  type KeyboardEventHandler,
+  type SetStateAction
+} from 'react';
 import { Extract, wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
 
@@ -11,24 +21,41 @@ import useActivityFeedbackHooks from './providers/useActivityFeedbackHooks';
 
 import styles from './private/FeedbackForm.module.css';
 
+const { useStyleOptions } = hooks;
+
+type FeedbackFormOverrideRenderer = (context: {
+  selectedAction: OrgSchemaAction;
+  onSubmit: () => void;
+  onDismiss: () => void;
+}) => React.ReactNode | null;
+
+type FeedbackTextState = readonly [string | undefined, Dispatch<SetStateAction<string | undefined>>];
+type SelectedActionState = readonly [OrgSchemaAction | undefined, (action: OrgSchemaAction | undefined) => void];
+type StyleOptionsWithFeedbackFormOverrideComponent = Readonly<{
+  renderFeedbackFormOverrideComponent?: FeedbackFormOverrideRenderer | undefined;
+}>;
+
 function InternalActivityFeedback() {
   const classNames = useStyles(styles);
 
   const { useActions, useFeedbackText, useFocusFeedbackButton, useHasSubmitted, useSelectedAction, useSubmit } =
     useActivityFeedbackHooks();
 
-  const [_, setFeedbackText] = useFeedbackText();
+  const [_, setFeedbackText] = useFeedbackText() as FeedbackTextState;
   const [actions] = useActions();
   const [hasSubmitted] = useHasSubmitted();
-  const [selectedAction, setSelectedAction] = useSelectedAction();
+  const [selectedAction, setSelectedAction] = useSelectedAction() as SelectedActionState;
   const focusFeedbackButton = useFocusFeedbackButton();
   const submit = useSubmit();
+  const [{ renderFeedbackFormOverrideComponent }] = useStyleOptions() as readonly [
+    StyleOptionsWithFeedbackFormOverrideComponent
+  ];
 
   const firstActionRequireReview = useMemo(() => actions.find(isActionRequireReview), [actions]);
   const selectedActionRef = useRefFrom(selectedAction);
 
   const handleReset = useCallback<FormEventHandler<HTMLFormElement>>(() => {
-    focusFeedbackButton(selectedActionRef.current);
+    selectedActionRef.current && focusFeedbackButton(selectedActionRef.current);
 
     setFeedbackText(undefined);
     setSelectedAction(undefined);
@@ -38,7 +65,7 @@ function InternalActivityFeedback() {
     event => {
       event.preventDefault();
 
-      submit(selectedActionRef.current);
+      selectedActionRef.current && submit(selectedActionRef.current);
     },
     [selectedActionRef, submit]
   );
@@ -61,22 +88,50 @@ function InternalActivityFeedback() {
     [hasSubmitted, selectedAction]
   );
 
+  // Callbacks for custom feedback form renderer.
+  const handleCustomSubmit = useCallback(() => {
+    selectedActionRef.current && submit(selectedActionRef.current);
+  }, [selectedActionRef, submit]);
+
+  const handleCustomDismiss = useCallback(() => {
+    selectedActionRef.current && focusFeedbackButton(selectedActionRef.current);
+
+    setFeedbackText(undefined);
+    setSelectedAction(undefined);
+  }, [focusFeedbackButton, selectedActionRef, setFeedbackText, setSelectedAction]);
+
+  const customFormElement = useMemo(() => {
+    if (!renderFeedbackFormOverrideComponent || !isExpanded || !selectedAction) {
+      return null;
+    }
+
+    return renderFeedbackFormOverrideComponent({
+      selectedAction,
+      onSubmit: handleCustomSubmit,
+      onDismiss: handleCustomDismiss
+    });
+  }, [renderFeedbackFormOverrideComponent, isExpanded, selectedAction, handleCustomSubmit, handleCustomDismiss]);
+
+  if (!actions.length) {
+    return null;
+  }
+
   return (
-    !!actions.length && (
-      <form
-        className={classNames['feedback-form']}
-        onKeyDown={handleKeyDown}
-        onReset={handleReset}
-        onSubmit={handleSubmit}
-      >
-        <FeedbackVoteButtonBar
-          // If one of the action requires review, use radio button for all.
-          buttonAs={firstActionRequireReview ? 'radio' : 'button'}
-        />
-        {/* We put the form outside of the container to let it wrap to next line instead of keeping it the same line as the like/dislike buttons. */}
-        {isExpanded && <FeedbackForm />}
-      </form>
-    )
+    <form
+      className={classNames['feedback-form']}
+      onKeyDown={handleKeyDown}
+      onReset={handleReset}
+      onSubmit={handleSubmit}
+    >
+      <FeedbackVoteButtonBar
+        // If one of the action requires review, use radio button for all.
+        buttonAs={firstActionRequireReview ? 'radio' : 'button'}
+      />
+      {/* We put the form outside of the container to let it wrap to next line instead of keeping it the same line as the like/dislike buttons. */}
+      {isExpanded && !renderFeedbackFormOverrideComponent && <FeedbackForm />}
+      {/* When a host renderFeedbackFormOverrideComponent is provided, skip the native form. */}
+      {isExpanded && renderFeedbackFormOverrideComponent ? customFormElement : null}
+    </form>
   );
 }
 
