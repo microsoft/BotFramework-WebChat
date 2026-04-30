@@ -17,8 +17,8 @@ const EMPTY_ARRAY = Object.freeze([]);
 const graphProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    store: custom<ReturnType<typeof createStore>>(
-      value => is(object({ getState: function_(), subscribe: function_() }), value)
+    store: custom<ReturnType<typeof createStore>>(value =>
+      is(object({ getState: function_(), subscribe: function_() }), value)
     )
   }),
   readonly()

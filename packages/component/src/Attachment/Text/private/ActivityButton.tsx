@@ -3,18 +3,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { forwardRef, memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import {
-  boolean,
-  custom,
-  function_,
-  is,
-  object,
-  optional,
-  pipe,
-  readonly,
-  string,
-  type InferInput
-} from 'valibot';
+import { boolean, custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
 

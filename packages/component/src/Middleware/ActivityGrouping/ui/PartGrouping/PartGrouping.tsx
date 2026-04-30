@@ -2,18 +2,7 @@ import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import { IdentifierSchema } from 'botframework-webchat-core/graph.js';
 import React, { Fragment, memo, useMemo } from 'react';
-import {
-  array,
-  custom,
-  is,
-  minLength,
-  object,
-  optional,
-  parse,
-  pipe,
-  readonly,
-  type InferOutput
-} from 'valibot';
+import { array, custom, is, minLength, object, optional, parse, pipe, readonly, type InferOutput } from 'valibot';
 
 import PartGroupingActivity from './private/PartGroupingActivity';
 
