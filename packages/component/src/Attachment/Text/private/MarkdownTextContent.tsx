@@ -247,15 +247,15 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     const usageInfo = messageThing?.usageInfo[0];
 
     if (usageInfo) {
-      const [pattern] = usageInfo.pattern;
+      const [firstPattern] = usageInfo.pattern;
       const encryptionStatus = !!usageInfo.keywords.find(keyword => keyword === 'encrypted-content');
 
       return {
         color:
-          pattern &&
-          pattern.inDefinedTermSet[0] === 'https://www.w3.org/TR/css-color-4/' &&
-          pattern.name[0] === 'color' &&
-          pattern.termCode[0],
+          firstPattern &&
+          firstPattern.inDefinedTermSet[0] === 'https://www.w3.org/TR/css-color-4/' &&
+          firstPattern.name[0] === 'color' &&
+          firstPattern.termCode[0],
         isEncrypted: encryptionStatus,
         name: usageInfo.name[0],
         title: usageInfo.description[0]
