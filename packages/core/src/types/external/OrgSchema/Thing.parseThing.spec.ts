@@ -31,10 +31,7 @@ describe('Thing', () => {
     });
   });
 
-  // This is an intentional drift from JSON-LD.
-  // Assuming expecting an object of Thing while the actual is CreativeWork.
-  // If unknown properties are removed, we will remove properties that are solely for CreativeWork.
-  test('should not remove unknown properties', () => {
+  test('should remove unknown properties', () => {
     expect(
       parse(thingSchema, {
         '@type': 'Thing',
@@ -42,8 +39,7 @@ describe('Thing', () => {
       })
     ).toEqual({
       ...thingTemplate,
-      '@type': 'Thing',
-      something: 1
+      '@type': 'Thing'
     });
   });
 
