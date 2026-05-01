@@ -152,6 +152,7 @@ const IGNORED_OWN_PACKAGES = [
         if (key === '.') {
           allOwnExports.add(`${packageJson.name}`);
         } else if (key.endsWith('.js')) {
+          // We need to remove .js suffix otherwise, esbuild will emit filename.js.js.
           // ./filename.js -> /filename
           allOwnExports.add(`${packageJson.name}${key.slice(1, -3)}`);
         }
