@@ -11,10 +11,7 @@ const setSuggestedActionsActionSchema = pipe(
     payload: pipe(
       object({
         originActivity: optional(custom<WebChatActivity>(value => is(object({}), value))),
-        suggestedActions: pipe(
-          array(custom<DirectLineCardAction>(value => is(object({}), value))),
-          readonly()
-        )
+        suggestedActions: pipe(array(custom<DirectLineCardAction>(value => is(object({}), value))), readonly())
       }),
       readonly()
     ),

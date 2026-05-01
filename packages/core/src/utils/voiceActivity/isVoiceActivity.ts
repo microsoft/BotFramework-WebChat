@@ -16,7 +16,6 @@ const VoiceActivitySchema = object({
 
 const isVoiceActivity = (
   activity: WebChatActivity
-): activity is WebChatActivity & InferOutput<typeof VoiceActivitySchema> =>
-  is(VoiceActivitySchema, activity);
+): activity is WebChatActivity & InferOutput<typeof VoiceActivitySchema> => is(VoiceActivitySchema, activity);
 
 export default isVoiceActivity;
