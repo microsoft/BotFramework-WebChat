@@ -1,4 +1,4 @@
-import { intersect, lazy, number, object, parse, string, union, type GenericSchema } from 'valibot';
+import { intersect, lazy, number, object, parser, string, union, type GenericSchema } from 'valibot';
 
 import { claimSchema } from './Claim';
 import {
@@ -209,7 +209,6 @@ creativeWorkSchema_ = intersect([
 const creativeWorkSchema = creativeWorkSchema_;
 
 /** @deprecated Use Valibot.parse(creativeWorkSchema) instead. Will be removed on or after 2028-04-23. */
-const parseCreativeWork = (creativeWork: CreativeWorkInput): CreativeWorkOutput =>
-  parse(creativeWorkSchema_, creativeWork);
+const parseCreativeWork: (creativeWork: CreativeWorkInput) => CreativeWorkOutput = parser(creativeWorkSchema);
 
 export { creativeWorkSchema, parseCreativeWork, type CreativeWorkInput, type CreativeWorkOutput };

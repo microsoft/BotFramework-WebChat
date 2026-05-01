@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
 
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
@@ -39,6 +39,6 @@ const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = inter
 ]);
 
 /** @deprecated Use Valibot.parse(userReviewSchema) instead. Will be removed on or after 2028-04-23. */
-const parseUserReview = (userReview: UserReviewInput): UserReviewOutput => parse(userReviewSchema, userReview);
+const parseUserReview: (userReview: UserReviewInput) => UserReviewOutput = parser(userReviewSchema);
 
 export { parseUserReview, userReviewSchema, type UserReviewInput, type UserReviewOutput };

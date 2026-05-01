@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parse, string, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
 
 import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
@@ -87,6 +87,6 @@ const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
 ]);
 
 /** @deprecated Use Valibot.parse(actionSchema) instead. Will be removed on or after 2028-04-23. */
-const parseAction = (action: ActionInput): ActionOutput => parse(actionSchema, action);
+const parseAction: (action: ActionInput) => ActionOutput = parser(actionSchema);
 
 export { actionSchema, parseAction, type ActionInput, type ActionOutput };

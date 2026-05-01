@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parse, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, type GenericSchema } from 'valibot';
 
 import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
@@ -63,6 +63,6 @@ const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
 ]);
 
 /** @deprecated Use Valibot.parse(claimSchema) instead. Will be removed on or after 2028-04-23. */
-const parseClaim = (claim: ClaimInput): ClaimOutput => parse(claimSchema, claim);
+const parseClaim: (claim: ClaimInput) => ClaimOutput = parser(claimSchema);
 
 export { claimSchema, parseClaim, type ClaimInput, type ClaimOutput };
