@@ -2,7 +2,7 @@ import { intersect, lazy, object, parse, string, type GenericSchema } from 'vali
 
 import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
 import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
-import { projectSchema, type ProjectInput } from './Project';
+import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import { userReviewSchema, type UserReviewInput, type UserReviewOutput } from './UserReview';
 
@@ -68,6 +68,7 @@ type ActionOutput = ThingOutput & {
    *
    * @see https://schema.org/provider
    */
+  readonly provider: readonly ProjectOutput[];
 
   /**
    * The result produced in the action. E.g. John wrote *a book*.
