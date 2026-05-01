@@ -42,7 +42,7 @@
   "scripts": {
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:post": "npm run build:post:dtsroll && npm run build:post:validate",
-    "build:post:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:post:dtsroll": "dtsroll ./dist/*.d.* && sed -E -i 's/^([[:space:]]*export[[:space:]]+)type[[:space:]]+(\\{[[:space:]]+type[[:space:]]+)/\\1\\2/' ./dist/*.d.ts",
     "build:post:validate": "npm run build:post:validate:css && npm run build:post:validate:inject-css && npm run build:post:validate:dts",
     "build:post:validate:css": "vg ast-check lightning-css ./dist/*.css",
     "build:post:validate:dts": "vg ast-check dist-types ./dist/*.d.*",
