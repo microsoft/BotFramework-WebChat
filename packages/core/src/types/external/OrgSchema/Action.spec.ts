@@ -1,8 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import { actionSchema, parseAction } from './Action';
 import { parse } from 'valibot';
+import { userReviewSchema } from './UserReview';
 
 const actionTemplate = parse(actionSchema, {});
+const userReviewTemplate = parse(userReviewSchema, {});
 
 describe('Action', () => {
   describe('actionStatus', () => {
@@ -45,14 +47,23 @@ describe('Action', () => {
         parse(actionSchema, {
           '@type': 'LikeAction',
           actionStatus: 'PotentialActionStatus',
-          result: [
-            {
-              '@type': 'UserReview',
-              reviewAspect: 'Hello, World!'
-            }
-          ]
+          result: {
+            '@type': 'UserReview',
+            reviewAspect: 'Hello, World!'
+          }
         })
-      ).toEqual({});
+      ).toEqual({
+        ...actionTemplate,
+        '@type': 'LikeAction',
+        actionStatus: ['PotentialActionStatus'],
+        result: [
+          {
+            ...userReviewTemplate,
+            '@type': 'UserReview',
+            reviewAspect: ['Hello, World!']
+          }
+        ]
+      });
     });
   });
 });
