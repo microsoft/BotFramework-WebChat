@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { claimSchema } from './Claim.js';
-import { creativeWorkSchema, parseCreativeWork } from './CreativeWork.js';
+import { claimSchema } from './Claim';
+import { creativeWorkSchema, parseCreativeWork } from './CreativeWork';
 
 const claimTemplate = parse(claimSchema, {});
 const creativeWorkTemplate = parse(creativeWorkSchema, {});
@@ -15,7 +15,7 @@ describe('CreativeWork', () => {
       })
     ).toEqual({
       ...creativeWorkTemplate,
-      '@type': 'CreativeWork',
+      '@type': ['CreativeWork'],
       name: ['Business @ the Speed of Thought']
     }));
 
@@ -27,7 +27,7 @@ describe('CreativeWork', () => {
       })
     ).toEqual({
       ...creativeWorkTemplate,
-      '@type': 'Book',
+      '@type': ['Book'],
       name: ['Business @ the Speed of Thought']
     }));
 
@@ -36,16 +36,19 @@ describe('CreativeWork', () => {
       parseCreativeWork({
         '@type': 'Book',
         name: 'Business @ the Speed of Thought',
-        citation: { '@type': 'Book', name: 'The Road Ahead' }
+        citation: {
+          '@type': 'Book',
+          name: 'The Road Ahead'
+        }
       })
     ).toEqual({
       ...creativeWorkTemplate,
-      '@type': 'Book',
+      '@type': ['Book'],
       name: ['Business @ the Speed of Thought'],
       citation: [
         {
           ...claimTemplate,
-          '@type': 'Book',
+          '@type': ['Book'],
           name: ['The Road Ahead']
         }
       ]
@@ -56,16 +59,21 @@ describe('CreativeWork', () => {
       parseCreativeWork({
         '@type': 'Book',
         name: 'Business @ the Speed of Thought',
-        citation: [{ '@type': 'Book', name: 'The Road Ahead' }]
+        citation: [
+          {
+            '@type': 'Book',
+            name: 'The Road Ahead'
+          }
+        ]
       })
     ).toEqual({
       ...creativeWorkTemplate,
-      '@type': 'Book',
+      '@type': ['Book'],
       name: ['Business @ the Speed of Thought'],
       citation: [
         {
           ...claimTemplate,
-          '@type': 'Book',
+          '@type': ['Book'],
           name: ['The Road Ahead']
         }
       ]

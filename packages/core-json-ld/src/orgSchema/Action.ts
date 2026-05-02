@@ -1,9 +1,9 @@
 import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus.js';
-import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
-import { projectSchema, type ProjectInput, type ProjectOutput } from './Project.js';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing.js';
-import { userReviewSchema, type UserReviewInput, type UserReviewOutput } from './UserReview.js';
+import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
+import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import { userReviewSchema, type UserReviewInput, type UserReviewOutput } from './UserReview';
 
 /**
  * An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.

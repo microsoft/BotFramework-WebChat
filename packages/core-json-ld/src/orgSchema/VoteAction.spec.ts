@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { parseVoteAction, voteActionSchema } from './VoteAction.js';
+import { parseVoteAction, voteActionSchema } from './VoteAction';
 
 const voteActionTemplate = parse(voteActionSchema, {});
 
@@ -14,7 +14,7 @@ describe('VoteAction', () => {
         })
       ).toEqual({
         ...voteActionTemplate,
-        '@type': 'VoteAction',
+        '@type': ['VoteAction'],
         actionOption: ['upvote']
       }));
 
@@ -28,7 +28,7 @@ describe('VoteAction', () => {
           })
         ).toEqual({
           ...voteActionTemplate,
-          '@type': 'Action',
+          '@type': ['Action'],
           actionOption: []
         });
       } catch (err) {

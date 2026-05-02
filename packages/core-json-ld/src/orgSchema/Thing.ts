@@ -1,7 +1,7 @@
 import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-import { actionSchema, type ActionInput, type ActionOutput } from './Action.js';
-import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
-import { jsonLinkedDataSchema, type JSONLinkedDataInput, type JSONLinkedDataOutput } from '../JSONLinkedData.js';
+import { actionSchema, type ActionInput, type ActionOutput } from './Action';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
+import { jsonLinkedDataSchema, type JSONLinkedDataInput, type JSONLinkedDataOutput } from '../JSONLinkedData';
 
 /**
  * The most generic type of item.

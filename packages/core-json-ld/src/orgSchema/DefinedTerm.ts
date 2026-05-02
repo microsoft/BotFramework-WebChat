@@ -1,6 +1,6 @@
 import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing.js';
-import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 
 /**
  * A word, name, acronym, phrase, etc. with a formal definition. Often used in the context of category or subject classification, glossaries or dictionaries, product or creative work types, etc. Use the name property for the term being defined, use termCode if the term has an alpha-numeric code allocated, use description to provide the definition of the term.

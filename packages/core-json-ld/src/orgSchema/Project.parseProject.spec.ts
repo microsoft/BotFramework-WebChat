@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { parseProject, projectSchema } from './Project.js';
+import { parseProject, projectSchema } from './Project';
 
 const projectTemplate = parse(projectSchema, {});
 
@@ -14,7 +14,7 @@ describe('Project', () => {
       })
     ).toEqual({
       ...projectTemplate,
-      '@type': 'Project',
+      '@type': ['Project'],
       name: ['Microsoft'],
       slogan: ['Empower every person and every organization on the planet to achieve more.']
     });

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { thingSchema } from './Thing.js';
+import { thingSchema } from './Thing';
 
 const thingTemplate = parse(thingSchema, {});
 
@@ -13,7 +13,7 @@ describe('Thing', () => {
       })
     ).toEqual({
       ...thingTemplate,
-      '@type': 'Thing',
+      '@type': ['Thing'],
       name: ['John Doe']
     });
   });
@@ -26,7 +26,7 @@ describe('Thing', () => {
       })
     ).toEqual({
       ...thingTemplate,
-      '@type': 'Unknown',
+      '@type': ['Unknown'],
       name: ['John Doe']
     });
   });
@@ -39,7 +39,7 @@ describe('Thing', () => {
       })
     ).toEqual({
       ...thingTemplate,
-      '@type': 'Thing'
+      '@type': ['Thing']
     });
   });
 
@@ -51,8 +51,21 @@ describe('Thing', () => {
       })
     ).toEqual({
       ...thingTemplate,
-      '@type': 'Thing',
+      '@type': ['Thing'],
       name: []
+    });
+  });
+
+  test('should parse multiple types', () => {
+    expect(
+      parse(thingSchema, {
+        '@type': ['Person', 'Thing'],
+        name: 'John Doe'
+      })
+    ).toEqual({
+      ...thingTemplate,
+      '@type': ['Person', 'Thing'],
+      name: ['John Doe']
     });
   });
 });

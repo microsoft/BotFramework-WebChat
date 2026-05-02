@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { actionSchema, parseAction } from './Action.js';
-import { userReviewSchema } from './UserReview.js';
+import { actionSchema, parseAction } from './Action';
+import { userReviewSchema } from './UserReview';
 
 const actionTemplate = parse(actionSchema, {});
 const userReviewTemplate = parse(userReviewSchema, {});
@@ -16,7 +16,7 @@ describe('Action', () => {
         })
       ).toEqual({
         ...actionTemplate,
-        '@type': 'Action',
+        '@type': ['Action'],
         actionStatus: ['ActiveActionStatus']
       }));
 
@@ -25,11 +25,12 @@ describe('Action', () => {
         expect(
           parseAction({
             '@type': 'Action',
+            // @ts-expect-error
             actionStatus: 'ABC'
           })
         ).toEqual({
           ...actionTemplate,
-          '@type': 'Action',
+          '@type': ['Action'],
           actionStatus: []
         });
       } catch (err) {
@@ -53,12 +54,12 @@ describe('Action', () => {
         })
       ).toEqual({
         ...actionTemplate,
-        '@type': 'LikeAction',
+        '@type': ['LikeAction'],
         actionStatus: ['PotentialActionStatus'],
         result: [
           {
             ...userReviewTemplate,
-            '@type': 'UserReview',
+            '@type': ['UserReview'],
             reviewAspect: ['Hello, World!']
           }
         ]

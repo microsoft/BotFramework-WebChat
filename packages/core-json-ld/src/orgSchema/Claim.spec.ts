@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { claimSchema } from './Claim.js';
-import { creativeWorkSchema } from './CreativeWork.js';
-import { projectSchema } from './Project.js';
+import { claimSchema } from './Claim';
+import { creativeWorkSchema } from './CreativeWork';
+import { projectSchema } from './Project';
 
 const claimTemplate = parse(claimSchema, {});
 const creativeWorkTemplate = parse(creativeWorkSchema, {});
@@ -20,11 +20,11 @@ describe('Claim', () => {
       })
     ).toEqual({
       ...claimTemplate,
-      '@type': 'Claim',
+      '@type': ['Claim'],
       appearance: [
         {
           ...creativeWorkTemplate,
-          '@type': 'Book',
+          '@type': ['Book'],
           name: ['Business @ the Speed of Thought']
         }
       ]
@@ -41,11 +41,11 @@ describe('Claim', () => {
       })
     ).toEqual({
       ...claimTemplate,
-      '@type': 'Claim',
+      '@type': ['Claim'],
       claimInterpreter: [
         {
           ...projectTemplate,
-          '@type': 'Project',
+          '@type': ['Project'],
           slogan: ['Empower every person and every organization on the planet to achieve more.']
         }
       ]
@@ -60,7 +60,7 @@ describe('Claim', () => {
         })
       ).toEqual({
         ...claimTemplate,
-        '@type': 'Claim',
+        '@type': ['Claim'],
         position: [1]
       }));
 
@@ -72,7 +72,7 @@ describe('Claim', () => {
         })
       ).toEqual({
         ...claimTemplate,
-        '@type': 'Claim',
+        '@type': ['Claim'],
         position: ['First']
       }));
   });

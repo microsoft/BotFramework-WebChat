@@ -1,19 +1,19 @@
 import { intersect, lazy, number, object, parser, string, union, type GenericSchema } from 'valibot';
-import { claimSchema } from './Claim.js';
+import { claimSchema } from './Claim';
 import {
   creativeWorkStatusSchema,
   type CreativeWorkStatusInput,
   type CreativeWorkStatusOutput
-} from './CreativeWorkStatus.js';
-import { definedTermSchema, type DefinedTermInput, type DefinedTermOutput } from './DefinedTerm.js';
-import { personSchema, type PersonInput, type PersonOutput } from './Person.js';
-import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
+} from './CreativeWorkStatus';
+import { definedTermSchema, type DefinedTermInput, type DefinedTermOutput } from './DefinedTerm';
+import { personSchema, type PersonInput, type PersonOutput } from './Person';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import {
   softwareSourceCodeSchema,
   type SoftwareSourceCodeInput,
   type SoftwareSourceCodeOutput
-} from './SoftwareSourceCode.js';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing.js';
+} from './SoftwareSourceCode';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * The most generic kind of creative work, including books, movies, photographs, software programs, etc.

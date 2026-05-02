@@ -1,6 +1,6 @@
 import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing.js';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
 /**
  * A review created by an end-user (e.g. consumer, purchaser, attendee etc.), in contrast with [`CriticReview`](https://schema.org/CriticReview).
