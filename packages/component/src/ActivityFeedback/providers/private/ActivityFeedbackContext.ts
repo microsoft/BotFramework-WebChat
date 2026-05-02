@@ -1,4 +1,4 @@
-import { type OrgSchemaAction, type WebChatActivity } from 'botframework-webchat-core';
+import { type OrgSchemaAction, type WebChatActivity } from 'botframework-webchat-core/org-schema.js';
 import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 type ActivityFeedbackContextType = Readonly<{

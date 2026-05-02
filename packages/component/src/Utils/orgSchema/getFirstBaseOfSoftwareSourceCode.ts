@@ -1,4 +1,4 @@
-import { type OrgSchemaCreativeWork, type OrgSchemaSoftwareSourceCode } from 'botframework-webchat-core';
+import { type OrgSchemaCreativeWork, type OrgSchemaSoftwareSourceCode } from 'botframework-webchat-core/org-schema.js';
 
 /**
  * Finds the first `isBasedOf` element that is of type `SoftwareSourceCode`.
