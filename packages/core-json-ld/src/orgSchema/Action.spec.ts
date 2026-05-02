@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { actionSchema, parseAction } from './Action';
 import { parse } from 'valibot';
-import { userReviewSchema } from './UserReview';
+import { actionSchema, parseAction } from './Action.js';
+import { userReviewSchema } from './UserReview.js';
 
 const actionTemplate = parse(actionSchema, {});
 const userReviewTemplate = parse(userReviewSchema, {});
@@ -25,7 +25,6 @@ describe('Action', () => {
         expect(
           parseAction({
             '@type': 'Action',
-            // @ts-expect-error
             actionStatus: 'ABC'
           })
         ).toEqual({

@@ -1,7 +1,6 @@
 import { intersect, lazy, object, string, type GenericSchema } from 'valibot';
-
-import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
-import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork.js';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
 
 /**
  * Computer programming source code. Example: Full (compile ready) solutions, code snippet samples, scripts, templates.

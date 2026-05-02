@@ -68,6 +68,26 @@
         "types": "./dist/botframework-webchat-core.internal.d.ts",
         "default": "./dist/botframework-webchat-core.internal.js"
       }
+    },
+    "./json-ld.js": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.json-ld.d.mts",
+        "default": "./dist/botframework-webchat-core.json-ld.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.json-ld.d.ts",
+        "default": "./dist/botframework-webchat-core.json-ld.js"
+      }
+    },
+    "./org-schema.js": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.org-schema.d.mts",
+        "default": "./dist/botframework-webchat-core.org-schema.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.org-schema.d.ts",
+        "default": "./dist/botframework-webchat-core.org-schema.js"
+      }
     }
   },
   "publishConfig": {
@@ -117,7 +137,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../core-debug-api/package.json\" \"../core-graph/package.json\"",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../core-debug-api/package.json\" \"../core-graph/package.json\" \"../core-json-ld/package.json\"",
     "test:tsd": "tsd"
   },
   "engines": {
@@ -141,6 +161,7 @@
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-core-debug-api": "development",
     "@msinternal/botframework-webchat-core-graph": "development",
+    "@msinternal/botframework-webchat-core-json-ld": "development",
     "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "devDependencies": {
@@ -151,6 +172,7 @@
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-core-debug-api": "0.0.0-0",
     "@msinternal/botframework-webchat-core-graph": "0.0.0-0",
+    "@msinternal/botframework-webchat-core-json-ld": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@testduet/given-when-then": "^0.1.0",
     "@types/jest": "^29.5.14",

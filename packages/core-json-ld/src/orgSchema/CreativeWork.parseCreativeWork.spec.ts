@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { claimSchema } from './Claim';
-import { creativeWorkSchema, parseCreativeWork } from './CreativeWork';
+import { claimSchema } from './Claim.js';
+import { creativeWorkSchema, parseCreativeWork } from './CreativeWork.js';
 
 const claimTemplate = parse(claimSchema, {});
 const creativeWorkTemplate = parse(creativeWorkSchema, {});

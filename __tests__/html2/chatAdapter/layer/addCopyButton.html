@@ -36,7 +36,7 @@
           '@id' in entity &&
           entity['@id'] === '' &&
           '@type' in entity &&
-          entity['@type'] === 'Message'
+          entity['@type'].includes('Message')
         ) {
           return entity;
         }

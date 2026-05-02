@@ -1,4 +1,8 @@
-import { orgSchemaUserReviewSchema, type OrgSchemaAction, type OrgSchemaThing } from 'botframework-webchat-core';
+import {
+  orgSchemaUserReviewSchema,
+  type OrgSchemaAction,
+  type OrgSchemaThing
+} from 'botframework-webchat-core/org-schema.js';
 import { safeParse } from 'valibot';
 
 export default function getDisclaimerFromActivity(action: OrgSchemaAction): string | undefined {

@@ -84,56 +84,6 @@ import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbna
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { Observable } from './types/external/Observable';
 
-// #region Schema.org
-export {
-  actionSchema as orgSchemaActionSchema,
-  parseAction,
-  type ActionOutput as OrgSchemaAction
-} from './types/external/OrgSchema/Action';
-export {
-  claimSchema as orgSchemaClaimSchema,
-  parseClaim,
-  type ClaimOutput as OrgSchemaClaim
-} from './types/external/OrgSchema/Claim';
-export {
-  creativeWorkSchema as orgSchemaCreativeWorkSchema,
-  parseCreativeWork,
-  type CreativeWorkOutput as OrgSchemaCreativeWork
-} from './types/external/OrgSchema/CreativeWork';
-export {
-  definedTermSchema as orgSchemaDefinedTermSchema,
-  parseDefinedTerm,
-  type DefinedTermOutput as OrgSchemaDefinedTerm
-} from './types/external/OrgSchema/DefinedTerm';
-export {
-  personSchema as orgSchemaPersonSchema,
-  type PersonOutput as OrgSchemaPerson
-} from './types/external/OrgSchema/Person';
-export {
-  projectSchema as orgSchemaProjectSchema,
-  parseProject,
-  type ProjectOutput as OrgSchemaProject
-} from './types/external/OrgSchema/Project';
-export {
-  softwareSourceCodeSchema as orgSchemaSoftwareSourceCodeSchema,
-  type SoftwareSourceCodeOutput as OrgSchemaSoftwareSourceCode
-} from './types/external/OrgSchema/SoftwareSourceCode';
-export {
-  thingSchema as orgSchemaThingSchema,
-  parseThing,
-  type ThingOutput as OrgSchemaThing
-} from './types/external/OrgSchema/Thing';
-export {
-  userReviewSchema as orgSchemaUserReviewSchema,
-  type UserReviewOutput as OrgSchemaUserReview
-} from './types/external/OrgSchema/UserReview';
-export {
-  voteActionSchema as orgSchemaVoteActionSchema,
-  parseVoteAction,
-  type VoteActionOutput as OrgSchemaVoteAction
-} from './types/external/OrgSchema/VoteAction';
-// #endregion
-
 /** @deprecated */
 export { singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 

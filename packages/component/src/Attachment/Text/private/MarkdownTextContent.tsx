@@ -1,15 +1,13 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
+import { getOrgSchemaMessage, onErrorResumeNext, type WebChatActivity } from 'botframework-webchat-core';
 import {
-  getOrgSchemaMessage,
-  onErrorResumeNext,
   orgSchemaClaimSchema,
   type OrgSchemaClaim,
   type OrgSchemaCreativeWork,
-  type OrgSchemaSoftwareSourceCode,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+  type OrgSchemaSoftwareSourceCode
+} from 'botframework-webchat-core/org-schema.js';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';

@@ -1,9 +1,10 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { orgSchemaActionSchema, orgSchemaVoteActionSchema } from 'botframework-webchat-core';
+import { orgSchemaActionSchema, orgSchemaVoteActionSchema } from 'botframework-webchat-core/org-schema.js';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { literal, object, pipe, readonly, string, union, type InferInput } from 'valibot';
+import { isOfType } from 'botframework-webchat-core/json-ld.js';
 
 import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
@@ -35,11 +36,11 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
   const actionRef = useRefFrom(action);
   const buttonRef = useRef<HTMLInputElement>(null);
   const direction = useMemo(() => {
-    if (action['@type'] === 'DislikeAction') {
+    if (isOfType('DislikeAction', action)) {
       return 'down';
-    } else if (action['@type'] === 'LikeAction') {
+    } else if (isOfType('LikeAction', action)) {
       return 'up';
-    } else if (action['@type'] === 'VoteAction') {
+    } else if (isOfType('VoteAction', action)) {
       if (action.actionOption[0] === 'downvote') {
         return 'down';
       } else if (action.actionOption[0] === 'upvote') {

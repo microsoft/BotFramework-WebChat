@@ -1,10 +1,10 @@
 import { parse } from 'valibot';
-import { creativeWorkSchema, type CreativeWorkOutput } from '../types/external/OrgSchema/CreativeWork';
-import { type WebChatActivity } from '../types/WebChatActivity';
+import { orgSchemaCreativeWorkSchema, type OrgSchemaCreativeWork } from '@msinternal/botframework-webchat-core-json-ld';
+import type { WebChatActivity } from '../types/WebChatActivity';
 
 type EntityType = NonNullable<WebChatActivity['entities']>[number];
 
-export default function getOrgSchemaMessage(graph: readonly EntityType[]): CreativeWorkOutput | undefined {
+export default function getOrgSchemaMessage(graph: readonly EntityType[]): OrgSchemaCreativeWork | undefined {
   for (const entity of graph ?? []) {
     const isPossiblySelfMessage =
       entity &&
@@ -15,7 +15,7 @@ export default function getOrgSchemaMessage(graph: readonly EntityType[]): Creat
       entity['@id'] === '';
 
     if (isPossiblySelfMessage) {
-      return parse(creativeWorkSchema, entity);
+      return parse(orgSchemaCreativeWorkSchema, entity);
     }
   }
 }

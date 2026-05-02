@@ -1,11 +1,8 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import {
-  getOrgSchemaMessage,
-  orgSchemaActionSchema,
-  type OrgSchemaAction,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+import { orgSchemaActionSchema, type OrgSchemaAction } from 'botframework-webchat-core/org-schema.js';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { isOfType } from 'botframework-webchat-core/json-ld.js';
 import random from 'math-random';
 import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { wrapWith } from 'react-wrap-with';
@@ -147,7 +144,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       const reactActions: readonly OrgSchemaAction[] = Object.freeze(
         messageThing?.potentialAction.filter(
-          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
+          action => isOfType('LikeAction', action) || isOfType('DislikeAction', action)
         ) ?? []
       );
 
@@ -244,7 +241,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
       const { current: feedbackText } = feedbackTextRef;
-      const isLegacyAction = action['@type'] === 'VoteAction';
+      const isLegacyAction = isOfType('VoteAction', action);
 
       // TODO: We should update this to use W3C Hydra.1
       if (isActionRequireReview(action)) {
@@ -256,7 +253,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
             actionName: 'feedback',
             actionValue: {
               feedback: { feedbackText: feedbackText || '' },
-              reaction: action['@type'] === 'LikeAction' ? 'like' : 'dislike'
+              reaction: isOfType('LikeAction', action) ? 'like' : 'dislike'
             }
           }
         } as any);
@@ -268,7 +265,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
             {
               ...entity,
               actionOption: entity.actionOption[0], // TODO: Service should accept plural.
-              type: new URL(entity['@type'] ?? '', entity['@context'] ?? 'https://schema.org').href
+              type: new URL(entity['@type'][0] ?? '', entity['@context'] ?? 'https://schema.org').href
             }
           ],
           name: 'webchat:activity-status/feedback',

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { parseVoteAction, voteActionSchema } from './VoteAction';
 import { parse } from 'valibot';
+import { parseVoteAction, voteActionSchema } from './VoteAction.js';
 
 const voteActionTemplate = parse(voteActionSchema, {});
 

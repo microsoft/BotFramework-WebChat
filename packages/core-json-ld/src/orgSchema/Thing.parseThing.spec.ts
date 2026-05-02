@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { parse } from 'valibot';
-import { thingSchema } from './Thing';
+import { thingSchema } from './Thing.js';
 
 const thingTemplate = parse(thingSchema, {});
 

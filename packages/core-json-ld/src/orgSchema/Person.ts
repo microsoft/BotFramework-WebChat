@@ -1,6 +1,6 @@
 import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
-import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing.js';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
 
 /**
  * A person (alive, dead, undead, or fictional).

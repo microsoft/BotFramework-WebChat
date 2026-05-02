@@ -1,7 +1,6 @@
 import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-
-import jsonLinkedDataProperty from './private/jsonLinkedDataProperty';
-import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty.js';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing.js';
 
 /**
  * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { parseProject, projectSchema } from './Project';
 import { parse } from 'valibot';
+import { parseProject, projectSchema } from './Project.js';
 
 const projectTemplate = parse(projectSchema, {});
 

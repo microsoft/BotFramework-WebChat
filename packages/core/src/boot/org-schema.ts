@@ -6,10 +6,16 @@ export {
   orgSchemaPersonSchema,
   orgSchemaProjectSchema,
   orgSchemaSoftwareSourceCodeSchema,
+  orgSchemaThingSchema,
   orgSchemaUserReviewSchema,
   orgSchemaVoteActionSchema,
-  orgSchemaThingSchema,
-  type OrgSchemaThing,
+  parseAction,
+  parseClaim,
+  parseCreativeWork,
+  parseDefinedTerm,
+  parseProject,
+  parseThing,
+  parseVoteAction,
   type OrgSchemaAction,
   type OrgSchemaClaim,
   type OrgSchemaCreativeWork,
@@ -17,6 +23,7 @@ export {
   type OrgSchemaPerson,
   type OrgSchemaProject,
   type OrgSchemaSoftwareSourceCode,
+  type OrgSchemaThing,
   type OrgSchemaUserReview,
   type OrgSchemaVoteAction
-} from 'botframework-webchat-core/org-schema.js';
+} from '@msinternal/botframework-webchat-core-json-ld';

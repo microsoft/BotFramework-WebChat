@@ -9,7 +9,7 @@ import { type OrgSchemaCreativeWork, type OrgSchemaSoftwareSourceCode } from 'bo
 export default function getFirstBaseOfSoftwareSourceCode(
   messageThing: OrgSchemaCreativeWork | undefined
 ): OrgSchemaSoftwareSourceCode | undefined {
-  return (messageThing?.isBasedOn ?? []).find(
-    ({ '@type': jsonLinkedDataType }) => jsonLinkedDataType === 'SoftwareSourceCode'
+  return (messageThing?.isBasedOn ?? []).find(({ '@type': jsonLinkedDataTypes }) =>
+    jsonLinkedDataTypes.includes('SoftwareSourceCode')
   );
 }

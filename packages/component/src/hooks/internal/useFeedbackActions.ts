@@ -1,9 +1,5 @@
-import {
-  getOrgSchemaMessage,
-  OrgSchemaAction,
-  orgSchemaActionSchema,
-  WebChatActivity
-} from 'botframework-webchat-core';
+import { getOrgSchemaMessage, WebChatActivity } from 'botframework-webchat-core';
+import { OrgSchemaAction, orgSchemaActionSchema } from 'botframework-webchat-core/org-schema.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { parse } from 'valibot';
@@ -30,7 +26,9 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
       const messageThing = getOrgSchemaMessage(graph);
 
       const reactActions = Object.freeze(
-        messageThing?.potentialAction.filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
+        messageThing?.potentialAction.filter(
+          ({ '@type': type }) => type.includes('LikeAction') || type.includes('DislikeAction')
+        )
       );
 
       if (reactActions.length) {

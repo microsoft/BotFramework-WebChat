@@ -1,13 +1,8 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import {
-  getOrgSchemaMessage,
-  orgSchemaActionSchema,
-  orgSchemaClaimSchema,
-  OrgSchemaProject,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { orgSchemaActionSchema, orgSchemaClaimSchema, OrgSchemaProject } from 'botframework-webchat-core/org-schema.js';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 import { parse } from 'valibot';

@@ -5,9 +5,9 @@ import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
   isVoiceTranscriptActivity,
-  type OrgSchemaCreativeWork,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { type OrgSchemaCreativeWork } from 'botframework-webchat-core/org-schema.js';
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
