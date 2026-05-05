@@ -12,7 +12,10 @@ import {
   type InferOutput
 } from 'valibot';
 
-const EMPTY_ARRAY = Object.freeze([]);
+// TODO: [P0] Uncomment `valibot.intersect` works with frozen objects.
+//       `valibot.intersect` doesn't work with frozen objects yet.
+//       Related to https://github.com/open-circle/valibot/pull/1463.
+// const EMPTY_ARRAY = Object.freeze([]);
 
 // JSON-LD property characteristics:
 // - Every property value can be singular or plural (value)
@@ -41,18 +44,12 @@ export default function jsonLinkedDataProperty<T extends BaseSchema<unknown, unk
       any(),
       transform((value: TOutput | readonly TOutput[]): readonly TOutput[] => {
         if (typeof value === 'undefined') {
-          return EMPTY_ARRAY;
+          // TODO: [P0] Uncomment `valibot.intersect` works with frozen objects.
+          // return EMPTY_ARRAY;
+          return [];
         }
 
-        let nextValue: readonly TOutput[];
-
-        if (Array.isArray(value)) {
-          nextValue = value;
-        } else {
-          nextValue = [value];
-        }
-
-        nextValue = nextValue.reduce<TOutput[]>((result, item) => {
+        const nextValue: TOutput[] = (Array.isArray(value) ? value : [value]).reduce<TOutput[]>((result, item) => {
           if (typeof item !== 'undefined') {
             const parseResult = safeParse(schema, item);
 
@@ -62,10 +59,14 @@ export default function jsonLinkedDataProperty<T extends BaseSchema<unknown, unk
           return result;
         }, []);
 
-        return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
+        // TODO: [P0] Uncomment `valibot.intersect` works with frozen objects.
+        // return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
+        return nextValue;
       }),
       readonly()
     ),
-    EMPTY_ARRAY
+    // TODO: [P0] Uncomment `valibot.intersect` works with frozen objects.
+    // EMPTY_ARRAY
+    []
   );
 }

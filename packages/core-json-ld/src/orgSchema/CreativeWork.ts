@@ -1,16 +1,4 @@
-import {
-  intersect,
-  lazy,
-  number,
-  object,
-  parser,
-  pipe,
-  readonly,
-  string,
-  transform,
-  union,
-  type GenericSchema
-} from 'valibot';
+import { intersect, lazy, number, object, parser, string, union, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { claimSchema } from './Claim';
 import {
@@ -199,31 +187,22 @@ let creativeWorkSchema_: GenericSchema<CreativeWorkInput, CreativeWorkOutput>;
 
 // This is for cyclic dependency.
 // eslint-disable-next-line prefer-const
-creativeWorkSchema_ = pipe(
-  intersect([
-    pipe(
-      lazy(() => thingSchema),
-      // TODO: `intersect()` seems doesn't like frozen objects.
-      //       Related to https://github.com/open-circle/valibot/pull/1463.
-      transform(value => ({ ...value }))
-    ),
-    object({
-      abstract: jsonLinkedDataProperty(string()),
-      author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
-      citation: jsonLinkedDataProperty(lazy(() => claimSchema)),
-      creativeWorkStatus: jsonLinkedDataProperty(creativeWorkStatusSchema),
-      isBasedOn: jsonLinkedDataProperty(lazy(() => softwareSourceCodeSchema)),
-      isPartOf: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
-      keywords: jsonLinkedDataProperty(union([lazy(() => definedTermSchema), string()])),
-      pattern: jsonLinkedDataProperty(lazy(() => definedTermSchema)),
-      position: jsonLinkedDataProperty(union([number(), string()])),
-      text: jsonLinkedDataProperty(string()),
-      usageInfo: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_))
-    })
-  ]),
-  readonly(),
-  transform(value => Object.freeze({ ...value }))
-);
+creativeWorkSchema_ = intersect([
+  lazy(() => thingSchema),
+  object({
+    abstract: jsonLinkedDataProperty(string()),
+    author: jsonLinkedDataProperty(union([lazy(() => personSchema), string()])),
+    citation: jsonLinkedDataProperty(lazy(() => claimSchema)),
+    creativeWorkStatus: jsonLinkedDataProperty(creativeWorkStatusSchema),
+    isBasedOn: jsonLinkedDataProperty(lazy(() => softwareSourceCodeSchema)),
+    isPartOf: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_)),
+    keywords: jsonLinkedDataProperty(union([lazy(() => definedTermSchema), string()])),
+    pattern: jsonLinkedDataProperty(lazy(() => definedTermSchema)),
+    position: jsonLinkedDataProperty(union([number(), string()])),
+    text: jsonLinkedDataProperty(string()),
+    usageInfo: jsonLinkedDataProperty(lazy(() => creativeWorkSchema_))
+  })
+]);
 
 // Constantize here, so we are exporting a const than a let.
 const creativeWorkSchema = creativeWorkSchema_;

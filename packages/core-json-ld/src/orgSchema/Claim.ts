@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parser, pipe, readonly, transform, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
@@ -53,22 +53,13 @@ type ClaimOutput = CreativeWorkOutput & {
   readonly claimInterpreter: readonly ProjectOutput[];
 };
 
-const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = pipe(
-  intersect([
-    pipe(
-      lazy(() => creativeWorkSchema),
-      // TODO: `intersect()` seems doesn't like frozen objects.
-      //       Related to https://github.com/open-circle/valibot/pull/1463.
-      transform(value => ({ ...value }))
-    ),
-    object({
-      appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
-      claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
-    })
-  ]),
-  readonly(),
-  transform(value => Object.freeze({ ...value }))
-);
+const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
+  lazy(() => creativeWorkSchema),
+  object({
+    appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
+    claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
+  })
+]);
 
 /** @deprecated Use Valibot.parse(claimSchema) instead. Will be removed on or after 2028-04-23. */
 const parseClaim: (claim: ClaimInput) => ClaimOutput = parser(claimSchema);

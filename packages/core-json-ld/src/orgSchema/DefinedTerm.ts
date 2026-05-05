@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parser, pipe, readonly, string, transform, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
@@ -48,22 +48,13 @@ type DefinedTermOutput = ThingOutput & {
   readonly termCode: readonly string[];
 };
 
-const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = pipe(
-  intersect([
-    pipe(
-      lazy(() => thingSchema),
-      // TODO: `intersect()` seems doesn't like frozen objects.
-      //       Related to https://github.com/open-circle/valibot/pull/1463.
-      transform(value => ({ ...value }))
-    ),
-    object({
-      inDefinedTermSet: jsonLinkedDataProperty(string()),
-      termCode: jsonLinkedDataProperty(string())
-    })
-  ]),
-  readonly(),
-  transform(value => Object.freeze({ ...value }))
-);
+const definedTermSchema: GenericSchema<DefinedTermInput, DefinedTermOutput> = intersect([
+  lazy(() => thingSchema),
+  object({
+    inDefinedTermSet: jsonLinkedDataProperty(string()),
+    termCode: jsonLinkedDataProperty(string())
+  })
+]);
 
 /** @deprecated Use Valibot.parse(definedTermSchema) instead. Will be removed on or after 2028-04-23. */
 const parseDefinedTerm: (definedTerm: DefinedTermInput) => DefinedTermOutput = parser(definedTermSchema);

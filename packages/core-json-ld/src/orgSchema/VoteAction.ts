@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parser, pipe, readonly, string, transform, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
 
@@ -38,21 +38,12 @@ type VoteActionOutput = ActionOutput & {
   readonly actionOption: readonly string[];
 };
 
-const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = pipe(
-  intersect([
-    pipe(
-      lazy(() => actionSchema),
-      // TODO: `intersect()` seems doesn't like frozen objects.
-      //       Related to https://github.com/open-circle/valibot/pull/1463.
-      transform(value => ({ ...value }))
-    ),
-    object({
-      actionOption: jsonLinkedDataProperty(string())
-    })
-  ]),
-  readonly(),
-  transform(value => Object.freeze({ ...value }))
-);
+const voteActionSchema: GenericSchema<VoteActionInput, VoteActionOutput> = intersect([
+  lazy(() => actionSchema),
+  object({
+    actionOption: jsonLinkedDataProperty(string())
+  })
+]);
 
 /** @deprecated Use Valibot.parse(voteActionSchema) instead. Will be removed on or after 2028-04-23. */
 const parseVoteAction: (voteAction: VoteActionInput) => VoteActionOutput = parser(voteActionSchema);

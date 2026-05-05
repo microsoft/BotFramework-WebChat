@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parser, pipe, readonly, string, transform, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 
@@ -30,21 +30,12 @@ type UserReviewOutput = ThingOutput & {
   readonly reviewAspect: readonly string[];
 };
 
-const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = pipe(
-  intersect([
-    pipe(
-      lazy(() => thingSchema),
-      // TODO: `intersect()` seems doesn't like frozen objects.
-      //       Related to https://github.com/open-circle/valibot/pull/1463.
-      transform(value => ({ ...value }))
-    ),
-    object({
-      reviewAspect: jsonLinkedDataProperty(string())
-    })
-  ]),
-  readonly(),
-  transform(value => Object.freeze({ ...value }))
-);
+const userReviewSchema: GenericSchema<UserReviewInput, UserReviewOutput> = intersect([
+  lazy(() => thingSchema),
+  object({
+    reviewAspect: jsonLinkedDataProperty(string())
+  })
+]);
 
 /** @deprecated Use Valibot.parse(userReviewSchema) instead. Will be removed on or after 2028-04-23. */
 const parseUserReview: (userReview: UserReviewInput) => UserReviewOutput = parser(userReviewSchema);

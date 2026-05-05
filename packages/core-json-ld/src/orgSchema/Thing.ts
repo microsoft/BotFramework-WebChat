@@ -1,4 +1,4 @@
-import { intersect, lazy, object, parser, pipe, readonly, string, transform, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
 import { jsonLinkedDataSchema, type JSONLinkedDataInput, type JSONLinkedDataOutput } from '../JSONLinkedData';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { actionSchema, type ActionInput, type ActionOutput } from './Action';
@@ -105,26 +105,17 @@ type ThingOutput = JSONLinkedDataOutput & {
   readonly url: readonly string[];
 };
 
-const thingSchema: GenericSchema<ThingInput, ThingOutput> = pipe(
-  intersect([
-    pipe(
-      lazy(() => jsonLinkedDataSchema),
-      // TODO: `intersect()` seems doesn't like frozen objects.
-      //       Related to https://github.com/open-circle/valibot/pull/1463.
-      transform(value => ({ ...value }))
-    ),
-    object({
-      additionalType: jsonLinkedDataProperty(string()),
-      alternateName: jsonLinkedDataProperty(string()),
-      description: jsonLinkedDataProperty(string()),
-      name: jsonLinkedDataProperty(string()),
-      potentialAction: jsonLinkedDataProperty(lazy(() => actionSchema)),
-      url: jsonLinkedDataProperty(string())
-    })
-  ]),
-  readonly(),
-  transform(value => Object.freeze({ ...value }))
-);
+const thingSchema: GenericSchema<ThingInput, ThingOutput> = intersect([
+  lazy(() => jsonLinkedDataSchema),
+  object({
+    additionalType: jsonLinkedDataProperty(string()),
+    alternateName: jsonLinkedDataProperty(string()),
+    description: jsonLinkedDataProperty(string()),
+    name: jsonLinkedDataProperty(string()),
+    potentialAction: jsonLinkedDataProperty(lazy(() => actionSchema)),
+    url: jsonLinkedDataProperty(string())
+  })
+]);
 
 /** @deprecated Use Valibot.parse(thingSchema) instead. Will be removed on or after 2028-04-23. */
 const parseThing: (thing: ThingInput) => ThingOutput = parser(thingSchema);
