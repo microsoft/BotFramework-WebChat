@@ -1,6 +1,6 @@
-import { intersect, lazy, object, string, type GenericSchema } from 'valibot';
-import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
+import { intersect, lazy, object, pipe, readonly, string, transform, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
+import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 
 /**
  * Computer programming source code. Example: Full (compile ready) solutions, code snippet samples, scripts, templates.
@@ -34,11 +34,20 @@ type SoftwareSourceCodeOutput = CreativeWorkOutput & {
   readonly programmingLanguage: readonly string[];
 };
 
-const softwareSourceCodeSchema: GenericSchema<SoftwareSourceCodeInput, SoftwareSourceCodeOutput> = intersect([
-  lazy(() => creativeWorkSchema),
-  object({
-    programmingLanguage: jsonLinkedDataProperty(string())
-  })
-]);
+const softwareSourceCodeSchema: GenericSchema<SoftwareSourceCodeInput, SoftwareSourceCodeOutput> = pipe(
+  intersect([
+    pipe(
+      lazy(() => creativeWorkSchema),
+      // TODO: `intersect()` seems doesn't like frozen objects.
+      //       Related to https://github.com/open-circle/valibot/pull/1463.
+      transform(value => ({ ...value }))
+    ),
+    object({
+      programmingLanguage: jsonLinkedDataProperty(string())
+    })
+  ]),
+  readonly(),
+  transform(value => Object.freeze({ ...value }))
+);
 
 export { softwareSourceCodeSchema, type SoftwareSourceCodeInput, type SoftwareSourceCodeOutput };

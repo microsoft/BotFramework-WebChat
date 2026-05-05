@@ -37,7 +37,7 @@ export default function jsonLinkedDataProperty<T extends BaseSchema<unknown, unk
 
   return optional(
     pipe(
-      // any() is okay, we will remove invalid value from the output array.
+      // any() is okay, our logic is to remove invalid value from the output array and not failing on them.
       any(),
       transform((value: TOutput | readonly TOutput[]): readonly TOutput[] => {
         if (typeof value === 'undefined') {
@@ -62,11 +62,7 @@ export default function jsonLinkedDataProperty<T extends BaseSchema<unknown, unk
           return result;
         }, []);
 
-        return nextValue.length ? nextValue : [];
-
-        // TODO: Should use frozen array but `intersect()` seems doesn't like it.
-        //       Write a test case to proof this is an issue in valibot.
-        // return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
+        return nextValue.length ? Object.freeze(nextValue) : EMPTY_ARRAY;
       }),
       readonly()
     ),

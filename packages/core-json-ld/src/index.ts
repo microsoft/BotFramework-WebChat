@@ -47,3 +47,4 @@ export {
 
 export { default as isOfType } from './isOfType.js';
 export { jsonLinkedDataSchema, type JSONLinkedDataInput, type JSONLinkedDataOutput } from './JSONLinkedData.js';
+export { default as deepFreeze } from './private/deepFreeze.js';

@@ -1,7 +1,7 @@
-import { intersect, lazy, object, parser, type GenericSchema } from 'valibot';
+import { intersect, lazy, object, parser, pipe, readonly, transform, type GenericSchema } from 'valibot';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 import { creativeWorkSchema, type CreativeWorkInput, type CreativeWorkOutput } from './CreativeWork';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
-import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
 
 /**
  * A [Claim](https://schema.org/Claim) in Schema.org represents a specific, factually-oriented claim that could be the [itemReviewed](https://schema.org/itemReviewed) in a [ClaimReview](https://schema.org/ClaimReview). The content of a claim can be summarized with the [text](https://schema.org/text) property. Variations on well known claims can have their common identity indicated via [sameAs](https://schema.org/sameAs) links, and summarized with a name. Ideally, a [Claim](https://schema.org/Claim) description includes enough contextual information to minimize the risk of ambiguity or inclarity. In practice, many claims are better understood in the context in which they appear or the interpretations provided by claim reviews.
@@ -53,13 +53,22 @@ type ClaimOutput = CreativeWorkOutput & {
   readonly claimInterpreter: readonly ProjectOutput[];
 };
 
-const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = intersect([
-  lazy(() => creativeWorkSchema),
-  object({
-    appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
-    claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
-  })
-]);
+const claimSchema: GenericSchema<ClaimInput, ClaimOutput> = pipe(
+  intersect([
+    pipe(
+      lazy(() => creativeWorkSchema),
+      // TODO: `intersect()` seems doesn't like frozen objects.
+      //       Related to https://github.com/open-circle/valibot/pull/1463.
+      transform(value => ({ ...value }))
+    ),
+    object({
+      appearance: jsonLinkedDataProperty(lazy(() => creativeWorkSchema)),
+      claimInterpreter: jsonLinkedDataProperty(lazy(() => projectSchema))
+    })
+  ]),
+  readonly(),
+  transform(value => Object.freeze({ ...value }))
+);
 
 /** @deprecated Use Valibot.parse(claimSchema) instead. Will be removed on or after 2028-04-23. */
 const parseClaim: (claim: ClaimInput) => ClaimOutput = parser(claimSchema);

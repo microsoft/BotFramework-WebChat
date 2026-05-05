@@ -1,6 +1,6 @@
-import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
-import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
+import { intersect, lazy, object, parser, pipe, readonly, string, transform, type GenericSchema } from 'valibot';
 import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
+import { actionStatusSchema, type ActionStatusInput, type ActionStatusOutput } from './ActionStatus';
 import { projectSchema, type ProjectInput, type ProjectOutput } from './Project';
 import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
 import { userReviewSchema, type UserReviewInput, type UserReviewOutput } from './UserReview';
@@ -75,15 +75,24 @@ type ActionOutput = ThingOutput & {
   readonly result: readonly (ThingOutput | UserReviewOutput)[];
 };
 
-const actionSchema: GenericSchema<ActionInput, ActionOutput> = intersect([
-  lazy(() => thingSchema),
-  object({
-    actionOption: jsonLinkedDataProperty(string()),
-    actionStatus: jsonLinkedDataProperty(actionStatusSchema),
-    provider: jsonLinkedDataProperty(lazy(() => projectSchema)),
-    result: jsonLinkedDataProperty(userReviewSchema)
-  })
-]);
+const actionSchema: GenericSchema<ActionInput, ActionOutput> = pipe(
+  intersect([
+    pipe(
+      lazy(() => thingSchema),
+      // TODO: `intersect()` seems doesn't like frozen objects.
+      //       Related to https://github.com/open-circle/valibot/pull/1463.
+      transform(value => ({ ...value }))
+    ),
+    object({
+      actionOption: jsonLinkedDataProperty(string()),
+      actionStatus: jsonLinkedDataProperty(actionStatusSchema),
+      provider: jsonLinkedDataProperty(lazy(() => projectSchema)),
+      result: jsonLinkedDataProperty(userReviewSchema)
+    })
+  ]),
+  readonly(),
+  transform(value => Object.freeze({ ...value }))
+);
 
 /** @deprecated Use Valibot.parse(actionSchema) instead. Will be removed on or after 2028-04-23. */
 const parseAction: (action: ActionInput) => ActionOutput = parser(actionSchema);
