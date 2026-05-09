@@ -4,7 +4,7 @@ import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 
 import { useStyles } from '../../styles/index.js';
-import { useActivityAuthor } from '../activity/index.js';
+import { useFirstActivityAuthor } from '../activity/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
 
@@ -18,7 +18,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const localize = useLocalizer();
 
-  const author = useActivityAuthor(activity);
+  const author = useFirstActivityAuthor(activity);
 
   const html = useMemo(
     () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(author?.description[0] || '') } : { __html: '' }),

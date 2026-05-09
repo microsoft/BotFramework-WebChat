@@ -8,8 +8,8 @@ import { custom, is, object, optional, pipe, readonly, string, type InferInput }
 import { useStyles } from '../../styles';
 import styles from './CopilotMessageHeader.module.css';
 import isAIGeneratedActivity from './private/isAIGeneratedActivity';
-import useActivityAuthor from './private/useActivityAuthor';
 import useActivityStyleOptions from './private/useActivityStyleOptions';
+import useFirstActivityAuthor from './private/useFirstActivityAuthor';
 
 const { useLocalizer } = hooks;
 
@@ -36,7 +36,7 @@ function CopilotMessageHeader(props: CopilotMessageHeaderProps) {
     [botAvatarBackgroundColor]
   );
 
-  const author = useActivityAuthor(activity);
+  const author = useFirstActivityAuthor(activity);
   const avatarImage = author?.image[0] || botAvatarImage;
   const botTitle = author?.name[0] || activity?.from?.name;
 

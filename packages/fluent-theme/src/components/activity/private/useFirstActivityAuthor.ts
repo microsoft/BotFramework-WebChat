@@ -8,7 +8,7 @@ import { parse } from 'valibot';
  *
  * String-based author will be convertewd to `Person` thing.
  */
-export default function useActivityAuthor(activity?: WebChatActivity | undefined): OrgSchemaPerson | undefined {
+export default function useFirstActivityAuthor(activity?: WebChatActivity | undefined): OrgSchemaPerson | undefined {
   return useMemo(() => {
     const firstAuthor = getOrgSchemaMessage(activity?.entities || [])?.author[0];
 
