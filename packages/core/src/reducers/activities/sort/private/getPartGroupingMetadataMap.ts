@@ -21,6 +21,7 @@ function getPartGroupingMetadataMap(activity: WebChatActivity): ReadonlyMap<stri
             type,
             Object.freeze({
               groupingId: item['@id'],
+              // We do not support non-number position.
               position: typeof firstPosition === 'number' ? firstPosition : undefined
             })
           );
