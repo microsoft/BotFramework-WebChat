@@ -1,5 +1,6 @@
 // TODO: [P0] This flattening can probably fold into `colorNode()` as it has slanted view of the system.
 
+import { isPlainObject } from '@msinternal/botframework-webchat-base/utils';
 import { v4 } from 'uuid';
 import { assert, check, is, looseObject, object, optional, parse, pipe, safeParse } from 'valibot';
 
@@ -8,7 +9,6 @@ import { IdentifierSchema, type Identifier } from './Identifier';
 import { JSONLiteralSchema, type JSONLiteral } from './JSONLiteral';
 import { LiteralSchema, type Literal } from './Literal';
 import { isNodeReference, NodeReferenceSchema, type NodeReference } from './NodeReference';
-import isPlainObject from './private/isPlainObject';
 
 function randomUUID(): string {
   // crypto.randomUUID() requires HTTPS context.
