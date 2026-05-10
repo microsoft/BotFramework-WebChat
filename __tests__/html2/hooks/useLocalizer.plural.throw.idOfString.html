@@ -46,7 +46,7 @@
         const localize = await renderHook(() => useLocalizer({ plural: true }));
 
         expect(() => localize('THIS_SHOULD_BE_MAP_INSTEAD')).toThrow(
-          'useLocalizer: Plural string must pass "id" as a map instead of string.'
+          'useLocalizer: Plural string must pass "id" as a plain object instead of string.'
         );
       });
     </script>
