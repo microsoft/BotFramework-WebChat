@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -24,12 +24,21 @@
         background-color: gold !important;
       }
     </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
   </head>
   <body>
     <main id="webchat"></main>
-    <script type="text/babel" data-presets="env,stage-3,react">
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       const {
-        React: { useEffect },
+        React: { createElement, useEffect },
         ReactDOM: { render },
         WebChat: {
           Components: { BasicWebChat, Composer },
@@ -59,10 +68,12 @@
         function renderWebChat(props) {
           return new Promise(resolve => {
             render(
-              <Composer directLine={directLine} store={store} styleOptions={styleOptions} {...props}>
-                <BasicWebChat />
-                <SendOnConnect />
-              </Composer>,
+              createElement(
+                Composer,
+                { directLine, store, styleOptions, ...props },
+                createElement(BasicWebChat),
+                createElement(SendOnConnect)
+              ),
               document.getElementById('webchat'),
               resolve
             );
@@ -77,16 +88,18 @@
         await pageConditions.suggestedActionsShown();
         await pageConditions.liveRegionStabilized();
 
-        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
-          testHelpers.getAllTextContents(child).join('\n')
-        );
-
-        expect(screenReaderTexts).toEqual([
-          'connecting',
-          'You said:\nsuggested-actions',
-          'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
-          'Message has suggested actions. Press shift tab 2 to 3 times to select them.'
-        ]);
+        await waitFor(() => {
+          expect(
+            Array.from(pageElements.liveRegion().children).map(child =>
+              testHelpers.getAllTextContents(child).join('\n')
+            )
+          ).toEqual([
+            'connecting',
+            'You said:\nsuggested-actions',
+            'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
+            'Message has suggested actions. Press shift tab 2 to 3 times to select them.'
+          ]);
+        });
 
         expect(document.querySelector('.webchat__suggested-actions').getAttribute('aria-label')).toBe(
           'Suggested actions'
