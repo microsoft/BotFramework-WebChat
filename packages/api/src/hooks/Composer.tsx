@@ -200,7 +200,9 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   }
 
   if (!isPlainObject(overrideLocalizedStrings)) {
-    throw new Error('botframework-webchat: overrideLocalizedStrings must be either a function, a plain object, or falsy.');
+    throw new Error(
+      'botframework-webchat: overrideLocalizedStrings must be either a function, a plain object, or falsy.'
+    );
   }
 
   return { ...localizedStrings, ...overrideLocalizedStrings };
