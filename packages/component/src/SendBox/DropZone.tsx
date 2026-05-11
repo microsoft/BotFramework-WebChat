@@ -69,11 +69,11 @@ type DropZoneProps = Readonly<{
   onFilesAdded: (files: File[]) => void;
 }>;
 
-function DropZone(props: DropZoneProps) {
+function DropZone({ onFilesAdded }: DropZoneProps) {
   const [dropZoneState, setDropZoneState] = useState<false | 'visible' | 'droppable'>(false);
   const dropZoneRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
-  const onFilesAddedRef = useRefFrom(props.onFilesAdded);
+  const onFilesAddedRef = useRefFrom(onFilesAdded);
   const styleToEmotionObject = useStyleToEmotionObject();
   const dropZoneClassName = styleToEmotionObject(DROP_ZONE_STYLE) + '';
   const dropZoneTextClassName = styleToEmotionObject(DROP_ZONE_TEXT_STYLE) + '';
