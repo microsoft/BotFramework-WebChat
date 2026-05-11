@@ -2,7 +2,7 @@ import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString,
   type HighlightCodeFn
-} from 'botframework-webchat-component/internal';
+} from 'botframework-webchat-component/internal.js';
 import katex from 'katex';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';

@@ -9,8 +9,7 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
-          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
           "react": "https://esm.sh/react@18",
           "react-dom": "https://esm.sh/react-dom@18",
           "react-dom/": "https://esm.sh/react-dom@18/"
@@ -22,7 +21,7 @@
       import '/test-page-object.mjs';
 
       import { createStoreWithOptions, testIds } from 'botframework-webchat';
-      import { useFocus } from 'botframework-webchat/hook';
+      import { useFocus } from 'botframework-webchat/hook.js';
       import createRenderHook from '/assets/esm/createRenderHook.js';
 
       const { createDirectLineEmulator } = window.testHelpers;

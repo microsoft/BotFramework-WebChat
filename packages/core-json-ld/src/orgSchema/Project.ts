@@ -1,0 +1,47 @@
+import { intersect, lazy, object, parser, string, type GenericSchema } from 'valibot';
+import jsonLinkedDataProperty from '../private/jsonLinkedDataProperty';
+import { thingSchema, type ThingInput, type ThingOutput } from './Thing';
+
+/**
+ * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
+ *
+ * This is partial implementation of https://schema.org/Project.
+ *
+ * @see https://schema.org/Project
+ */
+type ProjectInput = ThingInput & {
+  /**
+   * A slogan or motto associated with the item.
+   *
+   * @see https://schema.org/slogan
+   */
+  readonly slogan?: string | readonly string[] | undefined;
+};
+
+/**
+ * An enterprise (potentially individual but typically collaborative), planned to achieve a particular aim. Use properties from [Organization](https://schema.org/Organization), [subOrganization](https://schema.org/subOrganization)/[parentOrganization](https://schema.org/parentOrganization) to indicate project sub-structures.
+ *
+ * This is partial implementation of https://schema.org/Project.
+ *
+ * @see https://schema.org/Project
+ */
+type ProjectOutput = ThingOutput & {
+  /**
+   * A slogan or motto associated with the item.
+   *
+   * @see https://schema.org/slogan
+   */
+  readonly slogan: readonly string[];
+};
+
+const projectSchema: GenericSchema<ProjectInput, ProjectOutput> = intersect([
+  lazy(() => thingSchema),
+  object({
+    slogan: jsonLinkedDataProperty(string())
+  })
+]);
+
+/** @deprecated Use Valibot.parse(projectSchema) instead. Will be removed on or after 2028-04-23. */
+const parseProject: (project: ProjectInput) => ProjectOutput = parser(projectSchema);
+
+export { parseProject, projectSchema, type ProjectInput, type ProjectOutput };

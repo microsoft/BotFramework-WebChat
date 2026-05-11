@@ -4,7 +4,7 @@ import {
   createAvatarPolymiddleware,
   // Required but unused, for type portability.
   type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol
-} from 'botframework-webchat-api/middleware';
+} from 'botframework-webchat-api/middleware.js';
 import DefaultAvatar from './DefaultAvatar';
 
 function createDefaultAvatarMiddleware(styleOptions: StyleOptions | undefined) {

@@ -1,21 +1,21 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat';
-import { type WebChatActivity } from 'botframework-webchat/internal';
+import { type WebChatActivity } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { custom, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyles } from '../../styles';
 import styles from './CopilotMessageHeader.module.css';
 import isAIGeneratedActivity from './private/isAIGeneratedActivity';
-import useActivityAuthor from './private/useActivityAuthor';
 import useActivityStyleOptions from './private/useActivityStyleOptions';
+import useFirstActivityAuthor from './private/useFirstActivityAuthor';
 
 const { useLocalizer } = hooks;
 
 const copilotMessageHeaderPropsSchema = pipe(
   object({
-    activity: optional(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)),
+    activity: optional(custom<Readonly<WebChatActivity>>(value => is(object({}), value))),
     className: optional(string())
   }),
   readonly()
@@ -36,9 +36,9 @@ function CopilotMessageHeader(props: CopilotMessageHeaderProps) {
     [botAvatarBackgroundColor]
   );
 
-  const author = useActivityAuthor(activity);
-  const avatarImage = author?.image || botAvatarImage;
-  const botTitle = author?.name || activity?.from?.name;
+  const author = useFirstActivityAuthor(activity);
+  const avatarImage = author?.image[0] || botAvatarImage;
+  const botTitle = author?.name[0] || activity?.from?.name;
 
   return (
     <div className={cx(classNames['copilot-message-header'], className)}>

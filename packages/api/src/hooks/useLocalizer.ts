@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 import useLocalizedStrings from './internal/useLocalizedStrings';
-import isObject from '../utils/isObject';
+import { isPlainObject } from '@msinternal/botframework-webchat-base/utils';
 
 const DEFAULT_STRINGS = getAllLocalizedStrings()['en-US'];
 
@@ -28,8 +28,8 @@ export default function useLocalizer({ plural }: { plural?: boolean } = {}) {
       if (plural) {
         const pluralId = id as Plural;
 
-        if (!isObject(pluralId)) {
-          throw new Error('useLocalizer: Plural string must pass "id" as a map instead of string.');
+        if (!isPlainObject(pluralId)) {
+          throw new Error('useLocalizer: Plural string must pass "id" as a plain object instead of string.');
         } else if (typeof pluralId.other !== 'string') {
           throw new Error('useLocalizer: Plural string must have "id.other" of string.');
         } else if (typeof args[0] !== 'number') {

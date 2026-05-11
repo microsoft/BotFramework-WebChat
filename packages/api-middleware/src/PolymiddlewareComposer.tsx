@@ -1,18 +1,7 @@
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
-import {
-  array,
-  custom,
-  function_,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  transform,
-  type InferInput
-} from 'valibot';
+import { array, custom, function_, is, object, optional, pipe, readonly, transform, type InferInput } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
 import { AvatarPolymiddlewareProvider, extractAvatarEnhancer } from './avatarPolymiddleware';
@@ -23,7 +12,7 @@ const polymiddlewareComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     polymiddleware: pipe(
-      custom<readonly Polymiddleware[]>(value => safeParse(array(function_()), value).success),
+      custom<readonly Polymiddleware[]>(value => is(array(function_()), value)),
       transform<readonly Polymiddleware[], readonly Polymiddleware[]>(value => Object.freeze(Array.from(value)))
     )
   }),

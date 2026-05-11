@@ -1,5 +1,5 @@
 import { type Action } from 'redux';
-import { custom, function_, literal, object, pipe, readonly, safeParse, type InferOutput } from 'valibot';
+import { custom, function_, is, literal, object, pipe, readonly, type InferOutput } from 'valibot';
 
 const UNREGISTER_ACTION_SINK = 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' as const;
 
@@ -7,7 +7,7 @@ const unregisterActionSinkActionSchema = pipe(
   object({
     payload: pipe(
       object({
-        sink: custom<(action: Action) => void>(value => safeParse(function_(), value).success)
+        sink: custom<(action: Action) => void>(value => is(function_(), value))
       }),
       readonly()
     ),

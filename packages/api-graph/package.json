@@ -47,7 +47,12 @@
     "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\" \"../react-hooks/package.json\" \"../react-valibot/package.json\" \"../core/package.json\""
   },
-  "pinDependencies": {},
+  "pinDependencies": {
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ]
+  },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-react-hooks": "development",
@@ -61,8 +66,8 @@
     "@testduet/given-when-then": "^0.1.0",
     "@types/use-sync-external-store": "^1.5.0",
     "botframework-webchat-core": "0.0.0-0",
-    "type-fest": "^5.4.4",
-    "typescript": "^5.9.3"
+    "type-fest": "^5.6.0",
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "handler-chain": "0.1.1",
@@ -70,6 +75,6 @@
     "use-ref-from": "0.1.0"
   },
   "dependencies": {
-    "valibot": "1.2.0"
+    "valibot": "1.3.1"
   }
 }

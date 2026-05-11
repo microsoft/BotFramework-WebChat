@@ -1,9 +1,14 @@
 import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
-import { createGraphFromStore, isOfType, type GraphSubscriber, type Identifier } from 'botframework-webchat-core/graph';
+import {
+  createGraphFromStore,
+  isOfType,
+  type GraphSubscriber,
+  type Identifier
+} from 'botframework-webchat-core/graph.js';
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { custom, function_, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, function_, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
 
@@ -12,8 +17,8 @@ const EMPTY_ARRAY = Object.freeze([]);
 const graphProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    store: custom<ReturnType<typeof createStore>>(
-      value => safeParse(object({ getState: function_(), subscribe: function_() }), value).success
+    store: custom<ReturnType<typeof createStore>>(value =>
+      is(object({ getState: function_(), subscribe: function_() }), value)
     )
   }),
   readonly()

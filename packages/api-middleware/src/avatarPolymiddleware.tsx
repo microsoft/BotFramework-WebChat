@@ -1,7 +1,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { any, custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { any, custom, is, object, pipe, readonly, type InferInput } from 'valibot';
 
 import templatePolymiddleware, {
   type InferHandler,
@@ -44,7 +44,7 @@ type AvatarPolymiddlewareProviderProps = InferProviderProps<typeof AvatarPolymid
 const avatarPolymiddlewareProxyPropsSchema = pipe(
   object({
     [__INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol]: any(),
-    activity: custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)
+    activity: custom<Readonly<WebChatActivity>>(value => is(object({}), value))
   }),
   readonly()
 );

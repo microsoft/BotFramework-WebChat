@@ -1,4 +1,5 @@
 import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
+import type { PluginBuild } from 'esbuild';
 import path from 'path';
 import { defineConfig } from 'tsup';
 
@@ -8,7 +9,7 @@ import { bundleStyleContent as bundleStyleContentPlaceholder } from './src/style
 // Redirect import paths for "react" and "react-dom"
 const resolveReact = {
   name: 'isomorphic-react',
-  setup(build) {
+  setup(build: PluginBuild) {
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
     build.onResolve({ filter: /^(react|react-dom)$/ }, ({ path: pkgName }) => ({
@@ -25,7 +26,8 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat.decorator': './src/boot/exports/decorator.ts',
     'botframework-webchat.hook': './src/boot/exports/hook.ts',
     'botframework-webchat.internal': './src/boot/exports/internal.ts',
-    'botframework-webchat.middleware': './src/boot/exports/middleware.ts'
+    'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
+    'botframework-webchat.schema': './src/boot/exports/schema.ts'
   },
   env: {
     ...config.env,
@@ -52,7 +54,7 @@ const commonConfig = applyConfig(config => ({
     ...(config.esbuildPlugins ?? []),
     injectCSSPlugin({
       ignoreCSSEntries: ['dist/botframework-webchat.component.css'],
-      stylesPlaceholder: bundleStyleContentPlaceholder,
+      stylesPlaceholder: bundleStyleContentPlaceholder
     })
   ]
 }));

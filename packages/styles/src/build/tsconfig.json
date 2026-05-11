@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0", // Required for tsup@8.5.1 to work in typescript@6.0.3
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "types": ["node"]

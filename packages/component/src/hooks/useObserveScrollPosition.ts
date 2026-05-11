@@ -8,7 +8,10 @@ export default function useObserveScrollPosition(
   deps: any[]
 ): void {
   if (typeof observer !== 'function') {
+    // This is for shortcutting invalid props.
+    // eslint-disable-next-line react-hooks/immutability
     observer = undefined;
+
     console.warn('botframework-webchat: First argument passed to "useObserveScrollPosition" must be a function.');
   } else if (typeof deps !== 'undefined' && !Array.isArray(deps)) {
     console.warn(

@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat';
-import { type WebChatActivity } from 'botframework-webchat/internal';
+import { type WebChatActivity } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 
 import { useStyles } from '../../styles/index.js';
-import { useActivityAuthor } from '../activity/index.js';
+import { useFirstActivityAuthor } from '../activity/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
 
@@ -18,10 +18,10 @@ const PreChatMessageActivity = ({ activity }: Props) => {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const localize = useLocalizer();
 
-  const author = useActivityAuthor(activity);
+  const author = useFirstActivityAuthor(activity);
 
   const html = useMemo(
-    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(author?.description || '') } : { __html: '' }),
+    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(author?.description[0] || '') } : { __html: '' }),
     [author?.description, renderMarkdownAsHTML]
   );
 
@@ -36,9 +36,9 @@ const PreChatMessageActivity = ({ activity }: Props) => {
         >
           {author.image && (
             <img
-              alt={localize('AVATAR_ALT', author.name)}
+              alt={localize('AVATAR_ALT', author.name[0])}
               className={classNames['pre-chat-message-activity__body-avatar']}
-              src={author.image}
+              src={author.image[0]}
             />
           )}
           {author.name && <h2 className={classNames['pre-chat-message-activity__body-title']}>{author.name}</h2>}

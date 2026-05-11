@@ -1,19 +1,19 @@
 /* eslint-disable prefer-arrow-callback */
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { ThemeProvider } from 'botframework-webchat/component';
+import { ThemeProvider } from 'botframework-webchat/component.js';
 import {
   createActivityBorderMiddleware,
   createActivityGroupingMiddleware,
   DecoratorComposer,
   WebChatDecorator,
   type DecoratorMiddleware
-} from 'botframework-webchat/decorator';
+} from 'botframework-webchat/decorator.js';
 import {
   isVoiceTranscriptActivity,
   type ActivityMiddleware,
   type ActivityStatusMiddleware,
   type TypingIndicatorMiddleware
-} from 'botframework-webchat/internal';
+} from 'botframework-webchat/internal.js';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 

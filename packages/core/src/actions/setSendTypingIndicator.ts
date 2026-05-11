@@ -5,7 +5,7 @@ type SetSendTypingIndicatorAction = {
   type: typeof SET_SEND_TYPING_INDICATOR;
 };
 
-export default function setSendTypingIndicator(value): SetSendTypingIndicatorAction {
+export default function setSendTypingIndicator(value: boolean): SetSendTypingIndicatorAction {
   return {
     payload: { sendTypingIndicator: !!value },
     type: SET_SEND_TYPING_INDICATOR

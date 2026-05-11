@@ -1,4 +1,5 @@
 import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
+import { type PluginBuild } from 'esbuild';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
@@ -8,7 +9,7 @@ import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/style
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
-  setup(build) {
+  setup(build: PluginBuild) {
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
     build.onResolve({ filter: /^react$/ }, () => ({
@@ -26,7 +27,7 @@ const umdResolvePlugin = {
     build.onResolve({ filter: /^botframework-webchat-api\// }, args => ({
       path: join(
         fileURLToPath(import.meta.url),
-        `../src/external.umd/botframework-webchat-api/${args.path.split('/').slice(1).join('/')}.ts`
+        `../src/external.umd/botframework-webchat-api/${args.path.split('/').slice(1).join('/')}`
       )
     }));
 
@@ -41,7 +42,7 @@ const umdResolvePlugin = {
     build.onResolve({ filter: /^botframework-webchat-component\// }, args => ({
       path: join(
         fileURLToPath(import.meta.url),
-        `../src/external.umd/botframework-webchat-component/${args.path.split('/').slice(1).join('/')}.ts`
+        `../src/external.umd/botframework-webchat-component/${args.path.split('/').slice(1).join('/')}`
       )
     }));
   }

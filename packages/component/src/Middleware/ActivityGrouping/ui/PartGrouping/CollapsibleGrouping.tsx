@@ -20,7 +20,7 @@ const collapsibleGroupingPropsSchema = pipe(
     className: optional(string()),
     header: optional(reactNode()),
     isOpen: optional(boolean()),
-    onToggle: optional(pipe(custom<(isOpen: boolean) => void>(toggle => typeof toggle === 'function')), readonly())
+    onToggle: optional(custom<(isOpen: boolean) => void>(toggle => typeof toggle === 'function'))
   }),
   readonly()
 );

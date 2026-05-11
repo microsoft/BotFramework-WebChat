@@ -1,5 +1,5 @@
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { applyMiddleware, createStore as createReduxStore, type Store } from 'redux';
+import { applyMiddleware, createStore as createReduxStore, type Middleware, type Store } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
 import sagaError from './actions/sagaError';
@@ -8,7 +8,7 @@ import createSagas from './createSagas';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import { StoreDebugAPIRegistry } from './internal';
+import StoreDebugAPIRegistry from './internal/StoreDebugAPIRegistry';
 
 type CreateStoreOptions = {
   /**
@@ -31,7 +31,7 @@ type CreateStoreOptions = {
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
 
-function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
+function createEnhancerAndSagaMiddleware(getStore: () => any, ...middlewares: readonly Middleware[]) {
   const sagaMiddleware = createSagaMiddleware({
     onError: (...args) => {
       const [err] = args;
@@ -58,7 +58,11 @@ function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
 
 // The complexity is introduced by the check of ponyfill.
 // eslint-disable-next-line complexity
-export function withOptions(options: CreateStoreOptions, initialState?, ...middlewares): Store {
+export function withOptions(
+  options: CreateStoreOptions,
+  initialState?: any | undefined,
+  ...middlewares: readonly Middleware[]
+): Store {
   // IE Mode does not have `globalThis`.
   const globalThisOrWindow = typeof globalThis === 'undefined' ? window : globalThis;
   const ponyfillFromOptions: Partial<GlobalScopePonyfill> = options.ponyfill || {};
@@ -139,7 +143,7 @@ export function withOptions(options: CreateStoreOptions, initialState?, ...middl
  *
  * This store is critical for Web Chat business logics to operate, please use with cautions.
  */
-export default function createStore(initialState?, ...middlewares): Store {
+export default function createStore(initialState?: any, ...middlewares: readonly Middleware[]): Store {
   return withOptions({}, initialState, ...middlewares);
 }
 
@@ -150,6 +154,6 @@ export default function createStore(initialState?, ...middlewares): Store {
  *
  * @deprecated Use `withOptions` instead and pass `{ devTools: true }`
  */
-export function withDevTools(initialState?, ...middlewares): Store {
+export function withDevTools(initialState?: any, ...middlewares: readonly Middleware[]): Store {
   return withOptions({ devTools: true }, initialState, ...middlewares);
 }

@@ -1,6 +1,6 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { Fragment, memo, useMemo } from 'react';
-import { array, custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { array, custom, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import { middlewareFactoryMarker } from '../middleware/private/templateMiddleware';
 import InternalDecoratorComposer from './internal/InternalDecoratorComposer';
@@ -29,7 +29,7 @@ function DecoratorComposer(props: DecoratorComposerProps) {
   const { children, middleware } = validateProps(decoratorComposerPropsSchema, props);
 
   useMemo(() => {
-    if (!safeParse(warnInvalidMiddlewarePropsSchema, middleware).success) {
+    if (!is(warnInvalidMiddlewarePropsSchema, middleware)) {
       console.warn(
         'botframework-webchat: "middleware" props passed to <DecoratorComposer> should be created using createXXXMiddleware() functions.',
         { middleware }

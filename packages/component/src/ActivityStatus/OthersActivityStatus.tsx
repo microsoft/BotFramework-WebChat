@@ -1,15 +1,11 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import {
-  getOrgSchemaMessage,
-  OrgSchemaProject,
-  parseAction,
-  parseClaim,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { orgSchemaActionSchema, orgSchemaClaimSchema, OrgSchemaProject } from 'botframework-webchat-core/org-schema.js';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
+import { parse } from 'valibot';
 
 import ActivityFeedback from '../ActivityFeedback/ActivityFeedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
@@ -38,23 +34,28 @@ const OthersActivityStatus = memo(({ activity, className, slotted }: Props) => {
   const claimInterpreter = useMemo<OrgSchemaProject | undefined>(() => {
     try {
       if (messageThing) {
-        return parseClaim((messageThing?.citation || [])[0])?.claimInterpreter;
+        return parse(orgSchemaClaimSchema, messageThing?.citation[0]).claimInterpreter[0];
       }
 
-      const [firstClaim] = graph.filter(({ type }) => type === 'https://schema.org/Claim').map(parseClaim);
+      const [firstClaim] = graph
+        .filter(({ type }) => type === 'https://schema.org/Claim')
+        .map(claim => parse(orgSchemaClaimSchema, claim));
 
       if (firstClaim) {
         warnRootLevelThings();
 
-        return firstClaim?.claimInterpreter;
+        return firstClaim?.claimInterpreter[0];
       }
 
-      const replyAction = parseAction(graph.find(({ type }) => type === 'https://schema.org/ReplyAction'));
+      const replyAction = parse(
+        orgSchemaActionSchema,
+        graph.find(({ type }) => type === 'https://schema.org/ReplyAction')
+      );
 
       if (replyAction) {
         warnRootLevelThings();
 
-        return replyAction?.provider;
+        return replyAction?.provider[0];
       }
     } catch {
       // Intentionally left blank.
@@ -72,7 +73,12 @@ const OthersActivityStatus = memo(({ activity, className, slotted }: Props) => {
       )}
       {claimInterpreter && (
         <StatusSlot>
-          <Originator key="originator" project={claimInterpreter} />
+          <Originator
+            key="originator"
+            name={claimInterpreter.name[0]}
+            slogan={claimInterpreter.slogan[0]}
+            url={claimInterpreter.url[0]}
+          />
         </StatusSlot>
       )}
       {feedbackActionsPlacement === 'activity-status' && (

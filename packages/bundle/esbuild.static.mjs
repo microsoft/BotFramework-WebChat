@@ -137,7 +137,7 @@ const IGNORED_OWN_PACKAGES = [
 
   const { workspaces } = await readPackage({ cwd: resolve(fileURLToPath(import.meta.url), '../../../') });
 
-  const allOwnExports = new Set();
+  const allOwnExports = new Map();
 
   for (const path of workspaces) {
     // eslint-disable-next-line no-await-in-loop
@@ -147,8 +147,18 @@ const IGNORED_OWN_PACKAGES = [
       continue;
     }
 
+    const { name: packageName } = packageJson;
+
     for (const key of getKeysRecursive(packageJson.exports)) {
-      key.startsWith('.') && allOwnExports.add(`${packageJson.name}${key.slice(1)}`);
+      if (key.startsWith('.')) {
+        if (key === '.') {
+          allOwnExports.set(packageName, packageName);
+        } else if (key.endsWith('.js')) {
+          // We need to remove .js suffix otherwise, esbuild will emit filename.js.js.
+          // ./filename.js -> /filename
+          allOwnExports.set(`${packageName}${key.slice(1, -3)}`, `${packageName}${key.slice(1)}`);
+        }
+      }
     }
   }
 
@@ -165,8 +175,9 @@ const IGNORED_OWN_PACKAGES = [
     'botframework-webchat/hook': './src/boot/exports/hook.ts',
     'botframework-webchat/internal': './src/boot/exports/internal.ts',
     'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
+    'botframework-webchat/schema': './src/boot/exports/schema.ts',
     // TODO: [P2] We can remove the `Array.from()` after bumping Node.js.
-    ...Array.from(allOwnExports.keys()).reduce((entryPoints, key) => ({ ...entryPoints, [key]: key }), {})
+    ...Object.fromEntries(allOwnExports)
   };
 
   console.log('Exporting the following own entry points:');

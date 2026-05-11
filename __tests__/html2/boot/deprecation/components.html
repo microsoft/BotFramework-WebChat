@@ -36,7 +36,7 @@
         // THEN: Should show deprecation note.
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenLastCalledWith(
-          "botframework-webchat: `import { Components } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/component'` instead.",
+          "botframework-webchat: `import { Components } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/component.js'` instead.",
           'BasicWebChat'
         );
 

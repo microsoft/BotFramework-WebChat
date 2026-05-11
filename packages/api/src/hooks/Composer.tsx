@@ -4,7 +4,7 @@ import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
-import { singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
+import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
@@ -45,7 +45,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNod
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
-import type StyleOptions from '../StyleOptions';
+import { type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
@@ -81,7 +81,6 @@ import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '.
 import ToastMiddleware from '../types/ToastMiddleware';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
-import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import Tracker from './internal/Tracker';
@@ -193,15 +192,17 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   } else if (typeof overrideLocalizedStrings === 'function') {
     const merged = overrideLocalizedStrings(localizedStrings, language);
 
-    if (!isObject(merged)) {
-      throw new Error('botframework-webchat: overrideLocalizedStrings function must return an object.');
+    if (!isPlainObject(merged)) {
+      throw new Error('botframework-webchat: overrideLocalizedStrings function must return a plain object.');
     }
 
     return merged;
   }
 
-  if (!isObject(overrideLocalizedStrings)) {
-    throw new Error('botframework-webchat: overrideLocalizedStrings must be either a function, an object, or falsy.');
+  if (!isPlainObject(overrideLocalizedStrings)) {
+    throw new Error(
+      'botframework-webchat: overrideLocalizedStrings must be either a function, a plain object, or falsy.'
+    );
   }
 
   return { ...localizedStrings, ...overrideLocalizedStrings };
@@ -297,7 +298,7 @@ const ComposerCore = ({
   sendTypingIndicator,
   toastMiddleware,
   typingIndicatorMiddleware,
-  uiState,
+  uiState: rawUIState,
   userID,
   username
 }: ComposerCoreProps) => {
@@ -310,7 +311,7 @@ const ComposerCore = ({
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
 
-  uiState = parseUIState(uiState, disabled);
+  const uiState = parseUIState(rawUIState, disabled);
 
   useEffect(() => {
     dispatch(setLanguage(locale));
