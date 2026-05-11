@@ -11,6 +11,7 @@ import React, {
 import { useRefFrom } from 'use-ref-from';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import testIds from '../testIds';
 
 const { useLocalizer } = hooks;
 
@@ -145,6 +146,7 @@ function DropZone({ onFilesAdded }: DropZoneProps) {
   return dropZoneState ? (
     <div
       className={`webchat__drop-zone ${dropZoneClassName}${dropZoneState === 'droppable' ? ' webchat__drop-zone--droppable' : ''}`}
+      data-testid={testIds.sendBoxDropZone}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       ref={dropZoneRef}
