@@ -11,6 +11,7 @@ import useMakeThumbnail from '../hooks/useMakeThumbnail';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
+import useSubmit from '../providers/internal/SendBox/useSubmit';
 import { AttachmentBar } from './AttachmentBar/index';
 import DictationInterims from './DictationInterims';
 import DropZone from './DropZone';
@@ -23,7 +24,7 @@ const {
   DictateState: { DICTATING, STARTING }
 } = Constants;
 
-const { useDirection, useDictateState, useSendBoxAttachments, useStyleOptions } = hooks;
+const { useDirection, useDictateState, useSendBoxAttachments, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box': {
@@ -52,17 +53,21 @@ type BasicSendBoxProps = InferInput<typeof basicSendBoxPropsSchema>;
 function BasicSendBox(props: BasicSendBoxProps) {
   const { className } = validateProps(basicSendBoxPropsSchema, props);
 
-  const [{ disableFileUpload, sendBoxButtonAlignment }] = useStyleOptions();
+  const [{ disableFileUpload, sendAttachmentOn, sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
   const [errorMessageId] = useErrorMessageId();
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
+  const [uiState] = useUIState();
   const makeThumbnail = useMakeThumbnail();
   const styleToEmotionObject = useStyleToEmotionObject();
+  const submit = useSubmit();
 
   const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
+  const disabled = uiState === 'disabled';
+  const sendAttachmentOnRef = useRefFrom(sendAttachmentOn);
   const sendBoxAttachmentsRef = useRefFrom(sendBoxAttachments);
 
   const supportSpeechRecognition = !!SpeechRecognition;
@@ -80,13 +85,15 @@ function BasicSendBox(props: BasicSendBoxProps) {
       );
 
       setSendBoxAttachments([...sendBoxAttachmentsRef.current, ...newAttachments]);
+
+      sendAttachmentOnRef.current === 'attach' && submit();
     },
-    [makeThumbnail, sendBoxAttachmentsRef, setSendBoxAttachments]
+    [makeThumbnail, sendAttachmentOnRef, sendBoxAttachmentsRef, setSendBoxAttachments, submit]
   );
 
   const handlePaste = useCallback<ClipboardEventHandler>(
     event => {
-      if (disableFileUpload) {
+      if (disableFileUpload || disabled) {
         return;
       }
 
@@ -97,7 +104,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
         handleAddFiles([...files]);
       }
     },
-    [disableFileUpload, handleAddFiles]
+    [disabled, disableFileUpload, handleAddFiles]
   );
 
   const buttonClassName = classNames('webchat__send-box__button', {
@@ -132,7 +139,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
         ) : (
           <SendButton className={buttonClassName} />
         )}
-        {!disableFileUpload && <DropZone onFilesAdded={handleAddFiles} />}
+        {!disableFileUpload && !disabled && <DropZone onFilesAdded={handleAddFiles} />}
       </div>
     </div>
   );

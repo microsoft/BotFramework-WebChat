@@ -149,7 +149,7 @@ function SendBox(props: Props) {
 
   const handlePaste = useCallback<ClipboardEventHandler>(
     event => {
-      if (disableFileUpload) {
+      if (disableFileUpload || uiState === 'disabled') {
         return;
       }
 
@@ -160,7 +160,7 @@ function SendBox(props: Props) {
         handleAddFiles([...files]);
       }
     },
-    [disableFileUpload, handleAddFiles]
+    [disableFileUpload, handleAddFiles, uiState]
   );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
