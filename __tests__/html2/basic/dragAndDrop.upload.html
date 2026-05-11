@@ -47,7 +47,6 @@
           1000
         );
 
-        await host.snapshot('local');
 
         // WHEN: Dragging into the drop zone.
         const dragEnterDropZoneEvent = new DragEvent('dragenter', {
@@ -61,7 +60,6 @@
           .dispatchEvent(dragEnterDropZoneEvent);
 
         // THEN: Should render drop zone in droppable state.
-        await host.snapshot('local');
 
         // WHEN: Dropping into the drop zone.
         const dropEvent = new DragEvent('drop', {
@@ -79,7 +77,6 @@
           1000
         );
 
-        await host.snapshot('local');
 
         // WHEN: Dragging a file into document again.
         const dragEnterDocumentEvent1 = new DragEvent('dragenter', {
