@@ -31,7 +31,7 @@
         const textBox = document.querySelector(`[data-testid="${WebChat.testIds['sendBoxTextBox']}"]`);
         const dataTransfer = new DataTransfer();
 
-        dataTransfer.items.add(new File([new ArrayBuffer(100)], 'test-image.png', { type: 'image/png' }));
+        dataTransfer.items.add(new File([new ArrayBuffer(100)], 'test-document.txt', { type: 'text/plain' }));
 
         const pasteEvent = new ClipboardEvent('paste', {
           bubbles: true,
@@ -56,7 +56,7 @@
         // WHEN: Pasting a second file.
         const dataTransfer2 = new DataTransfer();
 
-        dataTransfer2.items.add(new File([new ArrayBuffer(200)], 'test-document.pdf', { type: 'application/pdf' }));
+        dataTransfer2.items.add(new File([new ArrayBuffer(200)], 'test-spreadsheet.csv', { type: 'text/csv' }));
 
         const pasteEvent2 = new ClipboardEvent('paste', {
           bubbles: true,
