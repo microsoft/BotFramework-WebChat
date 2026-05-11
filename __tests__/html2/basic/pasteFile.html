@@ -51,6 +51,8 @@
           1000
         );
 
+        await host.snapshot('local');
+
         // WHEN: Pasting a second file.
         const dataTransfer2 = new DataTransfer();
 
@@ -71,6 +73,7 @@
           1000
         );
 
+        await host.snapshot('local');
       });
     </script>
   </body>
