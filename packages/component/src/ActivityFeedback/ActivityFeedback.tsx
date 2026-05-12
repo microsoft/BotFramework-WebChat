@@ -1,4 +1,5 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { isOfType } from 'botframework-webchat-core/json-ld.js';
 import React, { memo, useCallback, useMemo, type FormEventHandler, type KeyboardEventHandler } from 'react';
 import { Extract, wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
@@ -57,7 +58,7 @@ function InternalActivityFeedback() {
 
   // Hide feedback form if feedback has already been submitted or it does not require UserReview.
   const isExpanded = useMemo(
-    () => !hasSubmitted && selectedAction?.result?.['@type'] === 'UserReview',
+    () => !hasSubmitted && isOfType('UserReview', selectedAction?.result[0]),
     [hasSubmitted, selectedAction]
   );
 

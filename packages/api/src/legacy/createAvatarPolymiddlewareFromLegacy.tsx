@@ -8,14 +8,14 @@ import {
 import { type LegacyAvatarMiddleware } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { composeEnhancer } from 'handler-chain';
 import React, { Fragment, memo, type ReactNode } from 'react';
-import { custom, function_, never, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, function_, is, never, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 type LegacyAvatarRenderFunction = () => Exclude<ReactNode, boolean | null | undefined>;
 
 const legacyAvatarBridgeComponentPropsSchema = pipe(
   object({
     children: optional(never()),
-    renderFn: custom<LegacyAvatarRenderFunction>(value => safeParse(function_(), value).success)
+    renderFn: custom<LegacyAvatarRenderFunction>(value => is(function_(), value))
   }),
   readonly()
 );

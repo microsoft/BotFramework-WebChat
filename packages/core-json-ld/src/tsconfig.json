@@ -1,0 +1,3 @@
+{
+  "extends": "@msinternal/botframework-webchat-tsconfig/current"
+}

@@ -1,4 +1,4 @@
-import { parse, safeParse, type BaseIssue, type BaseSchema, type InferInput, type InferOutput } from 'valibot';
+import { is, parse, type BaseIssue, type BaseSchema, type InferInput, type InferOutput } from 'valibot';
 
 /**
  * Specifies the props isolation mode.
@@ -52,7 +52,7 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
     return props as unknown as InferInput<TSchema>;
   }
 
-  if (isolationMode !== 'strict' && safeParse(propsSchema, props).success) {
+  if (isolationMode !== 'strict' && is(propsSchema, props)) {
     return props as unknown as InferInput<TSchema>;
   }
 

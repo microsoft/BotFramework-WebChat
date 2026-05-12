@@ -4,7 +4,7 @@ export {
   type ActivityStatusMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
-export { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat-api/internal';
+export { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat-api/internal.js';
 export {
   CodeHighlighterComposer,
   createIconComponent,
@@ -17,7 +17,7 @@ export {
   useCodeHighlighter,
   useLiveRegion,
   type HighlightCodeFn
-} from 'botframework-webchat-component/internal';
+} from 'botframework-webchat-component/internal.js';
 export {
   getOrgSchemaMessage,
   getVoiceActivityRole,

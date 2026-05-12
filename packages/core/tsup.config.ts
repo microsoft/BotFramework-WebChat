@@ -6,9 +6,11 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-core': './src/index.ts',
-    'botframework-webchat-core.activity': './src/activity/index.ts',
-    'botframework-webchat-core.graph': './src/graph/index.ts',
-    'botframework-webchat-core.internal': './src/internal/index.ts'
+    'botframework-webchat-core.activity': './src/boot/activity.ts',
+    'botframework-webchat-core.graph': './src/boot/graph.ts',
+    'botframework-webchat-core.internal': './src/boot/internal.ts',
+    'botframework-webchat-core.json-ld': './src/boot/json-ld.ts',
+    'botframework-webchat-core.org-schema': './src/boot/org-schema.ts'
   }
 }));
 

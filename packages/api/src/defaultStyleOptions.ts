@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: "off" */
-import StyleOptions from './StyleOptions';
+import { type StrictStyleOptions } from './StyleOptions';
 
-function fontFamily(fonts) {
+function fontFamily(fonts: readonly string[]): string {
   return fonts.map(font => `'${font}'`).join(', ');
 }
 
@@ -9,7 +9,7 @@ const DEFAULT_ACCENT = '#0063B1';
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 const PADDING_REGULAR = 10;
 
-const DEFAULT_OPTIONS: Required<StyleOptions> = {
+const DEFAULT_OPTIONS: StrictStyleOptions = {
   // Basic styling
   accent: DEFAULT_ACCENT,
   backgroundColor: 'White',
@@ -54,11 +54,8 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   bubbleFromUserNubOffset: 0,
   bubbleFromUserNubSize: undefined,
   bubbleFromUserTextColor: 'Black',
-  bubbleImageHeight: undefined,
   bubbleImageMaxHeight: 240, // Based on previously default `bubbleImageHeight` of 240px.
   bubbleImageMinHeight: 240, // TODO: Should change to 180px. Based on 320px bubble width showing a 16:9 image, or `320 / (16 / 9)`. 320px bubble width is based on 360px wide of the chat canvas.
-  bubbleMaxWidth: undefined, // Deprecated.
-  bubbleMinWidth: undefined, // Deprecated.
   bubbleAttachmentMaxWidth: 480, // Based off screen width = 600px
   bubbleAttachmentMinWidth: 250, // min screen width = 300px; Microsoft Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
   bubbleMessageMaxWidth: 480, // Based off screen width = 600px
@@ -80,7 +77,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   slowConnectionAfter: 15000,
 
   // Emoji
-  emojiSet: true,
+  emojiSet: undefined,
 
   // Live region - Accessibility
   internalLiveRegionFadeAfter: 1000,
@@ -92,7 +89,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   markdownRenderHTML: true,
 
   // Scroll behavior
-  hideScrollToEndButton: undefined, // Deprecated as of 4.14.0. Use "scrollToEndButtonBehavior" instead. Remove on or after 2023-06-02.
   autoScrollSnapOnActivity: false,
   autoScrollSnapOnActivityOffset: 0,
   autoScrollSnapOnPage: false,
@@ -102,7 +98,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   disableFileUpload: false,
   hideSendBox: false,
   hideTelephoneKeypadButton: true,
-  hideUploadButton: undefined, // Deprecated as of 4.19.0.
   microphoneButtonColorOnDictate: '#F33',
   sendAttachmentOn: 'send',
   sendBoxBackground: 'White',
@@ -197,16 +192,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   suggestedActionKeyboardFocusIndicatorBorderWidth: 1,
   suggestedActionKeyboardFocusIndicatorInset: 2,
 
-  suggestedActionActiveBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBorderColor: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBorderStyle: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBorderWidth: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledTextColor: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionFocusBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionHoverBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-
   // Suggested actions carousel layout
   suggestedActionsCarouselFlipperCursor: undefined,
   suggestedActionsCarouselFlipperBoxWidth: 40,
@@ -235,7 +220,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Transcript overlay buttons
   scrollToEndButtonBehavior: 'unread',
   scrollToEndButtonFontSize: '85%',
-  newMessagesButtonFontSize: undefined, // Deprecated as of 4.14.0, renamed to "scrollToEndButtonFontSize". Remove on or after 2023-06-02.
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnDisabled: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',

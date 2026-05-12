@@ -1,6 +1,6 @@
 const SET_SEND_BOX = 'WEB_CHAT/SET_SEND_BOX';
 
-export default function setSendBox(text) {
+export default function setSendBox(text: string) {
   return {
     type: SET_SEND_BOX,
     payload: { text }

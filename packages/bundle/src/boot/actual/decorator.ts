@@ -9,5 +9,5 @@ export {
   type ActivityBorderDecoratorProps,
   type DecoratorMiddleware,
   type InferDecoratorRequest
-} from 'botframework-webchat-api/decorator';
-export { BorderFlair, BorderLoader, WebChatDecorator } from 'botframework-webchat-component/decorator';
+} from 'botframework-webchat-api/decorator.js';
+export { BorderFlair, BorderLoader, WebChatDecorator } from 'botframework-webchat-component/decorator.js';

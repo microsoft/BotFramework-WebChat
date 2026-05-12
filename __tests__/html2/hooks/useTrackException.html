@@ -9,8 +9,7 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
-          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
           "jest-mock": "https://esm.sh/jest-mock",
           "react": "https://esm.sh/react@18",
           "react-dom": "https://esm.sh/react-dom@18",
@@ -23,7 +22,7 @@
       import '/test-page-object.mjs';
 
       import { createStoreWithOptions, testIds } from 'botframework-webchat';
-      import { useTrackDimension, useTrackException } from 'botframework-webchat/hook';
+      import { useTrackDimension, useTrackException } from 'botframework-webchat/hook.js';
       import { fn } from 'jest-mock';
       import createRenderHook from '/assets/esm/createRenderHook.js';
 

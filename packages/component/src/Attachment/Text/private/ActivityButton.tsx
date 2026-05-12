@@ -3,18 +3,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { forwardRef, memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import {
-  boolean,
-  custom,
-  function_,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  type InferInput
-} from 'valibot';
+import { boolean, custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
 
@@ -30,7 +19,7 @@ const activityButtonPropsSchema = pipe(
     'data-testid': optional(string()),
     disabled: optional(boolean()),
     icon: componentIconPropsSchema.entries.icon,
-    onClick: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    onClick: optional(custom<() => void>(value => is(function_(), value))),
     text: optional(string())
   }),
   readonly()

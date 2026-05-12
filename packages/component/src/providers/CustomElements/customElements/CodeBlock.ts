@@ -14,11 +14,11 @@ const { useStyleOptions, useLocalizer } = hooks;
 class CodeBlock extends HTMLElement {
   static observedAttributes = ['theme', 'language'];
 
+  copyButtonElement: HTMLElement;
+
   #connected = false;
   #originalFragment: DocumentFragment = undefined;
   #updateTask?: Promise<void>;
-
-  copyButtonElement: HTMLElement;
 
   get code() {
     return this.querySelector('code')?.textContent ?? '';
@@ -27,6 +27,7 @@ class CodeBlock extends HTMLElement {
   get theme() {
     return this.getAttribute('theme');
   }
+
   set theme(value: string) {
     this.setAttribute('theme', value);
   }
@@ -148,12 +149,12 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
   );
 };
 
-export default function useReactCodeBlockClass(copyButtonTagName: string) {
+export default function useReactCodeBlockClass(copyButtonTagName: string): typeof HTMLElement {
   const [codeBlockTarget, codeBlockPropsRef] = useCodeBlockProps(copyButtonTagName);
 
   const classNames = useStyles(styles);
 
-  return useMemo(
+  return useMemo<typeof HTMLElement>(
     () =>
       class ReactCodeBlock extends CodeBlock {
         static observedAttributes = CodeBlock.observedAttributes;

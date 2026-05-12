@@ -2,9 +2,9 @@ import { type MutableRefObject } from 'react';
 import {
   any,
   check,
+  is,
   object,
   pipe,
-  safeParse,
   type BaseIssue,
   type BaseSchema,
   type ErrorMessage,
@@ -33,7 +33,7 @@ function mutableRefObject<
 ): BaseSchema<MutableRefObject<InferOutput<TInput>>, MutableRefObject<InferOutput<TInput>>, BaseIssue<TMessage>> {
   return pipe(
     any(),
-    check(value => safeParse(object({ current: baseSchema }, message), value).success)
+    check(value => is(object({ current: baseSchema }, message), value))
   );
 }
 

@@ -1,4 +1,4 @@
-import { type ActivityPolymiddlewareRenderer } from 'botframework-webchat-api/middleware';
+import { type ActivityPolymiddlewareRenderer } from 'botframework-webchat-api/middleware.js';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import createContextAndHook from '../../createContextAndHook';
 

@@ -5,7 +5,7 @@ import {
   WebChatActivity,
   type DirectLineCardAction
 } from 'botframework-webchat-core';
-import { setRawState } from 'botframework-webchat-core/internal';
+import { setRawState } from 'botframework-webchat-core/internal.js';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { type Action } from 'redux';

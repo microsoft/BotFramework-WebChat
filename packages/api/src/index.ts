@@ -31,7 +31,7 @@ export {
   type SendBoxToolbarMiddlewareRequest
 } from './middleware/SendBoxToolbarMiddleware';
 export { default as normalizeStyleOptions } from './normalizeStyleOptions';
-export { type StrictStyleOptions, type default as StyleOptions } from './StyleOptions';
+export { type StrictStyleOptions, type StyleOptions } from './StyleOptions';
 export { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 export {
   type AttachmentForScreenReaderComponentFactory,

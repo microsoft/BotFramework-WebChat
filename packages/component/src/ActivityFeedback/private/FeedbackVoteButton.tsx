@@ -1,9 +1,10 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
+import { orgSchemaActionSchema, orgSchemaVoteActionSchema } from 'botframework-webchat-core/org-schema.js';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, literal, object, optional, pipe, readonly, safeParse, string, union, type InferInput } from 'valibot';
+import { literal, object, pipe, readonly, string, union, type InferInput } from 'valibot';
+import { isOfType } from 'botframework-webchat-core/json-ld.js';
 
 import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
@@ -15,21 +16,7 @@ const { useLocalizer, useStyleOptions } = hooks;
 
 const feedbackVoteButtonPropsSchema = pipe(
   object({
-    action: custom<OrgSchemaAction>(
-      value =>
-        safeParse(
-          union([
-            object({
-              '@type': union([literal('DislikeAction'), literal('LikeAction')])
-            }),
-            object({
-              '@type': literal('VoteAction'),
-              actionOption: optional(union([literal('downvote'), literal('upvote')]))
-            })
-          ]),
-          value
-        ).success
-    ),
+    action: union([orgSchemaActionSchema, orgSchemaVoteActionSchema]),
     as: union([literal('button'), literal('radio')]),
     name: string()
   }),
@@ -49,13 +36,21 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
   const actionRef = useRefFrom(action);
   const buttonRef = useRef<HTMLInputElement>(null);
   const direction = useMemo(() => {
-    if (
-      action['@type'] === 'DislikeAction' ||
-      (action['@type'] === 'VoteAction' &&
-        onErrorResumeNext(() => parseVoteAction(action))?.actionOption === 'downvote')
-    ) {
+    if (isOfType('DislikeAction', action)) {
       return 'down';
+    } else if (isOfType('LikeAction', action)) {
+      return 'up';
+    } else if (isOfType('VoteAction', action)) {
+      if (action.actionOption[0] === 'downvote') {
+        return 'down';
+      } else if (action.actionOption[0] === 'upvote') {
+        return 'up';
+      }
     }
+
+    console.warn(
+      'botframework-webchat: <FeedbackVoteButton> supports `DislikeAction`, `LikeAction`, and `VoteAction` with `actionOption` of "downvote" and "upvote" only.'
+    );
 
     return 'up';
   }, [action]);

@@ -6,13 +6,13 @@ import {
   boolean,
   custom,
   function_,
+  is,
   literal,
   number,
   object,
   optional,
   pipe,
   readonly,
-  safeParse,
   string,
   type InferInput
 } from 'valibot';
@@ -27,7 +27,7 @@ const accessibleButtonPropsSchema = pipe(
     className: optional(string()),
     'data-testid': optional(string()),
     disabled: optional(boolean()),
-    onClick: custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success),
+    onClick: custom<MouseEventHandler<HTMLButtonElement>>(value => is(function_(), value)),
     tabIndex: optional(number()),
     title: optional(string()),
     type: literal('button')

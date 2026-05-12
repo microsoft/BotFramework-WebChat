@@ -1,0 +1,15 @@
+import { type OrgSchemaCreativeWork, type OrgSchemaSoftwareSourceCode } from 'botframework-webchat-core/org-schema.js';
+
+/**
+ * Finds the first `isBasedOf` element that is of type `SoftwareSourceCode`.
+ *
+ * @param messageThing The `CreativeWork` to find.
+ * @returns A `SoftwareSourceCode` if found, otherwise, `undefined`.
+ */
+export default function getFirstBaseOfSoftwareSourceCode(
+  messageThing: OrgSchemaCreativeWork | undefined
+): OrgSchemaSoftwareSourceCode | undefined {
+  return (messageThing?.isBasedOn ?? []).find(({ '@type': jsonLinkedDataTypes }) =>
+    jsonLinkedDataTypes.includes('SoftwareSourceCode')
+  );
+}

@@ -77,7 +77,7 @@ export {
   useVoiceRecordingMuted,
   useVoiceSelector,
   useVoiceState
-} from 'botframework-webchat-api/hook';
+} from 'botframework-webchat-api/hook.js';
 
 // #region Overrides
 export {

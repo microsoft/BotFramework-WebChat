@@ -1,4 +1,4 @@
-import { type OrgSchemaAction } from 'botframework-webchat-core';
+import { type OrgSchemaAction } from 'botframework-webchat-core/org-schema.js';
 import { createPropagation } from 'use-propagate';
 
 const {

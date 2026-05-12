@@ -1,5 +1,5 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { createErrorBoxPolymiddleware, errorBoxComponent } from 'botframework-webchat-api/middleware';
+import { createErrorBoxPolymiddleware, errorBoxComponent } from 'botframework-webchat-api/middleware.js';
 import { Components } from 'botframework-webchat-component';
 import React, { memo, useMemo } from 'react';
 import { object, optional, pipe, type InferInput } from 'valibot';

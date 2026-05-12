@@ -1,6 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
-import { any, custom, object, optional, pipe, readonly, safeParse, startsWith, string, type InferInput } from 'valibot';
+import { any, custom, is, object, optional, pipe, readonly, startsWith, string, type InferInput } from 'valibot';
 
 import TextContent from './TextContent';
 
@@ -21,7 +21,7 @@ const textAttachmentPropsSchema = pipe(
     attachment: pipe(
       object({
         ...directLineAttachmentSchema.entries,
-        contentType: custom<`text/${string}`>(value => safeParse(pipe(string(), startsWith('text/')), value).success)
+        contentType: custom<`text/${string}`>(value => is(pipe(string(), startsWith('text/')), value))
       }),
       readonly()
     )

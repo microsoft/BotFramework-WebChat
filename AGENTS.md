@@ -46,7 +46,7 @@
 - All optional properties must be `undefined`-able, i.e. use `value?: number | undefined` over `value?: number`
 - For functions exported outside of current file, make sure all arguments and return value are typed
 - If need to look inside the object to check for types, use `valibot`
-   - E.g. `if (obj && typeof obj === 'object' && 'value' in obj && typeof obj.value === 'string')` should be replaced with `safeParse(object({ value: string }), obj).success`
+   - E.g. `if (obj && typeof obj === 'object' && 'value' in obj && typeof obj.value === 'string')` should be replaced with `is(object({ value: string }), obj)`
 - Use `{ readonly value: string }` instead of `Readonly<{ value: string }>`
 - Use as much `readonly` as possible
 

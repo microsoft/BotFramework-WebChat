@@ -5,7 +5,15 @@ const CONNECT_PENDING = `${CONNECT}_PENDING`;
 const CONNECT_REJECTED = `${CONNECT}_REJECTED`;
 const CONNECT_STILL_PENDING = `${CONNECT}_STILL_PENDING`;
 
-export default function connect({ directLine, userID, username }) {
+export default function connect({
+  directLine,
+  userID,
+  username
+}: {
+  readonly directLine: any;
+  readonly userID: string;
+  readonly username: string;
+}) {
   return {
     type: CONNECT,
     payload: {

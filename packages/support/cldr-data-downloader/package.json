@@ -45,7 +45,7 @@
     "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
     "build:pre:watch": "../../../scripts/npm/build-watch.sh",
     "build:run": "echo This package does not need to be built.",
-    "bump": "npm run bump:dev && npm run bump:prod && (npm audit fix || exit 0)",
+    "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
     "eslint": "npm run precommit",
     "postversion": "../../../scripts/npm/postversion.sh",
     "precommit": "npm run precommit:eslint -- src",
@@ -56,7 +56,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "dependencies": {
-    "adm-zip": "0.5.16",
+    "adm-zip": "0.5.17",
     "nopt": "9.0.0",
     "progress": "2.0.3",
     "q": "1.5.1"

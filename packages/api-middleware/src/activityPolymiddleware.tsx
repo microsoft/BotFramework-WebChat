@@ -1,7 +1,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, is, object, pipe, readonly, type InferInput } from 'valibot';
 
 import createErrorBoundaryMiddleware from './private/createErrorBoundaryMiddleware';
 import templatePolymiddleware, {
@@ -33,7 +33,7 @@ type ActivityPolymiddlewareProviderProps = InferProviderProps<typeof Provider>;
 
 const activityPolymiddlewareProxyPropsSchema = pipe(
   object({
-    activity: custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)
+    activity: custom<Readonly<WebChatActivity>>(value => is(object({}), value))
   }),
   readonly()
 );

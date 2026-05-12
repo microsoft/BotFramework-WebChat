@@ -45,7 +45,10 @@ const TRANSFORM_IGNORE_PACKAGES = [
 
   // Related to Adaptive Cards
   'adaptivecards',
-  'swiper'
+  'swiper',
+
+  // Related to Redux
+  '@redux-devtools/extension'
 ];
 
 module.exports = {

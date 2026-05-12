@@ -12,7 +12,7 @@ import {
   createActivityPolymiddleware,
   type ActivityPolymiddlewareProps,
   type ActivityPolymiddlewareRenderer
-} from 'botframework-webchat/middleware';
+} from 'botframework-webchat/middleware.js';
 import React, { Fragment, memo, useMemo } from 'react';
 import { render } from 'react-dom';
 
