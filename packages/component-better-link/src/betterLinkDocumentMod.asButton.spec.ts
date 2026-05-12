@@ -1,12 +1,10 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import {
-  parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal.js';
 import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
+import parseDocumentFragmentFromString from './parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from './serializeDocumentFragmentIntoString';
 
 const BASE_MARKDOWN = '[Example](https://example.com)';
 let baseHTML: string;
@@ -24,7 +22,7 @@ describe('When passing "asButton" option with true', () => {
   });
 
   test('should replace with <button type="button">', () =>
-    expect(actual.querySelector('button').getAttribute('type')).toBe('button'));
+    expect(actual.querySelector('button')?.getAttribute('type')).toBe('button'));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
@@ -41,7 +39,7 @@ describe('When passing "asButton" option with true and "iconClassName" with "my-
   });
 
   test('should replace with <button type="button">', () =>
-    expect(actual.querySelector('button').getAttribute('type')).toBe('button'));
+    expect(actual.querySelector('button')?.getAttribute('type')).toBe('button'));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
@@ -58,8 +56,8 @@ describe('When passing "asButton" option with true and "title" with "Hello, Worl
   });
 
   test('should replace with <button type="button" title="Hello, World!">', () => {
-    expect(actual.querySelector('button').getAttribute('type')).toBe('button');
-    expect(actual.querySelector('button').getAttribute('title')).toBe('Hello, World!');
+    expect(actual.querySelector('button')?.getAttribute('type')).toBe('button');
+    expect(actual.querySelector('button')?.getAttribute('title')).toBe('Hello, World!');
   });
 
   test('should match snapshot', () =>
@@ -77,8 +75,8 @@ describe('When passing "asButton" option with true and "className" with "my-link
   });
 
   test('should replace with <button type="button" class="my-link">', () => {
-    expect(actual.querySelector('button').getAttribute('type')).toBe('button');
-    expect(actual.querySelector('button').getAttribute('class')).toBe('my-link');
+    expect(actual.querySelector('button')?.getAttribute('type')).toBe('button');
+    expect(actual.querySelector('button')?.getAttribute('class')).toBe('my-link');
   });
 
   test('should match snapshot', () =>
@@ -96,8 +94,8 @@ describe('When passing "asButton" option with true and "aria-label" with "Hello,
   });
 
   test('should replace with <button type="button" aria-label="Hello, World!">', () => {
-    expect(actual.querySelector('button').getAttribute('type')).toBe('button');
-    expect(actual.querySelector('button').getAttribute('aria-label')).toBe('Hello, World!');
+    expect(actual.querySelector('button')?.getAttribute('type')).toBe('button');
+    expect(actual.querySelector('button')?.getAttribute('aria-label')).toBe('Hello, World!');
   });
 
   test('should match snapshot', () =>

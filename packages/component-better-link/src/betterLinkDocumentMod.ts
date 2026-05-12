@@ -1,14 +1,16 @@
-export type AttributeSetter = false | string | ((value?: string) => string);
+import copyAttribute from './private/copyAttribute';
 
-export type BetterLinkDocumentModDecoration = {
+type BetterLinkDocumentModAttributeSetter = false | string | ((value?: string | undefined) => string);
+
+type BetterLinkDocumentModDecoration = {
   /** Value of "aria-label" attribute of the link. If set to `false`, remove existing attribute. */
-  ariaLabel?: AttributeSetter;
+  ariaLabel?: BetterLinkDocumentModAttributeSetter;
 
   /** Turns this link into a <button> with "value" attribute instead of "href". */
   asButton?: boolean;
 
   /** Value of "class" attribute of the link. If set to `false`, remove existing attribute. */
-  className?: AttributeSetter;
+  className?: BetterLinkDocumentModAttributeSetter;
 
   /** Alternate text of the image icon appended to the link. */
   iconAlt?: string;
@@ -17,13 +19,13 @@ export type BetterLinkDocumentModDecoration = {
   iconClassName?: string;
 
   /** Value of "rel" attribute of the link. If set to `false`, remove existing attribute. */
-  rel?: AttributeSetter;
+  rel?: BetterLinkDocumentModAttributeSetter;
 
   /** Value of "target" attribute of the link. If set to `false`, remove existing attribute. */
-  target?: AttributeSetter;
+  target?: BetterLinkDocumentModAttributeSetter;
 
   /** Value of "title" attribute of the link. If set to `false`, remove existing attribute. */
-  title?: AttributeSetter;
+  title?: BetterLinkDocumentModAttributeSetter;
 
   /** Wraps the link with zero-width space. */
   wrapZeroWidthSpace?: boolean;
@@ -41,23 +43,23 @@ function* iterateNodeList<T extends Node>(nodeList: NodeListOf<T>) {
 
 const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-function setOrRemoveAttribute(element: Element, attributeName: string, setter: AttributeSetter) {
+function setOrRemoveAttribute(element: Element, attributeName: string, setter: BetterLinkDocumentModAttributeSetter) {
   if (setter) {
     element.setAttribute(
       attributeName,
-      typeof setter === 'function' ? setter(element.getAttribute(attributeName)) : setter
+      typeof setter === 'function' ? setter(element.getAttribute(attributeName) ?? undefined) : setter
     );
   } else if (setter === false) {
     element.removeAttribute(attributeName);
   }
 }
 
-export default function betterLinkDocumentMod<T extends Document | DocumentFragment>(
+function betterLinkDocumentMod<T extends Document | DocumentFragment>(
   documentFragment: T,
-  decorator: (href: string, textContent: string) => BetterLinkDocumentModDecoration | false | undefined
+  decorator: (href: string | undefined, textContent: string) => BetterLinkDocumentModDecoration | false | undefined
 ): T {
   for (const anchor of [...iterateNodeList(documentFragment.querySelectorAll('a'))]) {
-    const decoration = decorator(anchor.getAttribute('href'), anchor.textContent);
+    const decoration = decorator(anchor.getAttribute('href') ?? undefined, anchor.textContent);
 
     if (!decoration) {
       continue;
@@ -66,9 +68,9 @@ export default function betterLinkDocumentMod<T extends Document | DocumentFragm
     const { ariaLabel, asButton, className, iconAlt, iconClassName, rel, target, title, wrapZeroWidthSpace } =
       decoration;
 
-    setOrRemoveAttribute(anchor, 'aria-label', ariaLabel);
-    setOrRemoveAttribute(anchor, 'class', className);
-    setOrRemoveAttribute(anchor, 'title', title);
+    setOrRemoveAttribute(anchor, 'aria-label', ariaLabel ?? false);
+    setOrRemoveAttribute(anchor, 'class', className ?? false);
+    setOrRemoveAttribute(anchor, 'title', title ?? false);
 
     if (iconClassName) {
       const image = document.createElement('img');
@@ -84,11 +86,12 @@ export default function betterLinkDocumentMod<T extends Document | DocumentFragm
     if (asButton) {
       const button = document.createElement('button');
 
-      anchor.hasAttribute('aria-label') && button.setAttribute('aria-label', anchor.getAttribute('aria-label'));
-      anchor.hasAttribute('class') && button.setAttribute('class', anchor.getAttribute('class'));
-      anchor.hasAttribute('title') && button.setAttribute('title', anchor.getAttribute('title'));
+      copyAttribute(anchor, button, 'aria-label');
+      copyAttribute(anchor, button, 'class');
+      copyAttribute(anchor, button, 'title');
+
       button.setAttribute('type', 'button');
-      button.setAttribute('value', anchor.getAttribute('href'));
+      button.setAttribute('value', anchor.getAttribute('href') ?? ''); // Need empty string, otherwise, value="null".
       button.textContent = anchor.textContent;
       button.append(...anchor.children);
 
@@ -99,8 +102,8 @@ export default function betterLinkDocumentMod<T extends Document | DocumentFragm
         button.insertAdjacentText('afterend', ZERO_WIDTH_SPACE);
       }
     } else {
-      setOrRemoveAttribute(anchor, 'rel', rel);
-      setOrRemoveAttribute(anchor, 'target', target);
+      setOrRemoveAttribute(anchor, 'rel', rel ?? false);
+      setOrRemoveAttribute(anchor, 'target', target ?? false);
 
       if (wrapZeroWidthSpace) {
         anchor.insertAdjacentText('beforebegin', ZERO_WIDTH_SPACE);
@@ -111,3 +114,6 @@ export default function betterLinkDocumentMod<T extends Document | DocumentFragm
 
   return documentFragment;
 }
+
+export default betterLinkDocumentMod;
+export type { BetterLinkDocumentModAttributeSetter, BetterLinkDocumentModDecoration };

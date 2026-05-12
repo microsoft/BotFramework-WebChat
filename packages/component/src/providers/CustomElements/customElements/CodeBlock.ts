@@ -1,11 +1,11 @@
 /* eslint-disable class-methods-use-this */
-import { hooks } from 'botframework-webchat-api';
+import { parseDocumentFragmentFromString } from '@msinternal/botframework-webchat-component-better-link';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { hooks } from 'botframework-webchat-api';
 import { ReactNode, useMemo, useRef } from 'react';
 
 import { useCodeHighlighter } from '../../../hooks/internal/codeHighlighter';
 import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter/index';
-import parseDocumentFragmentFromString from '../../../Utils/parseDocumentFragmentFromString';
 
 import styles from './CodeBlock.module.css';
 

@@ -1,4 +1,5 @@
 import {
+  betterLinkDocumentMod,
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString,
   type HighlightCodeFn
@@ -14,10 +15,9 @@ import createStreamingRenderer, {
   type StreamingRenderOptions
 } from './createStreamingRenderer';
 import { math, mathHtml } from './mathExtension';
-import betterLinkDocumentMod from './private/betterLinkDocumentMod';
+import { createDecorate } from './private/createDecorate';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 import { pre as respectCRLFPre } from './private/respectCRLF';
-import { createDecorate } from './private/createDecorate';
 
 type RenderInit = Readonly<{
   codeBlockCopyButtonTagName: string;

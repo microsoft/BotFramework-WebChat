@@ -1,12 +1,10 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import {
-  parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal.js';
 import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
+import parseDocumentFragmentFromString from './parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from './serializeDocumentFragmentIntoString';
 
 const BASE_MARKDOWN = '[Hello, World!](https://example.com/1)\n\n[Aloha!](https://example.com/2)';
 let baseHTML: string;
@@ -27,7 +25,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
   });
 
   test('should have "aria-label" attribute set to "Hello, World!"', () =>
-    expect(actual.querySelector('a').getAttribute('aria-label')).toBe('Hello, World!'));
+    expect(actual.querySelector('a')?.getAttribute('aria-label')).toBe('Hello, World!'));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
@@ -47,7 +45,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
   });
 
   test('should have "aria-label" attribute set to "Hello, World!"', () =>
-    expect(actual.querySelector('a').getAttribute('aria-label')).toBe('Hello, World!'));
+    expect(actual.querySelector('a')?.getAttribute('aria-label')).toBe('Hello, World!'));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(

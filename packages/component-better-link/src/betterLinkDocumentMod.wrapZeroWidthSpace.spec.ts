@@ -1,12 +1,10 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import {
-  parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal.js';
 import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
+import parseDocumentFragmentFromString from './parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from './serializeDocumentFragmentIntoString';
 
 const BASE_MARKDOWN = '[Example](https://example.com)';
 let baseHTML: string;

@@ -1,12 +1,10 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import {
-  parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal.js';
 import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
+import parseDocumentFragmentFromString from './parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from './serializeDocumentFragmentIntoString';
 
 const BASE_MARKDOWN = '[Example](https://example.com)';
 let baseHTML: string;
@@ -24,7 +22,7 @@ describe('When passing "className" option with "my-link"', () => {
   });
 
   test('should have "className" attribute set to "my-link"', () =>
-    expect(actual.querySelector('a').classList.contains('my-link')).toBe(true));
+    expect(actual.querySelector('a')?.classList.contains('my-link')).toBe(true));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
@@ -44,7 +42,7 @@ describe('When passing "className" option with false', () => {
   });
 
   test('should have "class" attribute removed', () =>
-    expect(actual.querySelector('a').hasAttribute('class')).toBe(false));
+    expect(actual.querySelector('a')?.hasAttribute('class')).toBe(false));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(

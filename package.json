@@ -35,6 +35,7 @@
     "packages/api",
     "packages/isomorphic-react",
     "packages/isomorphic-react-dom",
+    "packages/component-better-link",
     "packages/component",
     "packages/repack/adaptivecards",
     "packages/repack/base64-js",

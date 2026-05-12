@@ -1,13 +1,13 @@
 import { cx } from '@emotion/css';
+import { parseDocumentFragmentFromString } from '@msinternal/botframework-webchat-component-better-link';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
-import parseDocumentFragmentFromString from '../Utils/parseDocumentFragmentFromString';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 import styles from './RenderMarkdown.module.css';
