@@ -3,7 +3,8 @@
 import {
   betterLinkDocumentMod,
   parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
+  serializeDocumentFragmentIntoString,
+  stripParagraphContainer
 } from '@msinternal/botframework-webchat-component-better-link';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook.js';
@@ -77,7 +78,10 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
       }
     });
 
-    return { __html: serializeDocumentFragmentIntoString(documentFragment) };
+    // TODO: [P*] Instead of <button value="">, it need to be <button data-markdown-href=""> to trigger the CSS.
+    // TODO: [P*] Remove trailing <p></p>.
+
+    return { __html: stripParagraphContainer(serializeDocumentFragmentIntoString(documentFragment)) };
   }, [markdown, references]);
 
   const handleClick = useCallback(
