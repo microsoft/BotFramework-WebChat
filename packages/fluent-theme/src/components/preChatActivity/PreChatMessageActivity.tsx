@@ -36,7 +36,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
         >
           {author.image && (
             <img
-              alt={localize('AVATAR_ALT', author.name[0])}
+              alt={localize('AVATAR_ALT', author.name[0] ?? '')}
               className={classNames['pre-chat-message-activity__body-avatar']}
               src={author.image[0]}
             />
