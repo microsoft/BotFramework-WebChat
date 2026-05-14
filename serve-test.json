@@ -16,6 +16,14 @@
       "destination": "__tests__/html/assets/:filename"
     },
     {
+      "source": "/assets/:path/:filename",
+      "destination": "__tests__/html/assets/:path/:filename"
+    },
+    {
+      "source": "/assets/:path1/:path2/:filename",
+      "destination": "__tests__/html/assets/:path1/:path2/:filename"
+    },
+    {
       "source": "/assets/transcripts/:filename",
       "destination": "__tests__/html/assets/transcripts/:filename"
     },
