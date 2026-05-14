@@ -7,7 +7,7 @@ export default async function fetchDirectLineAppServiceExtensionToken(
     throw new Error('Failed to fetch Direct Line App Service Extension token.');
   }
 
-  const { token } = await res.json();
+  const { domain, token } = await res.json();
 
-  return token;
+  return { domain, token };
 }
