@@ -126,7 +126,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.19.0",
-    "adaptivecards": "3.0.2",
+    "adaptivecards": "3.0.6",
     "botframework-directlinejs": "0.15.5",
     "botframework-directlinespeech-sdk": "0.0.0-0",
     "botframework-webchat-api": "0.0.0-0",
@@ -144,7 +144,7 @@
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "sanitize-html": "2.13.0",
-    "swiper": "8.4.7",
+    "swiper": "12.1.4",
     "url-search-params-polyfill": "8.2.5",
     "uuid": "8.3.2",
     "web-speech-cognitive-services": "7.1.3",
