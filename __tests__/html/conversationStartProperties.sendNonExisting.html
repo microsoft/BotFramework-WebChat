@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -17,9 +17,7 @@
               conversationStartProperties: {
                 locale: 'xx-YY'
               },
-              token: await testHelpers.token.fetchDirectLineToken(
-                'https://webchat-mockbot3.azurewebsites.net/api/token/directline'
-              )
+              token: await testHelpers.token.fetchDirectLineToken()
             }),
             store: testHelpers.createStore()
           },
@@ -27,7 +25,9 @@
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.minNumActivitiesShown(1);
+
+        await pageObjects.sendMessageViaSendBox('conversationstart');
+        await pageConditions.minNumActivitiesShown(2);
 
         await host.snapshot();
       });

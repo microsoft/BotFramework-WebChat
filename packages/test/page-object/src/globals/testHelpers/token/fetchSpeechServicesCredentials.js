@@ -2,7 +2,9 @@ function createFetchSpeechServicesCredentials() {
   let expireAfter = 0;
   let resultPromise;
 
-  return (url = 'https://webchat-mockbot.azurewebsites.net/speechservices/token') => {
+  return (
+    url = 'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi'
+  ) => {
     if (!resultPromise || Date.now() > expireAfter) {
       expireAfter = Date.now() + 5000;
       resultPromise = fetch(url, { method: 'POST' })

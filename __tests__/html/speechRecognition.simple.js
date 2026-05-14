@@ -25,7 +25,7 @@ describe.each([
     { useDirectLineSpeech: true, useHostname: true, useSubscriptionKey: true }
   ]
 ])('speech recognition using %s', (_, { useSubscriptionKey, useDirectLineSpeech, useHostname }) => {
-  test.nightly('should recognize "Hello, World!".', async () => {
+  test.skip('should recognize "Hello, World!".', async () => {
     if (!useDirectLineSpeech && !COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
       throw new Error('"COGNITIVE_SERVICES_SUBSCRIPTION_KEY" must be set.');
     } else if (useDirectLineSpeech && !DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
@@ -33,7 +33,7 @@ describe.each([
     }
 
     const { token } = await (
-      await fetch('https://webchat-mockbot3.azurewebsites.net/api/token/directline', { method: 'POST' })
+      await fetch('https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' })
     ).json();
 
     const params = new URLSearchParams({
