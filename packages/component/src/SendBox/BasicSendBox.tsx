@@ -33,15 +33,18 @@ const ROOT_STYLE = {
     gridTemplateRows: 'auto 1fr',
 
     '& .webchat__suggested-actions': {
-      gridArea: 'suggested-actions'
+      gridArea: 'suggested-actions',
+      minWidth: '0'
     },
 
     '& .webchat__send-box__main': {
-      gridArea: 'content'
+      gridArea: 'content',
+      minWidth: '0'
     },
 
     '& .webchat__drop-zone': {
-      gridArea: 'content'
+      gridArea: 'content',
+      minWidth: '0'
     },
 
     '& .webchat__send-box__button': { flexShrink: 0 },
