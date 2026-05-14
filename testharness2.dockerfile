@@ -4,10 +4,6 @@ ARG BASE_IMAGE=$REGISTRY/devcontainers/javascript-node:24-bookworm
 
 FROM $BASE_IMAGE
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache bash git openssh
-
 ENV PORT=80
 EXPOSE 80
 RUN npm install serve@11.3.0 -g
