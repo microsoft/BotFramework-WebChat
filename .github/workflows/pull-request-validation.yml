@@ -269,7 +269,7 @@ jobs:
 
       - if: always()
         name: Print Docker logs
-        run: docker-compose -f docker-compose-wsl2.yml logs
+        run: docker compose -f docker-compose-wsl2.yml logs
 
       - if: always()
         name: Append ID to test result
