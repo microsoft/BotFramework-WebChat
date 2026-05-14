@@ -79,6 +79,8 @@ export {
   useVoiceState
 } from 'botframework-webchat-api/hook.js';
 
+export { useFileDropZone, type DropZoneState } from '@msinternal/botframework-webchat-react-hooks';
+
 // #region Overrides
 export {
   // We are overwriting the `useSendFiles` hook from bf-wc-api and adding thumbnailing support.

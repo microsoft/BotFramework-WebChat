@@ -163,6 +163,7 @@ Breaking changes in this release:
 - Added core mute/unmute functionality for speech-to-speech via `useRecorder` hook (silent chunks keep server connection alive), in PR [#5688](https://github.com/microsoft/BotFramework-WebChat/pull/5688), by [@pranavjoshi](https://github.com/pranavjoshi001)
 - 🧪 Added incremental streaming Markdown renderer for livestreaming, in PR [#5799](https://github.com/microsoft/BotFramework-WebChat/pull/5799), by [@OEvgeny](https://github.com/OEvgeny)
    - Fixed streaming Markdown renderer to preserve link reference definitions during incremental rendering and recover on error, in PR [#5808](https://github.com/microsoft/BotFramework-WebChat/pull/5808), by [@OEvgeny](https://github.com/OEvgeny)
+- Added clipboard paste and drag-and-drop file support to both basic and fluent themes, in PR [#5820](https://github.com/microsoft/BotFramework-WebChat/pull/5820), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
