@@ -24,6 +24,18 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## [Unreleased]
 
+## [4.18.1] - 2026-05-13
+
+### Changed
+
+-  Bumped some dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   -  Production dependencies
+      -  [`adaptivecards@3.0.6`](https://npmjs.com/package/adaptivecards)
+      -  [`swiper@12.1.4`](https://npmjs.com/package/swiper)
+   -  Transient dependencies
+      -  [`form-data@4.0.6`](https://npmjs.com/package/form-data)
+      -  [`handlebars@4.7.9`](https://npmjs.com/package/handlebars)
+
 ## [4.18.0] - 2024-07-10
 
 ### Added
