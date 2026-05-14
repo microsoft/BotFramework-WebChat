@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Automated test harness</title>
@@ -167,10 +167,13 @@
         } else {
           const { token } = await retry(async () => {
             try {
-              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
-                method: 'POST',
-                timeout: 2000
-              });
+              const res = await fetch(
+                'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline',
+                {
+                  method: 'POST',
+                  timeout: 2000
+                }
+              );
 
               return await res.json();
             } catch (err) {

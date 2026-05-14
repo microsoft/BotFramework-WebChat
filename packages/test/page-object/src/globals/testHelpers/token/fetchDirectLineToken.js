@@ -1,4 +1,6 @@
-export default async function fetchDirectLineToken(url = 'https://webchat-mockbot.azurewebsites.net/directline/token') {
+export default async function fetchDirectLineToken(
+  url = 'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline'
+) {
   const res = await fetch(url, { method: 'POST' });
 
   if (!res.ok) {
