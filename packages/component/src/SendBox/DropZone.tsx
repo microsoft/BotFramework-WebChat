@@ -9,6 +9,7 @@ const { useLocalizer } = hooks;
 
 const DROP_ZONE_STYLE = {
   '&.webchat__drop-zone': {
+    backdropFilter: 'blur(4px)',
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
     border: '2px dashed #999',
     borderRadius: 4,
@@ -53,9 +54,7 @@ function DropZone({ onFilesAdded }: DropZoneProps) {
       onDrop={handleDrop}
       ref={dropZoneRef}
     >
-      <span className={`webchat__drop-zone__text ${dropZoneTextClassName}`}>
-        {localize('TEXT_INPUT_DROP_ZONE')}
-      </span>
+      <span className={`webchat__drop-zone__text ${dropZoneTextClassName}`}>{localize('TEXT_INPUT_DROP_ZONE')}</span>
     </div>
   ) : null;
 }
