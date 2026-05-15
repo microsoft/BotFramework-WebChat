@@ -80,6 +80,19 @@ jobs:
           path: docker.zip
           retention-days: 1
 
+      - name: Pack all packages
+        run: npx lerna exec -- npm pack
+
+      - name: Tar all tarballs
+        run: find . -type f -name '*.tgz' -not -path '*/node_modules/*' -print0 | tar --null -cvf tarballs.tar --files-from=-
+
+      - uses: actions/upload-artifact@v7
+        with:
+          compression-level: 0
+          name: tarballs
+          path: tarballs.tar
+          retention-days: 1
+
   static-code-analysis:
     name: Static code analysis
     runs-on: ubuntu-latest
@@ -156,7 +169,7 @@ jobs:
         name: Upload test results
         uses: actions/upload-artifact@v7
         with:
-          name: test-result
+          name: test-result-unit
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -286,7 +299,7 @@ jobs:
         name: Upload test results
         uses: actions/upload-artifact@v7
         with:
-          name: test-result
+          name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -297,7 +310,7 @@ jobs:
         name: Upload test snapshot diffs
         uses: actions/upload-artifact@v7
         with:
-          name: test-snapshot-diff
+          name: test-snapshot-diff-html-${{ matrix.shard-index }}
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
 
   merge-test-result:
@@ -309,6 +322,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Merge test result artifacts
+        uses: actions/upload-artifact/merge@v7
+        with:
+          delete-merged: true
+          name: test-result
+          pattern: test-result-*
+
       - name: Download test results
         uses: actions/download-artifact@v8
         with:
