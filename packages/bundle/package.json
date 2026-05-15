@@ -104,7 +104,7 @@
       "react@16.8.6 is our baseline"
     ],
     "adaptivecards": [
-      "3.0.2",
+      "3.0.6",
       "needs to bump manually"
     ],
     "markdown-it": [
@@ -116,8 +116,8 @@
       "needs to bump manually"
     ],
     "swiper": [
-      "^8.2.6",
-      "required by Adaptive Cards but they forget to include in adaptivecards@3.0.2"
+      "^12.1.4",
+      "required by Adaptive Cards but they forget to include in adaptivecards@3.0.6"
     ],
     "uuid": [
       "8",
