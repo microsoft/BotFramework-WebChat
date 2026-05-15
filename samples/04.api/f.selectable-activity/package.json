@@ -27,7 +27,7 @@
     ]
   },
   "dependencies": {
-    "botframework-webchat": "4.18.1-main.20260416.88357ae",
+    "botframework-webchat": "^0.15.0",
     "botframework-webchat-api": "4.18.1-main.20260416.88357ae",
     "react": "16.8.6",
     "react-dom": "16.8.6"
