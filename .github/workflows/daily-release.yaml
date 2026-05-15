@@ -163,6 +163,7 @@ jobs:
             --draft \
             --notes-file ./notes.txt \
             --prerelease \
+            --repo ${{ github.repository }} \
             --title ${{ steps.compute_hash.outputs.release_tag_name }}
 
       - name: Upload assets
