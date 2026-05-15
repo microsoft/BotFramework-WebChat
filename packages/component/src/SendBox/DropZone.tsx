@@ -18,7 +18,6 @@ const DROP_ZONE_STYLE = {
     placeContent: 'center',
     placeItems: 'center',
     transition: 'background-color 0.2s ease',
-    zIndex: 1,
 
     '&.webchat__drop-zone--droppable': {
       backgroundColor: 'rgba(0, 120, 212, 0.15)',
