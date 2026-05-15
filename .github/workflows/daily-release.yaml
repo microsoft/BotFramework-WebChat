@@ -66,6 +66,12 @@ jobs:
           name: bundles
           path: packages/bundle/dist/**/*
 
+      - name: Upload fluent-theme
+        uses: actions/upload-artifact@v7
+        with:
+          name: fluent-theme
+          path: packages/bundle/dist/**/*
+
       - name: Upload tarballs
         uses: actions/upload-artifact@v7
         with:
