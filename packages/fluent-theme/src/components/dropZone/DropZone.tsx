@@ -7,7 +7,7 @@ import testIds from '../../testIds';
 import { FluentIcon } from '../icon';
 import styles from './DropZone.module.css';
 
-const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => {
+const DropZone = (props: { readonly onFilesAdded: (files: readonly File[]) => void }) => {
   const { dropZoneRef, dropZoneState, handleDragOver, handleDrop } = useFileDropZone(props.onFilesAdded);
   const classNames = useStyles(styles);
   const localize = useLocalizer();
