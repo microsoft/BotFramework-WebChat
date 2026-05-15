@@ -60,16 +60,16 @@ jobs:
           npm pack
           cp *.tgz ../../artifacts/tarballs
 
+      - name: Run npm pack fluent-theme
+        run: |
+          cd packages/fluent-theme
+          npm pack
+          cp *.tgz ../../artifacts/tarballs
+
       - name: Upload bundles
         uses: actions/upload-artifact@v7
         with:
           name: bundles
-          path: packages/bundle/dist/**/*
-
-      - name: Upload fluent-theme
-        uses: actions/upload-artifact@v7
-        with:
-          name: fluent-theme
           path: packages/bundle/dist/**/*
 
       - name: Upload tarballs
