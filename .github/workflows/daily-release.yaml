@@ -1,11 +1,12 @@
 name: Daily release
 
 on:
-  push:
-    paths:
-      - .github/workflows/daily-release.yaml
-  schedule:
-    - cron: 00 03 * * *
+  workflow_dispatch: {}
+  # push:
+  #   paths:
+  #     - .github/workflows/daily-release.yaml
+  # schedule:
+  #   - cron: 00 03 * * *
 
 jobs:
   build:
