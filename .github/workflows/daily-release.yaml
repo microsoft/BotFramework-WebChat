@@ -74,6 +74,8 @@ jobs:
 
   release:
     needs: build
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
@@ -88,13 +90,21 @@ jobs:
       - id: compute_hash
         name: Compute build metadata
         run: |
-          echo "::set-output name=git_short_sha::`echo ${{ github.sha }} | cut -c 1-7`"
-          echo "::set-output name=package_version::`tar -xOzf botframework-webchat-4*.tgz package/package.json | jq -r '.version'`"
-          echo "::set-output name=release_date::`date \"+%Y-%m-%d %R:%S\"`"
-          echo "::set-output name=release_tag_name::daily"
-          echo "::set-output name=sha384_es5::`cat webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A`"
-          echo "::set-output name=sha384_full::`cat webchat.js | openssl dgst -sha384 -binary | openssl base64 -A`"
-          echo "::set-output name=sha384_minimal::`cat webchat-minimal.js | openssl dgst -sha384 -binary | openssl base64 -A`"
+          git_short_sha=$(echo ${{ github.sha }} | cut -c 1-7$)
+          package_version=$(tar -xOzf botframework-webchat-4*.tgz package/package.json | jq -r '.version'$)
+          release_date=$(date \"+%Y-%m-%d %R:%S\"$)
+          release_tag_name=v$package_version
+          sha384_es5=$(cat webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A$)
+          sha384_full=$(cat webchat.js | openssl dgst -sha384 -binary | openssl base64 -A$)
+          sha384_minimal=$(cat webchat-minimal.js | openssl dgst -sha384 -binary | openssl base64 -A$)
+
+          echo git_short_sha=$git_short_sha | tee --append $GITHUB_OUTPUT
+          echo package_version=$package_version | tee --append $GITHUB_OUTPUT
+          echo release_date=$release_date | tee --append $GITHUB_OUTPUT
+          echo release_tag_name=$release_tag_name | tee --append $GITHUB_OUTPUT
+          echo sha384_es5=$sha384_es5 | tee --append $GITHUB_OUTPUT
+          echo sha384_full=$sha384_full | tee --append $GITHUB_OUTPUT
+          echo sha384_minimal=$sha384_minimal | tee --append $GITHUB_OUTPUT
 
       - name: Display build metadata
         run: |
@@ -113,15 +123,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.compute_hash.outputs.release_tag_name }}
-          release_name: Daily (${{ github.ref }})
-          body: |
+      - name: Create release notes
+        run: |
+          cat <<EOF >notes.txt
             This release will be updated daily. **Please do not use this build in production environment.**
 
             | Build time | Run ID | Source version | Git ref | Package version |
@@ -149,8 +153,17 @@ jobs:
             ```
 
             > Note: the SHA384 hash may change daily.
-          draft: false
-          prerelease: true
+          EOF
+
+      - name: Create a release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.compute_hash.outputs.release_tag_name }} \
+            --draft \
+            --notes-file ./notes.txt \
+            --prerelease \
+            --title ${{ steps.compute_hash.outputs.release_tag_name }}
 
       - name: Upload assets
         env:
