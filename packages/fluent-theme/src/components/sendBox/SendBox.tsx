@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  type ClipboardEventHandler,
   type FormEventHandler,
   type MouseEventHandler
 } from 'react';
@@ -125,7 +126,7 @@ function SendBox(props: Props) {
   );
 
   const handleAddFiles = useCallback(
-    async (inputFiles: File[]) => {
+    async (inputFiles: readonly File[]) => {
       const newAttachments = Object.freeze(
         await Promise.all(
           inputFiles.map(file =>
@@ -145,6 +146,22 @@ function SendBox(props: Props) {
   );
 
   const handleClick = useCallback(({ currentTarget }) => currentTarget.removeAttribute('inputmode'), []);
+
+  const handlePaste = useCallback<ClipboardEventHandler>(
+    event => {
+      if (disableFileUpload || uiState === 'disabled') {
+        return;
+      }
+
+      const { files } = event.clipboardData;
+
+      if (files.length) {
+        event.preventDefault();
+        handleAddFiles(Object.freeze(Array.from(files)));
+      }
+    },
+    [disableFileUpload, handleAddFiles, uiState]
+  );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
@@ -206,6 +223,7 @@ function SendBox(props: Props) {
       {...aria}
       className={cx(classNames['sendbox'], variantClassName, props.className)}
       data-testid={testIds.sendBoxContainer}
+      onPaste={handlePaste}
       onSubmit={handleFormSubmit}
     >
       <SuggestedActions />
