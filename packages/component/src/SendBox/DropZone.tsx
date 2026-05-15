@@ -54,7 +54,7 @@ function DropZone({ onFilesAdded }: DropZoneProps) {
       ref={dropZoneRef}
     >
       <span className={`webchat__drop-zone__text ${dropZoneTextClassName}`}>
-        {localize('TEXT_INPUT_DROP_ZONE') || 'Drop files here'}
+        {localize('TEXT_INPUT_DROP_ZONE')}
       </span>
     </div>
   ) : null;
