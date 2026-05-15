@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type DragEventHandler,
@@ -10,6 +11,32 @@ import { useRefFrom } from 'use-ref-from';
 
 type DropZoneState = false | 'visible' | 'droppable';
 
+const isFilesTransferEvent = (event: DragEvent) =>
+  !!event.dataTransfer?.types?.some(type => type.toLowerCase() === 'files');
+
+const isOrIsDescendantOf = (target: unknown, ancestor: Node | null): boolean => {
+  if (!ancestor) {
+    return false;
+  }
+
+  if (target === ancestor) {
+    return true;
+  }
+
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  let current: Node | null = target;
+  while ((current = current.parentNode)) {
+    if (current === ancestor) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 /**
  * Shared drag-and-drop state management hook for file drop zones.
  * Manages global document event listeners and drop zone state.
@@ -17,7 +44,12 @@ type DropZoneState = false | 'visible' | 'droppable';
  * @param onFilesAdded - Callback invoked when files are dropped
  * @returns Object containing dropZoneState, dropZoneRef, and event handlers
  */
-function useFileDropZone(onFilesAdded: (files: File[]) => void) {
+function useFileDropZone(onFilesAdded: (files: readonly File[]) => void): Readonly<{
+  dropZoneState: DropZoneState;
+  dropZoneRef: React.RefObject<HTMLDivElement>;
+  handleDragOver: DragEventHandler<unknown>;
+  handleDrop: DragEventHandler<HTMLDivElement>;
+}> {
   const [dropZoneState, setDropZoneState] = useState<DropZoneState>(false);
   const dropZoneRef = useRef<HTMLDivElement>(null);
   const onFilesAddedRef = useRefFrom(onFilesAdded);
@@ -33,29 +65,6 @@ function useFileDropZone(onFilesAdded: (files: File[]) => void) {
     event.preventDefault();
   }, []);
 
-  // Notes: For files dragging from outside of browser, it only tell us if it is a "File" instead of "text/plain" or "text/uri-list".
-  //        For images dragging inside of browser, it only tell us that it is "text/plain", "text/uri-list" and "text/html". But not "image/*".
-  //        So we cannot allowlist what is droppable.
-  //        We are using case-insensitive of type "files" so we can drag in WebDriver.
-  const isFilesTransferEvent = useCallback(
-    (event: DragEvent) => !!event.dataTransfer?.types?.some(type => type.toLowerCase() === 'files'),
-    []
-  );
-
-  const isDescendantOf = useCallback((target: Node, ancestor: Node): boolean => {
-    let current = target.parentNode;
-
-    while (current) {
-      if (current === ancestor) {
-        return true;
-      }
-
-      current = current.parentNode;
-    }
-
-    return false;
-  }, []);
-
   useEffect(() => {
     let entranceCounter = 0;
 
@@ -65,13 +74,7 @@ function useFileDropZone(onFilesAdded: (files: File[]) => void) {
       entranceCounter++;
 
       if (isFilesTransferEvent(event)) {
-        setDropZoneState(
-          dropZoneRef.current &&
-            (event.target === dropZoneRef.current ||
-              (event.target instanceof HTMLElement && isDescendantOf(event.target, dropZoneRef.current)))
-            ? 'droppable'
-            : 'visible'
-        );
+        setDropZoneState(isOrIsDescendantOf(event.target, dropZoneRef.current) ? 'droppable' : 'visible');
       }
     };
 
@@ -103,7 +106,7 @@ function useFileDropZone(onFilesAdded: (files: File[]) => void) {
       document.removeEventListener('dragover', handleDragOver);
       document.removeEventListener('drop', handleDocumentDrop);
     };
-  }, [handleDragOver, isDescendantOf, isFilesTransferEvent, setDropZoneState]);
+  }, [handleDragOver, setDropZoneState]);
 
   const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(
     event => {
@@ -111,22 +114,26 @@ function useFileDropZone(onFilesAdded: (files: File[]) => void) {
 
       setDropZoneState(false);
 
-      if (!event.dataTransfer?.types?.some(type => type.toLowerCase() === 'files')) {
+      if (!isFilesTransferEvent(event.nativeEvent)) {
         return;
       }
 
-      onFilesAddedRef.current(Array.from(event.dataTransfer.files));
+      onFilesAddedRef.current(Object.freeze(Array.from(event.dataTransfer.files)));
     },
-    [onFilesAddedRef, setDropZoneState]
+    [onFilesAddedRef]
   );
 
-  return {
-    dropZoneRef,
-    dropZoneState,
-    handleDragOver,
-    handleDrop
-  };
+  return useMemo(
+    () =>
+      Object.freeze({
+        dropZoneRef,
+        dropZoneState,
+        handleDragOver,
+        handleDrop
+      }),
+    [dropZoneRef, dropZoneState, handleDragOver, handleDrop]
+  );
 }
 
 export default useFileDropZone;
-export { type DropZoneState, useFileDropZone };
+export { type DropZoneState };

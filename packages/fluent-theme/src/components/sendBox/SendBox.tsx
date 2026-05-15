@@ -126,7 +126,7 @@ function SendBox(props: Props) {
   );
 
   const handleAddFiles = useCallback(
-    async (inputFiles: File[]) => {
+    async (inputFiles: readonly File[]) => {
       const newAttachments = Object.freeze(
         await Promise.all(
           inputFiles.map(file =>
@@ -157,7 +157,7 @@ function SendBox(props: Props) {
 
       if (files.length) {
         event.preventDefault();
-        handleAddFiles([...files]);
+        handleAddFiles(Object.freeze(Array.from(files)));
       }
     },
     [disableFileUpload, handleAddFiles, uiState]

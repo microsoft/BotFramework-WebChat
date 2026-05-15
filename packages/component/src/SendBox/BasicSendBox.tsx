@@ -93,7 +93,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
   const supportSpeechRecognition = !!SpeechRecognition;
 
   const handleAddFiles = useCallback(
-    async (inputFiles: File[]) => {
+    async (inputFiles: readonly File[]) => {
       const newAttachments = Object.freeze(
         await Promise.all(
           inputFiles.map(file =>
@@ -104,7 +104,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
         )
       );
 
-      setSendBoxAttachments([...sendBoxAttachmentsRef.current, ...newAttachments]);
+      setSendBoxAttachments(Object.freeze([].concat(sendBoxAttachmentsRef.current, newAttachments)));
 
       sendAttachmentOnRef.current === 'attach' && submit();
     },
@@ -121,7 +121,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
 
       if (files.length) {
         event.preventDefault();
-        handleAddFiles([...files]);
+        handleAddFiles(Object.freeze(Array.from(files)));
       }
     },
     [disabled, disableFileUpload, handleAddFiles]
