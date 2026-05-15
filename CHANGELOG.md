@@ -24,11 +24,19 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## [Unreleased]
 
+## [4.18.2] - 2026-05-15
+
+### Changed
+
+-  Bumped production dependencies to the latest versions, by [@compulim](https://github.com/compulim)
+   -  Production dependencies
+      -  [`sanitize-html@2.17.4`](https://npmjs.com/package/sanitize-html)
+
 ## [4.18.1] - 2026-05-13
 
 ### Changed
 
--  Bumped some dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Bumped some dependencies to the latest versions, by [@compulim](https://github.com/compulim)
    -  Production dependencies
       -  [`adaptivecards@3.0.6`](https://npmjs.com/package/adaptivecards)
       -  [`swiper@12.1.4`](https://npmjs.com/package/swiper)
