@@ -92,7 +92,7 @@ jobs:
         run: |
           git_short_sha=$(echo ${{ github.sha }} | cut -c 1-7)
           package_version=$(tar -xOzf botframework-webchat-4*.tgz package/package.json | jq -r '.version')
-          release_date=$(date \"+%Y-%m-%d %R:%S\")
+          release_date=$(date "+%Y-%m-%d %R:%S")
           release_tag_name=v$package_version
           sha384_es5=$(cat webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A)
           sha384_full=$(cat webchat.js | openssl dgst -sha384 -binary | openssl base64 -A)
