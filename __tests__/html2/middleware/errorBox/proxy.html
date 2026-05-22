@@ -2,6 +2,21 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script>
+      const warn = console.warn.bind(console);
+
+      // We need to fake the mock ourselves without using jest-mock.
+      // jest-mock is ESM and cannot mock before Web Chat.
+      console.warn = (...args) => {
+        console.warn.mock.calls.push(args);
+
+        warn(...args);
+      };
+
+      console.warn._isMockFunction = true;
+      console.warn.getMockName = () => 'warn';
+      console.warn.mock = { calls: [] };
+    </script>
     <script type="importmap">
       {
         "imports": {
@@ -39,20 +54,19 @@
           WebChat: {
             Components: { Composer, ThemeProvider },
             DebugProvider,
-            middleware: { createErrorBoxPolymiddleware, errorBoxComponent, useBuildRenderErrorBoxCallback },
+            middleware: { ErrorBoxPolymiddlewareProxy },
             ReactWebChat
           }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
 
-        const SystemUnderTest = () => {
-          const renderErrorBox = useBuildRenderErrorBoxCallback();
-
-          const errorBox = renderErrorBox({ error: new Error('Hello, World!'), where: 'Artificial' });
-
-          return createElement('div', { className: 'error-box' }, errorBox?.({}));
-        };
+        const SystemUnderTest = () =>
+          createElement(
+            'div',
+            { className: 'error-box' },
+            createElement(ErrorBoxPolymiddlewareProxy, { error: new Error('Hello, World!'), where: 'Artificial' })
+          );
 
         const hasDebugProvider = !new URL(location.href).searchParams.has('no-debug-provider');
         const onTelemetry = fn();
@@ -83,6 +97,12 @@
 
         // THEN: Should render a red box with DebugProvider.
         await host.snapshot('local');
+
+        // THEN: Should not warn with RCoR fallthrough.
+        expect(console.warn).not.toHaveBeenCalledWith(
+          expect.stringContaining('the request has fall through all middleware, set "fallbackComponent" as a catchall'),
+          expect.anything()
+        );
       });
     </script>
   </body>
