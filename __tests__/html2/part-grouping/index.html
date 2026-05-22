@@ -417,6 +417,7 @@ plot_sine_waves()`;
 
       // Then: show the closing message after the list
       await pageConditions.numActivitiesShown(6);
+      await pageConditions.scrollToBottomCompleted();
       await host.snapshot('local');
     });
   </script>
