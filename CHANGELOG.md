@@ -19,6 +19,8 @@ Legends:
 
 ## [Unreleased]
 
+## [4.19.0] - 2026-05-23
+
 Breaking changes in this release:
 
 - 💥 `styleOptions.bubbleImageHeight` is being deprecated in favor of `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight`. The option will be removed on or after 2026-07-05
