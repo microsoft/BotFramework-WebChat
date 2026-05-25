@@ -19,7 +19,7 @@ Legends:
 
 ## [Unreleased]
 
-## [4.19.0] - 2026-05-23
+## [4.19.0] - 2026-05-25
 
 Breaking changes in this release:
 
@@ -2811,7 +2811,8 @@ Breaking changes in this release:
 
 - Initial release of Web Chat v4
 
-[Unreleased]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.18.0...HEAD
+[Unreleased]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.0...HEAD
+[4.19.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.18.0...v4.19.0
 [4.18.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.17.0...v4.18.0
 [4.17.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.16.0...v4.17.0
 [4.16.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.15.9...v4.16.0
