@@ -132,6 +132,9 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./*.js",
+    "./CHANGELOG.md",
+    "./LICENSE",
+    "./README.md",
     "./boot/**/*",
     "./dist/**/*",
     "./src/**/*",
