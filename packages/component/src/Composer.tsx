@@ -1,11 +1,6 @@
 /* eslint-disable react/require-default-props */
 
 import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
-import {
-  parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString,
-  stripParagraphContainer
-} from '@msinternal/botframework-webchat-component-better-link';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
   Composer as APIComposer,
@@ -29,7 +24,6 @@ import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webcha
 import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal.js';
 import classNames from 'classnames';
-import { micromark } from 'micromark';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
@@ -70,7 +64,6 @@ import CSSCustomPropertiesContainer from './Styles/CSSCustomPropertiesContainer'
 import ComponentStylesheet from './stylesheet/ComponentStylesheet';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
-import addTargetBlankToHyperlinks from './Utils/addTargetBlankToHyperlinks';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
@@ -196,19 +189,6 @@ const ComposerCore = ({
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
 
-  const internalRenderMarkdownInline = useMemo(
-    () => markdown => {
-      const documentFragment = parseDocumentFragmentFromString(micromark(markdown));
-
-      addTargetBlankToHyperlinks(documentFragment);
-
-      const html = serializeDocumentFragmentIntoString(documentFragment);
-
-      return stripParagraphContainer(html);
-    },
-    []
-  );
-
   const styleToEmotionObject = useStyleToEmotionObject();
 
   const patchedStyleSet = useMemo(
@@ -293,7 +273,6 @@ const ComposerCore = ({
       dispatchScrollPosition,
       dispatchTranscriptFocusByActivityKey,
       focusTranscriptCallbacksRef,
-      internalRenderMarkdownInline,
       nonce,
       numTranscriptFocusObservers,
       observeScrollPosition,
@@ -311,7 +290,6 @@ const ComposerCore = ({
       dispatchScrollPosition,
       dispatchTranscriptFocusByActivityKey,
       focusTranscriptCallbacksRef,
-      internalRenderMarkdownInline,
       nonce,
       numTranscriptFocusObservers,
       observeScrollPosition,

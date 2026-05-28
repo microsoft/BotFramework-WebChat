@@ -78,7 +78,7 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
       }
     });
 
-    // TODO: [P*] Instead of <button value="">, it need to be <button data-markdown-href=""> to trigger the CSS.
+    // TODO: [P*] Instead of <button value="">, it need to be <button data-markdown-href="a1b2c"> to trigger the CSS.
     // TODO: [P*] Remove trailing <p></p>.
 
     return { __html: stripParagraphContainer(serializeDocumentFragmentIntoString(documentFragment)) };

@@ -10,7 +10,6 @@ export type ContextType = {
   dictateAbortable: any;
   dispatchScrollPosition: any;
   dispatchTranscriptFocusByActivityKey: any;
-  internalRenderMarkdownInline: any;
   numTranscriptFocusObservers: any;
   observeScrollPosition: any;
   observeTranscriptFocus: any;

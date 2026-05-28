@@ -9,9 +9,9 @@ import CollapseIcon from './Toast/CollapseIcon';
 import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
-import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
+import renderMarkdownInline from './private/renderMarkdownInline';
 import { useLiveRegion } from './providers/LiveRegionTwin';
 
 const { useDebouncedNotifications, useLocalizer, useRenderToast } = hooks;
@@ -77,7 +77,6 @@ const BasicToaster = ({ className }) => {
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
   const renderToast = useRenderToast();
-  const renderMarkdownInline = useInternalRenderMarkdownInline();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
@@ -142,7 +141,7 @@ const BasicToaster = ({ className }) => {
     }
 
     return toAnnounce.length > 0 && <Fragment>{toAnnounce}</Fragment>;
-  }, [renderMarkdownInline, sortedNotifications]);
+  }, [sortedNotifications]);
 
   return (
     <div
