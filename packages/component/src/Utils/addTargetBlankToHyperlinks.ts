@@ -2,7 +2,7 @@ import { betterLinkDocumentMod } from '@msinternal/botframework-webchat-componen
 
 function addTargetBlankToHyperlinks(documentFragment: DocumentFragment) {
   betterLinkDocumentMod(documentFragment, href => {
-    if (/^\w/u.test(href)) {
+    if (href && /^\w/u.test(href)) {
       return {
         rel: 'noopener noreferrer',
         target: '_blank'

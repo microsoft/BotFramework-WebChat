@@ -93,7 +93,7 @@ const LocalizedString = (props: LocalizedStringProps) => {
 
     const documentFragment = parseDocumentFragmentFromString(micromark(localized));
 
-    betterLinkDocumentMod(documentFragment, href => {
+    betterLinkDocumentMod(documentFragment, (href, textContent) => {
       const decoration: BetterLinkDocumentModDecoration = {
         rel: 'noopener noreferrer',
         target: '_blank',
@@ -109,7 +109,7 @@ const LocalizedString = (props: LocalizedStringProps) => {
         decoration.asButton = true;
       } else if (protocol === 'http:' || protocol === 'https:') {
         // TODO: Add test.
-        decoration.ariaLabel = externalLinkAlt;
+        decoration.ariaLabel = value => [value || textContent, externalLinkAlt].filter(Boolean).join(' ');
         decoration.iconClassName = 'render-markdown__external-link-icon';
       }
 

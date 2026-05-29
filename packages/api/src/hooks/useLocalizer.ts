@@ -69,7 +69,7 @@ function useLocalizer({ plural }: { plural?: boolean } = {}): PluralLocalizer | 
         throw new Error('useLocalizer: "id" must be a string.');
       }
 
-      return Object.entries([arg0, ...argRest]).reduce(
+      return Object.entries(typeof arg0 === 'undefined' ? argRest : [arg0, ...argRest]).reduce(
         (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
         // Mitigation through denylisting.
         // eslint-disable-next-line security/detect-object-injection

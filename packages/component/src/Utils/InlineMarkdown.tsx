@@ -81,7 +81,7 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
       markdownWithLinkReferenceDefinitions += '\n\n';
     }
 
-    for (const reference of references) {
+    for (const reference of references || []) {
       markdownWithLinkReferenceDefinitions += `[${reference}]: #${reference}\n`;
     }
 
@@ -89,7 +89,7 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
 
     // Turn "<a href="#retry">Retry</a>" into "<button type="button" data-markdown-ref="#retry">Retry</button>"
     betterLinkDocumentMod(documentFragment, href => {
-      if (href.startsWith('#')) {
+      if (href?.startsWith('#')) {
         return { asButton: true, dataset: { markdownHref: href } };
       }
     });
@@ -102,9 +102,10 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
       event.stopPropagation();
 
       const href = event.target.getAttribute('value') ?? undefined;
+      const reference = href?.startsWith('#') ? href.slice(1) : href;
 
-      if (href) {
-        const event = createCustomEvent('reference', { data: href });
+      if (reference) {
+        const event = createCustomEvent('reference', { data: reference });
 
         parse(referenceEventSchema, event);
         onReference?.(event);
