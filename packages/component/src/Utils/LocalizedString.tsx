@@ -38,7 +38,7 @@ const pluralPropsSchema = pipe(
       many: optional(string()),
       other: string()
     }),
-    values: optional(pipe(tupleWithRest([number()], union([string()])), readonly()))
+    values: pipe(tupleWithRest([number()], union([string()])), readonly())
   }),
   readonly()
 );
@@ -88,7 +88,7 @@ const LocalizedString = (props: LocalizedStringProps) => {
     } else {
       const { stringIds, values } = props;
 
-      localized = localizeSingular(stringIds, ...values);
+      localized = localizeSingular(stringIds, ...(values || []));
     }
 
     const documentFragment = parseDocumentFragmentFromString(micromark(localized));
