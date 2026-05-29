@@ -1,12 +1,14 @@
 import { cx } from '@emotion/css';
+import {
+  parseDocumentFragmentFromString,
+  serializeDocumentFragmentIntoString
+} from '@msinternal/botframework-webchat-component-better-link';
 import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
-import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
-import parseDocumentFragmentFromString from '../Utils/parseDocumentFragmentFromString';
-import serializeDocumentFragmentIntoString from '../Utils/serializeDocumentFragmentIntoString';
-import useWebChatUIContext from './internal/useWebChatUIContext';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
+import useWebChatUIContext from './internal/useWebChatUIContext';
 
 import styles from './RenderMarkdown.module.css';
 

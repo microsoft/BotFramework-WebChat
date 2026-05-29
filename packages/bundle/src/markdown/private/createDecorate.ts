@@ -1,7 +1,7 @@
+import type { BetterLinkDocumentModDecoration } from 'botframework-webchat-component/internal.js';
 import { onErrorResumeNext } from 'botframework-webchat-core';
-import type { BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
-import type { MarkdownLinkDefinition } from './extractDefinitionsFromEvents';
 import { sanitizeUri } from 'micromark-util-sanitize-uri';
+import type { MarkdownLinkDefinition } from './extractDefinitionsFromEvents';
 
 export const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
 

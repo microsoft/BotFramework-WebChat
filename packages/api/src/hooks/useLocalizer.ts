@@ -1,10 +1,10 @@
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
+import { isPlainObject } from '@msinternal/botframework-webchat-base/utils';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 import useLocalizedStrings from './internal/useLocalizedStrings';
-import { isPlainObject } from '@msinternal/botframework-webchat-base/utils';
 
 const DEFAULT_STRINGS = getAllLocalizedStrings()['en-US'];
 
@@ -17,12 +17,18 @@ type Plural = {
   other: string;
 };
 
-export default function useLocalizer({ plural }: { plural?: boolean } = {}) {
+type PluralLocalizer = (id: Plural, arg0: number, ...argRest: readonly string[]) => string;
+type SingularLocalizer = (id: string, ...argRest: readonly string[]) => string;
+
+function useLocalizer(init: { plural: true }): PluralLocalizer;
+function useLocalizer(init?: { plural?: false } | undefined): SingularLocalizer;
+
+function useLocalizer({ plural }: { plural?: boolean } = {}): PluralLocalizer | SingularLocalizer {
   const [globalize] = useLocalizedGlobalize();
   const localizedStrings = useLocalizedStrings();
 
   return useCallback(
-    (id: string | Plural, ...args: [(number | string)?, ...string[]]) => {
+    (id: string | Plural, arg0: number | string, ...argRest: readonly string[]) => {
       let stringId = id as string;
 
       if (plural) {
@@ -32,7 +38,7 @@ export default function useLocalizer({ plural }: { plural?: boolean } = {}) {
           throw new Error('useLocalizer: Plural string must pass "id" as a plain object instead of string.');
         } else if (typeof pluralId.other !== 'string') {
           throw new Error('useLocalizer: Plural string must have "id.other" of string.');
-        } else if (typeof args[0] !== 'number') {
+        } else if (typeof arg0 !== 'number') {
           throw new Error('useLocalizer: Plural string must have first argument as a number.');
         }
 
@@ -58,12 +64,12 @@ export default function useLocalizer({ plural }: { plural?: boolean } = {}) {
           );
         }
 
-        stringId = pluralId[globalize.plural(args[0])] || pluralId.other;
+        stringId = pluralId[globalize.plural(arg0)] || pluralId.other;
       } else if (typeof id !== 'string') {
         throw new Error('useLocalizer: "id" must be a string.');
       }
 
-      return Object.entries(args).reduce(
+      return Object.entries(typeof arg0 === 'undefined' ? argRest : [arg0, ...argRest]).reduce(
         (str, [index, arg]) => str.replace(`$${+index + 1}`, arg),
         // Mitigation through denylisting.
         // eslint-disable-next-line security/detect-object-injection
@@ -73,3 +79,5 @@ export default function useLocalizer({ plural }: { plural?: boolean } = {}) {
     [globalize, localizedStrings, plural]
   );
 }
+
+export default useLocalizer;

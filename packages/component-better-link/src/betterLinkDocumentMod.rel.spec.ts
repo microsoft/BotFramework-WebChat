@@ -1,12 +1,10 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import {
-  parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
-} from 'botframework-webchat-component/internal.js';
 import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
+import parseDocumentFragmentFromString from './parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from './serializeDocumentFragmentIntoString';
 
 const BASE_MARKDOWN = '[Example](https://example.com)';
 let baseHTML: string;
@@ -24,7 +22,7 @@ describe('When passing "rel" option with "noopener noreferer"', () => {
   });
 
   test('should have "rel" attribute set to "noopener noreferer"', () =>
-    expect(actual.querySelector('a').getAttribute('rel')).toBe('noopener noreferer'));
+    expect(actual.querySelector('a')?.getAttribute('rel')).toBe('noopener noreferer'));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
@@ -43,7 +41,7 @@ describe('When passing "rel" option with false', () => {
     );
   });
 
-  test('should have "rel" attribute removed', () => expect(actual.querySelector('a').hasAttribute('rel')).toBe(false));
+  test('should have "rel" attribute removed', () => expect(actual.querySelector('a')?.hasAttribute('rel')).toBe(false));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(

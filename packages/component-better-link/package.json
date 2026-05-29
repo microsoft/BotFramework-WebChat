@@ -1,0 +1,56 @@
+{
+  "name": "@msinternal/botframework-webchat-component-better-link",
+  "version": "0.0.0-0",
+  "description": "botframework-webchat-component/better-link package",
+  "main": "./dist/botframework-webchat-component-better-link.js",
+  "types": "./dist/botframework-webchat-component-better-link.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-component-better-link.d.mts",
+        "default": "./dist/botframework-webchat-component-better-link.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component-better-link.d.ts",
+        "default": "./dist/botframework-webchat-component-better-link.js"
+      }
+    }
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "files": [
+    "./dist/**/*",
+    "./src/**/*",
+    "*.js"
+  ],
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component-better-link#readme",
+  "scripts": {
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "tsup",
+    "bump": "vg bump prod && vg bump dev && vg bump peer && (npm audit fix || exit 0)",
+    "eslint": "npm run precommit",
+    "postversion": "../../scripts/npm/postversion.sh",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "../../scripts/npm/preversion.sh",
+    "start": "../../scripts/npm/notify-build.sh \"src\""
+  },
+  "pinDependencies": {},
+  "localDependencies": {},
+  "devDependencies": {
+    "@testduet/given-when-then": "^0.1.0",
+    "typescript": "^6.0.3"
+  }
+}

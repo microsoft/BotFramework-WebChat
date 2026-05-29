@@ -19,6 +19,10 @@ Legends:
 
 ## [Unreleased]
 
+### Changed
+
+- Removed `markdown-it` and completed migration to `micromark`, in PR [#5825](https://github.com/microsoft/BotFramework-WebChat/pull/5825), by [@compulim](https://github.com/compulim)
+
 ## [4.19.0] - 2026-05-25
 
 Breaking changes in this release:

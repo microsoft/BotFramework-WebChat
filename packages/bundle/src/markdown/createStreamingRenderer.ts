@@ -3,12 +3,12 @@ import katex from 'katex';
 import { compile, parse, postprocess, preprocess } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 import type { Event, Options } from 'micromark-util-types';
+import { betterLinkDocumentMod } from 'botframework-webchat-component/internal.js';
 
 import { math, mathHtml } from './mathExtension';
-import betterLinkDocumentMod from './private/betterLinkDocumentMod';
+import { createDecorate } from './private/createDecorate';
 import extractDefinitionsFromEvents, { type MarkdownLinkDefinition } from './private/extractDefinitionsFromEvents';
 import { pre as respectCRLFPre } from './private/respectCRLF';
-import { createDecorate } from './private/createDecorate';
 
 type StreamingRenderInit = Readonly<{
   externalLinkAlt: string;
