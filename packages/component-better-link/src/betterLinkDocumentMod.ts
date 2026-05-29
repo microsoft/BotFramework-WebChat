@@ -12,6 +12,9 @@ type BetterLinkDocumentModDecoration = {
   /** Value of "class" attribute of the link. If set to `false`, remove existing attribute. */
   className?: BetterLinkDocumentModAttributeSetter;
 
+  /** Value of "data-*" attributes to be added. */
+  dataset?: DOMStringMap | undefined;
+
   /** Alternate text of the image icon appended to the link. */
   iconAlt?: string;
 
@@ -65,7 +68,7 @@ function betterLinkDocumentMod<T extends Document | DocumentFragment>(
       continue;
     }
 
-    const { ariaLabel, asButton, className, iconAlt, iconClassName, rel, target, title, wrapZeroWidthSpace } =
+    const { ariaLabel, asButton, className, dataset, iconAlt, iconClassName, rel, target, title, wrapZeroWidthSpace } =
       decoration;
 
     setOrRemoveAttribute(anchor, 'aria-label', ariaLabel ?? false);
@@ -83,8 +86,10 @@ function betterLinkDocumentMod<T extends Document | DocumentFragment>(
       anchor.insertAdjacentElement('beforeend', image);
     }
 
+    let datasetTarget: HTMLAnchorElement | HTMLButtonElement = anchor;
+
     if (asButton) {
-      const button = document.createElement('button');
+      const button = (datasetTarget = document.createElement('button'));
 
       copyAttribute(anchor, button, 'aria-label');
       copyAttribute(anchor, button, 'class');
@@ -108,6 +113,18 @@ function betterLinkDocumentMod<T extends Document | DocumentFragment>(
       if (wrapZeroWidthSpace) {
         anchor.insertAdjacentText('beforebegin', ZERO_WIDTH_SPACE);
         anchor.insertAdjacentText('afterend', ZERO_WIDTH_SPACE);
+      }
+    }
+
+    if (dataset) {
+      for (const [key, value] of Object.entries(dataset)) {
+        if (key === 'constructor' || key === 'proto' || key === 'prototype') {
+          continue;
+        }
+
+        // Filtered out dangerous property names.
+        // eslint-disable-next-line security/detect-object-injection
+        datasetTarget.dataset[key] = value;
       }
     }
   }

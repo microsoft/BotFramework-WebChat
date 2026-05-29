@@ -10,15 +10,31 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook.js';
 import { micromark } from 'micromark';
 import React, { useCallback, useMemo } from 'react';
-import { array, function_, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import {
+  args,
+  array,
+  function_,
+  instance,
+  object,
+  optional,
+  parse,
+  pipe,
+  readonly,
+  string,
+  tuple,
+  union,
+  type InferInput
+} from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import createCustomEvent from './createCustomEvent';
 
+const referenceEventSchema = union([instance(Event), object({ data: string() })]);
+
 const inlineMarkdownPropsSchema = pipe(
   object({
     markdown: string(),
-    onReference: function_(),
+    onReference: pipe(function_(), args(tuple([referenceEventSchema]))),
     references: optional(array(string()))
   }),
   readonly()
@@ -71,15 +87,12 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
 
     const documentFragment = parseDocumentFragmentFromString(micromark(markdownWithLinkReferenceDefinitions));
 
-    // Turn "<a href="#retry">Retry</a>" into "<button type="button" value="retry">Retry</button>"
+    // Turn "<a href="#retry">Retry</a>" into "<button type="button" data-markdown-ref="#retry">Retry</button>"
     betterLinkDocumentMod(documentFragment, href => {
       if (href.startsWith('#')) {
-        return { asButton: true };
+        return { asButton: true, dataset: { markdownHref: href } };
       }
     });
-
-    // TODO: [P*] Instead of <button value="">, it need to be <button data-markdown-href="a1b2c"> to trigger the CSS.
-    // TODO: [P*] Remove trailing <p></p>.
 
     return { __html: stripParagraphContainer(serializeDocumentFragmentIntoString(documentFragment)) };
   }, [markdown, references]);
@@ -90,7 +103,12 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
 
       const href = event.target.getAttribute('value') ?? undefined;
 
-      href && onReference?.(createCustomEvent('reference', { data: href }));
+      if (href) {
+        const event = createCustomEvent('reference', { data: href });
+
+        parse(referenceEventSchema, event);
+        onReference?.(event);
+      }
     },
     [onReference]
   );
