@@ -50,7 +50,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
+    "@testduet/given-when-then": "^0.1.0",
     "typescript": "^6.0.3"
-  },
-  "peerDependencies": {}
+  }
 }
