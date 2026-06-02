@@ -27,6 +27,6 @@
     "esbuild": "^0.28.0"
   },
   "dependencies": {
-    "html-react-parser": "6.0.1"
+    "html-react-parser": "6.1.2"
   }
 }

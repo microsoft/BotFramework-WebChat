@@ -23,10 +23,10 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.28.6",
-    "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.2",
-    "webpack": "^5.106.2",
-    "webpack-cli": "^7.0.2"
+    "@babel/cli": "^7.29.7",
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3"
   }
 }
