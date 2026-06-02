@@ -22,7 +22,7 @@ Legends:
 ### Changed
 
 - Removed `markdown-it` and completed migration to `micromark`, in PR [#5825](https://github.com/microsoft/BotFramework-WebChat/pull/5825), by [@compulim](https://github.com/compulim)
-- Bumped dependencies, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+- Bumped dependencies, by [@compulim](https://github.com/compulim) in PR [#5836](https://github.com/microsoft/BotFramework-WebChat/pull/5836)
    - Production dependencies
       - [`@babel/runtime@7.29.7`](https://npmjs.com/package/@babel/runtime/v/7.29.7)
       - [`html-react-parser@6.1.2`](https://npmjs.com/package/html-react-parser/v/6.1.2)
