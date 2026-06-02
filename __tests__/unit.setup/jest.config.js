@@ -4,6 +4,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   // General
   'merge-refs',
   'mime',
+  'botframework-streaming/node_modules/uuid',
   'uuid',
 
   // Related to micromark
