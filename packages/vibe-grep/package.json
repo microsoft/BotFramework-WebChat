@@ -30,7 +30,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "dependencies": {
-    "@ast-grep/napi": "0.42.1",
-    "yaml": "2.8.3"
+    "@ast-grep/napi": "0.43.0",
+    "yaml": "2.9.0"
   }
 }

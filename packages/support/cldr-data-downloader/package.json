@@ -57,7 +57,7 @@
   "localDependencies": {},
   "dependencies": {
     "adm-zip": "0.5.17",
-    "nopt": "9.0.0",
+    "nopt": "10.0.0",
     "progress": "2.0.3",
     "q": "1.5.1"
   }

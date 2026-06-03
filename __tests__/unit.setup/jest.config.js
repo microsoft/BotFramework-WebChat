@@ -4,6 +4,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   // General
   'merge-refs',
   'mime',
+  'botframework-streaming/node_modules/uuid',
   'uuid',
 
   // Related to micromark
@@ -60,7 +61,6 @@ module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'mjs', 'ts', 'tsx'],
   rootDir: '../../packages/',
   setupFilesAfterEnv: [
-    '<rootDir>/../__tests__/unit.setup/setupFiles/setupCrypto.js',
     '<rootDir>/../__tests__/unit.setup/setupFiles/setupTestNightly.js',
     '<rootDir>/../__tests__/unit.setup/setupFiles/setupTimeout.js'
   ],

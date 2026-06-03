@@ -34,6 +34,6 @@
     "esbuild": "^0.28.0"
   },
   "dependencies": {
-    "microsoft-cognitiveservices-speech-sdk": "1.49.0"
+    "microsoft-cognitiveservices-speech-sdk": "1.50.0"
   }
 }

@@ -22,6 +22,43 @@ Legends:
 ### Changed
 
 - Removed `markdown-it` and completed migration to `micromark`, in PR [#5825](https://github.com/microsoft/BotFramework-WebChat/pull/5825), by [@compulim](https://github.com/compulim)
+- Bumped dependencies, by [@compulim](https://github.com/compulim) in PR [#5836](https://github.com/microsoft/BotFramework-WebChat/pull/5836)
+   - Production dependencies
+      - [`@babel/runtime@7.29.7`](https://npmjs.com/package/@babel/runtime/v/7.29.7)
+      - [`html-react-parser@6.1.2`](https://npmjs.com/package/html-react-parser/v/6.1.2)
+      - [`katex@0.17.0`](https://npmjs.com/package/katex/v/0.17.0)
+      - [`microsoft-cognitiveservices-speech-sdk@1.50.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk/v/1.50.0)
+      - [`redux-saga@1.5.0`](https://npmjs.com/package/redux-saga/v/1.5.0)
+      - [`uuid@14.0.0`](https://npmjs.com/package/uuid/v/14.0.0)
+      - [`valibot@1.4.1`](https://npmjs.com/package/valibot/v/1.4.1)
+   - Development dependencies
+      - [`@ast-grep/napi@0.43.0`](https://npmjs.com/package/@ast-grep/napi/v/0.43.0)
+      - [`@babel/cli@7.29.7`](https://npmjs.com/package/@babel/cli/v/7.29.7)
+      - [`@babel/core@7.29.7`](https://npmjs.com/package/@babel/core/v/7.29.7)
+      - [`@babel/plugin-transform-runtime@7.29.7`](https://npmjs.com/package/@babel/plugin-transform-runtime/v/7.29.7)
+      - [`@babel/plugin-transform-typescript@7.29.7`](https://npmjs.com/package/@babel/plugin-transform-typescript/v/7.29.7)
+      - [`@babel/preset-env@7.29.7`](https://npmjs.com/package/@babel/preset-env/v/7.29.7)
+      - [`@babel/preset-react@7.29.7`](https://npmjs.com/package/@babel/preset-react/v/7.29.7)
+      - [`@babel/preset-typescript@7.29.7`](https://npmjs.com/package/@babel/preset-typescript/v/7.29.7)
+      - [`@babel/runtime@7.29.7`](https://npmjs.com/package/@babel/runtime/v/7.29.7)
+      - [`@biomejs/biome@2.4.16`](https://npmjs.com/package/@biomejs/biome/v/2.4.16)
+      - [`@fluentui/react-provider@9.22.17`](https://npmjs.com/package/@fluentui/react-provider/v/9.22.17)
+      - [`@types/dom-speech-recognition@0.0.11`](https://npmjs.com/package/@types/dom-speech-recognition/v/0.0.11)
+      - [`@types/node@25.9.1`](https://npmjs.com/package/@types/node/v/25.9.1)
+      - [`@types/react@16.14.70`](https://npmjs.com/package/@types/react/v/16.14.70)
+      - [`@typescript-eslint/eslint-plugin@8.60.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin/v/8.60.0)
+      - [`@typescript-eslint/parser@8.60.0`](https://npmjs.com/package/@typescript-eslint/parser/v/8.60.0)
+      - [`axe-core@4.11.4`](https://npmjs.com/package/axe-core/v/4.11.4)
+      - [`concurrently@10.0.0`](https://npmjs.com/package/concurrently/v/10.0.0)
+      - [`dtsroll@1.8.2`](https://npmjs.com/package/dtsroll/v/1.8.2)
+      - [`eslint-plugin-prettier@5.5.6`](https://npmjs.com/package/eslint-plugin-prettier/v/5.5.6)
+      - [`keep-a-changelog@3.0.4`](https://npmjs.com/package/keep-a-changelog/v/3.0.4)
+      - [`lint-staged@17.0.5`](https://npmjs.com/package/lint-staged/v/17.0.5)
+      - [`nopt@10.0.0`](https://npmjs.com/package/nopt/v/10.0.0)
+      - [`selenium-webdriver@4.44.0`](https://npmjs.com/package/selenium-webdriver/v/4.44.0)
+      - [`webpack-cli@7.0.3`](https://npmjs.com/package/webpack-cli/v/7.0.3)
+      - [`webpack@5.107.2`](https://npmjs.com/package/webpack/v/5.107.2)
+      - [`yaml@2.9.0`](https://npmjs.com/package/yaml/v/2.9.0)
 
 ## [4.19.0] - 2026-05-25
 

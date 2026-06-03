@@ -31,6 +31,7 @@ export default defineConfig([
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"'
     },
     format: 'cjs',
+    noExternal: ['uuid'],
     target: [...commonConfig.target, 'es2019']
   }
 ]);

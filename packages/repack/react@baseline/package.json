@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@msinternal/object-assign": "0.0.0-0",
-    "@types/react": "^16.14.69",
+    "@types/react": "^16.14.70",
     "esbuild": "^0.28.0"
   },
   "dependencies": {

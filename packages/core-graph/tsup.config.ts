@@ -18,6 +18,7 @@ export default defineConfig([
   {
     ...commonConfig,
     format: 'cjs',
+    noExternal: ['uuid'],
     target: [...commonConfig.target, 'es2019']
   }
 ]);
