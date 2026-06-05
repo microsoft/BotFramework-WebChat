@@ -62,7 +62,7 @@ Legends:
 
 ### Fixed
 
-- Fixed the "Retry" button should resend the message after failed to send, instead of showing "Render error", by [@compulim](https://github.com/compulim) in PR [#5838](https://github.com/microsoft/BotFramework-WebChat/pull/5838)
+- Fixed the "Retry" button to resend the message after it fails to send, instead of showing "Render error", by [@compulim](https://github.com/compulim) in PR [#5838](https://github.com/microsoft/BotFramework-WebChat/pull/5838)
 
 ## [4.19.0] - 2026-05-25
 
