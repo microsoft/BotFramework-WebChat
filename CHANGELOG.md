@@ -60,6 +60,10 @@ Legends:
       - [`webpack@5.107.2`](https://npmjs.com/package/webpack/v/5.107.2)
       - [`yaml@2.9.0`](https://npmjs.com/package/yaml/v/2.9.0)
 
+### Fixed
+
+- Fixed the "Retry" button should resend the message after failed to send, instead of showing "Render error", by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+
 ## [4.19.0] - 2026-05-25
 
 Breaking changes in this release:
