@@ -25,6 +25,21 @@ type StrictAdaptiveCardsStyleOptions = {
    * Enable title (and subtitle) wrapping
    */
   richCardWrapTitle: boolean | undefined;
+
+  /**
+   * Cards: Rich Cards
+   *
+   * When `true` (default, preserves historical behavior), the title of a hero/thumbnail/audio/video/
+   * animation/receipt card is rendered with Adaptive Cards `style: 'heading'`, which the Adaptive
+   * Cards SDK exposes via `role="heading"` + `aria-level`.
+   *
+   * Set to `false` when these card titles are not navigational headings in your host page
+   * (e.g. when card titles appear inside a chat transcript and would create misleading
+   * heading structure for assistive technology). See:
+   *   - Original request to add the heading: https://github.com/microsoft/BotFramework-WebChat/issues/4327
+   *   - Reverse request to make it removable: (the audit motivating this option)
+   */
+  richCardTitleAsHeading: boolean | undefined;
 };
 
 type AdaptiveCardsStyleOptions = Partial<StrictAdaptiveCardsStyleOptions>;

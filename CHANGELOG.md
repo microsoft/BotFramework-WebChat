@@ -19,6 +19,10 @@ Legends:
 
 ## [Unreleased]
 
+### Added
+
+- Added `styleOptions.richCardTitleAsHeading` (default `true`) to control whether hero/thumbnail/audio/video/animation/receipt card titles render with Adaptive Cards `style: 'heading'` (and the resulting `role="heading"` + `aria-level`). Hosts whose card titles do not represent navigational headings (e.g. cards inside a chat transcript) can opt out by setting it to `false`, reconciling the contradiction between the original [#4327](https://github.com/microsoft/BotFramework-WebChat/issues/4327) (add the heading) and downstream a11y audits that flag it as unnecessary.
+
 ### Changed
 
 - Removed `markdown-it` and completed migration to `micromark`, in PR [#5825](https://github.com/microsoft/BotFramework-WebChat/pull/5825), by [@compulim](https://github.com/compulim)

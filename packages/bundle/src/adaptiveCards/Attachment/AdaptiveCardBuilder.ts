@@ -119,11 +119,15 @@ export default class AdaptiveCardBuilder {
   }
 
   addCommonHeaders(content: ICommonContent) {
-    const { richCardWrapTitle } = this.styleOptions;
+    const { richCardTitleAsHeading, richCardWrapTitle } = this.styleOptions;
+    // Default to `true` to preserve historical behavior (see github.com/microsoft/BotFramework-WebChat/issues/4327).
+    // Hosts whose card titles do not represent navigational headings (e.g. when cards appear inside a chat
+    // transcript) should set `styleOptions.richCardTitleAsHeading` to `false` to drop the `style: 'heading'`
+    // and avoid an unnecessary `role="heading"` / `aria-level` on the title.
     this.addTextBlock(content.title, {
       color: TextColor.Default,
       size: TextSize.Medium,
-      style: 'heading',
+      ...(richCardTitleAsHeading === false ? {} : { style: 'heading' as const }),
       weight: TextWeight.Bolder,
       wrap: richCardWrapTitle
     });
