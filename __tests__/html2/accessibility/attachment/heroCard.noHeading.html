@@ -24,12 +24,20 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.scrollToBottomCompleted();
 
-        // The hero card title text block should be present...
-        const titleTextBlock = document.querySelector('.ac-textBlock');
-        expect(titleTextBlock).toHaveProperty('innerText', '\u200BDetails about image 1\u200B');
+        // Scope queries to the hero card activity so we don't accidentally match unrelated text blocks elsewhere.
+        const heroCardActivity = Array.from(webChatElement.querySelectorAll('.webchat__basic-transcript__activity')).find(
+          (activity) => !!activity.querySelector('.ac-textBlock')
+        );
+        expect(heroCardActivity).toBeTruthy();
 
-        // ...but it must not be a programmatic heading when richCardTitleAsHeading is false.
-        expect(document.querySelector('.ac-textBlock[role="heading"]')).toBe(null);
+        const titleTextBlock = Array.from(heroCardActivity.querySelectorAll('.ac-textBlock')).find(
+          (block) => block.innerText === '\u200BDetails about image 1\u200B'
+        );
+        expect(titleTextBlock).toBeTruthy();
+
+        // The title must not be a programmatic heading when richCardTitleAsHeading is false.
+        expect(titleTextBlock.getAttribute('role')).toBe(null);
+        expect(heroCardActivity.querySelector('.ac-textBlock[role="heading"]')).toBe(null);
       });
     </script>
   </body>

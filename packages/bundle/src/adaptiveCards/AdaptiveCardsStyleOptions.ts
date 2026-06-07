@@ -35,9 +35,9 @@ type StrictAdaptiveCardsStyleOptions = {
    *
    * Set to `false` when these card titles are not navigational headings in your host page
    * (e.g. when card titles appear inside a chat transcript and would create misleading
-   * heading structure for assistive technology). See:
-   *   - Original request to add the heading: https://github.com/microsoft/BotFramework-WebChat/issues/4327
-   *   - Reverse request to make it removable: (the audit motivating this option)
+   * heading structure for assistive technology).
+   *
+   * @see https://github.com/microsoft/BotFramework-WebChat/issues/4327 - original request to add the heading
    */
   richCardTitleAsHeading: boolean | undefined;
 };
