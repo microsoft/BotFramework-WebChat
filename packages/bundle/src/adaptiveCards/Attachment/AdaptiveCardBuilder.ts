@@ -127,7 +127,7 @@ export default class AdaptiveCardBuilder {
     this.addTextBlock(content.title, {
       color: TextColor.Default,
       size: TextSize.Medium,
-      ...(richCardTitleAsHeading === false ? {} : { style: 'heading' as const }),
+      ...(richCardTitleAsHeading === false ? {} : { style: 'heading' }),
       weight: TextWeight.Bolder,
       wrap: richCardWrapTitle
     });

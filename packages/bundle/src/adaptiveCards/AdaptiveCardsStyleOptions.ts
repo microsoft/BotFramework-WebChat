@@ -29,9 +29,10 @@ type StrictAdaptiveCardsStyleOptions = {
   /**
    * Cards: Rich Cards
    *
-   * When `true` (default, preserves historical behavior), the title of a hero/thumbnail/audio/video/
-   * animation/receipt card is rendered with Adaptive Cards `style: 'heading'`, which the Adaptive
-   * Cards SDK exposes via `role="heading"` + `aria-level`.
+   * When `true` (default, preserves historical behavior), the title of cards that flow through
+   * `AdaptiveCardBuilder.addCommonHeaders` (hero, OAuth, animation/audio/video cards via
+   * `CommonCard`, and thumbnail cards without images) is rendered with Adaptive Cards
+   * `style: 'heading'`, which the Adaptive Cards SDK exposes via `role="heading"` + `aria-level`.
    *
    * Set to `false` when these card titles are not navigational headings in your host page
    * (e.g. when card titles appear inside a chat transcript and would create misleading
