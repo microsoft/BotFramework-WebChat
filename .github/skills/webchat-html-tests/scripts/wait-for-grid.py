@@ -10,11 +10,12 @@ import urllib.request
 
 GRID_URL = os.environ.get('GRID_URL', 'http://localhost:4444/wd/hub/status')
 POLL_INTERVAL_SECONDS = float(os.environ.get('GRID_POLL_INTERVAL_SECONDS', '2'))
+REQUEST_TIMEOUT_SECONDS = float(os.environ.get('GRID_REQUEST_TIMEOUT_SECONDS', '5'))
 TIMEOUT_SECONDS = float(os.environ.get('GRID_TIMEOUT_SECONDS', '60'))
 
 
 def fetch_status():
-    with urllib.request.urlopen(GRID_URL) as response:
+    with urllib.request.urlopen(GRID_URL, timeout=REQUEST_TIMEOUT_SECONDS) as response:
         return json.load(response)
 
 
