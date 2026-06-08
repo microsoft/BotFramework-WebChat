@@ -21,12 +21,21 @@
 
         await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
         await pageConditions.scrollToBottomCompleted();
 
-        expect(document.querySelector('.ac-textBlock[role="heading"]')).toHaveProperty(
-          'innerText',
-          '\u200BDetails about image 1\u200B'
+        const heroCardActivity = Array.from(webChatElement.querySelectorAll('.webchat__basic-transcript__activity')).find(
+          (activity) => !!activity.querySelector('.ac-textBlock')
         );
+        expect(heroCardActivity).toBeTruthy();
+
+        const titleTextBlock = Array.from(heroCardActivity.querySelectorAll('.ac-textBlock')).find(
+          (block) => block.innerText === '\u200BDetails about image 1\u200B'
+        );
+        expect(titleTextBlock).toBeTruthy();
+        expect(titleTextBlock.getAttribute('role')).toBe('heading');
+
+        await host.snapshot('local');
       });
     </script>
   </body>

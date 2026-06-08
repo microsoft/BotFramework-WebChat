@@ -22,6 +22,7 @@
 
         await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
         await pageConditions.scrollToBottomCompleted();
 
         const heroCardActivity = Array.from(webChatElement.querySelectorAll('.webchat__basic-transcript__activity')).find(
@@ -36,6 +37,8 @@
 
         expect(titleTextBlock.getAttribute('role')).toBe(null);
         expect(heroCardActivity.querySelector('.ac-textBlock[role="heading"]')).toBe(null);
+
+        await host.snapshot('local');
       });
     </script>
   </body>

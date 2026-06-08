@@ -21,7 +21,7 @@ Legends:
 
 ### Added
 
-- Added `styleOptions.richCardTitleAsHeading` (default `true`) to opt out of `style: 'heading'` on rich card titles, by [@cjennison](https://github.com/cjennison). Resolves the conflict with [#4327](https://github.com/microsoft/BotFramework-WebChat/issues/4327) for hosts where card titles are not navigational headings.
+- Added `styleOptions.richCardTitleAsHeading` (default `true`) to opt out of `style: 'heading'` on rich card titles, in PR [#5839](https://github.com/microsoft/BotFramework-WebChat/pull/5839), by [@cjennison](https://github.com/cjennison)
 
 ### Changed
 
