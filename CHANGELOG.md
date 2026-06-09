@@ -19,6 +19,8 @@ Legends:
 
 ## [Unreleased]
 
+## [4.19.1] - 2026-06-09
+
 ### Changed
 
 - Removed `markdown-it` and completed migration to `micromark`, in PR [#5825](https://github.com/microsoft/BotFramework-WebChat/pull/5825), by [@compulim](https://github.com/compulim)
@@ -2856,7 +2858,8 @@ Breaking changes in this release:
 
 - Initial release of Web Chat v4
 
-[Unreleased]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.0...HEAD
+[Unreleased]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.1...HEAD
+[4.19.1]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.0...v4.19.1
 [4.19.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.18.0...v4.19.0
 [4.18.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.17.0...v4.18.0
 [4.17.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.16.0...v4.17.0
