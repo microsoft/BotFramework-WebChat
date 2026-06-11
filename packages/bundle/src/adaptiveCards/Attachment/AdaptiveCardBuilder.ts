@@ -119,11 +119,11 @@ export default class AdaptiveCardBuilder {
   }
 
   addCommonHeaders(content: ICommonContent) {
-    const { richCardTitleAsHeading, richCardWrapTitle } = this.styleOptions;
+    const { richCardTitleOmitHeadingRole, richCardWrapTitle } = this.styleOptions;
     this.addTextBlock(content.title, {
+      ...(richCardTitleOmitHeadingRole ? {} : { style: 'heading' }),
       color: TextColor.Default,
       size: TextSize.Medium,
-      ...(richCardTitleAsHeading === false ? {} : { style: 'heading' }),
       weight: TextWeight.Bolder,
       wrap: richCardWrapTitle
     });

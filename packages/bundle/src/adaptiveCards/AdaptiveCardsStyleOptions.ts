@@ -28,10 +28,11 @@ type StrictAdaptiveCardsStyleOptions = {
 
   /**
    * Cards: Rich Cards
-   * When `false`, omits `style: 'heading'` from the title so the rendered TextBlock has no
-   * `role="heading"` / `aria-level`. Defaults to `true`. See issue #4327.
+   * When `true`, omits `style: 'heading'` from the title so the rendered TextBlock has no
+   * `role="heading"` / `aria-level`. Defaults to `false` (existing behavior keeps the heading
+   * style; see issue #4327).
    */
-  richCardTitleAsHeading: boolean | undefined;
+  richCardTitleOmitHeadingRole: boolean | undefined;
 };
 
 type AdaptiveCardsStyleOptions = Partial<StrictAdaptiveCardsStyleOptions>;

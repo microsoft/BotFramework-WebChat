@@ -5,7 +5,7 @@ const ADAPTIVE_CARDS_DEFAULT_STYLE_OPTIONS: Required<AdaptiveCardsStyleOptions> 
   cardEmphasisBackgroundColor: '#F9F9F9',
   cardPushButtonBackgroundColor: '#0063B1',
   cardPushButtonTextColor: 'White',
-  richCardTitleAsHeading: true,
+  richCardTitleOmitHeadingRole: false,
   richCardWrapTitle: false
 };
 

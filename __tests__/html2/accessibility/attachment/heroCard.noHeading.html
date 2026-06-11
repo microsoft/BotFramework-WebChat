@@ -13,7 +13,7 @@
       run(async function () {
         const store = testHelpers.createStore();
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const styleOptions = { richCardTitleAsHeading: false };
+        const styleOptions = { richCardTitleOmitHeadingRole: true };
         const baseProps = { directLine, store, styleOptions };
         const webChatElement = document.getElementById('webchat');
 
