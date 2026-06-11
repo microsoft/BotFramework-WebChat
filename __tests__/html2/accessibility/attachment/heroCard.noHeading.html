@@ -13,7 +13,8 @@
       run(async function () {
         const store = testHelpers.createStore();
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const baseProps = { directLine, store };
+        const styleOptions = { richCardTitleOmitHeadingRole: true };
+        const baseProps = { directLine, store, styleOptions };
         const webChatElement = document.getElementById('webchat');
 
         WebChat.renderWebChat(baseProps, webChatElement);
@@ -34,7 +35,9 @@
           (block) => block.innerText === '\u200BDetails about image 1\u200B'
         );
         expect(titleTextBlock).toBeTruthy();
-        expect(titleTextBlock.getAttribute('role')).toBe('heading');
+
+        expect(titleTextBlock.getAttribute('role')).toBe(null);
+        expect(heroCardActivity.querySelector('.ac-textBlock[role="heading"]')).toBe(null);
 
         await host.snapshot('local');
       });
