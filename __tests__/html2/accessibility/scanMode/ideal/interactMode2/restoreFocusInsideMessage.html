@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render({ interactMode: 2 });
+
+          await systemUnderTest.focusChatHistory();
+
+          // THEN: Should focus on the last chat message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
+
+          // WHEN: TAB key is pressed.
+          await host.sendTab(4);
+
+          // THEN: Should focus on the address form submit button.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
+
+          // WHEN: TAB key is pressed again.
+          await host.sendTab();
+
+          // THEN: Should focus on the send box.
+          expect(document.activeElement).toBe(systemUnderTest.sendBoxTextBox);
+
+          // WHEN: SHIFT-TAB key is pressed.
+          await host.sendShiftTab();
+
+          // THEN: Should focus on the submit button.
+          //       This would maintain the focus symmetricity.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

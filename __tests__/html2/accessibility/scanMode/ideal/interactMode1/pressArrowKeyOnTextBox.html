@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render();
+
+          await systemUnderTest.focusChatHistory();
+
+          // WHEN: ENTER key is pressed to focus on the message body.
+          await host.sendKeys('ENTER');
+
+          // THEN: Should focus on the message body of the very last message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
+
+          // THEN: Up arrow key is pressed.
+          await host.sendKeys('ARROW_UP');
+
+          // THEN: Should not move the focus.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
