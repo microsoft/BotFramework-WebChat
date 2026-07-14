@@ -25,7 +25,7 @@ Legends:
 
 ### Fixed
 
-- Fixed an error when a failed activity is present when Web Chat mounts, resolving [#5812](https://github.com/microsoft/BotFramework-WebChat/issues/5812), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed an error when a failed activity is present when Web Chat mounts, resolving [#5812](https://github.com/microsoft/BotFramework-WebChat/issues/5812), in PR [#5848](https://github.com/microsoft/BotFramework-WebChat/pull/5848), by [@OEvgeny](https://github.com/OEvgeny)
 
 
 ## [4.19.1] - 2026-06-09
