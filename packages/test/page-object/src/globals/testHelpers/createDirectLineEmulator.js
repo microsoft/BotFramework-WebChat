@@ -16,9 +16,9 @@ function uniqueId() {
   return random().toString(36).substring(2, 7);
 }
 
-export default function createDirectLineEmulator({ autoConnect = true, ponyfill = {} } = {}) {
+export default function createDirectLineEmulator({ autoConnect = true, initialState, ponyfill = {} } = {}) {
   const { Date = window.Date } = ponyfill;
-  const store = createStoreWithOptions({ ponyfill });
+  const store = createStoreWithOptions({ ponyfill }, initialState);
 
   if (!isNativeClock()) {
     throw new Error('Fake timer is detected at global-level. You must pass it via the "ponyfill" option.');
