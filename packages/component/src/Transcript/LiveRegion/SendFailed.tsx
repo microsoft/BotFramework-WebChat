@@ -48,7 +48,7 @@ const LiveRegionSendFailed = () => {
 
   /** True, if one or more non-presentational activities start appears as "send failed", otherwise, false. */
   const hasNewSendFailed = useMemo<boolean>(() => {
-    if (activityKeysOfSendFailed === prevActivityKeysOfSendFailed) {
+    if (!prevActivityKeysOfSendFailed || activityKeysOfSendFailed === prevActivityKeysOfSendFailed) {
       return false;
     }
 
