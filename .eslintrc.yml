@@ -79,6 +79,9 @@ overrides:
 
   - files:
       - '__tests__/**/*.js'
+      - '__tests__/**/*.jsx'
+      - '__tests__/**/*.ts'
+      - '__tests__/**/*.tsx'
       - '**/*.spec.js'
       - '**/*.spec.jsx'
       - '**/*.spec.ts'
@@ -89,12 +92,21 @@ overrides:
       - '**/*.test.tsx'
 
     env:
+      browser: true
       jest: true
 
+    parserOptions:
+      ecmaFeatures:
+        jsx: true
+
     rules:
+      '@typescript-eslint/no-namespace': off
       '@typescript-eslint/no-require-imports': off
-      no-magic-numbers: off
       'react/forbid-elements': off
+      no-console: off
+      no-magic-numbers: off
+      prefer-arrow-callback: off
+      prefer-destructuring: off
 
 rules:
   # Only list rules that are not in *:recommended set
