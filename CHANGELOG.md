@@ -483,6 +483,10 @@ Breaking changes in this release:
 - Fixed send box should narrate `aria-label` prop, by [@compulim](https://github.com/compulim), in PR [#5805](https://github.com/microsoft/BotFramework-WebChat/pull/5805)
 - Fixed polymiddleware error should not propagate to React runtime if `<DebugProvider>` is not mounted, by [@compulim](https://github.com/compulim), in PR [#5833](https://github.com/microsoft/BotFramework-WebChat/pull/5833)
 
+# Samples
+
+-  Added [`06.recomposing-ui\f.continuous-speech-recognition`](../../samples/06.recomposing-ui/f.continuous-speech-recognition) for continuous listening recomposing sample, in PR [#5431](https://github.com/microsoft/BotFramework-WebChat/pull/5431), by [@RushikeshGavali](https://github.com/RushikeshGavali)
+
 ## [4.18.0] - 2024-07-10
 
 ### Added
