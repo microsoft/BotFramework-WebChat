@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            hooks: { useActivities },
+            testIds
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const renderWithFunction = fn =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={directLine} store={store}>
+                <BasicWebChat />
+                <RunFunction fn={() => resolve(fn?.())} key={Date.now() + ''} />
+              </Composer>,
+              document.getElementById('webchat')
+            )
+          );
+
+        renderWithFunction();
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          id: 'a-00001',
+          type: 'message',
+          text: "Hi! I'm Cody, the devbot. How can I help?",
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              potentialAction: [
+                {
+                  '@type': 'LikeAction',
+                  // Will change to "ActiveActionStatus" during submission.
+                  // Will change to "CompletedActionStatus" after we receive the echoback of this messageBack/postBack.
+                  actionStatus: 'PotentialActionStatus',
+                  target: {
+                    '@type': 'EntryPoint',
+                    // We use URL handler to catch ms-directline:// protocol.
+                    urlTemplate: 'ms-directline://postback?interaction=like'
+                  }
+                },
+                {
+                  '@type': 'DislikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  result: {
+                    '@type': 'Review',
+                    reviewBody: "I don't like it.",
+                    // This is related to W3C Hyrda, will become variable "reason" to use in URL Template later.
+                    'reviewBody-input': {
+                      '@type': 'PropertyValueSpecification',
+                      // Many things at PropertyValueSpecification can be directly map to HTML Form elements.
+                      // We may be able to build a form automatically.
+                      valueMinLength: 3,
+                      valueName: 'reason'
+                    }
+                  },
+                  target: {
+                    '@type': 'EntryPoint',
+                    // RFC-6570 URL Template syntax to add &reason=I%20don't%20like%20it.
+                    // We use URL handler to catch ms-directline:// protocol.
+                    urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                  }
+                }
+              ]
+            }
+          ]
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // ---
+
+        // WHEN: Click on the "Like" button.
+        // TODO: Click on the "Like" button, instead of emulating outgoing activity.
+        const likeEmulation = await directLine.emulateOutgoingActivity({
+          channelData: { postBack: true },
+          from: { role: 'user' },
+          replyToId: 'a-00001',
+          type: 'message',
+          value: { interaction: 'like' }
+        });
+
+        const likeActivities1 = await renderWithFunction(() => useActivities()[0]);
+
+        expect(likeActivities1).toHaveLength(2);
+        expect(likeActivities1).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: 'a-00001',
+              entities: expect.arrayContaining([
+                expect.objectContaining({
+                  '@id': '',
+                  '@type': 'Message',
+                  potentialAction: expect.arrayContaining([
+                    expect.objectContaining({
+                      '@type': 'LikeAction'
+                      // THEN: Should mark the button as active (a.k.a. processing.)
+                      // TODO: Uncomment this like, it should pass.
+                      // actionStatus: 'ActiveActionStatus'
+                    }),
+                    expect.objectContaining({
+                      '@type': 'LikeAction',
+                      actionStatus: 'PotentialActionStatus'
+                    })
+                  ])
+                })
+              ])
+            })
+          ])
+        );
+
+        await likeEmulation.echoBack();
+
+        const likeActivities2 = await renderWithFunction(() => useActivities()[0]);
+
+        expect(likeActivities2).toHaveLength(2);
+        expect(likeActivities2).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: 'a-00001',
+              entities: expect.arrayContaining([
+                expect.objectContaining({
+                  '@id': '',
+                  '@type': 'Message',
+                  potentialAction: expect.arrayContaining([
+                    expect.objectContaining({
+                      '@type': 'LikeAction'
+                      // THEN: Should mark the button as active completed.
+                      // TODO: Uncomment this like, it should pass.
+                      // actionStatus: 'CompletedActionStatus'
+                    }),
+                    expect.objectContaining({
+                      '@type': 'LikeAction',
+                      actionStatus: 'PotentialActionStatus'
+                    })
+                  ])
+                })
+              ])
+            })
+          ])
+        );
+
+        likeEmulation.resolvePostActivity();
+
+        // THEN: postBack should not show as a visible message.
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
+
+        // --- Changing thought, click on the "Dislike" button.
+
+        // WHEN: Click on the "Dislike" button.
+        // TODO: Click on the "Dislike" button, instead of emulating outgoing activity.
+        const dislikeEmulation = await directLine.emulateOutgoingActivity({
+          channelData: { postBack: true },
+          from: { role: 'user' },
+          replyToId: 'a-00001',
+          type: 'message',
+          value: { interaction: 'like' }
+        });
+
+        const dislikeActivities1 = await renderWithFunction(() => useActivities()[0]);
+
+        expect(dislikeActivities1).toHaveLength(3);
+        expect(dislikeActivities1).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: 'a-00001',
+              entities: expect.arrayContaining([
+                expect.objectContaining({
+                  '@id': '',
+                  '@type': 'Message',
+                  potentialAction: expect.arrayContaining([
+                    expect.objectContaining({
+                      '@type': 'LikeAction',
+                      // THEN: Should undo the interaction and turn it back into PotentialActionStatus.
+                      actionStatus: 'PotentialActionStatus'
+                    }),
+                    expect.objectContaining({
+                      '@type': 'DislikeAction'
+                      // THEN: Should mark the button as active (a.k.a. processing.)
+                      // TODO: Uncomment this like, it should pass.
+                      // actionStatus: 'ActiveActionStatus'
+                    })
+                  ])
+                })
+              ])
+            })
+          ])
+        );
+
+        await dislikeEmulation.echoBack();
+
+        const dislikeActivities2 = await renderWithFunction(() => useActivities()[0]);
+
+        expect(dislikeActivities2).toHaveLength(3);
+        expect(dislikeActivities2).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: 'a-00001',
+              entities: expect.arrayContaining([
+                expect.objectContaining({
+                  '@id': '',
+                  '@type': 'Message',
+                  potentialAction: expect.arrayContaining([
+                    expect.objectContaining({
+                      '@type': 'LikeAction',
+                      // THEN: Should undo the interaction and turn it back into PotentialActionStatus.
+                      actionStatus: 'PotentialActionStatus'
+                    }),
+                    expect.objectContaining({
+                      '@type': 'DislikeAction'
+                      // THEN: Should mark the button as completed.
+                      // TODO: Uncomment this like, it should pass.
+                      // actionStatus: 'CompletedActionStatus'
+                    })
+                  ])
+                })
+              ])
+            })
+          ])
+        );
+
+        dislikeEmulation.resolvePostActivity();
+
+        // THEN: postBack should not show as a visible message.
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
