@@ -17,7 +17,19 @@ import React, {
   type MouseEventHandler
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import {
+  any,
+  boolean,
+  literal,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  string,
+  url,
+  type InferInput
+} from 'valibot';
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -32,6 +44,13 @@ import { directLineCardActionSchema } from './private/directLineSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 import styles from './AdaptiveCardRenderer.module.css';
+
+const microsoftTeamsSignInActionSchema = object({
+  msteams: object({
+    type: literal('signin'),
+    value: pipe(string(), url())
+  })
+});
 
 const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useUIState } = hooks;
 
@@ -155,12 +174,29 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
           } else if (data.__isBotFrameworkCardAction) {
             performCardAction(data.cardAction);
           } else {
-            performCardAction({
-              image,
-              title,
-              type: 'postBack',
-              value: data
-            });
+            const parseMSTeamsSignInActionResult = safeParse(microsoftTeamsSignInActionSchema, data);
+
+            if (parseMSTeamsSignInActionResult.success) {
+              window.open(
+                parseMSTeamsSignInActionResult.output.msteams.value,
+                '_blank',
+                [
+                  // TODO: Configurable width and height.
+                  ['height', '640'],
+                  ['popup', ''],
+                  ['width', '480']
+                ]
+                  .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
+                  .join(',')
+              );
+            } else {
+              performCardAction({
+                image,
+                title,
+                type: 'postBack',
+                value: data
+              });
+            }
           }
         }
 
