@@ -33,6 +33,20 @@ type StrictAdaptiveCardsStyleOptions = {
    * style; see issue #4327).
    */
   richCardTitleOmitHeadingRole: boolean | undefined;
+
+  /**
+   * Adaptive Cards: sign-in action popup window height (in pixel)
+   *
+   * @default 640
+   */
+  adaptiveCardSignInActionPopupWindowHeight: number | undefined;
+
+  /**
+   * Adaptive Cards: sign-in action popup window width (in pixel)
+   *
+   * @default 480
+   */
+  adaptiveCardSignInActionPopupWindowWidth: number | undefined;
 };
 
 type AdaptiveCardsStyleOptions = Partial<StrictAdaptiveCardsStyleOptions>;

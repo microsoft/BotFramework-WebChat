@@ -4,7 +4,7 @@
   <body>
     <script>
       window.opener?.postMessage({ hello: 'World!' });
-      window.close();
+      setTimeout(() => window.close(), 1_000);
     </script>
   </body>
 </html>

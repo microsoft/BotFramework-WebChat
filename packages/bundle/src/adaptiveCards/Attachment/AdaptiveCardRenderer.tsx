@@ -44,6 +44,8 @@ import { directLineCardActionSchema } from './private/directLineSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 import styles from './AdaptiveCardRenderer.module.css';
+import useStyleOptions from '../../hooks/useStyleOptions';
+import normalizeStyleOptions from '../normalizeStyleOptions';
 
 const microsoftTeamsSignInActionSchema = object({
   msteams: object({
@@ -74,6 +76,9 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     tapAction
   } = validateProps(adaptiveCardRendererPropsSchema, props);
 
+  const { adaptiveCardSignInActionPopupWindowHeight, adaptiveCardSignInActionPopupWindowWidth } = normalizeStyleOptions(
+    useStyleOptions()[0]
+  );
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [uiState] = useUIState();
@@ -181,10 +186,9 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
                 parseMSTeamsSignInActionResult.output.msteams.value,
                 '_blank',
                 [
-                  // TODO: Configurable width and height.
-                  ['height', '640'],
+                  ['height', adaptiveCardSignInActionPopupWindowHeight],
                   ['popup', ''],
-                  ['width', '480']
+                  ['width', adaptiveCardSignInActionPopupWindowWidth]
                 ]
                   .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
                   .join(',')
@@ -206,7 +210,13 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         console.error(action);
       }
     },
-    [disabledRef, performCardAction, scrollToEnd]
+    [
+      adaptiveCardSignInActionPopupWindowHeight,
+      adaptiveCardSignInActionPopupWindowWidth,
+      disabledRef,
+      performCardAction,
+      scrollToEnd
+    ]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.

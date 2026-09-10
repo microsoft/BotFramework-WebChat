@@ -31,8 +31,12 @@
         window.WebChat = { createStoreWithOptions };
 
         const { directLine, store } = createDirectLineEmulator();
+        const styleOptions = {
+          adaptiveCardSignInActionPopupWindowHeight: 480,
+          adaptiveCardSignInActionPopupWindowWidth: 360
+        };
 
-        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -79,7 +83,6 @@
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot('local');
 
         // GIVEN: Intercept window.open to watch the popup window to be closed.
         const originalOpen = window.open.bind(window);
@@ -118,7 +121,7 @@
         expect(windowOpenArgs).toEqual([
           expect.stringContaining('signInAction.skip.html'),
           '_blank',
-          'height=640,popup,width=480'
+          'height=480,popup,width=360'
         ]);
       });
     </script>
