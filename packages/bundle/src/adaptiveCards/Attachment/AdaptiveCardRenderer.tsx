@@ -182,17 +182,23 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
             const parseMSTeamsSignInActionResult = safeParse(microsoftTeamsSignInActionSchema, data);
 
             if (parseMSTeamsSignInActionResult.success) {
-              window.open(
-                parseMSTeamsSignInActionResult.output.msteams.value,
-                '_blank',
-                [
-                  ['height', adaptiveCardSignInActionPopupWindowHeight],
-                  ['popup', ''],
-                  ['width', adaptiveCardSignInActionPopupWindowWidth]
-                ]
-                  .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
-                  .join(',')
-              );
+               const { value } = parseMSTeamsSignInActionResult.output.msteams;
+
+               if (['http:', 'https:'].includes(new URL(value).protocol)) {
+                 window.open(
+                   value,
+                   '_blank',
+                   [
+                     ['height', adaptiveCardSignInActionPopupWindowHeight],
+                     ['popup', ''],
+                     ['width', adaptiveCardSignInActionPopupWindowWidth]
+                   ]
+                     .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
+                     .join(',')
+                 );
+               } else {
+                 console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', value);
+               }
             } else {
               performCardAction({
                 image,
