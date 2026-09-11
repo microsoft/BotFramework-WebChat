@@ -20,6 +20,7 @@ import { useRefFrom } from 'use-ref-from';
 import {
   any,
   boolean,
+  check,
   literal,
   object,
   optional,
@@ -27,6 +28,7 @@ import {
   readonly,
   safeParse,
   string,
+  transform,
   url,
   type InferInput
 } from 'valibot';
@@ -47,10 +49,25 @@ import styles from './AdaptiveCardRenderer.module.css';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import normalizeStyleOptions from '../normalizeStyleOptions';
 
-const microsoftTeamsSignInActionSchema = object({
+const microsoftTeamsSubActionSchema = object({
+  msteams: object({})
+});
+
+const microsoftTeamsSignInSubActionSchema = object({
   msteams: object({
-    type: literal('signin'),
-    value: pipe(string(), url())
+    type: literal('signin', 'Sub-action type must be "signin"'),
+    value: pipe(
+      string('"value" must be a string'),
+      url('"value" must be an absolute URL'),
+      check(value => {
+        try {
+          return ['http:', 'https:'].includes(new URL(value).protocol);
+        } catch {
+          return false;
+        }
+      }, '"value" must have protocol of either "http:" or "https:"'),
+      transform<string, `${'http:' | 'https:'}//${string}`>(value => value as any)
+    )
   })
 });
 
@@ -179,26 +196,31 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
           } else if (data.__isBotFrameworkCardAction) {
             performCardAction(data.cardAction);
           } else {
-            const parseMSTeamsSignInActionResult = safeParse(microsoftTeamsSignInActionSchema, data);
+            const parseMSTeamsSubActionResult = safeParse(microsoftTeamsSubActionSchema, data);
 
-            if (parseMSTeamsSignInActionResult.success) {
-               const { value } = parseMSTeamsSignInActionResult.output.msteams;
+            if (parseMSTeamsSubActionResult.success) {
+              const parseMSTeamsSignInSubActionResult = safeParse(microsoftTeamsSignInSubActionSchema, data);
 
-               if (['http:', 'https:'].includes(new URL(value).protocol)) {
-                 window.open(
-                   value,
-                   '_blank',
-                   [
-                     ['height', adaptiveCardSignInActionPopupWindowHeight],
-                     ['popup', ''],
-                     ['width', adaptiveCardSignInActionPopupWindowWidth]
-                   ]
-                     .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
-                     .join(',')
-                 );
-               } else {
-                 console.warn('botframework-webchat: Cannot open URL with disallowed schemes.', value);
-               }
+              if (parseMSTeamsSignInSubActionResult.success) {
+                const { value } = parseMSTeamsSignInSubActionResult.output.msteams;
+
+                window.open(
+                  value,
+                  '_blank',
+                  [
+                    ['height', adaptiveCardSignInActionPopupWindowHeight],
+                    ['popup', ''],
+                    ['width', adaptiveCardSignInActionPopupWindowWidth]
+                  ]
+                    .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
+                    .join(',')
+                );
+              } else {
+                console.warn(
+                  'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
+                  ...parseMSTeamsSignInSubActionResult.issues.map(({ message }) => message)
+                );
+              }
             } else {
               performCardAction({
                 image,

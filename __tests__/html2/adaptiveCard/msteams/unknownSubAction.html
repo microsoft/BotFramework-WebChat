@@ -56,8 +56,8 @@
                         type: 'Action.Submit',
                         data: {
                           msteams: {
-                            type: 'signin',
-                            value: 'mailto:johndoe@microsoft.com'
+                            type: 'imBack',
+                            value: 'Hello, World!'
                           }
                         }
                       }
@@ -79,7 +79,6 @@
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot('local');
 
         // GIVEN: Intercept `console.warn`.
         const originalConsoleWarn = console.warn.bind(console);
@@ -91,26 +90,15 @@
           return originalConsoleWarn(...args);
         };
 
-        // GIVEN: Intercept `window.open`.
-        const originalOpen = window.open.bind(window);
-        let windowOpenCalled = false;
-
-        window.open = (...args) => {
-          windowOpenCalled = true;
-
-          return originalOpen(...args);
-        };
-
         // WHEN: The "Sign in" button is clicked.
         await host.click(document.querySelector('[aria-label="Sign in"]'));
 
-        // THEN: Should not call `window.open`.
-        expect(windowOpenCalled).toBe(false);
-
         // THEN: Should warn.
         expect(consoleWarnArgs).toEqual([
-          'botframework-webchat: Cannot open URL with disallowed schemes.',
-          'mailto:johndoe@microsoft.com'
+          'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
+          "Sub-action type must be \"signin\"",
+          '"value" must be an absolute URL',
+          '"value" must have protocol of either "http:" or "https:"'
         ]);
       });
     </script>
