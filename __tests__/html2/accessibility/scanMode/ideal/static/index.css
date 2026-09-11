@@ -1,0 +1,96 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.chat-history {
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px;
+  width: 360px;
+}
+
+.chat-history.chat-history--interact-mode-1 {
+  background-color: rgba(0, 255, 0, 0.1);
+}
+
+.chat-history.chat-history--interact-mode-2 {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+button:focus {
+  background-color: yellow !important;
+}
+
+.chat-history:focus-within:has(.chat-message__body:focus) {
+  outline: solid 2px black;
+}
+
+.chat-message:focus-within:has(.chat-message__body:focus) {
+  outline: dashed 2px black;
+  outline-offset: -2px;
+}
+
+.chat-message__body:focus {
+  outline: none;
+}
+
+.chat-message {
+  background-color: White;
+  border: solid 1px #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  position: relative;
+  transition: opacity ease-out 50ms;
+}
+
+.chat-message__header {
+  color: #999;
+  font-size: smaller;
+  font-weight: lighter;
+  margin-block-start: 0;
+  margin-block-end: 0.2em;
+}
+
+.chat-history:focus-within .chat-message:not(:focus-within) {
+  opacity: 0.4;
+}
+
+.chat-message__body > .focus-trap > p:first-of-type,
+.chat-message__body > p:first-of-type {
+  margin-block-start: 0;
+}
+
+.chat-message__body > .focus-trap > p:last-of-type,
+.chat-message__body > p:last-of-type {
+  margin-block-end: 0;
+}
+
+.chat-message__content,
+.focus-trap {
+  /* These elements are meaningless in CSS world, adding "display: contents" to save some CPUs. */
+  display: contents;
+}
+
+.send-box {
+  margin: 6px;
+}
+
+.focus-sentinel {
+  /* Cannot use display: contents because it would mark the element as non-focusable. */
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.ac-adaptiveCard {
+  /* background-color: #f7f7f7 !important; */
+  border: solid 1px #f0f0f0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-top: 0.5em;
+}
