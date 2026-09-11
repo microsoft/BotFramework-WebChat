@@ -1,0 +1,115 @@
+.App-pill-style {
+  width: 165px;
+  height: 60px;
+  display: flex;
+  border-radius: 26px;
+  outline-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.5);
+  outline-style: solid;
+  outline-width: 0px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes glow {
+  0% {
+    outline-width: 3px;
+  }
+  20% {
+    outline-width: 4px;
+  }
+  40% {
+    outline-width: 5px;
+  }
+  60% {
+    outline-width: 6px;
+  }
+  80% {
+    outline-width: 7px;
+  }
+  100% {
+    outline-width: 8px;
+  }
+}
+
+.App-speaking-style {
+  animation: glow 1s infinite alternate;
+}
+
+.App-icon-button {
+  width: 54px;
+  height: 54px;
+  border-radius: 100%;
+  cursor: pointer;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.App-icon-button:not(:disabled):not([aria-disabled="true"]) {
+  &:not(:active) {
+    &:hover {
+      .icon-button__shade {
+        background-color: transparent;
+      }
+    }
+  }
+
+  &:active {
+    .icon-button__shade {
+      background-color: transparent;
+    }
+  }
+}
+
+@keyframes innerShadow {
+  0% {
+    box-shadow: 0 0 20px 0 white inset;
+  }
+  20% {
+    box-shadow: 0 0 18px 0 white inset;
+  }
+  40% {
+    box-shadow: 0 0 16px 0 white inset;
+  }
+  60% {
+    box-shadow: 0 0 14px 0 white inset;
+  }
+  80% {
+    box-shadow: 0 0 12px 0 white inset;
+  }
+  100% {
+    box-shadow: 0 0 10px 0 white inset;
+  }
+}
+
+.App-icon-button_animation {
+  animation: innerShadow 1s infinite alternate;
+  background-color: #95B8C3;
+  border: 1px solid white;
+}
+
+.App-icon-button svg {
+  fill: #01678C;
+}
+
+.App-keyboard-style {
+  fill: #242424;
+}
+
+.App-chat_container {
+  height: auto;
+  width: auto;
+  position: fixed;
+  bottom: 0;
+  right: 10px;
+  bottom: 10px;
+}
+.App-chatBot.webchat__surface {
+  height: 500px;
+  max-height: calc(100vh - 50px);
+  width: 350px;
+  border: 1px solid black;
+}
