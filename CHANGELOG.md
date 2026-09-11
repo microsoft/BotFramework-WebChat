@@ -22,11 +22,15 @@ Legends:
 ### Added
 
 - Added `styleOptions.richCardTitleOmitHeadingRole` (default `false`) to opt out of `style: 'heading'` on rich card titles, in PR [#5839](https://github.com/microsoft/BotFramework-WebChat/pull/5839), by [@cjennison](https://github.com/cjennison)
+- Added support of Adaptive Cards `Action.Submit` action with `msteams/signin` sub-action to open sign-in link in a popup window, in PR [#5860](https://github.com/microsoft/BotFramework-WebChat/pull/5860), by [@compulim](https://github.com/compulim)
+   - Added `styleOptions.adaptiveCardSignInActionPopupWindowHeight/Width` for sizing the sign-in popup window
+   - Link to [Adaptive Cards spec](https://adaptivecards.microsoft.com/?topic=SigninSubmitActionData)
+   - Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload
+   - Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation
 
 ### Fixed
 
 - Fixed an error when a failed activity is present when Web Chat mounts, resolving [#5812](https://github.com/microsoft/BotFramework-WebChat/issues/5812), in PR [#5848](https://github.com/microsoft/BotFramework-WebChat/pull/5848), by [@OEvgeny](https://github.com/OEvgeny)
-
 
 ## [4.19.1] - 2026-06-09
 

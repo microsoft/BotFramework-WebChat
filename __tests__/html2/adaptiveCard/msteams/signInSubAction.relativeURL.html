@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      testHelpers.hideKnownError();
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.adaptive',
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                type: 'AdaptiveCard',
+                version: '1.2',
+                body: [
+                  {
+                    text: 'Hello, World!',
+                    type: 'TextBlock'
+                  },
+                  {
+                    actions: [
+                      {
+                        title: 'Sign in',
+                        type: 'Action.Submit',
+                        data: {
+                          msteams: {
+                            type: 'signin',
+                            value: '/index.html'
+                          }
+                        }
+                      }
+                    ],
+                    type: 'ActionSet'
+                  }
+                ]
+              }
+            }
+          ],
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          id: '1',
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        });
+
+        // THEN: Should render the Adaptive Card with a "Sign in" button.
+        await pageConditions.numActivitiesShown(1);
+
+        // GIVEN: Intercept `console.warn`.
+        const originalConsoleWarn = console.warn.bind(console);
+        let consoleWarnArgs;
+
+        console.warn = (...args) => {
+          consoleWarnArgs = args;
+
+          return originalConsoleWarn(...args);
+        };
+
+        // GIVEN: Intercept `window.open`.
+        const originalOpen = window.open.bind(window);
+        let windowOpenCalled = false;
+
+        window.open = (...args) => {
+          windowOpenCalled = true;
+
+          return originalOpen(...args);
+        };
+
+        // WHEN: The "Sign in" button is clicked.
+        await host.click(document.querySelector('[aria-label="Sign in"]'));
+
+        // THEN: Should not call `window.open`.
+        expect(windowOpenCalled).toBe(false);
+
+        // THEN: Should warn.
+        expect(consoleWarnArgs).toEqual([
+          'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
+          '"value" must be an absolute URL',
+          '"value" must have protocol of either "http:" or "https:"'
+        ]);
+      });
+    </script>
+  </body>
+</html>

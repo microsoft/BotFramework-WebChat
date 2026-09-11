@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      testHelpers.hideKnownError();
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.adaptive',
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                type: 'AdaptiveCard',
+                version: '1.2',
+                body: [
+                  {
+                    text: 'Hello, World!',
+                    type: 'TextBlock'
+                  },
+                  {
+                    actions: [
+                      {
+                        title: 'Sign in',
+                        type: 'Action.Submit',
+                        data: {
+                          msteams: {
+                            type: 'signin',
+                            value: new URL('signInSubAction.skip.html', location).toString()
+                          }
+                        }
+                      }
+                    ],
+                    type: 'ActionSet'
+                  }
+                ]
+              }
+            }
+          ],
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          id: '1',
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        });
+
+        // THEN: Should render the Adaptive Card with a "Sign in" button.
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
+
+        // GIVEN: Intercept window.open to watch the popup window to be closed.
+        const originalOpen = window.open.bind(window);
+        const popupClosedDeferred = Promise.withResolvers();
+        let windowOpenArgs;
+
+        window.open = (...args) => {
+          const popup = originalOpen(...args);
+
+          windowOpenArgs = args;
+
+          // Note: popup.addEventListener('close') does not dispatch.
+          const interval = setInterval(() => {
+            if (popup.closed) {
+              clearInterval(interval);
+
+              popupClosedDeferred.resolve();
+            }
+          }, 100);
+
+          return popup;
+        };
+
+        // WHEN: The "Sign in" button is clicked.
+        await host.click(document.querySelector('[aria-label="Sign in"]'));
+
+        // THEN: Popup window should close itself.
+        await Promise.race([
+          popupClosedDeferred.promise,
+          // THEN: Fail if popup window does not close after 2 seconds.
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timed out waiting for popup window to be closed')), 2_000)
+          )
+        ]);
+
+        expect(windowOpenArgs).toEqual([
+          expect.stringContaining('signInSubAction.skip.html'),
+          '_blank',
+          'height=640,popup,width=480'
+        ]);
+      });
+    </script>
+  </body>
+</html>
