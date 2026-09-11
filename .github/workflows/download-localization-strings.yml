@@ -1,5 +1,6 @@
 name: Download localization strings
 
+
 on:
   schedule:
     # Loc handback is every Mon/Thu.
@@ -41,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.3.0
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: localization-files
           path: packages/api/src/localization
