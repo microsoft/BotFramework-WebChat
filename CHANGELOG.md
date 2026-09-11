@@ -26,6 +26,7 @@ Legends:
    - Added `styleOptions.adaptiveCardSignInActionPopupWindowHeight/Width` for sizing the sign-in popup window
    - Link to [Adaptive Cards spec](https://adaptivecards.microsoft.com/?topic=SigninSubmitActionData)
    - Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload
+   - Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation
 
 ### Fixed
 
