@@ -52,15 +52,13 @@
                   {
                     actions: [
                       {
-                        type: 'Action.OpenUrlDialog',
-                        dialogHeight: 'medium',
-                        dialogWidth: 'medium',
                         title: 'Sign in (Action.OpenUrlDialog)',
+                        type: 'Action.OpenUrlDialog',
                         url: 'mailto:johndoe@microsoft.com',
 
                         fallback: {
-                          type: 'Action.OpenUrl',
                           title: 'Sign in (Action.OpenUrl)',
+                          type: 'Action.OpenUrl',
                           url: 'mailto:johndoe@microsoft.com'
                         }
                       },
