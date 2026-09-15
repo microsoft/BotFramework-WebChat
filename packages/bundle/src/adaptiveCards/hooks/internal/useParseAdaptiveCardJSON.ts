@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 
 import useAdaptiveCardsPackage from '../useAdaptiveCardsPackage';
 import useStyleOptions from '../../../hooks/useStyleOptions';
+import { OpenUrlAction } from 'adaptivecards';
 
 const { useDirection } = hooks;
 
@@ -51,6 +52,20 @@ export default function useParseAdaptiveCardJSON() {
       const card = new AdaptiveCard();
       const errors = [];
       const serializationContext = new SerializationContext(maxVersion);
+
+      serializationContext.actionRegistry.register(
+        'Action.OpenUrlDialog',
+        // TODO: Fix this
+        // @ts-expect-error
+        class OpenUrlDialogAction extends OpenUrlAction {
+          static readonly JsonTypeName: string = 'Action.OpenUrlDialog';
+
+          // eslint-disable-next-line class-methods-use-this
+          getJsonTypeName(): string {
+            return OpenUrlDialogAction.JsonTypeName;
+          }
+        }
+      );
 
       card.parse(content, serializationContext);
 

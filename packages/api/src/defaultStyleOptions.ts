@@ -307,7 +307,10 @@ const DEFAULT_OPTIONS: StrictStyleOptions = {
   sendBoxAttachmentBarMaxThumbnail: 3,
 
   // Speech-to-speech options
-  showMicrophoneButton: 'auto'
+  showMicrophoneButton: 'auto',
+
+  callURLActionPopupWindowHeight: 640,
+  callURLActionPopupWindowWidth: 480
 };
 
 export default DEFAULT_OPTIONS;

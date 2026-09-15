@@ -1,3 +1,5 @@
+import type { WebChatCallURLCardAction } from '../internal/WebChatCallURLCardAction.ts';
+
 type CardActionWithImageAndTitle =
   | { image: string }
   | { title: string }
@@ -123,6 +125,7 @@ type DirectLineCardAction =
   | PlayVideoCardAction
   | PostBackCardAction
   | ShowImageCardAction
-  | SignInCardAction;
+  | SignInCardAction
+  | WebChatCallURLCardAction;
 
 export type { DirectLineCardAction };

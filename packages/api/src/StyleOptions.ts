@@ -921,6 +921,20 @@ type StrictStyleOptions = {
    * @default 'auto'
    */
   showMicrophoneButton: 'auto' | 'hide' | undefined;
+
+  /**
+   * Adaptive Cards: sign-in action popup window height (in pixel)
+   *
+   * @default 640
+   */
+  callURLActionPopupWindowHeight: number | undefined;
+
+  /**
+   * Adaptive Cards: sign-in action popup window width (in pixel)
+   *
+   * @default 480
+   */
+  callURLActionPopupWindowWidth: number | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

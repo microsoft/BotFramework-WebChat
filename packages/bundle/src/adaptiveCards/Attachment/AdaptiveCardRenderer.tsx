@@ -17,21 +17,7 @@ import React, {
   type MouseEventHandler
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import {
-  any,
-  boolean,
-  check,
-  literal,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  transform,
-  url,
-  type InferInput
-} from 'valibot';
+import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -46,30 +32,6 @@ import { directLineCardActionSchema } from './private/directLineSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 import styles from './AdaptiveCardRenderer.module.css';
-import useStyleOptions from '../../hooks/useStyleOptions';
-import normalizeStyleOptions from '../normalizeStyleOptions';
-
-const microsoftTeamsSubActionSchema = object({
-  msteams: object({})
-});
-
-const microsoftTeamsSignInSubActionSchema = object({
-  msteams: object({
-    type: literal('signin', 'Sub-action type must be "signin"'),
-    value: pipe(
-      string('"value" must be a string'),
-      url('"value" must be an absolute URL'),
-      check(value => {
-        try {
-          return ['http:', 'https:'].includes(new URL(value).protocol);
-        } catch {
-          return false;
-        }
-      }, '"value" must have protocol of either "http:" or "https:"'),
-      transform<string, `${'http:' | 'https:'}//${string}`>(value => value as any)
-    )
-  })
-});
 
 const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useUIState } = hooks;
 
@@ -93,9 +55,6 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     tapAction
   } = validateProps(adaptiveCardRendererPropsSchema, props);
 
-  const { adaptiveCardSignInActionPopupWindowHeight, adaptiveCardSignInActionPopupWindowWidth } = normalizeStyleOptions(
-    useStyleOptions()[0]
-  );
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [uiState] = useUIState();
@@ -180,6 +139,15 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
           type: 'openUrl',
           value
         });
+      } else if (actionTypeName === 'Action.OpenUrlDialog') {
+        const { url: value } = action as OpenUrlAction;
+
+        performCardAction({
+          image,
+          title,
+          type: 'webchat:callURL',
+          value
+        });
       } else if (actionTypeName === 'Action.Submit') {
         const { data } = action as SubmitAction as {
           data: string | BotFrameworkCardAction;
@@ -196,39 +164,12 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
           } else if (data.__isBotFrameworkCardAction) {
             performCardAction(data.cardAction);
           } else {
-            const parseMSTeamsSubActionResult = safeParse(microsoftTeamsSubActionSchema, data);
-
-            if (parseMSTeamsSubActionResult.success) {
-              const parseMSTeamsSignInSubActionResult = safeParse(microsoftTeamsSignInSubActionSchema, data);
-
-              if (parseMSTeamsSignInSubActionResult.success) {
-                const { value } = parseMSTeamsSignInSubActionResult.output.msteams;
-
-                window.open(
-                  value,
-                  '_blank',
-                  [
-                    ['height', adaptiveCardSignInActionPopupWindowHeight],
-                    ['popup', ''],
-                    ['width', adaptiveCardSignInActionPopupWindowWidth]
-                  ]
-                    .map(([key, value]) => (value ? [key, encodeURIComponent(value)].join('=') : key))
-                    .join(',')
-                );
-              } else {
-                console.warn(
-                  'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
-                  ...parseMSTeamsSignInSubActionResult.issues.map(({ message }) => message)
-                );
-              }
-            } else {
-              performCardAction({
-                image,
-                title,
-                type: 'postBack',
-                value: data
-              });
-            }
+            performCardAction({
+              image,
+              title,
+              type: 'postBack',
+              value: data
+            });
           }
         }
 
@@ -238,13 +179,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         console.error(action);
       }
     },
-    [
-      adaptiveCardSignInActionPopupWindowHeight,
-      adaptiveCardSignInActionPopupWindowWidth,
-      disabledRef,
-      performCardAction,
-      scrollToEnd
-    ]
+    [disabledRef, performCardAction, scrollToEnd]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
