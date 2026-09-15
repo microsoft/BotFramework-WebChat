@@ -39,32 +39,16 @@
         await directLine.emulateIncomingActivity({
           attachments: [
             {
-              contentType: 'application/vnd.microsoft.card.adaptive',
+              contentType: 'application/vnd.microsoft.card.hero',
               content: {
-                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-                type: 'AdaptiveCard',
-                version: '1.2',
-                body: [
+                buttons: [
                   {
-                    text: 'Hello, World!',
-                    type: 'TextBlock'
-                  },
-                  {
-                    actions: [
-                      {
-                        title: 'Sign in',
-                        type: 'Action.Submit',
-                        data: {
-                          msteams: {
-                            type: 'imBack',
-                            value: 'Hello, World!'
-                          }
-                        }
-                      }
-                    ],
-                    type: 'ActionSet'
+                    title: 'Call URL',
+                    type: 'webchat:callURL',
+                    value: 'https://bing.com/'
                   }
-                ]
+                ],
+                title: 'Card with a "webchat:callURL" button'
               }
             }
           ],
@@ -77,29 +61,27 @@
           type: 'message'
         });
 
-        // THEN: Should render the Adaptive Card with a "Sign in" button.
+        // THEN: Should render the Hero Card with a "Call URL" button.
         await pageConditions.numActivitiesShown(1);
 
-        // GIVEN: Intercept `console.warn`.
-        const originalConsoleWarn = console.warn.bind(console);
-        let consoleWarnArgs;
+        // GIVEN: Intercept `window.open`.
+        const originalOpen = window.open.bind(window);
+        let windowOpenArgs;
 
-        console.warn = (...args) => {
-          consoleWarnArgs = args;
+        window.open = (...args) => {
+          windowOpenArgs = args;
 
-          return originalConsoleWarn(...args);
+          return originalOpen(...args);
         };
 
-        // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in"]'));
+        // WHEN: The "Call URL" button is clicked.
+        await host.click(document.querySelector('[aria-label="Call URL"]'));
 
-        // THEN: Should warn.
-        expect(consoleWarnArgs).toEqual([
-          'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
-          "Sub-action type must be \"signin\"",
-          '"value" must be an absolute URL',
-          '"value" must have protocol of either "http:" or "https:"'
-        ]);
+        // THEN: Should call `window.open` with popup window features instead of "noopener noreferrer",
+        //       which means the "webchat:callURL" type is preserved and not dispatched as "openUrl".
+        expect(windowOpenArgs[0]).toBe('https://bing.com/');
+        expect(windowOpenArgs[1]).toBe('_blank');
+        expect(windowOpenArgs[2]).toContain('popup');
       });
     </script>
   </body>

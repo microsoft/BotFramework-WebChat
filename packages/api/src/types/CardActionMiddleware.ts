@@ -1,11 +1,17 @@
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import FunctionMiddleware from './FunctionMiddleware';
+import type { StrictStyleOptions } from '../StyleOptions.js';
 
 type PerformCardAction = (cardAction: DirectLineCardAction, event?: { target: EventTarget }) => void;
 
 type CardActionMiddleware = FunctionMiddleware<
-  [{ dispatch: (action: any) => void }],
+  [
+    {
+      dispatch: (action: any) => void;
+      styleOptions: StrictStyleOptions;
+    }
+  ],
   [
     {
       cardAction: DirectLineCardAction;

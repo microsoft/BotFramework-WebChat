@@ -921,6 +921,20 @@ type StrictStyleOptions = {
    * @default 'auto'
    */
   showMicrophoneButton: 'auto' | 'hide' | undefined;
+
+  /**
+   * `webchat:callURL` action popup window height (in pixels)
+   *
+   * @default 640
+   */
+  callURLActionPopupWindowHeight: number | undefined;
+
+  /**
+   * `webchat:callURL` action popup window width (in pixels)
+   *
+   * @default 480
+   */
+  callURLActionPopupWindowWidth: number | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

@@ -39,32 +39,16 @@
         await directLine.emulateIncomingActivity({
           attachments: [
             {
-              contentType: 'application/vnd.microsoft.card.adaptive',
+              contentType: 'application/vnd.microsoft.card.hero',
               content: {
-                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-                type: 'AdaptiveCard',
-                version: '1.2',
-                body: [
+                buttons: [
                   {
-                    text: 'Hello, World!',
-                    type: 'TextBlock'
-                  },
-                  {
-                    actions: [
-                      {
-                        title: 'Sign in',
-                        type: 'Action.Submit',
-                        data: {
-                          msteams: {
-                            type: 'signin',
-                            value: new URL('signInSubAction.skip.html', location).toString()
-                          }
-                        }
-                      }
-                    ],
-                    type: 'ActionSet'
+                    title: 'Sign in (webchat:callURL)',
+                    type: 'webchat:callURL',
+                    value: new URL('dialog.skip.html', location).toString()
                   }
-                ]
+                ],
+                title: 'Hero card with a "webchat:callURL" button'
               }
             }
           ],
@@ -77,9 +61,8 @@
           type: 'message'
         });
 
-        // THEN: Should render the Adaptive Card with a "Sign in" button.
+        // THEN: Should render the hero card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot('local');
 
         // GIVEN: Intercept window.open to watch the popup window to be closed.
         const originalOpen = window.open.bind(window);
@@ -93,7 +76,7 @@
 
           // Note: popup.addEventListener('close') does not dispatch.
           const interval = setInterval(() => {
-            if (popup.closed) {
+            if (popup?.closed) {
               clearInterval(interval);
 
               popupClosedDeferred.resolve();
@@ -104,7 +87,7 @@
         };
 
         // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in"]'));
+        await host.click(document.querySelector('[aria-label="Sign in (webchat:callURL)"]'));
 
         // THEN: Popup window should close itself.
         await Promise.race([
@@ -115,8 +98,9 @@
           )
         ]);
 
+        // THEN: Should call "window.open" as a popup, instead of a plain "openUrl" action.
         expect(windowOpenArgs).toEqual([
-          expect.stringContaining('signInSubAction.skip.html'),
+          expect.stringContaining('dialog.skip.html'),
           '_blank',
           'height=640,popup,width=480'
         ]);

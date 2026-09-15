@@ -52,15 +52,16 @@
                   {
                     actions: [
                       {
-                        title: 'Sign in',
-                        type: 'Action.Submit',
-                        data: {
-                          msteams: {
-                            type: 'signin',
-                            value: '/index.html'
-                          }
+                        title: 'Sign in (Action.OpenUrlDialog)',
+                        type: 'Action.OpenUrlDialog',
+                        url: new URL('dialog.skip.html', location).toString(),
+
+                        fallback: {
+                          title: 'Sign in (Action.OpenUrl)',
+                          type: 'Action.OpenUrl',
+                          url: new URL('dialog.skip.html', location).toString()
                         }
-                      }
+                      },
                     ],
                     type: 'ActionSet'
                   }
@@ -79,38 +80,46 @@
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
 
-        // GIVEN: Intercept `console.warn`.
-        const originalConsoleWarn = console.warn.bind(console);
-        let consoleWarnArgs;
-
-        console.warn = (...args) => {
-          consoleWarnArgs = args;
-
-          return originalConsoleWarn(...args);
-        };
-
-        // GIVEN: Intercept `window.open`.
+        // GIVEN: Intercept window.open to watch the popup window to be closed.
         const originalOpen = window.open.bind(window);
-        let windowOpenCalled = false;
+        const popupClosedDeferred = Promise.withResolvers();
+        let windowOpenArgs;
 
         window.open = (...args) => {
-          windowOpenCalled = true;
+          const popup = originalOpen(...args);
 
-          return originalOpen(...args);
+          windowOpenArgs = args;
+
+          // Note: popup.addEventListener('close') does not dispatch.
+          const interval = setInterval(() => {
+            if (popup?.closed) {
+              clearInterval(interval);
+
+              popupClosedDeferred.resolve();
+            }
+          }, 100);
+
+          return popup;
         };
 
         // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in"]'));
+        await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
 
-        // THEN: Should not call `window.open`.
-        expect(windowOpenCalled).toBe(false);
+        // THEN: Popup window should close itself.
+        await Promise.race([
+          popupClosedDeferred.promise,
+          // THEN: Fail if popup window does not close after 2 seconds.
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timed out waiting for popup window to be closed')), 2_000)
+          )
+        ]);
 
-        // THEN: Should warn.
-        expect(consoleWarnArgs).toEqual([
-          'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
-          '"value" must be an absolute URL',
-          '"value" must have protocol of either "http:" or "https:"'
+        expect(windowOpenArgs).toEqual([
+          expect.stringContaining('dialog.skip.html'),
+          '_blank',
+          'height=640,popup,width=480'
         ]);
       });
     </script>

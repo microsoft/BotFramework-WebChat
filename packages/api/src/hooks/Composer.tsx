@@ -45,7 +45,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNod
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
-import { type StyleOptions } from '../StyleOptions';
+import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
@@ -133,7 +133,8 @@ function createCardActionContext({
   directLine,
   dispatch,
   markAllAsAcknowledged,
-  ponyfill
+  ponyfill,
+  styleOptions
 }: {
   cardActionMiddleware: readonly CardActionMiddleware[];
   continuous: boolean;
@@ -141,12 +142,13 @@ function createCardActionContext({
   dispatch: (...args: unknown[]) => unknown;
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
+  styleOptions: StrictStyleOptions;
 }) {
   const runMiddleware = applyMiddleware(
     'card action',
     ...cardActionMiddleware,
     createDefaultCardActionMiddleware()
-  )({ dispatch });
+  )({ dispatch, styleOptions });
 
   return {
     onCardAction: (cardAction, { target }: { target?: any } = {}) => {
@@ -348,16 +350,10 @@ const ComposerCore = ({
         directLine,
         dispatch,
         markAllAsAcknowledged,
-        ponyfill
+        ponyfill,
+        styleOptions
       }),
-    [
-      cardActionMiddleware,
-      directLine,
-      dispatch,
-      markAllAsAcknowledged,
-      ponyfill,
-      styleOptions.speechRecognitionContinuous
-    ]
+    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill, styleOptions]
   );
 
   const patchedSelectVoice = useMemo(

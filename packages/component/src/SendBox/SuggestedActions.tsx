@@ -227,7 +227,8 @@ const SuggestedActions = ({ className }: SuggestedActionsProps) => {
         | 'playVideo'
         | 'postBack'
         | 'showImage'
-        | 'signin';
+        | 'signin'
+        | 'webchat:callURL';
       value?: { [key: string]: any } | string;
     };
 
