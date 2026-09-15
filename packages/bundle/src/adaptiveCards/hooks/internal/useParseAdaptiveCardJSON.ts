@@ -1,9 +1,9 @@
+import { OpenUrlAction } from 'adaptivecards';
 import { hooks } from 'botframework-webchat-component';
 import { useCallback, useMemo } from 'react';
 
 import useAdaptiveCardsPackage from '../useAdaptiveCardsPackage';
 import useStyleOptions from '../../../hooks/useStyleOptions';
-import { OpenUrlAction } from 'adaptivecards';
 
 const { useDirection } = hooks;
 
