@@ -1,4 +1,3 @@
-import { OpenUrlAction } from 'adaptivecards';
 import { hooks } from 'botframework-webchat-component';
 import { useCallback, useMemo } from 'react';
 
@@ -29,7 +28,7 @@ export default function useParseAdaptiveCardJSON() {
   const [direction] = useDirection();
   const [{ adaptiveCardsParserMaxVersion }] = useStyleOptions();
 
-  const { AdaptiveCard, SerializationContext, Version } = adaptiveCardsPackage;
+  const { AdaptiveCard, OpenUrlAction, SerializationContext, Version } = adaptiveCardsPackage;
 
   const maxVersion = useMemo(() => {
     const maxVersion = Version.parse(adaptiveCardsParserMaxVersion, new SerializationContext());
@@ -85,6 +84,6 @@ export default function useParseAdaptiveCardJSON() {
 
       return card;
     },
-    [AdaptiveCard, adaptiveCardsPackage, direction, maxVersion, SerializationContext]
+    [AdaptiveCard, adaptiveCardsPackage, direction, maxVersion, OpenUrlAction, SerializationContext]
   );
 }
