@@ -22,11 +22,16 @@ Legends:
 ### Added
 
 - Added `styleOptions.richCardTitleOmitHeadingRole` (default `false`) to opt out of `style: 'heading'` on rich card titles, in PR [#5839](https://github.com/microsoft/BotFramework-WebChat/pull/5839), by [@cjennison](https://github.com/cjennison)
-- Added support of Adaptive Cards `Action.Submit` action with `msteams/signin` sub-action to open sign-in link in a popup window, in PR [#5860](https://github.com/microsoft/BotFramework-WebChat/pull/5860), by [@compulim](https://github.com/compulim)
-   - Added `styleOptions.adaptiveCardSignInActionPopupWindowHeight/Width` for sizing the sign-in popup window
-   - Link to [Adaptive Cards spec](https://adaptivecards.microsoft.com/?topic=SigninSubmitActionData)
-   - Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload
-   - Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation
+- ~Added support of Adaptive Cards `Action.Submit` action with `msteams/signin` sub-action to open sign-in link in a popup window, in PR [#5860](https://github.com/microsoft/BotFramework-WebChat/pull/5860), by [@compulim](https://github.com/compulim)~
+   - ~Added `styleOptions.adaptiveCardSignInActionPopupWindowHeight/Width` for sizing the sign-in popup window~
+   - ~Link to [Adaptive Cards spec](https://adaptivecards.microsoft.com/?topic=SigninSubmitActionData)~
+   - ~Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload~
+   - ~Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation~
+   - Obsoleted in favor of PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862)
+- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog), in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862), by [@compulim](https://github.com/compulim)
+   - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
+   - Refer to [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html) for the reference payload
+   - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
 
 ### Fixed
 
