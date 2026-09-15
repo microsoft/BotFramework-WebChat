@@ -55,7 +55,7 @@ export default function useParseAdaptiveCardJSON() {
 
       serializationContext.actionRegistry.register(
         'Action.OpenUrlDialog',
-        // TODO: Fix this
+        // Adaptive Cards own `OpenUrlAction.JsonTypeName` was not made extensible.
         // @ts-expect-error
         class OpenUrlDialogAction extends OpenUrlAction {
           static readonly JsonTypeName: string = 'Action.OpenUrlDialog';
