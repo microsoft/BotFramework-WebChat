@@ -1,3 +1,5 @@
+// TODO: [P1] Should move to [launder](https://www.npmjs.com/package/launder) package.
+
 // This code is adopted from sanitize-html/naughtyScheme.
 // sanitize-html is a dependency of Web Chat but the naughtScheme function is neither exposed nor reusable.
 // https://github.com/apostrophecms/sanitize-html/
