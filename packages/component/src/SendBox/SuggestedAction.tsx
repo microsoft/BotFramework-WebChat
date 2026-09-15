@@ -47,7 +47,8 @@ const suggestedActionPropsSchema = pipe(
         literal('playVideo'),
         literal('postBack'),
         literal('showImage'),
-        literal('signin')
+        literal('signin'),
+        literal('webchat:callURL')
       ])
     ),
     value: any()

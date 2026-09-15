@@ -29,7 +29,8 @@ type SuggestedActionProps = Readonly<{
     | 'playVideo'
     | 'postBack'
     | 'showImage'
-    | 'signin';
+    | 'signin'
+    | 'webchat:callURL';
   value?: any;
 }>;
 

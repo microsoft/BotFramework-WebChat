@@ -34,6 +34,7 @@ function addCardAction(cardAction: DirectLineCardAction, includesOAuthButtons?: 
     type === 'imBack' ||
     type === 'messageBack' ||
     type === 'postBack' ||
+    type === 'webchat:callURL' ||
     (type === 'signin' && includesOAuthButtons)
   ) {
     action = new SubmitAction();
