@@ -923,14 +923,14 @@ type StrictStyleOptions = {
   showMicrophoneButton: 'auto' | 'hide' | undefined;
 
   /**
-   * Adaptive Cards: sign-in action popup window height (in pixel)
+   * `webchat:callURL` action popup window height (in pixels)
    *
    * @default 640
    */
   callURLActionPopupWindowHeight: number | undefined;
 
   /**
-   * Adaptive Cards: sign-in action popup window width (in pixel)
+   * `webchat:callURL` action popup window width (in pixels)
    *
    * @default 480
    */
