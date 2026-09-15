@@ -32,6 +32,7 @@ Legends:
    - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
    - Refer to [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html) for the reference payload
    - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
+   - `webchat:callURL` card action is now retained and dispatched by Hero/Thumbnail cards and suggested actions, refer to [this test](./__tests__/html2/adaptiveCard/openUrlDialog/heroCard.html) for the reference payload
 
 ### Fixed
 

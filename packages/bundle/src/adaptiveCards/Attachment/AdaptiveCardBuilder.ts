@@ -26,6 +26,17 @@ export interface BotFrameworkCardAction {
   cardAction: DirectLineCardAction;
 }
 
+// Adaptive Cards own `OpenUrlAction.JsonTypeName` was not made extensible.
+// @ts-expect-error
+class OpenUrlDialogAction extends OpenUrlAction {
+  static readonly JsonTypeName: string = 'Action.OpenUrlDialog';
+
+  // eslint-disable-next-line class-methods-use-this
+  getJsonTypeName(): string {
+    return OpenUrlDialogAction.JsonTypeName;
+  }
+}
+
 function addCardAction(cardAction: DirectLineCardAction, includesOAuthButtons?: boolean) {
   const { type } = cardAction;
   let action;
@@ -45,6 +56,11 @@ function addCardAction(cardAction: DirectLineCardAction, includesOAuthButtons?: 
     };
 
     action.title = (cardAction as { title: string }).title;
+  } else if (type === 'webchat:callURL') {
+    action = new OpenUrlDialogAction();
+
+    action.title = (cardAction as { title: string }).title;
+    action.url = cardAction.value;
   } else {
     action = new OpenUrlAction();
 

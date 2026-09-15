@@ -99,8 +99,8 @@ function SuggestedAction(props: SuggestedActionProps) {
         //       Instead, we should pass a "cardAction" props.
         performCardAction({ displayText, text, type, value } as DirectLineCardAction, { target });
 
-        // Since "openUrl" action do not submit, the suggested action buttons do not hide after click.
-        type === 'openUrl' && setSuggestedActions([]);
+        // Since "openUrl" and "webchat:callURL" actions do not submit, the suggested action buttons do not hide after click.
+        (type === 'openUrl' || type === 'webchat:callURL') && setSuggestedActions([]);
 
         scrollToEnd();
       })();
