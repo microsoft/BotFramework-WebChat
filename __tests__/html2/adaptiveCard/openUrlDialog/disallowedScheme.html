@@ -52,15 +52,18 @@
                   {
                     actions: [
                       {
-                        title: 'Sign in',
-                        type: 'Action.Submit',
-                        data: {
-                          msteams: {
-                            type: 'imBack',
-                            value: 'Hello, World!'
-                          }
+                        type: 'Action.OpenUrlDialog',
+                        dialogHeight: 'medium',
+                        dialogWidth: 'medium',
+                        title: 'Sign in (Action.OpenUrlDialog)',
+                        url: 'mailto:johndoe@microsoft.com',
+
+                        fallback: {
+                          type: 'Action.OpenUrl',
+                          title: 'Sign in (Action.OpenUrl)',
+                          url: 'mailto:johndoe@microsoft.com'
                         }
-                      }
+                      },
                     ],
                     type: 'ActionSet'
                   }
@@ -90,14 +93,26 @@
           return originalConsoleWarn(...args);
         };
 
+        // GIVEN: Intercept `window.open`.
+        const originalOpen = window.open.bind(window);
+        let windowOpenCalled = false;
+
+        window.open = (...args) => {
+          windowOpenCalled = true;
+
+          return originalOpen(...args);
+        };
+
         // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in"]'));
+        await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
+
+        // THEN: Should not call `window.open`.
+        expect(windowOpenCalled).toBe(false);
 
         // THEN: Should warn.
         expect(consoleWarnArgs).toEqual([
-          'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
-          "Sub-action type must be \"signin\"",
-          '"value" must be an absolute URL',
+          'botframework-webchat: Cannot call invalid URL.',
+          'mailto:johndoe@microsoft.com',
           '"value" must have protocol of either "http:" or "https:"'
         ]);
       });

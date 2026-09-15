@@ -52,13 +52,16 @@
                   {
                     actions: [
                       {
-                        title: 'Sign in',
-                        type: 'Action.Submit',
-                        data: {
-                          msteams: {
-                            type: 'signin',
-                            value: '/index.html'
-                          }
+                        type: 'Action.OpenUrlDialog',
+                        dialogHeight: 'medium',
+                        dialogWidth: 'medium',
+                        title: 'Sign in (Action.OpenUrlDialog)',
+                        url: '/index.html',
+
+                        fallback: {
+                          type: 'Action.OpenUrl',
+                          title: 'Sign in (Action.OpenUrl)',
+                          url: '/index.html'
                         }
                       }
                     ],
@@ -101,14 +104,15 @@
         };
 
         // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in"]'));
+        await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
 
         // THEN: Should not call `window.open`.
         expect(windowOpenCalled).toBe(false);
 
         // THEN: Should warn.
         expect(consoleWarnArgs).toEqual([
-          'botframework-webchat: "Action.Submit/msteams" sub-action validation error.',
+          'botframework-webchat: Cannot call invalid URL.',
+          '/index.html',
           '"value" must be an absolute URL',
           '"value" must have protocol of either "http:" or "https:"'
         ]);

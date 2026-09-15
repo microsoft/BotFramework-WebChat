@@ -59,13 +59,13 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
                   `height=${styleOptions.callURLActionPopupWindowHeight}`,
                   'popup',
                   `width=${styleOptions.callURLActionPopupWindowWidth}`
-                ].join(' ')
+                ].join(',')
               );
             } else {
               console.warn(
                 'botframework-webchat: Cannot call invalid URL.',
                 value,
-                callURLValueParseResult.issues.map(({ message }) => message)
+                ...callURLValueParseResult.issues.map(({ message }) => message)
               );
             }
 

@@ -31,8 +31,12 @@
         window.WebChat = { createStoreWithOptions };
 
         const { directLine, store } = createDirectLineEmulator();
+        const styleOptions = {
+          callURLActionPopupWindowHeight: 480,
+          callURLActionPopupWindowWidth: 360
+        };
 
-        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -52,13 +56,16 @@
                   {
                     actions: [
                       {
-                        title: 'Sign in',
-                        type: 'Action.Submit',
-                        data: {
-                          msteams: {
-                            type: 'signin',
-                            value: new URL('signInSubAction.skip.html', location).toString()
-                          }
+                        type: 'Action.OpenUrlDialog',
+                        dialogHeight: 'medium',
+                        dialogWidth: 'medium',
+                        title: 'Sign in (Action.OpenUrlDialog)',
+                        url: new URL('dialog.skip.html', location).toString(),
+
+                        fallback: {
+                          type: 'Action.OpenUrl',
+                          title: 'Sign in (Action.OpenUrl)',
+                          url: new URL('dialog.skip.html', location).toString()
                         }
                       }
                     ],
@@ -79,7 +86,6 @@
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
-        await host.snapshot('local');
 
         // GIVEN: Intercept window.open to watch the popup window to be closed.
         const originalOpen = window.open.bind(window);
@@ -93,7 +99,7 @@
 
           // Note: popup.addEventListener('close') does not dispatch.
           const interval = setInterval(() => {
-            if (popup.closed) {
+            if (popup?.closed) {
               clearInterval(interval);
 
               popupClosedDeferred.resolve();
@@ -104,7 +110,7 @@
         };
 
         // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in"]'));
+        await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
 
         // THEN: Popup window should close itself.
         await Promise.race([
@@ -116,9 +122,9 @@
         ]);
 
         expect(windowOpenArgs).toEqual([
-          expect.stringContaining('signInSubAction.skip.html'),
+          expect.stringContaining('dialog.skip.html'),
           '_blank',
-          'height=640,popup,width=480'
+          'height=480,popup,width=360'
         ]);
       });
     </script>
