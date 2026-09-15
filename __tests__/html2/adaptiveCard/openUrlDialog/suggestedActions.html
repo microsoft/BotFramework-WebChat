@@ -37,21 +37,19 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
-          attachments: [
-            {
-              contentType: 'application/vnd.microsoft.card.hero',
-              content: {
-                buttons: [
-                  {
-                    title: 'Sign in (webchat:callURL)',
-                    type: 'webchat:callURL',
-                    value: new URL('dialog.skip.html', location).toString()
-                  }
-                ],
-                title: 'Hero card with a "webchat:callURL" button'
+          type: 'message',
+          textFormat: 'plain',
+          text: 'Please click the "Sign in" button below',
+          suggestedActions: {
+            actions: [
+              {
+                title: 'Sign in (webchat:callURL)',
+                type: 'webchat:callURL',
+                value: new URL('dialog.skip.html', location).toString()
               }
-            }
-          ],
+            ],
+            to: []
+          },
           from: {
             id: 'bot',
             role: 'bot'
@@ -87,7 +85,7 @@
         };
 
         // WHEN: The "Sign in" button is clicked.
-        await host.click(document.querySelector('[aria-label="Sign in (webchat:callURL)"]'));
+        await host.click(document.querySelector('[data-testid="suggested action button"]'));
 
         // THEN: Popup window should close itself.
         await Promise.race([
@@ -104,6 +102,9 @@
           '_blank',
           'height=640,popup,width=480'
         ]);
+
+        // THEN: The suggested action button should not be hidden.
+        expect(document.querySelector('[data-testid="suggested action button"]')).toBeNull();
       });
     </script>
   </body>
