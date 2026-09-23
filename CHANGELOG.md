@@ -28,11 +28,22 @@ Legends:
    - ~~Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload~~
    - ~~Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation~~
    - Obsoleted in favor of PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862)
-- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog), in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862), by [@compulim](https://github.com/compulim)
-   - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
-   - Reference payload for Direct Line `webchat:callURL` card action can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/heroCard.html)
-   - Reference payload for Adaptive Card `Action.OpenUrlDialog` can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html)
-   - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
+- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog)
+   - Open in new window, in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862), by [@compulim](https://github.com/compulim)
+      - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
+      - Reference payload for Direct Line `webchat:callURL` card action can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/heroCard.html)
+      - Reference payload for Adaptive Card `Action.OpenUrlDialog` can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html)
+      - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
+      - Adaptive Card: `dialogHeight`, `dialogTitle`, and `dialogWidth` are ignored
+   - Post back return value, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
+      - Added `styleOptions.callURLActionAllowExternalOrigin` for allowlisting external origins to show as popup window and postback a value, default is `undefined` (no external origins are allowed)
+         - Same origin is always allowed to show in popup and postback value
+         - External origins in this allowlist must be fully trusted and maintained properly
+         - Pages from these origins could potentially access data and manipulate the page where Web Chat is hosted, use with great care
+      - Popup requirements
+         - If the popup page is hosted on an external domain, the domain must be added to the allowlist at `styleOptions.callURLActionAllowExternalOrigin`
+         - To send a postback value, call `window.opener.postMessage({}, '...')`, it must be called within 2 minutes after the popup is shown
+         - Only the first postback value is sent, subsequent postback values are ignored
 
 ### Fixed
 
