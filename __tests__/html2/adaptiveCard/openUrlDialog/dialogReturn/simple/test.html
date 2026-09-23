@@ -140,6 +140,9 @@
         // THEN: Should have all "message" event handlers removed.
         expect(messageEventHandlers).toHaveProperty('size', 0);
 
+        // THEN: Should open popup window as trusted.
+        expect(windowOpenMock).toHaveBeenNthCalledWith(1, expect.anything(), '_blank', 'height=640,popup,width=480');
+
         windowOpenMock.mock.results[0].value.close();
       });
     </script>

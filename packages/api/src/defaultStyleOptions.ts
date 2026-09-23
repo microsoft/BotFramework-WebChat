@@ -309,9 +309,9 @@ const DEFAULT_OPTIONS: StrictStyleOptions = {
   // Speech-to-speech options
   showMicrophoneButton: 'auto',
 
-  callURLActionAllowExternalOrigin: undefined,
   callURLActionPopupWindowHeight: 640,
-  callURLActionPopupWindowWidth: 480
+  callURLActionPopupWindowWidth: 480,
+  callURLActionTrustedOrigin: undefined
 };
 
 export default DEFAULT_OPTIONS;

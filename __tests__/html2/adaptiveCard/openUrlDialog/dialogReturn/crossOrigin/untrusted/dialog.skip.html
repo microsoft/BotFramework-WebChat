@@ -3,15 +3,9 @@
   <head></head>
   <body>
     <pre>
-postMessage({ hello: 'World!' })
-
-await sleep(1_000);
-
 window.close();</pre
     >
     <script>
-      window.opener?.postMessage({ hello: 'World!' }, '*');
-
       setTimeout(() => window.close(), 1_000);
     </script>
   </body>

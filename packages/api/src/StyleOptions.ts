@@ -937,14 +937,16 @@ type StrictStyleOptions = {
   callURLActionPopupWindowWidth: number | undefined;
 
   /**
-   * `webchat:callURL` action: external origins allowed to host in popup window, delimited by comma. Same origin is always trusted.
+   * `webchat:callURL` action: origins to open in a trusted popup and have access to `window.opener`, delimited by comma. Same origin is always trusted.
    *
-   * Security concern: external origins in this allowlist must be fully trusted and maintained properly.
-   * Pages from these origins could potentially access data and manipulate the page where Web Chat is hosted, use with great care.
+   * Default: `undefined`, no cross origins are trusted.
+   *
+   * Security concern: cross origins in this allowlist must be fully trusted, maintained properly, and frequently audited.
+   * Content from these origins could potentially access data and manipulate the page where Web Chat is hosted.
    *
    * @default undefined
    */
-  callURLActionAllowExternalOrigin: string | undefined;
+  callURLActionTrustedOrigin: string | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

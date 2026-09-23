@@ -35,18 +35,13 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        renderWebChat(
-          {
-            directLine,
-            store,
-            styleOptions: {
-              callURLActionAllowExternalOrigin: 'http://localhost:5011'
-            }
-          },
-          document.getElementById('webchat')
-        );
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
+
+        const dialogURL = new URL('dialog.skip.html', location);
+
+        dialogURL.port = +dialogURL.port + 10;
 
         await directLine.emulateIncomingActivity({
           attachments: [
@@ -66,7 +61,7 @@
                       {
                         title: 'Sign in (Action.OpenUrlDialog)',
                         type: 'Action.OpenUrlDialog',
-                        url: new URL('dialog1.skip.html', location).toString()
+                        url: dialogURL.toString()
                       }
                     ],
                     type: 'ActionSet'
@@ -84,40 +79,25 @@
           type: 'message'
         });
 
-        const windowOpen = spyOn(window, 'open');
+        const windowOpen = window.open.bind(window);
+
+        const windowOpenMock = spyOn(window, 'open');
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
 
-        const { activity, resolveAll } = await Promise.race([
-          directLine.actPostActivity(async () => {
-            // WHEN: The "Sign in" button is clicked.
-            await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
-          }),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timed out waiting for popup to send postback')), 5_000)
-          )
-        ]);
+        // WHEN: The "Sign in" button is clicked.
+        await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
 
-        // THEN: It should open a new window.
-        expect(windowOpen).toHaveBeenCalledTimes(1);
-
-        // THEN: It should post back with "replyToId".
-        expect(activity).toEqual(
-          expect.objectContaining({
-            channelData: expect.objectContaining({
-              postBack: true
-            }),
-            from: expect.objectContaining({
-              role: 'user'
-            }),
-            replyToId: 'a-00001',
-            type: 'message',
-            value: { hello: 'World!' }
-          })
+        // THEN: Should call `window.open` with "noopener noreferer".
+        expect(windowOpenMock).toHaveBeenCalledTimes(1);
+        expect(windowOpenMock).toHaveBeenNthCalledWith(
+          1,
+          expect.anything(),
+          '_blank',
+          expect.stringMatching(/,noopener,noreferer$/u)
         );
-
-        windowOpen.mock.results[0].value.close();
+        expect(windowOpenMock).toHaveNthReturnedWith(1, null);
       });
     </script>
   </body>

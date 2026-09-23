@@ -93,7 +93,7 @@
         expect(consoleWarn).toHaveBeenCalledTimes(1);
         expect(consoleWarn).toHaveBeenNthCalledWith(
           1,
-          'botframework-webchat: Popup blocker has blocked the popup window.'
+          expect.stringContaining('botframework-webchat: Popup blocker has blocked the popup window to open URL ')
         );
       });
     </script>

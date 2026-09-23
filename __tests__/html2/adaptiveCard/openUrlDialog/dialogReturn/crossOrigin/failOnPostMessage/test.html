@@ -87,15 +87,18 @@
         //       The `MessageEvent` will come from an external origin.
         await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
 
-        // THEN: It should open a new popup.
+        // THEN: Should open a new popup.
         expect(windowOpenMock).toHaveBeenCalledTimes(1);
+
+        // THEN: Should open popup window as trusted.
+        expect(windowOpenMock).toHaveBeenNthCalledWith(1, expect.anything(), '_blank', 'height=640,popup,width=480');
 
         // THEN: It should warn.
         await waitFor(() => expect(consoleWarnMock).toHaveBeenCalledTimes(1), { timeout: 5_000 });
 
         expect(consoleWarnMock).toHaveBeenNthCalledWith(
           1,
-          'botframework-webchat: Cannot handle return value from URL outside of the allowlist. Please add the origin "http://localhost:5011" to style option named "callURLActionAllowExternalOrigin".'
+          'botframework-webchat: Cannot handle return value from an untrusted cross origin. Please add the origin "http://localhost:5011" to style option named "callURLActionTrustedOrigin".'
         );
 
         windowOpenMock.mock.results[0].value.close();

@@ -12,9 +12,7 @@ window.close();</pre
     <script>
       window.opener?.postMessage({ hello: 'World!' });
 
-      console.log('XXXXXXXXXXXXXX', window.opener);
-
-      // setTimeout(() => window.close(), 1_000);
+      setTimeout(() => window.close(), 1_000);
     </script>
   </body>
 </html>

@@ -35,15 +35,15 @@ Legends:
       - Reference payload for Adaptive Card `Action.OpenUrlDialog` can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html)
       - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
       - Adaptive Card: `dialogHeight`, `dialogTitle`, and `dialogWidth` are ignored
-   - Post back return value, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
-      - Added `styleOptions.callURLActionAllowExternalOrigin` for allowlisting external origins to show as popup window and postback a value, default is `undefined` (no external origins are allowed)
-         - Same origin is always allowed to show in popup and postback value
-         - External origins in this allowlist must be fully trusted and maintained properly
-         - Pages from these origins could potentially access data and manipulate the page where Web Chat is hosted, use with great care
-      - Popup requirements
-         - If the popup page is hosted on an external domain, the domain must be added to the allowlist at `styleOptions.callURLActionAllowExternalOrigin`
-         - To send a postback value, call `window.opener.postMessage({}, '...')`, it must be called within 2 minutes after the popup is shown
-         - Only the first postback value is sent, subsequent postback values are ignored
+   - Post back return value in trusted popup, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
+      - Popup window can be opened as trusted or untrusted based on their origin
+         - Trusted popup will have access to `window.opener` and can send postback value
+         - Untrusted popup will be opened with `noopener noreferer` and they cannot send postback value
+      - Same origin is always trusted, multiple cross origins can be trusted via the new `styleOptions.callURLActionTrustedOrigin` style option
+      - Content in trusted popup could potentially access data and manipulate the page in the origin where Web Chat is hosted, they must be well-maintained and frequently audited. In a trusted popup, never redirect to an untrusted cross origin
+      - To send a postback value, call `window.opener.postMessage({ everything: 'will be', sent: 'as a postback message' }, '...')`
+         - Postback is only accepted within 2 minutes after the popup window is opened and from a trusted origin
+         - Each popup window can only send atmost one postback, subsequent postbacks are ignored
 
 ### Fixed
 

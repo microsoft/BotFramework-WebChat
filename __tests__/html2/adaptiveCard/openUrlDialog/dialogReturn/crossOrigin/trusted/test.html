@@ -35,13 +35,18 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              callURLActionTrustedOrigin: 'http://localhost:5011'
+            }
+          },
+          document.getElementById('webchat')
+        );
 
         await pageConditions.uiConnected();
-
-        const dialogURL = new URL('dialog.skip.html', location);
-
-        dialogURL.port = +dialogURL.port + 10;
 
         await directLine.emulateIncomingActivity({
           attachments: [
@@ -61,7 +66,7 @@
                       {
                         title: 'Sign in (Action.OpenUrlDialog)',
                         type: 'Action.OpenUrlDialog',
-                        url: dialogURL.toString()
+                        url: new URL('dialog1.skip.html', location).toString()
                       }
                     ],
                     type: 'ActionSet'
@@ -79,21 +84,43 @@
           type: 'message'
         });
 
-        const consoleWarn = spyOn(console, 'warn');
-        const windowOpen = spyOn(window, 'open');
+        const windowOpenMock = spyOn(window, 'open');
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
 
-        await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
+        const { activity, resolveAll } = await Promise.race([
+          directLine.actPostActivity(async () => {
+            // WHEN: The "Sign in" button is clicked.
+            await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
+          }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timed out waiting for popup to send postback')), 5_000)
+          )
+        ]);
 
-        expect(windowOpen).toHaveBeenCalledTimes(0);
+        // THEN: Should open a new window.
+        expect(windowOpenMock).toHaveBeenCalledTimes(1);
 
-        expect(consoleWarn).toHaveBeenCalledTimes(1);
-        expect(consoleWarn).toHaveBeenNthCalledWith(
-          1,
-          'botframework-webchat: Cannot open popup window to URL outside of the allowlist. Please add the origin "http://localhost:5011" to style option named "callURLActionAllowExternalOrigin".'
+        // THEN: Should open popup window as trusted.
+        expect(windowOpenMock).toHaveBeenNthCalledWith(1, expect.anything(), '_blank', 'height=640,popup,width=480');
+
+        // THEN: It should post back with "replyToId".
+        expect(activity).toEqual(
+          expect.objectContaining({
+            channelData: expect.objectContaining({
+              postBack: true
+            }),
+            from: expect.objectContaining({
+              role: 'user'
+            }),
+            replyToId: 'a-00001',
+            type: 'message',
+            value: { hello: 'World!' }
+          })
         );
+
+        windowOpenMock.mock.results[0].value.close();
       });
     </script>
   </body>

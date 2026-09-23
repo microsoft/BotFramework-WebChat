@@ -55,90 +55,84 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
 
             if (callURLValueParseResult.success) {
               const popupURL = new URL(callURLValueParseResult.output);
-              const { origin: popupURLOrigin } = popupURL;
 
-              const isOriginAllowed = (origin: string): boolean =>
+              const isOriginTrusted = (origin: string): boolean =>
                 // Allow same origin.
                 location.origin === origin ||
                 // For cross origin, make sure the origin is on the allowlist.
-                (typeof styleOptions.callURLActionAllowExternalOrigin === 'string'
-                  ? styleOptions.callURLActionAllowExternalOrigin.split(',').map(origin => origin.trim())
+                (typeof styleOptions.callURLActionTrustedOrigin === 'string'
+                  ? styleOptions.callURLActionTrustedOrigin.split(',').map(origin => origin.trim())
                   : ([] satisfies string[])
                 ).includes(origin);
 
-              if (!isOriginAllowed(popupURLOrigin)) {
-                console.warn(
-                  `botframework-webchat: Cannot open popup window to URL outside of the allowlist. Please add the origin "${popupURLOrigin}" to style option named "callURLActionAllowExternalOrigin".`
-                );
-              } else {
-                // eslint-disable-next-line prefer-const
-                let cleanup: (() => void) | undefined;
-                // eslint-disable-next-line prefer-const
-                let popup: undefined | Window;
+              // eslint-disable-next-line prefer-const
+              let cleanup: (() => void) | undefined;
+              // eslint-disable-next-line prefer-const
+              let popup: undefined | Window;
 
-                const messageHandler: (event: MessageEvent) => void = event => {
-                  if (popup && !popup.closed && event.source === popup) {
-                    const { origin: eventOrigin } = event;
+              const messageHandler: (event: MessageEvent) => void = event => {
+                if (popup && !popup.closed && event.source === popup) {
+                  const { origin: eventOrigin } = event;
 
-                    if (!isOriginAllowed(eventOrigin)) {
-                      console.warn(
-                        `botframework-webchat: Cannot handle return value from URL outside of the allowlist. Please add the origin "${eventOrigin}" to style option named "callURLActionAllowExternalOrigin".`
-                      );
-                    } else {
-                      // TODO: Should we build a structure around `event.data`?
-                      dispatch(sendPostBack(event.data, { replyToId }));
-                      cleanup();
-                    }
+                  if (!isOriginTrusted(eventOrigin)) {
+                    console.warn(
+                      `botframework-webchat: Cannot handle return value from an untrusted cross origin. Please add the origin "${eventOrigin}" to style option named "callURLActionTrustedOrigin".`
+                    );
+                  } else {
+                    // TODO: Should we build a structure around `event.data`?
+                    dispatch(sendPostBack(event.data, { replyToId }));
+                    cleanup();
                   }
-                };
-
-                // Attach "message" event listener before `window.open()`.
-                window.addEventListener('message', messageHandler);
-
-                // For resource management reason, stop listening to "message" event after 2 minutes.
-                // We should not listen for the event forever.
-                const cleanupCloseDetectionTimeout = ponyfill.setTimeout(
-                  // Note: cleanup() is assigned later, do not collapse this line.
-                  () => cleanup?.(),
-                  POPUP_CLOSE_DETECTION_MAX_DURATION
-                );
-
-                const detectCloseInterval = ponyfill.setInterval(() => {
-                  // Note: there are no event to observe when `closed` become `true`, we need to rely on per interval checks.
-                  (!popup || popup.closed) && cleanup?.();
-                }, POPUP_CLOSE_DETECTION_INTERVAL);
-
-                cleanup = () => {
-                  window.removeEventListener('message', messageHandler);
-
-                  ponyfill.clearInterval(detectCloseInterval);
-                  ponyfill.clearTimeout(cleanupCloseDetectionTimeout);
-                };
-
-                // Open a blank popup and navigate to it has a higher chance of success.
-                popup = window.open(
-                  '',
-                  '_blank',
-                  [
-                    // Implicit allow opener/referer because we are calling into a dialog that can return result.
-                    `height=${styleOptions.callURLActionPopupWindowHeight}`,
-                    'popup',
-                    `width=${styleOptions.callURLActionPopupWindowWidth}`
-                  ].join(',')
-                );
-
-                if (popup) {
-                  popup.location.replace(popupURL);
-
-                  // Note: if access to the popup window is blocked by Cross-Origin-Opener-Policy, Chrome will not sever and set `closed` to `true` synchronously.
-                  //       Chrome will sever the connection asynchronously.
-                } else {
-                  // Popup window is blocked by popup blocker, we permanently lost connection to the Window object and has no way to verify authenticity of MessageEvent.
-                  // Thus, we should stop listening to the MessageEvent.
-                  console.warn('botframework-webchat: Popup blocker has blocked the popup window.');
-
-                  cleanup();
                 }
+              };
+
+              // Attach "message" event listener before `window.open()`.
+              window.addEventListener('message', messageHandler);
+
+              // For resource management reason, stop listening to "message" event after 2 minutes.
+              // We should not listen for the event forever.
+              const cleanupCloseDetectionTimeout = ponyfill.setTimeout(
+                // Note: cleanup() is assigned later, do not collapse this line.
+                () => cleanup?.(),
+                POPUP_CLOSE_DETECTION_MAX_DURATION
+              );
+
+              const detectCloseInterval = ponyfill.setInterval(() => {
+                // Note: there are no event to observe when `closed` become `true`, we need to rely on per interval checks.
+                (!popup || popup.closed) && cleanup?.();
+              }, POPUP_CLOSE_DETECTION_INTERVAL);
+
+              cleanup = () => {
+                window.removeEventListener('message', messageHandler);
+
+                ponyfill.clearInterval(detectCloseInterval);
+                ponyfill.clearTimeout(cleanupCloseDetectionTimeout);
+              };
+
+              // Open a blank popup and navigate to it has a higher chance of success.
+              popup = window.open(
+                popupURL,
+                '_blank',
+                [
+                  // Implicit allow opener/referer because we are calling into a dialog that can return result.
+                  `height=${styleOptions.callURLActionPopupWindowHeight}`,
+                  'popup',
+                  `width=${styleOptions.callURLActionPopupWindowWidth}`,
+
+                  // Add "noopener noreferer" to untrusted cross origin.
+                  ...(isOriginTrusted(popupURL.origin) ? [] : ['noopener', 'noreferer'])
+                ].join(',')
+              );
+
+              // Note: if access to the popup window is blocked by Cross-Origin-Opener-Policy, Chrome will not sever and set `closed` to `true` synchronously.
+              //       Chrome will sever the connection asynchronously.
+
+              if (!popup) {
+                // Popup window is blocked by popup blocker, we permanently lost connection to the Window object and has no way to verify authenticity of MessageEvent.
+                // Thus, we should stop listening to the MessageEvent.
+                console.warn(`botframework-webchat: Popup blocker has blocked the popup window to open URL ${popupURL}.`);
+
+                cleanup();
               }
             } else {
               console.warn(
