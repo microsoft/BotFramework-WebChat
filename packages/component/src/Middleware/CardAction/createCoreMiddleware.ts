@@ -6,7 +6,7 @@ import getScheme from './private/getScheme.js';
 
 const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
 const POPUP_CLOSE_DETECTION_INTERVAL = 1_000;
-const POPUP_CLOSE_DETECTION_MAX_DURATION = 120_000;
+const POPUP_CLOSE_DETECTION_MAX_DURATION = 300_000;
 
 const callURLValueSchema = pipe(
   string('"value" must be a string'),
@@ -130,7 +130,9 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
               if (!popup) {
                 // Popup window is blocked by popup blocker, we permanently lost connection to the Window object and has no way to verify authenticity of MessageEvent.
                 // Thus, we should stop listening to the MessageEvent.
-                console.warn(`botframework-webchat: Popup blocker has blocked the popup window to open URL ${popupURL}.`);
+                console.warn(
+                  `botframework-webchat: Popup blocker has blocked the popup window to open URL ${popupURL}.`
+                );
 
                 cleanup();
               }

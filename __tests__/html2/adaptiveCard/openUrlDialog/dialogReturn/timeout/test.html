@@ -128,7 +128,7 @@
           await waitFor(() => expect(messageEventHandlers.size).toBe(1));
 
           // WHEN: 2 minutes has passed.
-          clock.tick(120_000);
+          clock.tick(300_000);
 
           // THEN: Should remove the "message" event handler.
           await waitFor(() => expect(messageEventHandlers.size).toBe(0));
