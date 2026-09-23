@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <pre>window.location.href = 'dialog2.skip.html'</pre>
+    <script>
+      setTimeout(() => {
+        const url = new URL(location);
+
+        url.pathname = url.pathname.replace('dialog1', 'dialog2');
+        url.port = +url.port + 10;
+
+        window.location.href = url;
+      }, 1_000);
+    </script>
+  </body>
+</html>

@@ -935,6 +935,16 @@ type StrictStyleOptions = {
    * @default 480
    */
   callURLActionPopupWindowWidth: number | undefined;
+
+  /**
+   * `webchat:callURL` action: external origins allowed to host in popup window, delimited by comma. Same origin is always trusted.
+   *
+   * Security concern: external origins in this allowlist must be fully trusted and maintained properly.
+   * Pages from these origins could potentially access data and manipulate the page where Web Chat is hosted. Use with great care.
+   *
+   * @default undefined
+   */
+  callURLActionAllowExternalOrigin: string | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

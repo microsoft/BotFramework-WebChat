@@ -1,14 +1,19 @@
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import type { DirectLineCardAction, GlobalScopePonyfill } from 'botframework-webchat-core';
 
-import FunctionMiddleware from './FunctionMiddleware';
 import type { StrictStyleOptions } from '../StyleOptions.js';
+import FunctionMiddleware from './FunctionMiddleware';
 
-type PerformCardAction = (cardAction: DirectLineCardAction, event?: { target: EventTarget }) => void;
+type PerformCardAction = (
+  cardAction: DirectLineCardAction,
+  event?: { readonly target: EventTarget } | undefined,
+  init?: { readonly replyToId?: string | undefined } | undefined
+) => void;
 
 type CardActionMiddleware = FunctionMiddleware<
   [
     {
       dispatch: (action: any) => void;
+      ponyfill: GlobalScopePonyfill;
       styleOptions: StrictStyleOptions;
     }
   ],
@@ -16,6 +21,8 @@ type CardActionMiddleware = FunctionMiddleware<
     {
       cardAction: DirectLineCardAction;
       getSignInUrl?: () => string;
+      /** ID of the activity which the card action originates from. */
+      replyToId: string;
       target: any;
     }
   ],
@@ -26,4 +33,4 @@ type CardActionMiddleware = FunctionMiddleware<
 
 export default CardActionMiddleware;
 
-export { PerformCardAction };
+export { type PerformCardAction };

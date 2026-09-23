@@ -38,8 +38,9 @@ const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollTo
 const adaptiveCardRendererPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
-    disabled: optional(boolean()),
     adaptiveCard: any(),
+    disabled: optional(boolean()),
+    replyToId: optional(string()),
     tapAction: optional(directLineCardActionSchema)
   }),
   readonly()
@@ -52,6 +53,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     actionPerformedClassName,
     adaptiveCard,
     disabled: disabledFromProps,
+    replyToId,
     tapAction
   } = validateProps(adaptiveCardRendererPropsSchema, props);
 
@@ -109,10 +111,10 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         }
       }
 
-      performCardAction(tapActionRef.current as DirectLineCardAction);
+      performCardAction(tapActionRef.current as DirectLineCardAction, undefined, { replyToId });
       scrollToEnd();
     },
-    [contentRef, performCardAction, scrollToEnd, tapActionRef]
+    [contentRef, performCardAction, replyToId, scrollToEnd, tapActionRef]
   );
 
   // Only listen to event if it is not disabled and have "tapAction" prop.
@@ -133,21 +135,29 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
       if (actionTypeName === 'Action.OpenUrl') {
         const { url: value } = action as OpenUrlAction;
 
-        performCardAction({
-          image,
-          title,
-          type: 'openUrl',
-          value
-        });
+        performCardAction(
+          {
+            image,
+            title,
+            type: 'openUrl',
+            value
+          },
+          undefined,
+          { replyToId }
+        );
       } else if (actionTypeName === 'Action.OpenUrlDialog') {
         const { url: value } = action as OpenUrlAction;
 
-        performCardAction({
-          image,
-          title,
-          type: 'webchat:callURL',
-          value
-        });
+        performCardAction(
+          {
+            image,
+            title,
+            type: 'webchat:callURL',
+            value
+          },
+          undefined,
+          { replyToId }
+        );
       } else if (actionTypeName === 'Action.Submit') {
         const { data } = action as SubmitAction as {
           data: string | BotFrameworkCardAction;
@@ -155,21 +165,29 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
 
         if (typeof data !== 'undefined') {
           if (typeof data === 'string') {
-            performCardAction({
-              image,
-              title,
-              type: 'imBack',
-              value: data
-            });
+            performCardAction(
+              {
+                image,
+                title,
+                type: 'imBack',
+                value: data
+              },
+              undefined,
+              { replyToId }
+            );
           } else if (data.__isBotFrameworkCardAction) {
-            performCardAction(data.cardAction);
+            performCardAction(data.cardAction, undefined, { replyToId });
           } else {
-            performCardAction({
-              image,
-              title,
-              type: 'postBack',
-              value: data
-            });
+            performCardAction(
+              {
+                image,
+                title,
+                type: 'postBack',
+                value: data
+              },
+              undefined,
+              { replyToId }
+            );
           }
         }
 
@@ -179,7 +197,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         console.error(action);
       }
     },
-    [disabledRef, performCardAction, scrollToEnd]
+    [replyToId, disabledRef, performCardAction, scrollToEnd]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.

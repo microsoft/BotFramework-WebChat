@@ -22,7 +22,8 @@ const adaptiveCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: optional(any()),
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
@@ -30,7 +31,10 @@ const adaptiveCardContentPropsSchema = pipe(
 type AdaptiveCardContentProps = InferInput<typeof adaptiveCardContentPropsSchema>;
 
 function AdaptiveCardContent(props: AdaptiveCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = validateProps(adaptiveCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(
+    adaptiveCardContentPropsSchema,
+    props
+  );
 
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 
@@ -52,6 +56,7 @@ function AdaptiveCardContent(props: AdaptiveCardContentProps) {
         actionPerformedClassName={actionPerformedClassName}
         adaptiveCard={card}
         disabled={disabled}
+        replyToId={replyToId}
       />
     )
   );

@@ -71,7 +71,7 @@ import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
-import CardActionMiddleware from '../types/CardActionMiddleware';
+import CardActionMiddleware, { type PerformCardAction } from '../types/CardActionMiddleware';
 import { type ContextOf } from '../types/ContextOf';
 import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../types/LocalizedStrings';
@@ -143,15 +143,15 @@ function createCardActionContext({
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
   styleOptions: StrictStyleOptions;
-}) {
+}): { readonly onCardAction: PerformCardAction } {
   const runMiddleware = applyMiddleware(
     'card action',
     ...cardActionMiddleware,
     createDefaultCardActionMiddleware()
-  )({ dispatch, styleOptions });
+  )({ dispatch, ponyfill, styleOptions });
 
   return {
-    onCardAction: (cardAction, { target }: { target?: any } = {}) => {
+    onCardAction: (cardAction, { target }: { target?: any } = {}, init) => {
       markAllAsAcknowledged();
 
       // Stop speech recognition only if under interactive mode.
@@ -182,6 +182,7 @@ function createCardActionContext({
                 return value;
               }
             : null,
+        replyToId: init?.replyToId,
         target
       });
     }

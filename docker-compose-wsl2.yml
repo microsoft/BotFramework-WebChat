@@ -42,6 +42,7 @@ services:
       - ./packages/test/test-assets/out/:/var/web/packages/test/test-assets/out/
     ports:
       - '5081:80'
+      - '5091:80'
 
   jest-server:
     build:

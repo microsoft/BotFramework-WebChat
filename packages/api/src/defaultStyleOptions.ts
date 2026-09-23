@@ -309,6 +309,7 @@ const DEFAULT_OPTIONS: StrictStyleOptions = {
   // Speech-to-speech options
   showMicrophoneButton: 'auto',
 
+  callURLActionAllowExternalOrigin: undefined,
   callURLActionPopupWindowHeight: 640,
   callURLActionPopupWindowWidth: 480
 };

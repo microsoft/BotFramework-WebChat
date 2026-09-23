@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <pre>
+window.opener?.postMessage({ hello: 'World!' });
+window.opener?.postMessage({ aloha: 'Aloha!' });
+
+await sleep(1_000);
+
+window.close();</pre
+    >
+    <script>
+      window.opener?.postMessage({ hello: 'World!' });
+      window.opener?.postMessage({ aloha: 'Aloha!' });
+
+      setTimeout(() => window.close(), 1_000);
+    </script>
+  </body>
+</html>

@@ -9,7 +9,8 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
       const [
         {
           cardAction,
-          cardAction: { value }
+          cardAction: { value },
+          replyToId
         }
       ] = args;
 
@@ -31,7 +32,7 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
           break;
 
         case 'postBack':
-          dispatch(sendPostBack(value));
+          dispatch(sendPostBack(value, { replyToId }));
 
           break;
 
