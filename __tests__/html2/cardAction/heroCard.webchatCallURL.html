@@ -78,7 +78,7 @@
         await host.click(document.querySelector('[aria-label="Call URL"]'));
 
         // THEN: Should call `window.open` using the popup window features, instead of a plain "openUrl" dispatch.
-        expect(windowOpenArgs).toEqual(['https://bing.com/', '_blank', 'height=640,popup,width=480']);
+        expect(windowOpenArgs).toEqual(['https://bing.com/', '_blank', 'height=640,popup,width=480,noopener,noreferrer']);
       });
     </script>
   </body>
