@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+      import { fn } from 'https://esm.sh/jest-mock';
+
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render({ interactMode: 2 });
+
+          const submit = fn();
+
+          systemUnderTest.addressForm.addEventListener('submit', submit);
+          systemUnderTest.addressFormSubmitButton.focus();
+
+          // THEN: The chat message containing the focused button should be marked as active.
+          expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
+
+          await host.sendKeys('ENTER');
+
+          expect(submit).toHaveBeenCalledTimes(1);
+
+          // THEN: The focus should be kept on the submit button.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
+
+          // THEN: The chat message should still be marked as active.
+          expect(systemUnderTest.chatMessages[2].matches(':focus-within')).toBe(true);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

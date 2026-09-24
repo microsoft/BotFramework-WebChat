@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render({ interactMode: 2 });
+
+          await systemUnderTest.focusChatHistory();
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
+
+          await host.sendKeys('ARROW_UP');
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
+
+          await host.sendKeys('ARROW_UP');
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[0]);
+
+          await host.sendKeys('ARROW_UP');
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[0]);
+
+          await host.sendKeys('ARROW_DOWN');
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[1]);
+
+          await host.sendKeys('ARROW_DOWN');
+
+          expect(document.activeElement).toBe(systemUnderTest.chatMessageBodies[2]);
+
+          await host.sendKeys('ARROW_DOWN');
+
+          expect(document.activeElement).toBe(systemUnderTest.sendBoxTextBox);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
