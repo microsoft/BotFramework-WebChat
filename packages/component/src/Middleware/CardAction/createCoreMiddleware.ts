@@ -128,7 +128,7 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
 
               // Open a blank popup and navigate to it has a higher chance of success.
               popup = window.open(
-                popupURL,
+                popupURL.href,
                 '_blank',
                 [
                   // Implicit allow opener/referer because we are calling into a dialog that can return result.

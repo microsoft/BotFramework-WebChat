@@ -91,7 +91,12 @@
         expect(windowOpenMock).toHaveBeenCalledTimes(1);
 
         // THEN: Should open popup window as trusted.
-        expect(windowOpenMock).toHaveBeenNthCalledWith(1, expect.anything(), '_blank', 'height=640,popup,width=480');
+        expect(windowOpenMock).toHaveBeenNthCalledWith(
+          1,
+          expect.stringContaining('dialog1.skip.html'),
+          '_blank',
+          'height=640,popup,width=480'
+        );
 
         // THEN: It should warn.
         await waitFor(() => expect(consoleWarnMock).toHaveBeenCalledTimes(1), { timeout: 5_000 });
