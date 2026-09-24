@@ -36,6 +36,7 @@ type SuggestedActionProps = Readonly<{
 
 function SuggestedAction({
   buttonText,
+  className,
   displayText,
   image,
   imageAlt,
