@@ -41,7 +41,11 @@
 
         const dialogURL = new URL('dialog.skip.html', location);
 
-        dialogURL.port = +dialogURL.port + 10;
+        if (dialogURL.hostname === 'localhost') {
+          dialogURL.hostname = 'cross-origin.localhost';
+        } else {
+          dialogURL.hostname = 'webchat2-cross-origin';
+        }
 
         await directLine.emulateIncomingActivity({
           attachments: [
