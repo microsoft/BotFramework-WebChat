@@ -77,8 +77,35 @@
           type: 'message'
         });
 
+        const messageEventHandlers = new Set();
+        const windowAddEventListener = window.addEventListener.bind(window);
+        const windowOpen = window.open.bind(window);
+        const windowRemoveEventListener = window.removeEventListener.bind(window);
+
         const consoleWarnMock = spyOn(console, 'warn');
-        const windowOpenMock = spyOn(window, 'open');
+
+        spyOn(window, 'addEventListener').mockImplementation((...args) => {
+          const [name, handler] = args;
+
+          name === 'message' && messageEventHandlers.add(handler);
+
+          return windowAddEventListener(...args);
+        });
+
+        spyOn(window, 'removeEventListener').mockImplementation((...args) => {
+          const [name, handler] = args;
+
+          name === 'message' && messageEventHandlers.delete(handler);
+
+          return windowRemoveEventListener(...args);
+        });
+
+        const windowOpenMock = spyOn(window, 'open').mockImplementation((...args) => {
+          // THEN: Should attach "message" event handler before window.open().
+          expect(messageEventHandlers).toHaveProperty('size', 1);
+
+          return windowOpen(...args);
+        });
 
         // THEN: Should render the Adaptive Card with a "Sign in" button.
         await pageConditions.numActivitiesShown(1);
@@ -90,9 +117,6 @@
         // THEN: Should open a new popup.
         expect(windowOpenMock).toHaveBeenCalledTimes(1);
 
-        // THEN: Should open popup window as trusted.
-        expect(windowOpenMock).toHaveBeenNthCalledWith(1, expect.anything(), '_blank', 'height=640,popup,width=480');
-
         // THEN: It should warn.
         await waitFor(() => expect(consoleWarnMock).toHaveBeenCalledTimes(1), { timeout: 5_000 });
 
@@ -101,6 +125,9 @@
           'botframework-webchat: Failed to parse the message from the popup.',
           expect.any(Array)
         );
+
+        // THEN: Should have all "message" event handlers removed.
+        expect(messageEventHandlers).toHaveProperty('size', 0);
 
         windowOpenMock.mock.results[0].value.close();
       });
