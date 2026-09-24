@@ -97,7 +97,7 @@
         expect(windowOpenMock).toHaveBeenCalledTimes(1);
         expect(windowOpenMock).toHaveBeenNthCalledWith(
           1,
-          expect.stringContaining('dialog1.skip.html'),
+          expect.stringContaining('dialog.skip.html'),
           '_blank',
           expect.stringMatching(/,noopener,noreferrer$/u)
         );
