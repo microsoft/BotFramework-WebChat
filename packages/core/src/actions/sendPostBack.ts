@@ -16,7 +16,7 @@ export default function sendPostback(
 } {
   return {
     type: SEND_POST_BACK,
-    payload: { replyToId: init.replyToId, value }
+    payload: { replyToId: init?.replyToId, value }
   };
 }
 
