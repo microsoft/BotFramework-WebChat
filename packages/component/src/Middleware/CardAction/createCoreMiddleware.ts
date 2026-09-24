@@ -106,7 +106,7 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
               // Attach "message" event listener before `window.open()`.
               window.addEventListener('message', messageHandler);
 
-              // For resource management reason, stop listening to "message" event after 2 minutes.
+              // For resource management reason, stop listening to "message" event after 5 minutes.
               // We should not listen for the event forever.
               const cleanupCloseDetectionTimeout = ponyfill.setTimeout(
                 // Note: cleanup() is assigned later, do not collapse this line.
