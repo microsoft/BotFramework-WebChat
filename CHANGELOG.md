@@ -37,7 +37,7 @@ Legends:
       - Reference payload for Adaptive Card `Action.OpenUrlDialog` can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html)
       - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
       - Adaptive Card: `dialogHeight`, `dialogTitle`, and `dialogWidth` are ignored, use `styleOptions.callURLActionPopupWindowHeight/Width` for dialog sizing instead
-   - Trusted popup can send postback message, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
+   - Trusted popup can send postback message, in PR [#5863](https://github.com/microsoft/BotFramework-WebChat/pull/5863), by [@compulim](https://github.com/compulim)
       - Popup window can be opened as trusted or untrusted based on their origin
          - Trusted popup will have access to `window.opener` and can send postback value
          - Untrusted popup will be opened with `noopener noreferer` and they cannot send postback value
