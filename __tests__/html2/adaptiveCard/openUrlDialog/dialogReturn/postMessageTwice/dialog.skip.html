@@ -3,16 +3,16 @@
   <head></head>
   <body>
     <pre>
-window.opener?.postMessage({ hello: 'World!' });
-window.opener?.postMessage({ aloha: 'Aloha!' });
+window.opener?.postMessage({ type: 'postback', value: { hello: 'World!' } }, '*');
+window.opener?.postMessage({ type: 'postback', value: { aloha: 'Aloha!' } }, '*');
 
 await sleep(1_000);
 
 window.close();</pre
     >
     <script>
-      window.opener?.postMessage({ hello: 'World!' });
-      window.opener?.postMessage({ aloha: 'Aloha!' });
+      window.opener?.postMessage({ type: 'payload', value: { hello: 'World!' } });
+      window.opener?.postMessage({ type: 'payload', value: { aloha: 'Aloha!' } });
 
       setTimeout(() => window.close(), 1_000);
     </script>

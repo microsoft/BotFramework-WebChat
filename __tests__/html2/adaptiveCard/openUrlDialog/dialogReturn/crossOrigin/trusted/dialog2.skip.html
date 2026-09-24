@@ -3,14 +3,14 @@
   <head></head>
   <body>
     <pre>
-postMessage({ hello: 'World!' })
+window.opener?.postMessage({ type: 'postback', value: { hello: 'World!' } }, '*');
 
 await sleep(1_000);
 
 window.close();</pre
     >
     <script>
-      window.opener?.postMessage({ hello: 'World!' }, '*');
+      window.opener?.postMessage({ type: 'postback', value: { hello: 'World!' } }, '*');
 
       setTimeout(() => window.close(), 1_000);
     </script>

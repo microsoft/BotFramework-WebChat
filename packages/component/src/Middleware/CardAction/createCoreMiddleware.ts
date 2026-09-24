@@ -1,6 +1,6 @@
 import type { CardActionMiddleware } from 'botframework-webchat-api';
 import { sendPostBack } from 'botframework-webchat-core';
-import { check, pipe, safeParse, string, transform, url } from 'valibot';
+import { any, check, literal, object, pipe, safeParse, string, transform, url } from 'valibot';
 
 import getScheme from './private/getScheme.js';
 
@@ -19,6 +19,14 @@ const callURLValueSchema = pipe(
     }
   }, '"value" must have protocol of either "http:" or "https:"'),
   transform<string, `${'http:' | 'https:'}//${string}`>(value => value as any)
+);
+
+const callURLPostMessageDataSchema = object(
+  {
+    type: literal('postback', '"MessageEvent.data.type" must be "postback"'),
+    value: any()
+  },
+  '"MessageEvent.data" must be an object'
 );
 
 export default function createDefaultCardActionMiddleware(): readonly CardActionMiddleware[] {
@@ -79,8 +87,17 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
                       `botframework-webchat: Cannot handle return value from an untrusted cross origin. Please add the origin "${eventOrigin}" to style option named "callURLActionTrustedOrigin".`
                     );
                   } else {
-                    // TODO: Should we build a structure around `event.data`?
-                    dispatch(sendPostBack(event.data, { replyToId }));
+                    const dataResult = safeParse(callURLPostMessageDataSchema, event.data);
+
+                    if (!dataResult.success) {
+                      console.warn(
+                        `botframework-webchat: Failed to parse the message from the popup.`,
+                        dataResult.issues
+                      );
+                    } else {
+                      dispatch(sendPostBack(event.data.value, { replyToId }));
+                    }
+
                     cleanup();
                   }
                 }

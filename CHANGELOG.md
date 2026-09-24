@@ -43,7 +43,7 @@ Legends:
          - Untrusted popup will be opened with `noopener noreferer` and they cannot send postback value
       - Same origin is always trusted, multiple cross origins can be trusted via the new `styleOptions.callURLActionTrustedOrigin` style option
       - Content in trusted popup could potentially access data and manipulate the page in the origin where Web Chat is hosted. Content must be well-maintained and frequently audited. In a trusted popup, never redirect to an untrusted cross origin
-      - To send a postback value, call `window.opener.postMessage({ everything: 'will be', sent: 'as a postback message' }, '...')`
+      - To send a postback value, call `window.opener.postMessage({ type: 'postback', value: {} | string }, '...')`
          - Postback is only accepted within 5 minutes after the popup window is opened and from a trusted origin
          - Each popup window can only send atmost one postback, subsequent postbacks are ignored
          - `replyToId` will be automatically filled in by the ID of the originating activity
