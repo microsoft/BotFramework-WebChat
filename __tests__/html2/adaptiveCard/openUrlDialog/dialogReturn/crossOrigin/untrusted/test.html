@@ -89,13 +89,13 @@
         // WHEN: The "Sign in" button is clicked.
         await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
 
-        // THEN: Should call `window.open` with "noopener noreferer".
+        // THEN: Should call `window.open` with "noopener noreferrer".
         expect(windowOpenMock).toHaveBeenCalledTimes(1);
         expect(windowOpenMock).toHaveBeenNthCalledWith(
           1,
           expect.anything(),
           '_blank',
-          expect.stringMatching(/,noopener,noreferer$/u)
+          expect.stringMatching(/,noopener,noreferrer$/u)
         );
         expect(windowOpenMock).toHaveNthReturnedWith(1, null);
       });

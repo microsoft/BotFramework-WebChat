@@ -40,7 +40,7 @@ Legends:
    - Trusted popup can send postback message, in PR [#5863](https://github.com/microsoft/BotFramework-WebChat/pull/5863), by [@compulim](https://github.com/compulim)
       - Popup window can be opened as trusted or untrusted based on their origin
          - Trusted popup will have access to `window.opener` and can send postback value
-         - Untrusted popup will be opened with `noopener noreferer` and they cannot send postback value
+         - Untrusted popup will be opened with `noopener noreferrer` and they cannot send postback value
       - Same origin is always trusted, multiple cross origins can be trusted via the new `styleOptions.callURLActionTrustedOrigin` style option
       - Content in trusted popup could potentially access data and manipulate the page in the origin where Web Chat is hosted. Content must be well-maintained and frequently audited. In a trusted popup, never redirect to an untrusted cross origin
       - To send a postback value, call `window.opener.postMessage({ type: 'postback', value: {} | string }, '...')`

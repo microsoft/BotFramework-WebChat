@@ -136,8 +136,8 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
                   'popup',
                   `width=${styleOptions.callURLActionPopupWindowWidth}`,
 
-                  // Add "noopener noreferer" to untrusted cross origin.
-                  ...(isOriginTrusted(popupURL.origin) ? [] : ['noopener', 'noreferer'])
+                  // Add "noopener noreferrer" to untrusted cross origin.
+                  ...(isOriginTrusted(popupURL.origin) ? [] : ['noopener', 'noreferrer'])
                 ].join(',')
               );
 
