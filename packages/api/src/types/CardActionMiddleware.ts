@@ -22,7 +22,7 @@ type CardActionMiddleware = FunctionMiddleware<
       cardAction: DirectLineCardAction;
       getSignInUrl?: () => string;
       /** ID of the activity which the card action originates from. */
-      replyToId: string;
+      replyToId?: string | undefined;
       target: any;
     }
   ],
