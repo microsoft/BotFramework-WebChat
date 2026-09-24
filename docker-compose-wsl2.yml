@@ -28,6 +28,10 @@ services:
     build:
       context: ./
       dockerfile: testharness2.dockerfile
+    networks:
+      default:
+        aliases:
+          - webchat2-cross-origin
     stop_grace_period: 0s
     volumes:
       - ./__tests__/assets/:/var/web/__tests__/assets/
@@ -42,7 +46,6 @@ services:
       - ./packages/test/test-assets/out/:/var/web/packages/test/test-assets/out/
     ports:
       - '5081:80'
-      - '5091:80'
 
   jest-server:
     build:

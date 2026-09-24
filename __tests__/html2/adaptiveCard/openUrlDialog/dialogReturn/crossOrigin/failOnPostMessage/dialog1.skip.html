@@ -8,7 +8,12 @@
         const url = new URL(location);
 
         url.pathname = url.pathname.replace('dialog1', 'dialog2');
-        url.port = +url.port + 10;
+
+        if (url.hostname === 'localhost') {
+          url.hostname = 'cross-origin.localhost';
+        } else {
+          url.hostname = 'webchat2-cross-origin';
+        }
 
         window.location.href = url;
       }, 1_000);

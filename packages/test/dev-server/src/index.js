@@ -5,7 +5,7 @@ import { resolve } from 'path';
 import serve from 'serve-handler';
 import { fileURLToPath } from 'url';
 
-const { PORT = 5001, PORT2 = 5011 } = process.env;
+const { PORT = 5001 } = process.env;
 const resolveFromProjectRoot = resolve.bind(undefined, fileURLToPath(import.meta.url), '../../');
 const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../../');
 
@@ -115,13 +115,5 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
   // Other requests will be served by `serve-handler` based on `/serve-test.json`.
   app.use((req, res) => serve(req, res, { ...serveConfigJSON, public: resolveFromRepositoryRoot() }));
 
-  const port1Resolver = Promise.withResolvers();
-  const port2Resolver = Promise.withResolvers();
-
-  app.listen(PORT, () => port1Resolver.resolve());
-  app.listen(PORT2, () => port2Resolver.resolve());
-
-  await Promise.all([port1Resolver, port2Resolver]);
-
-  console.log(`Web Chat development server listening on port ${PORT} and ${PORT2}`);
+  app.listen(PORT, () => console.log(`Web Chat development server listening on port ${PORT}`));
 })();

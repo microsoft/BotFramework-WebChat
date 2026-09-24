@@ -98,7 +98,9 @@
 
         expect(consoleWarnMock).toHaveBeenNthCalledWith(
           1,
-          'botframework-webchat: Cannot handle return value from an untrusted cross origin. Please add the origin "http://localhost:5011" to style option named "callURLActionTrustedOrigin".'
+          expect.stringMatching(
+            /botframework-webchat: Cannot handle return value from an untrusted cross origin\. Please add the origin "(http:\/\/cross-origin.localhost:5001|https:\/\/webchat2-cross-origin)" to style option named "callURLActionTrustedOrigin"\./u
+          )
         );
 
         windowOpenMock.mock.results[0].value.close();

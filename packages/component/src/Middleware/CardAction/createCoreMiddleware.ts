@@ -90,6 +90,7 @@ export default function createDefaultCardActionMiddleware(): readonly CardAction
                     const dataResult = safeParse(callURLPostMessageDataSchema, event.data);
 
                     if (!dataResult.success) {
+                      // TODO: Add a test.
                       console.warn(
                         `botframework-webchat: Failed to parse the message from the popup.`,
                         dataResult.issues

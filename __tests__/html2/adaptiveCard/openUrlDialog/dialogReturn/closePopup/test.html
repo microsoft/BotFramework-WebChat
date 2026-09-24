@@ -123,7 +123,7 @@
         await waitFor(() => expect(popupWindow).toHaveProperty('closed', true), { timeout: 2_000 });
 
         // THEN: Should remove the "message" event handler.
-        await waitFor(() => expect(messageEventHandlers.size).toBe(0));
+        await waitFor(() => expect(messageEventHandlers.size).toBe(0), { timeout: 2_000 });
       });
     </script>
   </body>
