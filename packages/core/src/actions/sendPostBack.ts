@@ -1,9 +1,22 @@
+export type SendPostBackInit = {
+  replyToId?: string | undefined;
+};
+
 const SEND_POST_BACK = 'WEB_CHAT/SEND_POST_BACK';
 
-export default function sendPostback(value: any) {
+export default function sendPostback(
+  value: any,
+  init?: SendPostBackInit | undefined
+): {
+  readonly type: typeof SEND_POST_BACK;
+  readonly payload: {
+    readonly replyToId: string | undefined;
+    readonly value: any;
+  };
+} {
   return {
     type: SEND_POST_BACK,
-    payload: { value }
+    payload: { replyToId: init?.replyToId, value }
   };
 }
 

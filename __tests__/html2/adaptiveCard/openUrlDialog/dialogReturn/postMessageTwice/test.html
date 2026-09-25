@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { spyOn } from 'jest-mock';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      testHelpers.hideKnownError();
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.adaptive',
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                type: 'AdaptiveCard',
+                version: '1.2',
+                body: [
+                  {
+                    text: 'Call postMessage twice',
+                    type: 'TextBlock'
+                  },
+                  {
+                    actions: [
+                      {
+                        title: 'Sign in (Action.OpenUrlDialog)',
+                        type: 'Action.OpenUrlDialog',
+                        url: new URL('dialog.skip.html', location).toString()
+                      }
+                    ],
+                    type: 'ActionSet'
+                  }
+                ]
+              }
+            }
+          ],
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          id: 'a-00001',
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        });
+
+        const messageEventHandlers = new Set();
+
+        const windowAddEventListener = window.addEventListener.bind(window);
+        const windowRemoveEventListener = window.removeEventListener.bind(window);
+        const windowOpen = window.open.bind(window);
+
+        spyOn(window, 'addEventListener').mockImplementation((...args) => {
+          const [name, handler] = args;
+
+          name === 'message' && messageEventHandlers.add(handler);
+
+          return windowAddEventListener(...args);
+        });
+
+        spyOn(window, 'removeEventListener').mockImplementation((...args) => {
+          const [name, handler] = args;
+
+          name === 'message' && messageEventHandlers.delete(handler);
+
+          return windowRemoveEventListener(...args);
+        });
+
+        const windowOpenMock = spyOn(window, 'open').mockImplementation((...args) => {
+          // THEN: Should attach "message" event handler before window.open().
+          expect(messageEventHandlers.size).toBe(1);
+
+          return windowOpen(...args);
+        });
+
+        // THEN: Should render the Adaptive Card with a "Sign in" button.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should have no "message" event handler initially.
+        expect(messageEventHandlers.size).toBe(0);
+
+        const { activity, resolveAll } = await Promise.race([
+          directLine.actPostActivity(async () => {
+            // WHEN: The "Sign in" button is clicked.
+            await host.click(document.querySelector('[aria-label="Sign in (Action.OpenUrlDialog)"]'));
+          }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timed out waiting for popup to send postback')), 5_000)
+          )
+        ]);
+
+        // THEN: It should post back once.
+        //       If it post back twice, it would error out.
+        expect(activity).toEqual(
+          expect.objectContaining({
+            channelData: expect.objectContaining({
+              postBack: true
+            }),
+            from: expect.objectContaining({
+              role: 'user'
+            }),
+            replyToId: 'a-00001',
+            type: 'message',
+            value: { hello: 'World!' }
+          })
+        );
+
+        await resolveAll();
+
+        // THEN: Should have all "message" event handlers removed.
+        expect(messageEventHandlers.size).toBe(0);
+
+        windowOpenMock.mock.results[0].value.close();
+      });
+    </script>
+  </body>
+</html>

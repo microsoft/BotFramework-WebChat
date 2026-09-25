@@ -310,7 +310,8 @@ const DEFAULT_OPTIONS: StrictStyleOptions = {
   showMicrophoneButton: 'auto',
 
   callURLActionPopupWindowHeight: 640,
-  callURLActionPopupWindowWidth: 480
+  callURLActionPopupWindowWidth: 480,
+  callURLActionTrustedOrigin: undefined
 };
 
 export default DEFAULT_OPTIONS;

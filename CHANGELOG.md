@@ -28,11 +28,25 @@ Legends:
    - ~~Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload~~
    - ~~Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation~~
    - Obsoleted in favor of PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862)
-- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog), in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862), by [@compulim](https://github.com/compulim)
-   - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
-   - Reference payload for Direct Line `webchat:callURL` card action can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/heroCard.html)
-   - Reference payload for Adaptive Card `Action.OpenUrlDialog` can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html)
-   - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
+- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog)
+   - The card action is designed to host popup for authentication and authorization (call-and-return pattern), it can optionally send a postback message to the bot
+   - Open in popup, in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862), by [@compulim](https://github.com/compulim)
+      - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
+      - URL must be absolute with scheme of either http:// or https://
+      - Reference payload for Direct Line `webchat:callURL` card action can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/heroCard.html)
+      - Reference payload for Adaptive Card `Action.OpenUrlDialog` can be found in [this test](./__tests__/html2/adaptiveCard/openUrlDialog/simple.html)
+      - Note: the Adaptive Card implementation is based on observation of how other apps behave and could deviate from their official implementation
+      - Adaptive Card: `dialogHeight`, `dialogTitle`, and `dialogWidth` are ignored, use `styleOptions.callURLActionPopupWindowHeight/Width` for dialog sizing instead
+   - Trusted popup can send postback message, in PR [#5863](https://github.com/microsoft/BotFramework-WebChat/pull/5863), by [@compulim](https://github.com/compulim)
+      - Popup window can be opened as trusted or untrusted based on their origin
+         - Trusted popup will have access to `window.opener` and can send postback value
+         - Untrusted popup will be opened with `noopener noreferrer` and they cannot send postback value
+      - Same origin is always trusted, multiple cross origins can be trusted via the new `styleOptions.callURLActionTrustedOrigin` style option
+      - Content in trusted popup could potentially access data and manipulate the page in the origin where Web Chat is hosted. Content must be well-maintained and frequently audited. In a trusted popup, never redirect to an untrusted cross origin
+      - To send a postback value, call `window.opener.postMessage({ type: 'postback', value: {} | string }, '...')`
+         - Postback is only accepted within 5 minutes after the popup window is opened and from a trusted origin
+         - Each popup window can only send at most one postback, subsequent postbacks are ignored
+         - `replyToId` will be automatically filled in by the ID of the originating activity
 
 ### Fixed
 

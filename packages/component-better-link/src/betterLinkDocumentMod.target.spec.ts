@@ -13,20 +13,20 @@ beforeEach(() => {
   baseHTML = micromark(BASE_MARKDOWN, { allowDangerousHtml: true });
 });
 
-describe('When passing "target" option with "noopener noreferer"', () => {
+describe('When passing "target" option with "noopener noreferrer"', () => {
   let actual: DocumentFragment;
-  const decoration: BetterLinkDocumentModDecoration = { target: 'noopener noreferer' };
+  const decoration: BetterLinkDocumentModDecoration = { target: 'noopener noreferrer' };
 
   beforeEach(() => {
     actual = betterLinkDocumentMod(parseDocumentFragmentFromString(baseHTML), () => decoration);
   });
 
-  test('should have "target" attribute set to "noopener noreferer"', () =>
-    expect(actual.querySelector('a')?.getAttribute('target')).toBe('noopener noreferer'));
+  test('should have "target" attribute set to "noopener noreferrer"', () =>
+    expect(actual.querySelector('a')?.getAttribute('target')).toBe('noopener noreferrer'));
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" target="noopener noreferer">Example</a></p>'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" target="noopener noreferrer">Example</a></p>'
     ));
 });
 
@@ -36,7 +36,7 @@ describe('When passing "target" option with false', () => {
 
   beforeEach(() => {
     actual = betterLinkDocumentMod(
-      parseDocumentFragmentFromString('<a href="https://example.com" target="noopener noreferer">Example</a>'),
+      parseDocumentFragmentFromString('<a href="https://example.com" target="noopener noreferrer">Example</a>'),
       () => decoration
     );
   });

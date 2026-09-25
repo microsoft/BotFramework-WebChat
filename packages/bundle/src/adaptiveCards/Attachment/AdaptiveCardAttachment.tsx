@@ -1,6 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
-import { any, boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import AdaptiveCardContent from './AdaptiveCardContent';
 
@@ -12,7 +12,8 @@ const adaptiveCardAttachmentPropsSchema = pipe(
       }),
       readonly()
     ),
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
@@ -22,10 +23,11 @@ type AdaptiveCardAttachmentProps = InferInput<typeof adaptiveCardAttachmentProps
 function AdaptiveCardAttachment(props: AdaptiveCardAttachmentProps) {
   const {
     attachment: { content },
-    disabled
+    disabled,
+    replyToId
   } = validateProps(adaptiveCardAttachmentPropsSchema, props);
 
-  return <AdaptiveCardContent content={content} disabled={disabled} />;
+  return <AdaptiveCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 }
 
 export default memo(AdaptiveCardAttachment);

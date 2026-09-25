@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <pre>
+window.opener?.postMessage({ type: 'postback', value: { hello: 'World!' } }, '*');
+
+await sleep(1_000);
+
+window.close();</pre
+    >
+    <script>
+      window.opener?.postMessage({ type: 'postback', value: { hello: 'World!' } });
+
+      setTimeout(() => window.close(), 1_000);
+    </script>
+  </body>
+</html>

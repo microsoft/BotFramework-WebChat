@@ -2,6 +2,7 @@ import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-ap
 import {
   type DirectLineJSBotConnection,
   type Observable,
+  type SendPostBackInit,
   type WebChatActivity,
   type sendFiles,
   type sendMessage,
@@ -19,6 +20,8 @@ import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
 import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 import { RenderToast } from '../../types/ToastMiddleware';
+
+export type { SendPostBackInit };
 
 export type WebChatAPIContextType = {
   activityStatusRenderer: RenderActivityStatus;
@@ -59,7 +62,7 @@ export type WebChatAPIContextType = {
   sendFiles?: (...args: Parameters<typeof sendFiles>) => void;
   sendMessage?: (...args: Parameters<typeof sendMessage>) => void;
   sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
-  sendPostBack?: (value?: any) => void;
+  sendPostBack?: (value?: any, init?: SendPostBackInit | undefined) => void;
   sendTypingIndicator?: boolean;
   setDictateInterims?: (interims: string[]) => void;
   setDictateState?: (dictateState: number) => void;

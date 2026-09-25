@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head></head>
+  <body>
+    <pre>window.location.href = 'dialog2.skip.html'</pre>
+    <script>
+      setTimeout(() => {
+        const url = new URL(location);
+
+        url.pathname = url.pathname.replace('dialog1', 'dialog2');
+
+        if (url.hostname === 'localhost') {
+          url.hostname = 'cross-origin.localhost';
+        } else {
+          url.hostname = 'webchat2-cross-origin';
+        }
+
+        window.location.href = url;
+      }, 1_000);
+    </script>
+  </body>
+</html>
