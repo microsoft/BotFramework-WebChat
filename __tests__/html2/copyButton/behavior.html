@@ -105,7 +105,7 @@
         const firstCopyAnnouncement = copyStatus?.firstElementChild;
 
         // WHEN: Waiting while the confirmation should remain perceivable.
-        await testHelpers.sleep(1_000);
+        await testHelpers.sleep(1000);
 
         // THEN: The visual and assistive technology confirmations should still be available.
         expect({
@@ -146,7 +146,7 @@
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
         // WHEN: Waiting for the restarted confirmation to finish.
-        await testHelpers.sleep(5_100);
+        await testHelpers.sleep(5100);
 
         // THEN: The visual and assistive technology confirmations should be cleared without an animation event.
         expect(getComputedStyle(copiedTextElement).visibility).toBe('hidden');
