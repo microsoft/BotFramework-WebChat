@@ -60,8 +60,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   }, [buttonRef, setCopyStatusPortalTarget]);
 
   useEffect(
-    () => () =>
-      copyAnnouncementTimeoutIdRef.current && clearTimeout(copyAnnouncementTimeoutIdRef.current),
+    () => () => copyAnnouncementTimeoutIdRef.current && clearTimeout(copyAnnouncementTimeoutIdRef.current),
     [clearTimeout, copyAnnouncementTimeoutIdRef]
   );
 
@@ -95,14 +94,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
       setCopyAnnouncementKey(undefined);
     }, COPY_CONFIRMATION_DURATION);
-  }, [
-    classNames,
-    clearTimeout,
-    copyAnnouncementTimeoutIdRef,
-    setCopyAnnouncementKey,
-    setTimeout,
-    targetRef
-  ]);
+  }, [classNames, clearTimeout, copyAnnouncementTimeoutIdRef, setCopyAnnouncementKey, setTimeout, targetRef]);
 
   useEffect(() => {
     let unmounted = false;
@@ -119,7 +111,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   }, [setPermissionGranted]);
 
   return (
-    <>
+    <React.Fragment>
       <ActivityButton
         className={cx(classNames['activity-copy-button'], className)}
         data-testid="copy button"
@@ -133,16 +125,12 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       </ActivityButton>
       {copyStatusPortalTarget &&
         createPortal(
-          <div
-            aria-atomic={true}
-            className={classNames['activity-copy-button__copy-announcement']}
-            role="status"
-          >
+          <div aria-atomic={true} className={classNames['activity-copy-button__copy-announcement']} role="status">
             {!!copyAnnouncementKey && <span key={copyAnnouncementKey}>{copiedText}</span>}
           </div>,
           copyStatusPortalTarget
         )}
-    </>
+    </React.Fragment>
   );
 };
 

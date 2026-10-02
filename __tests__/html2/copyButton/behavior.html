@@ -84,10 +84,9 @@
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
 
-
         // axe-core is crazy about empty button name while swapping name
-        const { checkAccessibility } = window
-        window.checkAccessibility = async () => { };
+        const { checkAccessibility } = window;
+        window.checkAccessibility = async () => {};
 
         // THEN: Should focus on the "Copy" button
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
