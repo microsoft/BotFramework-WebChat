@@ -69,8 +69,17 @@
         // THEN: The "Copy" button should say "Copied".
         await host.snapshot('local');
 
+        // WHEN: Waiting while the confirmation should remain perceivable.
+        await testHelpers.sleep(1_000);
+
+        // THEN: The "Copied" confirmation should remain visible.
+        expect(
+          getComputedStyle(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`).lastElementChild)
+            .visibility
+        ).toBe('visible');
+
         // WHEN: After the confirmation finishes.
-        await testHelpers.sleep(5_100);
+        await testHelpers.sleep(4_100);
 
         // THEN: The "Copy" button should back to normal.
         await host.snapshot('local');
