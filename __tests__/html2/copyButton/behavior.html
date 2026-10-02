@@ -101,6 +101,42 @@
         // THEN: The copy button should change to "Copied".
         await host.snapshot('local');
 
+        const copiedTextElement = copyButton.lastElementChild;
+        const copyStatus = document.querySelector('.webchat > [role="status"]');
+        const firstCopyAnnouncement = copyStatus?.firstElementChild;
+
+        // WHEN: Waiting while the confirmation should remain perceivable.
+        await testHelpers.sleep(1_000);
+
+        // THEN: The visual and assistive technology confirmations should still be available.
+        expect({
+          ariaAtomic: copyStatus?.getAttribute('aria-atomic'),
+          labelledAncestor: copyStatus?.closest('[aria-labelledby]'),
+          nestedInSharedLiveRegion: document.querySelector('.webchat__live-region').contains(copyStatus),
+          role: copyStatus?.getAttribute('role'),
+          statusText: copyStatus?.textContent,
+          visibility: getComputedStyle(copiedTextElement).visibility
+        }).toEqual({
+          ariaAtomic: 'true',
+          labelledAncestor: null,
+          nestedInSharedLiveRegion: false,
+          role: 'status',
+          statusText: 'Copied',
+          visibility: 'visible'
+        });
+
+        // WHEN: Activating Copy again.
+        await host.sendKeys('ENTER');
+
+        // THEN: The status content should be replaced and the visual confirmation should restart.
+        expect(document.querySelector('.webchat > [role="status"]')).toBe(copyStatus);
+        expect(copyStatus.firstElementChild).not.toBe(firstCopyAnnouncement);
+        expect(copyStatus.textContent).toBe('Copied');
+        expect(getComputedStyle(copiedTextElement).visibility).toBe('visible');
+
+        // WHEN: Disabling the visual animation before it completes.
+        copiedTextElement.style.animation = 'none';
+
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="plain-text-box"]'));
         await host.sendKeys('+CONTROL', 'v', '-CONTROL');
@@ -110,8 +146,12 @@
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
-        // Sleep for 1 second for the "Copied" text to go away.
-        await testHelpers.sleep(500);
+        // WHEN: Waiting for the restarted confirmation to finish.
+        await testHelpers.sleep(5_100);
+
+        // THEN: The visual and assistive technology confirmations should be cleared without an animation event.
+        expect(getComputedStyle(copiedTextElement).visibility).toBe('hidden');
+        expect(copyStatus.textContent).toBe('');
 
         window.checkAccessibility = checkAccessibility;
 

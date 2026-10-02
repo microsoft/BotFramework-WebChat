@@ -17,7 +17,7 @@ export default function createActivityButtonStyle() {
 
       '&.webchat__activity-copy-button--copied': {
         '.webchat__activity-copy-button__copied-text': {
-          animation: 'webchat__activity-copy-button__copied-animation 0.7s linear'
+          animation: 'webchat__activity-copy-button__copied-animation 5s linear'
         },
 
         '.webchat__activity-button__icon, .webchat__activity-button__text': {

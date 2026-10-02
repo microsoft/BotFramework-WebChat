@@ -19,7 +19,7 @@
 
   &.activity-copy-button--copied {
     .activity-copy-button__copied-text {
-      animation: webchat__activity-copy-button__copied-animation 0.7s linear;
+      animation: webchat__activity-copy-button__copied-animation 5s linear;
     }
 
     .activity-button__icon,
@@ -30,7 +30,14 @@
 }
 
 :global(.webchat) .activity-copy-button__copy-announcement {
+  color: transparent;
+  height: 1px;
+  overflow: hidden;
   pointer-events: none;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  width: 1px;
 }
 
 @keyframes webchat__activity-copy-button__copied-animation {

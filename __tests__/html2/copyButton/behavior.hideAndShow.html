@@ -69,8 +69,8 @@
         // THEN: The "Copy" button should say "Copied".
         await host.snapshot('local');
 
-        // WHEN: After 1 second.
-        await testHelpers.sleep(1_000);
+        // WHEN: After the confirmation finishes.
+        await testHelpers.sleep(5_100);
 
         // THEN: The "Copy" button should back to normal.
         await host.snapshot('local');
