@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: screen reader primary action</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        const createActivity = (id, position) => ({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              abstract: `Activity ${position}`,
+              author: { name: 'Research' },
+              isPartOf: { '@id': '_:g-00001', '@type': 'HowTo' },
+              keywords: ['AIGeneratedContent', 'AnalysisMessage'],
+              position,
+              type: 'https://schema.org/Message'
+            }
+          ],
+          id,
+          type: 'message'
+        });
+
+        directLine.emulateIncomingActivity(createActivity('group-activity-1', 1));
+        directLine.emulateIncomingActivity(createActivity('group-activity-2', 2));
+
+        await pageConditions.numActivitiesShown(2);
+        await pageObjects.focusTranscript();
+        await host.sendKeys('ARROW_UP', 'ARROW_UP');
+
+        const activeDescendant = () =>
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'));
+        const groupButton = () => document.querySelector('.collapsible-grouping__header .activity-button');
+
+        // WHEN: Narrator invokes the grouped activity's primary action.
+        activeDescendant().click();
+
+        // THEN: Focus should move to the group's first interactive control.
+        await pageConditions.became(
+          'focus is on the group expand or collapse button after screen reader primary action',
+          () => document.activeElement === groupButton(),
+          1000
+        );
+
+        // WHEN: Escape is pressed from inside the group.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Focus should return to the transcript with the group active.
+        await pageConditions.became(
+          'focus returned to the transcript with the group active',
+          () =>
+            document.activeElement === pageElements.transcript() &&
+            !!activeDescendant() &&
+            !pageElements.focusedActivity(),
+          1000
+        );
+
+        // WHEN: Plain Enter is pressed.
+        await host.sendKeys('ENTER');
+
+        // THEN: Plain Enter should continue to move focus to the group button.
+        await pageConditions.became(
+          'focus is on the group expand or collapse button after plain Enter',
+          () => document.activeElement === groupButton(),
+          1000
+        );
+
+        // WHEN: Escape is pressed again.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Focus should return to the transcript with the group active.
+        await pageConditions.became(
+          'focus returned to the transcript after plain Enter on a group',
+          () =>
+            document.activeElement === pageElements.transcript() &&
+            !!activeDescendant() &&
+            !pageElements.focusedActivity(),
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>
