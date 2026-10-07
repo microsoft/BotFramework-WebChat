@@ -2,7 +2,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import React, { Fragment, memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
+import React, { Fragment, memo, useCallback, useMemo, useRef, useState, type MouseEventHandler } from 'react';
 import cx from 'classnames';
 import { array, custom, is, minLength, object, optional, pipe, readonly, string, type InferOutput } from 'valibot';
 
@@ -67,6 +67,7 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
   const { activity, children, className, groupKey } = validateProps(partGroupingFocusableActivityPropsSchema, props);
 
   const [activeDescendantId] = useActiveDescendantId();
+  const focusTrapTargetRef = useRef<HTMLDivElement>();
 
   const getGroupDescendantIdByActivityKey = useGetGroupDescendantIdByActivityKey();
   const focusByGroupKey = useFocusByGroupKey();
@@ -84,6 +85,9 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
 
   // When receive Escape key from descendant, focus back to the group.
   const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
+
+  // Screen readers dispatch a click to the active descendant when users invoke its primary action.
+  const handleScreenReaderPrimaryAction = useCallback(() => focusTrapTargetRef.current?.focus(), [focusTrapTargetRef]);
 
   // When the user press UP/DOWN arrow keys, we put a visual focus indicator around the focused group.
   // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the activity.
@@ -115,11 +119,17 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
         targetClassName="webchat__basic-transcript__group-focus-target"
+        targetRef={focusTrapTargetRef}
       >
         {children}
       </FocusTrap>
       <TranscriptFocusContentOverlay>
-        {!android && <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />}
+        {!android && (
+          <TranscriptFocusContentActiveDescendant
+            id={groupingActivityDescendantId}
+            onClick={handleScreenReaderPrimaryAction}
+          />
+        )}
         <TranscriptFocusIndicator type="content" />
       </TranscriptFocusContentOverlay>
     </TranscriptFocusContent>
