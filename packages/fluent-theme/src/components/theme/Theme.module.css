@@ -297,7 +297,7 @@
 :global(.webchat-fluent).theme
   :global(
     .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
-    + .transcript-focus-area__transcript-indicator
+      + .transcript-focus-area__transcript-indicator
   ) {
   border-color: var(--webchat-colorStrokeFocus2);
 }
@@ -403,7 +403,7 @@
 :global(.webchat-fluent).theme
   :global(
     .webchat__basic-transcript:has(.part-grouping-decorator:only-child):has(.pre-chat-message-activity)
-    .webchat__basic-transcript__filler
+      .webchat__basic-transcript__filler
   ) {
   /* limit grow to half of the size to center the activity */
   flex-grow: 0.5;
@@ -651,10 +651,6 @@
 :global(.webchat-fluent).theme :global(.activity-copy-button) {
   :global(.activity-copy-button__copied-text) {
     background-color: var(--webchat-colorNeutralBackground1);
-  }
-
-  &:global(.activity-copy-button--copied) :global(.activity-copy-button__copied-text) {
-    animation-duration: var(--webchat-durationUltraSlow);
   }
 }
 

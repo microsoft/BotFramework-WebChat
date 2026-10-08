@@ -52,9 +52,7 @@
         await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
           features: [
             { name: 'prefers-reduced-motion', value: 'reduce' },
-            ...(theme === 'dark' || theme === 'light'
-              ? [{ name: 'prefers-color-scheme', value: theme }]
-              : [])
+            ...(theme === 'dark' || theme === 'light' ? [{ name: 'prefers-color-scheme', value: theme }] : [])
           ]
         });
 
@@ -99,17 +97,17 @@
         const root = createRoot(document.getElementById('webchat'));
 
         root.render(
-          variant ? 
-            React.createElement(
-              FluentProvider,
-              { theme: fluentTheme },
-              React.createElement(
-                FluentThemeProvider,
-                { variant: variant },
-                React.createElement(ReactWebChat, { directLine, store, styleOptions })
+          variant
+            ? React.createElement(
+                FluentProvider,
+                { theme: fluentTheme },
+                React.createElement(
+                  FluentThemeProvider,
+                  { variant: variant },
+                  React.createElement(ReactWebChat, { directLine, store, styleOptions })
+                )
               )
-            ) :
-            React.createElement(ReactWebChat, { directLine, store, styleOptions })
+            : React.createElement(ReactWebChat, { directLine, store, styleOptions })
         );
 
         await pageConditions.uiConnected();
@@ -177,10 +175,19 @@
 
         // THEN: "Copy" button should appear after the message.
         await host.snapshot('local');
+
+        if (variant === 'fluent') {
+          // WHEN: Activating Copy and waiting longer than the previous Fluent theme override.
+          await host.click(copyButton);
+          await testHelpers.sleep(1_000);
+
+          // THEN: The Fluent-themed confirmation should remain visible.
+          expect(getComputedStyle(copyButton.lastElementChild).visibility).toBe('visible');
+        }
       });
 
       // TODO: figure out why it fails with copilot image
-      window.checkAccessibility = async () => {}
+      window.checkAccessibility = async () => {};
     </script>
   </body>
 </html>
