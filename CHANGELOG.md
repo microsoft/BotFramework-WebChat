@@ -19,6 +19,8 @@ Legends:
 
 ## [Unreleased]
 
+## [4.19.2] - 2026-10-08
+
 ### Added
 
 - Added `styleOptions.richCardTitleOmitHeadingRole` (default `false`) to opt out of `style: 'heading'` on rich card titles, in PR [#5839](https://github.com/microsoft/BotFramework-WebChat/pull/5839), by [@cjennison](https://github.com/cjennison)
