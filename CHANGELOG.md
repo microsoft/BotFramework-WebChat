@@ -2893,7 +2893,8 @@ Breaking changes in this release:
 
 - Initial release of Web Chat v4
 
-[Unreleased]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.1...HEAD
+[Unreleased]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.2...HEAD
+[4.19.2]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.1...v4.19.2
 [4.19.1]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.19.0...v4.19.1
 [4.19.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.18.0...v4.19.0
 [4.18.0]: https://github.com/microsoft/BotFramework-WebChat/compare/v4.17.0...v4.18.0
