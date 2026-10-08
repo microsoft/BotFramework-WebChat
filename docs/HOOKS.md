@@ -1311,11 +1311,13 @@ When called, this function will send a `messageBack` activity to the bot.
 
 <!-- prettier-ignore-start -->
 ```js
-useSendPostBack(): (value: any) => void
+useSendPostBack(): (value: any, init?: { replyToId?: string | undefined } | undefined) => void
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will send a `postBack` activity to the bot.
+> New in 4.19.2: Added `init.replyToId` argument.
+
+When called, this function will send a `postBack` activity to the bot with optionally `replyToId`.
 
 ## `useSendTimeoutForActivity`
 
