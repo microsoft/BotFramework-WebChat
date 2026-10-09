@@ -40,7 +40,7 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
           replyToId={activity?.id}
         />
       ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
-        <OAuthCardAttachment attachment={attachment} />
+        <OAuthCardAttachment attachment={attachment} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
         <ReceiptCardAttachment attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.signin' ? (
