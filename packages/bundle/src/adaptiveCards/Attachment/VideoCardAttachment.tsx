@@ -37,3 +37,4 @@ const VideoCardAttachment = memo((props: VideoCardAttachmentProps) => {
 VideoCardAttachment.displayName = 'VideoCardAttachment';
 
 export default VideoCardAttachment;
+export { videoCardAttachmentPropsSchema, type VideoCardAttachmentProps };
