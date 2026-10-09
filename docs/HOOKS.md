@@ -958,15 +958,21 @@ To stop observing scroll positions, pass a falsy value to the `observer` argumen
 ## `usePerformCardAction`
 
 <!-- prettier-ignore-start -->
-```js
-usePerformCardAction(): ({
-  displayText: string,
-  text: string,
-  type: string,
-  value: string
-}) => void
+```ts
+usePerformCardAction(): (
+  cardAction: {
+    readonly displayText?: string | undefined;
+    readonly text?: string | undefined;
+    readonly type: string;
+    readonly value?: string | undefined;
+  },
+  event?: { readonly target: EventTarget } | undefined,
+  init?: { readonly replyToId?: string | undefined } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.19.2: `init.replyToId` is added.
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
 
