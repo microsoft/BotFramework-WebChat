@@ -58,5 +58,7 @@ function HeroCardContent(props: HeroCardContentProps) {
   );
 }
 
+HeroCardContent.displayName = 'HeroCardContent';
+
 export default memo(HeroCardContent);
 export { heroCardContentPropsSchema, type HeroCardContentProps };

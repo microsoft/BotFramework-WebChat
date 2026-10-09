@@ -36,3 +36,4 @@ const HeroCardAttachment = memo((props: HeroCardAttachmentProps) => {
 HeroCardAttachment.displayName = 'HeroCardAttachment';
 
 export default HeroCardAttachment;
+export { heroCardAttachmentPropsSchema, type HeroCardAttachmentProps };
