@@ -960,12 +960,7 @@ To stop observing scroll positions, pass a falsy value to the `observer` argumen
 <!-- prettier-ignore-start -->
 ```ts
 usePerformCardAction(): (
-  cardAction: {
-    readonly displayText?: string | undefined;
-    readonly text?: string | undefined;
-    readonly type: string;
-    readonly value?: string | undefined;
-  },
+  cardAction: DirectLineCardAction,
   event?: { readonly target: EventTarget } | undefined,
   init?: { readonly replyToId?: string | undefined } | undefined
 ) => void
