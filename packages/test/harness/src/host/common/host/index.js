@@ -14,6 +14,7 @@ const pressAndHold = require('./pressAndHold');
 const ready = require('./ready');
 const release = require('./release');
 const sendAccessKey = require('./sendAccessKey');
+const sendAndGetDevToolsCommand = require('./sendAndGetDevToolsCommand');
 const sendDevToolsCommand = require('./sendDevToolsCommand');
 const sendKeys = require('./sendKeys');
 const sendShiftTab = require('./sendShiftTab');
@@ -45,6 +46,7 @@ module.exports = function createHost(webDriver) {
     readyPromise: readyWithResolvers.promise,
     release: release(webDriver),
     sendAccessKey: sendAccessKey(webDriver),
+    sendAndGetDevToolsCommand: sendAndGetDevToolsCommand(webDriver),
     sendDevToolsCommand: sendDevToolsCommand(webDriver),
     sendKeys: sendKeys(webDriver),
     sendShiftTab: sendShiftTab(webDriver),

@@ -19,6 +19,7 @@ export default function createHost() {
     ready: () => {},
     release: () => {},
     sendAccessKey: () => {},
+    sendAndGetDevToolsCommand: () => {},
     sendDevToolsCommand: () => {},
     sendKeys: () => {},
     sendShiftTab: () => {},
