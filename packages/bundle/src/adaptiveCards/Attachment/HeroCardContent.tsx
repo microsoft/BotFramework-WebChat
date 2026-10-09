@@ -1,8 +1,8 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -22,7 +22,7 @@ const heroCardContentPropsSchema = pipe(
   readonly()
 );
 
-type HeroCardContentProps = InferInput<typeof heroCardContentPropsSchema>;
+type HeroCardContentProps = InferReactProps<typeof heroCardContentPropsSchema>;
 
 function HeroCardContent(props: HeroCardContentProps) {
   const { actionPerformedClassName, content, disabled, replyToId } = validateProps(heroCardContentPropsSchema, props);
