@@ -20,7 +20,7 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
       const [{ activity, attachment }] = args;
 
       return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
-        <HeroCardAttachment attachment={attachment} />
+        <HeroCardAttachment attachment={attachment} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
         <AdaptiveCardAttachment attachment={attachment} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (

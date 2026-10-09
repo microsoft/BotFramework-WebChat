@@ -16,7 +16,8 @@ const heroCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: directLineBasicCardSchema,
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
@@ -24,7 +25,7 @@ const heroCardContentPropsSchema = pipe(
 type HeroCardContentProps = InferInput<typeof heroCardContentPropsSchema>;
 
 function HeroCardContent(props: HeroCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = validateProps(heroCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(heroCardContentPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
@@ -51,6 +52,7 @@ function HeroCardContent(props: HeroCardContentProps) {
       actionPerformedClassName={actionPerformedClassName}
       adaptiveCard={builtCard}
       disabled={disabled}
+      replyToId={replyToId}
       tapAction={content && content.tap}
     />
   );
