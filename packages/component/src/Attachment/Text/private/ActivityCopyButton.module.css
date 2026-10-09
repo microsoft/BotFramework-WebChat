@@ -19,7 +19,7 @@
 
   &.activity-copy-button--copied {
     .activity-copy-button__copied-text {
-      animation: webchat__activity-copy-button__copied-animation 5s linear;
+      visibility: visible;
     }
 
     .activity-button__icon,
@@ -38,15 +38,4 @@
   top: 0;
   white-space: nowrap;
   width: 1px;
-}
-
-@keyframes webchat__activity-copy-button__copied-animation {
-  0% {
-    /* This is set during the animation only hence shouldn't spill when hidden from the above tree */
-    visibility: visible;
-  }
-
-  100% {
-    visibility: unset;
-  }
 }

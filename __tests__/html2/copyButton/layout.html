@@ -183,6 +183,12 @@
 
           // THEN: The Fluent-themed confirmation should remain visible.
           expect(getComputedStyle(copyButton.lastElementChild).visibility).toBe('visible');
+
+          // WHEN: Waiting for the visual confirmation to finish.
+          await testHelpers.sleep(1_100);
+
+          // THEN: The Fluent-themed confirmation should be hidden.
+          expect(getComputedStyle(copyButton.lastElementChild).visibility).toBe('hidden');
         }
       });
 

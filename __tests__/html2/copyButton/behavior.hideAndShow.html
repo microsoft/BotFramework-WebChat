@@ -78,8 +78,8 @@
             .visibility
         ).toBe('visible');
 
-        // WHEN: After the confirmation finishes.
-        await testHelpers.sleep(4_100);
+        // WHEN: After the visual confirmation finishes.
+        await testHelpers.sleep(1_100);
 
         // THEN: The "Copy" button should back to normal.
         await host.snapshot('local');

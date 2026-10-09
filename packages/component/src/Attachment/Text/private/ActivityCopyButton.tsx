@@ -13,7 +13,8 @@ import styles from './ActivityCopyButton.module.css';
 
 const { useLocalizer, usePonyfill, useUIState } = hooks;
 
-const COPY_CONFIRMATION_DURATION = 5_000;
+const COPY_ANNOUNCEMENT_DURATION = 5_000;
+const COPY_CONFIRMATION_DURATION = 2_000;
 
 const activityCopyButtonPropsSchema = pipe(
   object({
@@ -36,6 +37,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const copyAnnouncementTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
+  const copyConfirmationTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
   const localize = useLocalizer();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
@@ -43,25 +45,15 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   const disabled = !permissionGranted || uiState === 'disabled';
 
   useEffect(() => {
-    const { current } = buttonRef;
-
-    if (current) {
-      const handleAnimationEnd = () =>
-        current.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
-      current.addEventListener('animationend', handleAnimationEnd);
-
-      return () => current.removeEventListener('animationend', handleAnimationEnd);
-    }
-  }, [buttonRef, classNames]);
-
-  useEffect(() => {
     setCopyStatusPortalTarget(buttonRef.current?.closest<HTMLElement>('.webchat') || null);
   }, [buttonRef, setCopyStatusPortalTarget]);
 
   useEffect(
-    () => () => copyAnnouncementTimeoutIdRef.current && clearTimeout(copyAnnouncementTimeoutIdRef.current),
-    [clearTimeout, copyAnnouncementTimeoutIdRef]
+    () => () => {
+      copyAnnouncementTimeoutIdRef.current && clearTimeout(copyAnnouncementTimeoutIdRef.current);
+      copyConfirmationTimeoutIdRef.current && clearTimeout(copyConfirmationTimeoutIdRef.current);
+    },
+    [clearTimeout, copyAnnouncementTimeoutIdRef, copyConfirmationTimeoutIdRef]
   );
 
   const handleClick = useCallback(() => {
@@ -77,24 +69,33 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       ])
       .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
-    buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
-    // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
-    // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
-    buttonRef.current?.offsetWidth;
-
     buttonRef.current?.classList.add(...classNames['activity-copy-button--copied'].split(/\s+/gu));
 
     setCopyAnnouncementKey(key => (key || 0) + 1);
 
     copyAnnouncementTimeoutIdRef.current && clearTimeout(copyAnnouncementTimeoutIdRef.current);
+    copyConfirmationTimeoutIdRef.current && clearTimeout(copyConfirmationTimeoutIdRef.current);
+
+    copyConfirmationTimeoutIdRef.current = setTimeout(() => {
+      copyConfirmationTimeoutIdRef.current = undefined;
+
+      buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
+    }, COPY_CONFIRMATION_DURATION);
+
     copyAnnouncementTimeoutIdRef.current = setTimeout(() => {
       copyAnnouncementTimeoutIdRef.current = undefined;
 
-      buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
       setCopyAnnouncementKey(undefined);
-    }, COPY_CONFIRMATION_DURATION);
-  }, [classNames, clearTimeout, copyAnnouncementTimeoutIdRef, setCopyAnnouncementKey, setTimeout, targetRef]);
+    }, COPY_ANNOUNCEMENT_DURATION);
+  }, [
+    classNames,
+    clearTimeout,
+    copyAnnouncementTimeoutIdRef,
+    copyConfirmationTimeoutIdRef,
+    setCopyAnnouncementKey,
+    setTimeout,
+    targetRef
+  ]);
 
   useEffect(() => {
     let unmounted = false;

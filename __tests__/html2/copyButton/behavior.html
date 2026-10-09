@@ -133,9 +133,6 @@
         expect(copyStatus.textContent).toBe('Copied');
         expect(getComputedStyle(copiedTextElement).visibility).toBe('visible');
 
-        // WHEN: Disabling the visual animation before it completes.
-        copiedTextElement.style.animation = 'none';
-
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="plain-text-box"]'));
         await host.sendKeys('+CONTROL', 'v', '-CONTROL');
@@ -145,11 +142,17 @@
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
-        // WHEN: Waiting for the restarted confirmation to finish.
-        await testHelpers.sleep(5100);
+        // WHEN: Waiting for the restarted visual confirmation to finish.
+        await testHelpers.sleep(2100);
 
-        // THEN: The visual and assistive technology confirmations should be cleared without an animation event.
+        // THEN: The visual confirmation should clear while the assistive technology confirmation remains available.
         expect(getComputedStyle(copiedTextElement).visibility).toBe('hidden');
+        expect(copyStatus.textContent).toBe('Copied');
+
+        // WHEN: Waiting for the assistive technology confirmation to finish.
+        await testHelpers.sleep(3000);
+
+        // THEN: The assistive technology confirmation should be cleared.
         expect(copyStatus.textContent).toBe('');
 
         window.checkAccessibility = checkAccessibility;
