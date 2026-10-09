@@ -49,7 +49,7 @@ Legends:
          - Postback is only accepted within 5 minutes after the popup window is opened and from a trusted origin
          - Each popup window can only send at most one postback, subsequent postbacks are ignored
          - `replyToId` will be automatically filled in by the ID of the originating activity
-- Rich cards: added fill-in of `replyToId` for card actions, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
+- Rich cards: added fill-in of `replyToId` for "post back" card actions, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
