@@ -37,3 +37,4 @@ const AudioCardAttachment = memo((props: AudioCardAttachmentProps) => {
 AudioCardAttachment.displayName = 'AudioCardAttachment';
 
 export default AudioCardAttachment;
+export { audioCardAttachmentPropsSchema, type AudioCardAttachmentProps };

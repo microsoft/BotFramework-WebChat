@@ -60,3 +60,4 @@ const CommonCard = memo((props: CommonCardProps) => {
 CommonCard.displayName = 'CommonCard';
 
 export default CommonCard;
+export { commonCardPropsSchema, type CommonCardProps };
