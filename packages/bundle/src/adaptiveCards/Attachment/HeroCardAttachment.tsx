@@ -25,9 +25,6 @@ const HeroCardAttachment = memo((props: HeroCardAttachmentProps) => {
   return (
     !!content && (
       <HeroCardContent
-        // TODO: [P1] Validated "content" prop is marked as read-only.
-        //       However, <HeroCardContent> is using InferInput<T> and accepting read-write.
-        //       We should build our own InferProp<T> to work like InferInput<T> but honoring read-only.
         content={content}
         disabled={disabled}
         replyToId={replyToId}
