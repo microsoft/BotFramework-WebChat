@@ -1,9 +1,10 @@
 /* eslint react/no-array-index-key: "off" */
 
+import type { InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
-import { boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, parse, pipe, readonly, string } from 'valibot';
 
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
@@ -16,15 +17,16 @@ const videoCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: directLineMediaCardSchema,
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
 
-type VideoCardContentProps = InferInput<typeof videoCardContentPropsSchema>;
+type VideoCardContentProps = InferReactProps<typeof videoCardContentPropsSchema>;
 
 function VideoCardContent(props: VideoCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parse(videoCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = parse(videoCardContentPropsSchema, props);
 
   const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media } = content;
   const classNames = useStyles(styles);
@@ -38,7 +40,12 @@ function VideoCardContent(props: VideoCardContentProps) {
           </li>
         ))}
       </ul>
-      <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
+      <CommonCard
+        actionPerformedClassName={actionPerformedClassName}
+        content={content}
+        disabled={disabled}
+        replyToId={replyToId}
+      />
     </div>
   );
 }
