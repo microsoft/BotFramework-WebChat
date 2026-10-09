@@ -958,15 +958,16 @@ To stop observing scroll positions, pass a falsy value to the `observer` argumen
 ## `usePerformCardAction`
 
 <!-- prettier-ignore-start -->
-```js
-usePerformCardAction(): ({
-  displayText: string,
-  text: string,
-  type: string,
-  value: string
-}) => void
+```ts
+usePerformCardAction(): (
+  cardAction: DirectLineCardAction,
+  event?: { readonly target: EventTarget } | undefined,
+  init?: { readonly replyToId?: string | undefined } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.19.2: `init.replyToId` is added.
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
 
@@ -1311,11 +1312,13 @@ When called, this function will send a `messageBack` activity to the bot.
 
 <!-- prettier-ignore-start -->
 ```js
-useSendPostBack(): (value: any) => void
+useSendPostBack(): (value: any, init?: { replyToId?: string | undefined } | undefined) => void
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will send a `postBack` activity to the bot.
+> New in 4.19.2: Added `init.replyToId` argument.
+
+When called, this function will send a `postBack` activity to the bot with optionally `replyToId`.
 
 ## `useSendTimeoutForActivity`
 

@@ -20,23 +20,49 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
       const [{ activity, attachment }] = args;
 
       return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
-        <HeroCardAttachment attachment={attachment} />
+        <HeroCardAttachment
+          // Not sure why we need to force-cast `contentType` even we already have a ternary operator above.
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.hero' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
         <AdaptiveCardAttachment attachment={attachment} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
-        <AnimationCardAttachment attachment={attachment} />
+        <AnimationCardAttachment
+          // TODO: [P1] Fix the typing of "attachment" request, it should allow "DirectLineMediaCard".
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.animation' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
-        <AudioCardAttachment attachment={attachment} />
+        <AudioCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.audio' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
-        <OAuthCardAttachment attachment={attachment} />
+        <OAuthCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.oauth' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
-        <ReceiptCardAttachment attachment={attachment} />
+        <ReceiptCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.receipt' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.signin' ? (
-        <SignInCardAttachment attachment={attachment} />
+        <SignInCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.signin' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ? (
-        <ThumbnailCardAttachment attachment={attachment} />
+        <ThumbnailCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.thumbnail' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.video' ? (
-        <VideoCardAttachment attachment={attachment} />
+        <VideoCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.video' }}
+          replyToId={activity?.id}
+        />
       ) : (
         next(...args)
       );

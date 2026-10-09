@@ -1,30 +1,36 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
 import React, { memo, useMemo } from 'react';
-import { boolean, object, optional, pipe, readonly, string } from 'valibot';
+import { array, boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import { directLineSignInCardSchema } from './private/directLineSchema';
+import directLineCardActionSchema from './private/directLineCardActionSchema';
 
 const { useDirection } = hooks;
 
-const oauthCardContentPropsSchema = pipe(
+const commonCardPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
-    content: directLineSignInCardSchema,
+    content: object({
+      buttons: optional(pipe(array(directLineCardActionSchema), readonly())),
+      subtitle: optional(string()),
+      text: optional(string()),
+      title: optional(string()),
+      tap: optional(directLineCardActionSchema)
+    }),
     disabled: optional(boolean()),
     replyToId: optional(string())
   }),
   readonly()
 );
 
-type OAuthCardContentProps = InferReactProps<typeof oauthCardContentPropsSchema>;
+type CommonCardProps = InferReactProps<typeof commonCardPropsSchema>;
 
-function OAuthCardContent(props: OAuthCardContentProps) {
-  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(oauthCardContentPropsSchema, props);
+const CommonCard = memo((props: CommonCardProps) => {
+  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(commonCardPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
@@ -34,8 +40,7 @@ function OAuthCardContent(props: OAuthCardContentProps) {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
-      builder.addCommonHeaders(content as any);
-      builder.addButtons(content.buttons as any, true);
+      builder.addCommon(content);
 
       return builder.card;
     }
@@ -47,9 +52,12 @@ function OAuthCardContent(props: OAuthCardContentProps) {
       adaptiveCard={builtCard}
       disabled={disabled}
       replyToId={replyToId}
+      tapAction={content && content.tap}
     />
   );
-}
+});
 
-export default memo(OAuthCardContent);
-export { oauthCardContentPropsSchema, type OAuthCardContentProps };
+CommonCard.displayName = 'CommonCard';
+
+export default CommonCard;
+export { commonCardPropsSchema, type CommonCardProps };

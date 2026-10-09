@@ -30,7 +30,7 @@ Legends:
    - ~~Refer to [this test](./__tests__/html2/adaptiveCard/signInAction.html) for the reference payload~~
    - ~~Note: this implementation is based on observation of how Microsoft Teams behave and could deviate from their official implementation~~
    - Obsoleted in favor of PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862)
-- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog)
+- Added card action `webchat:callURL` and [Adaptive Card action `Action.OpenUrlDialog`](https://adaptivecards.microsoft.com/?topic=Action.OpenUrlDialog), in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862) and PR [#5863](https://github.com/microsoft/BotFramework-WebChat/pull/5863), by [@compulim](https://github.com/compulim)
    - The card action is designed to host popup for authentication and authorization (call-and-return pattern), it can optionally send a postback message to the bot
    - Open in popup, in PR [#5862](https://github.com/microsoft/BotFramework-WebChat/pull/5862), by [@compulim](https://github.com/compulim)
       - Added `styleOptions.callURLActionPopupWindowHeight/Width` for sizing the popup window
@@ -49,6 +49,7 @@ Legends:
          - Postback is only accepted within 5 minutes after the popup window is opened and from a trusted origin
          - Each popup window can only send at most one postback, subsequent postbacks are ignored
          - `replyToId` will be automatically filled in by the ID of the originating activity
+- Rich cards: added fill-in of `replyToId` for "post back" card actions, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
