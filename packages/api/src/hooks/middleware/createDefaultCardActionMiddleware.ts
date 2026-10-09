@@ -19,7 +19,7 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
         case 'imBack':
           if (typeof value === 'string') {
             // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-          // TODO: [P1] Add `replyToId`.
+            // TODO: [P1] Add `replyToId`.
             dispatch(sendMessage(value, 'imBack'));
           } else {
             throw new Error('cannot send "imBack" with a non-string value');
