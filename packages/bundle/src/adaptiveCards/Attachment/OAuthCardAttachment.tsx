@@ -9,7 +9,7 @@ const oauthCardAttachmentPropsSchema = pipe(
   object({
     attachment: pipe(
       object({
-        content: directLineSignInCardSchema,
+        content: optional(directLineSignInCardSchema),
         contentType: literal('application/vnd.microsoft.card.oauth')
       }),
       readonly()
@@ -25,7 +25,7 @@ type OAuthCardAttachmentProps = InferReactProps<typeof oauthCardAttachmentPropsS
 const OAuthCardAttachment = memo((props: OAuthCardAttachmentProps) => {
   const { attachment: { content } = {}, disabled, replyToId } = validateProps(oauthCardAttachmentPropsSchema, props);
 
-  return <OAuthCardContent content={content} disabled={disabled} replyToId={replyToId} />;
+  return !!content&&<OAuthCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 });
 
 OAuthCardAttachment.displayName = 'OAuthCardAttachment';

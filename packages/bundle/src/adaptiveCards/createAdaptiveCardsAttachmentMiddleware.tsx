@@ -42,7 +42,10 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
       ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
         <OAuthCardAttachment attachment={attachment} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
-        <ReceiptCardAttachment attachment={attachment} />
+        <ReceiptCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.receipt' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.signin' ? (
         <SignInCardAttachment attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ? (

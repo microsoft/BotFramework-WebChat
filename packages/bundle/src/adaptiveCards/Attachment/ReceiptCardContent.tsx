@@ -1,10 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
 
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -22,15 +22,19 @@ const receiptCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: directLineReceiptCardSchema,
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
 
-type ReceiptCardContentProps = InferInput<typeof receiptCardContentPropsSchema>;
+type ReceiptCardContentProps = InferReactProps<typeof receiptCardContentPropsSchema>;
 
 function ReceiptCardContent(props: ReceiptCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = validateProps(receiptCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(
+    receiptCardContentPropsSchema,
+    props
+  );
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
@@ -127,6 +131,7 @@ function ReceiptCardContent(props: ReceiptCardContentProps) {
       actionPerformedClassName={actionPerformedClassName}
       adaptiveCard={builtCard}
       disabled={disabled}
+      replyToId={replyToId}
       tapAction={content && content.tap}
     />
   );
