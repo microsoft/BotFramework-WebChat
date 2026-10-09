@@ -29,7 +29,7 @@ const ThumbnailCardAttachment = memo((props: ThumbnailCardAttachmentProps) => {
     replyToId
   } = validateProps(thumbnailCardAttachmentPropsSchema, props);
 
-  return <ThumbnailCardContent content={content} disabled={disabled} replyToId={replyToId} />;
+  return !!content && <ThumbnailCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 });
 
 ThumbnailCardAttachment.displayName = 'ThumbnailCardAttachment';

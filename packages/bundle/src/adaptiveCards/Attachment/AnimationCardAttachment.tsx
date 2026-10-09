@@ -9,7 +9,7 @@ const animationCardAttachmentPropsSchema = pipe(
   object({
     attachment: pipe(
       object({
-        content: directLineMediaCardSchema,
+        content: optional(directLineMediaCardSchema),
         contentType: literal('application/vnd.microsoft.card.animation')
       }),
       readonly()
@@ -23,9 +23,13 @@ const animationCardAttachmentPropsSchema = pipe(
 type AnimationCardAttachmentProps = InferInput<typeof animationCardAttachmentPropsSchema>;
 
 const AnimationCardAttachment = memo((props: AnimationCardAttachmentProps) => {
-  const { disabled, replyToId } = validateProps(animationCardAttachmentPropsSchema, props);
+  const {
+    attachment: { content },
+    disabled,
+    replyToId
+  } = validateProps(animationCardAttachmentPropsSchema, props);
 
-  return <AnimationCardContent content={props.attachment.content} disabled={disabled} replyToId={replyToId} />;
+  return !!content && <AnimationCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 });
 
 AnimationCardAttachment.displayName = 'AnimationCardAttachment';
