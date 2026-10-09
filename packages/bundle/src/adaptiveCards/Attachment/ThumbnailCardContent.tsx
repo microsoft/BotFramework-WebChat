@@ -2,8 +2,9 @@
 
 import { hooks } from 'botframework-webchat-component';
 import React, { memo, useMemo } from 'react';
-import { boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, parse, pipe, readonly, string } from 'valibot';
 
+import type { InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
@@ -16,15 +17,16 @@ const thumbnailCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: directLineBasicCardSchema,
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
 
-type ThumbnailCardContentProps = InferInput<typeof thumbnailCardContentPropsSchema>;
+type ThumbnailCardContentProps = InferReactProps<typeof thumbnailCardContentPropsSchema>;
 
 function ThumbnailCardContent(props: ThumbnailCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parse(thumbnailCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = parse(thumbnailCardContentPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
@@ -63,6 +65,7 @@ function ThumbnailCardContent(props: ThumbnailCardContentProps) {
       actionPerformedClassName={actionPerformedClassName}
       adaptiveCard={builtCard}
       disabled={disabled}
+      replyToId={replyToId}
       tapAction={content && content.tap}
     />
   );

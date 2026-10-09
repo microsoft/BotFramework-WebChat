@@ -52,7 +52,7 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
           replyToId={activity?.id}
         />
       ) : attachment.contentType === 'application/vnd.microsoft.card.thumbnail' ? (
-        <ThumbnailCardAttachment attachment={attachment} />
+        <ThumbnailCardAttachment attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.thumbnail'}} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.video' ? (
         <VideoCardAttachment attachment={attachment} />
       ) : (
