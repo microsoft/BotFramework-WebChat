@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { usePerformCardAction } from 'botframework-webchat/hook.js';
+      import { fn, spyOn } from 'jest-mock';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      const cardActionEnhancerMock = fn();
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const renderHook = createRenderHook(
+          document.getElementById('webchat'),
+          {
+            cardActionMiddleware:
+              ({ dispatch }) =>
+              next =>
+              (...args) =>
+                cardActionEnhancerMock(...args),
+            directLine,
+            store
+          },
+          { renderWebChat: true }
+        );
+
+        await renderHook();
+        await pageConditions.uiConnected();
+
+        const performCardAction = await renderHook(() => usePerformCardAction());
+
+        performCardAction({ type: 'postback', value: 'Hello, World!' }, undefined, { replyToId: 'a-00001' });
+
+        expect(cardActionEnhancerMock).toHaveBeenCalledTimes(1);
+        expect(cardActionEnhancerMock).toHaveBeenNthCalledWith(
+          1,
+          expect.objectContaining({
+            cardAction: { type: 'postback', value: 'Hello, World!' },
+
+            // THEN: Must contain "replyToId" in the request.
+            replyToId: 'a-00001'
+          })
+        );
+      });
+    </script>
+  </body>
+</html>
