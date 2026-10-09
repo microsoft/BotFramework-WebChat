@@ -31,7 +31,7 @@ const AudioCardAttachment = memo((props: AudioCardAttachmentProps) => {
     replyToId
   } = validateProps(audioCardAttachmentPropsSchema, props);
 
-  return <AudioCardContent content={content} disabled={disabled} replyToId={replyToId} />;
+  return !!content && <AudioCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 });
 
 AudioCardAttachment.displayName = 'AudioCardAttachment';
