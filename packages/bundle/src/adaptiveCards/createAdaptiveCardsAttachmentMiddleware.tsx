@@ -11,6 +11,7 @@ import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
 import SignInCardAttachment from './Attachment/SignInCardAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from './Attachment/VideoCardAttachment';
+import type { DirectLineAttachment } from 'botframework-webchat-core';
 
 export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMiddleware {
   // This is not returning a React component, but a render function.
@@ -20,11 +21,19 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
       const [{ activity, attachment }] = args;
 
       return attachment.contentType === 'application/vnd.microsoft.card.hero' ? (
-        <HeroCardAttachment attachment={attachment} replyToId={activity?.id} />
+        <HeroCardAttachment
+          // Not sure why we need to force-cast `contentType` even we already have a ternary operator above.
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.hero' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.adaptive' ? (
         <AdaptiveCardAttachment attachment={attachment} replyToId={activity?.id} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
-        <AnimationCardAttachment attachment={attachment} />
+        <AnimationCardAttachment
+          // TODO: [P1] Fix the typing of "attachment" request, it should allow "DirectLineMediaCard".
+          attachment={attachment satisfies DirectLineAttachment as any}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
         <AudioCardAttachment attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (

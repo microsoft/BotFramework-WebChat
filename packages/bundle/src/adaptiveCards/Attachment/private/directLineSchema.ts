@@ -1,28 +1,6 @@
-import {
-  any,
-  array,
-  boolean,
-  literal,
-  looseObject,
-  number,
-  object,
-  optional,
-  pipe,
-  readonly,
-  string,
-  union
-} from 'valibot';
+import { any, array, boolean, literal, number, object, optional, pipe, readonly, string, union } from 'valibot';
 
-// TODO: Should build a better `directLineCardActionSchema`.
-const directLineCardActionSchema = pipe(
-  looseObject({
-    image: optional(string()),
-    title: optional(string()),
-    type: string(),
-    value: optional(any())
-  }),
-  readonly()
-);
+import directLineCardActionSchema from './directLineCardActionSchema';
 
 // https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#media-cards
 const directLineMediaCardSchema = pipe(
@@ -144,7 +122,6 @@ const directLineSignInCardSchema = pipe(
 
 export {
   directLineBasicCardSchema,
-  directLineCardActionSchema,
   directLineMediaCardSchema,
   directLineReceiptCardSchema,
   directLineSignInCardSchema

@@ -7,7 +7,7 @@ import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import { directLineCardActionSchema } from './private/directLineSchema';
+import directLineCardActionSchema from './private/directLineCardActionSchema';
 
 const { useDirection } = hooks;
 
