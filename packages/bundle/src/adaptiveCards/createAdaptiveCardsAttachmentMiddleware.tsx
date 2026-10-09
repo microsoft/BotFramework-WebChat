@@ -11,7 +11,6 @@ import ReceiptCardAttachment from './Attachment/ReceiptCardAttachment';
 import SignInCardAttachment from './Attachment/SignInCardAttachment';
 import ThumbnailCardAttachment from './Attachment/ThumbnailCardAttachment';
 import VideoCardAttachment from './Attachment/VideoCardAttachment';
-import type { DirectLineAttachment } from 'botframework-webchat-core';
 
 export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMiddleware {
   // This is not returning a React component, but a render function.
@@ -31,7 +30,7 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
       ) : attachment.contentType === 'application/vnd.microsoft.card.animation' ? (
         <AnimationCardAttachment
           // TODO: [P1] Fix the typing of "attachment" request, it should allow "DirectLineMediaCard".
-          attachment={attachment satisfies DirectLineAttachment as any}
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.animation' }}
           replyToId={activity?.id}
         />
       ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
@@ -40,7 +39,10 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
           replyToId={activity?.id}
         />
       ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
-        <OAuthCardAttachment attachment={attachment} replyToId={activity?.id} />
+        <OAuthCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.oauth' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
         <ReceiptCardAttachment
           attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.receipt' }}
