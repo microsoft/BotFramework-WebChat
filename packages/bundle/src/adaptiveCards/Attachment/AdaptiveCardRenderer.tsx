@@ -28,7 +28,7 @@ import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEf
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
-import { directLineCardActionSchema } from './private/directLineSchema';
+import directLineCardActionSchema from './private/directLineCardActionSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 import styles from './AdaptiveCardRenderer.module.css';
