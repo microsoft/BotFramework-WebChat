@@ -19,7 +19,6 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useUniqueId from '../hooks/internal/useUniqueId';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
@@ -41,7 +40,6 @@ type StackedLayoutInnerProps = Readonly<{
   hasAvatar: boolean;
   hasDisplayText: boolean;
   hasNub: boolean;
-  id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
   renderBubbleContent: (title?: string | undefined, showStatus?: boolean) => ReactNode;
   showAvatar?: boolean | undefined;
@@ -56,7 +54,6 @@ const StackedLayoutInner = memo(
     hasAvatar,
     hasDisplayText,
     hasNub,
-    id,
     renderAvatar,
     renderBubbleContent,
     showAvatar,
@@ -74,14 +71,7 @@ const StackedLayoutInner = memo(
     return (
       <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
         {!!(hasDisplayText || messageThing?.abstract[0]) && (
-          <div
-            aria-roledescription="message"
-            className={cx(classNames['stacked-layout__message-row'])}
-            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-            /* eslint-disable-next-line react/forbid-dom-props */
-            id={id}
-            role="group"
-          >
+          <div aria-roledescription="message" className={cx(classNames['stacked-layout__message-row'])} role="group">
             <ScreenReaderText text={greetingAlt} />
             <Bubble
               className={classNames['stacked-layout__message']}
@@ -122,7 +112,6 @@ const StackedLayout = ({
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
   const classNames = useStyles(styles);
 
@@ -280,7 +269,6 @@ const StackedLayout = ({
 
   return (
     <StackedLayoutRoot
-      ariaLabelId={activityDisplayText ? ariaLabelId : undefined}
       extraTrailing={extraTrailing}
       fromUser={fromUser}
       hideAvatar={hasAvatar && !showAvatar}
@@ -297,7 +285,6 @@ const StackedLayout = ({
         hasAvatar={hasAvatar}
         hasDisplayText={!!activityDisplayText?.length || isCollapsible}
         hasNub={hasNub}
-        id={ariaLabelId}
         renderAvatar={renderAvatar}
         renderBubbleContent={renderBubbleContent}
         showAvatar={showAvatar}

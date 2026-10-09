@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        render(
+          <FluentThemeProvider>
+            <ReactWebChat
+              directLine={directLine}
+              store={store}
+              styleOptions={{ feedbackActionsPlacement: 'activity-actions' }}
+            />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AllowCopy'],
+              potentialAction: [
+                {
+                  '@type': 'LikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=like'
+                  }
+                },
+                {
+                  '@type': 'DislikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=dislike'
+                  }
+                }
+              ],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          text: 'This is a deliberately long bot response. It contains multiple sentences so duplicate narration is easy to detect. The message action should be announced without repeating this response.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const getAccessibilityNode = async expression => {
+          const {
+            result: { objectId }
+          } = await host.sendAndGetDevToolsCommand('Runtime.evaluate', { expression });
+          const {
+            node: { backendNodeId }
+          } = await host.sendAndGetDevToolsCommand('DOM.describeNode', { objectId });
+          const { nodes } = await host.sendAndGetDevToolsCommand('Accessibility.getPartialAXTree', {
+            backendNodeId,
+            fetchRelatives: false
+          });
+
+          return nodes.find(node => node.backendDOMNodeId === backendNodeId) || nodes[0];
+        };
+
+        const copyButton = document.querySelector(`[data-testid="${testIds.copyButton}"]`);
+        const feedbackButtons = [...document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)];
+        const messageGroup = copyButton.closest('[aria-roledescription="message"][role="group"]');
+        const responseText = 'This is a deliberately long bot response.';
+
+        copyButton.setAttribute('data-a11y-action', 'copy');
+        feedbackButtons.forEach((button, index) => button.setAttribute('data-a11y-action', `${index}`));
+
+        const actionAccessibilityNodes = await Promise.all([
+          getAccessibilityNode(`document.querySelector('[data-a11y-action="copy"]')`),
+          ...feedbackButtons.map((_, index) =>
+            getAccessibilityNode(`document.querySelector('[data-a11y-action="${index}"]')`)
+          )
+        ]);
+
+        expect(actionAccessibilityNodes.map(({ name }) => name.value)).toEqual(['Copy', 'Like', 'Dislike']);
+        expect(messageGroup.textContent).toContain(responseText);
+
+        const actionAncestors = [];
+
+        for (let element = copyButton.parentElement; element; element = element.parentElement) {
+          actionAncestors.push(element);
+        }
+
+        actionAncestors.forEach((element, index) => element.setAttribute('data-a11y-ancestor', `${index}`));
+
+        const ancestorAccessibilityNames = await Promise.all(
+          actionAncestors.map((_, index) =>
+            getAccessibilityNode(`document.querySelector('[data-a11y-ancestor="${index}"]')`).then(
+              ({ name }) => name?.value || ''
+            )
+          )
+        );
+
+        expect(ancestorAccessibilityNames.some(name => name.includes(responseText))).toBe(false);
+        expect(messageGroup.getAttribute('role')).toBe('group');
+        expect(messageGroup.getAttribute('aria-roledescription')).toBe('message');
+
+        await host.clickAt(1, 1, pageElements.transcriptScrollable());
+
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        expect(pageElements.activeActivity().contains(messageGroup)).toBe(true);
+
+        pageElements.activeActivity().setAttribute('data-a11y-transcript-article', '');
+
+        const transcriptArticleAccessibilityNode = await getAccessibilityNode(
+          `document.querySelector('[data-a11y-transcript-article]')`
+        );
+
+        expect(transcriptArticleAccessibilityNode.role.value).toBe('article');
+      });
+    </script>
+  </body>
+</html>
