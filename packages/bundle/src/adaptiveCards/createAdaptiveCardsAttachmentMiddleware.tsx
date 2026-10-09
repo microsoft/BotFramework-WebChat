@@ -35,7 +35,10 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentMid
           replyToId={activity?.id}
         />
       ) : attachment.contentType === 'application/vnd.microsoft.card.audio' ? (
-        <AudioCardAttachment attachment={attachment} />
+        <AudioCardAttachment
+          attachment={attachment as typeof attachment & { contentType: 'application/vnd.microsoft.card.audio' }}
+          replyToId={activity?.id}
+        />
       ) : attachment.contentType === 'application/vnd.microsoft.card.oauth' ? (
         <OAuthCardAttachment attachment={attachment} />
       ) : attachment.contentType === 'application/vnd.microsoft.card.receipt' ? (
