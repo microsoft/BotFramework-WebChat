@@ -1,0 +1,12 @@
+
+.App-send_box_container {
+  align-items: stretch;
+  background-color: white;
+  border-top: 1px solid rgb(230, 230, 230);
+  min-height: 40px;
+  display: flex;
+}
+
+.App-max_width {
+  flex: 10000 1 0%;
+}
