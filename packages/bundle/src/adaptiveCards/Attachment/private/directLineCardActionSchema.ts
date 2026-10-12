@@ -16,6 +16,11 @@ import {
   type InferOutput
 } from 'valibot';
 
+// TODO: [P1] Consider a plan for migrating to stricter action validation.
+//            Maybe we could have a `PostBackCardAction` and a `LoosePostBackCardAction`.
+//            We warn on `PostBackCardAction` and fail on `LoosePostBackCardAction`.
+//            Also need to think about postback value which only accept complex type.
+
 // TODO: [P1] Naive complex, we should make complex equivalent to JSON compatible and drop incompatible properties.
 const complexSchema = unknown();
 
@@ -120,7 +125,7 @@ const webChatCallURLCardActionEssenceSchema = pipe(
 );
 
 /**
- * > This headless card action is intended for tap action only.
+ * > This headless card action is intended for tap action only, which does not have `image`, `imageAlt`, and `title`.
  *
  * A card action represents a clickable or interactive button for use within cards or as suggested actions. They are used to solicit input from users. Despite their name, card actions are not limited to use solely on cards.
  *
