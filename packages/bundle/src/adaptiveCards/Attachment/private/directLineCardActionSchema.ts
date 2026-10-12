@@ -1,6 +1,8 @@
 import {
+  fallback,
   intersect,
   literal,
+  nullish,
   object,
   optional,
   pipe,
@@ -13,6 +15,9 @@ import {
   variant,
   type InferOutput
 } from 'valibot';
+
+// TODO: [P1] Naive complex, we should make complex equivalent to JSON compatible and drop incompatible properties.
+const complexSchema = nullish(record(string(), unknown()));
 
 // TODO: [P0] We should rebuild this schema into a stricter one that follows Direct Line spec.
 
@@ -56,7 +61,7 @@ const messageBackCardActionEssenceSchema = pipe(
     displayText: optional(string()),
     text: optional(string()),
     type: literal('messageBack'),
-    value: optional(record(string(), unknown()))
+    value: optional(fallback(complexSchema, undefined))
   }),
   readonly()
 );
@@ -80,14 +85,20 @@ const playAudioCardActionEssenceSchema = pipe(object({ type: literal('playAudio'
  *
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#play-video
  */
-const playVideoCardActionEssenceSchema = pipe(object({ type: literal('playVideo'), value: string() }), readonly());
+const playVideoCardActionEssenceSchema = pipe(
+  object({ type: literal('playVideo'), value: optional(string(), '') }),
+  readonly()
+);
 
 /**
  * A `postBack` action represents a text response that is not added to the chat feed.
  *
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#post-back
  */
-const postBackCardActionEssenceSchema = pipe(object({ type: literal('postBack'), value: unknown() }), readonly());
+const postBackCardActionEssenceSchema = pipe(
+  object({ type: literal('postBack'), value: optional(fallback(complexSchema, undefined)) }),
+  readonly()
+);
 
 /**
  * A `showImage` action represents an image that may be displayed.
