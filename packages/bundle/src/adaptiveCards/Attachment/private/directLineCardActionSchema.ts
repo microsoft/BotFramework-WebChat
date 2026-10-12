@@ -85,10 +85,7 @@ const playAudioCardActionEssenceSchema = pipe(object({ type: literal('playAudio'
  *
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#play-video
  */
-const playVideoCardActionEssenceSchema = pipe(
-  object({ type: literal('playVideo'), value: optional(string(), '') }),
-  readonly()
-);
+const playVideoCardActionEssenceSchema = pipe(object({ type: literal('playVideo'), value: string() }), readonly());
 
 /**
  * A `postBack` action represents a text response that is not added to the chat feed.

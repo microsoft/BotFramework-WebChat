@@ -87,7 +87,7 @@ type PlayVideoCardAction = CardActionWithImageAndTitle & {
  */
 type PostBackCardAction = CardActionWithImageAndTitle & {
   type: 'postBack';
-  value: any; // For legacy reason, postBack support any.
+  value?: any; // For legacy reason, postBack support any.
 };
 
 /**
