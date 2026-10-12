@@ -6,9 +6,10 @@ import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
-import styles from './AudioCardContent.module.css';
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+
+import styles from './AudioCardContent.module.css';
 
 const { AudioContent } = Components;
 
