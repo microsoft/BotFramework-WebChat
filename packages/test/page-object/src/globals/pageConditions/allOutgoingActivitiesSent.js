@@ -16,9 +16,9 @@ export default function allOutgoingActivitiesSent() {
           innerText.includes('Send failed') ||
           innerText.includes('Sending') ||
           // Send failed.
-          innerText.includes("فشل في الإرسال") ||
+          innerText.includes('فشل في الإرسال') ||
           // Sending.
-          innerText.includes("أرسال")
+          innerText.includes('أرسال')
         );
       }),
     15000
