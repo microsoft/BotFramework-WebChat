@@ -20,6 +20,7 @@ import {
 //    When parent component send props, those props could be read-only.
 //    But the child component (wrongly) prefer read-write because `InferInput` ignore read-only.
 
+// Copied from `InferInput` and added `ReadonlyDeep`.
 type InferReactProps<
   TItem$1 extends
     | BaseSchema<unknown, unknown, BaseIssue<unknown>>
