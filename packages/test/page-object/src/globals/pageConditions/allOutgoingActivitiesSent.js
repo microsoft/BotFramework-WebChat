@@ -12,7 +12,14 @@ export default function allOutgoingActivitiesSent() {
 
         const { innerText } = activityStatusElement;
 
-        return !innerText.includes('Send failed') && !innerText.includes('Sending');
+        return !(
+          innerText.includes('Send failed') ||
+          innerText.includes('Sending') ||
+          // Send failed.
+          innerText.includes("فشل في الإرسال") ||
+          // Sending.
+          innerText.includes("أرسال")
+        );
       }),
     15000
   );
