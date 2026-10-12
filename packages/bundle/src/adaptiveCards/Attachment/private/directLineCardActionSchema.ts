@@ -17,7 +17,7 @@ import {
 } from 'valibot';
 
 // TODO: [P1] Naive complex, we should make complex equivalent to JSON compatible and drop incompatible properties.
-const complexSchema = nullish(record(string(), unknown()));
+const complexSchema = unknown();
 
 // TODO: [P0] We should rebuild this schema into a stricter one that follows Direct Line spec.
 

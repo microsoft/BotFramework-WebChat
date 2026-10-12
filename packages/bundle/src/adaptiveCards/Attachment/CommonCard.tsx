@@ -7,7 +7,7 @@ import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import directLineCardActionSchema from './private/directLineCardActionSchema';
+import directLineCardActionSchema, { directLineHeadlessCardActionSchema } from './private/directLineCardActionSchema';
 
 const { useDirection } = hooks;
 
@@ -19,7 +19,7 @@ const commonCardPropsSchema = pipe(
       subtitle: optional(string()),
       text: optional(string()),
       title: optional(string()),
-      tap: optional(directLineCardActionSchema)
+      tap: optional(directLineHeadlessCardActionSchema)
     }),
     disabled: optional(boolean()),
     replyToId: optional(string())

@@ -53,13 +53,13 @@
 
         const performCardAction = await renderHook(() => usePerformCardAction());
 
-        performCardAction({ type: 'postback', value: 'Hello, World!' }, undefined, { replyToId: 'a-00001' });
+        performCardAction({ type: 'postBack', value: 'Hello, World!' }, undefined, { replyToId: 'a-00001' });
 
         expect(cardActionEnhancerMock).toHaveBeenCalledTimes(1);
         expect(cardActionEnhancerMock).toHaveBeenNthCalledWith(
           1,
           expect.objectContaining({
-            cardAction: { type: 'postback', value: 'Hello, World!' },
+            cardAction: { type: 'postBack', value: 'Hello, World!' },
 
             // THEN: Must contain "replyToId" in the request.
             replyToId: 'a-00001'
