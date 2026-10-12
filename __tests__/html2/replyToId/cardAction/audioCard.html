@@ -94,6 +94,7 @@
           })
         );
 
+        await pageConditions.scrollStabilized();
         await host.snapshot('local');
       });
     </script>
