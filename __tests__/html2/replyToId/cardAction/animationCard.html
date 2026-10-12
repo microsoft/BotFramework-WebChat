@@ -64,6 +64,11 @@
           type: 'message'
         });
 
+        // Hide the controls because the timeline contains buffer size which will never converge.
+        // We poll every 500ms until got 5 stable numbers.
+        // However, the buffer size range from 3.035s to 3.238s, which produce different snapshot.
+        document.querySelector('video').controls = false;
+
         const submitButton = pageElements.activities()[0].querySelector('.ac-pushButton');
 
         const { activity, resolveAll } = await directLine.actPostActivity(() => host.click(submitButton));
