@@ -22,15 +22,7 @@ type HeroCardAttachmentProps = InferReactProps<typeof heroCardAttachmentPropsSch
 const HeroCardAttachment = memo((props: HeroCardAttachmentProps) => {
   const { attachment: { content } = {}, disabled, replyToId } = validateProps(heroCardAttachmentPropsSchema, props);
 
-  return (
-    !!content && (
-      <HeroCardContent
-        content={content}
-        disabled={disabled}
-        replyToId={replyToId}
-      />
-    )
-  );
+  return !!content && <HeroCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 });
 
 HeroCardAttachment.displayName = 'HeroCardAttachment';
