@@ -1,30 +1,23 @@
-import { hooks } from 'botframework-webchat-api';
-import { type SendBoxAttachment } from 'botframework-webchat-core';
+import { type UseSendMessageInit, useSendMessage as useAPISendMessage } from 'botframework-webchat-api/hook.js';
 import { useCallback } from 'react';
 
 import useMakeThumbnail from './useMakeThumbnail';
 
-const { useSendMessage: useAPISendMessage } = hooks;
-
-type SendMessage = (
-  text?: string,
-  method?: string,
-  init?: {
-    attachments?: Iterable<SendBoxAttachment> | undefined;
-    channelData?: any;
-  }
-) => void;
-
-export default function useSendMessage(): SendMessage {
+export default function useSendMessage(): (
+  text?: string | undefined,
+  method?: string | undefined,
+  init?: UseSendMessageInit | undefined
+) => void {
   const makeThumbnail = useMakeThumbnail();
   const sendMessage = useAPISendMessage();
 
-  return useCallback<SendMessage>(
-    async (text, method, { channelData, attachments } = {}) => {
+  return useCallback(
+    async (text, method, init) => {
       sendMessage(text, method, {
-        attachments: attachments
+        ...init,
+        attachments: init?.attachments
           ? await Promise.all(
-              [...attachments].map(async ({ blob, thumbnailURL }) => {
+              [...init.attachments].map(async ({ blob, thumbnailURL }) => {
                 if (!thumbnailURL && blob instanceof File) {
                   thumbnailURL = await makeThumbnail(blob);
                 }
@@ -32,8 +25,7 @@ export default function useSendMessage(): SendMessage {
                 return { blob, thumbnailURL };
               })
             )
-          : [],
-        channelData
+          : []
       });
     },
     [makeThumbnail, sendMessage]
