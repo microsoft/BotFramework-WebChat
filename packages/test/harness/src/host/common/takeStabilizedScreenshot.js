@@ -14,7 +14,7 @@ module.exports = async function takeStabilizedScreenshot(
       const screenshot = await webDriver.takeScreenshot();
 
       buckets.push(screenshot);
-      buckets = buckets.slice(0, NUM_STABILIZED_SCREENSHOT);
+      buckets = buckets.slice(-NUM_STABILIZED_SCREENSHOT);
 
       if (buckets.length < NUM_STABILIZED_SCREENSHOT) {
         throw new Error(
