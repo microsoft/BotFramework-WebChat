@@ -87,11 +87,7 @@ export default function () {
         '&.webchat__thumb-button--has-submitted:has(.webchat__thumb-button__input:not(:checked):not([aria-pressed="true"])) .webchat__thumb-button__tooltip':
           {
             display: 'none'
-          },
-
-        '&.webchat__thumb-button--has-submitted .webchat__thumb-button__tooltip': {
-          '--webchat__tooltip-anchor-inline-start': '20%'
-        }
+          }
       }
     }
   };
