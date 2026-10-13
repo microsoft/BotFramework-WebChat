@@ -10,7 +10,6 @@ import type { VoiceHandler } from './actions/registerVoiceHandler';
 import registerVoiceHandler from './actions/registerVoiceHandler';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
-import sendMessage from './actions/sendMessage';
 import sendMessageBack from './actions/sendMessageBack';
 import sendPostBack, { type SendPostBackInit } from './actions/sendPostBack';
 import setDictateInterims from './actions/setDictateInterims';
@@ -66,8 +65,17 @@ export {
   type SetSuggestedActionsAction
 } from './actions/setSuggestedActions';
 
+export {
+  SEND_MESSAGE,
+  default as sendMessage,
+  sendMessageActionSchema,
+  type SendMessageAction,
+  type SendMessageActionFactoryInit
+} from './actions/sendMessage';
+
+export { sendBoxAttachmentSchema, type SendBoxAttachment } from './types/SendBoxAttachment';
+
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import type { SendBoxAttachment } from './types/SendBoxAttachment';
 import type { WebChatActivity } from './types/WebChatActivity';
 import type { DirectLineActivity } from './types/external/DirectLineActivity';
 import type { DirectLineAnimationCard } from './types/external/DirectLineAnimationCard';
@@ -112,7 +120,6 @@ export {
   registerVoiceHandler,
   sendEvent,
   sendFiles,
-  sendMessage,
   sendMessageBack,
   sendPostBack,
   setDictateInterims,
@@ -151,7 +158,6 @@ export type {
   DirectLineVideoCard,
   GlobalScopePonyfill,
   Observable,
-  SendBoxAttachment,
   SendPostBackInit,
   VoiceHandler,
   VoiceState,

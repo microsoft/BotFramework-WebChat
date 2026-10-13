@@ -4,24 +4,36 @@ import { useCallback } from 'react';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
-export default function useSendMessage(): (
-  text?: string,
-  method?: string,
-  init?: { attachments?: readonly SendBoxAttachment[] | undefined; channelData?: any }
+type UseSendMessageInit = {
+  readonly attachments?: readonly SendBoxAttachment[] | undefined;
+  readonly channelData?: any;
+  readonly replyToId?: string | undefined;
+};
+
+function useSendMessage(): (
+  text?: string | undefined,
+  method?: string | undefined,
+  init?: UseSendMessageInit | undefined
 ) => void {
   const { sendMessage } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 
   return useCallback(
-    (text, method, { attachments, channelData } = {}) => {
+    (text, method, { attachments, channelData, replyToId } = {}) => {
       trackEvent('sendMessage', {
         numAttachments: attachments?.length || 0,
-        // eslint-disable-next-line no-magic-numbers
-        sumSizeInKB: Math.round(attachments?.reduce((total, { blob: { size } }) => total + size, 0) / 1024)
+        sumSizeInKB: Math.round(
+          attachments?.reduce((total, { blob: { size } }) => total + size, 0) /
+            // eslint-disable-next-line no-magic-numbers
+            1024
+        )
       });
 
-      sendMessage(text, method, { attachments, channelData });
+      sendMessage(text, method, { attachments, channelData, replyToId });
     },
     [sendMessage, trackEvent]
   );
 }
+
+export default useSendMessage;
+export { type UseSendMessageInit };
