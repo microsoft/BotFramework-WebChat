@@ -6,6 +6,7 @@ import {
   optional,
   pipe,
   readonly,
+  record,
   string,
   undefined_,
   union,
@@ -64,7 +65,7 @@ const messageBackCardActionEssenceSchema = pipe(
     displayText: optional(string()),
     text: optional(string()),
     type: literal('messageBack'),
-    value: optional(fallback(complexSchema, undefined))
+    value: optional(record(string(), unknown()))
   }),
   readonly()
 );
