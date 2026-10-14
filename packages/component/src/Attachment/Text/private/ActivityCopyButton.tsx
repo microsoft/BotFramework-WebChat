@@ -31,22 +31,19 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
 
   const classNames = useStyles(styles);
   const [copyAnnouncementKey, setCopyAnnouncementKey] = useState<number>();
-  const [copyStatusPortalTarget, setCopyStatusPortalTarget] = useState<HTMLElement | null>(null);
+  const [copyConfirmed, setCopyConfirmed] = useState(false);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [uiState] = useUIState();
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const copyAnnouncementTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
   const copyConfirmationTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
+  const copyStatusPortalTargetRef = useRef<HTMLElement | null>(null);
   const localize = useLocalizer();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
   const disabled = !permissionGranted || uiState === 'disabled';
-
-  useEffect(() => {
-    setCopyStatusPortalTarget(buttonRef.current?.closest<HTMLElement>('.webchat') || null);
-  }, [buttonRef, setCopyStatusPortalTarget]);
 
   useEffect(
     () => () => {
@@ -69,9 +66,8 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       ])
       .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
-    buttonRef.current?.classList.add(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
     setCopyAnnouncementKey(key => (key || 0) + 1);
+    setCopyConfirmed(true);
 
     copyAnnouncementTimeoutIdRef.current && clearTimeout(copyAnnouncementTimeoutIdRef.current);
     copyConfirmationTimeoutIdRef.current && clearTimeout(copyConfirmationTimeoutIdRef.current);
@@ -79,7 +75,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
     copyConfirmationTimeoutIdRef.current = setTimeout(() => {
       copyConfirmationTimeoutIdRef.current = undefined;
 
-      buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
+      setCopyConfirmed(false);
     }, COPY_CONFIRMATION_DURATION);
 
     copyAnnouncementTimeoutIdRef.current = setTimeout(() => {
@@ -88,11 +84,11 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       setCopyAnnouncementKey(undefined);
     }, COPY_ANNOUNCEMENT_DURATION);
   }, [
-    classNames,
     clearTimeout,
     copyAnnouncementTimeoutIdRef,
     copyConfirmationTimeoutIdRef,
     setCopyAnnouncementKey,
+    setCopyConfirmed,
     setTimeout,
     targetRef
   ]);
@@ -101,8 +97,9 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
     let unmounted = false;
 
     (async function () {
-      if ((await navigator.permissions.query({ name: 'clipboard-write' as any })).state === 'granted') {
-        unmounted || setPermissionGranted(true);
+      if ((await navigator.permissions.query({ name: 'clipboard-write' as any })).state === 'granted' && !unmounted) {
+        copyStatusPortalTargetRef.current = buttonRef.current?.closest<HTMLElement>('.webchat') || null;
+        setPermissionGranted(true);
       }
     })();
 
@@ -114,7 +111,9 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   return (
     <React.Fragment>
       <ActivityButton
-        className={cx(classNames['activity-copy-button'], className)}
+        className={cx(classNames['activity-copy-button'], className, {
+          [classNames['activity-copy-button--copied']]: copyConfirmed
+        })}
         data-testid="copy button"
         disabled={disabled}
         icon="copy"
@@ -124,12 +123,12 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       >
         <span className={classNames['activity-copy-button__copied-text']}>{copiedText}</span>
       </ActivityButton>
-      {copyStatusPortalTarget &&
+      {copyStatusPortalTargetRef.current &&
         createPortal(
           <div aria-atomic={true} className={classNames['activity-copy-button__copy-announcement']} role="status">
             {!!copyAnnouncementKey && <span key={copyAnnouncementKey}>{copiedText}</span>}
           </div>,
-          copyStatusPortalTarget
+          copyStatusPortalTargetRef.current
         )}
     </React.Fragment>
   );
