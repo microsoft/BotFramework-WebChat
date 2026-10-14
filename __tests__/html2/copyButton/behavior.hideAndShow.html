@@ -66,22 +66,30 @@
         // WHEN: Focus on the "Copy" button via keyboard.
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`));
 
+        const copiedTextElement = document.querySelector(
+          `[data-testid="${WebChat.testIds.copyButton}"]`
+        ).lastElementChild;
+        const confirmationAfterOneSecondPromise = new Promise(resolve =>
+          setTimeout(() => resolve(getComputedStyle(copiedTextElement).visibility), 1_000)
+        );
+        const confirmationAfterTwoSecondsPromise = new Promise(resolve =>
+          setTimeout(() => resolve(getComputedStyle(copiedTextElement).visibility), 2_100)
+        );
+
         // THEN: The "Copy" button should say "Copied".
         await host.snapshot('local');
 
         // WHEN: Waiting while the confirmation should remain perceivable.
-        await testHelpers.sleep(1_000);
+        const confirmationAfterOneSecond = await confirmationAfterOneSecondPromise;
 
         // THEN: The "Copied" confirmation should remain visible.
-        expect(
-          getComputedStyle(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`).lastElementChild)
-            .visibility
-        ).toBe('visible');
+        expect(confirmationAfterOneSecond).toBe('visible');
 
         // WHEN: After the visual confirmation finishes.
-        await testHelpers.sleep(1_100);
+        const confirmationAfterTwoSeconds = await confirmationAfterTwoSecondsPromise;
 
         // THEN: The "Copy" button should back to normal.
+        expect(confirmationAfterTwoSeconds).toBe('hidden');
         await host.snapshot('local');
 
         window.checkAccessibility = checkAccessibility;

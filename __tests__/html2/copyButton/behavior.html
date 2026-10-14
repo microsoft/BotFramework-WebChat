@@ -90,36 +90,91 @@
 
         // THEN: Should focus on the "Copy" button
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
+        const copyStatus = copyButton.parentElement.querySelector(':scope > [role="status"]');
 
         expect(document.activeElement).toBe(copyButton);
+        expect(copyStatus.textContent).toBe('');
         await host.snapshot('local');
 
         // WHEN: Press ENTER on the "Copy" button.
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
+        const copiedTextElement = copyButton.lastElementChild;
+        const firstCopyAnnouncement = copyStatus?.firstElementChild;
+        const messageGroup = copyButton.closest('[aria-roledescription="message"][role="group"]');
+        const confirmationAfterOneSecondPromise = new Promise(resolve =>
+          setTimeout(
+            () =>
+              resolve({
+                statusText: copyStatus.textContent,
+                visibility: getComputedStyle(copiedTextElement).visibility
+              }),
+            1000
+          )
+        );
+
+        copyButton.setAttribute('data-a11y-copy-button', '');
+        copyButton.parentElement.setAttribute('data-a11y-copy-actions', '');
+        copyStatus?.setAttribute('data-a11y-copy-status', '');
+        messageGroup?.setAttribute('data-a11y-copy-message', '');
+
+        const getAccessibilityNode = async expression => {
+          const {
+            result: { objectId }
+          } = await host.sendAndGetDevToolsCommand('Runtime.evaluate', { expression });
+          const {
+            node: { backendNodeId }
+          } = await host.sendAndGetDevToolsCommand('DOM.describeNode', { objectId });
+          const { nodes } = await host.sendAndGetDevToolsCommand('Accessibility.getPartialAXTree', {
+            backendNodeId,
+            fetchRelatives: false
+          });
+
+          return nodes.find(node => node.backendDOMNodeId === backendNodeId) || nodes[0];
+        };
+
+        const [
+          copyButtonAccessibilityNode,
+          copyActionsAccessibilityNode,
+          copyStatusAccessibilityNode,
+          messageAccessibilityNode
+        ] = await Promise.all([
+          getAccessibilityNode(`document.querySelector('[data-a11y-copy-button]')`),
+          getAccessibilityNode(`document.querySelector('[data-a11y-copy-actions]')`),
+          getAccessibilityNode(`document.querySelector('[data-a11y-copy-status]')`),
+          getAccessibilityNode(`document.querySelector('[data-a11y-copy-message]')`)
+        ]);
+
         await host.snapshot('local');
 
-        const copiedTextElement = copyButton.lastElementChild;
-        const copyStatus = document.querySelector('.webchat > [role="status"]');
-        const firstCopyAnnouncement = copyStatus?.firstElementChild;
-
         // WHEN: Waiting while the confirmation should remain perceivable.
-        await testHelpers.sleep(1000);
+        const confirmationAfterOneSecond = await confirmationAfterOneSecondPromise;
 
         // THEN: The visual and assistive technology confirmations should still be available.
         expect({
           ariaAtomic: copyStatus?.getAttribute('aria-atomic'),
+          buttonContainsStatus: copyButton.contains(copyStatus),
+          buttonName: copyButtonAccessibilityNode.name.value,
+          messageName: messageAccessibilityNode.name?.value || '',
           labelledAncestor: copyStatus?.closest('[aria-labelledby]'),
           nestedInSharedLiveRegion: document.querySelector('.webchat__live-region').contains(copyStatus),
+          parentName: copyActionsAccessibilityNode.name?.value || '',
+          portaledToRoot: copyStatus.parentElement.matches('.webchat'),
           role: copyStatus?.getAttribute('role'),
-          statusText: copyStatus?.textContent,
-          visibility: getComputedStyle(copiedTextElement).visibility
+          statusRole: copyStatusAccessibilityNode.role.value,
+          ...confirmationAfterOneSecond
         }).toEqual({
           ariaAtomic: 'true',
+          buttonContainsStatus: false,
+          buttonName: 'Copy Copied',
+          messageName: '',
           labelledAncestor: null,
           nestedInSharedLiveRegion: false,
+          parentName: '',
+          portaledToRoot: false,
           role: 'status',
+          statusRole: 'status',
           statusText: 'Copied',
           visibility: 'visible'
         });
@@ -128,7 +183,7 @@
         await host.sendKeys('ENTER');
 
         // THEN: The status content should be replaced and the visual confirmation should restart.
-        expect(document.querySelector('.webchat > [role="status"]')).toBe(copyStatus);
+        expect(copyButton.parentElement.querySelector(':scope > [role="status"]')).toBe(copyStatus);
         expect(copyStatus.firstElementChild).not.toBe(firstCopyAnnouncement);
         expect(copyStatus.textContent).toBe('Copied');
         expect(getComputedStyle(copiedTextElement).visibility).toBe('visible');

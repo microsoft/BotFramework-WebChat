@@ -3,7 +3,6 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { instance, nullable, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import refObject from '../../../types/internal/refObject';
@@ -35,10 +34,8 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [uiState] = useUIState();
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const copyAnnouncementTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
   const copyConfirmationTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
-  const copyStatusPortalTargetRef = useRef<HTMLElement | null>(null);
   const localize = useLocalizer();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
@@ -98,7 +95,6 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
 
     (async function () {
       if ((await navigator.permissions.query({ name: 'clipboard-write' as any })).state === 'granted' && !unmounted) {
-        copyStatusPortalTargetRef.current = buttonRef.current?.closest<HTMLElement>('.webchat') || null;
         setPermissionGranted(true);
       }
     })();
@@ -118,18 +114,13 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
         disabled={disabled}
         icon="copy"
         onClick={handleClick}
-        ref={buttonRef}
         text={copyText}
       >
         <span className={classNames['activity-copy-button__copied-text']}>{copiedText}</span>
       </ActivityButton>
-      {copyStatusPortalTargetRef.current &&
-        createPortal(
-          <div aria-atomic={true} className={classNames['activity-copy-button__copy-announcement']} role="status">
-            {!!copyAnnouncementKey && <span key={copyAnnouncementKey}>{copiedText}</span>}
-          </div>,
-          copyStatusPortalTargetRef.current
-        )}
+      <div aria-atomic={true} className={classNames['activity-copy-button__copy-announcement']} role="status">
+        {!!copyAnnouncementKey && <span key={copyAnnouncementKey}>{copiedText}</span>}
+      </div>
     </React.Fragment>
   );
 };
