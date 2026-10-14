@@ -1280,13 +1280,17 @@ type SendBoxAttachment = {
 
 useSendMessage(): (
   text?: string,
-  method: string | undefined,
-  {
+  method?: string | undefined,
+  init?: {
     attachments?: Iterable<SendBoxAttachment> | undefined
-  }
+    channelData?: any;
+    replyToId?: string | undefined;
+  } | undefined
 ) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.19.3: Added `init.replyToId`.
 
 > New in 4.17.0: `attachments` are added to support attaching files.
 
@@ -1302,9 +1306,18 @@ Image attachments (`Blob.type` returning `image/*`) will have their thumbnail au
 
 <!-- prettier-ignore-start -->
 ```js
-useSendMessageBack(): (value: any, text: string, displayText: string) => void
+useSendMessageBack(): (
+  value: any,
+  text?: string | undefined,
+  displayText?: string | undefined,
+  init?: {
+    replyToId?: string | undefined
+  } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.19.3: Added `init.replyToId`.
 
 When called, this function will send a `messageBack` activity to the bot.
 
@@ -1312,11 +1325,16 @@ When called, this function will send a `messageBack` activity to the bot.
 
 <!-- prettier-ignore-start -->
 ```js
-useSendPostBack(): (value: any, init?: { replyToId?: string | undefined } | undefined) => void
+useSendPostBack(): (
+  value: any,
+  init?: {
+    replyToId?: string | undefined
+  } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
 
-> New in 4.19.2: Added `init.replyToId` argument.
+> New in 4.19.3: Added `init.replyToId`.
 
 When called, this function will send a `postBack` activity to the bot with optionally `replyToId`.
 
