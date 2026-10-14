@@ -10,7 +10,6 @@ import type { VoiceHandler } from './actions/registerVoiceHandler';
 import registerVoiceHandler from './actions/registerVoiceHandler';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
-import sendMessageBack from './actions/sendMessageBack';
 import sendPostBack, { type SendPostBackInit } from './actions/sendPostBack';
 import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
@@ -73,6 +72,14 @@ export {
   type SendMessageActionFactoryInit
 } from './actions/sendMessage';
 
+export {
+  SEND_MESSAGE_BACK,
+  default as sendMessageBack,
+  sendMessageBackActionSchema,
+  type SendMessageBackAction,
+  type SendMessageBackActionFactoryInit
+} from './actions/sendMessageBack';
+
 export { sendBoxAttachmentSchema, type SendBoxAttachment } from './types/SendBoxAttachment';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
@@ -120,7 +127,6 @@ export {
   registerVoiceHandler,
   sendEvent,
   sendFiles,
-  sendMessageBack,
   sendPostBack,
   setDictateInterims,
   setDictateState,
