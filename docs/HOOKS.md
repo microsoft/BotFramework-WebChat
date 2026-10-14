@@ -1275,7 +1275,7 @@ If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a
 ```js
 type SendBoxAttachment = {
   blob: Blob | File;
-  thumbnailURL?: URL | undefined;
+  thumbnailURL?: URL | undefined; // Must be data URI
 };
 
 useSendMessage(): (
@@ -1289,6 +1289,8 @@ useSendMessage(): (
 ) => void
 ```
 <!-- prettier-ignore-end -->
+
+> Breaking change in 4.19.3: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored.
 
 > New in 4.19.3: Added `init.replyToId`.
 

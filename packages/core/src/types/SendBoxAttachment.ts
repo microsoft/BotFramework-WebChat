@@ -1,6 +1,7 @@
 import {
   blob,
   check,
+  fallback,
   file,
   instance,
   object,
@@ -29,7 +30,17 @@ const sendBoxAttachmentSchema = pipe(
             transform(value => new URL(value))
           )
         ]),
-        check(url => url.protocol === 'data:', 'Scheme of the supplied URL must be of type "data:"')
+        transform(url => {
+          if (url.protocol === 'data:') {
+            return url;
+          }
+
+          console.warn(
+            'botframework-webchat: `SendBoxAttachment.thumbnailURL` must be a data URI, ignoring the value.'
+          );
+
+          return undefined;
+        })
       )
     )
   }),
