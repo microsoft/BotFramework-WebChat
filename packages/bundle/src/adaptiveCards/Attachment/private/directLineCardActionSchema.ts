@@ -1,4 +1,5 @@
 import {
+  any,
   fallback,
   intersect,
   literal,
@@ -65,7 +66,7 @@ const messageBackCardActionEssenceSchema = pipe(
     displayText: optional(string()),
     text: optional(string()),
     type: literal('messageBack'),
-    value: optional(record(string(), unknown()))
+    value: optional(pipe(record(string(), any()), readonly()))
   }),
   readonly()
 );
