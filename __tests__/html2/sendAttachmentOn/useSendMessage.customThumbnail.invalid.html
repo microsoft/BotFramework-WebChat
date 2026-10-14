@@ -80,7 +80,7 @@
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenNthCalledWith(
           1,
-          'botframework-webchat: `attachments.thumbnailURL` must be a data URI.'
+          'botframework-webchat: `SendBoxAttachment.thumbnailURL` must be a data URI, ignoring the value.'
         );
 
         await resolveAll();
