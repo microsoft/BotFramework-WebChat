@@ -5,7 +5,7 @@ import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
 type UseSendMessageInit = {
-  readonly attachments?: readonly SendBoxAttachment[] | undefined;
+  readonly attachments?: readonly Iterable<SendBoxAttachment> | undefined;
   readonly channelData?: any;
   readonly replyToId?: string | undefined;
 };
