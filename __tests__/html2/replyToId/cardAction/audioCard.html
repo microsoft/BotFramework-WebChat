@@ -64,6 +64,10 @@
           type: 'message'
         });
 
+        // Hide the controls because the timeline contains buffer size which will never converge.
+        // See `../animationcard.html` for details.
+        document.querySelector('audio').controls = false;
+
         const submitButton = pageElements.activities()[0].querySelector('.ac-pushButton');
 
         const { activity, resolveAll } = await directLine.actPostActivity(() => host.click(submitButton));

@@ -91,7 +91,8 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
-        await host.snapshot('local');
+        // NOTE: The screenshot is time-sensitive, do not wait until stable.
+        await host.snapshot('local', { stable: false });
 
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="paste box"]'));
