@@ -19,7 +19,7 @@ export default function useSendMessage(): (
         ...init,
         attachments: Object.freeze(
           await Promise.all(
-            Array.from(attachments).map(async ({ blob, thumbnailURL }) => {
+            Array.from(attachments || []).map(async ({ blob, thumbnailURL }) => {
               if (!thumbnailURL && blob instanceof File) {
                 thumbnailURL = await makeThumbnail(blob);
               }
