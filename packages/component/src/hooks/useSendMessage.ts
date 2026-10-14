@@ -13,19 +13,21 @@ export default function useSendMessage(): (
 
   return useCallback(
     async (text, method, init) => {
+      const attachments = init?.attachments;
+
       sendMessage(text, method, {
         ...init,
-        attachments: init?.attachments
-          ? await Promise.all(
-              [...init.attachments].map(async ({ blob, thumbnailURL }) => {
-                if (!thumbnailURL && blob instanceof File) {
-                  thumbnailURL = await makeThumbnail(blob);
-                }
+        attachments: Object.freeze(
+          await Promise.all(
+            Array.from(attachments).map(async ({ blob, thumbnailURL }) => {
+              if (!thumbnailURL && blob instanceof File) {
+                thumbnailURL = await makeThumbnail(blob);
+              }
 
-                return { blob, thumbnailURL };
-              })
-            )
-          : []
+              return Object.freeze({ blob, thumbnailURL });
+            })
+          )
+        )
       });
     },
     [makeThumbnail, sendMessage]

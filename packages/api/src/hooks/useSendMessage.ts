@@ -20,16 +20,18 @@ function useSendMessage(): (
 
   return useCallback(
     (text, method, { attachments, channelData, replyToId } = {}) => {
+      const attachmentsArray = Object.freeze(Array.from(attachments || []));
+
       trackEvent('sendMessage', {
-        numAttachments: attachments?.length || 0,
+        numAttachments: attachmentsArray.length || 0,
         sumSizeInKB: Math.round(
-          attachments?.reduce((total, { blob: { size } }) => total + size, 0) /
+          attachmentsArray.reduce((total, { blob: { size } }) => total + size, 0) /
             // eslint-disable-next-line no-magic-numbers
             1024
         )
       });
 
-      sendMessage(text, method, { attachments, channelData, replyToId });
+      sendMessage(text, method, { attachments: attachmentsArray, channelData, replyToId });
     },
     [sendMessage, trackEvent]
   );
