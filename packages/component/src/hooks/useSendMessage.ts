@@ -17,17 +17,19 @@ export default function useSendMessage(): (
 
       sendMessage(text, method, {
         ...init,
-        attachments: Object.freeze(
-          await Promise.all(
-            Array.from(attachments || []).map(async ({ blob, thumbnailURL }) => {
-              if (!thumbnailURL && blob instanceof File) {
-                thumbnailURL = await makeThumbnail(blob);
-              }
+        attachments: attachments
+          ? Object.freeze(
+              await Promise.all(
+                Array.from(attachments).map(async ({ blob, thumbnailURL }) => {
+                  if (!thumbnailURL && blob instanceof File) {
+                    thumbnailURL = await makeThumbnail(blob);
+                  }
 
-              return Object.freeze({ blob, thumbnailURL });
-            })
-          )
-        )
+                  return Object.freeze({ blob, thumbnailURL });
+                })
+              )
+            )
+          : []
       });
     },
     [makeThumbnail, sendMessage]
