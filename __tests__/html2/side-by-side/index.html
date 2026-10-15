@@ -111,11 +111,11 @@
 
     run(async function () {
       const {
-        WebChat: { 
+        WebChat: {
           decorator: { createActivityGroupingMiddleware, DecoratorComposer },
           CopilotMessageHeader,
-          FluentThemeProvider, 
-          PartGroupDecorator, 
+          FluentThemeProvider,
+          PartGroupDecorator,
           ReactWebChat
         }
       } = window; // Imports in UMD fashion.
@@ -804,7 +804,7 @@ Use the command to install required dependencies:
       let RightWrap = React.Fragment;
       if (/\s/u.test(rightVariant)) {
         const CustomPartGroupDecorator = (props) => {
-          const { 
+          const {
             activities: [activity, ...restActivities],
           } = props;
           const isFromBot = activity?.from?.role === 'bot';
@@ -930,12 +930,15 @@ Use the command to install required dependencies:
           await host.sendKeys('ENTER');
           await host.snapshot('local');
           await host.sendKeys('TAB');
+          await testHelpers.sleep(400); // Wait for tooltip to show up
           await host.snapshot('local');
           await host.sendKeys('SPACE');
+          await testHelpers.sleep(400); // Wait for tooltip to show up
           await host.snapshot('local');
           await host.sendKeys('TAB');
           await host.snapshot('local');
           await host.sendKeys('SPACE');
+          await testHelpers.sleep(400); // Wait for tooltip to show up
           await host.snapshot('local');
           await host.sendKeys('SPACE'); // Clear feedback but still focused on feedback button
           await host.sendKeys('ESCAPE'); // Focus on activity

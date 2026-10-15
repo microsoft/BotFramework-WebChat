@@ -44,10 +44,11 @@ type IMBackCardAction = CardActionWithImageAndTitle & {
  * https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#message-back
  */
 type MessageBackCardAction = CardActionWithImageAndTitle & {
-  displayText?: string;
-  text?: string;
+  displayText?: string | undefined;
+  text?: string | undefined;
   type: 'messageBack';
-  value?: { [key: string]: any };
+  // We were inconsistent of what can be set in messageBack value, we are opening it to any/unknown until we have a better we to clamp it down.
+  value?: unknown | undefined;
 };
 
 /**
@@ -87,7 +88,7 @@ type PlayVideoCardAction = CardActionWithImageAndTitle & {
  */
 type PostBackCardAction = CardActionWithImageAndTitle & {
   type: 'postBack';
-  value: any; // For legacy reason, postBack support any.
+  value?: any; // For legacy reason, postBack support any.
 };
 
 /**

@@ -49,6 +49,7 @@
 
           await pageObjects.sendMessageViaSendBox('normal');
           await pageConditions.numActivitiesShown(2);
+          await pageConditions.allOutgoingActivitiesSent();
 
           await host.snapshot('local', { skipCheckAccessibility: true });
 

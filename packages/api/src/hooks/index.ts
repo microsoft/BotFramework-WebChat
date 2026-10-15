@@ -50,7 +50,6 @@ import useSendBoxAttachments from './useSendBoxAttachments';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
 import useSendFiles from './useSendFiles';
-import useSendMessage from './useSendMessage';
 import useSendMessageBack from './useSendMessageBack';
 import useSendPostBack from './useSendPostBack';
 import useSendStatusByActivityKey from './useSendStatusByActivityKey';
@@ -79,6 +78,7 @@ import useVoiceState from './useVoiceState';
 
 export { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
 export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
+export { default as useSendMessage, type UseSendMessageInit } from './useSendMessage';
 
 export {
   useActiveTyping,
@@ -133,7 +133,6 @@ export {
   useSendBoxValue,
   useSendEvent,
   useSendFiles,
-  useSendMessage,
   useSendMessageBack,
   useSendPostBack,
   useSendStatusByActivityKey,

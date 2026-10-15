@@ -96,6 +96,7 @@
 
         // WHEN: The dislike button is clicked.
         await host.click(pageElements.allByTestId(testIds.feedbackButton)[1]);
+        await testHelpers.sleep(400); // Wait for tooltip.
 
         // THEN: It should match the snapshot.
         await host.snapshot('local');
