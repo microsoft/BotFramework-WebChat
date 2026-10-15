@@ -67,7 +67,10 @@ const messageBackCardActionEssenceSchema = pipe(
     displayText: optional(string()),
     text: optional(string()),
     type: literal('messageBack'),
-    value: nullish(pipe(record(string(), any()), readonly()), undefined)
+    // We were inconsistent of what can be set in messageBack value, we are opening it to any/unknown until we have a better we to clamp it down.
+    // /html2/accessibility/liveRegion/newMessages has "messageBack" `value` of type string.
+    // /html2/richCard/heroCard/actions has "messageBack" `value` of `null`.
+    value: optional(unknown())
   }),
   readonly()
 );
