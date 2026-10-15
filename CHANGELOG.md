@@ -28,6 +28,7 @@ Legends:
 ### Changed
 
 - 💥 `useSendMessage`: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
+- 👷🏻 Visual regression tests now use 5 consecutive screenshots for stability indication, up from 2, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 
 ## [4.19.2] - 2026-10-08
 
