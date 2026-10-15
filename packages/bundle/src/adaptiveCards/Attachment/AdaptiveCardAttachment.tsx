@@ -27,7 +27,7 @@ function AdaptiveCardAttachment(props: AdaptiveCardAttachmentProps) {
     replyToId
   } = validateProps(adaptiveCardAttachmentPropsSchema, props);
 
-  return <AdaptiveCardContent content={content} disabled={disabled} replyToId={replyToId} />;
+  return !!content && <AdaptiveCardContent content={content} disabled={disabled} replyToId={replyToId} />;
 }
 
 export default memo(AdaptiveCardAttachment);

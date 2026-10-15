@@ -1,28 +1,31 @@
-const until = require('./until');
+const { waitFor } = require('@testduet/wait-for');
 
 const TIME_FOR_STABILIZED_SCREENSHOT = 5000; // Time (in ms) to wait for a stabilized screenshot.
+const NUM_STABILIZED_SCREENSHOT = 5;
 
 // Keep taking screenshot until 2 consecutive screenshots are the same.
 module.exports = async function takeStabilizedScreenshot(
   /** @type import('selenium-webdriver').WebDriver */ webDriver
 ) {
-  let lastScreenshot;
+  let buckets = [];
 
-  const screenshot = await until(async () => {
-    const screenshot = await webDriver.takeScreenshot();
+  await waitFor(
+    async () => {
+      const screenshot = await webDriver.takeScreenshot();
 
-    if (lastScreenshot === screenshot) {
-      return screenshot;
-    }
+      buckets.push(screenshot);
+      buckets = buckets.slice(-NUM_STABILIZED_SCREENSHOT);
 
-    lastScreenshot = screenshot;
+      if (buckets.length < NUM_STABILIZED_SCREENSHOT) {
+        throw new Error(
+          `Not enough screenshots to signal stability, need ${NUM_STABILIZED_SCREENSHOT}, got ${buckets.length}`
+        );
+      } else if (!buckets.slice(1).every(value => value === buckets[0])) {
+        throw new Error('Screenshots are not stable');
+      }
+    },
+    { timeout: TIME_FOR_STABILIZED_SCREENSHOT }
+  );
 
-    return false;
-  }, TIME_FOR_STABILIZED_SCREENSHOT);
-
-  if (!screenshot) {
-    throw new Error(`No stabilized screenshot is taken after ${TIME_FOR_STABILIZED_SCREENSHOT} ms.`);
-  }
-
-  return screenshot;
+  return buckets[0];
 };
