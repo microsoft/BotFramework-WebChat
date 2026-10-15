@@ -13,7 +13,6 @@ import styles from './ActivityCopyButton.module.css';
 
 const { useLocalizer, usePonyfill, useUIState } = hooks;
 
-// Keep the "Copied" confirmation long enough to be perceived (#5857).
 const COPIED_DURATION = 5_000;
 
 const activityCopyButtonPropsSchema = pipe(
