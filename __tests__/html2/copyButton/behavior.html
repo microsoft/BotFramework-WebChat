@@ -89,33 +89,13 @@
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
 
-        // axe-core is crazy about empty button name while swapping name
-        const { checkAccessibility } = window;
-        window.checkAccessibility = async () => {};
-
         // THEN: Should focus on the "Copy" button
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
 
-        const getAccessibleName = async () => {
-          const {
-            result: { objectId }
-          } = await host.sendAndGetDevToolsCommand('Runtime.evaluate', {
-            expression: `document.querySelector('[data-testid="${WebChat.testIds.copyButton}"]')`
-          });
-          const {
-            node: { backendNodeId }
-          } = await host.sendAndGetDevToolsCommand('DOM.describeNode', { objectId });
-          const { nodes } = await host.sendAndGetDevToolsCommand('Accessibility.getPartialAXTree', {
-            backendNodeId,
-            fetchRelatives: false
-          });
-
-          return (nodes.find(node => node.backendDOMNodeId === backendNodeId) || nodes[0]).name?.value;
-        };
         const isCopiedShown = () => getComputedStyle(copyButton.lastElementChild).visibility === 'visible';
 
         expect(document.activeElement).toBe(copyButton);
-        await expect(getAccessibleName()).resolves.toBe('Copy');
+        await expect(testHelpers.getAccessibleName(copyButton)).resolves.toBe('Copy');
         await host.snapshot('local');
 
         // WHEN: Press ENTER on the "Copy" button.
@@ -123,7 +103,7 @@
 
         // THEN: The copy button should change to "Copied", including its accessible name.
         await pageConditions.became('"Copied" is shown', isCopiedShown, 1000);
-        await expect(getAccessibleName()).resolves.toBe('Copied');
+        await expect(testHelpers.getAccessibleName(copyButton)).resolves.toBe('Copied');
         await host.snapshot('local');
 
         // WHEN: Press ENTER again 3 seconds later.
@@ -148,9 +128,7 @@
 
         // THEN: The "Copied" text should go away and the accessible name should be back to "Copy".
         await pageConditions.became('"Copied" is hidden', () => !isCopiedShown(), 1000);
-        await expect(getAccessibleName()).resolves.toBe('Copy');
-
-        window.checkAccessibility = checkAccessibility;
+        await expect(testHelpers.getAccessibleName(copyButton)).resolves.toBe('Copy');
 
         // THEN: Plain text box should contains plain text, while rich text box should contains rich text.
         await host.snapshot('local');

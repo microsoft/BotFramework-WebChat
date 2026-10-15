@@ -67,12 +67,9 @@
           1000
         );
 
-        // axe-core is crazy about empty button name while swapping name
-        const { checkAccessibility } = window;
-        window.checkAccessibility = async () => {};
-
-        const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
-        const isCopiedShown = () => getComputedStyle(copyButton.lastElementChild).visibility === 'visible';
+        // Always query for the button, hiding and showing Web Chat may render a new element.
+        const getCopyButton = () => document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
+        const isCopiedShown = () => getComputedStyle(getCopyButton().lastElementChild).visibility === 'visible';
         const hideAndShowWebChat = () => {
           document.getElementById('webchat').style.display = 'none';
           document.body.offsetWidth; // Need for browser to refresh the layout.
@@ -80,7 +77,7 @@
         };
 
         // WHEN: Click on the "Copy" button.
-        await host.click(copyButton);
+        await host.click(getCopyButton());
 
         // THEN: The "Copy" button should say "Copied".
         await pageConditions.became('"Copied" is shown', isCopiedShown, 1_000);
@@ -106,15 +103,13 @@
         await pageConditions.became('"Copied" is hidden', () => !isCopiedShown(), 1_000);
         await host.snapshot('local');
 
-        window.checkAccessibility = checkAccessibility;
-
         // WHEN: Hiding Web Chat and showing it back.
         hideAndShowWebChat();
 
         // THEN: The "Copy" button should be kept at normal.
         await host.snapshot('local');
 
-        expect(copyButton.innerText).toBe('Copy');
+        expect(getCopyButton().innerText).toBe('Copy');
       });
     </script>
   </body>
