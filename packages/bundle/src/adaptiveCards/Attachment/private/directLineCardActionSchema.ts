@@ -3,6 +3,7 @@ import {
   fallback,
   intersect,
   literal,
+  nullish,
   object,
   optional,
   pipe,
@@ -66,7 +67,7 @@ const messageBackCardActionEssenceSchema = pipe(
     displayText: optional(string()),
     text: optional(string()),
     type: literal('messageBack'),
-    value: optional(pipe(record(string(), any()), readonly()))
+    value: nullish(pipe(record(string(), any()), readonly()), undefined)
   }),
   readonly()
 );
