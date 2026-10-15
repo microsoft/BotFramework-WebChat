@@ -11,7 +11,10 @@ import ActivityButton from './ActivityButton';
 
 import styles from './ActivityCopyButton.module.css';
 
-const { useLocalizer, useUIState } = hooks;
+const { useLocalizer, usePonyfill, useUIState } = hooks;
+
+// Keep the "Copied" confirmation long enough to be perceived (#5857).
+const COPIED_DURATION = 5_000;
 
 const activityCopyButtonPropsSchema = pipe(
   object({
@@ -23,32 +26,21 @@ const activityCopyButtonPropsSchema = pipe(
 
 type ActivityCopyButtonProps = InferInput<typeof activityCopyButtonPropsSchema>;
 
-const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
+function ActivityCopyButton(props: ActivityCopyButtonProps) {
   const { className, targetRef } = validateProps(activityCopyButtonPropsSchema, props);
 
-  const classNames = useStyles(styles);
+  const [{ clearTimeout, setTimeout }] = usePonyfill();
+  const [copied, setCopied] = useState(false);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [uiState] = useUIState();
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const classNames = useStyles(styles);
+  const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>();
   const localize = useLocalizer();
   const queueStaticElement = useQueueStaticElement();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
   const disabled = !permissionGranted || uiState === 'disabled';
-
-  useEffect(() => {
-    const { current } = buttonRef;
-
-    if (current) {
-      const handleAnimationEnd = () =>
-        current.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
-      current.addEventListener('animationend', handleAnimationEnd);
-
-      return () => current.removeEventListener('animationend', handleAnimationEnd);
-    }
-  }, [buttonRef, classNames]);
 
   const handleClick = useCallback(() => {
     const htmlText = targetRef.current?.outerHTML;
@@ -63,16 +55,18 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       ])
       .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
-    buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
-    // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
-    // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
-    buttonRef.current?.offsetWidth;
-
-    buttonRef.current?.classList.add(...classNames['activity-copy-button--copied'].split(/\s+/gu));
+    // Activating again restarts the confirmation.
+    copiedTimeoutRef.current && clearTimeout(copiedTimeoutRef.current);
+    copiedTimeoutRef.current = setTimeout(() => setCopied(false), COPIED_DURATION);
+    setCopied(true);
 
     queueStaticElement(<div className={classNames['activity-copy-button__copy-announcement']}>{copiedText}</div>);
-  }, [classNames, copiedText, queueStaticElement, targetRef]);
+  }, [classNames, clearTimeout, copiedText, copiedTimeoutRef, queueStaticElement, setCopied, setTimeout, targetRef]);
+
+  useEffect(
+    () => () => copiedTimeoutRef.current && clearTimeout(copiedTimeoutRef.current),
+    [clearTimeout, copiedTimeoutRef]
+  );
 
   useEffect(() => {
     let unmounted = false;
@@ -90,18 +84,19 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
 
   return (
     <ActivityButton
-      className={cx(classNames['activity-copy-button'], className)}
+      className={cx(classNames['activity-copy-button'], className, {
+        [classNames['activity-copy-button--copied']]: copied
+      })}
       data-testid="copy button"
       disabled={disabled}
       icon="copy"
       onClick={handleClick}
-      ref={buttonRef}
       text={copyText}
     >
       <span className={classNames['activity-copy-button__copied-text']}>{copiedText}</span>
     </ActivityButton>
   );
-};
+}
 
 ActivityCopyButton.displayName = 'ActivityCopyButton';
 

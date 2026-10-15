@@ -52,6 +52,7 @@ Legends:
 
 ### Fixed
 
+- Fixed the "Copied" confirmation of the Copy button disappearing too quickly: it is now shown for 5 seconds in all themes, keeps the focus indicator visible, and is reflected in the accessible name of the button, resolving [#5857](https://github.com/microsoft/BotFramework-WebChat/issues/5857), in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers repeating the full bot response when focus enters message actions such as Copy, Like, or Dislike, resolving [#5849](https://github.com/microsoft/BotFramework-WebChat/issues/5849), by [@asalsa](https://github.com/asalsa)
 - Fixed an error when a failed activity is present when Web Chat mounts, resolving [#5812](https://github.com/microsoft/BotFramework-WebChat/issues/5812), in PR [#5848](https://github.com/microsoft/BotFramework-WebChat/pull/5848), by [@OEvgeny](https://github.com/OEvgeny)
 
