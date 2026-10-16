@@ -5,6 +5,7 @@ import React, {
   type FocusEvent,
   type KeyboardEventHandler,
   type ReactNode,
+  type Ref,
   useCallback,
   useRef
 } from 'react';
@@ -16,12 +17,14 @@ const FocusTrap = ({
   children,
   onFocus,
   onLeave,
-  targetClassName
+  targetClassName,
+  targetRef
 }: Readonly<{
   children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
   targetClassName?: string | undefined;
+  targetRef?: Ref<HTMLDivElement> | undefined;
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
   const lastFocused = useRef<HTMLElement>();
@@ -122,7 +125,7 @@ const FocusTrap = ({
       >
         {children}
       </div>
-      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />
+      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} ref={targetRef} tabIndex={-1} />
     </Fragment>
   );
 };
