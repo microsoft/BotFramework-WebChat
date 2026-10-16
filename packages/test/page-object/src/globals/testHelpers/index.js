@@ -11,6 +11,8 @@ import createRenderWebChatWithHook from './createRenderWebChatWithHook';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
 import createStore, { createStoreWithOptions } from './createStore';
 import depthFirstWalk from './depthFirstWalk';
+import getAccessibilityNode from './getAccessibilityNode';
+import getAccessibleName from './getAccessibleName';
 import getAllTextContents from './getAllTextContents';
 import iterateAsyncIterable from './iterateAsyncIterable';
 import shareObservable from './shareObservable';
@@ -31,6 +33,8 @@ export {
   createStore,
   createStoreWithOptions,
   depthFirstWalk,
+  getAccessibilityNode,
+  getAccessibleName,
   getAllTextContents,
   iterateAsyncIterable,
   shareObservable,

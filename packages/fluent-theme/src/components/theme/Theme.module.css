@@ -647,17 +647,6 @@
   }
 }
 
-/* Copy button */
-:global(.webchat-fluent).theme :global(.activity-copy-button) {
-  :global(.activity-copy-button__copied-text) {
-    background-color: var(--webchat-colorNeutralBackground1);
-  }
-
-  &:global(.activity-copy-button--copied) :global(.activity-copy-button__copied-text) {
-    animation-duration: var(--webchat-durationUltraSlow);
-  }
-}
-
 /* Feedback button */
 :global(.webchat-fluent).theme :global(.thumb-button),
 :global(.webchat-fluent).theme :global(.thumb-button.thumb-button--large) {

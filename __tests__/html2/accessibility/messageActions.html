@@ -74,35 +74,14 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        const getAccessibilityNode = async expression => {
-          const {
-            result: { objectId }
-          } = await host.sendAndGetDevToolsCommand('Runtime.evaluate', { expression });
-          const {
-            node: { backendNodeId }
-          } = await host.sendAndGetDevToolsCommand('DOM.describeNode', { objectId });
-          const { nodes } = await host.sendAndGetDevToolsCommand('Accessibility.getPartialAXTree', {
-            backendNodeId,
-            fetchRelatives: false
-          });
-
-          return nodes.find(node => node.backendDOMNodeId === backendNodeId) || nodes[0];
-        };
-
         const copyButton = document.querySelector(`[data-testid="${testIds.copyButton}"]`);
         const feedbackButtons = [...document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)];
         const messageGroup = copyButton.closest('[aria-roledescription="message"][role="group"]');
         const responseText = 'This is a deliberately long bot response.';
 
-        copyButton.setAttribute('data-a11y-action', 'copy');
-        feedbackButtons.forEach((button, index) => button.setAttribute('data-a11y-action', `${index}`));
-
-        const actionAccessibilityNodes = await Promise.all([
-          getAccessibilityNode(`document.querySelector('[data-a11y-action="copy"]')`),
-          ...feedbackButtons.map((_, index) =>
-            getAccessibilityNode(`document.querySelector('[data-a11y-action="${index}"]')`)
-          )
-        ]);
+        const actionAccessibilityNodes = await Promise.all(
+          [copyButton, ...feedbackButtons].map(button => testHelpers.getAccessibilityNode(button))
+        );
 
         expect(actionAccessibilityNodes.map(({ name }) => name.value)).toEqual(['Copy', 'Like', 'Dislike']);
         expect(messageGroup.textContent).toContain(responseText);
@@ -113,14 +92,8 @@
           actionAncestors.push(element);
         }
 
-        actionAncestors.forEach((element, index) => element.setAttribute('data-a11y-ancestor', `${index}`));
-
         const ancestorAccessibilityNames = await Promise.all(
-          actionAncestors.map((_, index) =>
-            getAccessibilityNode(`document.querySelector('[data-a11y-ancestor="${index}"]')`).then(
-              ({ name }) => name?.value || ''
-            )
-          )
+          actionAncestors.map(async element => (await testHelpers.getAccessibleName(element)) || '')
         );
 
         expect(ancestorAccessibilityNames.some(name => name.includes(responseText))).toBe(false);
@@ -132,10 +105,8 @@
         expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
         expect(pageElements.activeActivity().contains(messageGroup)).toBe(true);
 
-        pageElements.activeActivity().setAttribute('data-a11y-transcript-article', '');
-
-        const transcriptArticleAccessibilityNode = await getAccessibilityNode(
-          `document.querySelector('[data-a11y-transcript-article]')`
+        const transcriptArticleAccessibilityNode = await testHelpers.getAccessibilityNode(
+          pageElements.activeActivity()
         );
 
         expect(transcriptArticleAccessibilityNode.role.value).toBe('article');
