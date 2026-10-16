@@ -15,6 +15,7 @@ import getAccessibilityNode from './getAccessibilityNode';
 import getAccessibleName from './getAccessibleName';
 import getAllTextContents from './getAllTextContents';
 import iterateAsyncIterable from './iterateAsyncIterable';
+import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
 import sleep from './sleep';
 import stringToArrayBuffer from './stringToArrayBuffer';
@@ -37,6 +38,7 @@ export {
   getAccessibleName,
   getAllTextContents,
   iterateAsyncIterable,
+  preloadImages,
   shareObservable,
   sleep,
   speech,
