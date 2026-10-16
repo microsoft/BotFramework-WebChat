@@ -104,11 +104,6 @@
         codeBlockTheme = 'github-light-default';
       }
 
-      // TODO: code block github theme triggers accessibility violation
-      if (variant) {
-        window.checkAccessibility = async () => { };
-      }
-
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(

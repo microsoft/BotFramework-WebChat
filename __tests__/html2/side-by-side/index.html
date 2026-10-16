@@ -134,6 +134,10 @@
       const [leftTranscriptIndex = 0, rightTranscriptIndex = 1] = searchParams.getAll('transcript');
       const [leftVariant = 'fluent', rightVariant = 'copilot'] = searchParams.getAll('variant');
 
+      // TODO: [P1] The deprecated Copilot custom variant puts elements other than articles in the transcript `role="feed"` (aria-required-children).
+      //       Remove `skipCheckAccessibility` when fixed.
+      const skipCheckAccessibility = [leftVariant, rightVariant].some(variant => variant.startsWith('variant-copilot-deprecated'));
+
       const sendBoxIndexes = searchParams.getAll('focus');
       const activeFocusPresets = searchParams.getAll('focus-preset');
 
@@ -884,30 +888,30 @@ Use the command to install required dependencies:
 
       await pageConditions.scrollStabilized();
 
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       const focusPresetsMap = new Map(Object.entries({
         navigation: async sendbox => {
           sendbox.focus();
           await host.sendKeys('Next message');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
           // hide timestamp to not fail snapshot if is not relative
           sendbox.parentElement.parentElement.parentElement.parentElement.querySelector('.part-grouping-decorator:last-child .stacked-layout__status').style.opacity = 0;
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendShiftTab();
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('HOME');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('END');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ARROW_UP');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
           await host.sendShiftTab();
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ESCAPE');
         },
         viewCode: async sendbox => {
@@ -915,35 +919,37 @@ Use the command to install required dependencies:
           await host.sendShiftTab();
           await host.sendKeys('ARROW_UP');
           await host.sendKeys('ENTER');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('TAB');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
-          await host.snapshot('local');
+          // TODO: [P2] In the "View code" dialog, the FAQ link (dark theme) and comments in the GitHub light code theme do not have enough color contrast.
+          //       Remove `skipCheckAccessibility` when fixed.
+          await host.snapshot('local', { skipCheckAccessibility: true });
           await host.sendKeys('ENTER');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
         },
         likeDislike: async sendbox => {
           sendbox.focus();
           await host.sendShiftTab();
           await host.sendKeys('ARROW_UP');
           await host.sendKeys('ENTER');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('TAB');
           await testHelpers.sleep(400); // Wait for tooltip to show up
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('SPACE');
           await testHelpers.sleep(400); // Wait for tooltip to show up
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('TAB');
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('SPACE');
           await testHelpers.sleep(400); // Wait for tooltip to show up
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('SPACE'); // Clear feedback but still focused on feedback button
           await host.sendKeys('ESCAPE'); // Focus on activity
           await host.sendKeys('ESCAPE'); // Clear activity selection
-          await host.snapshot('local');
+          await host.snapshot('local', { skipCheckAccessibility });
         }
       }));
 
@@ -962,8 +968,6 @@ Use the command to install required dependencies:
         }
       }
     }, { skipCheckAccessibility: true });
-
-    window.checkAccessibility = async () => {}
   </script>
 </body>
 

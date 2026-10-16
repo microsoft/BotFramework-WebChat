@@ -62,16 +62,20 @@
       await pageConditions.scrollStabilized();
     }
 
+    const searchParams = new URLSearchParams(location.search);
+    const variant = searchParams.get('variant');
+    const theme = searchParams.get('fluent-theme');
+
+    // TODO: [P1] Part grouping remounts when its first activity changes: it loses its open state and the transcript keeps `aria-activedescendant` pointing to the removed group.
+    //       It happens intermittently with the "copilot" variant, which focuses the group. Remove `skipCheckAccessibility` when fixed.
+    const skipCheckAccessibility = variant === 'copilot';
+
     run(async function () {
       const {
         WebChat: { FluentThemeProvider, ReactWebChat }
       } = window;
 
       const { directLine, store } = testHelpers.createDirectLineEmulator();
-
-      const searchParams = new URLSearchParams(location.search);
-      const variant = searchParams.get('variant');
-      const theme = searchParams.get('fluent-theme');
 
       await host.windowSize(640, 1024, document.getElementById('webchat'));
       await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
@@ -122,11 +126,6 @@
           colorGrey98: '#fafafa'
         };
         codeBlockTheme = 'github-light-default';
-      }
-
-      // TODO: code block github theme triggers accessibility violation
-      if (variant) {
-        window.checkAccessibility = async () => { }
       }
 
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
@@ -353,14 +352,14 @@ plot_sine_waves()`;
         await host.click(document.querySelector('.collapsible-grouping__toggle'));
       }
 
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When marking the 1st activity as 'Published':
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'Published'));
 
       // Then: show the 1st activity in the list with the 'Published' status indicator
       await pageConditions.numActivitiesShown(3);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When adding activities to the list:
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(2), undefined));
@@ -368,14 +367,14 @@ plot_sine_waves()`;
 
       // Then: show all added activities in the list with corresponding status:
       await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When marking the 2nd activity as 'Incomplete':
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'Incomplete'));
 
       // Then: show the 2nd activity in the list with the loading status indicator
       await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When marking the 2rd activity as 'Published' and the 3th as 'Published':
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'Published'));
@@ -383,34 +382,34 @@ plot_sine_waves()`;
 
       // Then: both activities should show the 'Published' status indicator
       await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When setting status of the last activity to 'Incomplete':
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(3), 'Incomplete'));
 
       // Then: the last activity should show the loading status indicator
       await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When updating the last activity with code content:
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'Incomplete'));
 
       // Then: the last activity should show the loading status indicator and chevron
       await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When clicking on the chevron:
       await openLastActivity();
 
       // Then: the last activity should expand to show the code content
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When marking the last activity as 'Published':
       directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'Published'));
 
       // Then: the last activity should show the 'Published' status indicator and remain open
       await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When adding a closing message:
       directLine.emulateIncomingActivity(activities.at(5));
@@ -418,8 +417,8 @@ plot_sine_waves()`;
       // Then: show the closing message after the list
       await pageConditions.numActivitiesShown(6);
       await pageConditions.scrollToBottomCompleted();
-      await host.snapshot('local');
-    });
+      await host.snapshot('local', { skipCheckAccessibility });
+    }, { skipCheckAccessibility });
   </script>
 </body>
 
