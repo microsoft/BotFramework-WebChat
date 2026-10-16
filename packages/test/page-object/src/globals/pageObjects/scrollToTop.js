@@ -1,6 +1,11 @@
 import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
 import scrollStabilized from '../pageConditions/scrollStabilized';
 
+// react-scroll-to-bottom ignores "scroll" events right after its scroll animation ends, without updating the sizes it remembers.
+// The next scroll will be mistaken as a resize while sticky, and it will scroll back to the bottom.
+// Like a user, we scroll again. By then, react-scroll-to-bottom has learnt the latest sizes.
+const MAX_ATTEMPTS = 3;
+
 /** True, if `value` is a negative number, negative zero, or negative infinity, otherwise, false. */
 function isNegative(value) {
   return value === -Infinity || 1 / value < 0;
@@ -21,7 +26,17 @@ export default async function scrollToTop(offset = 0) {
   // Handles any numbers, 0, -0, Infinity, and -Infinity.
   offset = Math.max(0, Math.min(maxOffset, isNegative(offset) ? maxOffset + offset : offset));
 
-  transcriptScrollable.scrollTop = offset;
+  for (let attempt = 1; ; attempt++) {
+    transcriptScrollable.scrollTop = offset;
+
+    // Wait until the scroll settles, wherever it lands.
+    // eslint-disable-next-line no-await-in-loop
+    await scrollStabilized();
+
+    if (Math.abs(transcriptScrollable.scrollTop - offset) <= 1 || attempt >= MAX_ATTEMPTS) {
+      break;
+    }
+  }
 
   await scrollStabilized(offset);
 }

@@ -68,6 +68,9 @@
         // THEN: Should have error log.
         //       Currently attachment middleware is using console.warn instead of console.error.
         //       Once we migrate to polymiddleware, it should be console.error.
+        //       The live region renders the activity after the transcript, wait for it.
+        await pageConditions.became('console.warn is called', () => consoleWarn.mock.calls.length > 0, 1000);
+
         expect(consoleWarn).toHaveBeenCalledTimes(1);
         expect(consoleWarn.mock.calls[0][0]).toBe(
           'No renderer for attachment for screen reader of type "x-unknown-attachment"'
