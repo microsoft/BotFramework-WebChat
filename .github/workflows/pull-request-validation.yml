@@ -33,10 +33,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
@@ -76,7 +76,7 @@ jobs:
       - run: ls -l docker.zip
 
       - name: Upload Docker artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           compression-level: 0
           name: docker
@@ -89,7 +89,7 @@ jobs:
       - name: Tar all tarballs
         run: find . -type f -name '*.tgz' -not -path '*/node_modules/*' -print0 | tar --null -cvf tarballs.tar --files-from=-
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           compression-level: 0
           name: tarballs
@@ -107,10 +107,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
@@ -124,10 +124,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
@@ -145,10 +145,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
@@ -156,7 +156,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Download tarballs
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: tarballs
 
@@ -175,10 +175,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
@@ -186,7 +186,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Download tarballs
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: tarballs
 
@@ -223,7 +223,7 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: test-result-unit
           path: |
@@ -237,10 +237,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
@@ -248,7 +248,7 @@ jobs:
       - run: npm clean-install --strict-peer-deps
 
       - name: Download tarballs
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: tarballs
 
@@ -289,12 +289,12 @@ jobs:
 
     steps:
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
 
       - name: Download Docker artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: docker
 
@@ -351,7 +351,7 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: test-result-html-${{ matrix.shard-index }}
           path: |
@@ -360,7 +360,7 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           compression-level: 0
           name: test-snapshot-diff-html-${{ matrix.shard-index }}
@@ -378,14 +378,14 @@ jobs:
 
     steps:
       - name: Merge test result artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           delete-merged: true
           name: test-result
           pattern: test-result-*
 
       - name: Download test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: test-result
 
@@ -416,7 +416,7 @@ jobs:
     steps:
       - continue-on-error: true # Do not error out when no artifacts to merge, see https://github.com/actions/upload-artifact/issues/524
         name: Merge test snapshots artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           compression-level: 0
           delete-merged: true
@@ -431,12 +431,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - run: git fetch origin main
 
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm

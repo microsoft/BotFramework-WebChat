@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checking out for ${{ github.ref }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
 
       - run: npm clean-install --ignore-scripts
 
@@ -31,13 +31,13 @@ jobs:
         env:
           NODE_ENV: production
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2.3.1
         with:
           name: wwwroot
           path: packages/playground/build.zip
 
       - id: deploy
-        uses: azure/webapps-deploy@v2.1.2
+        uses: azure/webapps-deploy@2d85376f88b09cd11575b3d7e96b65c3effe5e05 # v2.1.2
         with:
           app-name: webchat-playground
           slot-name: production
