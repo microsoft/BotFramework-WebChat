@@ -1,9 +1,10 @@
 import getTranscriptScrollableElement from '../pageElements/transcriptScrollable';
 import scrollStabilized from '../pageConditions/scrollStabilized';
 
-// react-scroll-to-bottom ignores "scroll" events right after its scroll animation ends, without updating the sizes it remembers.
-// The next scroll will be mistaken as a resize while sticky, and it will scroll back to the bottom.
-// Like a user, we scroll again. By then, react-scroll-to-bottom has learnt the latest sizes.
+// When the transcript is resized while scrolling to the bottom, react-scroll-to-bottom may ignore the "scroll" event and miss the new size.
+// The next scroll will be mistaken as a resize while sticky, and it will scroll back to the bottom. Waiting will not bring it back up.
+// Like a user, we scroll again. By then, react-scroll-to-bottom has learnt the new size.
+// TODO: [P2] Remove the retry after https://github.com/compulim/react-scroll-to-bottom/pull/145 is released.
 const MAX_ATTEMPTS = 3;
 
 /** True, if `value` is a negative number, negative zero, or negative infinity, otherwise, false. */
