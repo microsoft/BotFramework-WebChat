@@ -30,6 +30,11 @@ Legends:
 - 💥 `useSendMessage`: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - 👷🏻 Visual regression tests now use 5 consecutive screenshots for stability indication, up from 2, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 
+### Fixed
+
+- Fixed the "Copied" confirmation of the Copy button disappearing too quickly: it is now shown for 5 seconds in all themes, fixes [#5857](https://github.com/microsoft/BotFramework-WebChat/issues/5857), in PR [#5872](https://github.com/microsoft/BotFramework-WebChat/pull/5872), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed screen readers repeating the full bot response when focus enters message actions such as Copy, Like, or Dislike, resolving [#5849](https://github.com/microsoft/BotFramework-WebChat/issues/5849), by [@asalsa](https://github.com/asalsa)
+
 ## [4.19.2] - 2026-10-08
 
 ### Added
@@ -63,8 +68,6 @@ Legends:
 
 ### Fixed
 
-- Fixed the "Copied" confirmation of the Copy button disappearing too quickly: it is now shown for 5 seconds in all themes, fixes [#5857](https://github.com/microsoft/BotFramework-WebChat/issues/5857), in PR [#5872](https://github.com/microsoft/BotFramework-WebChat/pull/5872), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed screen readers repeating the full bot response when focus enters message actions such as Copy, Like, or Dislike, resolving [#5849](https://github.com/microsoft/BotFramework-WebChat/issues/5849), by [@asalsa](https://github.com/asalsa)
 - Fixed an error when a failed activity is present when Web Chat mounts, resolving [#5812](https://github.com/microsoft/BotFramework-WebChat/issues/5812), in PR [#5848](https://github.com/microsoft/BotFramework-WebChat/pull/5848), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.1] - 2026-06-09
