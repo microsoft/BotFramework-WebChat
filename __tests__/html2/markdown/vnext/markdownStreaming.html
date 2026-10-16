@@ -49,6 +49,8 @@
 
       const store = testHelpers.createStore();
 
+      // TODO: [P2] Markdown headings from the bot are rendered as-is: "# Heading" becomes a level-one heading, which Web Chat must not contain (#4721).
+      //       Remove both `skipCheckAccessibility` when fixed.
       run(async function () {
         const { directLine } = adapter;
 
@@ -74,11 +76,8 @@
 
         await pageConditions.scrollStabilized();
 
-        await host.snapshot('local');
+        await host.snapshot('local', { skipCheckAccessibility: true });
       }, { skipCheckAccessibility: true });
-
-      // TODO: figure out why skip doesn't work with fluent
-      window.checkAccessibility = async () => {}
     </script>
   </body>
 </html>
