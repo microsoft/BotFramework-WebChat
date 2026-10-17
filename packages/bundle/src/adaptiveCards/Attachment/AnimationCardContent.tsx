@@ -30,7 +30,7 @@ function AnimationCardContent(props: AnimationCardContentProps) {
     props
   );
 
-  const { media = [] } = content;
+  const { media = [], title } = content;
   const classNames = useStyles(styles);
 
   return (
@@ -41,7 +41,7 @@ function AnimationCardContent(props: AnimationCardContentProps) {
             {/\.gif$/iu.test(url) ? (
               <ImageContent alt={profile} src={url} />
             ) : (
-              <VideoContent alt={profile} autoPlay={content.autostart} src={url} />
+              <VideoContent alt={profile || title} autoPlay={content.autostart} src={url} />
             )}
           </li>
         ))}
