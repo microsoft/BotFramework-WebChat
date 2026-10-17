@@ -72,8 +72,11 @@
         pageObjects.focusTranscript();
         await host.sendKeys('ENTER');
 
-        // THEN: The audio player should have the keyboard focus.
+        // THEN: The audio player should have the keyboard focus, named after the title of the card.
         await waitFor(() => expect(document.activeElement).toBe(audioElement));
+        await waitFor(async () =>
+          expect(await getFocusedControl()).toEqual({ name: 'BotFramework Test', role: 'Audio' })
+        );
 
         // WHEN: TAB is pressed 5 times.
         await host.sendTab(5);

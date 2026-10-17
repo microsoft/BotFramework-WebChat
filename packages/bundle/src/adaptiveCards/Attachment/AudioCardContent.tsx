@@ -28,7 +28,7 @@ type AudioCardContentProps = InferReactProps<typeof audioCardContentPropsSchema>
 function AudioCardContent(props: AudioCardContentProps) {
   const { actionPerformedClassName, content, disabled, replyToId } = validateProps(audioCardContentPropsSchema, props);
 
-  const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
+  const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [], title } = content;
   const classNames = useStyles(styles);
 
   return (
@@ -36,7 +36,7 @@ function AudioCardContent(props: AudioCardContentProps) {
       <ul className="media-list">
         {media.map(({ url }, index) => (
           <li key={index}>
-            <AudioContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
+            <AudioContent alt={title} autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
           </li>
         ))}
       </ul>
