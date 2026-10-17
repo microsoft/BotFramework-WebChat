@@ -74,9 +74,18 @@
           type: 'message'
         });
 
-        await pageConditions.numActivitiesShown(4);
+        // GIVEN: The bot sends YouTube and Vimeo URLs without a video ID, which cannot be embedded.
+        for (const contentUrl of ['https://www.youtube.com/@Microsoft', 'https://youtu.be/', 'https://vimeo.com/']) {
+          await directLine.emulateIncomingActivity({
+            attachments: [{ contentType: 'video/mp4', contentUrl, name: 'Video without a video ID' }],
+            from: { role: 'bot' },
+            type: 'message'
+          });
+        }
 
-        // THEN: Every activity should show a video player with the URL as-is.
+        await pageConditions.numActivitiesShown(7);
+
+        // THEN: Every activity should show a video player with the URL as-is, the same as other URLs that cannot be embedded.
         const activityElements = pageElements.activities();
         const videoElements = activityElements.map(activityElement => activityElement.querySelector('video'));
 
@@ -84,8 +93,14 @@
           '/assets/dark-gray-video.webm',
           '/assets/dark-gray-video.webm',
           '/assets/dark-gray-video.webm',
-          'https://'
+          'https://',
+          'https://www.youtube.com/@Microsoft',
+          'https://youtu.be/',
+          'https://vimeo.com/'
         ]);
+
+        // THEN: YouTube and Vimeo URLs without a video ID should not be embedded.
+        expect(document.querySelector('iframe')).toBeNull();
 
         // THEN: The video players with a relative URL should load the video, relative to the page.
         await waitFor(() =>
