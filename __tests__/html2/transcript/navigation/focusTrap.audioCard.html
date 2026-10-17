@@ -86,12 +86,18 @@
           expect(await getFocusedControl()).toEqual({ name: 'show more media controls', role: 'button' })
         );
 
+        // THEN: The "show more media controls" button should show the focus indicator.
+        await host.snapshot('local');
+
         // WHEN: SHIFT+TAB is pressed twice.
         await host.sendShiftTab(2);
 
         // THEN: The focus should be on the volume slider.
         await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'volume', role: 'slider' }));
         expect(document.activeElement).toBe(audioElement);
+
+        // THEN: The volume slider should show the focus indicator.
+        await host.snapshot('local');
       });
     </script>
   </body>

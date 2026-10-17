@@ -70,10 +70,18 @@
         await waitFor(() => expect(document.activeElement).toBe(audioElement));
         await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'Hello, World!', role: 'Audio' }));
 
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: The focus should move to the first control of the audio player.
+        await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'play', role: 'button' }));
+
+        // THEN: The play button should show the focus indicator.
+        await host.snapshot('local');
+
         // WHEN: TAB is pressed repeatedly.
-        // THEN: The focus should move through every control of the audio player, in order.
+        // THEN: The focus should move through the other controls of the audio player, in order.
         for (const control of [
-          { name: 'play', role: 'button' },
           { name: 'audio time scrubber', role: 'slider' },
           { name: 'volume', role: 'slider' },
           { name: 'mute', role: 'button' },
@@ -97,6 +105,9 @@
         await waitFor(async () =>
           expect(await getFocusedControl()).toEqual({ name: 'show more media controls', role: 'button' })
         );
+
+        // THEN: The "show more media controls" button should show the focus indicator.
+        await host.snapshot('local');
 
         // WHEN: SHIFT+TAB is pressed again.
         await host.sendShiftTab();
