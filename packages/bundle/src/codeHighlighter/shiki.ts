@@ -28,14 +28,18 @@ function adjustTheme(theme: ThemeRegistration, background: string): ThemeRegistr
     colorReplacements: {
       ...theme.colorReplacements,
       ...Object.fromEntries(
-        [
-          theme.colors?.['editor.foreground'],
-          ...(theme.settings ?? theme.tokenColors ?? []).map(({ settings }) => settings.foreground)
-        ]
-          .filter((color): color is string => !!color)
-          .map(color => color.toLowerCase())
-          .map(color => [color, ensureContrast(color, background, theme.type === 'dark' ? 'lighten' : 'darken')])
-          .filter(([color, replacement]) => color !== replacement)
+        // Each distinct color once: many token rules share a color.
+        Array.from(
+          new Set(
+            [
+              theme.colors?.['editor.foreground'],
+              ...(theme.settings ?? theme.tokenColors ?? []).map(({ settings }) => settings.foreground)
+            ]
+              .filter((color): color is string => !!color)
+              .map(color => color.toLowerCase())
+          ),
+          color => [color, ensureContrast(color, background, theme.type === 'dark' ? 'lighten' : 'darken')]
+        ).filter(([color, replacement]) => color !== replacement)
       )
     },
     colors: {
