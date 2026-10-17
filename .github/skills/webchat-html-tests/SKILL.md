@@ -1,6 +1,6 @@
 ---
 name: webchat-html-tests
-description: 'Run Bot Framework Web Chat HTML tests in Docker/Selenium Grid. Use when: running __tests__/html2, debugging failing HTML tests, updating snapshots, checking grid health, or cleaning leaked Selenium sessions.'
+description: 'Run Bot Framework Web Chat HTML tests in Docker/Selenium Grid. Use when: writing or running __tests__/html2, debugging failing HTML tests, updating snapshots, checking grid health, or cleaning leaked Selenium sessions.'
 argument-hint: 'Optional HTML test regex'
 ---
 
@@ -11,6 +11,7 @@ Run the HTML test harness, keep Selenium Grid healthy, and debug failures withou
 ## When to Use
 
 - Running `__tests__/html2` for a branch or PR
+- Writing a new HTML test or a theme variant of one
 - Debugging a failing HTML or snapshot test
 - Updating snapshots after an intentional visual change
 - Checking whether Selenium Grid is ready or leaking sessions
@@ -41,7 +42,16 @@ python3 ./.github/skills/webchat-html-tests/scripts/wait-for-grid.py
 
 Stop if the script times out or if the node summary does not show ready nodes.
 
-### 3. Run Tests
+### 3. Build What You Changed
+
+Tests load built files (`dist`, `static`) from the checkout where the grid was started, not `src`. After changing package source, rebuild that package, then `packages/bundle` ([details](./references/architecture.md#rebuild-before-testing)):
+
+```sh
+npm run build --workspace ./packages/component
+npm run build --workspace ./packages/bundle
+```
+
+### 4. Run Tests
 
 Run the full suite:
 
@@ -61,28 +71,30 @@ Update snapshots for an expected visual change:
 ./.github/skills/webchat-html-tests/scripts/run-html-tests.sh --update "__tests__/html2/activity/message-status\.html$"
 ```
 
-### 4. Clean Grid Sessions After Every Run
+### 5. Clean Grid Sessions After Every Run
+
+The grid may be shared, so delete only sessions too old to belong to a running test:
 
 ```sh
-python3 ./.github/skills/webchat-html-tests/scripts/cleanup-grid-sessions.py
+python3 ./.github/skills/webchat-html-tests/scripts/cleanup-grid-sessions.py --min-age 400
 ```
 
-If leaked sessions remain, clean them before the next Jest run or the grid can stall.
+Without `--min-age`, the script deletes every session, including other runs' tests; use that only when every session is yours. `--dry-run` lists sessions without deleting.
 
-### 5. Recover Common Infra Problems
+### 6. Recover Common Infra Problems
 
-If dist files return 404s after a local build, restart `webchat2`:
+If dist files return 404s after a served folder was deleted and re-created (e.g. `rm -rf packages/bundle/static`), restart `webchat2`:
 
 ```sh
 docker compose -f docker-compose-wsl2.yml restart webchat2
 ```
 
-If a failure is not obvious, load the reference docs before changing code:
+Before writing a test, or when a failure is not obvious, load the reference docs:
 
-- [Architecture and test layout](./references/architecture.md)
-- [Failure modes and snapshot workflow](./references/failure-modes.md)
+- [Architecture, served paths, and theme variants](./references/architecture.md)
+- [Failure modes, grid sessions, and snapshot workflow](./references/failure-modes.md)
 
-### 6. Tear Down
+### 7. Tear Down
 
 ```sh
 docker compose -f docker-compose-wsl2.yml down
@@ -91,7 +103,8 @@ docker compose -f docker-compose-wsl2.yml down
 ## Checklist
 
 - [ ] Grid is ready before running Jest
+- [ ] Changed packages are rebuilt before running tests
 - [ ] Focused tests use an anchored regex when targeting one HTML file
-- [ ] Sessions are cleaned after every run
+- [ ] Sessions are cleaned after every run, with `--min-age` on a shared grid
 - [ ] Snapshot updates are rerun without `--update`
 - [ ] `npm run precommit` passes before opening the PR
