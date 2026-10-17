@@ -28,7 +28,7 @@ type VideoCardContentProps = InferReactProps<typeof videoCardContentPropsSchema>
 function VideoCardContent(props: VideoCardContentProps) {
   const { actionPerformedClassName, content, disabled, replyToId } = parse(videoCardContentPropsSchema, props);
 
-  const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media } = content;
+  const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media, title } = content;
   const classNames = useStyles(styles);
 
   return (
@@ -36,7 +36,7 @@ function VideoCardContent(props: VideoCardContentProps) {
       <ul className="media-list">
         {media.map(({ url }, index) => (
           <li key={index}>
-            <VideoContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
+            <VideoContent alt={title} autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
           </li>
         ))}
       </ul>
