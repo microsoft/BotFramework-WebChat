@@ -3,24 +3,43 @@
   <head>
     <title>Code block: every syntax-highlighted token has enough color contrast</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
-  </head>
-  <body>
-    <main id="webchat"></main>
     <script type="importmap">
       {
         "imports": {
-          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/",
+          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
         }
       }
     </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .fui-FluentProvider {
+        display: contents;
+
+        --webchat__color--surface: var(--colorNeutralBackground3);
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webDarkTheme } from '@fluentui/tokens';
       import { waitFor } from '@testduet/wait-for';
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
 
       // Comments, keywords, strings, and other tokens in every language Web Chat highlights.
       const SAMPLES = Object.freeze([
@@ -68,20 +87,32 @@ print(f"{Point(1)!r}", r"\\d+", None, True)`
 
       run(async function () {
         const {
-          WebChat: { testIds }
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const searchParams = new URLSearchParams(location.search);
 
-        renderWebChat(
-          {
-            directLine,
-            store,
-            styleOptions: {
-              codeBlockTheme: new URLSearchParams(location.search).get('code-block-theme') ?? 'github-light-default'
-            }
-          },
-          document.getElementById('webchat')
+        const webChatElement = React.createElement(ReactWebChat, {
+          directLine,
+          store,
+          styleOptions: { codeBlockTheme: searchParams.get('code-block-theme') ?? 'github-light-default' }
+        });
+
+        const themedElement =
+          searchParams.get('theme') === 'fluent'
+            ? React.createElement(FluentThemeProvider, null, webChatElement)
+            : webChatElement;
+
+        // The code block theme does not follow the color scheme: Web Chat in a dark Fluent UI theme can use either code block theme.
+        createRoot(document.getElementById('webchat')).render(
+          searchParams.get('fluent-theme') === 'dark'
+            ? React.createElement(
+                FluentProvider,
+                { className: 'fui-FluentProvider', theme: webDarkTheme },
+                themedElement
+              )
+            : themedElement
         );
 
         await pageConditions.uiConnected();
