@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: CopilotMessageHeader</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/",
+          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style type="text/css">
+      #webchat {
+        width: 640px;
+      }
+
+      .fui-FluentProvider {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webLightTheme } from '@fluentui/tokens';
+      import { waitFor } from '@testduet/wait-for';
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: {
+            CopilotMessageHeader,
+            decorator: { createActivityGroupingMiddleware, DecoratorComposer },
+            FluentThemeProvider,
+            PartGroupDecorator,
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const BOT_NAME = 'Contoso Human Resources Onboarding and Benefits Assistant for New Employees';
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        await host.windowSize(640, 640, document.getElementById('webchat'));
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        // GIVEN: A part grouping decorator with <CopilotMessageHeader> as the header of bot messages.
+        const HeaderPartGroupDecorator = props =>
+          React.createElement(PartGroupDecorator, {
+            ...(props.activities[0]?.from?.role === 'bot' && {
+              header: React.createElement(CopilotMessageHeader, {
+                activity: props.activities[0],
+                className: 'part-grouping-decorator__header'
+              })
+            }),
+            ...props
+          });
+
+        createRoot(document.getElementById('webchat')).render(
+          React.createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: { ...webLightTheme, colorNeutralForeground1: '#1b1b1b' } },
+            React.createElement(
+              FluentThemeProvider,
+              { variant: new URLSearchParams(location.search).get('variant') ?? 'fluent' },
+              React.createElement(
+                DecoratorComposer,
+                {
+                  middleware: [
+                    createActivityGroupingMiddleware(
+                      next => request => (request.groupingName === 'part' ? HeaderPartGroupDecorator : next(request))
+                    )
+                  ]
+                },
+                React.createElement(ReactWebChat, { directLine, store })
+              )
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: An AI-generated message arrives from a bot with a long name.
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AIGeneratedContent'],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          from: { id: 'bot', name: BOT_NAME, role: 'bot' },
+          text: 'Welcome aboard! I can answer questions about your benefits, payroll, equipment, and your first week in the office.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: The header should show the bot name, with the full name in its tooltip, and the AI-generated content badge.
+        await waitFor(() =>
+          expect(document.querySelector('.copilot-message-header [title]')).toHaveProperty('title', BOT_NAME)
+        );
+        expect(document.querySelector('.copilot-message-header [title]').textContent).toBe(BOT_NAME);
+        expect(document.querySelector('.copilot-message-header').textContent).toContain('AI-generated content');
+
+        // THEN: The header should be no wider than the message bubble can be, truncating the bot name.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
