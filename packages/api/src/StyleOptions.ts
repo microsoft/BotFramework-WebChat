@@ -130,7 +130,7 @@ type StrictStyleOptions = {
    * 'Bubble' refers to the container of the activit(ies) from the bot and user. Below, non-'fromUser' props refer to styling for the bot activities.
    */
 
-  /** Background color of the bubble, also used for the inner band of the focus indicator of video attachments. */
+  /** Background color of the bubble, also used for the inner band of the focus indicator of video attachments and videos in animation cards. */
   bubbleBackground: string | undefined;
 
   bubbleBorderColor: string | undefined;
@@ -699,13 +699,13 @@ type StrictStyleOptions = {
   transcriptActivityVisualKeyboardIndicatorStyle: string | undefined;
   transcriptActivityVisualKeyboardIndicatorWidth: number | string | undefined;
 
-  /** Transcript: Visual keyboard indicator color for the transcript, carousel layout (attachments and flipper buttons), card action buttons, and audio and video attachments. */
+  /** Transcript: Visual keyboard indicator color for the transcript, carousel layout (attachments and flipper buttons), card action buttons, audio and video attachments, and videos in animation cards. */
   transcriptVisualKeyboardIndicatorColor: string | undefined;
 
-  /** Transcript: Visual keyboard indicator style for the transcript, carousel layout (attachments and flipper buttons), card action buttons, and audio and video attachments. */
+  /** Transcript: Visual keyboard indicator style for the transcript, carousel layout (attachments and flipper buttons), card action buttons, audio and video attachments, and videos in animation cards. */
   transcriptVisualKeyboardIndicatorStyle: string | undefined;
 
-  /** Transcript: Visual keyboard indicator width for the transcript, carousel layout (attachments and flipper buttons), card action buttons, and audio and video attachments. */
+  /** Transcript: Visual keyboard indicator width for the transcript, carousel layout (attachments and flipper buttons), card action buttons, audio and video attachments, and videos in animation cards. */
   transcriptVisualKeyboardIndicatorWidth: number | string | undefined;
 
   /**
