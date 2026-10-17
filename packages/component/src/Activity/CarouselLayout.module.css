@@ -26,5 +26,30 @@
       background-color: var(--webchat__background--transcript-overlay-button-hover);
       color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
     }
+
+    &:focus-visible {
+      /* Show the focused flipper, including the one hidden at the edge, so keyboard users can see where the focus is. */
+      :global(.react-film__main__slider) {
+        transition-delay: 0s;
+      }
+
+      :global(.react-film__main__slider--left) {
+        left: 0;
+      }
+
+      :global(.react-film__main__slider--right) {
+        right: 0;
+      }
+
+      /* Two-tone focus indicator: visible against both the flipper and any content behind it. */
+      :global(.react-film__flipper__body) {
+        box-shadow: 0 0 0 2px
+          var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
+        outline: var(--webchat__border-width--transcript-visual-keyboard-indicator)
+          var(--webchat__border-style--transcript-visual-keyboard-indicator)
+          var(--webchat__color--transcript-visual-keyboard-indicator);
+        outline-offset: 2px;
+      }
+    }
   }
 }
