@@ -35,6 +35,7 @@ Legends:
 - Fixed the "Copied" confirmation of the Copy button disappearing too quickly: it is now shown for 5 seconds in all themes, fixes [#5857](https://github.com/microsoft/BotFramework-WebChat/issues/5857), in PR [#5872](https://github.com/microsoft/BotFramework-WebChat/pull/5872), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers repeating the full bot response when focus enters message actions such as Copy, Like, or Dislike, resolving [#5849](https://github.com/microsoft/BotFramework-WebChat/issues/5849), by [@asalsa](https://github.com/asalsa)
 - Fixed card images with empty alternate text (`altText: ""` in Adaptive Cards or `alt: ""` in rich cards) not being rendered as decorative images, related to [#5747](https://github.com/microsoft/BotFramework-WebChat/issues/5747), in PR [#5877](https://github.com/microsoft/BotFramework-WebChat/pull/5877), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed the keyboard focus indicator of the "Previous" and "Next" flipper buttons in carousel layout: they now show a visible focus ring, and the focused flipper is shown even at the start or end of the carousel, fixes [#5704](https://github.com/microsoft/BotFramework-WebChat/issues/5704) and [#5744](https://github.com/microsoft/BotFramework-WebChat/issues/5744), in PR [#5876](https://github.com/microsoft/BotFramework-WebChat/pull/5876), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
