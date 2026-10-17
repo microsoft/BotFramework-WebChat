@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        const webChatElement = createElement(ReactWebChat, { directLine, store });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // Same as the "carousel" command of the mock bot.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [1, 2, 3].map(index => ({
+            content: {
+              buttons: [
+                { title: 'Places To Buy', type: 'imBack', value: 'Place to buy' },
+                { title: 'Related Products', type: 'imBack', value: 'Related Products' }
+              ],
+              subtitle: 'This is the subtitle',
+              text: 'Price: $XXX.XX USD',
+              title: `Details about image ${index}`
+            },
+            contentType: 'application/vnd.microsoft.card.hero'
+          })),
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const placesToBuyButton = document.querySelector('.carousel-layout .ac-pushButton');
+
+        const getFocusIndicatorStyle = () => {
+          const { backgroundColor, boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth } =
+            getComputedStyle(placesToBuyButton);
+
+          return { backgroundColor, boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth };
+        };
+
+        // Two-tone focus indicator drawn inside the button, as the action set clips anything outside of the button:
+        // an outer ring in the transcript keyboard indicator color (black, 2px) on the edge of the button,
+        // separated from the button by an inner band in the pressed button text color (white, 2px).
+        // Black against the card (white) is 21:1, white against the pressed button (#0063B1) is 6.14:1.
+        const focusIndicatorStyle = {
+          boxShadow: 'rgb(255, 255, 255) 0px 0px 0px 3px inset',
+          outlineColor: 'rgb(0, 0, 0)',
+          outlineOffset: '-2px',
+          outlineStyle: 'solid',
+          outlineWidth: '2px'
+        };
+
+        // WHEN: Focus on the first attachment of the carousel via keyboard.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ENTER');
+
+        // WHEN: Press TAB to move focus to the "Places To Buy" button.
+        await host.sendTab();
+
+        // THEN: The "Places To Buy" button should have a two-tone focus indicator.
+        expect(document.activeElement).toBe(placesToBuyButton);
+        expect(placesToBuyButton.textContent).toBe('Places To Buy');
+        expect(placesToBuyButton.matches(':focus-visible')).toBe(true);
+        expect(getFocusIndicatorStyle()).toEqual({ ...focusIndicatorStyle, backgroundColor: 'rgb(255, 255, 255)' });
+
+        await pageConditions.scrollStabilized();
+        await host.snapshot('local');
+
+        // WHEN: Press ENTER to press the "Places To Buy" button.
+        (await directLine.actPostActivity(() => host.sendKeys('ENTER'))).resolveAll();
+
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: The "Places To Buy" button should be pressed and keep the focus.
+        await waitFor(() => expect(placesToBuyButton.getAttribute('aria-pressed')).toBe('true'));
+        expect(document.activeElement).toBe(placesToBuyButton);
+        expect(placesToBuyButton.matches(':focus-visible')).toBe(true);
+
+        // THEN: The focus indicator should be separated from the pressed button (#0063B1) by the inner band.
+        expect(getFocusIndicatorStyle()).toEqual({ ...focusIndicatorStyle, backgroundColor: 'rgb(0, 99, 177)' });
+
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
