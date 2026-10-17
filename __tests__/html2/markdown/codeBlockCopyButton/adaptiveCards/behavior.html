@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -11,7 +11,16 @@
   </head>
   <body>
     <main id="webchat" style="position: relative"></main>
-    <script type="text/babel">
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script data-type="module" type="text/babel">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         await host.sendDevToolsCommand('Browser.setPermission', {
           permission: { name: 'clipboard-write' },
@@ -28,11 +37,12 @@
           WebChat: { ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         const App = () => (
           <React.Fragment>
-            <ReactWebChat directLine={directLine} store={store} />
+            <ReactWebChat directLine={directLine} ponyfill={clock} store={store} />
             <div style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
               <label>
                 <div>Paste box</div>
@@ -47,6 +57,10 @@
         );
 
         render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
 
         await pageConditions.uiConnected();
 
@@ -108,8 +122,8 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
-        // NOTE: "Copied" will eventually turn back into normal mode, this is time-sensitive screenshot.
-        await host.snapshot('local', { stable: false });
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copied'));
+        await host.snapshot('local');
 
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="paste box"]'));
@@ -117,8 +131,11 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
-        // Sleep for 1 second for the checkmark to go away.
-        await testHelpers.sleep(500);
+        // WHEN: 5 seconds after pressing the "Copy" button.
+        clock.tick(5_000);
+
+        // THEN: The checkmark should go away.
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copy'));
 
         // WHEN: Hiding Web Chat and showing it back.
         document.getElementById('webchat').style.display = 'none';
