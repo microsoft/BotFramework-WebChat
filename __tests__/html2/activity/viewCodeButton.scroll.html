@@ -50,21 +50,19 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        render(
-          <ReactWebChat directLine={directLine} store={store} />,
-          document.getElementById('webchat')
-        );
+        render(<ReactWebChat directLine={directLine} store={store} />, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
         directLine.emulateIncomingActivity({
           from: { role: 'bot' },
-          entities: [{
-            ...aiMessageEntity,
-            isBasedOn: {
-              '@type': 'SoftwareSourceCode',
-              'programmingLanguage': 'python',
-              "text": `import numpy as np
+          entities: [
+            {
+              ...aiMessageEntity,
+              isBasedOn: {
+                '@type': 'SoftwareSourceCode',
+                programmingLanguage: 'python',
+                text: `import numpy as np
 import matplotlib.pyplot as plt
 
 def plot_sine_waves():
@@ -106,10 +104,11 @@ def plot_sine_waves():
 
 # Generate the visualization
 plot_sine_waves()`
+              }
             }
-          }],
-          type: "message",
-          text: `This example demonstrates creating a beautiful visualization of harmonic waves using Python's Matplotlib library. The code generates three sine waves with different frequencies and phases, then combines them to show wave interference patterns.\n<img alt="wave plot" src="${waveSvg}">`,
+          ],
+          type: 'message',
+          text: `This example demonstrates creating a beautiful visualization of harmonic waves using Python's Matplotlib library. The code generates three sine waves with different frequencies and phases, then combines them to show wave interference patterns.\n<img alt="wave plot" src="${waveSvg}">`
         });
 
         await pageConditions.numActivitiesShown(1);

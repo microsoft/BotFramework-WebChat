@@ -1,192 +1,190 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Attachment AdaptiveCard: custom</title>
-  <script type="importmap">
-    {
-      "imports": {
-        "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
-        "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
-        "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
-        "bot-bundle-chat-adapter": "https://cdn.jsdelivr.net/gh/compulim/experiment-mockbot@v0.0.4/esm/bot-bundle-chat-adapter.js",
-        "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-        "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
-        "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
-        "react": "/__dist__/packages/test/test-assets/out/react.js",
-        "react-dom": "/__dist__/packages/test/test-assets/out/react-dom.js",
-        "react-dom/": "/__dist__/packages/test/test-assets/out/react-dom/",
-        "react-jsx-runtime": "/__dist__/packages/test/test-assets/out/react-jsx-runtime.js"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Attachment AdaptiveCard: custom</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "bot-bundle-chat-adapter": "https://cdn.jsdelivr.net/gh/compulim/experiment-mockbot@v0.0.4/esm/bot-bundle-chat-adapter.js",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/test/test-assets/out/react.js",
+          "react-dom": "/__dist__/packages/test/test-assets/out/react-dom.js",
+          "react-dom/": "/__dist__/packages/test/test-assets/out/react-dom/",
+          "react-jsx-runtime": "/__dist__/packages/test/test-assets/out/react-jsx-runtime.js"
+        }
       }
-    }
-  </script>
+    </script>
+    <script type="module">
+      import { registerElements } from '/assets/custom-element/custom-element.js';
+
+      await registerElements('test-shell');
+    </script>
+  </head>
+
+  <body>
+    <main>
+      <test-shell>
+        <div id="webchat"></div>
+      </test-shell>
+    </main>
+  </body>
+
   <script type="module">
-    import { registerElements } from '/assets/custom-element/custom-element.js';
+    import { FluentProvider } from '@fluentui/react-provider';
+    import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
+    import { waitFor } from '@testduet/wait-for';
+    import { createBotAsChatAdapter } from 'bot-bundle-chat-adapter';
+    import { ReactWebChat } from 'botframework-webchat';
+    import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+    import { createElement as h } from 'react';
+    import { createRoot } from 'react-dom/client.js';
 
-    await registerElements('test-shell');
-  </script>
-</head>
+    import { postActivity } from '/assets/esm/postActivity.js';
+    import { run, host, pageConditions, testHelpers } from '/assets/esm/test.js';
 
-<body>
-  <main>
-    <test-shell>
-      <div id="webchat"></div>
-    </test-shell>
-  </main>
-</body>
+    const searchParams = new URLSearchParams(location.search);
+    const theme = document.querySelector('test-shell').dataset.theme;
+    let codeBlockTheme;
+    let fluentTheme;
 
-<script type="module">
-  import { FluentProvider } from '@fluentui/react-provider';
-  import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
-  import { waitFor } from '@testduet/wait-for';
-  import { createBotAsChatAdapter } from 'bot-bundle-chat-adapter';
-  import { ReactWebChat } from 'botframework-webchat';
-  import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
-  import { createElement as h } from 'react';
-  import { createRoot } from 'react-dom/client.js';
+    const root = createRoot(document.getElementById('webchat'));
 
-  import { postActivity } from '/assets/esm/postActivity.js';
-  import { run, host, pageConditions, testHelpers } from '/assets/esm/test.js';
+    if (theme !== 'light') {
+      fluentTheme = {
+        ...createDarkTheme({
+          10: '#12174c',
+          20: '#1a1f5b',
+          30: '#21276a',
+          40: '#293079',
+          50: '#303788',
+          60: '#384097',
+          70: '#4049a7',
+          80: '#151e80',
+          90: '#4f59c5',
+          100: '#5661d4',
+          110: '#5e69e3',
+          120: '#7982e8',
+          130: '#949bec',
+          140: '#afb5f1',
+          150: '#c9cdf6',
+          160: '#e4e6fa'
+        }),
+        colorNeutralBackground1Disabled: '#101010',
+        colorNeutralBackground1Hover: '#101010',
+        colorNeutralForeground5: '#424242'
+      };
+      codeBlockTheme = 'github-dark-default';
+    } else {
+      fluentTheme = webLightTheme;
+    }
 
-  const searchParams = new URLSearchParams(location.search);
-  const theme = document.querySelector('test-shell').dataset.theme;
-  let codeBlockTheme;
-  let fluentTheme;
-
-  const root = createRoot(document.getElementById('webchat'));
-
-  if (theme !== 'light') {
-    fluentTheme = {
-      ...createDarkTheme({
-        10: '#12174c',
-        20: '#1a1f5b',
-        30: '#21276a',
-        40: '#293079',
-        50: '#303788',
-        60: '#384097',
-        70: '#4049a7',
-        80: '#151e80',
-        90: '#4f59c5',
-        100: '#5661d4',
-        110: '#5e69e3',
-        120: '#7982e8',
-        130: '#949bec',
-        140: '#afb5f1',
-        150: '#c9cdf6',
-        160: '#e4e6fa'
-      }),
-      colorNeutralBackground1Disabled: '#101010',
-      colorNeutralBackground1Hover: '#101010',
-      colorNeutralForeground5: '#424242'
-    };
-    codeBlockTheme = 'github-dark-default';
-  } else {
-    fluentTheme = webLightTheme;
-  }
-
-  function renderWebChat() {
-    root.render(
-      h(
-        FluentProvider,
-        { className: 'fui-FluentProvider', theme: fluentTheme },
+    function renderWebChat() {
+      root.render(
         h(
-          FluentThemeProvider,
-          { variant: searchParams.get('variant') ?? 'copilot' },
-          h(ReactWebChat, {
-            dir: searchParams.get('dir'),
-            styleOptions: {
-              ...(codeBlockTheme && { codeBlockTheme }),
-              maxMessageLength: null
-            },
-            directLine: adapter,
-            store
-          })
+          FluentProvider,
+          { className: 'fui-FluentProvider', theme: fluentTheme },
+          h(
+            FluentThemeProvider,
+            { variant: searchParams.get('variant') ?? 'copilot' },
+            h(ReactWebChat, {
+              dir: searchParams.get('dir'),
+              styleOptions: {
+                ...(codeBlockTheme && { codeBlockTheme }),
+                maxMessageLength: null
+              },
+              directLine: adapter,
+              store
+            })
+          )
         )
-      )
-    );
-  }
+      );
+    }
 
-  const store = testHelpers.createStore();
-  const adapter = createBotAsChatAdapter({
-    conversationStartProperties: { locale: navigator.language }
-  });
-
-
-  run(async () => {
-    await host.windowSize(800, 800, document.body);
-
-    renderWebChat();
-
-    await pageConditions.uiConnected();
-
-    // When: send an adaptive card with primary and secondary buttons
-    await postActivity(adapter, {
-      text: 'custom-card with 3 button types', value: {
-        "type": "AdaptiveCard",
-        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-        "version": "1.6",
-        "body": [
-          {
-            "type": "ActionSet",
-            "actions": [
-              {
-                "type": "Action.Submit",
-                "title": "Primary positive",
-                "style": "positive"
-              },
-              {
-                "type": "Action.Submit",
-                "title": "Primary destructive",
-                "style": "destructive"
-              },
-              {
-                "type": "Action.Submit",
-                "title": "Secondary"
-              }
-            ]
-          }
-        ],
-        "actions": []
-      }
+    const store = testHelpers.createStore();
+    const adapter = createBotAsChatAdapter({
+      conversationStartProperties: { locale: navigator.language }
     });
 
-    // Then: should apply styles for buttons correctly
-    // The bot responses render after `postActivity()` resolves, wait for them and for the scroll before each snapshot.
-    await pageConditions.numActivitiesShown(2);
-    await host.snapshot('local');
+    run(async () => {
+      await host.windowSize(800, 800, document.body);
 
-    await waitFor(() => expect(document.querySelectorAll('.ac-pushButton')).toHaveLength(3));
+      renderWebChat();
 
-    // When: click all buttons
-    for (const [index, button] of document.querySelectorAll('.ac-pushButton').entries()) {
-      await host.click(button);
+      await pageConditions.uiConnected();
 
-      // Wait for the response to each click, so the next click is not made while the transcript is scrolling.
-      await pageConditions.numActivitiesShown(3 + index);
+      // When: send an adaptive card with primary and secondary buttons
+      await postActivity(adapter, {
+        text: 'custom-card with 3 button types',
+        value: {
+          type: 'AdaptiveCard',
+          $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+          version: '1.6',
+          body: [
+            {
+              type: 'ActionSet',
+              actions: [
+                {
+                  type: 'Action.Submit',
+                  title: 'Primary positive',
+                  style: 'positive'
+                },
+                {
+                  type: 'Action.Submit',
+                  title: 'Primary destructive',
+                  style: 'destructive'
+                },
+                {
+                  type: 'Action.Submit',
+                  title: 'Secondary'
+                }
+              ]
+            }
+          ],
+          actions: []
+        }
+      });
+
+      // Then: should apply styles for buttons correctly
+      // The bot responses render after `postActivity()` resolves, wait for them and for the scroll before each snapshot.
+      await pageConditions.numActivitiesShown(2);
+      await host.snapshot('local');
+
+      await waitFor(() => expect(document.querySelectorAll('.ac-pushButton')).toHaveLength(3));
+
+      // When: click all buttons
+      for (const [index, button] of document.querySelectorAll('.ac-pushButton').entries()) {
+        await host.click(button);
+
+        // Wait for the response to each click, so the next click is not made while the transcript is scrolling.
+        await pageConditions.numActivitiesShown(3 + index);
+        await pageConditions.scrollToBottomCompleted();
+      }
+
+      // Then: should apply correct pressed styles
+      await host.snapshot('local');
+
+      // When: sending a layout command
+      await postActivity(adapter, { text: 'layout' });
+
+      // Then: should render multiple attachments correctly
+      await pageConditions.numActivitiesShown(7);
       await pageConditions.scrollToBottomCompleted();
-    }
+      await host.snapshot('local');
 
-    // Then: should apply correct pressed styles
-    await host.snapshot('local');
+      // When: send an adaptive card with containers
+      await postActivity(adapter, { text: 'card containerstyles' });
 
-    // When: sending a layout command
-    await postActivity(adapter, { text: 'layout' });
-
-    // Then: should render multiple attachments correctly
-    await pageConditions.numActivitiesShown(7);
-    await pageConditions.scrollToBottomCompleted();
-    await host.snapshot('local');
-
-    // When: send an adaptive card with containers
-    await postActivity(adapter, { text: 'card containerstyles' });
-
-    // Then: should render container styles correctly
-    await pageConditions.numActivitiesShown(9);
-    await pageConditions.scrollToBottomCompleted();
-    await host.snapshot('local');
-  });
-</script>
-
+      // Then: should render container styles correctly
+      await pageConditions.numActivitiesShown(9);
+      await pageConditions.scrollToBottomCompleted();
+      await host.snapshot('local');
+    });
+  </script>
 </html>
