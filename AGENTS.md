@@ -99,6 +99,8 @@ export { MyComponentPropsSchema, type MyComponentProps };
 - Follow other HTML files under the same folder on how to write tests
 - Page conditions, page elements, and page objects can be found at `/packages/test/page-object/src/globals`
 - Use `expect` instead of `assert`
+- For visual changes, let snapshots (VRT) do the work instead of asserting computed CSS, assert state such as focus, role, name, and attributes
+- Wait for effects of asynchronous work (e.g. after `host.click()`) with `waitFor()` from `@testduet/wait-for` and `expect`, not with sleeps
 - Use `@testduet/given-when-then` package instead of xUnit style `describe`/`before`/`test`/`after`
 - Prefer integration/end-to-end testing than unit testing
 - Use as realistic setup as possible, such as using `msw` than mocking calls
