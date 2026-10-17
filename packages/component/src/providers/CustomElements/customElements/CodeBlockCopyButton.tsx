@@ -1,108 +1,140 @@
-import cx from 'classnames';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import React, { memo, useCallback, useState } from 'react';
+import { hooks } from 'botframework-webchat-api';
+import { type GlobalScopePonyfill } from 'botframework-webchat-core';
+import cx from 'classnames';
+import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
+import { custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useCopiedState from '../../../hooks/internal/useCopiedState';
 import { ComponentIcon } from '../../../Icon';
 import testIds from '../../../testIds';
 import wrapAsCustomElement from './wrapAsCustomElement';
 
 import styles from './CodeBlockCopyButton.module.css';
 
-export type CodeBlockCopyButtonProps = Readonly<{
-  className: string;
-  'data-alt-copied': string;
-  'data-alt-copy': string;
-  'data-value': string;
-}>;
+const { usePonyfill } = hooks;
 
-const CodeBlockCopyButton = memo(
-  ({
+const codeBlockCopyButtonPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    'data-alt-copied': optional(string()),
+    'data-alt-copy': optional(string()),
+    'data-value': optional(string()),
+    ponyfill: custom<Pick<GlobalScopePonyfill, 'clearTimeout' | 'setTimeout'>>(value =>
+      is(object({ clearTimeout: function_(), setTimeout: function_() }), value)
+    )
+  }),
+  readonly()
+);
+
+type CodeBlockCopyButtonProps = InferInput<typeof codeBlockCopyButtonPropsSchema>;
+
+function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
+  const {
     className,
     'data-alt-copied': copiedAlt,
     'data-alt-copy': copyAlt,
-    'data-value': value
-  }: CodeBlockCopyButtonProps) => {
-    const classNames = useStyles(styles);
-    const [disabled, setDisabled, disabledRef] = useStateWithRef(false);
-    const [pressed, setPressed] = useState(false);
-    const valueRef = useRefFrom(value);
+    'data-value': value,
+    ponyfill
+  } = validateProps(codeBlockCopyButtonPropsSchema, props);
 
-    const handleClick = useCallback(() => {
-      if (disabledRef.current) {
-        return;
-      }
+  const [copied, markAsCopied] = useCopiedState(ponyfill);
+  const [disabled, setDisabled, disabledRef] = useStateWithRef(false);
+  const classNames = useStyles(styles);
+  const valueRef = useRefFrom(value);
 
-      let obsoleted = false;
+  const handleClick = useCallback(() => {
+    if (disabledRef.current) {
+      return;
+    }
 
-      (async () => {
-        try {
-          const { state } = await navigator.permissions.query({ name: 'clipboard-write' as any });
+    let obsoleted = false;
 
-          if (!obsoleted) {
-            if (state === 'granted') {
-              await navigator.clipboard?.write([
-                new ClipboardItem({ 'text/plain': new Blob([valueRef.current], { type: 'text/plain' }) })
-              ]);
+    (async () => {
+      try {
+        const { state } = await navigator.permissions.query({ name: 'clipboard-write' as any });
 
-              obsoleted || setPressed(true);
-            } else if (state === 'denied') {
-              setDisabled(true);
-            }
+        if (!obsoleted) {
+          if (state === 'granted') {
+            await navigator.clipboard?.write([
+              new ClipboardItem({ 'text/plain': new Blob([valueRef.current], { type: 'text/plain' }) })
+            ]);
+
+            // Copying again restarts the confirmation.
+            obsoleted || markAsCopied();
+          } else if (state === 'denied') {
+            setDisabled(true);
           }
-        } catch (error) {
-          console.warn('botframework-webchat: Failed to copy code block to clipboard.', error);
         }
-      })();
+      } catch (error) {
+        console.warn('botframework-webchat: Failed to copy code block to clipboard.', error);
+      }
+    })();
 
-      return () => {
-        obsoleted = true;
-      };
-    }, [disabledRef, setDisabled, setPressed, valueRef]);
+    return () => {
+      obsoleted = true;
+    };
+  }, [disabledRef, markAsCopied, setDisabled, valueRef]);
 
-    const handleAnimationEnd = useCallback(() => setPressed(false), [setPressed]);
-
-    return (
-      <button
-        aria-disabled={disabled}
-        aria-live="assertive"
-        aria-pressed={pressed ? 'true' : undefined}
-        className={cx(className, classNames['code-block-copy-button'], {
-          [classNames['code-block-copy-button--copied']]: pressed
-        })}
-        data-testid={testIds.codeBlockCopyButton}
-        onAnimationEnd={handleAnimationEnd}
-        onClick={handleClick}
-        type="button"
-      >
-        <ComponentIcon
-          aria-hidden={pressed ? 'true' : undefined}
-          aria-label={copyAlt}
-          className={cx(classNames['code-block-copy-button__icon'], classNames['code-block-copy-button__icon--copy'])}
-          icon={pressed ? 'copy-code-checkmark' : 'copy-code'}
-          role="img"
-        />
-        <div
-          aria-hidden={pressed ? undefined : 'true'}
-          aria-label={copiedAlt}
-          className={cx(classNames['code-block-copy-button__icon'], classNames['code-block-copy-button__icon--copied'])}
-          role="img"
-        />
-      </button>
-    );
-  }
-);
+  // A plain button, like the copy button of activities: its name is "Copied" while the confirmation is shown.
+  // A live region on the button would raise another event for "Copied", then an assertive "Copy" when the confirmation ends.
+  // The "--copied" classes have no style of their own, they are kept for hosts to style.
+  return (
+    <button
+      aria-disabled={disabled}
+      className={cx(className, classNames['code-block-copy-button'], { 'code-block-copy-button--copied': copied })}
+      data-testid={testIds.codeBlockCopyButton}
+      onClick={handleClick}
+      type="button"
+    >
+      <ComponentIcon
+        aria-hidden={copied ? 'true' : undefined}
+        aria-label={copyAlt}
+        className={cx(classNames['code-block-copy-button__icon'], classNames['code-block-copy-button__icon--copy'])}
+        icon={copied ? 'copy-code-checkmark' : 'copy-code'}
+        role="img"
+      />
+      <div
+        aria-hidden={copied ? undefined : 'true'}
+        aria-label={copiedAlt}
+        className={cx(classNames['code-block-copy-button__icon'], 'code-block-copy-button__icon--copied')}
+        role="img"
+      />
+    </button>
+  );
+}
 
 CodeBlockCopyButton.displayName = 'CodeBlockCopyButton';
 
-const CodeBlockCopyButtonElement = wrapAsCustomElement(CodeBlockCopyButton, [
-  'className',
-  'data-alt-copied',
-  'data-alt-copy',
-  'data-value'
-]);
+const MemoizedCodeBlockCopyButton = memo(CodeBlockCopyButton);
 
-export default CodeBlockCopyButton;
+function createCodeBlockCopyButtonClass(ponyfill: CodeBlockCopyButtonProps['ponyfill']): typeof HTMLElement {
+  function CodeBlockCopyButtonWithPonyfill(props: Omit<CodeBlockCopyButtonProps, 'ponyfill'>) {
+    return <MemoizedCodeBlockCopyButton {...props} ponyfill={ponyfill} />;
+  }
 
-export { CodeBlockCopyButtonElement };
+  CodeBlockCopyButtonWithPonyfill.displayName = 'CodeBlockCopyButtonWithPonyfill';
+
+  return wrapAsCustomElement(CodeBlockCopyButtonWithPonyfill, [
+    'className',
+    'data-alt-copied',
+    'data-alt-copy',
+    'data-value'
+  ]);
+}
+
+/**
+ * Creates the custom element class of the copy button of code blocks.
+ *
+ * The custom element renders in its own React root, outside of the React tree of Web Chat, so the ponyfill is passed down.
+ */
+export default function useReactCodeBlockCopyButtonClass(): typeof HTMLElement {
+  const [ponyfill] = usePonyfill();
+
+  return useMemo(() => createCodeBlockCopyButtonClass(ponyfill), [ponyfill]);
+}
+
+export { codeBlockCopyButtonPropsSchema, type CodeBlockCopyButtonProps };
