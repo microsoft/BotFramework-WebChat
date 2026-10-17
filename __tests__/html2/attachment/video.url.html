@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a video attachment with a relative URL.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            { contentType: 'video/webm', contentUrl: '/assets/dark-green-video.webm', name: 'Video attachment' }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should show a video player with the URL as-is, which loads the video relative to the page.
+        const attachmentVideoElement = pageElements.activities()[0].querySelector('video');
+
+        expect(attachmentVideoElement.getAttribute('src')).toBe('/assets/dark-green-video.webm');
+
+        await waitFor(() => expect(attachmentVideoElement.readyState).toBe(HTMLMediaElement.HAVE_ENOUGH_DATA));
+        await pageConditions.mediaBufferStabilized(attachmentVideoElement);
+
+        // THEN: The dark green video should be shown.
+        await host.snapshot('local');
+
+        // WHEN: The bot sends a video card with a relative URL.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: { media: [{ url: '/assets/dark-green-video.webm' }], title: 'Video card' },
+              contentType: 'application/vnd.microsoft.card.video'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: The card should show the video, loaded relative to the page, along with its title.
+        const videoCardVideoElement = pageElements.activities()[1].querySelector('video');
+
+        expect(videoCardVideoElement.getAttribute('src')).toBe('/assets/dark-green-video.webm');
+        expect(pageElements.activities()[1].textContent).toContain('Video card');
+
+        await waitFor(() => expect(videoCardVideoElement.readyState).toBe(HTMLMediaElement.HAVE_ENOUGH_DATA));
+        await pageConditions.mediaBufferStabilized(videoCardVideoElement);
+        await host.snapshot('local');
+
+        // WHEN: The bot sends a video attachment with a URL that cannot be parsed.
+        await directLine.emulateIncomingActivity({
+          attachments: [{ contentType: 'video/webm', contentUrl: 'https://', name: 'Video with an invalid URL' }],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+
+        // THEN: It should show a video player with the URL as-is, which fails to load, instead of an empty bubble.
+        const invalidVideoElement = pageElements.activities()[2].querySelector('video');
+
+        expect(invalidVideoElement.getAttribute('src')).toBe('https://');
+
+        await waitFor(() => expect(invalidVideoElement.error).toBeInstanceOf(MediaError));
+
+        // THEN: The video player should show that it cannot play, in gray, unlike the dark green videos that loaded.
+        await host.snapshot('local');
+
+        // WHEN: The bot sends an animation card with a video with a relative URL.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: { media: [{ url: '/assets/dark-green-video.webm' }], title: 'Animation card' },
+              contentType: 'application/vnd.microsoft.card.animation'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        // THEN: The card should show the video, loaded relative to the page, along with its title.
+        const animationCardVideoElement = pageElements.activities()[3].querySelector('video');
+
+        expect(animationCardVideoElement.getAttribute('src')).toBe('/assets/dark-green-video.webm');
+        expect(pageElements.activities()[3].textContent).toContain('Animation card');
+
+        await waitFor(() => expect(animationCardVideoElement.readyState).toBe(HTMLMediaElement.HAVE_ENOUGH_DATA));
+        await pageConditions.mediaBufferStabilized(animationCardVideoElement);
+        await host.snapshot('local');
+
+        // WHEN: The bot sends YouTube and Vimeo URLs without a video ID, which cannot be embedded.
+        for (const contentUrl of ['https://www.youtube.com/@Microsoft', 'https://youtu.be/', 'https://vimeo.com/']) {
+          await directLine.emulateIncomingActivity({
+            attachments: [{ contentType: 'video/mp4', contentUrl, name: 'Video without a video ID' }],
+            from: { role: 'bot' },
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(7);
+
+        // THEN: They should show a video player with the URL as-is, the same as other URLs that cannot be embedded.
+        // These players load from the network, so their state is asserted instead of their look.
+        expect(
+          pageElements
+            .activities()
+            .slice(4)
+            .map(activityElement => activityElement.querySelector('video')?.getAttribute('src'))
+        ).toEqual(['https://www.youtube.com/@Microsoft', 'https://youtu.be/', 'https://vimeo.com/']);
+
+        // THEN: YouTube and Vimeo URLs without a video ID should not be embedded.
+        expect(document.querySelector('iframe')).toBeNull();
+      });
+    </script>
+  </body>
+</html>
