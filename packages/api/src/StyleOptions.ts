@@ -652,13 +652,13 @@ type StrictStyleOptions = {
    */
   suggestedActionsStackedLayoutButtonTextWrap: boolean | undefined;
 
-  /** Suggested actions: Visual keyboard indicator color for the container. */
+  /** Suggested actions: Visual keyboard indicator color for the container and the flipper buttons in carousel layout. */
   suggestedActionsVisualKeyboardIndicatorColor: string | undefined;
 
-  /** Suggested actions: Visual keyboard indicator style for the container. */
+  /** Suggested actions: Visual keyboard indicator style for the container and the flipper buttons in carousel layout. */
   suggestedActionsVisualKeyboardIndicatorStyle: string | undefined;
 
-  /** Suggested actions: Visual keyboard indicator width for the container. */
+  /** Suggested actions: Visual keyboard indicator width for the container and the flipper buttons in carousel layout. */
   suggestedActionsVisualKeyboardIndicatorWidth: number | undefined;
 
   /**
