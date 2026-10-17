@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      async function getAccessibilityNodes(imageElements) {
+        return (
+          await Promise.all(imageElements.map(imageElement => testHelpers.getAccessibilityNode(imageElement)))
+        ).map(({ ignored, name, role }) => (ignored ? { ignored } : { ignored, name: name?.value, role: role?.value }));
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot sends cards with images with empty alternate text and with alternate text.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: { images: [{ alt: '', url: '/assets/bot-avatar.jpg' }], title: 'Hero card with empty alt' },
+              contentType: 'application/vnd.microsoft.card.hero'
+            },
+            {
+              content: {
+                images: [{ alt: 'Bot avatar', url: '/assets/bot-avatar.jpg' }],
+                title: 'Hero card with alt'
+              },
+              contentType: 'application/vnd.microsoft.card.hero'
+            },
+            {
+              content: {
+                images: [{ alt: '', url: '/assets/bot-avatar.jpg' }],
+                title: 'Thumbnail card with empty alt'
+              },
+              contentType: 'application/vnd.microsoft.card.thumbnail'
+            },
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [
+                  { altText: '', type: 'Image', url: '/assets/bot-avatar.jpg' },
+                  { altText: 'Bot avatar', type: 'Image', url: '/assets/bot-avatar.jpg' },
+                  { images: [{ altText: '', type: 'Image', url: '/assets/bot-avatar.jpg' }], type: 'ImageSet' },
+                  {
+                    columns: [
+                      { items: [{ altText: '', type: 'Image', url: '/assets/bot-avatar.jpg' }], type: 'Column' }
+                    ],
+                    type: 'ColumnSet'
+                  },
+                  {
+                    altText: '',
+                    selectAction: { title: 'Open image', type: 'Action.Submit' },
+                    type: 'Image',
+                    url: '/assets/bot-avatar.jpg'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await waitFor(() => expect(pageElements.activities()[0].querySelectorAll('img.ac-image')).toHaveLength(8));
+        await pageConditions.allImagesLoaded();
+
+        const imageElements = Array.from(pageElements.activities()[0].querySelectorAll('img.ac-image'));
+
+        // THEN: Images with empty alternate text should have `alt=""`, except image with select action.
+        expect(imageElements.map(imageElement => imageElement.getAttribute('alt'))).toEqual([
+          '', // Hero card with empty alt.
+          'Bot avatar', // Hero card with alt.
+          '', // Thumbnail card with empty alt.
+          '', // Adaptive Card: Image with empty alt.
+          'Bot avatar', // Adaptive Card: Image with alt.
+          '', // Adaptive Card: Image with empty alt inside ImageSet.
+          '', // Adaptive Card: Image with empty alt inside ColumnSet.
+          null // Adaptive Card: Image with empty alt and select action.
+        ]);
+
+        // THEN: Images with empty alternate text should be decorative, image with select action should be a button.
+        expect(await getAccessibilityNodes(imageElements)).toEqual([
+          { ignored: true }, // Hero card with empty alt.
+          { ignored: false, name: 'Bot avatar', role: 'image' }, // Hero card with alt.
+          { ignored: true }, // Thumbnail card with empty alt.
+          { ignored: true }, // Adaptive Card: Image with empty alt.
+          { ignored: false, name: 'Bot avatar', role: 'image' }, // Adaptive Card: Image with alt.
+          { ignored: true }, // Adaptive Card: Image with empty alt inside ImageSet.
+          { ignored: true }, // Adaptive Card: Image with empty alt inside ColumnSet.
+          { ignored: false, name: 'Open image', role: 'button' } // Adaptive Card: Image with empty alt and select action.
+        ]);
+      });
+    </script>
+  </body>
+</html>
