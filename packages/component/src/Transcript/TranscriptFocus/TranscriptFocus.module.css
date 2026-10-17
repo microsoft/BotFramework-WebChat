@@ -39,7 +39,7 @@
   &:focus-visible .transcript-focus-area__transcript-indicator,
   .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
     + .transcript-focus-area__transcript-indicator {
-    border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
+    border-color: var(--webchat__color--transcript-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
   }
