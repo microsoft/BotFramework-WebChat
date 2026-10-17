@@ -2,6 +2,10 @@ arrowParens: avoid
 bracketSameLine: false
 bracketSpacing: true
 endOfLine: auto
+overrides:
+  - files: '*.md'
+    options:
+      tabWidth: 3
 printWidth: 120
 proseWrap: preserve
 quoteProps: as-needed

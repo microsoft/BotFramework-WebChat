@@ -8,6 +8,7 @@
     <script type="importmap">
       {
         "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
           "jest-mock": "https://esm.sh/jest-mock"
         }
       }
@@ -16,6 +17,7 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
+      import { waitFor } from '@testduet/wait-for';
       import { fn, spyOn } from 'jest-mock';
 
       run(async function () {
@@ -60,12 +62,14 @@
           // WHEN: Click on the send button.
           await host.click(pageElements.sendButton());
 
-          expect(timeline).toEqual([
-            'setAttribute(\"inputmode\", \"text\")', // THEN: `setAttribute()` is called when click on the text box.
-            'setAttribute(\"inputmode\", \"none\")', // THEN: Tap on the send button should hide the virtual keyboard.
-            'requestIdleCallback()', // THEN: Make sure there is a pause between `setAttribute()` and `focus()`
-            'focus()' // THEN: Should focus on the send box.
-          ]);
+          await waitFor(() =>
+            expect(timeline).toEqual([
+              'setAttribute(\"inputmode\", \"text\")', // THEN: `setAttribute()` is called when click on the text box.
+              'setAttribute(\"inputmode\", \"none\")', // THEN: Tap on the send button should hide the virtual keyboard.
+              'requestIdleCallback()', // THEN: Make sure there is a pause between `setAttribute()` and `focus()`
+              'focus()' // THEN: Should focus on the send box.
+            ])
+          );
 
           expect(document.activeElement).toBe(sendBoxTextBox);
         });

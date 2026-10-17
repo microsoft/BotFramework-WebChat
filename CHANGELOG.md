@@ -30,10 +30,19 @@ Legends:
 - 💥 `useSendMessage`: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - 👷🏻 Visual regression tests now use 5 consecutive screenshots for stability indication, up from 2, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 
+### Removed
+
+- 💥 Style set entries that are no longer used for rendering since 4.19.0 are being deprecated, in PR [#5881](https://github.com/microsoft/BotFramework-WebChat/pull/5881), by [@OEvgeny](https://github.com/OEvgeny). They will be removed on or after 2028-10-16
+   - `activityButton`, `activityCopyButton`, `basicTranscript`, `bubble`, `carouselFilmStrip`, `carouselFilmStripAttachment`, `carouselFlipper`, `citationModalDialog`, `linkDefinitions`, `renderMarkdown`, `sendStatus`, `stackedLayout`, `textContent`, and `thumbButton`
+   - Full bundle: `adaptiveCardRenderer`, `animationCardAttachment`, and `audioCardAttachment`
+   - Customizing these entries has no effect, please use style options instead
+
 ### Fixed
 
 - Fixed the "Copied" confirmation of the Copy button disappearing too quickly: it is now shown for 5 seconds in all themes, fixes [#5857](https://github.com/microsoft/BotFramework-WebChat/issues/5857), in PR [#5872](https://github.com/microsoft/BotFramework-WebChat/pull/5872), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers repeating the full bot response when focus enters message actions such as Copy, Like, or Dislike, resolving [#5849](https://github.com/microsoft/BotFramework-WebChat/issues/5849), by [@asalsa](https://github.com/asalsa)
+- Fixed the keyboard focus indicator of the "Previous" and "Next" flipper buttons of suggested actions in carousel layout: they now show a visible focus ring, fixes [#5725](https://github.com/microsoft/BotFramework-WebChat/issues/5725), in PR [#5878](https://github.com/microsoft/BotFramework-WebChat/pull/5878), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed card images with empty alternate text (`altText: ""` in Adaptive Cards or `alt: ""` in rich cards) not being rendered as decorative images, related to [#5747](https://github.com/microsoft/BotFramework-WebChat/issues/5747), in PR [#5877](https://github.com/microsoft/BotFramework-WebChat/pull/5877), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed the keyboard focus indicator of the "Previous" and "Next" flipper buttons in carousel layout: they now show a visible focus ring, and the focused flipper is shown even at the start or end of the carousel, fixes [#5704](https://github.com/microsoft/BotFramework-WebChat/issues/5704) and [#5744](https://github.com/microsoft/BotFramework-WebChat/issues/5744), in PR [#5876](https://github.com/microsoft/BotFramework-WebChat/pull/5876), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed the keyboard focus indicator of card action buttons, such as hero card buttons, having less than 3:1 contrast against a pressed button: it is now a two-tone ring that is visible against both the button and the card, fixes [#5742](https://github.com/microsoft/BotFramework-WebChat/issues/5742), in PR [#5879](https://github.com/microsoft/BotFramework-WebChat/pull/5879), by [@OEvgeny](https://github.com/OEvgeny)
 
