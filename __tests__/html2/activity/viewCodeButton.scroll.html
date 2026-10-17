@@ -136,11 +136,19 @@ plot_sine_waves()`
         // THEN: Shows a focus ring around the code block.
         await host.snapshot('local');
 
-        // WHEN: Press ARROW_DOWN to scroll down the code block.
-        await host.sendKeys('ARROW_DOWN');
-        await host.sendKeys('ARROW_DOWN');
+        // WHEN: Press ARROW_DOWN twice to scroll down the code block.
+        //       Chrome may drop a keyboard scroll that arrives while the previous smooth scroll is ending,
+        //       wait for each scroll to end before pressing the next key.
+        for (let index = 0; index < 2; index++) {
+          const scrollEnd = new Promise(resolve =>
+            document.addEventListener('scrollend', resolve, { capture: true, once: true })
+          );
 
-        // // THEN: The code block should scroll down.
+          await host.sendKeys('ARROW_DOWN');
+          await scrollEnd;
+        }
+
+        // THEN: The code block should scroll down.
         await host.snapshot('local');
       });
     </script>

@@ -2,7 +2,6 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -11,7 +10,16 @@
   </head>
   <body>
     <main id="webchat" style="position: relative"></main>
-    <script type="text/babel">
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         await host.sendDevToolsCommand('Browser.setPermission', {
           permission: { name: 'clipboard-write' },
@@ -24,29 +32,35 @@
         );
 
         const {
+          React: { createElement, Fragment },
           ReactDOM: { render },
           WebChat: { ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const App = () => (
-          <React.Fragment>
-            <ReactWebChat directLine={directLine} store={store} />
-            <div style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
-              <label>
-                <div>Paste box</div>
-                <textarea
-                  data-testid="paste box"
-                  spellCheck={false}
-                  style={{ background: '#f0f0f0', border: 0, height: 100, padding: 0, resize: 'none', width: '100%' }}
-                />
-              </label>
-            </div>
-          </React.Fragment>
+        render(
+          createElement(
+            Fragment,
+            {},
+            createElement(ReactWebChat, { directLine, store }),
+            createElement(
+              'div',
+              { style: { gap: 8, position: 'absolute', top: 0, width: '100%' } },
+              createElement(
+                'label',
+                {},
+                createElement('div', {}, 'Paste box'),
+                createElement('textarea', {
+                  'data-testid': 'paste box',
+                  spellCheck: false,
+                  style: { background: '#f0f0f0', border: 0, height: 100, padding: 0, resize: 'none', width: '100%' }
+                })
+              )
+            )
+          ),
+          document.getElementById('webchat')
         );
-
-        render(<App />, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -87,7 +101,8 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should be disabled.
-        expect(copyButton.getAttribute('aria-disabled')).toBe('true');
+        //       The button checks the permission asynchronously, wait for it.
+        await waitFor(() => expect(copyButton.getAttribute('aria-disabled')).toBe('true'));
         await host.snapshot('local');
 
         // WHEN: Press TAB twice.

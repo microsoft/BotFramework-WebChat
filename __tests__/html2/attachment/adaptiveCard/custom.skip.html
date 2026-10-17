@@ -153,14 +153,19 @@
     });
 
     // Then: should apply styles for buttons correctly
+    // The bot responses render after `postActivity()` resolves, wait for them and for the scroll before each snapshot.
+    await pageConditions.numActivitiesShown(2);
     await host.snapshot('local');
 
-    let buttons;
-    await waitFor(() => (buttons = document.querySelectorAll('.ac-pushButton'), buttons.length === 3), 500);
+    await waitFor(() => expect(document.querySelectorAll('.ac-pushButton')).toHaveLength(3));
 
     // When: click all buttons
-    for (const button of buttons) {
+    for (const [index, button] of document.querySelectorAll('.ac-pushButton').entries()) {
       await host.click(button);
+
+      // Wait for the response to each click, so the next click is not made while the transcript is scrolling.
+      await pageConditions.numActivitiesShown(3 + index);
+      await pageConditions.scrollToBottomCompleted();
     }
 
     // Then: should apply correct pressed styles
@@ -170,12 +175,16 @@
     await postActivity(adapter, { text: 'layout' });
 
     // Then: should render multiple attachments correctly
+    await pageConditions.numActivitiesShown(7);
+    await pageConditions.scrollToBottomCompleted();
     await host.snapshot('local');
 
     // When: send an adaptive card with containers
     await postActivity(adapter, { text: 'card containerstyles' });
 
     // Then: should render container styles correctly
+    await pageConditions.numActivitiesShown(9);
+    await pageConditions.scrollToBottomCompleted();
     await host.snapshot('local');
   });
 </script>
