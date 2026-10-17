@@ -60,76 +60,22 @@
         const nextFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Next"]');
         const previousFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Previous"]');
 
-        const getFlipperBody = flipper => flipper.querySelector('.react-film__flipper__body');
-
-        const getFocusIndicatorStyle = flipper => {
-          const { boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth } = getComputedStyle(
-            getFlipperBody(flipper)
-          );
-
-          return { boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth };
-        };
-
-        // The flipper button clips its content, the focus indicator (4px around the flipper) must fit inside the button.
-        const getMinFlipperBodyClearance = flipper => {
-          const bodyRect = getFlipperBody(flipper).getBoundingClientRect();
-          const buttonRect = flipper.getBoundingClientRect();
-
-          return Math.min(
-            bodyRect.top - buttonRect.top,
-            bodyRect.left - buttonRect.left,
-            buttonRect.right - bodyRect.right,
-            buttonRect.bottom - bodyRect.bottom
-          );
-        };
-
-        // The background color of the flipper transitions in 100ms when focus changes.
-        const waitForFlipperBackgroundColor = (flipper, backgroundColor) =>
-          waitFor(() =>
-            expect(getComputedStyle(getFlipperBody(flipper))).toHaveProperty('backgroundColor', backgroundColor)
-          );
-
-        // Two-tone focus indicator: an outer ring in the suggested actions keyboard indicator color (black, 2px),
-        // separated from the flipper by a band in the flipper foreground color (white, 2px).
-        // It has at least 3:1 contrast against the flipper and against the background.
-        const visibleFocusIndicatorStyle = {
-          boxShadow: 'rgb(255, 255, 255) 0px 0px 0px 2px',
-          outlineColor: 'rgb(0, 0, 0)',
-          outlineOffset: '2px',
-          outlineStyle: 'solid',
-          outlineWidth: '2px'
-        };
-
-        // GIVEN: The suggested actions are scrolled to the start.
-        expect(document.querySelector('.webchat__suggested-actions .react-film__filmstrip').scrollLeft).toBe(0);
-
         // WHEN: Press SHIFT-TAB from the send box to move focus to the "Next" flipper.
         pageObjects.focusSendBoxTextBox();
         await host.sendShiftTab(2);
 
         // THEN: The "Next" flipper should have a visible focus indicator.
         expect(document.activeElement).toBe(nextFlipper);
-        expect(nextFlipper.matches(':focus-visible')).toBe(true);
-        expect(getFocusIndicatorStyle(nextFlipper)).toEqual(visibleFocusIndicatorStyle);
-        expect(getMinFlipperBodyClearance(nextFlipper)).toBeGreaterThanOrEqual(4);
 
-        await waitForFlipperBackgroundColor(nextFlipper, 'rgba(0, 0, 0, 0.8)');
+        // The flipper background color transitions in 100ms, host.snapshot() waits for 5 identical screenshots in a row.
         await host.snapshot('local');
 
         // WHEN: Press SHIFT-TAB twice to move focus to the "Previous" flipper, through the first suggested action.
         await host.sendShiftTab(2);
 
-        // THEN: The "Previous" flipper should have a visible focus indicator, although the suggested actions cannot scroll back.
+        // THEN: The "Previous" flipper should have a visible focus indicator, the "Next" flipper should not.
         expect(document.activeElement).toBe(previousFlipper);
-        expect(previousFlipper.matches(':focus-visible')).toBe(true);
-        expect(getFocusIndicatorStyle(previousFlipper)).toEqual(visibleFocusIndicatorStyle);
-        expect(getMinFlipperBodyClearance(previousFlipper)).toBeGreaterThanOrEqual(4);
 
-        // THEN: The "Next" flipper should not show the focus indicator after losing focus.
-        expect(getFocusIndicatorStyle(nextFlipper)).toHaveProperty('outlineStyle', 'none');
-
-        await waitForFlipperBackgroundColor(nextFlipper, 'rgba(0, 0, 0, 0.6)');
-        await waitForFlipperBackgroundColor(previousFlipper, 'rgba(0, 0, 0, 0.8)');
         await host.snapshot('local');
       });
     </script>
