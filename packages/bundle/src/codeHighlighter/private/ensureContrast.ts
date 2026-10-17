@@ -31,7 +31,7 @@ function parseHexColor(color: string): readonly number[] | undefined {
  * Returns the color unchanged if it has a contrast ratio of at least 4.5:1 against the background.
  *
  * Otherwise, returns the first mix of the color with black (`'darken'`) or white (`'lighten'`), in 1% steps,
- * that reaches 4.5:1. Mixing with black or white keeps the hue of the color.
+ * that reaches 4.5:1, or black or white if none does. Mixing with black or white keeps the hue of the color.
  *
  * Only `#rrggbb` colors are supported, other colors are returned unchanged.
  */
@@ -39,18 +39,20 @@ export default function ensureContrast(color: string, background: string, direct
   const backgroundRGB = parseHexColor(background);
   const rgb = parseHexColor(color);
 
-  if (!backgroundRGB || !rgb) {
+  if (!backgroundRGB || !rgb || getContrastRatio(rgb, backgroundRGB) >= MIN_CONTRAST_RATIO) {
     return color;
   }
 
   const target = direction === 'darken' ? 0 : 255;
 
-  // From the color itself (0%) to black or white (100%).
-  const mixes = Array.from({ length: 101 }, (_, percentage) =>
-    rgb.map(channel => Math.round(channel + ((target - channel) * percentage) / 100))
+  // From 1% to 100% (black or white).
+  const mixes = Array.from({ length: 100 }, (_, index) =>
+    rgb.map(channel => Math.round(channel + ((target - channel) * (index + 1)) / 100))
   );
 
-  const mix = mixes.find(candidate => getContrastRatio(candidate, backgroundRGB) >= MIN_CONTRAST_RATIO) ?? mixes[100];
+  const mix =
+    mixes.find(candidate => getContrastRatio(candidate, backgroundRGB) >= MIN_CONTRAST_RATIO) ??
+    mixes[mixes.length - 1];
 
-  return mix === mixes[0] ? color : `#${mix.map(channel => channel.toString(16).padStart(2, '0')).join('')}`;
+  return `#${mix.map(channel => channel.toString(16).padStart(2, '0')).join('')}`;
 }
