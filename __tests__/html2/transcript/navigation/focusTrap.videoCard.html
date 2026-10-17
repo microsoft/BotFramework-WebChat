@@ -51,10 +51,10 @@
                 autoloop: true,
                 autostart: false,
                 // `VideoContent` parses the URL with `new URL()`, so it must be absolute.
-                media: [{ profile: 'videocard', url: new URL('/assets/dark-gray-video.webm', location.href).href }],
+                media: [{ profile: 'videocard', url: new URL('/assets/dark-green-video.webm', location.href).href }],
                 subtitle: 'Video test',
                 text: 'No buttons, No Image, Autoloop, No Sharable',
-                title: 'Dark gray video'
+                title: 'Dark green video'
               },
               contentType: 'application/vnd.microsoft.card.video'
             }
@@ -76,7 +76,7 @@
         // THEN: The video player should have the keyboard focus, named after the title of the card.
         await waitFor(() => expect(document.activeElement).toBe(videoElement));
         await waitFor(async () =>
-          expect(await getFocusedControl()).toEqual({ name: 'Dark gray video', role: 'Video' })
+          expect(await getFocusedControl()).toEqual({ name: 'Dark green video', role: 'Video' })
         );
 
         // WHEN: SHIFT+TAB is pressed on the video player.
@@ -88,12 +88,15 @@
         );
         expect(document.activeElement).toBe(videoElement);
 
+        // THEN: The time scrubber should show the focus indicator.
+        await host.snapshot('local');
+
         // WHEN: TAB is pressed on the last control.
         await host.sendTab();
 
         // THEN: The focus should stay in the activity and wrap to the video player.
         await waitFor(async () =>
-          expect(await getFocusedControl()).toEqual({ name: 'Dark gray video', role: 'Video' })
+          expect(await getFocusedControl()).toEqual({ name: 'Dark green video', role: 'Video' })
         );
         expect(document.activeElement).toBe(videoElement);
       });

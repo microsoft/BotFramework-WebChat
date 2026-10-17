@@ -49,8 +49,8 @@
             {
               contentType: 'video/webm',
               // `VideoContent` parses the URL with `new URL()`, so it must be absolute.
-              contentUrl: new URL('/assets/dark-gray-video.webm', location.href).href,
-              name: 'Dark gray video'
+              contentUrl: new URL('/assets/dark-green-video.webm', location.href).href,
+              name: 'Dark green video'
             }
           ],
           from: { role: 'bot' },
@@ -70,13 +70,21 @@
         // THEN: The video player should have the keyboard focus.
         await waitFor(() => expect(document.activeElement).toBe(videoElement));
         await waitFor(async () =>
-          expect(await getFocusedControl()).toEqual({ name: 'Dark gray video', role: 'Video' })
+          expect(await getFocusedControl()).toEqual({ name: 'Dark green video', role: 'Video' })
         );
 
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: The focus should move to the first control of the video player.
+        await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'play', role: 'button' }));
+
+        // THEN: The play button should show the focus indicator.
+        await host.snapshot('local');
+
         // WHEN: TAB is pressed repeatedly.
-        // THEN: The focus should move through every control of the video player, in order.
+        // THEN: The focus should move through the other controls of the video player, in order.
         for (const control of [
-          { name: 'play', role: 'button' },
           { name: 'enter full screen', role: 'button' },
           { name: 'show more media controls', role: 'button' },
           { name: 'video time scrubber', role: 'slider' }
@@ -90,7 +98,7 @@
 
         // THEN: The focus should stay in the activity and wrap to the video player.
         await waitFor(async () =>
-          expect(await getFocusedControl()).toEqual({ name: 'Dark gray video', role: 'Video' })
+          expect(await getFocusedControl()).toEqual({ name: 'Dark green video', role: 'Video' })
         );
         expect(document.activeElement).toBe(videoElement);
 
@@ -102,6 +110,9 @@
           expect(await getFocusedControl()).toEqual({ name: 'video time scrubber', role: 'slider' })
         );
         expect(document.activeElement).toBe(videoElement);
+
+        // THEN: The time scrubber should show the focus indicator.
+        await host.snapshot('local');
       });
     </script>
   </body>
