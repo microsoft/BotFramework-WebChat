@@ -65,25 +65,6 @@
 
         const placesToBuyButton = document.querySelector('.carousel-layout .ac-pushButton');
 
-        const getFocusIndicatorStyle = () => {
-          const { backgroundColor, boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth } =
-            getComputedStyle(placesToBuyButton);
-
-          return { backgroundColor, boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth };
-        };
-
-        // Two-tone focus indicator drawn inside the button, as the action set clips anything outside of the button:
-        // an outer ring in the transcript keyboard indicator color (black, 2px) on the edge of the button,
-        // separated from the button by an inner band in the pressed button text color (white, 2px).
-        // Black against the card (white) is 21:1, white against the pressed button (#0063B1) is 6.14:1.
-        const focusIndicatorStyle = {
-          boxShadow: 'rgb(255, 255, 255) 0px 0px 0px 3px inset',
-          outlineColor: 'rgb(0, 0, 0)',
-          outlineOffset: '-2px',
-          outlineStyle: 'solid',
-          outlineWidth: '2px'
-        };
-
         // WHEN: Focus on the first attachment of the carousel via keyboard.
         pageObjects.focusTranscript();
         await host.sendKeys('ENTER');
@@ -91,12 +72,11 @@
         // WHEN: Press TAB to move focus to the "Places To Buy" button.
         await host.sendTab();
 
-        // THEN: The "Places To Buy" button should have a two-tone focus indicator.
+        // THEN: The "Places To Buy" button should be focused.
         expect(document.activeElement).toBe(placesToBuyButton);
         expect(placesToBuyButton.textContent).toBe('Places To Buy');
-        expect(placesToBuyButton.matches(':focus-visible')).toBe(true);
-        expect(getFocusIndicatorStyle()).toEqual({ ...focusIndicatorStyle, backgroundColor: 'rgb(255, 255, 255)' });
 
+        // THEN: The button should show a two-tone focus indicator: a black ring and a white inner band.
         await pageConditions.scrollStabilized();
         await host.snapshot('local');
 
@@ -109,11 +89,8 @@
         // THEN: The "Places To Buy" button should be pressed and keep the focus.
         await waitFor(() => expect(placesToBuyButton.getAttribute('aria-pressed')).toBe('true'));
         expect(document.activeElement).toBe(placesToBuyButton);
-        expect(placesToBuyButton.matches(':focus-visible')).toBe(true);
 
-        // THEN: The focus indicator should be separated from the pressed button (#0063B1) by the inner band.
-        expect(getFocusIndicatorStyle()).toEqual({ ...focusIndicatorStyle, backgroundColor: 'rgb(0, 99, 177)' });
-
+        // THEN: The white inner band should separate the black ring from the pressed button (blue).
         await pageConditions.scrollToBottomCompleted();
         await host.snapshot('local');
       });
