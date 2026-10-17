@@ -293,13 +293,9 @@
   scrollbar-gutter: stable;
 }
 
-/* Transcript focus indicator color when in focus-visible state */
-:global(.webchat-fluent).theme
-  :global(
-    .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
-    + .transcript-focus-area__transcript-indicator
-  ) {
-  border-color: var(--webchat-colorStrokeFocus2);
+/* Transcript focus indicator color */
+:global(.webchat-fluent).theme :global(.transcript-focus-area__transcript-indicator) {
+  --webchat__color--transcript-visual-keyboard-indicator: var(--webchat-colorStrokeFocus2);
 }
 
 /* Transcript Content indicator without focus-visible state */

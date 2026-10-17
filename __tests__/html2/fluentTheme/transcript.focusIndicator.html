@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Fluent Theme: transcript focus indicator</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/",
+          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .fui-FluentProvider {
+        display: contents;
+
+        --webchat__color--surface: var(--colorNeutralBackground3);
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webDarkTheme, webLightTheme } from '@fluentui/tokens';
+      import { waitFor } from '@testduet/wait-for';
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(
+          React.createElement(
+            FluentProvider,
+            {
+              theme: new URL(location.href).searchParams.get('fluent-theme') === 'dark' ? webDarkTheme : webLightTheme
+            },
+            React.createElement(FluentThemeProvider, null, React.createElement(ReactWebChat, { directLine, store }))
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The transcript is empty and the send box is focused.
+        pageObjects.focusSendBoxTextBox();
+
+        // WHEN: SHIFT-TAB key is pressed from the send box.
+        await host.sendShiftTab();
+
+        // THEN: The empty transcript should have keyboard focus.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.transcript()));
+        expect(pageElements.transcript().matches(':focus-visible')).toBe(true);
+
+        // THEN: The focus indicator around the transcript should use the Fluent focus stroke color.
+        await host.snapshot('local');
+
+        // WHEN: 2 activities arrive and the send box is focused.
+        await directLine.emulateIncomingActivity('Hello, World!');
+        await directLine.emulateIncomingActivity('Aloha!');
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        pageObjects.focusSendBoxTextBox();
+
+        // WHEN: SHIFT-TAB key is pressed from the send box.
+        await host.sendShiftTab();
+
+        // THEN: The "End of chat history" terminator should have keyboard focus.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.transcriptTerminator()));
+        expect(pageElements.transcriptTerminator().matches(':focus-visible')).toBe(true);
+
+        // THEN: The focus indicator around the transcript should use the Fluent focus stroke color.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
