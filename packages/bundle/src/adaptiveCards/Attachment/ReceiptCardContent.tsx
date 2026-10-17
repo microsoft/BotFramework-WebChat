@@ -1,4 +1,4 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 15, 25, 50, 60, 75] }] */
 
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
@@ -54,25 +54,24 @@ function ReceiptCardContent(props: ReceiptCardContentProps) {
     if (content) {
       builder.addTextBlock(title, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle });
 
-      if (facts) {
-        const [firstFactColumn, lastFactColumn] = builder.addColumnSet([75, 25]);
+      // Each fact is a row of its own, so its key and value stay aligned when either of them wraps.
+      facts?.forEach(({ key, value }) => {
+        const [keyColumn, valueColumn] = builder.addColumnSet([75, 25]);
 
-        facts.map(({ key, value }) => {
-          builder.addTextBlock(key, { size: TextSize.Medium }, firstFactColumn);
-          builder.addTextBlock(
-            value,
-            { size: TextSize.Medium, horizontalAlignment: HorizontalAlignment.Right },
-            lastFactColumn
-          );
-        });
-      }
+        builder.addTextBlock(key, { size: TextSize.Medium, wrap: true }, keyColumn);
+        builder.addTextBlock(
+          value,
+          { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, wrap: true },
+          valueColumn
+        );
+      });
 
       items &&
         items.map(({ image, price, quantity, subtitle, tap, text, title }) => {
           let itemColumns;
 
           if (image?.url) {
-            const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
+            const [itemImageColumn, ...columns] = builder.addColumnSet([15, 60, 25]);
 
             itemColumns = columns;
             builder.addImage(image?.url, itemImageColumn, image?.tap as DirectLineCardAction, image?.alt);
@@ -84,38 +83,43 @@ function ReceiptCardContent(props: ReceiptCardContentProps) {
 
           builder.addTextBlock(
             quantity ? `${title} &times; ${quantity}` : title,
-            { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: richCardWrapTitle },
+            { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true },
             itemTitleColumn
           );
-          builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
-          builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right }, itemPriceColumn);
+          builder.addTextBlock(subtitle, { size: TextSize.Medium, wrap: true }, itemTitleColumn);
+          builder.addTextBlock(price, { horizontalAlignment: HorizontalAlignment.Right, wrap: true }, itemPriceColumn);
 
           if (text) {
-            builder.addTextBlock(text, { size: TextSize.Medium, wrap: richCardWrapTitle }, itemTitleColumn);
+            builder.addTextBlock(text, { size: TextSize.Medium, wrap: true }, itemTitleColumn);
           }
         });
 
       if (!nullOrUndefined(vat)) {
         const vatCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(vatText, { size: TextSize.Medium, weight: TextWeight.Bolder }, vatCol[0]);
-        builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right }, vatCol[1]);
+        builder.addTextBlock(vatText, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, vatCol[0]);
+        builder.addTextBlock(vat, { horizontalAlignment: HorizontalAlignment.Right, wrap: true }, vatCol[1]);
       }
 
       if (!nullOrUndefined(tax)) {
         const taxCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(taxText, { size: TextSize.Medium, weight: TextWeight.Bolder }, taxCol[0]);
-        builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right }, taxCol[1]);
+        builder.addTextBlock(taxText, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, taxCol[0]);
+        builder.addTextBlock(tax, { horizontalAlignment: HorizontalAlignment.Right, wrap: true }, taxCol[1]);
       }
 
       if (!nullOrUndefined(total)) {
         const totalCol = builder.addColumnSet([75, 25]);
 
-        builder.addTextBlock(totalText, { size: TextSize.Medium, weight: TextWeight.Bolder }, totalCol[0]);
+        builder.addTextBlock(totalText, { size: TextSize.Medium, weight: TextWeight.Bolder, wrap: true }, totalCol[0]);
         builder.addTextBlock(
           total,
-          { horizontalAlignment: HorizontalAlignment.Right, size: TextSize.Medium, weight: TextWeight.Bolder },
+          {
+            horizontalAlignment: HorizontalAlignment.Right,
+            size: TextSize.Medium,
+            weight: TextWeight.Bolder,
+            wrap: true
+          },
           totalCol[1]
         );
       }

@@ -23,6 +23,8 @@ type StrictAdaptiveCardsStyleOptions = {
   /**
    * Cards: Rich Cards
    * Enable title (and subtitle) wrapping
+   *
+   * Line items, facts, and amounts in receipt cards always wrap so they are not truncated, regardless of this option.
    */
   richCardWrapTitle: boolean | undefined;
 
