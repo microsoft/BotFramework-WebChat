@@ -1,3 +1,6 @@
+// Not used for rendering since #5670, no component reads `styleSet.linkDefinitions`.
+// The live styles are in `../../LinkDefinition/LinkDefinitions.module.css`.
+
 import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
 
 // TODO: Temporarily disable dark theme until chat history support dark theme.

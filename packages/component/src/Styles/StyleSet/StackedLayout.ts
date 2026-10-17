@@ -1,3 +1,6 @@
+// Not used for rendering since #5506, no component reads `styleSet.stackedLayout`.
+// The live styles are in `../../Activity/StackedLayout.module.css`.
+
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { StrictStyleOptions } from 'botframework-webchat-api';

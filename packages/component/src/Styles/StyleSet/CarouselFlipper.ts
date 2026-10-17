@@ -1,3 +1,6 @@
+// Not used for rendering since #5668, no component reads `styleSet.carouselFlipper`.
+// The live styles are in `../../Activity/CarouselLayout.module.css`.
+
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function CarouselFlipper({

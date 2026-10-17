@@ -1,3 +1,6 @@
+// Not used for rendering since #5670, no component reads `styleSet.activityButton`.
+// The live styles are in `../../Attachment/Text/private/ActivityButton.module.css`.
+
 export default function createActivityButtonStyle() {
   return {
     '&.webchat__activity-button': {

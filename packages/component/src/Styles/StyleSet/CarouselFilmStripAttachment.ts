@@ -1,3 +1,6 @@
+// Not used for rendering since #5668, no component reads `styleSet.carouselFilmStripAttachment`.
+// The live styles are in `../../Activity/CarouselFilmStripAttachment.module.css`.
+
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 

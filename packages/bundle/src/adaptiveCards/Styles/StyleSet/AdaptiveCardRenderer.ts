@@ -1,3 +1,6 @@
+// Not used for rendering since #5666, no component reads `styleSet.adaptiveCardRenderer`.
+// The live styles are in `../../Attachment/AdaptiveCardRenderer.module.css`.
+
 import type { FullBundleStyleOptions } from '../../../types/FullBundleStyleOptions';
 
 export default function ({

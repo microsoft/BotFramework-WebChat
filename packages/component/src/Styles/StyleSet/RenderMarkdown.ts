@@ -1,3 +1,6 @@
+// Not used for rendering since #5670, no component reads `styleSet.renderMarkdown`.
+// The live styles are in `../../hooks/RenderMarkdown.module.css`.
+
 import CSSTokens from '../CSSTokens';
 import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
 

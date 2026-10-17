@@ -1,3 +1,6 @@
+// Not used for rendering since #5670, no component reads `styleSet.textContent`.
+// The live styles are in `../../Attachment/Text/TextContent.module.css`.
+
 import CSSTokens from '../CSSTokens';
 
 export default function createTextContentStyle() {

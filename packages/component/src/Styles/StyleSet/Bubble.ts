@@ -1,3 +1,6 @@
+// Not used for rendering since #5668, no component reads `styleSet.bubble`.
+// The live styles are in `../../Activity/Bubble.module.css`.
+
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 

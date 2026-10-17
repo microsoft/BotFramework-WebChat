@@ -1,3 +1,6 @@
+// Not used for rendering since #5575, which removed it from `createStyleSet()`.
+// The live styles are in `../../providers/CustomElements/customElements/CodeBlockCopyButton.module.css`.
+
 import CSSTokens from '../CSSTokens';
 
 export default function createCodeBlockCopyButtonStyle() {

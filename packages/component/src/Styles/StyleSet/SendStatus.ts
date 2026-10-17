@@ -1,3 +1,6 @@
+// Not used for rendering since #5669, no component reads `styleSet.sendStatus`.
+// The live styles are in `../../ActivityStatus/ActivityStatus.module.css`.
+
 import CSSTokens from '../CSSTokens';
 
 export default function createSendStatusStyle() {

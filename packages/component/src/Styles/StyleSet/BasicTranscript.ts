@@ -1,3 +1,6 @@
+// Not used for rendering since #5553, no component reads `styleSet.basicTranscript`.
+// The live styles are in `../../Transcript/TranscriptFocus/TranscriptFocus.module.css`.
+
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { StrictStyleOptions } from 'botframework-webchat-api';

@@ -1,3 +1,6 @@
+// Not used for rendering since #5669, no component reads `styleSet.thumbButton`.
+// The live styles are in `../../ActivityFeedback/private/ThumbButton.module.css`.
+
 import CSSTokens from '../CSSTokens';
 
 export default function () {
