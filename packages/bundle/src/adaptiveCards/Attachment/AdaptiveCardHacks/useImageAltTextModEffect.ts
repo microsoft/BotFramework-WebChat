@@ -23,7 +23,9 @@ const emptyAltTextSchema = object({ altText: literal('') });
  *
  * We need to set `alt=""` on these images.
  *
- * Image with select action has a role (button or link) and is not decorative, we must not set `alt=""` on it.
+ * Image with select action is not decorative: Adaptive Cards renders it as a button or link,
+ * named by the action title (`aria-label`). We must not set `alt=""` on it: it would not change its accessible name,
+ * and axe reports `presentation-role-conflict` on focusable `<img alt="">` with ARIA attributes.
  */
 export default function useImageAltTextModEffect(
   adaptiveCard: AdaptiveCard

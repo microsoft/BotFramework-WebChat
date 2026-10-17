@@ -88,6 +88,8 @@
         const imageElements = Array.from(pageElements.activities()[0].querySelectorAll('img.ac-image'));
 
         // THEN: Images with empty alternate text should have `alt=""`, except image with select action.
+        //       Image with select action is a button named by the action title (`aria-label`), it is not decorative.
+        //       `alt=""` would not change its name, and axe would report `presentation-role-conflict` on it.
         expect(imageElements.map(imageElement => imageElement.getAttribute('alt'))).toEqual([
           '', // Hero card with empty alt.
           'Bot avatar', // Hero card with alt.
@@ -96,7 +98,7 @@
           'Bot avatar', // Adaptive Card: Image with alt.
           '', // Adaptive Card: Image with empty alt inside ImageSet.
           '', // Adaptive Card: Image with empty alt inside ColumnSet.
-          null // Adaptive Card: Image with empty alt and select action.
+          null // Adaptive Card: Image with empty alt and select action, `alt` is untouched.
         ]);
 
         // THEN: Images with empty alternate text should be decorative, image with select action should be a button.
