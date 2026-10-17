@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The bot sends videos with a relative URL: a video attachment, a video card, and an animation card with a video.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            { contentType: 'video/webm', contentUrl: '/assets/dark-gray-video.webm', name: 'Video attachment' }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: { media: [{ url: '/assets/dark-gray-video.webm' }], title: 'Video card' },
+              contentType: 'application/vnd.microsoft.card.video'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: { media: [{ url: '/assets/dark-gray-video.webm' }], title: 'Animation card' },
+              contentType: 'application/vnd.microsoft.card.animation'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        // GIVEN: The bot sends a video attachment with a URL that cannot be parsed.
+        await directLine.emulateIncomingActivity({
+          attachments: [{ contentType: 'video/webm', contentUrl: 'https://', name: 'Video with an invalid URL' }],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        // THEN: Every activity should show a video player with the URL as-is.
+        const activityElements = pageElements.activities();
+        const videoElements = activityElements.map(activityElement => activityElement.querySelector('video'));
+
+        expect(videoElements.map(videoElement => videoElement?.getAttribute('src'))).toEqual([
+          '/assets/dark-gray-video.webm',
+          '/assets/dark-gray-video.webm',
+          '/assets/dark-gray-video.webm',
+          'https://'
+        ]);
+
+        // THEN: The video players with a relative URL should load the video, relative to the page.
+        await waitFor(() =>
+          expect(
+            videoElements.slice(0, 3).map(({ readyState }) => readyState >= HTMLMediaElement.HAVE_METADATA)
+          ).toEqual([true, true, true])
+        );
+
+        // THEN: The cards should show their title along with the video.
+        expect(activityElements[1].textContent).toContain('Video card');
+        expect(activityElements[2].textContent).toContain('Animation card');
+      });
+    </script>
+  </body>
+</html>
