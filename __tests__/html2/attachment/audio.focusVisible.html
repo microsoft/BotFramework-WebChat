@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        const webChatElement = createElement(ReactWebChat, { directLine, store });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The bot sends an audio attachment, similar to the "audio" command of the mock bot.
+        await directLine.emulateIncomingActivity({
+          attachments: [{ contentType: 'audio/wav', contentUrl: '/assets/hello-world.wav', name: 'Hello, World!' }],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const audioElement = document.querySelector('audio');
+
+        await pageConditions.mediaBufferStabilized(audioElement);
+
+        // WHEN: Focus on the audio player via keyboard.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ENTER');
+
+        // THEN: The audio player should have the keyboard focus.
+        await waitFor(() => expect(document.activeElement).toBe(audioElement));
+        expect(audioElement.matches(':focus-visible')).toBe(true);
+
+        // THEN: The focus indicator should be visible on all four sides of the audio player.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
