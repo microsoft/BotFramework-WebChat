@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -10,8 +10,17 @@
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <main id="webchat" style="position: relative;"></main>
-    <script type="text/babel">
+    <main id="webchat" style="position: relative"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script data-type="module" type="text/babel">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         await host.sendDevToolsCommand('Browser.setPermission', {
           permission: { name: 'clipboard-write' },
@@ -28,6 +37,7 @@
           WebChat: { ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
+        // Using the real clock: with a fake clock, the message would arrive before the code highlighter is loaded.
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => (
@@ -91,8 +101,8 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
-        // NOTE: The screenshot is time-sensitive, do not wait until stable.
-        await host.snapshot('local', { stable: false });
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copied'));
+        await host.snapshot('local');
 
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="paste box"]'));
@@ -100,8 +110,10 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
-        // Sleep for 1 second for the checkmark to go away.
-        await testHelpers.sleep(500);
+        // THEN: The checkmark should go away 5 seconds after pressing the "Copy" button.
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copy'), {
+          timeout: 10_000
+        });
 
         // WHEN: Hiding Web Chat and showing it back.
         document.getElementById('webchat').style.display = 'none';
