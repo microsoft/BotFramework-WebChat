@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import math
 import os
 import sys
 import urllib.error
@@ -29,7 +30,10 @@ def parse_arguments():
 
     arguments = parser.parse_args()
 
-    arguments.min_age is not None and arguments.min_age < 0 and parser.error('--min-age must not be negative')
+    # `float()` accepts "nan" and "inf", which break the age comparison, e.g. `age < nan` is always false.
+    arguments.min_age is not None and not (
+        math.isfinite(arguments.min_age) and arguments.min_age >= 0
+    ) and parser.error('--min-age must be a finite number of seconds, zero or more')
 
     return arguments
 
