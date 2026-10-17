@@ -1,10 +1,12 @@
-// Not used for rendering since #5666, no component reads `styleSet.audioCardAttachment`.
-// The live styles are in `AudioCardContent.module.css` and `VideoCardContent.module.css` in `../../Attachment/`.
-
 // TODO: [P4] We are moving attachments related to Adaptive Cards out of "component"
 //       Later, we will rewrite these attachments without Adaptive Cards
 //       We are leaving the CSS here as-is for now
 
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5666), customizing it has no effect.
+ * The live styles are in `AudioCardContent.module.css` and `VideoCardContent.module.css` under `packages/bundle/src/adaptiveCards/Attachment/`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function AudioCardAttachment({ paddingRegular = undefined }) {
   return {
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.

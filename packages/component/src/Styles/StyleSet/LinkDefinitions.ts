@@ -1,6 +1,3 @@
-// Not used for rendering since #5670, no component reads `styleSet.linkDefinitions`.
-// The live styles are in `../../LinkDefinition/LinkDefinitions.module.css`.
-
 import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
 
 // TODO: Temporarily disable dark theme until chat history support dark theme.
@@ -9,6 +6,11 @@ const LIGHT_THEME_SELECTOR = '@media (forced-colors: none)';
 
 import CSSTokens from '../CSSTokens';
 
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+ * The live styles are in `packages/component/src/LinkDefinition/LinkDefinitions.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createLinkDefinitionsStyleSet() {
   return {
     '&.webchat__link-definitions': {

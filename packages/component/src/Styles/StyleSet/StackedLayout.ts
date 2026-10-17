@@ -1,11 +1,13 @@
-// Not used for rendering since #5506, no component reads `styleSet.stackedLayout`.
-// The live styles are in `../../Activity/StackedLayout.module.css`.
-
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { StrictStyleOptions } from 'botframework-webchat-api';
 import CSSTokens from '../CSSTokens';
 
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5506), customizing it has no effect.
+ * The live styles are in `packages/component/src/Activity/StackedLayout.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createStackedLayoutStyle({
   bubbleAttachmentMaxWidth,
   bubbleAttachmentMinWidth,

@@ -1,11 +1,13 @@
-// Not used for rendering since #5668, no component reads `styleSet.bubble`.
-// The live styles are in `../../Activity/Bubble.module.css`.
-
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
 import mirrorStyle from '../mirrorStyle';
 
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5668), customizing it has no effect.
+ * The live styles are in `packages/component/src/Activity/Bubble.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createBubbleStyle({
   bubbleBackground,
   bubbleBorderColor,
