@@ -14,6 +14,7 @@ import depthFirstWalk from './depthFirstWalk';
 import getAccessibilityNode from './getAccessibilityNode';
 import getAccessibleName from './getAccessibleName';
 import getAllTextContents from './getAllTextContents';
+import getFocusedAccessibilityNode from './getFocusedAccessibilityNode';
 import iterateAsyncIterable from './iterateAsyncIterable';
 import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
@@ -37,6 +38,7 @@ export {
   getAccessibilityNode,
   getAccessibleName,
   getAllTextContents,
+  getFocusedAccessibilityNode,
   iterateAsyncIterable,
   preloadImages,
   shareObservable,
