@@ -31,11 +31,11 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });
-  const activityDeferredObservable = createDeferredObservable(async () => {
+  // Not async: the returned value is called on unsubscribe, e.g. when Web Chat is unmounted, and a promise is not a function.
+  const activityDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(1);
 
-    await connectedWithResolvers.promise;
-    connectionStatusDeferredObservable.next(2);
+    connectedWithResolvers.promise.then(() => connectionStatusDeferredObservable.next(2));
   });
 
   const postActivityCallDeferreds = [];
