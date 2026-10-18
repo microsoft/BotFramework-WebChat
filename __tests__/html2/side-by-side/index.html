@@ -923,9 +923,11 @@ Use the command to install required dependencies:
           await host.sendKeys('TAB');
           await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
-          // TODO: [P2] In the "View code" dialog, the FAQ link (dark theme) and comments in the GitHub light code theme do not have enough color contrast.
-          //       Remove `skipCheckAccessibility` when fixed.
-          await host.snapshot('local', { skipCheckAccessibility: true });
+          // TODO: [P2] In the "View code" dialog, the FAQ link does not have enough color contrast in the dark theme.
+          //       Remove `skipCheckAccessibility` for the dark theme when fixed.
+          await host.snapshot('local', {
+            skipCheckAccessibility: skipCheckAccessibility || searchParams.get('theme') === 'fluent-dark'
+          });
           await host.sendKeys('ENTER');
           await host.snapshot('local', { skipCheckAccessibility });
         },
