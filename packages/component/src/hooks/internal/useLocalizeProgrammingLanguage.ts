@@ -3,17 +3,16 @@ import { useCallback } from 'react';
 
 const { useLocalizer } = hooks;
 
-// Names and aliases follow Shiki ("bundledLanguagesInfo" in "shiki/langs"). Aliases are in lowercase.
+// Names and aliases (in lowercase) follow Shiki ("bundledLanguagesInfo" in "shiki/langs"), except that shell dialects,
+// such as "bash" and "zsh", keep their own name instead of "Shell".
+// Languages without aliases and titled with their capitalized ID, such as "go" ("Go"), need no string.
 const STRING_ID_BY_PROGRAMMING_LANGUAGE: ReadonlyMap<string, string> = Object.freeze(
   new Map(
     Object.entries({
-      PROGRAMMING_LANGUAGE_C: ['c'],
       PROGRAMMING_LANGUAGE_CPP: ['c++', 'cpp'],
       PROGRAMMING_LANGUAGE_CSHARP: ['c#', 'cs', 'csharp'],
       PROGRAMMING_LANGUAGE_CSS: ['css'],
-      PROGRAMMING_LANGUAGE_GO: ['go'],
       PROGRAMMING_LANGUAGE_HTML: ['html'],
-      PROGRAMMING_LANGUAGE_JAVA: ['java'],
       PROGRAMMING_LANGUAGE_JAVASCRIPT: ['javascript', 'js'],
       PROGRAMMING_LANGUAGE_JSON: ['json'],
       PROGRAMMING_LANGUAGE_JSX: ['jsx'],
@@ -24,9 +23,8 @@ const STRING_ID_BY_PROGRAMMING_LANGUAGE: ReadonlyMap<string, string> = Object.fr
       PROGRAMMING_LANGUAGE_PYTHON: ['py', 'python'],
       PROGRAMMING_LANGUAGE_RUBY: ['rb', 'ruby'],
       PROGRAMMING_LANGUAGE_RUST: ['rs', 'rust'],
-      PROGRAMMING_LANGUAGE_SHELL: ['bash', 'sh', 'shell', 'shellscript', 'zsh'],
+      PROGRAMMING_LANGUAGE_SHELL: ['sh', 'shell', 'shellscript'],
       PROGRAMMING_LANGUAGE_SQL: ['sql'],
-      PROGRAMMING_LANGUAGE_SWIFT: ['swift'],
       PROGRAMMING_LANGUAGE_TSX: ['tsx'],
       PROGRAMMING_LANGUAGE_TYPESCRIPT: ['ts', 'typescript'],
       PROGRAMMING_LANGUAGE_XML: ['xml'],

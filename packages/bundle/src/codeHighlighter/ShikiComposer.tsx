@@ -8,7 +8,8 @@ const createHighligtCodeWithShiki =
   (shikiHiglighter: HighlighterCore): HighlightCodeFn =>
   (code, language, options) =>
     shikiHiglighter.codeToHtml(code, {
-      lang: language,
+      // Shiki resolves languages and aliases in lowercase only, e.g. "ts", while bots may send "TS".
+      lang: language?.toLowerCase(),
       theme: options.theme
     });
 

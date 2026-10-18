@@ -37,22 +37,47 @@
       });
 
       // Programming languages are sent as-is in "programmingLanguage", often in lowercase or as an alias.
+      // Only JavaScript, Python, and TypeScript are highlighted by the bundled highlighter.
       const COLLAPSIBLE_SAMPLES = Object.freeze([
         Object.freeze({
+          isHighlighted: true,
           programmingLanguage: 'javascript',
           text: "console.log('Hello, World!');",
           title: 'JavaScript'
         }),
         Object.freeze({
+          isHighlighted: true,
           programmingLanguage: 'TS',
           text: "const greeting: string = 'Hello, World!';",
           title: 'TypeScript'
         }),
-        Object.freeze({ programmingLanguage: 'c#', text: 'Console.WriteLine("Hello, World!");', title: 'C#' }),
-        // The title of "Shell" is overridden via "overrideLocalizedStrings" below.
-        Object.freeze({ programmingLanguage: 'bash', text: "echo 'Hello, World!'", title: 'Bash' }),
+        Object.freeze({
+          isHighlighted: false,
+          programmingLanguage: 'c#',
+          text: 'Console.WriteLine("Hello, World!");',
+          title: 'C#'
+        }),
+        // The title of "sh" ("Shell") is overridden via "overrideLocalizedStrings" below.
+        Object.freeze({
+          isHighlighted: false,
+          programmingLanguage: 'sh',
+          text: 'echo "Hello, World!"',
+          title: 'Shell script'
+        }),
+        // Shell dialects keep their own name: only the first letter is capitalized.
+        Object.freeze({
+          isHighlighted: false,
+          programmingLanguage: 'bash',
+          text: "echo 'Hello, World!'",
+          title: 'Bash'
+        }),
         // Unknown programming language: only the first letter is capitalized.
-        Object.freeze({ programmingLanguage: 'cobol', text: 'DISPLAY "Hello, World!".', title: 'Cobol' })
+        Object.freeze({
+          isHighlighted: false,
+          programmingLanguage: 'cobol',
+          text: 'DISPLAY "Hello, World!".',
+          title: 'Cobol'
+        })
       ]);
 
       run(async function () {
@@ -67,7 +92,7 @@
         createRoot(document.getElementById('webchat')).render(
           React.createElement(ReactWebChat, {
             directLine,
-            overrideLocalizedStrings: { PROGRAMMING_LANGUAGE_SHELL: 'Bash' },
+            overrideLocalizedStrings: { PROGRAMMING_LANGUAGE_SHELL: 'Shell script' },
             store
           })
         );
@@ -99,6 +124,13 @@
 
           await waitFor(() => expect(summary.getAttribute('aria-expanded')).toBe('true'));
         }
+
+        // THEN: Code in JavaScript and TypeScript should be highlighted, regardless of the case of the programming language.
+        await waitFor(() =>
+          expect(
+            Array.from(document.querySelectorAll('.code-block-content pre'), pre => pre.classList.contains('shiki'))
+          ).toEqual(COLLAPSIBLE_SAMPLES.map(({ isHighlighted }) => isHighlighted))
+        );
 
         await pageConditions.scrollStabilized();
 
