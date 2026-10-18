@@ -17,6 +17,7 @@ import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import getFirstBaseOfSoftwareSourceCode from '../../../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
+import useLocalizeProgrammingLanguage from '../../../hooks/internal/useLocalizeProgrammingLanguage';
 import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
 import useStreamingMarkdownWithDefinitions, {
   type MarkdownLinkDefinition
@@ -82,6 +83,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
+  const localizeProgrammingLanguage = useLocalizeProgrammingLanguage();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
   const showModal = useShowModal();
 
@@ -311,7 +313,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
             code={firstSoftwareSourceCodeBase.text[0]}
             isAIGenerated={isAIGeneratedActivity(activity)}
             language={firstSoftwareSourceCodeBase.programmingLanguage[0]}
-            title={firstSoftwareSourceCodeBase.programmingLanguage[0]}
+            title={localizeProgrammingLanguage(firstSoftwareSourceCodeBase.programmingLanguage[0])}
           />
         ) : null}
         {activity.type === 'message' && activity.text && messageThing?.keywords.includes('AllowCopy') ? (

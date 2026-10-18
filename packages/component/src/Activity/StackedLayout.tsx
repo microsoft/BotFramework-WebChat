@@ -19,6 +19,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
+import useLocalizeProgrammingLanguage from '../hooks/internal/useLocalizeProgrammingLanguage';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
@@ -113,6 +114,7 @@ const StackedLayout = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const localize = useLocalizer();
+  const localizeProgrammingLanguage = useLocalizeProgrammingLanguage();
   const classNames = useStyles(styles);
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
@@ -214,7 +216,7 @@ const StackedLayout = ({
               code={firstSoftwareSourceCode.text[0]}
               key={syntheticAttachments.length}
               language={firstSoftwareSourceCode.programmingLanguage[0]}
-              title={firstSoftwareSourceCode.programmingLanguage[0]}
+              title={localizeProgrammingLanguage(firstSoftwareSourceCode.programmingLanguage[0])}
             />
           </AttachmentRow>
         );
@@ -244,6 +246,7 @@ const StackedLayout = ({
     hasNub,
     isCollapsible,
     localize,
+    localizeProgrammingLanguage,
     messageThing,
     otherInitials,
     renderAttachment,
