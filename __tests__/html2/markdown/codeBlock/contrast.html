@@ -58,7 +58,8 @@ export default class Greeter extends EventTarget {
 
     return text.match(pattern) ?? null;
   }
-}`
+}`,
+          title: 'JavaScript'
         }),
         Object.freeze({
           programmingLanguage: 'typescript',
@@ -67,7 +68,8 @@ type Shape = { readonly kind: 'circle'; radius: number };
 
 export function area(shape: Shape): number {
   return Math.PI * shape.radius ** 2; /* Block comment. */
-}`
+}`,
+          title: 'TypeScript'
         }),
         Object.freeze({
           programmingLanguage: 'python',
@@ -81,7 +83,8 @@ class Point:
     def distance(self, other: "Point") -> float:
         return math.sqrt((self.x - other.x) ** 2)  # Trailing comment.
 
-print(f"{Point(1)!r}", r"\\d+", None, True)`
+print(f"{Point(1)!r}", r"\\d+", None, True)`,
+          title: 'Python'
         })
       ]);
 
@@ -140,13 +143,13 @@ print(f"{Point(1)!r}", r"\\d+", None, True)`
 
         // The accessibility check cannot measure the color contrast of text in the transcript: the transcript focus overlays cover it.
         // The "View code" dialog shows the same highlighted code outside of the transcript.
-        for (const [index, { programmingLanguage }] of SAMPLES.entries()) {
+        for (const [index, { title }] of SAMPLES.entries()) {
           // WHEN: Click the "View code" button of the message.
           await host.click(document.querySelectorAll(`[data-testid="${testIds.viewCodeButton}"]`)[index]);
 
           // THEN: The "View code" dialog should show the code highlighted.
           await waitFor(() => expect(document.querySelector('dialog[open] pre.shiki')).toBeTruthy());
-          expect(document.querySelector('dialog[open] h2').textContent).toBe(programmingLanguage);
+          expect(document.querySelector('dialog[open] h2').textContent).toBe(title);
 
           // THEN: Should match snapshot, and every token should pass the default accessibility check, including color contrast.
           await host.snapshot('local');
