@@ -20,7 +20,7 @@ import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunct
  *
  * Since action buttons are button, the intuitive way to indicate selection of a button is marking it as pressed.
  *
- * One exception is the `Action.ShowUrl` action. This button represents expand/collapse header of an accordion.
+ * One exception is the `Action.ShowCard` action. This button represents expand/collapse header of an accordion.
  * Thus, their state is indicated by `aria-expanded`, instead of `aria-pressed`.
  * However, we still need to remove other unnecessary ARIA fields.
  */
