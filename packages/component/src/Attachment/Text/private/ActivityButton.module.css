@@ -41,5 +41,9 @@
 
     --webchat__component-icon--color: #707070;
     --webchat__component-icon--size: 20px;
+
+    @media (forced-colors: active) {
+      --webchat__component-icon--color: buttonText;
+    }
   }
 }

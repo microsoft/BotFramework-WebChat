@@ -6,11 +6,12 @@ import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
+import AnimatedImageContent from './AnimatedImageContent';
 import styles from './AnimationCardContent.module.css';
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
 
-const { AnimatedImageContent, VideoContent } = Components;
+const { VideoContent } = Components;
 
 const animationCardContentPropsSchema = pipe(
   object({

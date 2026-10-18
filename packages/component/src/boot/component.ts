@@ -11,7 +11,6 @@ export { default as BasicSendBoxToolbar } from '../SendBoxToolbar/BasicSendBoxTo
 export { default as AccessKeySinkSurface } from '../Utils/AccessKeySink/Surface';
 
 // Components for recomposing activities and attachments
-export { default as AnimatedImageContent } from '../Attachment/AnimatedImageContent';
 export { default as AudioContent } from '../Attachment/AudioContent';
 export { default as FileContent } from '../Attachment/FileContent';
 export { default as HTMLVideoContent } from '../Attachment/HTMLVideoContent';

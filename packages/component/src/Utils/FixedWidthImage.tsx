@@ -35,6 +35,7 @@ const fixedWidthImagePropsSchema = pipe(
   object({
     alt: string(),
     className: optional(string()),
+    onError: optional(custom<ReactEventHandler<HTMLImageElement>>(value => is(function_(), value))),
     onLoad: optional(custom<ReactEventHandler<HTMLImageElement>>(value => is(function_(), value))),
     src: string()
   }),
@@ -47,7 +48,7 @@ type FixedWidthImageProps = InferInput<typeof fixedWidthImagePropsSchema>;
  * Shows the image with fixed width but cropped top/bottom.
  */
 function FixedWidthImage(props: FixedWidthImageProps) {
-  const { alt, className, onLoad, src } = validateProps(fixedWidthImagePropsSchema, props);
+  const { alt, className, onError, onLoad, src } = validateProps(fixedWidthImagePropsSchema, props);
 
   return (
     <div
@@ -58,7 +59,7 @@ function FixedWidthImage(props: FixedWidthImageProps) {
       )}
     >
       <img alt="" className="webchat__fixed-width-image__filler" role="none" src={src} />
-      <img alt={alt} className="webchat__fixed-width-image__image" onLoad={onLoad} src={src} />
+      <img alt={alt} className="webchat__fixed-width-image__image" onError={onError} onLoad={onLoad} src={src} />
     </div>
   );
 }
