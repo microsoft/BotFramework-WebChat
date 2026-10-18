@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: { DebugProvider, ReactWebChat }
+        } = window;
+
+        // Record every URL the page requests, regardless of the size of the resource timing buffer.
+        const requestedURLs = [];
+
+        new PerformanceObserver(list => requestedURLs.push(...list.getEntries().map(({ name }) => name))).observe({
+          type: 'resource'
+        });
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        // GIVEN: A development build of Web Chat with <DebugProvider>, which shows an error box for attachments that fail to render.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(DebugProvider, {}, createElement(ReactWebChat, { directLine, store }))
+        );
+
+        await pageConditions.uiConnected();
+
+        // Development builds log invalid props as errors, record them and log them as warnings instead.
+        const consoleError = spyOn(console, 'error').mockImplementation(console.warn.bind(console));
+
+        // Every relative URL points to the existing dark green video when resolved against this page.
+        const relativeURLs = [
+          '/assets/dark-green-video.webm?root-relative',
+          '../../assets/dark-green-video.webm?path-relative',
+          `//${location.host}/assets/dark-green-video.webm?protocol-relative`
+        ];
+
+        // WHEN: The bot sends a video attachment, a video card, and an animation card, each with a relative URL.
+        await directLine.emulateIncomingActivity({
+          attachments: [{ contentType: 'video/webm', contentUrl: relativeURLs[0], name: 'Video attachment' }],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                buttons: [{ title: 'Watch later', type: 'imBack', value: 'watch later' }],
+                media: [{ url: relativeURLs[1] }],
+                text: 'Video card text',
+                title: 'Video card'
+              },
+              contentType: 'application/vnd.microsoft.card.video'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                buttons: [{ title: 'Show more', type: 'imBack', value: 'show more' }],
+                media: [{ url: relativeURLs[2] }],
+                text: 'Animation card text',
+                title: 'Animation card'
+              },
+              contentType: 'application/vnd.microsoft.card.animation'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+
+        // THEN: Every attachment should show the error box instead, the same as other attachments that fail to render.
+        const validationErrorMessage = 'botframework-webchat: Validation error while parsing props.';
+        const getErrorMessages = () =>
+          pageElements
+            .activities()
+            .map(activityElement =>
+              Array.from(activityElement.querySelectorAll('summary'), ({ textContent }) => textContent)
+            );
+
+        await waitFor(() =>
+          expect(getErrorMessages()).toEqual([
+            [validationErrorMessage],
+            [validationErrorMessage],
+            [validationErrorMessage]
+          ])
+        );
+
+        // THEN: The error box should replace the whole card.
+        expect(pageElements.activities()[1].textContent).not.toContain('Video card text');
+        expect(pageElements.activities()[2].textContent).not.toContain('Animation card text');
+
+        // THEN: No video should be shown or embedded.
+        expect(document.querySelector('iframe, video')).toBeNull();
+
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+
+        // WHEN: The bot sends video attachments with URLs that cannot be parsed and a protocol-relative YouTube URL.
+        const invalidURLs = ['https://', 'http://[invalid', '//www.youtube.com/watch?v=dQw4w9WgXcQ'];
+
+        await directLine.emulateIncomingActivity({
+          attachments: invalidURLs.map(contentUrl => ({
+            contentType: 'video/mp4',
+            contentUrl,
+            name: 'Video with an invalid URL'
+          })),
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        // THEN: Every attachment should show the error box instead.
+        await waitFor(() =>
+          expect(getErrorMessages()[3]).toEqual([
+            validationErrorMessage,
+            validationErrorMessage,
+            validationErrorMessage
+          ])
+        );
+
+        // THEN: No video should be shown or embedded.
+        expect(document.querySelector('iframe, video')).toBeNull();
+
+        // THEN: The console should tell which URLs are invalid.
+        expect(
+          new Set(
+            consoleError.mock.calls
+              .filter(([error, issues]) => error?.message === validationErrorMessage && Array.isArray(issues))
+              .flatMap(([, issues]) => issues.map(({ input }) => input))
+          )
+        ).toEqual(new Set([...relativeURLs, ...invalidURLs]));
+
+        consoleError.mockRestore();
+
+        // WHEN: The bot sends YouTube and Vimeo URLs without a video ID, which cannot be embedded.
+        await directLine.emulateIncomingActivity({
+          attachments: ['https://www.youtube.com/@Microsoft', 'https://youtu.be/', 'https://vimeo.com/'].map(
+            contentUrl => ({ contentType: 'video/mp4', contentUrl, name: 'Video without a video ID' })
+          ),
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(5);
+
+        // THEN: They should show a video player with the URL as-is, the same as other absolute URLs that cannot be embedded.
+        expect(
+          Array.from(pageElements.activities()[4].querySelectorAll('video'), videoElement =>
+            videoElement.getAttribute('src')
+          )
+        ).toEqual(['https://www.youtube.com/@Microsoft', 'https://youtu.be/', 'https://vimeo.com/']);
+
+        // THEN: YouTube and Vimeo URLs without a video ID should not be embedded.
+        expect(document.querySelector('iframe')).toBeNull();
+
+        // WHEN: The bot sends a video attachment with an absolute URL.
+        const absoluteURL = new URL('/assets/dark-green-video.webm?absolute', location.href).href;
+
+        await directLine.emulateIncomingActivity({
+          attachments: [{ contentType: 'video/webm', contentUrl: absoluteURL, name: 'Video with an absolute URL' }],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(6);
+
+        // THEN: It should be requested and loaded.
+        const absoluteVideoElement = pageElements.activities()[5].querySelector('video');
+
+        expect(absoluteVideoElement.getAttribute('src')).toBe(absoluteURL);
+
+        await waitFor(() => expect(absoluteVideoElement.readyState).toBe(HTMLMediaElement.HAVE_ENOUGH_DATA));
+        await waitFor(() => expect(requestedURLs).toContain(absoluteURL));
+
+        // THEN: The relative URLs should never be requested from the server of this page.
+        expect(
+          relativeURLs.map(url => new URL(url, location.href).href).filter(url => requestedURLs.includes(url))
+        ).toEqual([]);
+      });
+    </script>
+  </body>
+</html>
