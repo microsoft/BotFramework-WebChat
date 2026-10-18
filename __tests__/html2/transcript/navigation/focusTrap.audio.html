@@ -32,10 +32,15 @@
       window.WebChat = { createStoreWithOptions };
 
       // The native controls of the audio player are in a closed shadow tree, `document.activeElement` is always the <audio> element.
-      async function getFocusedControl() {
-        const { name, role } = await testHelpers.getFocusedAccessibilityNode();
+      // The focused control is found in the accessibility tree instead.
+      async function expectFocusedControl(mediaElement, expected) {
+        await waitFor(async () => {
+          const { name, role } = await testHelpers.getFocusedAccessibilityNode();
 
-        return { name: name?.value, role: role?.value };
+          expect({ name: name?.value, role: role?.value }).toEqual(expected);
+        });
+
+        expect(document.activeElement).toBe(mediaElement);
       }
 
       run(async function () {
@@ -67,54 +72,92 @@
         await host.sendKeys('ENTER');
 
         // THEN: The audio player should have the keyboard focus.
-        await waitFor(() => expect(document.activeElement).toBe(audioElement));
-        await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'Hello, World!', role: 'Audio' }));
+        await expectFocusedControl(audioElement, { name: 'Hello, World!', role: 'Audio' });
+        await host.snapshot('local');
 
         // WHEN: TAB is pressed.
         await host.sendTab();
 
-        // THEN: The focus should move to the first control of the audio player.
-        await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'play', role: 'button' }));
-
-        // THEN: The play button should show the focus indicator.
+        // THEN: The focus should move to the play button, the first control of the audio player.
+        await expectFocusedControl(audioElement, { name: 'play', role: 'button' });
         await host.snapshot('local');
 
-        // WHEN: TAB is pressed repeatedly.
-        // THEN: The focus should move through the other controls of the audio player, in order.
-        for (const control of [
-          { name: 'audio time scrubber', role: 'slider' },
-          { name: 'volume', role: 'slider' },
-          { name: 'mute', role: 'button' },
-          { name: 'show more media controls', role: 'button' }
-        ]) {
-          await host.sendTab();
-          await waitFor(async () => expect(await getFocusedControl()).toEqual(control));
-        }
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: The focus should move to the time scrubber.
+        await expectFocusedControl(audioElement, { name: 'audio time scrubber', role: 'slider' });
+        await host.snapshot('local');
+
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: The focus should move to the volume slider.
+        await expectFocusedControl(audioElement, { name: 'volume', role: 'slider' });
+        await host.snapshot('local');
+
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: The focus should move to the mute button.
+        await expectFocusedControl(audioElement, { name: 'mute', role: 'button' });
+        await host.snapshot('local');
+
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: The focus should move to the "show more media controls" button, the last control of the audio player.
+        await expectFocusedControl(audioElement, { name: 'show more media controls', role: 'button' });
+        await host.snapshot('local');
 
         // WHEN: TAB is pressed on the last control.
         await host.sendTab();
 
         // THEN: The focus should stay in the activity and wrap to the audio player.
-        await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'Hello, World!', role: 'Audio' }));
-        expect(document.activeElement).toBe(audioElement);
+        await expectFocusedControl(audioElement, { name: 'Hello, World!', role: 'Audio' });
+        await host.snapshot('local');
 
         // WHEN: SHIFT+TAB is pressed on the audio player.
         await host.sendShiftTab();
 
-        // THEN: The focus should wrap to the last control of the audio player.
-        await waitFor(async () =>
-          expect(await getFocusedControl()).toEqual({ name: 'show more media controls', role: 'button' })
-        );
-
-        // THEN: The "show more media controls" button should show the focus indicator.
+        // THEN: The focus should stay in the activity and wrap to the last control of the audio player.
+        await expectFocusedControl(audioElement, { name: 'show more media controls', role: 'button' });
         await host.snapshot('local');
 
-        // WHEN: SHIFT+TAB is pressed again.
+        // WHEN: SHIFT+TAB is pressed.
         await host.sendShiftTab();
 
-        // THEN: The focus should move back through the controls of the audio player.
-        await waitFor(async () => expect(await getFocusedControl()).toEqual({ name: 'mute', role: 'button' }));
-        expect(document.activeElement).toBe(audioElement);
+        // THEN: The focus should move back to the mute button.
+        await expectFocusedControl(audioElement, { name: 'mute', role: 'button' });
+        await host.snapshot('local');
+
+        // WHEN: SHIFT+TAB is pressed.
+        await host.sendShiftTab();
+
+        // THEN: The focus should move back to the volume slider.
+        await expectFocusedControl(audioElement, { name: 'volume', role: 'slider' });
+        await host.snapshot('local');
+
+        // WHEN: SHIFT+TAB is pressed.
+        await host.sendShiftTab();
+
+        // THEN: The focus should move back to the time scrubber.
+        await expectFocusedControl(audioElement, { name: 'audio time scrubber', role: 'slider' });
+        await host.snapshot('local');
+
+        // WHEN: SHIFT+TAB is pressed.
+        await host.sendShiftTab();
+
+        // THEN: The focus should move back to the play button.
+        await expectFocusedControl(audioElement, { name: 'play', role: 'button' });
+        await host.snapshot('local');
+
+        // WHEN: SHIFT+TAB is pressed on the first control.
+        await host.sendShiftTab();
+
+        // THEN: The focus should move back to the audio player.
+        await expectFocusedControl(audioElement, { name: 'Hello, World!', role: 'Audio' });
+        await host.snapshot('local');
       });
     </script>
   </body>
