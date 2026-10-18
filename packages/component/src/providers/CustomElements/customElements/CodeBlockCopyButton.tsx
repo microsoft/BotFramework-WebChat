@@ -1,4 +1,4 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { type GlobalScopePonyfill } from 'botframework-webchat-core';
@@ -6,9 +6,9 @@ import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
-import { custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { custom, function_, is, object, optional, pipe, readonly, string } from 'valibot';
 
-import useCopiedState from '../../../hooks/internal/useCopiedState';
+import useAutoResetState from '../../../hooks/internal/useAutoResetState';
 import { ComponentIcon } from '../../../Icon';
 import testIds from '../../../testIds';
 import wrapAsCustomElement from './wrapAsCustomElement';
@@ -16,6 +16,9 @@ import wrapAsCustomElement from './wrapAsCustomElement';
 import styles from './CodeBlockCopyButton.module.css';
 
 const { usePonyfill } = hooks;
+
+// Same as the Copy button of activities.
+const COPIED_DURATION = 5_000;
 
 const codeBlockCopyButtonPropsSchema = pipe(
   object({
@@ -30,7 +33,7 @@ const codeBlockCopyButtonPropsSchema = pipe(
   readonly()
 );
 
-type CodeBlockCopyButtonProps = InferInput<typeof codeBlockCopyButtonPropsSchema>;
+type CodeBlockCopyButtonProps = InferReactProps<typeof codeBlockCopyButtonPropsSchema>;
 
 function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
   const {
@@ -41,7 +44,7 @@ function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
     ponyfill
   } = validateProps(codeBlockCopyButtonPropsSchema, props);
 
-  const [copied, markAsCopied] = useCopiedState(ponyfill);
+  const [copied, setCopied] = useAutoResetState(false, COPIED_DURATION, ponyfill);
   const [disabled, setDisabled, disabledRef] = useStateWithRef(false);
   const classNames = useStyles(styles);
   const valueRef = useRefFrom(value);
@@ -64,7 +67,7 @@ function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
             ]);
 
             // Copying again restarts the confirmation.
-            obsoleted || markAsCopied();
+            obsoleted || setCopied(true);
           } else if (state === 'denied') {
             setDisabled(true);
           }
@@ -77,7 +80,7 @@ function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
     return () => {
       obsoleted = true;
     };
-  }, [disabledRef, markAsCopied, setDisabled, valueRef]);
+  }, [disabledRef, setCopied, setDisabled, valueRef]);
 
   // A plain button, like the copy button of activities: its name is "Copied" while the confirmation is shown.
   // A live region on the button would raise another event for "Copied", then an assertive "Copy" when the confirmation ends.
@@ -131,10 +134,10 @@ function createCodeBlockCopyButtonClass(ponyfill: CodeBlockCopyButtonProps['pony
  *
  * The custom element renders in its own React root, outside of the React tree of Web Chat, so the ponyfill is passed down.
  */
-export default function useReactCodeBlockCopyButtonClass(): typeof HTMLElement {
+export default function useReactCodeBlockCopyButtonClass(): readonly [typeof HTMLElement] {
   const [ponyfill] = usePonyfill();
 
-  return useMemo(() => createCodeBlockCopyButtonClass(ponyfill), [ponyfill]);
+  return useMemo(() => Object.freeze([createCodeBlockCopyButtonClass(ponyfill)] as const), [ponyfill]);
 }
 
 export { codeBlockCopyButtonPropsSchema, type CodeBlockCopyButtonProps };

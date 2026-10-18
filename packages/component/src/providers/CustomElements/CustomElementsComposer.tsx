@@ -35,7 +35,7 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
     [hash]
   );
 
-  const CodeBlockCopyButtonClass = useReactCodeBlockCopyButtonClass();
+  const [CodeBlockCopyButtonClass] = useReactCodeBlockCopyButtonClass();
 
   const codeBlockCopyButtonTagName = useMemo(
     () => registerCustomElement('code-block-copy-button', CodeBlockCopyButtonClass),

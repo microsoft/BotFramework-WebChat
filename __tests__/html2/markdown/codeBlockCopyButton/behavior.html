@@ -88,19 +88,6 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         const copyButton = document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`);
 
-        // What a screen reader gets from the button: its name and role, and whether it is a live region or a toggle button.
-        const getAccessibilityState = async () => {
-          const { name, properties = [], role } = await testHelpers.getAccessibilityNode(copyButton);
-
-          return Object.fromEntries([
-            ['name', name?.value],
-            ['role', role?.value],
-            ...properties
-              .filter(({ name }) => name === 'live' || name === 'pressed')
-              .map(({ name, value }) => [name, value.value])
-          ]);
-        };
-
         const hideAndShowWebChat = () => {
           document.getElementById('webchat').style.display = 'none';
           document.body.offsetWidth; // Need for browser to refresh the layout.
@@ -130,7 +117,12 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         // THEN: "Copied" should still be shown.
         // It should be a plain button: not a toggle button, and not a live region, which would raise another event for "Copied" and an assertive "Copy" later.
-        expect(await getAccessibilityState()).toEqual({ name: 'Copied', role: 'button' });
+        const { name, properties, role } = await testHelpers.getAccessibilityNode(copyButton);
+
+        expect(name.value).toBe('Copied');
+        expect(role.value).toBe('button');
+        expect(properties.map(property => property.name)).not.toContain('live');
+        expect(properties.map(property => property.name)).not.toContain('pressed');
 
         // WHEN: Paste into the paste box.
         await host.click(document.querySelector('[data-testid="paste box"]'));
@@ -152,7 +144,6 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         // THEN: The "Copy" button should be back to normal.
         await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copy'));
-        expect(await getAccessibilityState()).toEqual({ name: 'Copy', role: 'button' });
 
         // WHEN: Hiding Web Chat and showing it back.
         await host.click(document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`));

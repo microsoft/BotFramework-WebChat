@@ -5,7 +5,7 @@ import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { instance, nullable, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useCopiedState from '../../../hooks/internal/useCopiedState';
+import useAutoResetState from '../../../hooks/internal/useAutoResetState';
 import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import refObject from '../../../types/internal/refObject';
 import ActivityButton from './ActivityButton';
@@ -13,6 +13,8 @@ import ActivityButton from './ActivityButton';
 import styles from './ActivityCopyButton.module.css';
 
 const { useLocalizer, usePonyfill, useUIState } = hooks;
+
+const COPIED_DURATION = 5_000;
 
 const activityCopyButtonPropsSchema = pipe(
   object({
@@ -29,12 +31,12 @@ function ActivityCopyButton(props: ActivityCopyButtonProps) {
 
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [ponyfill] = usePonyfill();
+  const [copied, setCopied] = useAutoResetState(false, COPIED_DURATION, ponyfill);
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   const queueStaticElement = useQueueStaticElement();
 
-  const [copied, markAsCopied] = useCopiedState(ponyfill);
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
   const disabled = !permissionGranted || uiState === 'disabled';
@@ -53,10 +55,10 @@ function ActivityCopyButton(props: ActivityCopyButtonProps) {
       .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
     // Activating again restarts the confirmation.
-    markAsCopied();
+    setCopied(true);
 
     queueStaticElement(<div className={classNames['activity-copy-button__copy-announcement']}>{copiedText}</div>);
-  }, [classNames, copiedText, markAsCopied, queueStaticElement, targetRef]);
+  }, [classNames, copiedText, queueStaticElement, setCopied, targetRef]);
 
   useEffect(() => {
     let unmounted = false;
