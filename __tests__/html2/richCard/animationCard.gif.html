@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        const webChatElement = createElement(ReactWebChat, { directLine, store });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The test harness prefers reduced motion.
+        expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
+
+        // GIVEN: The bot sends an animation card with a looping GIF, similar to the "animationcard" command of the mock bot.
+        // Like the GIF of the mock bot, it is served from another origin.
+        const gifURL = new URL('/assets/yellow-ball-animation.gif', location.href);
+
+        gifURL.hostname = gifURL.hostname === 'localhost' ? 'cross-origin.localhost' : 'webchat2-cross-origin';
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                autoloop: true,
+                autostart: true,
+                media: [
+                  {
+                    profile: 'Yellow ball moving from left to right',
+                    url: gifURL.href
+                  }
+                ],
+                subtitle: 'Animation with a GIF',
+                text: 'No buttons, no image.',
+                title: 'Animation card'
+              },
+              contentType: 'application/vnd.microsoft.card.animation'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.allImagesLoaded();
+
+        const [[attachmentElement]] = pageElements.activityAttachments();
+        const buttonElement = attachmentElement.querySelector('button');
+        const imageElement = attachmentElement.querySelector('img[alt="Yellow ball moving from left to right"]');
+
+        // THEN: The image should still be named after the media profile.
+        await expect(testHelpers.getAccessibilityNode(imageElement)).resolves.toEqual(
+          expect.objectContaining({
+            name: expect.objectContaining({ value: 'Yellow ball moving from left to right' }),
+            role: expect.objectContaining({ value: 'image' })
+          })
+        );
+
+        // THEN: The animation should be paused and offer a "Play animation" button.
+        expect(buttonElement).toBeTruthy();
+        await expect(testHelpers.getAccessibilityNode(buttonElement)).resolves.toEqual(
+          expect.objectContaining({
+            name: expect.objectContaining({ value: 'Play animation' }),
+            role: expect.objectContaining({ value: 'button' })
+          })
+        );
+
+        // THEN: The first frame should be shown with the "Play animation" button over it.
+        await host.snapshot('local');
+
+        // WHEN: Focus on the button via keyboard.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ENTER');
+
+        // THEN: The button should have the keyboard focus.
+        await waitFor(() => expect(document.activeElement).toBe(buttonElement));
+        expect(buttonElement.matches(':focus-visible')).toBe(true);
+
+        // WHEN: Press ENTER on the button.
+        await host.sendKeys('ENTER');
+
+        // THEN: The animation should play and the button should become "Pause animation", keeping the focus.
+        await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Pause animation'));
+        expect(document.activeElement).toBe(buttonElement);
+
+        // WHEN: Press ENTER on the button again.
+        await host.sendKeys('ENTER');
+
+        // THEN: The animation should stop and the button should become "Play animation", keeping the focus.
+        await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Play animation'));
+        expect(document.activeElement).toBe(buttonElement);
+
+        // THEN: The first frame should be shown again, with the focus indicator on the button.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 export {
   AccessKeySinkSurface,
+  AnimatedImageContent,
   AttachmentBar,
   AudioContent,
   Avatar,

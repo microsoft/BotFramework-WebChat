@@ -1,0 +1,42 @@
+:global(.webchat) .animated-image-content {
+  position: relative;
+
+  /* Same position as the image in <FixedWidthImage>, clipped to the visible part of the image, so the button stays on the image. */
+  .animated-image-content__overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 50%;
+    max-height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+  }
+
+  .animated-image-content__first-frame {
+    flex-shrink: 0;
+    visibility: hidden;
+    width: 100%;
+  }
+
+  .animated-image-content__button {
+    bottom: var(--webchat__padding--regular);
+    inset-inline-start: var(--webchat__padding--regular);
+    pointer-events: auto;
+    position: absolute;
+  }
+
+  /* The image stays in the accessibility tree, only its first frame is visible. */
+  &.animated-image-content--paused {
+    .animated-image-content__image {
+      opacity: 0;
+    }
+
+    .animated-image-content__first-frame {
+      visibility: visible;
+    }
+  }
+}

@@ -1,5 +1,7 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import React, { memo } from 'react';
+import React, { memo, type ReactEventHandler } from 'react';
+import { custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import CSSTokens from '../Styles/CSSTokens';
@@ -29,19 +31,25 @@ const ROOT_STYLE = {
   }
 };
 
+const fixedWidthImagePropsSchema = pipe(
+  object({
+    alt: string(),
+    className: optional(string()),
+    onLoad: optional(custom<ReactEventHandler<HTMLImageElement>>(value => is(function_(), value))),
+    src: string()
+  }),
+  readonly()
+);
+
+type FixedWidthImageProps = InferInput<typeof fixedWidthImagePropsSchema>;
+
 /**
  * Shows the image with fixed width but cropped top/bottom.
  */
-const FixedWidthImage = memo(
-  ({
-    alt,
-    className,
-    src
-  }: Readonly<{
-    alt: string;
-    className?: string | undefined;
-    src: string;
-  }>) => (
+function FixedWidthImage(props: FixedWidthImageProps) {
+  const { alt, className, onLoad, src } = validateProps(fixedWidthImagePropsSchema, props);
+
+  return (
     <div
       className={classNames(
         'webchat__fixed-width-image',
@@ -50,11 +58,12 @@ const FixedWidthImage = memo(
       )}
     >
       <img alt="" className="webchat__fixed-width-image__filler" role="none" src={src} />
-      <img alt={alt} className="webchat__fixed-width-image__image" src={src} />
+      <img alt={alt} className="webchat__fixed-width-image__image" onLoad={onLoad} src={src} />
     </div>
-  )
-);
+  );
+}
 
 FixedWidthImage.displayName = 'FixedWidthImage';
 
-export default FixedWidthImage;
+export default memo(FixedWidthImage);
+export { fixedWidthImagePropsSchema, type FixedWidthImageProps };

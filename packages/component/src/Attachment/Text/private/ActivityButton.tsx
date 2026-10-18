@@ -13,6 +13,7 @@ const activityButtonPropsSchema = pipe(
   object({
     'aria-controls': optional(string()),
     'aria-expanded': optional(boolean()),
+    'aria-label': optional(string()),
     'aria-pressed': optional(boolean()),
     children: optional(reactNode()),
     className: optional(string()),
@@ -31,6 +32,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
   const {
     'aria-controls': ariaControls,
     'aria-expanded': ariaExpanded,
+    'aria-label': ariaLabel,
     'aria-pressed': ariaPressed,
     children,
     className,
@@ -51,6 +53,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       aria-controls={ariaControls}
       aria-disabled={disabled ? 'true' : undefined}
       aria-expanded={ariaExpanded}
+      aria-label={ariaLabel}
       aria-pressed={ariaPressed}
       className={cx(classNames['activity-button'], className)}
       data-testid={dataTestId}
