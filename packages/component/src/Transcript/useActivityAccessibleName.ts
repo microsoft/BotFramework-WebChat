@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import { SEND_FAILED } from '../types/internal/SendStatus';
+import { SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import activityAltText from '../Utils/activityAltText';
 import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
@@ -15,7 +15,7 @@ enum InteractiveType {
   WIDGET
 }
 
-const { useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
+const { useDateFormatter, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   few: 'ACTIVITY_NUM_ATTACHMENTS_FEW_ALT',
@@ -35,6 +35,7 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
 export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
   const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
+  const formatDate = useDateFormatter();
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -63,9 +64,18 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
     [localizeWithPlural, numAttachments]
   );
 
-  const isSendFailed = useMemo(
-    () => sendStatusByActivityKey.get(activityKey) === SEND_FAILED,
-    [activityKey, sendStatusByActivityKey]
+  // Like the activity status, an activity without a send status is sent, e.g. from the bot.
+  const sendStatus = sendStatusByActivityKey.get(activityKey) || SENT;
+
+  const isSendFailed = sendStatus === SEND_FAILED;
+
+  /** "Sent at October 17 at 4:00 PM", only after the activity is sent, like the timestamp in the activity status. */
+  const sentAtAlt = useMemo(
+    () =>
+      activity.timestamp && sendStatus === SENT
+        ? localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(activity.timestamp))
+        : '',
+    [activity.timestamp, formatDate, localize, sendStatus]
   );
 
   const accessibleName = useMemo(
@@ -81,7 +91,8 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
           : interactiveType === InteractiveType.WIDGET
             ? activityInteractiveReasonInteractiveContentAlt
             : '',
-        interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : ''
+        interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : '',
+        sentAtAlt
       ]
         .filter(Boolean)
         .join(' '),
@@ -94,7 +105,8 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
       interactiveType,
       isSendFailed,
       messageTextAlt,
-      numAttachmentsAlt
+      numAttachmentsAlt,
+      sentAtAlt
     ]
   );
 
