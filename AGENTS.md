@@ -54,7 +54,7 @@
 
 ```tsx
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { number, object, pipe, readonly } from 'valibot';
 
 // Use valibot to validate props.
@@ -72,9 +72,9 @@ function MyComponent(props: MyComponentProps) {
   // Call `validateProps` to get a validated props.
   const { children } = validateProps(MyComponentPropsSchema, props);
 
-  // Use `<>` instead of `<Fragment>`.
-  // Never export `children` by itself, always wrap with `<>`.
-  return <>{children}</>;
+  // Use `<Fragment>` instead of `<>` (enforced by `react/jsx-fragments`).
+  // Never export `children` by itself, always wrap with `<Fragment>`.
+  return <Fragment>{children}</Fragment>;
 }
 
 // Set `displayName`.
