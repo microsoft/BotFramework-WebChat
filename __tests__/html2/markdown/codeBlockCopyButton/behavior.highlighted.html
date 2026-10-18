@@ -37,12 +37,12 @@
           WebChat: { ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
-        // Using the real clock: with a fake clock, the message would arrive before the code highlighter is loaded.
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         const App = () => (
           <React.Fragment>
-            <ReactWebChat directLine={directLine} store={store} />
+            <ReactWebChat directLine={directLine} ponyfill={clock} store={store} />
             <div style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
               <label>
                 <div>Paste box</div>
@@ -57,6 +57,10 @@
         );
 
         render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
 
         await pageConditions.uiConnected();
 
@@ -86,6 +90,11 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         await pageConditions.numActivitiesShown(1);
 
+        // THEN: The Python code should be highlighted.
+        await waitFor(() =>
+          expect(document.querySelector('pre.shiki')?.textContent).toContain('def plot_sine_waves():')
+        );
+
         // WHEN: Focus on the "Copy" button via keyboard.
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
         await host.sendShiftTab(3);
@@ -110,10 +119,11 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
-        // THEN: The checkmark should go away 5 seconds after pressing the "Copy" button.
-        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copy'), {
-          timeout: 10_000
-        });
+        // WHEN: 5 seconds after pressing the "Copy" button.
+        clock.tick(5_000);
+
+        // THEN: The checkmark should go away.
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copy'));
 
         // WHEN: Hiding Web Chat and showing it back.
         document.getElementById('webchat').style.display = 'none';
