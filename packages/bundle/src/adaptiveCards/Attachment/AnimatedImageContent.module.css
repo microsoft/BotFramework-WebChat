@@ -27,6 +27,21 @@
     inset-inline-start: var(--webchat__padding--regular);
     pointer-events: auto;
     position: absolute;
+
+    /* The focus indicator of the button is drawn on the button background: a band in the same color around the button keeps it visible over any image. */
+    /* The band is the outline of a pseudo-element on the border of the button, because forced colors remove box shadows. */
+    &:focus-visible::after {
+      border-radius: inherit;
+      content: '';
+      inset: -1px;
+      outline: 2px solid #fff;
+      pointer-events: none;
+      position: absolute;
+
+      @media (forced-colors: active) {
+        outline-color: ButtonFace;
+      }
+    }
   }
 
   /* The image stays in the accessibility tree, only its first frame is visible. */

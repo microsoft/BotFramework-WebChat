@@ -1,10 +1,10 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-component';
 import { ActivityButton, FixedWidthImage } from 'botframework-webchat-component/internal.js';
 import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type SyntheticEvent } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import styles from './AnimatedImageContent.module.css';
 
@@ -19,7 +19,7 @@ const animatedImageContentPropsSchema = pipe(
   readonly()
 );
 
-type AnimatedImageContentProps = InferInput<typeof animatedImageContentPropsSchema>;
+type AnimatedImageContentProps = InferReactProps<typeof animatedImageContentPropsSchema>;
 
 /**
  * Shows an animated image, such as a GIF, with a button to pause and play the animation.

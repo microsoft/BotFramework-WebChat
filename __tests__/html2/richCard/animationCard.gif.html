@@ -47,6 +47,8 @@
 
         // GIVEN: The bot sends an animation card with a looping GIF, similar to the "animationcard" command of the mock bot.
         // Like the GIF of the mock bot, it is served from another origin.
+        // The first frame (ball on the left) is shown for 20 ms, the second frame (ball on the right) for about 11 minutes,
+        // so a playing GIF settles on the second frame before the snapshot.
         const gifURL = new URL('/assets/yellow-ball-animation.gif', location.href);
 
         gifURL.hostname = gifURL.hostname === 'localhost' ? 'cross-origin.localhost' : 'webchat2-cross-origin';
@@ -115,6 +117,9 @@
         // THEN: The animation should play and the button should become "Pause animation", keeping the focus.
         await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Pause animation'));
         expect(document.activeElement).toBe(buttonElement);
+
+        // THEN: The second frame should be shown, with the focus indicator on the button.
+        await host.snapshot('local');
 
         // WHEN: Press ENTER on the button again.
         await host.sendKeys('ENTER');

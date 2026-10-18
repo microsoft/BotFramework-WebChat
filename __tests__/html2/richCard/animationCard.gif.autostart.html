@@ -52,6 +52,8 @@
 
         // GIVEN: The bot sends an animation card with a GIF and no "autostart", which defaults to true.
         // GIVEN: The bot sends another animation card with a GIF and "autostart" set to false.
+        // The first frame of the GIF (ball on the left) is shown for 20 ms, the second frame (ball on the right) for about 11 minutes,
+        // so a playing GIF settles on the second frame before the snapshot.
         for (const autostart of [undefined, false]) {
           await directLine.emulateIncomingActivity({
             attachments: [
@@ -97,6 +99,9 @@
           })
         );
 
+        // THEN: The first animation should show its second frame and the second animation its first frame, with the button inside the cropped image.
+        await host.snapshot('local');
+
         // WHEN: Click on the "Pause animation" button.
         await host.click(autostartButtonElement);
 
@@ -105,7 +110,7 @@
           expect(testHelpers.getAccessibleName(autostartButtonElement)).resolves.toBe('Play animation')
         );
 
-        // THEN: Both animations should show their first frame, with the button inside the cropped image.
+        // THEN: Both animations should show their first frame.
         await host.snapshot('local');
       });
     </script>
