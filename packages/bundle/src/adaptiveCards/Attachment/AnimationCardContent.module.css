@@ -1,10 +1,48 @@
 :global(.webchat) .animation-card-attachment {
+  /* Same top corners as the bubble, which clips the first media. */
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
   display: flex;
   flex-direction: column;
 
   > :global(ul.media-list) {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
     list-style-type: none;
     margin: 0;
     padding: 0;
+
+    > li {
+      position: relative;
+
+      &:first-child {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+      }
+
+      /* Lay out the video as a block, so the media item has the size of the video and the focus indicator hugs it. */
+      > video {
+        display: block;
+      }
+
+      /* Same two-tone focus indicator as video attachments, see `Styles/StyleSet/VideoAttachment.ts` in the component package. */
+      /* It follows the clipped top corners. When the bubble does not clip the video, the video is rounded like the indicator. */
+      > video:focus-visible {
+        border-radius: inherit;
+        outline: 0;
+      }
+
+      &:has(> video:focus-visible)::after {
+        border-color: var(--webchat__color--transcript-visual-keyboard-indicator);
+        border-radius: inherit;
+        border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
+        border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
+        box-shadow: inset 0 0 0 2px var(--webchat__background--bubble);
+        content: '';
+        inset: 0;
+        pointer-events: none;
+        position: absolute;
+      }
+    }
   }
 }
