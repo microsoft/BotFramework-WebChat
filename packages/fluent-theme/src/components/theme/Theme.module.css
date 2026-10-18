@@ -46,6 +46,7 @@
   --webchat-colorStrokeFocus2: var(--colorStrokeFocus2, #000000);
 
   --webchat-colorBrandStroke2: var(--colorBrandStroke2, #9edcf7);
+  --webchat-colorBrandStroke2Hover: var(--colorBrandStroke2Hover, #5fc7f3);
   --webchat-colorBrandStroke2Pressed: var(--colorBrandStroke2Pressed, #01384d);
 
   --webchat-colorTransparentStroke: var(--colorTransparentStroke, transparent);

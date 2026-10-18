@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Built-in decorator: border fade colors</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      #webchat {
+        --webchat-borderFlair-borderSize: 6px;
+        --webchat-borderFlair-color1Fade: Red;
+        --webchat-borderFlair-color3Fade: Blue;
+        --webchat-borderLoader-borderSize: 8px;
+        --webchat-borderLoader-color1Fade: Red;
+        --webchat-borderLoader-color3Fade: Blue;
+      }
+
+      /* Freeze the loader mid-way, with both ends of its gradient in view. */
+      #webchat .border-loader__loader {
+        animation-delay: -1s !important;
+        animation-play-state: paused !important;
+      }
+
+      /* Freeze the flair at its end, where it shows the fade colors. */
+      #webchat .border-flair {
+        animation-delay: -2s !important;
+        animation-play-state: paused !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: {
+            decorator: { WebChatDecorator },
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: The host sets the fade colors of the loader and the flair: red for the first color, blue for the third.
+        createRoot(document.getElementById('webchat')).render(
+          React.createElement(WebChatDecorator, null, React.createElement(ReactWebChat, { directLine, store }))
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: An informative message is being streamed.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'informative' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00001',
+          text: 'Working on it...',
+          type: 'typing'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should show the loader.
+        await waitFor(() => expect(document.querySelector('.border-loader__loader')).toBeTruthy());
+
+        // THEN: The loader gradient should fade from red on the left to blue on the right.
+        await host.snapshot('local');
+
+        // WHEN: The final message arrives.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 't-00001', streamType: 'final' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'm-00001',
+          text: 'Work completed!',
+          type: 'message'
+        });
+
+        // THEN: Should replace the loader with the flair.
+        await waitFor(() => expect(document.querySelector('.border-flair')).toBeTruthy());
+        expect(document.querySelector('.border-loader__loader')).toBeNull();
+        expect(pageElements.activities()[0].textContent).toContain('Work completed!');
+
+        // THEN: The flair border should end with the fade colors, including blue for the third color.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
