@@ -16,32 +16,9 @@ import languageTypeScript from 'shiki/langs/ts.mjs';
 import themeGitHubDark from 'shiki/themes/github-dark-default.mjs';
 import themeGitHubLight from 'shiki/themes/github-light-default.mjs';
 
-import ensureContrast from './private/ensureContrast.js';
-
-// Web Chat paints the background of the code block, the background of the theme is transparent.
-// Token colors are adjusted to at least 4.5:1 (WCAG 1.4.3) against the code block background closest to them:
-// Fluent theme's #fafafa (light) and #141414 (dark), the default theme uses #ffffff and #0d1117 from the themes.
-// For example, comments in "github-light-default" (#6e7781) are 4.55:1 on #ffffff but 4.36:1 on #fafafa.
-function adjustTheme(theme: ThemeRegistration, background: string): ThemeRegistration {
+function adjustTheme(theme: ThemeRegistration): ThemeRegistration {
   return {
     ...theme,
-    colorReplacements: {
-      ...theme.colorReplacements,
-      ...Object.fromEntries(
-        // Each distinct color once: many token rules share a color.
-        Array.from(
-          new Set(
-            [
-              theme.colors?.['editor.foreground'],
-              ...(theme.settings ?? theme.tokenColors ?? []).map(({ settings }) => settings.foreground)
-            ]
-              .filter((color): color is string => !!color)
-              .map(color => color.toLowerCase())
-          ),
-          color => [color, ensureContrast(color, background, theme.type === 'dark' ? 'lighten' : 'darken')]
-        ).filter(([color, replacement]) => color !== replacement)
-      )
-    },
     colors: {
       ...theme.colors,
       'editor.background': `transparent`
@@ -53,8 +30,16 @@ function createHighlighter() {
   return createHighlighterCore({
     engine: createJavaScriptRegexEngine(),
     langs: [languageJavaScript, languagePython, languageTypeScript],
-    // Backgrounds of the Fluent theme: `--webchat-colorGrey8` (dark) and `--webchat-colorGrey98` (light).
-    themes: [adjustTheme(themeGitHubDark, '#141414'), adjustTheme(themeGitHubLight, '#fafafa')]
+    themes: [
+      adjustTheme(themeGitHubDark),
+      adjustTheme({
+        ...themeGitHubLight,
+        // Comments (#6e7781) are 4.36:1 on the Fluent theme code block background (#fafafa), below 4.5:1 (WCAG 1.4.3).
+        // Use the muted text color of the theme instead (#656d76): 5.03:1 on #fafafa, 5.25:1 on #ffffff.
+        // Other token colors of JavaScript, Python, and TypeScript are at least 4.83:1 (light) and 5.99:1 (dark).
+        colorReplacements: { '#6e7781': '#656d76' }
+      })
+    ]
   });
 }
 
