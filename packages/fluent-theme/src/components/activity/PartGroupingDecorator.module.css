@@ -24,8 +24,7 @@
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
   --webchat-externalLink-mask: var(
     --externalLink-mask,
-    var(--webchat__icon-url--external-link) center center /
-    10px 10px
+    var(--webchat__icon-url--external-link) center center / 10px 10px
   );
   --webchat-externalLink-maxWidth: var(--externalLink-maxWidth, 204px);
 
@@ -676,7 +675,7 @@
           }
 
           :global(.ac-pushButton:active),
-          :global(.ac-pushButton[aria-pressed='true']) {
+          :global(.ac-pushButton.adaptive-card-renderer__action--selected) {
             background-color: var(--webchat-colorNeutralBackground1Pressed);
             border-color: var(--webchat-colorNeutralStroke1Pressed);
             color: var(--webchat-colorNeutralForeground1Pressed);
@@ -703,7 +702,7 @@
           }
 
           :global(.ac-pushButton.primary:active),
-          :global(.ac-pushButton.primary[aria-pressed='true']) {
+          :global(.ac-pushButton.primary.adaptive-card-renderer__action--selected) {
             background-color: var(--webchat-colorBrandBackgroundPressed);
             border-color: transparent;
             color: var(--webchat-colorNeutralForegroundOnBrand);

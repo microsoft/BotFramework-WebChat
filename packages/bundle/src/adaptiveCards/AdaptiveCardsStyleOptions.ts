@@ -11,12 +11,12 @@ type StrictAdaptiveCardsStyleOptions = {
   cardEmphasisBackgroundColor: string | undefined;
 
   /**
-   * Adaptive Cards: background color of Adaptive Cards button with status of 'aria-pressed'
+   * Adaptive Cards: background color of the selected Adaptive Cards button, i.e. the action the user has performed
    */
   cardPushButtonBackgroundColor: string | undefined;
 
   /**
-   * Adaptive Cards: text color of Adaptive Cards button with status of 'aria-pressed', and the inner band of the keyboard focus indicator of Adaptive Cards buttons
+   * Adaptive Cards: text color of the selected Adaptive Cards button, i.e. the action the user has performed, and the inner band of the keyboard focus indicator of Adaptive Cards buttons
    */
   cardPushButtonTextColor: string | undefined;
 

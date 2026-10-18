@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -9,29 +9,19 @@
   <body>
     <main id="webchat"></main>
     <script>
-      function createActivity(text) {
-        return {
-          from: { role: 'bot' },
-          id: Math.random().toString(36).substr(2, 5),
-          text,
-          timestamp: new Date().toISOString(),
-          type: 'message'
-        };
-      }
+      async function getSelectedButtonTexts() {
+        const selectedButtonTexts = [];
 
-      /** Checks if the element has an ancestor that fulfill the predicate. */
-      function hasAncestor(element, predicate) {
-        let current = element.parentElement;
+        for (const pushButton of document.querySelectorAll('.ac-pushButton')) {
+          const { description, properties } = await testHelpers.getAccessibilityNode(pushButton);
 
-        while (current) {
-          if (predicate.call(element, current)) {
-            return true;
-          }
+          // Action buttons are plain buttons, not toggle buttons.
+          expect(properties?.find(({ name }) => name === 'pressed')).toBeUndefined();
 
-          current = current.parentElement;
+          description?.value === 'Selected' && selectedButtonTexts.push(pushButton.innerText);
         }
 
-        return false;
+        return selectedButtonTexts;
       }
 
       run(async function () {
@@ -113,47 +103,22 @@
         // SETUP: There should be 2 set of `ac-actionSet` containers.
         expect(document.querySelectorAll('.ac-actionSet')).toHaveLength(2);
 
-        // SETUP: All 'ac-pushButton' should not have `aria-pressed="true"`.
-        Array.from(document.querySelectorAll('.ac-pushButton')).every(pushButton =>
-          expect(pushButton.hasAttribute('aria-pressed')).not.toBe('true')
-        );
+        // SETUP: No 'ac-pushButton' should be selected.
+        expect(await getSelectedButtonTexts()).toEqual([]);
 
         // WHEN: Clicking on the card action button ("Submit card").
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER', 'TAB', 'TAB', 'ENTER');
 
-        // THEN: Selected `ac-pushButton` should have `aria-pressed` set to `true`.
-        Array.from(document.querySelectorAll('.ac-pushButton'))
-          .filter(pushButton => pushButton.innerText === 'Submit card')
-          .forEach(pushButton => expect(pushButton.getAttribute('aria-pressed')).toBe('true'));
-
-        // THEN: Only one button is selected.
-        expect(
-          Array.from(document.querySelectorAll('.ac-pushButton')).filter(
-            pushButton => pushButton.getAttribute('aria-pressed') === 'true'
-          )
-        ).toHaveLength(1);
-
-        // THEN: Non-selection should not have `aria-pressed` set.
-        Array.from(document.querySelectorAll('.ac-pushButton'))
-          .filter(pushButton => pushButton.innerText !== 'Submit card')
-          .forEach(pushButton => expect(pushButton.getAttribute('aria-pressed')).not.toBe('true'));
+        // THEN: Only the "Submit card" button should be selected.
+        expect(await getSelectedButtonTexts()).toEqual(['Submit card']);
 
         // WHEN: Click on the first action set button ("Yes")
         await host.sendShiftTab(2);
         await host.sendKeys('ENTER');
 
-        // THEN: Selected `ac-pushButton` should have `aria-pressed` set to `true`.
-        Array.from(document.querySelectorAll('.ac-pushButton'))
-          .filter(pushButton => pushButton.innerText === 'Yes')
-          .forEach(pushButton => expect(pushButton.getAttribute('aria-pressed')).toBe('true'));
-
-        // THEN: Two buttons are selected.
-        expect(
-          Array.from(document.querySelectorAll('.ac-pushButton')).filter(
-            pushButton => pushButton.getAttribute('aria-pressed') === 'true'
-          )
-        ).toHaveLength(2);
+        // THEN: Both the "Yes" and "Submit card" buttons should be selected.
+        expect(await getSelectedButtonTexts()).toEqual(['Yes', 'Submit card']);
       });
     </script>
   </body>

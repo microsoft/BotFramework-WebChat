@@ -13,43 +13,44 @@ import type { AdaptiveCard, CardObject } from 'adaptivecards';
 import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunction';
 
 /**
- * Accessibility: Action in ActionSet/CardElement should be push button.
+ * Accessibility: Action in ActionSet/CardElement should be push button, i.e. a plain command button.
  *
  * Pressing the action button is a decision-making process. The decision made by the end-user need to be read by the screen reader.
  * Thus, we need to indicate what decision the end-user made.
  *
- * Since action buttons are button, the intuitive way to indicate selection of a button is marking it as pressed.
+ * Action buttons are not toggle buttons: pressing a selected action again does not unselect it.
+ * Thus, instead of `aria-pressed`, the selected action is described by the element of `descriptionId` (e.g. "Selected"),
+ * and styled by `selectedClassName`.
  *
  * One exception is the `Action.ShowCard` action. This button represents expand/collapse header of an accordion.
- * Thus, their state is indicated by `aria-expanded`, instead of `aria-pressed`.
+ * Thus, their state is indicated by `aria-expanded` and they are never selected.
  * However, we still need to remove other unnecessary ARIA fields.
  */
 export default function useActionShouldBePushButtonModEffect(
   adaptiveCard: AdaptiveCard
-): readonly [(cardElement: HTMLElement, actionPerformedClassName?: string | undefined) => void, () => void] {
+): readonly [(cardElement: HTMLElement, selectedClassName: string, descriptionId: string) => void, () => void] {
   const prevAdaptiveCard = usePrevious(adaptiveCard);
   const pushedCardObjectsRef = useRef<Set<CardObject>>(new Set());
 
   prevAdaptiveCard === adaptiveCard || pushedCardObjectsRef.current.clear();
 
   const modder = useMemo(
-    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, actionPerformedClassName?: string | undefined) => {
+    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, selectedClassName: string, descriptionId: string) => {
       const undoStack: UndoFunction[] = [];
+
+      const markAsSelected = (actionElement: HTMLElement) =>
+        undoStack.push(
+          durableAddClassWithUndo(actionElement, selectedClassName),
+          setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-describedby', descriptionId)
+        );
 
       Array.from(cardElement.querySelectorAll('button.ac-pushButton') as NodeListOf<HTMLButtonElement>).forEach(
         actionElement => {
           const cardObject = findDOMNodeOwner(adaptiveCard, actionElement);
 
-          if (!actionElement.hasAttribute('aria-expanded')) {
-            if (pushedCardObjectsRef.current.has(cardObject)) {
-              actionPerformedClassName &&
-                undoStack.push(durableAddClassWithUndo(actionElement, actionPerformedClassName));
-
-              undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'true'));
-            } else {
-              undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'false'));
-            }
-          }
+          !actionElement.hasAttribute('aria-expanded') &&
+            pushedCardObjectsRef.current.has(cardObject) &&
+            markAsSelected(actionElement);
 
           undoStack.push(
             setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-posinset', false),
@@ -85,10 +86,7 @@ export default function useActionShouldBePushButtonModEffect(
               return;
             }
 
-            actionPerformedClassName &&
-              undoStack.push(durableAddClassWithUndo(actionElement, actionPerformedClassName));
-
-            undoStack.push(setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-pressed', 'true'));
+            markAsSelected(actionElement);
 
             cardObject && pushedCardObjectsRef.current.add(cardObject);
           },
