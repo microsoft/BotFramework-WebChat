@@ -7,6 +7,7 @@ import { SEND_FAILED } from '../types/internal/SendStatus';
 import activityAltText from '../Utils/activityAltText';
 import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
+import useActivityGreetingAlt from '../hooks/internal/useActivityGreetingAlt.js';
 import useValueRef from '../hooks/internal/useValueRef';
 
 enum InteractiveType {
@@ -14,7 +15,7 @@ enum InteractiveType {
   WIDGET
 }
 
-const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
+const { useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   few: 'ACTIVITY_NUM_ATTACHMENTS_FEW_ALT',
@@ -32,10 +33,8 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
  * Due to a bug in Safari, accessible name for active descendant must be a string but not a DOM element.
  */
 export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
-  const [{ initials: botInitials }] = useAvatarForBot();
   const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
-  const fromSelf = activity.from?.role === 'user';
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -53,14 +52,7 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
   /** "Send failed." */
   const activityInteractiveReasonSendFailedAlt = localize('ACTIVITY_INTERACTIVE_REASON_SEND_FAILED_ALT');
   const activityKey = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
-  const greetingAlt = useMemo(
-    () =>
-      (fromSelf ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')).replace(
-        /\s{2,}/gu,
-        ' '
-      ),
-    [botInitials, fromSelf, localize]
-  );
+  const greetingAlt = useActivityGreetingAlt(activity, activity.from?.role === 'user');
   const interactiveTypeRef = useValueRef(interactiveType);
   const messageTextAlt = useMemo(
     () => activityAltText(activity, renderMarkdownAsHTML),

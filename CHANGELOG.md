@@ -62,6 +62,7 @@ Legends:
 - Fixed the "Positive" card action button having less than 4.5:1 color contrast, fixes [#5713](https://github.com/microsoft/BotFramework-WebChat/issues/5713), in PR [#5905](https://github.com/microsoft/BotFramework-WebChat/pull/5905), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers announcing a single audio, video, or animation in a card as a list item, such as "1 of 1", fixes [#5722](https://github.com/microsoft/BotFramework-WebChat/issues/5722), in PR [#5903](https://github.com/microsoft/BotFramework-WebChat/pull/5903), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed video and animation cards disappearing in production builds when the video URL is relative or invalid, in PR [#5889](https://github.com/microsoft/BotFramework-WebChat/pull/5889), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed screen readers announcing all bot messages with the same initials, such as "Bot JO said:" for both a bot and a live agent: the text before each message, the name of the message when navigating with arrow keys, and the live region now prefer the per-activity `channelData.webChat.styleOptions.botAvatarInitials` over `styleOptions.botAvatarInitials`, fixes [#5803](https://github.com/microsoft/BotFramework-WebChat/issues/5803), in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 

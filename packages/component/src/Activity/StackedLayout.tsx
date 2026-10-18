@@ -19,6 +19,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
+import useActivityGreetingAlt from '../hooks/internal/useActivityGreetingAlt.js';
 import useLocalizeProgrammingLanguage from '../hooks/internal/useLocalizeProgrammingLanguage';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
@@ -60,14 +61,10 @@ const StackedLayoutInner = memo(
     showAvatar,
     showNub
   }: StackedLayoutInnerProps) => {
-    const [{ initials: botInitials }] = useAvatarForBot();
-    const localize = useLocalizer();
     const classNames = useStyles(styles);
+    const greetingAlt = useActivityGreetingAlt(activity, fromUser);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
-    const greetingAlt = (
-      fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-    ).replace(/\s{2,}/gu, ' ');
 
     return (
       <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>

@@ -12,10 +12,11 @@ import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
+import useActivityGreetingAlt from '../hooks/internal/useActivityGreetingAlt.js';
 
 import styles from './CarouselFilmStrip.module.css';
 
-const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
+const { useAvatarForBot, useAvatarForUser, useDirection, useStyleOptions } = hooks;
 
 const CarouselFilmStrip = ({
   activity,
@@ -30,7 +31,6 @@ const CarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
-  const localize = useLocalizer();
   const showActivityStatus = typeof renderActivityStatus === 'function';
   const classNames = useStyles(styles);
 
@@ -97,9 +97,7 @@ const CarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
-  const greetingAlt = (
-    fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-  ).replace(/\s{2,}/gu, ' ');
+  const greetingAlt = useActivityGreetingAlt(activity, fromUser);
 
   const initials = fromUser ? userInitials : botInitials;
   const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
