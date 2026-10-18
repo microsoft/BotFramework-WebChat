@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Code: shows the title of the programming language</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      const aiMessageEntity = Object.freeze({
+        '@context': 'https://schema.org',
+        '@id': '',
+        '@type': 'Message',
+        keywords: Object.freeze(['AIGeneratedContent']),
+        type: 'https://schema.org/Message'
+      });
+
+      // Programming languages are sent as-is in "programmingLanguage", often in lowercase or as an alias.
+      const COLLAPSIBLE_SAMPLES = Object.freeze([
+        Object.freeze({
+          programmingLanguage: 'javascript',
+          text: "console.log('Hello, World!');",
+          title: 'JavaScript'
+        }),
+        Object.freeze({
+          programmingLanguage: 'TS',
+          text: "const greeting: string = 'Hello, World!';",
+          title: 'TypeScript'
+        }),
+        Object.freeze({ programmingLanguage: 'c#', text: 'Console.WriteLine("Hello, World!");', title: 'C#' }),
+        // The title of "Shell" is overridden via "overrideLocalizedStrings" below.
+        Object.freeze({ programmingLanguage: 'bash', text: "echo 'Hello, World!'", title: 'Bash' }),
+        // Unknown programming language: only the first letter is capitalized.
+        Object.freeze({ programmingLanguage: 'cobol', text: 'DISPLAY "Hello, World!".', title: 'Cobol' })
+      ]);
+
+      run(async function () {
+        const {
+          WebChat: { ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        await host.windowSize(360, 1024, document.getElementById('webchat'));
+
+        createRoot(document.getElementById('webchat')).render(
+          React.createElement(ReactWebChat, {
+            directLine,
+            overrideLocalizedStrings: { PROGRAMMING_LANGUAGE_SHELL: 'Bash' },
+            store
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends collapsible messages with code (emulated).
+        for (const { programmingLanguage, text } of COLLAPSIBLE_SAMPLES) {
+          await directLine.emulateIncomingActivity({
+            entities: [
+              {
+                ...aiMessageEntity,
+                abstract: `Code in ${programmingLanguage}`,
+                isBasedOn: { '@type': 'SoftwareSourceCode', programmingLanguage, text },
+                keywords: [...aiMessageEntity.keywords, 'Collapsible']
+              }
+            ],
+            from: { role: 'bot' },
+            text: '',
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(COLLAPSIBLE_SAMPLES.length);
+
+        // WHEN: Expand every message.
+        for (const summary of document.querySelectorAll('summary.collapsible-content__summary')) {
+          await host.click(summary);
+
+          await waitFor(() => expect(summary.getAttribute('aria-expanded')).toBe('true'));
+        }
+
+        await pageConditions.scrollStabilized();
+
+        // THEN: The code blocks should show the title of the programming language.
+        expect(
+          Array.from(document.querySelectorAll('.code-block-content__title'), ({ textContent }) => textContent)
+        ).toEqual(COLLAPSIBLE_SAMPLES.map(({ title }) => title));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // WHEN: The bot sends a message with code in "py" (emulated).
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              ...aiMessageEntity,
+              isBasedOn: { '@type': 'SoftwareSourceCode', programmingLanguage: 'py', text: "print('Hello, World!')" }
+            }
+          ],
+          from: { role: 'bot' },
+          text: 'Here is a sample in Python.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(COLLAPSIBLE_SAMPLES.length + 1);
+        await pageConditions.scrollStabilized();
+
+        // WHEN: Click the "View code" button.
+        await host.click(document.querySelector(`[data-testid="${testIds.viewCodeButton}"]`));
+
+        // THEN: The "View code" dialog should show and be labelled with the title of the programming language.
+        await waitFor(() => expect(document.querySelector('dialog[open] pre.shiki')).toBeTruthy());
+        expect(document.querySelector('dialog[open] h2').textContent).toBe('Python');
+        await expect(testHelpers.getAccessibleName(document.querySelector('dialog[open]'))).resolves.toBe(
+          'Code sample: Python'
+        );
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
