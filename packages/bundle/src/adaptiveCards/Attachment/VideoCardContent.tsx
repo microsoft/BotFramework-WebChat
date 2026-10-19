@@ -8,6 +8,7 @@ import { boolean, object, optional, parse, pipe, readonly, string } from 'valibo
 
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+import MediaList from './private/MediaList';
 
 import styles from './VideoCardContent.module.css';
 
@@ -33,13 +34,11 @@ function VideoCardContent(props: VideoCardContentProps) {
 
   return (
     <div className={classNames['video-card-attachment']}>
-      <ul className="media-list">
+      <MediaList>
         {media.map(({ url }, index) => (
-          <li key={index}>
-            <VideoContent alt={title} autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
-          </li>
+          <VideoContent alt={title} autoPlay={autostart} key={index} loop={autoloop} poster={imageURL} src={url} />
         ))}
-      </ul>
+      </MediaList>
       <CommonCard
         actionPerformedClassName={actionPerformedClassName}
         content={content}
