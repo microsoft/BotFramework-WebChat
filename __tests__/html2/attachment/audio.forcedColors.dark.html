@@ -39,7 +39,9 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+        );
 
         await pageConditions.uiConnected();
 
