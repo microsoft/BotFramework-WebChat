@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot sends 2 Adaptive Cards without "speak", so the card has no label: one without inputs and one with inputs.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [{ text: 'Sunny, 21°C', type: 'TextBlock' }],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    id: 'name',
+                    label: 'What is your full name',
+                    placeholder: 'For example, John Doe', // The live region copy names inputs by their placeholder until #5913 (by their label).
+                    type: 'Input.Text'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await waitFor(() => expect(document.querySelectorAll('.ac-adaptiveCard')).toHaveLength(2));
+
+        const cardElements = Array.from(document.querySelectorAll('.ac-adaptiveCard'));
+
+        // THEN: Both cards should have no label.
+        expect(cardElements.map(cardElement => cardElement.getAttribute('aria-label'))).toEqual([null, null]);
+
+        // THEN: Both cards should have no role, as "figure" and "form" without a name are announced without their content.
+        expect(cardElements.map(cardElement => cardElement.getAttribute('role'))).toEqual([null, null]);
+
+        // THEN: Neither card should be a "figure" or a "form" in the accessibility tree.
+        expect(
+          (await Promise.all(cardElements.map(cardElement => testHelpers.getAccessibilityNode(cardElement)))).map(
+            ({ role }) => role?.value
+          )
+        ).toEqual(['generic', 'generic']);
+      });
+    </script>
+  </body>
+</html>
