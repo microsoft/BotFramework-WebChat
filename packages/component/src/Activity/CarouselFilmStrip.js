@@ -17,6 +17,11 @@ import styles from './CarouselFilmStrip.module.css';
 
 const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
+// Controls without their own LEFT/RIGHT behavior. Inputs that use arrow keys (text, number, date, radio, range, select)
+// and media are left out.
+const CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR =
+  'a[href], button, input[type="button"], input[type="checkbox"], input[type="reset"], input[type="submit"], [role="button"]';
+
 const CarouselFilmStrip = ({
   activity,
   className,
@@ -62,7 +67,17 @@ const CarouselFilmStrip = ({
       const index = cards.indexOf(target);
       const rtl = direction === 'rtl';
 
-      if (altKey || ctrlKey || metaKey || shiftKey || !~index) {
+      if (altKey || ctrlKey || metaKey || shiftKey) {
+        return;
+      }
+
+      if (!~index) {
+        // On a control inside a card, LEFT/RIGHT do nothing. Otherwise, the browser would scroll the carousel and
+        // react-film would center the card again, or, on a held key, scroll the control out of view.
+        (key === 'ArrowLeft' || key === 'ArrowRight') &&
+          target.matches(CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR) &&
+          event.preventDefault();
+
         return;
       }
 

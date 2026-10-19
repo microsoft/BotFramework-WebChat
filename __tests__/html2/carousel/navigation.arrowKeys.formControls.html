@@ -114,11 +114,6 @@
             { timeout: 5000 }
           );
 
-        const waitForCarouselScrolled = async () => {
-          await waitFor(() => expect(carouselLayout.querySelector('.react-film__main--scrolling')).not.toBeNull());
-          await waitForCarouselSettled();
-        };
-
         // Focus should be on the card itself, not on the form controls inside it.
         const expectFocusOnCard = async index => {
           expect(document.activeElement).toBe(cards[index]);
@@ -208,9 +203,9 @@
         await host.sendKeys('ARROW_RIGHT');
         expect(document.activeElement).toBe(submitButton);
 
-        // RIGHT on a button keeps the browser default of scrolling the carousel, wait for the scroll to start and settle.
-        await waitForCarouselScrolled();
-        expect(document.activeElement).toBe(submitButton);
+        // RIGHT on a button does not scroll the carousel.
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
 
         await host.snapshot('local');
 
@@ -233,8 +228,8 @@
         await host.sendKeys('ARROW_RIGHT');
         expect(document.activeElement).toBe(heroCardButton);
 
-        await waitForCarouselScrolled();
-        expect(document.activeElement).toBe(heroCardButton);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
 
         // WHEN: Press SHIFT-TAB to focus on the hero card, then press RIGHT.
         await host.sendShiftTab();
