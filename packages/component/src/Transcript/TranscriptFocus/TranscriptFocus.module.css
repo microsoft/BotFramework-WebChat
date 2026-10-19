@@ -46,6 +46,8 @@
 
   .transcript-focus-area__activity-list {
     display: grid;
+    /* Host styles may make the list a flex item: do not shrink it, its rows have `min-height: 0` and would be squeezed. */
+    flex-shrink: 0;
     gap: var(--webchat__transcript--spacing);
     padding-block: var(--webchat__transcript--spacing);
   }
