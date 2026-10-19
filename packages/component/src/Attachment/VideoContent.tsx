@@ -31,24 +31,20 @@ type VideoContentProps = InferInput<typeof videoContentPropsSchema>;
 function VideoContent(props: VideoContentProps) {
   const { alt, autoPlay = false, loop = false, poster, src } = validateProps(videoContentPropsSchema, props);
 
-  // Production builds do not validate props, leave out the video if the URL is relative or cannot be parsed.
   const parsedURL = onErrorResumeNext(() => new URL(src));
-
-  if (!parsedURL) {
-    return null;
-  }
-
-  const { hostname, pathname, searchParams } = parsedURL;
-  const lastSegment = pathname.split('/').pop();
+  const hostname = parsedURL?.hostname;
+  const lastSegment = parsedURL?.pathname.split('/').pop();
 
   // Embed YouTube and Vimeo videos only when the URL has a video ID, otherwise, play the URL in <video>.
   const vimeoEmbedID = (hostname === VIMEO_DOMAIN || hostname === VIMEO_WWW_DOMAIN) && lastSegment;
   const youTubeEmbedID =
     hostname === YOUTUBE_DOMAIN || hostname === YOUTUBE_WWW_DOMAIN
-      ? searchParams.get('v')
+      ? parsedURL?.searchParams.get('v')
       : (hostname === YOUTUBE_SHORT_DOMAIN || hostname === YOUTUBE_WWW_SHORT_DOMAIN) && lastSegment;
 
-  return vimeoEmbedID ? (
+  // Production builds do not validate props, leave out the video if the URL is relative or cannot be parsed.
+  // When `validateProps()` is enabled for production, remove this branch as it will be unreachable.
+  return !parsedURL ? null : vimeoEmbedID ? (
     <VimeoContent alt={alt} autoPlay={autoPlay} embedID={vimeoEmbedID} loop={loop} />
   ) : youTubeEmbedID ? (
     <YouTubeContent alt={alt} autoPlay={autoPlay} embedID={youTubeEmbedID} loop={loop} />
