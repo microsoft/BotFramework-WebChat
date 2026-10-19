@@ -63,6 +63,7 @@ Legends:
 - Fixed screen readers announcing a single audio, video, or animation in a card as a list item, such as "1 of 1", fixes [#5722](https://github.com/microsoft/BotFramework-WebChat/issues/5722), in PR [#5903](https://github.com/microsoft/BotFramework-WebChat/pull/5903), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed video and animation cards disappearing in production builds when the video URL is relative or invalid, in PR [#5889](https://github.com/microsoft/BotFramework-WebChat/pull/5889), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed activities overlapping in the default theme when the host page styles `section` as a flex item, in PR [#5919](https://github.com/microsoft/BotFramework-WebChat/pull/5919), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed timestamps always using the 12-hour clock, such as "4:41 PM" instead of "16:41" in German, in PR [#5920](https://github.com/microsoft/BotFramework-WebChat/pull/5920), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
