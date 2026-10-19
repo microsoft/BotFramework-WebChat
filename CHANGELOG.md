@@ -64,6 +64,7 @@ Legends:
 - Fixed video and animation cards disappearing in production builds when the video URL is relative or invalid, in PR [#5889](https://github.com/microsoft/BotFramework-WebChat/pull/5889), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers announcing all bot messages with the same initials, such as "Bot JO said:" for both a bot and a live agent: the text before each message, the name of the message when navigating with arrow keys, and the live region now prefer the per-activity `channelData.webChat.styleOptions.botAvatarInitials` over `styleOptions.botAvatarInitials`, fixes [#5803](https://github.com/microsoft/BotFramework-WebChat/issues/5803), in PR [#5898](https://github.com/microsoft/BotFramework-WebChat/pull/5898), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers not announcing the time of a message when navigating the transcript with arrow keys: the name of each sent message now ends with the same "Sent at" text as its timestamp, fixes [#5715](https://github.com/microsoft/BotFramework-WebChat/issues/5715) and [#5735](https://github.com/microsoft/BotFramework-WebChat/issues/5735), in PR [#5898](https://github.com/microsoft/BotFramework-WebChat/pull/5898), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed timestamps always using the 12-hour clock, such as "4:41 PM" instead of "16:41" in German, in PR [#5920](https://github.com/microsoft/BotFramework-WebChat/pull/5920), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
