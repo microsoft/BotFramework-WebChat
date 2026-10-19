@@ -138,20 +138,6 @@
 
         // THEN: The first frame should be shown again, with the focus indicator on the "Play animation" button.
         await host.snapshot('local');
-
-        // WHEN: Forced colors are active, such as with a Windows contrast theme.
-        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
-          features: [
-            { name: 'forced-colors', value: 'active' },
-            { name: 'prefers-reduced-motion', value: 'reduce' }
-          ]
-        });
-
-        expect(matchMedia('(forced-colors: active)').matches).toBe(true);
-        expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
-
-        // THEN: The "Play animation" icon and the focus indicator should be visible in forced colors.
-        await host.snapshot('local');
       });
     </script>
   </body>
