@@ -88,6 +88,9 @@ function htmlTextAlternatives(document: Document): string[] {
 
     if (nodeType === Node.TEXT_NODE) {
       return [textContent];
+    } else if (tagName === 'A' || tagName === 'BUTTON') {
+      // Links and citation buttons are separate words, e.g. "settings[1]" should read "settings 1", not "settings1".
+      return /\S$/u.test(node.previousSibling?.textContent || '') ? [' '] : [];
     } else if (tagName === 'IMG') {
       return [node.getAttribute('alt')];
     } else if (!HTML_INLINE_TAGS.includes(tagName)) {

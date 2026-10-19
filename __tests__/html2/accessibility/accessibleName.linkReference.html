@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { internalLiveRegionFadeAfter: 60000 } // Keep the live region content for the assertion.
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: a message with a link reference marker "[1]" right after a word, without a space.
+        await directLine.emulateIncomingActivity({
+          text: 'Override the proxy settings[1].\n\n[1]: https://example.com/proxy "Proxy settings"',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: the message's accessible name separates the marker from the word: "settings 1.", not "settings1.".
+        // Zero-width spaces wrap every link for line breaking, screen readers do not pause on them.
+        await waitFor(async () =>
+          expect(
+            (
+              await testHelpers.getAccessibleName(
+                pageElements.activities()[0].querySelector('.webchat__basic-transcript__activity-active-descendant')
+              )
+            ).replace(/\u200b/gu, '')
+          ).toBe('Bot said: Override the proxy settings 1. One or more links in the message.')
+        );
+
+        // THEN: the live region announces the same text on arrival.
+        await waitFor(() =>
+          expect(
+            testHelpers
+              .getAllTextContents(pageElements.liveRegion())
+              .join('\n')
+              .replace(/\u200b/gu, '')
+          ).toContain('Bot said:\nOverride the proxy settings 1.')
+        );
+      });
+    </script>
+  </body>
+</html>
