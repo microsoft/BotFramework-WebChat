@@ -6,11 +6,12 @@ import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
+import AnimatedImageContent from './AnimatedImageContent';
 import styles from './AnimationCardContent.module.css';
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
 
-const { ImageContent, VideoContent } = Components;
+const { VideoContent } = Components;
 
 const animationCardContentPropsSchema = pipe(
   object({
@@ -39,7 +40,7 @@ function AnimationCardContent(props: AnimationCardContentProps) {
         {media.map(({ profile = '', url }, index) => (
           <li key={index}>
             {/\.gif$/iu.test(url) ? (
-              <ImageContent alt={profile} src={url} />
+              <AnimatedImageContent alt={profile} autoPlay={content.autostart !== false} src={url} />
             ) : (
               <VideoContent alt={profile || title} autoPlay={content.autostart} src={url} />
             )}

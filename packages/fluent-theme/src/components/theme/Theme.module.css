@@ -641,6 +641,19 @@
     width: 20px;
 
     --webchat__component-icon--color: var(--webchat-colorNeutralForeground2);
+
+    @media (forced-colors: active) {
+      --webchat__component-icon--color: buttonText;
+    }
+  }
+}
+
+/* Pause button over animated images: a band in the button background around the focus indicator keeps it visible over any image */
+:global(.webchat-fluent).theme :global(.activity-button.animated-image-content__button):focus-visible::after {
+  outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorNeutralBackground1);
+
+  @media (forced-colors: active) {
+    outline-color: ButtonFace;
   }
 }
 
