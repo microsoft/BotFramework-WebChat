@@ -67,8 +67,8 @@ Legends:
 - Fixed carousel cards focused with <kbd>TAB</kbd> staying partially out of view, in PR [#5926](https://github.com/microsoft/BotFramework-WebChat/pull/5926), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on a button inside a carousel card scrolling the carousel, in PR [#5917](https://github.com/microsoft/BotFramework-WebChat/pull/5917), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed icons being invisible, link references not using the link color, and Fluent messages and Copy button having no border in forced colors, fixes [#4906](https://github.com/microsoft/BotFramework-WebChat/issues/4906) and [#4907](https://github.com/microsoft/BotFramework-WebChat/issues/4907), in PR [#5907](https://github.com/microsoft/BotFramework-WebChat/pull/5907), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed Adaptive Cards without a label being announced as an unnamed figure by screen readers, fixes [#5049](https://github.com/microsoft/BotFramework-WebChat/issues/5049), in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed clickable containers and images in Adaptive Cards not showing a pointer cursor, fixes [#5130](https://github.com/microsoft/BotFramework-WebChat/issues/5130), in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed Adaptive Cards without a label being announced as an unnamed figure by screen readers, fixes [#5049](https://github.com/microsoft/BotFramework-WebChat/issues/5049), in PR [#5915](https://github.com/microsoft/BotFramework-WebChat/pull/5915), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed clickable containers and images in Adaptive Cards not showing a pointer cursor, fixes [#5130](https://github.com/microsoft/BotFramework-WebChat/issues/5130), in PR [#5915](https://github.com/microsoft/BotFramework-WebChat/pull/5915), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
