@@ -87,7 +87,7 @@ function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
   // The "--copied" classes have no style of their own, they are kept for hosts to style.
   return (
     <button
-      aria-disabled={disabled}
+      aria-disabled={disabled || undefined}
       className={cx(className, classNames['code-block-copy-button'], { 'code-block-copy-button--copied': copied })}
       data-testid={testIds.codeBlockCopyButton}
       onClick={handleClick}

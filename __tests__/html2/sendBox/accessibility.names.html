@@ -36,8 +36,11 @@
         const root = createRoot(document.getElementById('webchat'));
         const variant = new URLSearchParams(location.search).get('variant');
 
+        // Bubble nubs are off by default, turn on the nub of bot messages.
+        const styleOptions = { bubbleNubSize: 10 };
+
         const render = props => {
-          const webChatElement = createElement(ReactWebChat, { directLine, store, ...props });
+          const webChatElement = createElement(ReactWebChat, { directLine, store, styleOptions, ...props });
 
           root.render(variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement);
         };
@@ -57,9 +60,9 @@
 
         await pageConditions.uiConnected();
 
-        // GIVEN: A message with a Markdown link reference definition, shown as a reference list below the message.
+        // GIVEN: A message with a nub, a code block with a "Copy" button, and a Markdown link reference definition.
         await directLine.emulateIncomingActivity({
-          text: 'Override the proxy settings[1].\n\n[1]: https://example.com/proxy "Proxy settings"\n',
+          text: 'Override the proxy settings[1].\n\n```js\nsetProxy(proxyURL);\n```\n\n[1]: https://example.com/proxy "Proxy settings"\n',
           type: 'message'
         });
 
@@ -74,9 +77,9 @@
         // THEN: The hidden file input behind the "Upload file" button should also be labelled, for audit tools.
         expect(getSendBox().querySelector('input[type="file"]').getAttribute('aria-label')).toBe('Upload file');
 
-        // THEN: The send box should not set `aria-disabled` or `aria-invalid` to "false".
+        // THEN: The send box and the "Copy" button of the code block should not set `aria-disabled` or `aria-invalid` to "false".
         expect(
-          Array.from(getSendBox().querySelectorAll('[aria-disabled="false"], [aria-invalid="false"]')).map(
+          Array.from(document.querySelectorAll('[aria-disabled="false"], [aria-invalid="false"]')).map(
             element => element.outerHTML
           )
         ).toEqual([]);
@@ -87,8 +90,31 @@
         expect(openInNewWindowIcon.getAttribute('aria-hidden')).toBe('true');
         expect(await testHelpers.getAccessibilityNode(openInNewWindowIcon)).toHaveProperty('ignored', true);
 
-        // THEN: The send box and the link reference with its "open in new window" icon are shown.
+        // THEN: The decorative nub of the bubble should be hidden from assistive technologies.
+        const nub = document.querySelector('.bubble__nub');
+
+        expect(nub.getAttribute('aria-hidden')).toBe('true');
+        expect(await testHelpers.getAccessibilityNode(nub)).toHaveProperty('ignored', true);
+
+        // THEN: The message with its nub, code block, and link reference, and the send box are shown.
         await host.snapshot('local');
+
+        // WHEN: Two notifications are shown and the toaster is expanded.
+        store.dispatch({
+          payload: { id: '1', level: 'info', message: 'Notification 1.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+        store.dispatch({
+          payload: { id: '2', level: 'error', message: 'Notification 2.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toasterExpandable();
+        await pageObjects.clickToasterHeader();
+        await pageConditions.toasterExpanded();
+
+        // THEN: The list of notifications is a generic `<div>` and should not be labelled by `aria-labelledby`.
+        expect(document.querySelector('.webchat__toaster__list').hasAttribute('aria-labelledby')).toBe(false);
 
         // The Fluent theme shows its microphone button for voice-capable adapters only, not for Web Speech.
         if (!variant) {
