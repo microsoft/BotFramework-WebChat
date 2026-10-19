@@ -77,6 +77,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((rawProps, ref) 
 
   return (
     <div
+      aria-hidden={props.hidden || undefined}
       className={cx(
         classNames['text-area'],
         classNames['text-area--scroll'],
@@ -84,7 +85,6 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((rawProps, ref) 
         { [classNames['text-area--in-completion']]: props.completion },
         props.className
       )}
-      role={props.hidden ? 'hidden' : undefined}
     >
       {uiState === 'blueprint' ? (
         <div className={cx(classNames['text-area-doppelganger'], classNames['text-area-shared'])}> </div>
