@@ -62,7 +62,7 @@ const StackedLayoutInner = memo(
     showNub
   }: StackedLayoutInnerProps) => {
     const classNames = useStyles(styles);
-    const greetingAlt = useActivityGreetingAlt(activity, fromUser);
+    const [greetingAlt] = useActivityGreetingAlt(activity, fromUser);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
 

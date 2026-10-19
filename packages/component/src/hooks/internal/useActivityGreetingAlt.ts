@@ -12,16 +12,18 @@ const { useLocalizer } = hooks;
  * Bot initials set in the per-activity `channelData.webChat.styleOptions.botAvatarInitials` take precedence over
  * `styleOptions.botAvatarInitials`, so each sender is narrated with their own initials, e.g. a bot and a live agent.
  */
-export default function useActivityGreetingAlt(activity: WebChatActivity, fromUser: boolean): string {
+export default function useActivityGreetingAlt(activity: WebChatActivity, fromUser: boolean): readonly [string] {
   const [{ botAvatarInitials }] = useActivityStyleOptions(activity);
   const localize = useLocalizer();
 
   return useMemo(
     () =>
-      (fromUser
-        ? localize('ACTIVITY_YOU_SAID_ALT')
-        : localize('ACTIVITY_BOT_SAID_ALT', typeof botAvatarInitials === 'string' ? botAvatarInitials : '')
-      ).replace(/\s{2,}/gu, ' '),
+      Object.freeze([
+        (fromUser
+          ? localize('ACTIVITY_YOU_SAID_ALT')
+          : localize('ACTIVITY_BOT_SAID_ALT', typeof botAvatarInitials === 'string' ? botAvatarInitials : '')
+        ).replace(/\s{2,}/gu, ' ')
+      ] as const),
     [botAvatarInitials, fromUser, localize]
   );
 }

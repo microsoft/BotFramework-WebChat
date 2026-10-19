@@ -97,7 +97,7 @@ const CarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
-  const greetingAlt = useActivityGreetingAlt(activity, fromUser);
+  const [greetingAlt] = useActivityGreetingAlt(activity, fromUser);
 
   const initials = fromUser ? userInitials : botInitials;
   const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;

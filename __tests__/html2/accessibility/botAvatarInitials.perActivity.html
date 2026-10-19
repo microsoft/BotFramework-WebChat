@@ -28,7 +28,10 @@
           {
             directLine,
             store,
-            styleOptions: { botAvatarInitials: 'JO', internalLiveRegionFadeAfter: 60000 }
+            styleOptions: {
+              botAvatarInitials: 'JO',
+              internalLiveRegionFadeAfter: 60000 // Keep messages in the live region until they are checked.
+            }
           },
           document.getElementById('webchat')
         );

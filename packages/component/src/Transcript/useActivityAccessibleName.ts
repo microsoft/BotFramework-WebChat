@@ -32,7 +32,10 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
  *
  * Due to a bug in Safari, accessible name for active descendant must be a string but not a DOM element.
  */
-export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
+export default function useActivityAccessibleName(
+  activity: WebChatActivity,
+  bodyRef: RefObject<HTMLElement>
+): readonly [string] {
   const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
   const formatDate = useDateFormatter();
@@ -53,7 +56,7 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
   /** "Send failed." */
   const activityInteractiveReasonSendFailedAlt = localize('ACTIVITY_INTERACTIVE_REASON_SEND_FAILED_ALT');
   const activityKey = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
-  const greetingAlt = useActivityGreetingAlt(activity, activity.from?.role === 'user');
+  const [greetingAlt] = useActivityGreetingAlt(activity, activity.from?.role === 'user');
   const interactiveTypeRef = useValueRef(interactiveType);
   const messageTextAlt = useMemo(
     () => activityAltText(activity, renderMarkdownAsHTML),
@@ -118,5 +121,5 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
       setInteractiveType(hasLinks ? InteractiveType.LINK : hasWidgets ? InteractiveType.WIDGET : false);
   }, [bodyRef, interactiveTypeRef, setInteractiveType]);
 
-  return [accessibleName];
+  return useMemo(() => Object.freeze([accessibleName] as const), [accessibleName]);
 }
