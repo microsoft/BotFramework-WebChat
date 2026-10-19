@@ -17,6 +17,15 @@
     padding: var(--webchat__padding--regular);
   }
 
+  /* Chromium picks the calendar and clock icons by the color scheme of the input, not by the forced colors palette, so dark palettes (e.g. "Aquatic" on Windows) get dark icons on a dark background. */
+  /* TODO: Remove when Chromium is fixed, https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css. */
+  :global(.ac-dateInput),
+  :global(.ac-timeInput) {
+    @media (forced-colors: active) {
+      color-scheme: light dark;
+    }
+  }
+
   :global(.ac-pushButton) {
     appearance: none;
     background-color: white;

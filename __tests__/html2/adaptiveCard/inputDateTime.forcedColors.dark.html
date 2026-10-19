@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: A dark high contrast theme (such as "Aquatic" on Windows) is active before Web Chat renders.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'forced-colors', value: 'active' },
+            { name: 'prefers-color-scheme', value: 'dark' }
+          ]
+        });
+
+        expect(window.matchMedia('(forced-colors: active) and (prefers-color-scheme: dark)').matches).toBe(true);
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        // Hide the send box, it is not under test. The Fluent theme does not honor the `hideSendBox` style option.
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          sendBoxMiddleware: [() => () => () => false],
+          store
+        });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends an Adaptive Card with a date input and a time input.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                body: [
+                  { id: 'dueDate', label: 'Due date', type: 'Input.Date' },
+                  { id: 'dueTime', label: 'Due time', type: 'Input.Time' }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [[attachmentElement]] = pageElements.activityAttachments();
+        const dateInputElement = attachmentElement.querySelector('input[type="date"]');
+        const timeInputElement = attachmentElement.querySelector('input[type="time"]');
+
+        // THEN: The inputs should be the browser's date and time pickers, named after their labels.
+        await expect(testHelpers.getAccessibleName(dateInputElement)).resolves.toBe('Due date');
+        await expect(testHelpers.getAccessibleName(timeInputElement)).resolves.toBe('Due time');
+
+        // The screen reader copy of the card in the live region is not under test (its date and time inputs have no label until #5913).
+        // Wait until it fades out, 1 second after the message arrives.
+        await waitFor(
+          () => expect(pageElements.liveRegion().querySelector('.webchat__live-region-activity')).toBeNull(),
+          { timeout: 5000 }
+        );
+
+        // THEN: The calendar icon of the date input and the clock icon of the time input should be visible against the dark background.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
