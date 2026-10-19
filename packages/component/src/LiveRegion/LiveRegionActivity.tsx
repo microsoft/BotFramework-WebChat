@@ -6,7 +6,7 @@ import React, { Fragment, useMemo } from 'react';
 import { any, object, pipe, readonly, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
-import useActivityGreetingAlt from '../hooks/internal/useActivityGreetingAlt.js';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import activityAltText from '../Utils/activityAltText';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
@@ -37,13 +37,10 @@ type LiveRegionActivityProps = InferInput<typeof liveRegionActivityPropsSchema>;
 function LiveRegionActivity(props: LiveRegionActivityProps) {
   const { activity } = validateProps(liveRegionActivityPropsSchema, props);
 
-  const {
-    from: { role },
-    type
-  } = activity;
+  const { type } = activity;
   const fallbackText: string | undefined =
     type === 'message' ? activity.channelData['webchat:fallback-text'] : undefined;
-  const [greetingAlt] = useActivityGreetingAlt(activity, role === 'user');
+  const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('accessible name');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);

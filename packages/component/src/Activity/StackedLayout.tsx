@@ -19,7 +19,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useActivityGreetingAlt from '../hooks/internal/useActivityGreetingAlt.js';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useLocalizeProgrammingLanguage from '../hooks/internal/useLocalizeProgrammingLanguage';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
@@ -62,7 +62,7 @@ const StackedLayoutInner = memo(
     showNub
   }: StackedLayoutInnerProps) => {
     const classNames = useStyles(styles);
-    const [greetingAlt] = useActivityGreetingAlt(activity, fromUser);
+    const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
 

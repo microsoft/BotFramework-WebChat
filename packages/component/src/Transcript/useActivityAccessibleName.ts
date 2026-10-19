@@ -7,7 +7,7 @@ import { SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import activityAltText from '../Utils/activityAltText';
 import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
-import useActivityGreetingAlt from '../hooks/internal/useActivityGreetingAlt.js';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useValueRef from '../hooks/internal/useValueRef';
 
 enum InteractiveType {
@@ -56,7 +56,7 @@ export default function useActivityAccessibleName(
   /** "Send failed." */
   const activityInteractiveReasonSendFailedAlt = localize('ACTIVITY_INTERACTIVE_REASON_SEND_FAILED_ALT');
   const activityKey = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
-  const [greetingAlt] = useActivityGreetingAlt(activity, activity.from?.role === 'user');
+  const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
   const interactiveTypeRef = useValueRef(interactiveType);
   const messageTextAlt = useMemo(
     () => activityAltText(activity, renderMarkdownAsHTML),
