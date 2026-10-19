@@ -8,6 +8,7 @@
     <script type="importmap">
       {
         "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
           "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
           "react": "/__dist__/packages/bundle/static/react.js",
@@ -20,6 +21,7 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
+      import { waitFor } from '@testduet/wait-for';
       import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
@@ -54,6 +56,24 @@
 
         // THEN: They should not be embedded.
         expect(document.querySelector('iframe')).toBeNull();
+
+        // These URLs are not videos, wait until every player gives up loading them.
+        await waitFor(() =>
+          expect(Array.from(document.querySelectorAll('video'), ({ networkState }) => networkState)).toEqual(
+            new Array(3).fill(HTMLMediaElement.NETWORK_NO_SOURCE)
+          )
+        );
+
+        // The three players do not fit in the transcript, take one snapshot at the top and one at the bottom.
+        await pageObjects.scrollToTop();
+
+        // THEN: It should show the first and second players (YouTube channel and short URL) as empty video players, not embedded.
+        await host.snapshot('local');
+
+        await pageObjects.scrollToBottom();
+
+        // THEN: It should show the second and third players (YouTube short URL and Vimeo) as empty video players, not embedded.
+        await host.snapshot('local');
       });
     </script>
   </body>
