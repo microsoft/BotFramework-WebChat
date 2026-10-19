@@ -179,7 +179,11 @@
     }
 
     @media (forced-colors: active) {
-      color: LinkText;
+      &,
+      &:hover,
+      &:hover:active {
+        color: LinkText;
+      }
     }
   }
   /* #endregion */

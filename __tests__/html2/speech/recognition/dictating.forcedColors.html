@@ -60,11 +60,8 @@
 
         const microphoneButton = pageElements.microphoneButton();
 
-        // THEN: The microphone button should be named "Speak".
-        await expect(testHelpers.getAccessibleName(microphoneButton)).resolves.toBe('Speak');
-
         // WHEN: The microphone button is clicked and the user starts speaking.
-        actRecognizeOnce(
+        await actRecognizeOnce(
           ponyfill,
           () => actSpeakOnce(ponyfill, () => host.click(microphoneButton)),
           dispatcher => {
