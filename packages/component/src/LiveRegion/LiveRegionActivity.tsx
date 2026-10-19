@@ -1,10 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { Fragment, useMemo } from 'react';
-import { any, object, pipe, readonly, type InferInput } from 'valibot';
+import { any, object, pipe, readonly } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
@@ -34,7 +34,7 @@ const liveRegionActivityPropsSchema = pipe(
   readonly()
 );
 
-type LiveRegionActivityProps = InferInput<typeof liveRegionActivityPropsSchema>;
+type LiveRegionActivityProps = InferReactProps<typeof liveRegionActivityPropsSchema>;
 
 function LiveRegionActivity(props: LiveRegionActivityProps) {
   const { activity } = validateProps(liveRegionActivityPropsSchema, props);
