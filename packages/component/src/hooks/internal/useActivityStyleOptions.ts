@@ -15,10 +15,10 @@ export default function useActivityStyleOptions(
   return useMemo<readonly [Readonly<StrictStyleOptions>]>(
     () =>
       Object.freeze([
-        {
+        Object.freeze({
           ...styleOptions,
           ...activity?.channelData?.webChat?.styleOptions
-        }
+        })
       ]),
     [activity?.channelData?.webChat?.styleOptions, styleOptions]
   );
