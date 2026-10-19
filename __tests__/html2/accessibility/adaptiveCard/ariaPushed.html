@@ -8,7 +8,16 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       async function getSelectedButtonTexts() {
         const selectedButtonTexts = [];
 
@@ -87,7 +96,8 @@
             directLine,
             store: testHelpers.createStore(),
             styleOptions: {
-              autoScrollSnapOnActivity: 1
+              autoScrollSnapOnActivity: 1,
+              hideSendBox: true
             }
           },
           document.getElementById('webchat')
@@ -97,28 +107,68 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.scrollToBottomCompleted();
 
-        // SETUP: Focus on the send box.
-        await pageObjects.focusSendBoxTextBox();
-
         // SETUP: There should be 2 set of `ac-actionSet` containers.
         expect(document.querySelectorAll('.ac-actionSet')).toHaveLength(2);
 
         // SETUP: No 'ac-pushButton' should be selected.
         expect(await getSelectedButtonTexts()).toEqual([]);
 
-        // WHEN: Clicking on the card action button ("Submit card").
-        await host.sendShiftTab(3);
-        await host.sendKeys('ENTER', 'TAB', 'TAB', 'ENTER');
+        // SETUP: Focus on the transcript, the card is the last and only activity.
+        pageObjects.focusTranscript();
 
-        // THEN: Only the "Submit card" button should be selected.
-        expect(await getSelectedButtonTexts()).toEqual(['Submit card']);
-
-        // WHEN: Click on the first action set button ("Yes")
-        await host.sendShiftTab(2);
+        // WHEN: Pressing ENTER to focus inside the card.
         await host.sendKeys('ENTER');
 
-        // THEN: Both the "Yes" and "Submit card" buttons should be selected.
+        // THEN: The "Yes" button should have focus and nothing should be selected.
+        await waitFor(() => expect(document.activeElement).toHaveProperty('innerText', 'Yes'));
+        expect(await getSelectedButtonTexts()).toEqual([]);
+        await host.snapshot('local');
+
+        // WHEN: Pressing TAB.
+        await host.sendTab();
+
+        // THEN: The "No" button should have focus.
+        await waitFor(() => expect(document.activeElement).toHaveProperty('innerText', 'No'));
+        await host.snapshot('local');
+
+        // WHEN: Pressing TAB.
+        await host.sendTab();
+
+        // THEN: The "Submit card" button should have focus.
+        await waitFor(() => expect(document.activeElement).toHaveProperty('innerText', 'Submit card'));
+        await host.snapshot('local');
+
+        // WHEN: Pressing ENTER on the "Submit card" button.
+        await host.sendKeys('ENTER');
+
+        // THEN: Only the "Submit card" button should be selected, and it should keep focus.
+        expect(document.activeElement).toHaveProperty('innerText', 'Submit card');
+        await waitFor(() => expect(document.activeElement.hasAttribute('aria-describedby')).toBe(true)); // "Selected" description attached
+        expect(await getSelectedButtonTexts()).toEqual(['Submit card']);
+        await host.snapshot('local');
+
+        // WHEN: Pressing SHIFT-TAB.
+        await host.sendShiftTab();
+
+        // THEN: The "No" button should have focus, the "Submit card" button should stay selected.
+        await waitFor(() => expect(document.activeElement).toHaveProperty('innerText', 'No'));
+        await host.snapshot('local');
+
+        // WHEN: Pressing SHIFT-TAB.
+        await host.sendShiftTab();
+
+        // THEN: The "Yes" button should have focus, the "Submit card" button should stay selected.
+        await waitFor(() => expect(document.activeElement).toHaveProperty('innerText', 'Yes'));
+        await host.snapshot('local');
+
+        // WHEN: Pressing ENTER on the "Yes" button.
+        await host.sendKeys('ENTER');
+
+        // THEN: Both the "Yes" and "Submit card" buttons should be selected, the "Yes" button should keep focus.
+        expect(document.activeElement).toHaveProperty('innerText', 'Yes');
+        await waitFor(() => expect(document.activeElement.hasAttribute('aria-describedby')).toBe(true)); // "Selected" description attached
         expect(await getSelectedButtonTexts()).toEqual(['Yes', 'Submit card']);
+        await host.snapshot('local');
       });
     </script>
   </body>
