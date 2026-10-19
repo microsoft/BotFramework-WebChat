@@ -67,9 +67,8 @@
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
         const input = cards[0].querySelector('input');
 
-        const expectFocusOnInput = async selectionStart => {
+        const expectFocusOnInputWithCarouselAtStart = async () => {
           expect(document.activeElement).toBe(input);
-          expect(input).toHaveProperty('selectionStart', selectionStart);
 
           await pageConditions.carouselSettled(carouselLayout);
 
@@ -93,40 +92,49 @@
         // WHEN: Press TAB to focus on the text input inside the first card.
         await host.sendTab();
 
-        // THEN: The text input has focus with its text selected, the carousel is at the start.
-        await expectFocusOnInput(0);
+        // THEN: The text input has focus with all of its text "Hello" selected, the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 0);
         expect(input).toHaveProperty('selectionEnd', 5);
         await host.snapshot('local');
 
         // Arrow keys, HOME, and END inside the text input move the caret as usual, without moving focus to another card or
-        // scrolling the carousel. The caret is not drawn in snapshots, its position is asserted.
+        // scrolling the carousel. Snapshots do not show the caret: each step asserts selectionStart and selectionEnd.
 
         // WHEN: Press END inside the text input.
         await host.sendKeys('END');
 
-        // THEN: The text input keeps focus with the caret at the end, the carousel is at the start.
-        await expectFocusOnInput(5);
+        // THEN: The text input keeps focus with the caret at the end, after "Hello", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 5);
+        expect(input).toHaveProperty('selectionEnd', 5);
         await host.snapshot('local');
 
         // WHEN: Press LEFT inside the text input.
         await host.sendKeys('ARROW_LEFT');
 
-        // THEN: The text input keeps focus with the caret moved one character left, the carousel is at the start.
-        await expectFocusOnInput(4);
+        // THEN: The text input keeps focus with the caret one character left, after "Hell", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 4);
+        expect(input).toHaveProperty('selectionEnd', 4);
         await host.snapshot('local');
 
         // WHEN: Press HOME inside the text input.
         await host.sendKeys('HOME');
 
-        // THEN: The text input keeps focus with the caret at the start, the carousel is at the start.
-        await expectFocusOnInput(0);
+        // THEN: The text input keeps focus with the caret at the start, before "Hello", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 0);
+        expect(input).toHaveProperty('selectionEnd', 0);
         await host.snapshot('local');
 
         // WHEN: Press RIGHT inside the text input.
         await host.sendKeys('ARROW_RIGHT');
 
-        // THEN: The text input keeps focus with the caret moved one character right, the carousel is at the start.
-        await expectFocusOnInput(1);
+        // THEN: The text input keeps focus with the caret one character right, after "H", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 1);
+        expect(input).toHaveProperty('selectionEnd', 1);
         await host.snapshot('local');
 
         // WHEN: Press SHIFT-TAB to focus on the first card.
