@@ -47,10 +47,33 @@
           contentType: 'application/vnd.microsoft.card.hero'
         });
 
-        // GIVEN: A carousel with 3 hero cards, each with a button.
+        // GIVEN: A carousel with hero cards, each with a button, and an Adaptive Card whose container opens a URL.
         await directLine.emulateIncomingActivity({
           attachmentLayout: 'carousel',
-          attachments: [createHeroCard(1), createHeroCard(2), createHeroCard(3)],
+          attachments: [
+            createHeroCard(1),
+            createHeroCard(2),
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [
+                  {
+                    items: [
+                      { size: 'large', text: 'Details about item 3', type: 'TextBlock', weight: 'bolder', wrap: true },
+                      { text: 'Price: $XXX.XX USD', type: 'TextBlock', wrap: true }
+                    ],
+                    // Adaptive Cards render a container with Action.OpenUrl as `<div role="link" tabindex="0">`.
+                    selectAction: { title: 'Open item 3', type: 'Action.OpenUrl', url: 'https://example.com/item/3' },
+                    type: 'Container'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            createHeroCard(4)
+          ],
           from: { role: 'bot' },
           type: 'message'
         });
@@ -87,7 +110,7 @@
             { timeout: 5000 }
           );
 
-        expect(cards).toHaveLength(3);
+        expect(cards).toHaveLength(4);
         expect(secondCardButton).toHaveProperty('textContent', 'Buy item 2');
 
         // WHEN: Focus on the first card via keyboard.
@@ -136,6 +159,7 @@
         await host.sendKeys('ARROW_LEFT');
 
         // THEN: The button keeps focus, the browser does not scroll the carousel.
+        // `defaultPrevented` is the real check: `scrollLeft` can be read before a native scroll would start.
         expect(keyDownEvents).toHaveLength(1);
         expect(keyDownEvents[0]).toHaveProperty('defaultPrevented', true);
         expect(document.activeElement).toBe(secondCardButton);
@@ -153,6 +177,56 @@
         expect(document.activeElement).toBe(secondCardButton);
         await waitForCarouselSettled();
         expect(carouselFilmstrip.scrollLeft).toBe(centeredScrollLeft);
+        expect(numScrolls).toBe(0);
+
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB.
+        await host.sendShiftTab();
+
+        // THEN: The second card has focus, the carousel has not moved.
+        expect(document.activeElement).toBe(cards[1]);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(centeredScrollLeft);
+
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The third card (the Adaptive Card) has focus and is scrolled to the center.
+        expect(document.activeElement).toBe(cards[2]);
+        await waitFor(() => expect(isCardInView(cards[2])).toBe(true));
+        await waitForCarouselSettled();
+
+        const thirdCenteredScrollLeft = carouselFilmstrip.scrollLeft;
+        const thirdCardLink = cards[2].querySelector('[role="link"]');
+
+        expect(thirdCenteredScrollLeft).toBeGreaterThan(centeredScrollLeft);
+
+        await host.snapshot('local');
+
+        // WHEN: Press TAB.
+        await host.sendTab();
+
+        // THEN: The link container inside the third card has focus, the carousel has not moved.
+        expect(document.activeElement).toBe(thirdCardLink);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(thirdCenteredScrollLeft);
+
+        await host.snapshot('local');
+
+        numScrolls = 0;
+
+        // WHEN: Press RIGHT on the link container.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The link container keeps focus, the browser does not scroll the carousel.
+        expect(keyDownEvents.at(-1)).toHaveProperty('key', 'ArrowRight');
+        expect(keyDownEvents.at(-1)).toHaveProperty('defaultPrevented', true);
+        expect(document.activeElement).toBe(thirdCardLink);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(thirdCenteredScrollLeft);
         expect(numScrolls).toBe(0);
 
         await host.snapshot('local');
