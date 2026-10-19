@@ -480,6 +480,14 @@
     min-height: var(--webchat-part-grouping__bubble--min-height);
   }
 
+  /* Forced colors remove the bubble shadow and fill, so draw a border as the default theme does. */
+  @media (forced-colors: active) {
+    &:not(.part-grouping-decorator--group)
+      :global(.stacked-layout .bubble:not(:has(.activity-loader)) .bubble__content) {
+      border: var(--webchat-strokeWidthThin) solid CanvasText;
+    }
+  }
+
   :global(.stacked-layout .bubble .text-content) {
     font-size: var(--webchat__font-size--medium);
     line-height: var(--webchat__line-height--medium);

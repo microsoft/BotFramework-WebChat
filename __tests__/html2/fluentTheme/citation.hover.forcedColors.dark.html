@@ -101,6 +101,7 @@
         await waitFor(() => expect(citation.matches(':hover')).toBe(true));
 
         // THEN: The hovered citation "1" and its border should stay in the link color, same as the reference chip below.
+        // THEN: The message should have a border.
         await host.snapshot('local');
       });
     </script>
