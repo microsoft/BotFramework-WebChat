@@ -32,7 +32,7 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: Bot sends a message with an Adaptive Card, a hero card, and a file.
+        // WHEN: Bot sends a message with an Adaptive Card, a hero card, a file, and a suggested action.
         await directLine.emulateIncomingActivity({
           attachments: [
             {
@@ -52,23 +52,29 @@
             { contentType: 'application/octet-stream', name: 'report.zip' }
           ],
           from: { role: 'bot' },
+          suggestedActions: { actions: [{ title: 'Help', type: 'imBack', value: 'help' }] },
           text: 'Here are 2 cards and a file.',
           type: 'message'
         });
 
         await pageConditions.numActivitiesShown(1);
 
-        await waitFor(() =>
-          expect(pageElements.liveRegion().querySelector('.webchat__live-region-activity')).toBeTruthy()
-        );
+        const liveRegionActivity = await waitFor(() => {
+          const element = pageElements.liveRegion().querySelector('.webchat__live-region-activity');
 
-        const liveRegionActivity = pageElements.liveRegion().querySelector('.webchat__live-region-activity');
+          expect(element).toBeTruthy();
 
-        // THEN: The live region should contain the text of the message, the cards, and the file.
+          return element;
+        });
+
+        // THEN: The live region should contain the text of the message, the suggested action, the cards, and the file.
         expect(liveRegionActivity.innerText).toBe(
           [
             'Bot WC said:',
             'Here are 2 cards and a file.',
+            '', // The suggested actions are in a `<p>`, `innerText` puts a blank line around it.
+            'Help',
+            '',
             'A card: Card 1',
             'OK',
             'A card: Card 2 Hero text',
@@ -80,15 +86,23 @@
         // THEN: The message should still be announced as a whole.
         expect(liveRegionActivity.getAttribute('aria-atomic')).toBe('true');
 
-        // THEN: The message and its attachments should not be articles, screen readers would read "article" before each of them.
         const accessibilityNodes = await Promise.all(
           [liveRegionActivity, ...liveRegionActivity.querySelectorAll('*')].map(element =>
             testHelpers.getAccessibilityNode(element)
           )
         );
 
-        expect(accessibilityNodes.map(({ role }) => role?.value)).not.toContain('article');
-        expect(liveRegionActivity.querySelectorAll('article')).toHaveLength(0);
+        // THEN: The message should be a generic container, not an article, screen readers would read "article" before it.
+        expect(accessibilityNodes[0].role?.value).toBe('generic');
+
+        // THEN: Inside the message, only the copies of the buttons should be in the accessibility tree, besides the text.
+        //       On Windows, every other element is a "group" (including generic `<div>` and `<p>`), screen readers would read "group" before each line.
+        expect(
+          accessibilityNodes
+            .slice(1) // The message itself keeps `aria-atomic`, which requires an element in the accessibility tree.
+            .filter(({ ignored }) => !ignored)
+            .map(({ name, role }) => `${role?.value} "${name?.value}"`)
+        ).toEqual(['button "Help"', 'button "OK"', 'button "Go"']);
       });
     </script>
   </body>

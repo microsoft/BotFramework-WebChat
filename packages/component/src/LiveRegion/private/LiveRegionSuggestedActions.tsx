@@ -24,7 +24,7 @@ function LiveRegionSuggestedActions(props: LiveRegionSuggestedActionsProps) {
 
   return (
     suggestedActions.actions?.length && (
-      <p className="webchat__live-region-activity__suggested-actions">
+      <p className="webchat__live-region-activity__suggested-actions" role="none">
         {suggestedActions.actions.map((action, index) => (
           // Direct Line schema does not have key other than index.
           // eslint-disable-next-line react/no-array-index-key

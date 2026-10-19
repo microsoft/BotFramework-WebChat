@@ -8,7 +8,7 @@ const ImageAttachment = () => {
 
   const label = localize('ATTACHMENT_IMAGE');
 
-  return <div>{label}</div>;
+  return <div role="none">{label}</div>;
 };
 
 export default ImageAttachment;

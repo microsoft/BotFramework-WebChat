@@ -9,7 +9,7 @@ const TextAttachment = ({ attachment: { content = '' } = {} }) => {
 
   const label = localize('ATTACHMENT_TEXT', content);
 
-  return <div>{label}</div>;
+  return <div role="none">{label}</div>;
 };
 
 TextAttachment.propTypes = {

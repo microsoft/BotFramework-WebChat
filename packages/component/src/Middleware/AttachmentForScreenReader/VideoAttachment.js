@@ -8,7 +8,7 @@ const VideoAttachment = () => {
 
   const label = localize('ATTACHMENT_VIDEO');
 
-  return <div>{label}</div>;
+  return <div role="none">{label}</div>;
 };
 
 export default VideoAttachment;

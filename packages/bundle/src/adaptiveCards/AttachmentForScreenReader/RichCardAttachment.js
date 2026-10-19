@@ -16,8 +16,8 @@ const RichCardAttachment = ({ content = {} }) => {
   const cardLabel = localize('ATTACHMENT_CARD', title || '', subtitle || '', text || '');
 
   return (
-    <div>
-      <div>{cardLabel}</div>
+    <div role="none">
+      <div role="none">{cardLabel}</div>
       {!!image && !!image.alt && <img alt={image.alt} />}
       {!!images && !!images.length && images.map(({ alt }, index) => <img alt={alt} key={index} />)}
       {!!facts && !!facts.length && (
@@ -35,32 +35,32 @@ const RichCardAttachment = ({ content = {} }) => {
           {items.map(({ image, price, quantity, subtitle, text, title }, index) => (
             <li key={index}>
               {!!image && !!image.alt && <img alt={image.alt} />}
-              {!!title && <p>{title}</p>}
-              {!!subtitle && <p>{subtitle}</p>}
-              {!!text && <p>{text}</p>}
-              {!!quantity && <p>{quantity}</p>}
-              {!!price && <p>{price}</p>}
+              {!!title && <p role="none">{title}</p>}
+              {!!subtitle && <p role="none">{subtitle}</p>}
+              {!!text && <p role="none">{text}</p>}
+              {!!quantity && <p role="none">{quantity}</p>}
+              {!!price && <p role="none">{price}</p>}
             </li>
           ))}
         </ul>
       )}
       {!!vat && (
-        <p>
+        <p role="none">
           {vatLabel} {vat}
         </p>
       )}
       {!!tax && (
-        <p>
+        <p role="none">
           {taxLabel} {tax}
         </p>
       )}
       {!!total && (
-        <p>
+        <p role="none">
           {totalLabel} {total}
         </p>
       )}
       {!!buttons && !!buttons.length && (
-        <div>
+        <div role="none">
           {buttons.map(({ title }, index) => (
             <button key={index} tabIndex={-1} type="button">
               {title}

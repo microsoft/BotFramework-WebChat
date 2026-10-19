@@ -56,14 +56,16 @@ function LiveRegionActivity(props: LiveRegionActivityProps) {
   ).replace(/\s{2,}/gu, ' ');
   const validFallbackText = fallbackText && typeof fallbackText === 'string';
 
+  // Lines are `role="none"`: on Windows, generic `<div>` and `<p>` are exposed as "group", screen readers would read "group" before each line.
+  // The message itself stays in the accessibility tree, as required by `aria-atomic`.
   return (
     <div aria-atomic={true} className={classNames('webchat__live-region-activity', rootClassName)}>
-      <div>{greetingAlt}</div>
+      <div role="none">{greetingAlt}</div>
       {validFallbackText ? (
-        <div>{fallbackText}</div>
+        <div role="none">{fallbackText}</div>
       ) : (
         <Fragment>
-          <div>{textAlt}</div>
+          <div role="none">{textAlt}</div>
           {type === 'message' && (
             <Fragment>
               {!!activity.suggestedActions && (

@@ -8,7 +8,7 @@ const AudioAttachment = () => {
 
   const label = localize('ATTACHMENT_AUDIO');
 
-  return <div>{label}</div>;
+  return <div role="none">{label}</div>;
 };
 
 export default AudioAttachment;
