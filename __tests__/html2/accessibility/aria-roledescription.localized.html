@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshots show the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main id="webchat"></main>
@@ -34,7 +36,13 @@
         const root = createRoot(document.getElementById('webchat'));
         const render = props =>
           root.render(
-            createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true }, ...props })
+            createElement(ReactWebChat, {
+              directLine,
+              store,
+              // Keeps the live region copy of new messages, so it can be seen in the snapshots.
+              styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 },
+              ...props
+            })
           );
 
         // Role descriptions of the message and attachments, per activity.
@@ -68,8 +76,10 @@
         }
 
         await pageConditions.numActivitiesShown(2);
+        await pageConditions.liveRegionStabilized();
 
         // THEN: A stacked message, then a carousel message, each with its text and 2 cards.
+        // THEN: The live region (top) shows what screen readers announce for each: "Bot said:", the text, and "A card:" per card, without role descriptions.
         await host.snapshot('local');
 
         // THEN: Message and attachments are described in English.
@@ -94,6 +104,20 @@
             ['Nachricht', 'Anhang', 'Anhang']
           ])
         );
+
+        // WHEN: The bot sends another message.
+        await directLine.emulateIncomingActivity({
+          attachments: [{ content: { title: 'Card 3' }, contentType: 'application/vnd.microsoft.card.hero' }],
+          from: { role: 'bot' },
+          text: 'Message after switching to German',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: The live region shows the new message announced in German ("Bot sagte:", "Eine Karte:", from de-DE); the earlier copies are re-rendered in German too.
+        await host.snapshot('local');
       });
     </script>
   </body>
