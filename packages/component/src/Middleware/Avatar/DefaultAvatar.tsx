@@ -21,7 +21,7 @@ const ROOT_STYLE = {
 
 const defaultAvatarPropsSchema = pipe(
   object({
-    'aria-hidden': optional(boolean(), true),
+    'aria-hidden': optional(boolean()),
     children: optional(never()),
     className: optional(string()),
     fromUser: boolean()
@@ -32,7 +32,11 @@ const defaultAvatarPropsSchema = pipe(
 type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
 
 function DefaultAvatar(props: DefaultAvatarProps) {
-  const { 'aria-hidden': ariaHidden, className, fromUser } = validateProps(defaultAvatarPropsSchema, props, 'strict');
+  const {
+    'aria-hidden': ariaHidden = true,
+    className,
+    fromUser
+  } = validateProps(defaultAvatarPropsSchema, props, 'strict');
 
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
