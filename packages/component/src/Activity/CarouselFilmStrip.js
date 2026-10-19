@@ -2,10 +2,10 @@
 
 import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { useItemContainerCallbackRef, useScrollableCallbackRef } from 'react-film';
+import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import Bubble from './Bubble';
 import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
@@ -15,7 +15,7 @@ import textFormatToContentType from '../Utils/textFormatToContentType';
 
 import styles from './CarouselFilmStrip.module.css';
 
-const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
+const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const CarouselFilmStrip = ({
   activity,
@@ -29,12 +29,62 @@ const CarouselFilmStrip = ({
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
+  const [direction] = useDirection();
   const localize = useLocalizer();
   const showActivityStatus = typeof renderActivityStatus === 'function';
   const classNames = useStyles(styles);
 
   const itemContainerCallbackRef = useItemContainerCallbackRef();
   const scrollableCallbackRef = useScrollableCallbackRef();
+  const scrollTo = useScrollTo();
+
+  // When a card itself has focus (not a control inside it), LEFT/RIGHT move the focus to the previous/next card
+  // (mirrored in RTL), HOME/END to the first/last card. This is a shortcut: every card is still a tab stop.
+  const handleAttachmentsKeyDown = useCallback(
+    event => {
+      const { altKey, ctrlKey, currentTarget, key, metaKey, shiftKey, target } = event;
+      const cards = Array.from(currentTarget.children);
+
+      const index = cards.indexOf(target);
+      const rtl = direction === 'rtl';
+
+      if (altKey || ctrlKey || metaKey || shiftKey || !~index) {
+        return;
+      }
+
+      let nextIndex;
+
+      switch (key) {
+        case 'ArrowLeft':
+          nextIndex = rtl ? index + 1 : index - 1;
+          break;
+
+        case 'ArrowRight':
+          nextIndex = rtl ? index - 1 : index + 1;
+          break;
+
+        case 'End':
+          nextIndex = cards.length - 1;
+          break;
+
+        case 'Home':
+          nextIndex = 0;
+          break;
+
+        default:
+          return;
+      }
+
+      nextIndex = Math.max(0, Math.min(cards.length - 1, nextIndex));
+
+      event.preventDefault();
+
+      // Center the card with react-film, as the flippers do, instead of the native scroll on focus.
+      cards[+nextIndex].focus({ preventScroll: true });
+      scrollTo(() => nextIndex);
+    },
+    [direction, scrollTo]
+  );
 
   const {
     attachments = [],
@@ -117,6 +167,7 @@ const CarouselFilmStrip = ({
             <div className={classNames['carousel-filmstrip__complimentary-content']}>
               <ul
                 className={cx(classNames['carousel-filmstrip__attachments'], 'react-film__filmstrip__list')}
+                onKeyDown={handleAttachmentsKeyDown}
                 ref={itemContainerCallbackRef}
               >
                 {attachments.map((attachment, index) => (

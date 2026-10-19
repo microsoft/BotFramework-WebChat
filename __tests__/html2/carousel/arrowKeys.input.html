@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [1, 2, 3].map(index => ({
+            content: {
+              $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+              body: [
+                { size: 'large', text: `Item ${index}`, type: 'TextBlock', wrap: true },
+                { id: `note-${index}`, label: `Note for item ${index}`, type: 'Input.Text', value: 'Hello' }
+              ],
+              type: 'AdaptiveCard',
+              version: '1.5'
+            },
+            contentType: 'application/vnd.microsoft.card.adaptive'
+          })),
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const carouselFilmstrip = document.querySelector('.carousel-filmstrip');
+        const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
+        const input = cards[0].querySelector('input');
+
+        // GIVEN: The carousel is scrolled to the start.
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        // WHEN: Focus on the first card via keyboard, then press TAB to focus on the text input inside it.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ENTER');
+
+        expect(cards.indexOf(document.activeElement)).toBe(0);
+
+        await host.sendTab();
+
+        // THEN: The text input should have focus.
+        expect(document.activeElement).toBe(input);
+
+        // WHEN: Press END, LEFT, HOME, and RIGHT inside the text input.
+        // THEN: They should move the caret as usual, without moving focus to another card or scrolling the carousel.
+        await host.sendKeys('END');
+        expect(document.activeElement).toBe(input);
+        expect(input).toHaveProperty('selectionStart', 5);
+
+        await host.sendKeys('ARROW_LEFT');
+        expect(document.activeElement).toBe(input);
+        expect(input).toHaveProperty('selectionStart', 4);
+
+        await host.sendKeys('HOME');
+        expect(document.activeElement).toBe(input);
+        expect(input).toHaveProperty('selectionStart', 0);
+
+        await host.sendKeys('ARROW_RIGHT');
+        expect(document.activeElement).toBe(input);
+        expect(input).toHaveProperty('selectionStart', 1);
+
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        // WHEN: Press SHIFT-TAB to focus on the first card, then press RIGHT.
+        await host.sendShiftTab();
+
+        expect(cards.indexOf(document.activeElement)).toBe(0);
+
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The second card should have focus and the carousel should scroll.
+        expect(cards.indexOf(document.activeElement)).toBe(1);
+        await waitFor(() => expect(carouselFilmstrip.scrollLeft).toBeGreaterThan(0));
+      });
+    </script>
+  </body>
+</html>
