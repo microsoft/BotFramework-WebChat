@@ -89,7 +89,7 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
           : interactiveType === InteractiveType.WIDGET
             ? activityInteractiveReasonInteractiveContentAlt
             : '',
-        interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : ''
+        interactiveType !== false || isSendFailed ? activityInteractiveFootNoteAlt : ''
       ]
         .filter(Boolean)
         .join(' '),
