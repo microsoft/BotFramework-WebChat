@@ -182,6 +182,7 @@
       &,
       &:hover,
       &:hover:active {
+        border-color: LinkText;
         color: LinkText;
       }
     }
@@ -237,6 +238,12 @@
       font-size: var(--webchat__font-size--small);
       height: 24px;
       padding-inline-end: var(--webchat-spacingHorizontalS);
+
+      /* Button chips use the link color like link chips; the badge, divider and text inherit it. */
+      @media (forced-colors: active) {
+        border-color: LinkText;
+        color: LinkText;
+      }
     }
 
     :global(.link-definitions__list-item-body) {
@@ -282,10 +289,6 @@
       color: currentColor;
       text-decoration: none;
       text-overflow: ellipsis;
-
-      @media (forced-colors: active) {
-        color: LinkText;
-      }
     }
 
     :global(.link-definitions__list-item-main-text):has(:global(.link-definitions__open-in-new-window-icon))::before {

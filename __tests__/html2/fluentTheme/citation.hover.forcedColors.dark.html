@@ -100,7 +100,7 @@
         // THEN: The citation should be hovered.
         await waitFor(() => expect(citation.matches(':hover')).toBe(true));
 
-        // THEN: The hovered citation "1" should stay in the link color, same as the citation without hover.
+        // THEN: The hovered citation "1" and its border should stay in the link color, same as the reference chip below.
         await host.snapshot('local');
       });
     </script>
