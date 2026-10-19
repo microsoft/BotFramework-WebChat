@@ -146,20 +146,29 @@ const AdaptiveCardAttachment = ({ content }) => {
   return (
     <article>
       <div>{cardLabel}</div>
-      {/* Inputs are named and pre-filled as in the rendered card: named by their label, otherwise by their placeholder. */}
+      {/* Inputs are named and pre-filled as in the rendered card: named by their label, otherwise by their placeholder.
+          The label is not rendered as text, otherwise screen readers read it twice: as text and as the input name. */}
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
         ) : input instanceof DateInput ? (
-          <label key={index}>
-            {input.label || input.placeholder}
-            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="date" />
-          </label>
+          <input
+            aria-label={input.label || undefined}
+            defaultValue={input.defaultValue}
+            key={index}
+            placeholder={input.placeholder}
+            tabIndex={-1}
+            type="date"
+          />
         ) : input instanceof NumberInput ? (
-          <label key={index}>
-            {input.label || input.placeholder}
-            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="number" />
-          </label>
+          <input
+            aria-label={input.label || undefined}
+            defaultValue={input.defaultValue}
+            key={index}
+            placeholder={input.placeholder}
+            tabIndex={-1}
+            type="number"
+          />
         ) : input instanceof OpenUrlAction || input instanceof ShowCardAction || input instanceof SubmitAction ? (
           <div key={index}>
             <button tabIndex={-1} type="button">
@@ -167,15 +176,23 @@ const AdaptiveCardAttachment = ({ content }) => {
             </button>
           </div>
         ) : input instanceof TextInput ? (
-          <label key={index}>
-            {input.label || input.placeholder}
-            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="text" />
-          </label>
+          <input
+            aria-label={input.label || undefined}
+            defaultValue={input.defaultValue}
+            key={index}
+            placeholder={input.placeholder}
+            tabIndex={-1}
+            type="text"
+          />
         ) : input instanceof TimeInput ? (
-          <label key={index}>
-            {input.label || input.placeholder}
-            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="time" />
-          </label>
+          <input
+            aria-label={input.label || undefined}
+            defaultValue={input.defaultValue}
+            key={index}
+            placeholder={input.placeholder}
+            tabIndex={-1}
+            type="time"
+          />
         ) : input instanceof ToggleInput ? (
           <label key={index}>
             {input.title}

@@ -70,7 +70,8 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.liveRegionStabilized();
 
-        const inputs = Array.from(pageElements.liveRegion().querySelectorAll('.webchat__live-region-activity input'));
+        const activity = pageElements.liveRegion().querySelector('.webchat__live-region-activity');
+        const inputs = Array.from(activity.querySelectorAll('input'));
 
         // THEN: The live region copy names every input as the card in the transcript does: by its label, otherwise by its placeholder.
         expect(await Promise.all(inputs.map(input => testHelpers.getAccessibleName(input)))).toEqual([
@@ -81,10 +82,17 @@
           'Add a note'
         ]);
 
+        // THEN: The labels are not repeated as text next to the inputs, so screen readers read each label once, as the input name.
+        expect(testHelpers.getAllTextContents(activity).map(text => text.trim())).toEqual([
+          'Bot said:',
+          'A card:',
+          'Place order' // The button.
+        ]);
+
         // THEN: The inputs in the copy are out of the tab order.
         expect(inputs.map(({ tabIndex }) => tabIndex)).toEqual([-1, -1, -1, -1, -1]);
 
-        // THEN: The live region shows the labels next to their inputs, and the accessibility check (no unlabeled inputs) passes.
+        // THEN: The live region shows the inputs without label text, only the placeholder of the last one, and the accessibility check (no unlabeled inputs) passes.
         await host.snapshot('local');
       });
     </script>
