@@ -70,10 +70,13 @@ const AdaptiveCardAttachment = ({ content }) => {
     {
       ChoiceSetInput,
       DateInput,
+      FactSet,
       NumberInput,
       OpenUrlAction,
+      RichTextBlock,
       ShowCardAction,
       SubmitAction,
+      TextBlock,
       TextInput,
       TimeInput,
       ToggleInput
@@ -114,7 +117,20 @@ const AdaptiveCardAttachment = ({ content }) => {
     ToggleInput
   ]);
 
-  const cardLabel = localize('ATTACHMENT_CARD', card.speak || '', '', '');
+  // Without `speak`, the card is described by its text, in document order. Inputs and actions are listed separately below.
+  const text = useMemo(() => {
+    const texts = [];
+
+    walkAllItems(card, node =>
+      node instanceof FactSet
+        ? texts.push(...node.facts.map(({ name, value }) => [name, value].filter(Boolean).join(': ')))
+        : (node instanceof RichTextBlock || node instanceof TextBlock) && texts.push(node.asString())
+    );
+
+    return texts.filter(Boolean).join(' ');
+  }, [card, FactSet, RichTextBlock, TextBlock]);
+
+  const cardLabel = localize('ATTACHMENT_CARD', card.speak || text, '', '');
 
   return (
     <article>
