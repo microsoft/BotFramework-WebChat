@@ -32,7 +32,9 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+        );
 
         await pageConditions.uiConnected();
 
@@ -56,12 +58,39 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        const carouselFilmstrip = document.querySelector('.carousel-filmstrip');
+        const carouselLayout = document.querySelector('.carousel-layout');
+        const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
+        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
         const input = cards[0].querySelector('input');
 
-        // GIVEN: The carousel is scrolled to the start.
+        const isCardInView = card => {
+          const cardRect = card.getBoundingClientRect();
+          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
+
+          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
+        };
+
+        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
+        const isFlipperHidden = flipper => {
+          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
+          const buttonRect = flipper.getBoundingClientRect();
+
+          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
+        };
+
+        const waitForCarouselSettled = () =>
+          waitFor(
+            () => {
+              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
+              expect(flippers.every(isFlipperHidden)).toBe(true);
+            },
+            { timeout: 5000 }
+          );
+
+        // GIVEN: The carousel is scrolled to the start, the second card is not fully in view.
         expect(carouselFilmstrip.scrollLeft).toBe(0);
+        expect(isCardInView(cards[1])).toBe(false);
 
         // WHEN: Focus on the first card via keyboard, then press TAB to focus on the text input inside it.
         pageObjects.focusTranscript();
@@ -92,7 +121,10 @@
         expect(document.activeElement).toBe(input);
         expect(input).toHaveProperty('selectionStart', 1);
 
+        await waitForCarouselSettled();
         expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        await host.snapshot('local');
 
         // WHEN: Press SHIFT-TAB to focus on the first card, then press RIGHT.
         await host.sendShiftTab();
@@ -104,6 +136,11 @@
         // THEN: The second card should have focus and the carousel should scroll.
         expect(cards.indexOf(document.activeElement)).toBe(1);
         await waitFor(() => expect(carouselFilmstrip.scrollLeft).toBeGreaterThan(0));
+        await waitFor(() => expect(isCardInView(cards[1])).toBe(true));
+        await waitForCarouselSettled();
+        expect(isCardInView(cards[1])).toBe(true);
+
+        await host.snapshot('local');
       });
     </script>
   </body>
