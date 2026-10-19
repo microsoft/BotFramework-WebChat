@@ -297,10 +297,16 @@ function SendBox(props: Props) {
   );
 }
 
-const PrimarySendBox = memo((props: Exclude<Props, 'primary'>) => <SendBox {...props} isPrimary={true} />);
+function PrimarySendBox(props: Exclude<Props, 'primary'>) {
+  const [{ hideSendBox }] = useStyleOptions();
+
+  return hideSendBox ? null : <SendBox {...props} isPrimary={true} />;
+}
 
 PrimarySendBox.displayName = 'PrimarySendBox';
 
+const MemoizedPrimarySendBox = memo(PrimarySendBox);
+
 export default memo(SendBox);
 
-export { PrimarySendBox };
+export { MemoizedPrimarySendBox as PrimarySendBox };
