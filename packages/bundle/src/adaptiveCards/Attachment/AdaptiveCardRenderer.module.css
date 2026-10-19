@@ -50,7 +50,8 @@
   }
 
   :global(.ac-pushButton.style-positive) {
-    background-color: #0078d7;
+    /* Passes 4.5:1 with white text (#5713). */
+    background-color: #0078d4;
     color: white;
   }
 
