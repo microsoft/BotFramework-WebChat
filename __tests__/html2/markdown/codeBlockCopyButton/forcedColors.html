@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      .fui-FluentProvider {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webDarkTheme } from '@fluentui/tokens';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const searchParams = new URLSearchParams(location.search);
+        const colorScheme = searchParams.get('color-scheme') === 'dark' ? 'dark' : 'light';
+        const variant = searchParams.get('variant');
+
+        // GIVEN: A light or dark high contrast theme (such as "Desert" or "Aquatic" on Windows) is active before Web Chat renders.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'forced-colors', value: 'active' },
+            { name: 'prefers-color-scheme', value: colorScheme }
+          ]
+        });
+
+        expect(window.matchMedia(`(forced-colors: active) and (prefers-color-scheme: ${colorScheme})`).matches).toBe(
+          true
+        );
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const webChatElement = createElement(ReactWebChat, { directLine, store });
+        const themedElement = variant
+          ? createElement(FluentThemeProvider, { variant }, webChatElement)
+          : webChatElement;
+
+        // GIVEN: With the Fluent theme and a dark color scheme, the page uses the dark Fluent UI theme.
+        createRoot(document.getElementById('webchat')).render(
+          variant && colorScheme === 'dark'
+            ? createElement(FluentProvider, { theme: webDarkTheme }, themedElement)
+            : themedElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a message with a code block.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          text: 'Print a message to the console:\n\n```js\nconsole.log("Hello, World!");\n```',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The code block should have a "Copy" button.
+        await expect(
+          testHelpers.getAccessibleName(document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`))
+        ).resolves.toBe('Copy');
+
+        // THEN: The icon of the "Copy" button should be visible.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

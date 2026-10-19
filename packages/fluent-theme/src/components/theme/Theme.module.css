@@ -472,6 +472,10 @@
 
     :global(.code-block-copy-button__icon) {
       --webchat__component-icon--color: currentColor;
+
+      @media (forced-colors: active) {
+        --webchat__component-icon--color: buttonText;
+      }
     }
 
     &:hover {
