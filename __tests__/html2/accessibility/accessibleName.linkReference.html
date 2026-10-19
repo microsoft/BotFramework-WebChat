@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -25,7 +27,7 @@
           {
             directLine,
             store,
-            styleOptions: { internalLiveRegionFadeAfter: 60000 } // Keep the live region content for the assertion.
+            styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 } // Keep the live region content for the assertion and the snapshot.
           },
           document.getElementById('webchat')
         );
@@ -61,6 +63,11 @@
               .replace(/\u200b/gu, '')
           ).toContain('Bot said:\nOverride the proxy settings 1.')
         );
+
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: the live region (top) shows "Override the proxy settings 1." with a space, while the transcript shows "settings[1].".
+        await host.snapshot('local');
       });
     </script>
   </body>
