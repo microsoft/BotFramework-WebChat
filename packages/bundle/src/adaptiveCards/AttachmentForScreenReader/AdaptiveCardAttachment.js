@@ -146,17 +146,18 @@ const AdaptiveCardAttachment = ({ content }) => {
   return (
     <article>
       <div>{cardLabel}</div>
+      {/* Inputs are named as in the rendered card: by their label, otherwise by their placeholder. */}
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
         ) : input instanceof DateInput ? (
           <label key={index}>
-            {input.title}
+            {input.label || input.placeholder}
             <input placeholder={input.placeholder} tabIndex={-1} type="date" />
           </label>
         ) : input instanceof NumberInput ? (
           <label key={index}>
-            {input.title}
+            {input.label || input.placeholder}
             <input placeholder={input.placeholder} tabIndex={-1} type="number" />
           </label>
         ) : input instanceof OpenUrlAction || input instanceof ShowCardAction || input instanceof SubmitAction ? (
@@ -167,12 +168,12 @@ const AdaptiveCardAttachment = ({ content }) => {
           </div>
         ) : input instanceof TextInput ? (
           <label key={index}>
-            {input.title}
+            {input.label || input.placeholder}
             <input placeholder={input.placeholder} tabIndex={-1} type="text" />
           </label>
         ) : input instanceof TimeInput ? (
           <label key={index}>
-            {input.title}
+            {input.label || input.placeholder}
             <input placeholder={input.placeholder} tabIndex={-1} type="time" />
           </label>
         ) : input instanceof ToggleInput ? (

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be checked and seen in the snapshot.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends an Adaptive Card form, with inputs labelled by the "label" property (Adaptive Cards 1.3+).
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Place order', type: 'Action.Submit' }],
+                body: [
+                  { id: 'name', label: 'Your name', type: 'Input.Text' },
+                  { id: 'quantity', label: 'Quantity', type: 'Input.Number' },
+                  { id: 'date', label: 'Delivery date', type: 'Input.Date' },
+                  { id: 'time', label: 'Delivery time', type: 'Input.Time' },
+                  { id: 'note', placeholder: 'Add a note', type: 'Input.Text' } // No label: the card names it by its placeholder.
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.liveRegionStabilized();
+
+        const inputs = Array.from(pageElements.liveRegion().querySelectorAll('.webchat__live-region-activity input'));
+
+        // THEN: The live region copy names every input as the card in the transcript does: by its label, otherwise by its placeholder.
+        expect(await Promise.all(inputs.map(input => testHelpers.getAccessibleName(input)))).toEqual([
+          'Your name',
+          'Quantity',
+          'Delivery date',
+          'Delivery time',
+          'Add a note'
+        ]);
+
+        // THEN: The inputs in the copy are out of the tab order.
+        expect(inputs.map(({ tabIndex }) => tabIndex)).toEqual([-1, -1, -1, -1, -1]);
+
+        // THEN: The live region shows the labels next to their inputs, and the accessibility check (no unlabeled inputs) passes.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
