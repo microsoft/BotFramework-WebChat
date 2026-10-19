@@ -195,25 +195,27 @@ async function prepareSession(sessionId) {
     },
     createProxyMiddleware({
       ...DEFAULT_PROXY_OPTIONS,
-      onProxyRes: responseInterceptor(async responseBuffer => {
-        const session = JSON.parse(responseBuffer.toString());
+      on: {
+        proxyRes: responseInterceptor(async responseBuffer => {
+          const session = JSON.parse(responseBuffer.toString());
 
-        const entry = { busy: true, numUsed: 1, session, sessionId: session.value.sessionId, startTime: Date.now() };
+          const entry = { busy: true, numUsed: 1, session, sessionId: session.value.sessionId, startTime: Date.now() };
 
-        pool.push(entry);
+          pool.push(entry);
 
-        setTimeout(() => housekeep(pool), INSTANCE_LIFE - INSTANCE_MIN_LIFE);
+          setTimeout(() => housekeep(pool), INSTANCE_LIFE - INSTANCE_MIN_LIFE);
 
-        await prepareSession(entry.sessionId);
+          await prepareSession(entry.sessionId);
 
-        console.log(
-          `New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances: [${pool
-            .map(runLeft)
-            .join(', ')}].`
-        );
+          console.log(
+            `New instance ${entry.sessionId} created. Now the pool has ${pool.length} instances: [${pool
+              .map(runLeft)
+              .join(', ')}].`
+          );
 
-        return responseBuffer;
-      }),
+          return responseBuffer;
+        })
+      },
       selfHandleResponse: true
     })
   );
