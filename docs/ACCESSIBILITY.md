@@ -386,13 +386,57 @@ This will prevent the screen reader renderer warning from appearing in the brows
 
 # Using `role="feed"` and `role="article"` to represent the chat history and activity
 
-> This is introduced in PR [#4108](https://github.com/microsoft/BotFramework-WebChat/pull/4108).
+> This is introduced in PR [#4108](https://github.com/microsoft/BotFramework-WebChat/pull/4108). Related to [#4471](https://github.com/microsoft/BotFramework-WebChat/issues/4471) and [#4477](https://github.com/microsoft/BotFramework-WebChat/issues/4477).
 
-We are using `role="feed"` and `role="article"` to represent the chat history and activity respectively:
+We are using `role="feed"` and `role="article"` to represent the chat history and activity respectively.
 
--  `role="feed"` is designed for very long content and also support virtual scrolling via `aria-busy`
--  We should not use `<ul>` as it will push the content into second level, despite `list-style-type: none` is set
--  In WAI-ARIA guideline, `role="feed"`/`role="article"` are designed to contain nested interactive elements, such as comment box, etc. This is more aligned to our Adaptive Cards and our interactive attachment story
+## Structure
+
+-  The chat history is a focusable `role="group"` named "Chat history, press arrow keys to navigate."
+   -  It carries `aria-activedescendant`, which only works with a number of roles and must be set explicitly
+-  Inside it, `<section role="feed">` contains the activities, with `aria-roledescription` set to the localized "chat history"
+   -  The feed is rendered only when there are one or more activities, as an empty feed is invalid, in PR [#4420](https://github.com/microsoft/BotFramework-WebChat/pull/4420)
+-  Every activity is an `<article>` element (a group of parts is a `role="article"`), as all children of a feed must be articles
+   -  The article has no `aria-roledescription`, see [below](#why-not-describe-the-article-as-a-message)
+   -  Another `role="article"` inside it is named by a screen reader only summary, e.g. "Bot said: …", and is the target of `aria-activedescendant` when the user presses <kbd>UP</kbd> and <kbd>DOWN</kbd> arrow keys
+   -  The summary is not rendered on Android: TalkBack does not support `aria-activedescendant` and would narrate the content twice
+   -  In the stacked layout, the content of a message is a `role="group"` with `aria-roledescription="message"`, in PR [#5865](https://github.com/microsoft/BotFramework-WebChat/pull/5865)
+-  New activities are narrated by a separate live region, not by the feed, see [UX: Live region chat history](#ux-live-region-chat-history)
+
+## Why `feed` and not other roles
+
+In WAI-ARIA, there are not many roles that would fit chat bubbles: [`log`](https://w3c.github.io/aria/#log), [`grid`](https://w3c.github.io/aria/#grid) and [`feed`](https://w3c.github.io/aria/#feed).
+
+-  `log` lists chat logs and messaging history as examples, but:
+   -  It is an implicit live region
+      -  Due to bugs in screen readers, we have to use a separate live region, these bugs cannot be worked around
+      -  Adaptive Cards emit a huge and complex DOM tree, screen readers often misunderstand it in live regions
+      -  At the time we implemented it, some assistive technologies would not turn off the live region of `log`
+   -  It is not a complex widget, it is good for static and simple content, such as a few sentences and images
+      -  Our chat bubbles could contain Adaptive Cards, audio, video, inputs and other interactive widgets
+      -  End-users do not expect nested interactive widgets in a non-complex widget, focus management and chat history navigation would be confusing
+-  `grid` is a complex widget that supports nested interactive elements and fits our focus management requirements
+   -  However, it is more like a spreadsheet control and too generic, it should only be used as the last resort
+-  `<ul>`/`role="list"` will push the content into the second level, despite `list-style-type: none` is set
+-  `feed` is a scrollable list of articles
+   -  It supports complex widgets, articles in a feed are expected to contain interactive widgets, such as a comment box
+   -  It presents a stream of stories with text, links, images and comments, which is what bots could send with Adaptive Cards
+   -  It supports appending and prepending articles for very long content, such as loading partial chat history, with `aria-busy`, `aria-setsize` and `aria-posinset`
+   -  It has very explicit instructions on how to implement navigation for its complex widgets
+
+Given the points above, we took some compromises and chose `feed` over `log`. As all children of `feed` must be `article`, we use `article` for every activity.
+
+## Why not describe the article as a message
+
+While we understand "article" and "message" could be a bit confusing, we tried to use `aria-roledescription` to override it. When we tested on Android and iOS, their support of `aria-roledescription` was limited to nothing and it made the experience worse. Thus, the article is narrated as "article".
+
+## What screen readers do
+
+-  When focus lands on the chat history and the user presses <kbd>UP</kbd> and <kbd>DOWN</kbd> arrow keys, the screen reader narrates the summary article, e.g. "Bot said: Where are you from? One attachment. Message is interactive. Click to interact. Article.", see [Actual narrations](#actual-narrations)
+-  In browse mode, the screen reader reads the content of every article in order, followed by its summary article, see [#3804](https://github.com/microsoft/BotFramework-WebChat/issues/3804)
+   -  Screen readers that support `aria-roledescription` announce the feed as "chat history"
+-  Screen readers may announce the position of the article in the feed, e.g. "1 of 3", which helps users know where they are in a long chat history, see [#5016](https://github.com/microsoft/BotFramework-WebChat/issues/5016)
+   -  Web Chat does not set `aria-setsize` and `aria-posinset`, the browser computes the position from the feed
 
 # UX: Narration of messages
 
