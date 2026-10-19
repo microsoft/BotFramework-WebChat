@@ -62,7 +62,7 @@ Legends:
 - Fixed the "Positive" card action button having less than 4.5:1 color contrast, fixes [#5713](https://github.com/microsoft/BotFramework-WebChat/issues/5713), in PR [#5905](https://github.com/microsoft/BotFramework-WebChat/pull/5905), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers announcing a single audio, video, or animation in a card as a list item, such as "1 of 1", fixes [#5722](https://github.com/microsoft/BotFramework-WebChat/issues/5722), in PR [#5903](https://github.com/microsoft/BotFramework-WebChat/pull/5903), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed video and animation cards disappearing in production builds when the video URL is relative or invalid, in PR [#5889](https://github.com/microsoft/BotFramework-WebChat/pull/5889), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed activities overlapping in the default theme when the host page styles `section` as a flex item, in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed activities overlapping in the default theme when the host page styles `section` as a flex item, in PR [#5919](https://github.com/microsoft/BotFramework-WebChat/pull/5919), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
