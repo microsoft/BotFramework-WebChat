@@ -470,6 +470,11 @@
     width: 20px;
     transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
+    /* Without a border, the button has no visible boundary in forced colors, so draw one as the default theme does. */
+    @media (forced-colors: active) {
+      border: var(--webchat-strokeWidthThin) solid ButtonText;
+    }
+
     :global(.code-block-copy-button__icon) {
       --webchat__component-icon--color: currentColor;
 

@@ -89,7 +89,7 @@
           testHelpers.getAccessibleName(document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`))
         ).resolves.toBe('Copy');
 
-        // THEN: The icon of the "Copy" button should be visible.
+        // THEN: The "Copy" button should show its icon and its border.
         await host.snapshot('local');
       });
     </script>
