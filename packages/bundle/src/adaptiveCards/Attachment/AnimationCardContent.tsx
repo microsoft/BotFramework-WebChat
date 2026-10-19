@@ -10,6 +10,7 @@ import AnimatedImageContent from './AnimatedImageContent';
 import styles from './AnimationCardContent.module.css';
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+import MediaList from './private/MediaList';
 
 const { VideoContent } = Components;
 
@@ -36,17 +37,15 @@ function AnimationCardContent(props: AnimationCardContentProps) {
 
   return (
     <div className={classNames['animation-card-attachment']}>
-      <ul className="media-list">
-        {media.map(({ profile = '', url }, index) => (
-          <li key={index}>
-            {/\.gif$/iu.test(url) ? (
-              <AnimatedImageContent alt={profile} autoPlay={content.autostart !== false} src={url} />
-            ) : (
-              <VideoContent alt={profile || title} autoPlay={content.autostart} src={url} />
-            )}
-          </li>
-        ))}
-      </ul>
+      <MediaList>
+        {media.map(({ profile = '', url }, index) =>
+          /\.gif$/iu.test(url) ? (
+            <AnimatedImageContent alt={profile} autoPlay={content.autostart !== false} key={index} src={url} />
+          ) : (
+            <VideoContent alt={profile || title} autoPlay={content.autostart} key={index} src={url} />
+          )
+        )}
+      </MediaList>
       <CommonCard
         actionPerformedClassName={actionPerformedClassName}
         content={content}
