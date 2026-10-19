@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const root = createRoot(document.getElementById('webchat'));
+        const render = props =>
+          root.render(
+            createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true }, ...props })
+          );
+
+        // Role descriptions of the message and attachments, per activity.
+        // Selects by role, not by the attribute, so an element missing its role description shows up as null.
+        const getRoleDescriptions = () =>
+          pageElements
+            .activities()
+            .map(activity =>
+              Array.from(activity.querySelectorAll('[role="group"], [role="listitem"]'), element =>
+                element.getAttribute('aria-roledescription')
+              )
+            );
+
+        // GIVEN: Web Chat in the default locale (en-US).
+        render({});
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A message with text and 2 attachments in each attachment layout.
+        for (const attachmentLayout of ['list', 'carousel']) {
+          await directLine.emulateIncomingActivity({
+            attachmentLayout,
+            attachments: [1, 2].map(index => ({
+              content: { title: `Card ${index} (${attachmentLayout})` },
+              contentType: 'application/vnd.microsoft.card.hero'
+            })),
+            from: { role: 'bot' },
+            text: `Message with ${attachmentLayout} attachments`,
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: A stacked message, then a carousel message, each with its text and 2 cards.
+        await host.snapshot('local');
+
+        // THEN: Message and attachments are described in English.
+        expect(getRoleDescriptions()).toEqual([
+          ['message', 'attachment', 'attachment'],
+          ['message', 'attachment', 'attachment']
+        ]);
+
+        // WHEN: The host switches to German and provides the strings (no translation in de-DE yet).
+        render({
+          locale: 'de-DE',
+          overrideLocalizedStrings: {
+            ACTIVITY_ATTACHMENT_ARIA_ROLE_ALT: 'Anhang',
+            ACTIVITY_MESSAGE_ARIA_ROLE_ALT: 'Nachricht'
+          }
+        });
+
+        // THEN: Message and attachments are described in German.
+        await waitFor(() =>
+          expect(getRoleDescriptions()).toEqual([
+            ['Nachricht', 'Anhang', 'Anhang'],
+            ['Nachricht', 'Anhang', 'Anhang']
+          ])
+        );
+      });
+    </script>
+  </body>
+</html>
