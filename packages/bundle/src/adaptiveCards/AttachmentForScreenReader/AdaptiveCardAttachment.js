@@ -10,19 +10,22 @@ import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useLocalizer } = hooks;
 
-// Perform a depth-first search of the Adaptive Card tree.
+// Perform a depth-first search of the visible elements of the Adaptive Card tree, skipping hidden subtrees.
+// Actions are visited but not walked into, so the card of Action.ShowCard, hidden until opened, is not visited.
 function walkAllItems(node, fn) {
-  fn(node);
+  if (node.isVisible) {
+    fn(node);
 
-  if (node.getItemAt && node.getItemCount) {
-    for (let count = node.getItemCount(), index = 0; index < count; index++) {
-      walkAllItems(node.getItemAt(index), fn);
+    if (node.getItemAt && node.getItemCount) {
+      for (let count = node.getItemCount(), index = 0; index < count; index++) {
+        walkAllItems(node.getItemAt(index), fn);
+      }
     }
-  }
 
-  if (node.getActionAt && node.getActionCount) {
-    for (let count = node.getActionCount(), index = 0; index < count; index++) {
-      fn(node.getActionAt(index));
+    if (node.getActionAt && node.getActionCount) {
+      for (let count = node.getActionCount(), index = 0; index < count; index++) {
+        fn(node.getActionAt(index));
+      }
     }
   }
 }
@@ -71,6 +74,7 @@ const AdaptiveCardAttachment = ({ content }) => {
       ChoiceSetInput,
       DateInput,
       FactSet,
+      Image,
       NumberInput,
       OpenUrlAction,
       RichTextBlock,
@@ -117,18 +121,25 @@ const AdaptiveCardAttachment = ({ content }) => {
     ToggleInput
   ]);
 
-  // Without `speak`, the card is described by its text, in document order. Inputs and actions are listed separately below.
+  // Without `speak`, the card is described by its visible text, in document order. Inputs and actions are listed separately below.
   const text = useMemo(() => {
-    const texts = [];
+    const nodes = [];
 
-    walkAllItems(card, node =>
-      node instanceof FactSet
-        ? texts.push(...node.facts.map(({ name, value }) => [name, value].filter(Boolean).join(': ')))
-        : (node instanceof RichTextBlock || node instanceof TextBlock) && texts.push(node.asString())
-    );
+    walkAllItems(card, node => nodes.push(node));
 
-    return texts.filter(Boolean).join(' ');
-  }, [card, FactSet, RichTextBlock, TextBlock]);
+    return nodes
+      .flatMap(node =>
+        node instanceof FactSet
+          ? node.facts.map(({ name, value }) => [name, value].filter(Boolean).join(': '))
+          : node instanceof Image
+            ? [node.altText]
+            : node instanceof RichTextBlock || node instanceof TextBlock
+              ? [node.asString()]
+              : []
+      )
+      .filter(Boolean)
+      .join(' ');
+  }, [card, FactSet, Image, RichTextBlock, TextBlock]);
 
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || text, '', '');
 

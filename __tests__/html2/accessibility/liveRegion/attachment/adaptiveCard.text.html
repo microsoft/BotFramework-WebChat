@@ -52,6 +52,7 @@
                 body: [
                   { style: 'heading', text: 'Seattle', type: 'TextBlock' },
                   { text: 'Sunny, 21°C', type: 'TextBlock' },
+                  { altText: 'Bot avatar', type: 'Image', url: '/assets/bot-avatar.jpg' },
                   {
                     facts: [
                       { title: 'Humidity', value: '40%' },
@@ -78,14 +79,18 @@
         });
 
         await pageConditions.numActivitiesShown(1);
+        await pageConditions.allImagesLoaded();
         await pageConditions.liveRegionStabilized();
 
-        // THEN: The live region copy describes the card by its text, in document order: text blocks, facts as "title: value", and rich text.
+        // THEN: The live region copy describes the card by its text, in document order: text blocks, image alt text, facts as "title: value", and rich text.
         expect(
           testHelpers
             .getAllTextContents(pageElements.liveRegion().querySelector('.webchat__live-region-activity'))
             .map(text => text.trim())
-        ).toEqual(['Bot said:', 'A card: Seattle Sunny, 21°C Humidity: 40% Wind: 8 km/h Updated 5 minutes ago']);
+        ).toEqual([
+          'Bot said:',
+          'A card: Seattle Sunny, 21°C Bot avatar Humidity: 40% Wind: 8 km/h Updated 5 minutes ago'
+        ]);
 
         // THEN: The live region shows "A card:" followed by the card text.
         await host.snapshot('local');
