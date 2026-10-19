@@ -111,11 +111,16 @@
         const [firstAudioElement, secondAudioElement] = twoMediaCardElement.querySelectorAll('audio');
 
         // THEN: A single medium should not be announced as an item of a list, such as "1 of 1".
-        expect(await getAccessibilityAncestorRoles(audioCardElement.querySelector('audio'))).not.toContain('listitem');
-        expect(await getAccessibilityAncestorRoles(videoCardElement.querySelector('video'))).not.toContain('listitem');
-        expect(await getAccessibilityAncestorRoles(animationCardElement.querySelector('img'))).not.toContain(
-          'listitem'
-        );
+        for (const mediaElement of [
+          audioCardElement.querySelector('audio'),
+          videoCardElement.querySelector('video'),
+          animationCardElement.querySelector('img')
+        ]) {
+          const roles = await getAccessibilityAncestorRoles(mediaElement);
+
+          expect(roles).not.toContain('list');
+          expect(roles).not.toContain('listitem');
+        }
 
         // THEN: 2 media should be announced as the 2 items of a list.
         const [firstListItem, firstList] = await testHelpers.getAccessibilityAncestors(firstAudioElement);
@@ -127,7 +132,7 @@
         expect(firstList.role.value).toBe('list');
         expect(secondList.backendDOMNodeId).toBe(firstList.backendDOMNodeId);
 
-        // THEN: A single medium and a list of 2 media should be laid out alike, without list markers.
+        // THEN: The list of 2 media should have no list markers.
         await pageConditions.mediaBufferStabilized(firstAudioElement);
         await pageConditions.mediaBufferStabilized(secondAudioElement);
         await pageConditions.scrollToBottomCompleted();
