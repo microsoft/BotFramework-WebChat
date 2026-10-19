@@ -24,6 +24,7 @@ Legends:
 - Rich cards: added fill-in of `replyToId` for "IM back", "post back", and "message back" card actions, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - `hooks/useSendMessage`: added `replyToId`, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - `hooks/useSendMessageBack`: added `replyToId`, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
+- Carousel: added <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> (mirrored in right-to-left) and <kbd>HOME</kbd>/<kbd>END</kbd> to move the focus between cards when a card has focus, fixes [#5743](https://github.com/microsoft/BotFramework-WebChat/issues/5743), in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
@@ -57,7 +58,6 @@ Legends:
 - Fixed code samples, such as in the "View code" dialog, titled "Javascript" instead of "JavaScript": common programming languages and their aliases, such as `js`, now show their proper names, which can be overridden via `overrideLocalizedStrings` (`PROGRAMMING_LANGUAGE_*`), in PR [#5896](https://github.com/microsoft/BotFramework-WebChat/pull/5896), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed code not being highlighted when the programming language is not in lowercase, such as `TS`, in PR [#5896](https://github.com/microsoft/BotFramework-WebChat/pull/5896), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed GIFs in animation cards looping with no way to stop them: they now have a pause button, and do not play when the user prefers reduced motion or the card has `autostart: false`; the icons of the Copy and View code buttons are now visible in forced colors, fixes [#5734](https://github.com/microsoft/BotFramework-WebChat/issues/5734), in PR [#5897](https://github.com/microsoft/BotFramework-WebChat/pull/5897), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed arrow keys not moving between the cards of a carousel: when a card has focus, <kbd>LEFT</kbd> and <kbd>RIGHT</kbd> move the focus to the previous or next card (mirrored in right-to-left) and scroll it into view, <kbd>HOME</kbd> and <kbd>END</kbd> to the first and last card; keys pressed inside the card and <kbd>TAB</kbd> are unchanged, fixes [#5743](https://github.com/microsoft/BotFramework-WebChat/issues/5743), related to [#5117](https://github.com/microsoft/BotFramework-WebChat/issues/5117) and [#5718](https://github.com/microsoft/BotFramework-WebChat/issues/5718), in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
