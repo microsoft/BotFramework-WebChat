@@ -30,6 +30,7 @@ Legends:
 
 - 💥 `useSendMessage`: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - 👷🏻 Visual regression tests now use 5 consecutive screenshots for stability indication, up from 2, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
+- 👷🏻 Bumped `http-proxy-middleware` to 3.0.0, fixes [#5178](https://github.com/microsoft/BotFramework-WebChat/issues/5178), by [@Podugboch](https://github.com/Podugboch)
 
 ### Removed
 
