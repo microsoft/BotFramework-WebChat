@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -12,7 +14,11 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be seen in the snapshot.
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 } },
+          document.getElementById('webchat')
+        );
 
         await pageConditions.uiConnected();
 
@@ -66,6 +72,11 @@
 
         expect(secondAdaptiveCard.getAttribute('aria-label')).toBeTruthy();
         expect(secondAdaptiveCard.getAttribute('role')).toBe('form');
+
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: The live region shows what screen readers announce: "Bot said:", "A card: Hello, World!" (the "speak" property) for each card, then the input of the second card.
+        await host.snapshot('local');
       });
     </script>
   </body>
