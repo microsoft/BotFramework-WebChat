@@ -8,6 +8,7 @@ import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+import MediaList from './private/MediaList';
 
 import styles from './AudioCardContent.module.css';
 
@@ -33,13 +34,11 @@ function AudioCardContent(props: AudioCardContentProps) {
 
   return (
     <div className={classNames['audio-card-attachment']}>
-      <ul className="media-list">
+      <MediaList>
         {media.map(({ url }, index) => (
-          <li key={index}>
-            <AudioContent alt={title} autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
-          </li>
+          <AudioContent alt={title} autoPlay={autostart} key={index} loop={autoloop} poster={imageURL} src={url} />
         ))}
-      </ul>
+      </MediaList>
       <CommonCard
         actionPerformedClassName={actionPerformedClassName}
         content={content}
