@@ -64,50 +64,25 @@
         const carouselLayout = document.querySelector('.carousel-layout');
         const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
-        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
 
         // In RTL, the next card is on the left.
         const nextKey = dir === 'rtl' ? 'ARROW_LEFT' : 'ARROW_RIGHT';
         const previousKey = dir === 'rtl' ? 'ARROW_RIGHT' : 'ARROW_LEFT';
 
-        const isCardInView = card => {
-          const cardRect = card.getBoundingClientRect();
-          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
-
-          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
-        };
-
-        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
-        const isFlipperHidden = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
-          const buttonRect = flipper.getBoundingClientRect();
-
-          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
-        };
-
-        const waitForCarouselSettled = () =>
-          waitFor(
-            () => {
-              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
-              expect(flippers.every(isFlipperHidden)).toBe(true);
-            },
-            { timeout: 5000 }
-          );
-
         const expectFocusOnCard = async index => {
           expect(cards.indexOf(document.activeElement)).toBe(index);
           expect(document.activeElement.matches(':focus-visible')).toBe(true);
 
-          await waitFor(() => expect(isCardInView(cards[index])).toBe(true));
-          await waitForCarouselSettled();
+          await waitFor(() => expect(testHelpers.isCardInView(cards[index])).toBe(true));
+          await pageConditions.carouselSettled(carouselLayout);
 
-          expect(isCardInView(cards[index])).toBe(true);
+          expect(testHelpers.isCardInView(cards[index])).toBe(true);
         };
 
         // GIVEN: The carousel is scrolled to the start, the second card is not fully in view.
         expect(cards).toHaveLength(4);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
-        expect(isCardInView(cards[1])).toBe(false);
+        expect(testHelpers.isCardInView(cards[1])).toBe(false);
 
         // WHEN: Focus on the first card via keyboard.
         pageObjects.focusTranscript();
@@ -180,7 +155,7 @@
 
         // THEN: Tab order is unchanged: the button inside the first card has focus, the carousel stays at the start.
         expect(document.activeElement).toBe(cards[0].querySelector('button'));
-        await waitForCarouselSettled();
+        await pageConditions.carouselSettled(carouselLayout);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
         await host.snapshot('local');
       });

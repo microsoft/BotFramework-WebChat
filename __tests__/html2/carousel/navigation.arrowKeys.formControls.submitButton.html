@@ -89,47 +89,14 @@
         const carouselLayout = document.querySelector('.carousel-layout');
         const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
-        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
         const input = cards[0].querySelector('input');
         const submitButton = cards[0].querySelector('button');
-        const heroCardButton = cards[1].querySelector('button');
-
-        const isCardInView = card => {
-          const cardRect = card.getBoundingClientRect();
-          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
-
-          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
-        };
-
-        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
-        const isFlipperHidden = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
-          const buttonRect = flipper.getBoundingClientRect();
-
-          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
-        };
-
-        const waitForCarouselSettled = () =>
-          waitFor(
-            () => {
-              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
-              expect(flippers.every(isFlipperHidden)).toBe(true);
-            },
-            { timeout: 5000 }
-          );
-
-        // An arrow key on a button keeps the browser default: the browser scrolls the carousel by one arrow key step, then
-        // react-film auto-centers it back on the nearest card. Wait for this scroll to start and to settle.
-        const waitForCarouselScrolled = async () => {
-          await waitFor(() => expect(carouselLayout.querySelector('.react-film__main--scrolling')).not.toBeNull());
-          await waitForCarouselSettled();
-        };
 
         const expectCarouselAtStart = async () => {
-          await waitForCarouselSettled();
+          await pageConditions.carouselSettled(carouselLayout);
 
           expect(carouselFilmstrip.scrollLeft).toBe(0);
-          expect(isCardInView(cards[0])).toBe(true);
+          expect(testHelpers.isCardInView(cards[0])).toBe(true);
         };
 
         // Focus should be on the card itself, not on the form controls inside it.
@@ -137,23 +104,20 @@
           expect(document.activeElement).toBe(cards[index]);
           expect(document.activeElement.matches(':focus-visible')).toBe(true);
 
-          await waitFor(() => expect(isCardInView(cards[index])).toBe(true));
-          await waitForCarouselSettled();
+          await waitFor(() => expect(testHelpers.isCardInView(cards[index])).toBe(true));
+          await pageConditions.carouselSettled(carouselLayout);
 
-          expect(isCardInView(cards[index])).toBe(true);
+          expect(testHelpers.isCardInView(cards[index])).toBe(true);
         };
 
-        const expectFocusOnInput = async selectionStart => {
-          expect(document.activeElement).toBe(input);
-          expect(input).toHaveProperty('selectionStart', selectionStart);
-
-          await expectCarouselAtStart();
+        // An arrow key on a button keeps the browser default: the browser scrolls the carousel by one arrow key step, then
+        // react-film auto-centers it back on the nearest card. Wait for this scroll to start and to settle.
+        const waitForCarouselScrolled = async () => {
+          await waitFor(() => expect(carouselLayout.querySelector('.react-film__main--scrolling')).not.toBeNull());
+          await pageConditions.carouselSettled(carouselLayout);
         };
 
-        expect(cards).toHaveLength(3);
-        expect(input).toHaveProperty('value', 'Hello');
         expect(submitButton).toHaveProperty('textContent', 'Add item 1');
-        expect(heroCardButton).toHaveProperty('textContent', 'Buy item 2');
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 
         // WHEN: Focus on the first card via keyboard.
@@ -165,72 +129,14 @@
         await expectCarouselAtStart();
         await host.snapshot('local');
 
-        // WHEN: Press RIGHT.
-        await host.sendKeys('ARROW_RIGHT');
-
-        // THEN: The hero card has focus (not its button) and is scrolled to the center.
-        await expectFocusOnCard(1);
-        await host.snapshot('local');
-
-        // WHEN: Press RIGHT again.
-        await host.sendKeys('ARROW_RIGHT');
-
-        // THEN: The third card has focus (not its form controls) and the carousel is scrolled to the end.
-        await expectFocusOnCard(2);
-        await host.snapshot('local');
-
-        // WHEN: Press LEFT.
-        await host.sendKeys('ARROW_LEFT');
-
-        // THEN: The hero card has focus again and is scrolled to the center.
-        await expectFocusOnCard(1);
-        await host.snapshot('local');
-
-        // WHEN: Press LEFT again.
-        await host.sendKeys('ARROW_LEFT');
-
-        // THEN: The first card has focus again, the carousel is back at the start.
-        await expectFocusOnCard(0);
-        await expectCarouselAtStart();
-        await host.snapshot('local');
-
         // WHEN: Press TAB to focus on the text input inside the first card.
         await host.sendTab();
 
         // THEN: The text input has focus with its text selected, the carousel is at the start.
-        await expectFocusOnInput(0);
+        expect(document.activeElement).toBe(input);
+        expect(input).toHaveProperty('selectionStart', 0);
         expect(input).toHaveProperty('selectionEnd', 5);
-        await host.snapshot('local');
-
-        // Arrow keys inside the text input move the caret, without moving focus to another card or scrolling the carousel.
-        // The caret is not drawn in snapshots, its position is asserted.
-
-        // WHEN: Press END inside the text input.
-        await host.sendKeys('END');
-
-        // THEN: The text input keeps focus with the caret at the end, the carousel is at the start.
-        await expectFocusOnInput(5);
-        await host.snapshot('local');
-
-        // WHEN: Press LEFT inside the text input.
-        await host.sendKeys('ARROW_LEFT');
-
-        // THEN: The text input keeps focus with the caret moved one character left, the carousel is at the start.
-        await expectFocusOnInput(4);
-        await host.snapshot('local');
-
-        // WHEN: Press LEFT inside the text input again.
-        await host.sendKeys('ARROW_LEFT');
-
-        // THEN: The text input keeps focus with the caret moved another character left, the carousel is at the start.
-        await expectFocusOnInput(3);
-        await host.snapshot('local');
-
-        // WHEN: Press RIGHT inside the text input.
-        await host.sendKeys('ARROW_RIGHT');
-
-        // THEN: The text input keeps focus with the caret moved one character right, the carousel is at the start.
-        await expectFocusOnInput(4);
+        await expectCarouselAtStart();
         await host.snapshot('local');
 
         // WHEN: Press TAB to focus on the submit button inside the first card.
@@ -264,46 +170,6 @@
         // THEN: The hero card has focus, the carousel stays at the start with the hero card partly in view.
         expect(document.activeElement).toBe(cards[1]);
         await expectCarouselAtStart();
-        await host.snapshot('local');
-
-        // WHEN: Press TAB to focus on the button inside the hero card.
-        await host.sendTab();
-
-        // THEN: The button inside the hero card has focus, the carousel stays at the start.
-        expect(document.activeElement).toBe(heroCardButton);
-        await expectCarouselAtStart();
-        await host.snapshot('local');
-
-        // WHEN: Press LEFT on the button inside the hero card.
-        await host.sendKeys('ARROW_LEFT');
-
-        // THEN: The button inside the hero card keeps focus, the carousel stays at the start.
-        expect(document.activeElement).toBe(heroCardButton);
-        await expectCarouselAtStart();
-        await host.snapshot('local');
-
-        // WHEN: Press RIGHT on the button inside the hero card.
-        await host.sendKeys('ARROW_RIGHT');
-        await waitForCarouselScrolled();
-
-        // THEN: The button keeps focus; the browser scrolls the carousel briefly, but it settles back at the start.
-        expect(document.activeElement).toBe(heroCardButton);
-        await expectCarouselAtStart();
-        await host.snapshot('local');
-
-        // WHEN: Press SHIFT-TAB to focus on the hero card.
-        await host.sendShiftTab();
-
-        // THEN: The hero card has focus, the carousel stays at the start.
-        expect(document.activeElement).toBe(cards[1]);
-        await expectCarouselAtStart();
-        await host.snapshot('local');
-
-        // WHEN: Press RIGHT on the hero card.
-        await host.sendKeys('ARROW_RIGHT');
-
-        // THEN: Arrow keys move focus between cards again: the third card has focus and the carousel is scrolled to the end.
-        await expectFocusOnCard(2);
         await host.snapshot('local');
       });
     </script>

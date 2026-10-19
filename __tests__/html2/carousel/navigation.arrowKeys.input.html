@@ -65,45 +65,20 @@
         const carouselLayout = document.querySelector('.carousel-layout');
         const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
-        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
         const input = cards[0].querySelector('input');
-
-        const isCardInView = card => {
-          const cardRect = card.getBoundingClientRect();
-          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
-
-          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
-        };
-
-        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
-        const isFlipperHidden = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
-          const buttonRect = flipper.getBoundingClientRect();
-
-          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
-        };
-
-        const waitForCarouselSettled = () =>
-          waitFor(
-            () => {
-              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
-              expect(flippers.every(isFlipperHidden)).toBe(true);
-            },
-            { timeout: 5000 }
-          );
 
         const expectFocusOnInput = async selectionStart => {
           expect(document.activeElement).toBe(input);
           expect(input).toHaveProperty('selectionStart', selectionStart);
 
-          await waitForCarouselSettled();
+          await pageConditions.carouselSettled(carouselLayout);
 
           expect(carouselFilmstrip.scrollLeft).toBe(0);
         };
 
         // GIVEN: The carousel is scrolled to the start, the second card is not fully in view.
         expect(carouselFilmstrip.scrollLeft).toBe(0);
-        expect(isCardInView(cards[1])).toBe(false);
+        expect(testHelpers.isCardInView(cards[1])).toBe(false);
 
         // WHEN: Focus on the first card via keyboard.
         pageObjects.focusTranscript();
@@ -111,7 +86,7 @@
 
         // THEN: The first card has focus, the carousel is at the start.
         expect(cards.indexOf(document.activeElement)).toBe(0);
-        await waitForCarouselSettled();
+        await pageConditions.carouselSettled(carouselLayout);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
         await host.snapshot('local');
 
@@ -159,7 +134,7 @@
 
         // THEN: The first card has focus, the carousel is at the start.
         expect(cards.indexOf(document.activeElement)).toBe(0);
-        await waitForCarouselSettled();
+        await pageConditions.carouselSettled(carouselLayout);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
         await host.snapshot('local');
 
@@ -168,9 +143,9 @@
 
         // THEN: The second card has focus and is scrolled to the center.
         expect(cards.indexOf(document.activeElement)).toBe(1);
-        await waitFor(() => expect(isCardInView(cards[1])).toBe(true));
-        await waitForCarouselSettled();
-        expect(isCardInView(cards[1])).toBe(true);
+        await waitFor(() => expect(testHelpers.isCardInView(cards[1])).toBe(true));
+        await pageConditions.carouselSettled(carouselLayout);
+        expect(testHelpers.isCardInView(cards[1])).toBe(true);
         await host.snapshot('local');
       });
     </script>
