@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dictate-button": "https://esm.sh/react-dictate-button",
+          "react-dictate-button/": "https://esm.sh/react-dictate-button/",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { actRecognizeOnce, actSpeakOnce, createWebSpeechPonyfill } from '/assets/esm/speech/speechPageObjects.js';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const colorScheme = new URLSearchParams(location.search).get('color-scheme') === 'dark' ? 'dark' : 'light';
+
+        // GIVEN: A light or dark high contrast theme (such as "Desert" or "Aquatic" on Windows) is active before Web Chat renders.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'forced-colors', value: 'active' },
+            { name: 'prefers-color-scheme', value: colorScheme }
+          ]
+        });
+
+        expect(window.matchMedia(`(forced-colors: active) and (prefers-color-scheme: ${colorScheme})`).matches).toBe(
+          true
+        );
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const ponyfill = createWebSpeechPonyfill();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, { directLine, store, webSpeechPonyfillFactory: () => ponyfill })
+        );
+
+        await pageConditions.uiConnected();
+
+        const microphoneButton = pageElements.microphoneButton();
+
+        // THEN: The microphone button should be named "Speak".
+        await expect(testHelpers.getAccessibleName(microphoneButton)).resolves.toBe('Speak');
+
+        // WHEN: The microphone button is clicked and the user starts speaking.
+        actRecognizeOnce(
+          ponyfill,
+          () => actSpeakOnce(ponyfill, () => host.click(microphoneButton)),
+          dispatcher => {
+            dispatcher.start();
+            dispatcher.audioStart();
+            dispatcher.soundStart();
+            dispatcher.speechStart();
+            dispatcher.result('Hello, World!');
+          }
+        );
+
+        // THEN: Web Chat should be dictating.
+        await waitFor(() =>
+          expect(microphoneButton.parentElement.classList.contains('webchat__microphone-button--dictating')).toBe(true)
+        );
+
+        // THEN: The send box should show what the user is saying.
+        await waitFor(() =>
+          expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
+            'textContent',
+            'Hello, World!\u00a0' // Each interim result is followed by a non-breaking space.
+          )
+        );
+
+        // THEN: The microphone icon should be visible while dictating.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
