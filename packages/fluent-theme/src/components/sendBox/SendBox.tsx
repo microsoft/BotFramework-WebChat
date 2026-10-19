@@ -209,14 +209,14 @@ function SendBox(props: Props) {
 
   const handleTranscriptNavigation = useTranscriptNavigation();
 
-  const aria = {
-    'aria-invalid': 'false' as const,
-    ...(errorMessage && {
-      'aria-describedby': errorMessageId,
-      'aria-errormessage': errorMessageId,
-      'aria-invalid': 'true' as const
-    })
-  };
+  // Only set "aria-invalid" when invalid, "false" is the default.
+  const aria = errorMessage
+    ? Object.freeze({
+        'aria-describedby': errorMessageId,
+        'aria-errormessage': errorMessageId,
+        'aria-invalid': 'true' as const
+      })
+    : undefined;
 
   return (
     <form

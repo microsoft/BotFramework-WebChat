@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const root = createRoot(document.getElementById('webchat'));
+        const variant = new URLSearchParams(location.search).get('variant');
+
+        const render = props => {
+          const webChatElement = createElement(ReactWebChat, { directLine, store, ...props });
+
+          root.render(variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement);
+        };
+
+        const getSendBox = () =>
+          document.querySelector(variant ? '[data-testid="send box container"]' : '.webchat__send-box');
+
+        const getSendButton = () =>
+          document.querySelector(variant ? '[data-testid="send box send button"]' : '.webchat__send-button');
+
+        const getMicrophoneButton = () => document.querySelector('[data-testid="send box microphone button"]');
+
+        const getUploadButton = () =>
+          document.querySelector(variant ? '[data-testid="send box upload button"]' : '.webchat__upload-button button');
+
+        render();
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A message with a Markdown link reference definition, shown as a reference list below the message.
+        await directLine.emulateIncomingActivity({
+          text: 'Override the proxy settings[1].\n\n[1]: https://example.com/proxy "Proxy settings"\n',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The "Send" and "Upload file" buttons should be named by `aria-label`, not only by `title`.
+        expect(getSendButton().getAttribute('aria-label')).toBe('Send');
+        expect(getUploadButton().getAttribute('aria-label')).toBe('Upload file');
+        expect(await testHelpers.getAccessibleName(getSendButton())).toBe('Send');
+        expect(await testHelpers.getAccessibleName(getUploadButton())).toBe('Upload file');
+
+        // THEN: The hidden file input behind the "Upload file" button should also be labelled, for audit tools.
+        expect(getSendBox().querySelector('input[type="file"]').getAttribute('aria-label')).toBe('Upload file');
+
+        // THEN: The send box should not set `aria-disabled` or `aria-invalid` to "false".
+        expect(
+          Array.from(getSendBox().querySelectorAll('[aria-disabled="false"], [aria-invalid="false"]')).map(
+            element => element.outerHTML
+          )
+        ).toEqual([]);
+
+        // THEN: The "open in new window" icon in the link reference should be hidden from assistive technologies.
+        const openInNewWindowIcon = document.querySelector('.link-definitions__list-item-box svg');
+
+        expect(openInNewWindowIcon.getAttribute('aria-hidden')).toBe('true');
+        expect(await testHelpers.getAccessibilityNode(openInNewWindowIcon)).toHaveProperty('ignored', true);
+
+        // THEN: The send box and the link reference with its "open in new window" icon are shown.
+        await host.snapshot('local');
+
+        // The Fluent theme shows its microphone button for voice-capable adapters only, not for Web Speech.
+        if (!variant) {
+          // WHEN: Speech recognition is enabled.
+          render({ webSpeechPonyfillFactory: testHelpers.speech.createWebSpeechMock });
+
+          // THEN: The microphone button should be named by `aria-label`, not only by `title`.
+          await waitFor(() => expect(getMicrophoneButton()).toBeTruthy());
+          expect(getMicrophoneButton().getAttribute('aria-label')).toBe('Speak');
+          expect(await testHelpers.getAccessibleName(getMicrophoneButton())).toBe('Speak');
+        }
+
+        // WHEN: Web Chat is disabled.
+        render({ uiState: 'disabled' });
+
+        // THEN: The send box should still mark its controls as disabled.
+        await waitFor(() => expect(getSendButton().getAttribute('aria-disabled')).toBe('true'));
+        expect(getUploadButton().getAttribute('aria-disabled')).toBe('true');
+        expect(getSendBox().querySelector('[data-testid="send box text area"]').getAttribute('aria-disabled')).toBe(
+          'true'
+        );
+      });
+    </script>
+  </body>
+</html>

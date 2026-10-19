@@ -95,7 +95,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((rawProps, ref) 
           </div>
           <textarea
             aria-describedby={props['aria-describedby']}
-            aria-disabled={disabled}
+            aria-disabled={disabled || undefined}
             aria-label={props['aria-label']}
             aria-labelledby={props['aria-labelledby']}
             aria-placeholder={props.placeholder}

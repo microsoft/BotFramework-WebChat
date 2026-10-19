@@ -23,6 +23,7 @@ const accessibleButtonPropsSchema = pipe(
   object({
     'aria-hidden': optional(boolean()),
     'aria-keyshortcuts': optional(string()),
+    'aria-label': optional(string()),
     children: optional(reactNode()),
     className: optional(string()),
     'data-testid': optional(string()),
@@ -60,6 +61,7 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
     {
       'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyShortcuts,
+      'aria-label': ariaLabel,
       children,
       className,
       'data-testid': dataTestId,
@@ -74,6 +76,7 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
       aria-disabled={disabled || undefined}
       aria-hidden={ariaHidden}
       aria-keyshortcuts={ariaKeyShortcuts}
+      aria-label={ariaLabel}
       className={className}
       data-testid={dataTestId}
       onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}
