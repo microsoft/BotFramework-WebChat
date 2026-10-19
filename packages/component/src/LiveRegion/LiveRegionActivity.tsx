@@ -57,7 +57,7 @@ function LiveRegionActivity(props: LiveRegionActivityProps) {
   const validFallbackText = fallbackText && typeof fallbackText === 'string';
 
   return (
-    <article aria-atomic={true} className={classNames('webchat__live-region-activity', rootClassName)}>
+    <div aria-atomic={true} className={classNames('webchat__live-region-activity', rootClassName)}>
       <div>{greetingAlt}</div>
       {validFallbackText ? (
         <div>{fallbackText}</div>
@@ -74,7 +74,7 @@ function LiveRegionActivity(props: LiveRegionActivityProps) {
           )}
         </Fragment>
       )}
-    </article>
+    </div>
   );
 }
 

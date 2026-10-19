@@ -9,7 +9,7 @@ const FileAttachment = ({ attachment: { name = '' } = {} }) => {
 
   const label = localize('ATTACHMENT_FILE', name);
 
-  return <article>{label}</article>;
+  return <div>{label}</div>;
 };
 
 FileAttachment.propTypes = {

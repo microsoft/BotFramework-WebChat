@@ -16,7 +16,7 @@ const RichCardAttachment = ({ content = {} }) => {
   const cardLabel = localize('ATTACHMENT_CARD', title || '', subtitle || '', text || '');
 
   return (
-    <article>
+    <div>
       <div>{cardLabel}</div>
       {!!image && !!image.alt && <img alt={image.alt} />}
       {!!images && !!images.length && images.map(({ alt }, index) => <img alt={alt} key={index} />)}
@@ -68,7 +68,7 @@ const RichCardAttachment = ({ content = {} }) => {
           ))}
         </div>
       )}
-    </article>
+    </div>
   );
 };
 

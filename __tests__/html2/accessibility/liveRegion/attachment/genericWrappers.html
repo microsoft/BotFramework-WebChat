@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { botAvatarInitials: 'WC', internalLiveRegionFadeAfter: 60000 }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot sends a message with an Adaptive Card, a hero card, and a file.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                actions: [{ title: 'OK', type: 'Action.Submit' }],
+                body: [{ text: 'Card 1', type: 'TextBlock' }],
+                speak: 'Card 1',
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            {
+              content: { buttons: [{ title: 'Go', type: 'imBack', value: 'go' }], text: 'Hero text', title: 'Card 2' },
+              contentType: 'application/vnd.microsoft.card.hero'
+            },
+            { contentType: 'application/octet-stream', name: 'report.zip' }
+          ],
+          from: { role: 'bot' },
+          text: 'Here are 2 cards and a file.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await waitFor(() =>
+          expect(pageElements.liveRegion().querySelector('.webchat__live-region-activity')).toBeTruthy()
+        );
+
+        const liveRegionActivity = pageElements.liveRegion().querySelector('.webchat__live-region-activity');
+
+        // THEN: The live region should contain the text of the message, the cards, and the file.
+        expect(liveRegionActivity.innerText).toBe(
+          [
+            'Bot WC said:',
+            'Here are 2 cards and a file.',
+            'A card: Card 1',
+            'OK',
+            'A card: Card 2 Hero text',
+            'Go',
+            'A file: report.zip'
+          ].join('\n')
+        );
+
+        // THEN: The message should still be announced as a whole.
+        expect(liveRegionActivity.getAttribute('aria-atomic')).toBe('true');
+
+        // THEN: The message and its attachments should not be articles, screen readers would read "article" before each of them.
+        const accessibilityNodes = await Promise.all(
+          [liveRegionActivity, ...liveRegionActivity.querySelectorAll('*')].map(element =>
+            testHelpers.getAccessibilityNode(element)
+          )
+        );
+
+        expect(accessibilityNodes.map(({ role }) => role?.value)).not.toContain('article');
+        expect(liveRegionActivity.querySelectorAll('article')).toHaveLength(0);
+      });
+    </script>
+  </body>
+</html>

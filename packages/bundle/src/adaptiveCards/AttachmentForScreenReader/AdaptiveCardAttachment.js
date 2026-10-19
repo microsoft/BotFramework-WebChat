@@ -144,7 +144,7 @@ const AdaptiveCardAttachment = ({ content }) => {
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || text, '', '');
 
   return (
-    <article>
+    <div>
       <div>{cardLabel}</div>
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
@@ -184,7 +184,7 @@ const AdaptiveCardAttachment = ({ content }) => {
           false
         )
       )}
-    </article>
+    </div>
   );
 };
 
