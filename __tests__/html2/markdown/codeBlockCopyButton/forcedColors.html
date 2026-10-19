@@ -57,7 +57,11 @@
         );
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
-        const webChatElement = createElement(ReactWebChat, { directLine, store });
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          store,
+          styleOptions: { hideSendBox: true }
+        });
         const themedElement = variant
           ? createElement(FluentThemeProvider, { variant }, webChatElement)
           : webChatElement;
