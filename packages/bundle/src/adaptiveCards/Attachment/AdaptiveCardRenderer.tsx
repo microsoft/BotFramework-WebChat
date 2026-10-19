@@ -125,12 +125,23 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   // Only listen to event if it is not disabled and have "tapAction" prop.
   const handleClickAndKeyPressForTapAction = !disabled && tapAction ? handleClickAndKeyPress : undefined;
 
+  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod, markActionAsSelected] =
+    useActionShouldBePushButtonModEffect(adaptiveCard);
+  const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
+  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
+  const [applyImageAltTextMod, undoImageAltTextMod] = useImageAltTextModEffect(adaptiveCard);
+  const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
+  const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
+
   const handleExecuteAction = useCallback(
     (action: AdaptiveCardAction): void => {
       // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
       if (disabledRef.current) {
         return;
       }
+
+      // Adaptive Cards calls `onExecuteAction` only after the inputs of the action passed validation.
+      markActionAsSelected(action);
 
       const actionTypeName = action.getJsonTypeName();
       const { iconUrl: image, title } = action;
@@ -202,19 +213,11 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         console.error(action);
       }
     },
-    [replyToId, disabledRef, performCardAction, scrollToEnd]
+    [disabledRef, markActionAsSelected, performCardAction, replyToId, scrollToEnd]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
-
-  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod] =
-    useActionShouldBePushButtonModEffect(adaptiveCard);
-  const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
-  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
-  const [applyImageAltTextMod, undoImageAltTextMod] = useImageAltTextModEffect(adaptiveCard);
-  const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
-  const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
 
   const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
     undoActionShouldBePushButtonMod();
