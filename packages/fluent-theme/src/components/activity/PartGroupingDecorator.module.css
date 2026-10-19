@@ -118,6 +118,10 @@
       background: currentColor;
       -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
       mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
     }
   }
 
@@ -168,6 +172,14 @@
       height: 0.7em;
       -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
       mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
+    }
+
+    @media (forced-colors: active) {
+      color: LinkText;
     }
   }
   /* #endregion */
@@ -266,6 +278,10 @@
       color: currentColor;
       text-decoration: none;
       text-overflow: ellipsis;
+
+      @media (forced-colors: active) {
+        color: LinkText;
+      }
     }
 
     :global(.link-definitions__list-item-main-text):has(:global(.link-definitions__open-in-new-window-icon))::before {
@@ -280,6 +296,10 @@
       mask: var(--webchat__citation__external-link--mask) no-repeat;
       padding: 0;
       width: 1em;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
     }
 
     /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
