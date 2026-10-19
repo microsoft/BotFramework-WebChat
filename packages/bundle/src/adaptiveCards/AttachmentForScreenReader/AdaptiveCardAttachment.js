@@ -146,19 +146,19 @@ const AdaptiveCardAttachment = ({ content }) => {
   return (
     <article>
       <div>{cardLabel}</div>
-      {/* Inputs are named as in the rendered card: by their label, otherwise by their placeholder. */}
+      {/* Inputs are named and pre-filled as in the rendered card: named by their label, otherwise by their placeholder. */}
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
         ) : input instanceof DateInput ? (
           <label key={index}>
             {input.label || input.placeholder}
-            <input placeholder={input.placeholder} tabIndex={-1} type="date" />
+            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="date" />
           </label>
         ) : input instanceof NumberInput ? (
           <label key={index}>
             {input.label || input.placeholder}
-            <input placeholder={input.placeholder} tabIndex={-1} type="number" />
+            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="number" />
           </label>
         ) : input instanceof OpenUrlAction || input instanceof ShowCardAction || input instanceof SubmitAction ? (
           <div key={index}>
@@ -169,17 +169,17 @@ const AdaptiveCardAttachment = ({ content }) => {
         ) : input instanceof TextInput ? (
           <label key={index}>
             {input.label || input.placeholder}
-            <input placeholder={input.placeholder} tabIndex={-1} type="text" />
+            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="text" />
           </label>
         ) : input instanceof TimeInput ? (
           <label key={index}>
             {input.label || input.placeholder}
-            <input placeholder={input.placeholder} tabIndex={-1} type="time" />
+            <input defaultValue={input.defaultValue} placeholder={input.placeholder} tabIndex={-1} type="time" />
           </label>
         ) : input instanceof ToggleInput ? (
           <label key={index}>
             {input.title}
-            <input defaultChecked={input.value === input.valueOn} tabIndex={-1} type="checkbox" />
+            <input defaultChecked={input.defaultValue === input.valueOn} tabIndex={-1} type="checkbox" />
           </label>
         ) : (
           false
