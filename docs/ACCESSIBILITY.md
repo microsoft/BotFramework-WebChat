@@ -92,6 +92,7 @@ Adaptive Cards, some type of attachments, or custom activities could contains in
    -  There will be no-op if the user press <kbd>ENTER</kbd> on a non-interactive activity
 -  Inside an activity: When the focus is placed inside an interactive activity, the focus will be trapped inside the activity
    -  To leave the focus trap, the user should press the <kbd>ESCAPE</kbd> key
+   -  In a carousel, when a card has focus, the user can press <kbd>LEFT</kbd> and <kbd>RIGHT</kbd> (mirrored in right-to-left) to move the focus to the previous or next card, and <kbd>HOME</kbd> and <kbd>END</kbd> to the first or last card
 
 ### <kbd>PAGE UP</kbd> and <kbd>PAGE DOWN</kbd> keys should not change focus
 
