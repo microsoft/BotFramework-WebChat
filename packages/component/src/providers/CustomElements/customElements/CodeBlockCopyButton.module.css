@@ -45,6 +45,6 @@
   --webchat__component-icon--size: 16px;
 
   @media (forced-colors: active) {
-    --webchat__component-icon--color: buttonText;
+    --webchat__component-icon--color: ButtonText;
   }
 }

@@ -28,7 +28,7 @@
   --webchat__fluent-icon--color: currentColor;
 
   @media (forced-colors: active) {
-    --webchat__fluent-icon--color: canvasText;
+    --webchat__fluent-icon--color: CanvasText;
   }
 }
 /* #endregion */
