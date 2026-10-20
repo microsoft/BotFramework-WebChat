@@ -1,0 +1,63 @@
+name: Pull request changelog
+
+on:
+  pull_request:
+    branches:
+      - main
+      - test-changelog-base # Test only.
+
+    # "labeled" and "unlabeled" for the "no-changelog" label.
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+      - unlabeled
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 24
+
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    name: Changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --ignore-scripts --strict-peer-deps
+
+      - name: Run unit tests of scripts/changelog
+        run: node --test 'scripts/changelog/*.spec.mjs'
+
+      - name: Validate and preview the changelog fragment
+        env:
+          NO_CHANGELOG: ${{ contains(github.event.pull_request.labels.*.name, 'no-changelog') }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          OPTIONS=(--pr "$PULL_REQUEST_NUMBER")
+
+          [[ "$NO_CHANGELOG" == true ]] && OPTIONS+=(--optional)
+
+          if node ./scripts/changelog/build.mjs "${OPTIONS[@]}" --output "$RUNNER_TEMP/preview.md" 2> "$RUNNER_TEMP/error.txt"
+          then
+            tee --append "$GITHUB_STEP_SUMMARY" < "$RUNNER_TEMP/preview.md"
+          else
+            # Also on the summary page, where contributors look first.
+            cat "$RUNNER_TEMP/error.txt" >&2
+            printf '## Changelog\n\n~~~text\n%s\n~~~\n' "$(cat "$RUNNER_TEMP/error.txt")" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
