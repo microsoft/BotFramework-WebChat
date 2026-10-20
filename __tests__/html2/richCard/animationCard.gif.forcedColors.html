@@ -103,7 +103,7 @@
         expect(buttonElement.matches(':focus-visible')).toBe(true);
         await expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Play animation');
 
-        // THEN: The "Play animation" icon and the focus indicator should be visible in forced colors, over the first frame.
+        // THEN: The "Play animation" icon, the focus indicator, and the border of the message should be visible in forced colors, over the first frame.
         await host.snapshot('local');
       });
     </script>
