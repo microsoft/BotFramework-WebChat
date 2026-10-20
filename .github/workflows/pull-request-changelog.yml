@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - test-changelog-v2-base # Test only.
 
     # "labeled" and "unlabeled" for the "changelog-edit" and "no-changelog" labels.
     types:

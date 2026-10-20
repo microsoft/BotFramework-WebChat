@@ -13,6 +13,7 @@ on:
   push:
     branches:
       - main
+      - test-changelog-v2-base # Test only.
 
   workflow_dispatch: {}
 
@@ -33,7 +34,7 @@ permissions: {}
 jobs:
   publish:
     # Not on forks, which would publish their own branch.
-    if: github.repository == 'microsoft/BotFramework-WebChat' && github.ref == 'refs/heads/main'
+    if: github.repository == 'microsoft/BotFramework-WebChat' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test-changelog-v2-base') # Test only.
     name: Publish changelog-unreleased
     runs-on: ubuntu-latest
 
@@ -59,4 +60,4 @@ jobs:
           GIT_AUTHOR_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: github-actions[bot]
-        run: node ./scripts/changelog/publish.mjs --branch changelog-unreleased | tee --append "$GITHUB_STEP_SUMMARY"
+        run: node ./scripts/changelog/publish.mjs --branch ${{ github.ref == 'refs/heads/main' && 'changelog-unreleased' || 'test-changelog-v2-unreleased' }} | tee --append "$GITHUB_STEP_SUMMARY"
