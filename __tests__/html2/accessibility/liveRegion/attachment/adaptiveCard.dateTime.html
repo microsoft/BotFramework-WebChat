@@ -83,7 +83,7 @@
             .map(text => text.trim())
         ).toEqual(['Bot said:', `A card: ${cardText}`]);
 
-        // THEN: The card and the live region below show the same formatted date and time.
+        // THEN: The card and the live region above show the same formatted date and time.
         await host.snapshot('local');
       });
     </script>
