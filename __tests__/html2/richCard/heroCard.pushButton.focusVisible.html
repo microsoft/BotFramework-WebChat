@@ -34,7 +34,12 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const variant = new URLSearchParams(location.search).get('variant');
-        const webChatElement = createElement(ReactWebChat, { directLine, store });
+        // The send box is not under test: hide it, including the send box of the Fluent theme.
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          sendBoxMiddleware: [() => () => () => false],
+          store
+        });
 
         createRoot(document.getElementById('webchat')).render(
           variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
@@ -69,6 +74,13 @@
         pageObjects.focusTranscript();
         await host.sendKeys('ENTER');
 
+        // THEN: The first attachment should have the focus.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.activityAttachments()[0][0]));
+
+        // THEN: The first card shows the focus indicator, its buttons do not.
+        await pageConditions.scrollStabilized();
+        await host.snapshot('local');
+
         // WHEN: Press TAB to move focus to the "Places To Buy" button.
         await host.sendTab();
 
@@ -76,8 +88,7 @@
         expect(document.activeElement).toBe(placesToBuyButton);
         expect(placesToBuyButton.textContent).toBe('Places To Buy');
 
-        // THEN: The button should show a two-tone focus indicator: a black ring and a white inner band.
-        await pageConditions.scrollStabilized();
+        // THEN: The "Places To Buy" button shows a two-tone focus indicator: a black ring and a white inner band.
         await host.snapshot('local');
 
         // WHEN: Press ENTER to press the "Places To Buy" button.
@@ -92,8 +103,10 @@
         );
         expect(document.activeElement).toBe(placesToBuyButton);
 
-        // THEN: The white inner band should separate the black ring from the selected button (blue).
         await pageConditions.scrollToBottomCompleted();
+
+        // THEN: The selected "Places To Buy" button (blue) keeps the focus indicator, the white band separates it from the black ring.
+        // THEN: The "Place to buy" message is sent below the carousel.
         await host.snapshot('local');
       });
     </script>
