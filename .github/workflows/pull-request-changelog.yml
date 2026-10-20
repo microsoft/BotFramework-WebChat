@@ -1,0 +1,67 @@
+name: Pull request changelog
+
+on:
+  pull_request:
+    branches:
+      - main
+
+    # "labeled" and "unlabeled" for the "changelog-edit" and "no-changelog" labels.
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+      - unlabeled
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 24
+
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    name: Changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # To compare with the base, and to order entries by the time their fragment was merged.
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --ignore-scripts --strict-peer-deps
+
+      - name: Run unit tests of scripts/changelog
+        run: node --test 'scripts/changelog/*.spec.mjs'
+
+      - name: Check the changelog and preview the entries
+        env:
+          CHANGELOG_EDIT: ${{ contains(github.event.pull_request.labels.*.name, 'changelog-edit') }}
+          NO_CHANGELOG: ${{ contains(github.event.pull_request.labels.*.name, 'no-changelog') }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # HEAD is the pull request merged into the base, its first parent is the base.
+          OPTIONS=(--base HEAD^1 --pr "$PULL_REQUEST_NUMBER")
+
+          [[ "$CHANGELOG_EDIT" == true ]] && OPTIONS+=(--changelog-edit)
+          [[ "$NO_CHANGELOG" == true ]] && OPTIONS+=(--no-changelog)
+
+          if node ./scripts/changelog/check.mjs "${OPTIONS[@]}" --output "$RUNNER_TEMP/preview.md" 2> "$RUNNER_TEMP/error.txt"
+          then
+            tee --append "$GITHUB_STEP_SUMMARY" < "$RUNNER_TEMP/preview.md"
+          else
+            # Also on the summary page, where contributors look first.
+            cat "$RUNNER_TEMP/error.txt" >&2
+            printf '## Changelog\n\n~~~text\n%s\n~~~\n' "$(cat "$RUNNER_TEMP/error.txt")" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
