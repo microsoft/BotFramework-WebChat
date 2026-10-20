@@ -16,6 +16,8 @@ import getAccessibilityNode from './getAccessibilityNode';
 import getAccessibleName from './getAccessibleName';
 import getAllTextContents from './getAllTextContents';
 import getFocusedAccessibilityNode from './getFocusedAccessibilityNode';
+import isCardInView from './isCardInView';
+import isFlipperHidden from './isFlipperHidden';
 import iterateAsyncIterable from './iterateAsyncIterable';
 import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
@@ -41,6 +43,8 @@ export {
   getAccessibleName,
   getAllTextContents,
   getFocusedAccessibilityNode,
+  isCardInView,
+  isFlipperHidden,
   iterateAsyncIterable,
   preloadImages,
   shareObservable,
