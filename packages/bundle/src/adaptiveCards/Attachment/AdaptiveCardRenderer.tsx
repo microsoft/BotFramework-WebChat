@@ -6,7 +6,9 @@ import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitActio
 import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware.js';
 import { getTabIndex, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
+import cx from 'classnames';
 import React, {
+  Fragment,
   memo,
   useCallback,
   useEffect,
@@ -21,6 +23,7 @@ import { any, boolean, object, optional, pipe, readonly, string, type InferInput
 
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import useUniqueId from '../hooks/internal/useUniqueId';
 import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
 import useValueRef from './AdaptiveCardHacks/private/useValueRef';
 import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionShouldBePushButtonModEffect';
@@ -66,6 +69,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const performCardAction = usePerformCardAction();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const scrollToEnd = useScrollToEnd();
+  const selectedDescriptionId = useUniqueId('webchat__adaptive-card-renderer__selected-description');
   const classNames = useStyles(styles);
 
   const disabled = uiState === 'disabled' || disabledFromProps;
@@ -121,12 +125,23 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   // Only listen to event if it is not disabled and have "tapAction" prop.
   const handleClickAndKeyPressForTapAction = !disabled && tapAction ? handleClickAndKeyPress : undefined;
 
+  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod, markActionAsSelected] =
+    useActionShouldBePushButtonModEffect(adaptiveCard);
+  const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
+  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
+  const [applyImageAltTextMod, undoImageAltTextMod] = useImageAltTextModEffect(adaptiveCard);
+  const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
+  const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
+
   const handleExecuteAction = useCallback(
     (action: AdaptiveCardAction): void => {
       // Some items, e.g. tappable image, cannot be disabled thru DOM attributes
       if (disabledRef.current) {
         return;
       }
+
+      // Adaptive Cards calls `onExecuteAction` only after the inputs of the action passed validation.
+      markActionAsSelected(action);
 
       const actionTypeName = action.getJsonTypeName();
       const { iconUrl: image, title } = action;
@@ -198,19 +213,11 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         console.error(action);
       }
     },
-    [replyToId, disabledRef, performCardAction, scrollToEnd]
+    [disabledRef, markActionAsSelected, performCardAction, replyToId, scrollToEnd]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
-
-  const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod] =
-    useActionShouldBePushButtonModEffect(adaptiveCard);
-  const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
-  const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
-  const [applyImageAltTextMod, undoImageAltTextMod] = useImageAltTextModEffect(adaptiveCard);
-  const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
-  const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
 
   const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
     undoActionShouldBePushButtonMod();
@@ -258,7 +265,11 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   // This is because we have undoed mods when we call the `useXXXModEffect` hook.
   useLayoutEffect(() => {
     if (element) {
-      applyActionShouldBePushButtonMod(element, actionPerformedClassName);
+      applyActionShouldBePushButtonMod(
+        element,
+        cx(classNames['adaptive-card-renderer__action--selected'], actionPerformedClassName),
+        selectedDescriptionId
+      );
       applyActiveElementMod(element);
       applyDisabledMod(element, disabled);
       applyImageAltTextMod(element);
@@ -273,8 +284,10 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     applyImageAltTextMod,
     applyPersistValuesMod,
     applyRoleMod,
+    classNames,
     disabled,
-    element
+    element,
+    selectedDescriptionId
   ]);
 
   errors?.length && console.warn('botframework-webchat: Failed to render Adaptive Cards.', errors);
@@ -282,12 +295,19 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   return errors?.length ? (
     <ErrorBoxPolymiddlewareProxy error={errors[0]} where={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
   ) : (
-    <div
-      className={classNames['adaptive-card-renderer']}
-      onClick={handleClickAndKeyPressForTapAction as MouseEventHandler<HTMLDivElement>}
-      onKeyPress={handleClickAndKeyPressForTapAction as KeyboardEventHandler<HTMLDivElement>}
-      ref={contentRef}
-    />
+    <Fragment>
+      <div
+        className={classNames['adaptive-card-renderer']}
+        onClick={handleClickAndKeyPressForTapAction as MouseEventHandler<HTMLDivElement>}
+        onKeyPress={handleClickAndKeyPressForTapAction as KeyboardEventHandler<HTMLDivElement>}
+        ref={contentRef}
+      />
+      {/* `id` is required for `aria-describedby` of the selected action */}
+      {/* eslint-disable-next-line react/forbid-dom-props */}
+      <span hidden={true} id={selectedDescriptionId}>
+        {localize('ADAPTIVE_CARD_ACTION_SELECTED_ALT')}
+      </span>
+    </Fragment>
   );
 }
 
