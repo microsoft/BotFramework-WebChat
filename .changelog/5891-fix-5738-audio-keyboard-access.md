@@ -1,0 +1,3 @@
+### Fixed
+
+- Fixed the native controls of audio and video players, such as volume and "more options", not being reachable with <kbd>TAB</kbd> and <kbd>SHIFT</kbd> + <kbd>TAB</kbd> inside an activity: the focus now moves through every control of the player and wraps within the activity; the players of audio, video, and animation cards are now named after the card title, fixes [#5738](https://github.com/microsoft/BotFramework-WebChat/issues/5738) and [#5709](https://github.com/microsoft/BotFramework-WebChat/issues/5709), in PR [#5891](https://github.com/microsoft/BotFramework-WebChat/pull/5891), by [@OEvgeny](https://github.com/OEvgeny)
