@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -21,11 +23,12 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be seen in the snapshot.
         WebChat.renderWebChat(
           {
             directLine,
             store,
-            styleOptions: { botAvatarInitials: 'WC', internalLiveRegionFadeAfter: 60000 }
+            styleOptions: { botAvatarInitials: 'WC', hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
           },
           document.getElementById('webchat')
         );
@@ -103,6 +106,11 @@
             .filter(({ ignored }) => !ignored)
             .map(({ name, role }) => `${role?.value} "${name?.value}"`)
         ).toEqual(['button "Help"', 'button "OK"', 'button "Go"']);
+
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: The live region (top) shows the message, "Help", "A card: Card 1", "OK", "A card: Card 2 Hero text", "Go" and "A file: report.zip", with no role words such as "article" or "group".
+        await host.snapshot('local');
       });
     </script>
   </body>
