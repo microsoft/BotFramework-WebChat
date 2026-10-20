@@ -21,6 +21,10 @@ Legends:
 
 Entries for the next release are in [`UNRELEASED.md`](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/UNRELEASED.md), built from one file per pull request in [`.changelog/`](https://github.com/microsoft/BotFramework-WebChat/tree/main/.changelog).
 
+### Fixed
+
+- Fixed a test entry added the old way to CHANGELOG.md, in PR [#5933](https://github.com/microsoft/BotFramework-WebChat/pull/5933), by [@OEvgeny](https://github.com/OEvgeny)
+
 ## [4.19.2] - 2026-10-08
 
 ### Added
