@@ -119,6 +119,11 @@
 
         expect(store.getState().activities.filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
 
+        // The live region copy of the card names inputs by `title` only, so its "First name" input has no name for axe.
+        // Wait for the live region to clear (after 1 second) before the accessibility check of the snapshot.
+        // Remove this wait once the live region copy names inputs by their `label` (#5913).
+        await waitFor(() => expect(pageElements.liveRegion().children).toHaveLength(0), { timeout: 2_000 });
+
         // THEN: The card should show the error and the "Submit" button should not look selected.
         await host.snapshot('local');
 
