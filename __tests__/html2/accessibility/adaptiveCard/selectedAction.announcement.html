@@ -120,6 +120,28 @@
         expect((await testHelpers.getAccessibilityNode(placesToBuyButton)).description?.value).toBe('Selected');
         expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said:\nPlaces To Buy']);
         await host.snapshot('local');
+
+        // WHEN: Press ENTER to press the selected "Places To Buy" button again.
+        (await directLine.actPostActivity(() => host.sendKeys('ENTER'))).resolveAll();
+
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: The button performs its action again, so "Selected" should be announced again, right before the second message.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            ...liveRegionTextsBeforePress,
+            'Selected',
+            'You said:\nPlaces To Buy',
+            'Selected',
+            'You said:\nPlaces To Buy'
+          ])
+        );
+
+        // THEN: The live region should show "Selected" twice, and the "Places To Buy" button should still look selected and keep the focus.
+        expect(document.activeElement).toBe(placesToBuyButton);
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
       });
     </script>
   </body>
