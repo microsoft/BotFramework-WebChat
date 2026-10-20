@@ -217,14 +217,18 @@
         // WHEN: Press TAB twice to focus on the button inside the hero card.
         await host.sendTab(2);
 
-        // THEN: The button inside the hero card should have focus.
+        // THEN: The button inside the hero card should have focus, TAB into the hero card scrolled it into view.
         expect(document.activeElement).toBe(heroCardButton);
+        await waitFor(() => expect(isCardInView(cards[1])).toBe(true));
+        await waitForCarouselSettled();
 
         // WHEN: Press LEFT and RIGHT on the button inside the hero card.
         // THEN: The button inside the hero card should keep focus.
         await host.sendKeys('ARROW_LEFT');
         expect(document.activeElement).toBe(heroCardButton);
-        expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        await waitForCarouselScrolled();
+        expect(document.activeElement).toBe(heroCardButton);
 
         await host.sendKeys('ARROW_RIGHT');
         expect(document.activeElement).toBe(heroCardButton);
