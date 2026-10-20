@@ -72,7 +72,7 @@ Built from [`66d7d7a`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - Fixed carousel cards focused with <kbd>TAB</kbd> staying partially out of view, in PR [#5926](https://github.com/microsoft/BotFramework-WebChat/pull/5926), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on a button inside a carousel card scrolling the carousel, in PR [#5917](https://github.com/microsoft/BotFramework-WebChat/pull/5917), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed [#4906](https://github.com/microsoft/BotFramework-WebChat/issues/4906) and [#4907](https://github.com/microsoft/BotFramework-WebChat/issues/4907), icons being invisible, link references not using the link color, and Fluent messages and Copy button having no border in forced colors, in PR [#5907](https://github.com/microsoft/BotFramework-WebChat/pull/5907), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed [#5734](https://github.com/microsoft/BotFramework-WebChat/issues/5734), test entry B of the v2 CI test, in PR [#5937](https://github.com/microsoft/BotFramework-WebChat/pull/5937), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5734](https://github.com/microsoft/BotFramework-WebChat/issues/5734), test entry B of the v2 CI test, edited by hand, in PR [#5937](https://github.com/microsoft/BotFramework-WebChat/pull/5937), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
