@@ -167,9 +167,8 @@
         // WHEN: Press TAB to focus on the hero card.
         await host.sendTab();
 
-        // THEN: The hero card has focus, the carousel stays at the start with the hero card partly in view.
-        expect(document.activeElement).toBe(cards[1]);
-        await expectCarouselAtStart();
+        // THEN: The hero card has focus, TAB into the partly hidden hero card scrolled it to the center.
+        await expectFocusOnCard(1);
         await host.snapshot('local');
       });
     </script>

@@ -27,7 +27,7 @@ import { fileURLToPath } from 'url';
     return [
       ...formattersAndParsers,
       ...[
-        globalize.dateFormatter({ skeleton: 'MMMMdhm' }),
+        globalize.dateFormatter({ skeleton: 'MMMMdjm' }),
         globalize.pluralGenerator(),
         globalize.relativeTimeFormatter('hour'),
         globalize.relativeTimeFormatter('minute'),
