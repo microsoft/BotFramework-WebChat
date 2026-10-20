@@ -109,13 +109,6 @@
           expect(testHelpers.isCardInView(cards[index])).toBe(true);
         };
 
-        // An arrow key on a button keeps the browser default: the browser scrolls the carousel by one arrow key step, then
-        // react-film auto-centers it back on the nearest card. Wait for this scroll to start and to settle.
-        const waitForCarouselScrolled = async () => {
-          await waitFor(() => expect(carouselLayout.querySelector('.react-film__main--scrolling')).not.toBeNull());
-          await pageConditions.carouselSettled(carouselLayout);
-        };
-
         expect(heroCardButton).toHaveProperty('textContent', 'Buy item 2');
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 
@@ -153,18 +146,16 @@
 
         // WHEN: Press LEFT on the button inside the hero card.
         await host.sendKeys('ARROW_LEFT');
-        await waitForCarouselScrolled();
 
-        // THEN: The button keeps focus; the browser scrolls the carousel briefly, but it settles back on the hero card.
+        // THEN: The button keeps focus, the carousel does not scroll: the hero card stays in the center.
         expect(document.activeElement).toBe(heroCardButton);
         await expectCarouselOnHeroCard();
         await host.snapshot('local');
 
         // WHEN: Press RIGHT on the button inside the hero card.
         await host.sendKeys('ARROW_RIGHT');
-        await waitForCarouselScrolled();
 
-        // THEN: The button keeps focus; the browser scrolls the carousel briefly, but it settles back on the hero card.
+        // THEN: The button keeps focus, the carousel does not scroll: the hero card stays in the center.
         expect(document.activeElement).toBe(heroCardButton);
         await expectCarouselOnHeroCard();
         await host.snapshot('local');

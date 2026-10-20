@@ -110,13 +110,6 @@
           expect(testHelpers.isCardInView(cards[index])).toBe(true);
         };
 
-        // An arrow key on a button keeps the browser default: the browser scrolls the carousel by one arrow key step, then
-        // react-film auto-centers it back on the nearest card. Wait for this scroll to start and to settle.
-        const waitForCarouselScrolled = async () => {
-          await waitFor(() => expect(carouselLayout.querySelector('.react-film__main--scrolling')).not.toBeNull());
-          await pageConditions.carouselSettled(carouselLayout);
-        };
-
         expect(submitButton).toHaveProperty('textContent', 'Add item 1');
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 
@@ -157,9 +150,8 @@
 
         // WHEN: Press RIGHT on the submit button.
         await host.sendKeys('ARROW_RIGHT');
-        await waitForCarouselScrolled();
 
-        // THEN: The submit button keeps focus; the browser scrolls the carousel briefly, but it settles back at the start.
+        // THEN: The submit button keeps focus, the carousel does not scroll: it stays at the start.
         expect(document.activeElement).toBe(submitButton);
         await expectCarouselAtStart();
         await host.snapshot('local');
