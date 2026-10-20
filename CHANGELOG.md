@@ -19,6 +19,8 @@ Legends:
 
 ## [Unreleased]
 
+[Show most recent changelog](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) for the full changelog as last rebuilt from `main`.
+
 ### Added
 
 - Rich cards: added fill-in of `replyToId` for "IM back", "post back", and "message back" card actions, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
