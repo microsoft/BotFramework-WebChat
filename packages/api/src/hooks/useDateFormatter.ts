@@ -10,7 +10,7 @@ export default function useDateFormatter(): (date: Date | number | string) => st
   const [globalize] = useLocalizedGlobalize();
 
   const formatDate = useMemo(
-    () => date => globalize.dateFormatter({ skeleton: 'MMMMdhm' })(new Date(date)),
+    () => date => globalize.dateFormatter({ skeleton: 'MMMMdjm' })(new Date(date)),
     [Date, globalize]
   );
 
