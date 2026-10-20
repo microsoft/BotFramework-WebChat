@@ -209,27 +209,47 @@
 
         await host.snapshot('local');
 
-        // WHEN: Press TAB twice to focus on the button inside the hero card.
-        await host.sendTab(2);
+        // WHEN: Press TAB to focus on the partially visible hero card.
+        await host.sendTab();
 
-        // THEN: The button inside the hero card should have focus, TAB into the hero card scrolled it into view.
+        // THEN: The hero card should have focus and be scrolled fully into view.
+        await expectFocusOnCard(1);
+
+        const heroCardScrollLeft = carouselFilmstrip.scrollLeft;
+
+        expect(heroCardScrollLeft).toBeGreaterThan(0);
+
+        await host.snapshot('local');
+
+        // WHEN: Press TAB to focus on the button inside the hero card.
+        await host.sendTab();
+
+        // THEN: The button inside the hero card should have focus, the carousel should not scroll.
         expect(document.activeElement).toBe(heroCardButton);
-        await waitFor(() => expect(isCardInView(cards[1])).toBe(true));
         await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(heroCardScrollLeft);
 
-        // WHEN: Press LEFT and RIGHT on the button inside the hero card.
-        // THEN: The button inside the hero card should keep focus.
+        await host.snapshot('local');
+
+        // WHEN: Press LEFT on the button inside the hero card.
         await host.sendKeys('ARROW_LEFT');
-        expect(document.activeElement).toBe(heroCardButton);
 
-        await waitForCarouselScrolled();
+        // THEN: The button inside the hero card should keep focus, the carousel should not scroll.
         expect(document.activeElement).toBe(heroCardButton);
-
-        await host.sendKeys('ARROW_RIGHT');
-        expect(document.activeElement).toBe(heroCardButton);
-
         await waitForCarouselSettled();
-        expect(carouselFilmstrip.scrollLeft).toBe(0);
+        expect(carouselFilmstrip.scrollLeft).toBe(heroCardScrollLeft);
+
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT on the button inside the hero card.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The button inside the hero card should keep focus, the carousel should not scroll.
+        expect(document.activeElement).toBe(heroCardButton);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(heroCardScrollLeft);
+
+        await host.snapshot('local');
 
         // WHEN: Press SHIFT-TAB to focus on the hero card, then press RIGHT.
         await host.sendShiftTab();
