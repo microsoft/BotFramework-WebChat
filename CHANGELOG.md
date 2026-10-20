@@ -19,6 +19,8 @@ Legends:
 
 ## [Unreleased]
 
+Built from [`66d7d7a`](https://github.com/microsoft/BotFramework-WebChat/commit/66d7d7a40297407a0f54c6bfd3a48f22d1228146).
+
 [Show most recent changelog](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) for the full changelog as last rebuilt from `main`.
 
 ### Added
@@ -32,6 +34,7 @@ Legends:
 
 - 💥 `useSendMessage`: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - 👷🏻 Visual regression tests now use 5 consecutive screenshots for stability indication, up from 2, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
+- 👷🏻 Changelog entries are now one file per pull request in `.changelog/`, merged into `CHANGELOG.md` on the [`changelog-unreleased`](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) branch, in PR [#5936](https://github.com/microsoft/BotFramework-WebChat/pull/5936), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 
@@ -69,6 +72,7 @@ Legends:
 - Fixed carousel cards focused with <kbd>TAB</kbd> staying partially out of view, in PR [#5926](https://github.com/microsoft/BotFramework-WebChat/pull/5926), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on a button inside a carousel card scrolling the carousel, in PR [#5917](https://github.com/microsoft/BotFramework-WebChat/pull/5917), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed [#4906](https://github.com/microsoft/BotFramework-WebChat/issues/4906) and [#4907](https://github.com/microsoft/BotFramework-WebChat/issues/4907), icons being invisible, link references not using the link color, and Fluent messages and Copy button having no border in forced colors, in PR [#5907](https://github.com/microsoft/BotFramework-WebChat/pull/5907), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5734](https://github.com/microsoft/BotFramework-WebChat/issues/5734), test entry B of the v2 CI test, in PR [#5937](https://github.com/microsoft/BotFramework-WebChat/pull/5937), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
