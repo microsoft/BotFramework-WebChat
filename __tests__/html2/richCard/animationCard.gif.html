@@ -142,7 +142,7 @@
         expect(matchMedia('(forced-colors: active)').matches).toBe(true);
         expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
 
-        // THEN: The "Play animation" icon should be visible in forced colors.
+        // THEN: The "Play animation" icon and the border of the message should be visible in forced colors.
         await host.snapshot('local');
       });
     </script>
