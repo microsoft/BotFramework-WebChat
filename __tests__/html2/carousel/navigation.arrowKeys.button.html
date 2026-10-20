@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+        );
+
+        await pageConditions.uiConnected();
+
+        const createHeroCard = index => ({
+          content: {
+            buttons: [{ title: `Buy item ${index}`, type: 'imBack', value: `Buy item ${index}` }],
+            text: 'Price: $XXX.XX USD',
+            title: `Details about item ${index}`
+          },
+          contentType: 'application/vnd.microsoft.card.hero'
+        });
+
+        // GIVEN: A carousel with hero cards, each with a button, and an Adaptive Card whose container opens a URL.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [
+            createHeroCard(1),
+            createHeroCard(2),
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [
+                  {
+                    items: [
+                      { size: 'large', text: 'Details about item 3', type: 'TextBlock', weight: 'bolder', wrap: true },
+                      { text: 'Price: $XXX.XX USD', type: 'TextBlock', wrap: true }
+                    ],
+                    // Adaptive Cards render a container with Action.OpenUrl as `<div role="link" tabindex="0">`.
+                    selectAction: { title: 'Open item 3', type: 'Action.OpenUrl', url: 'https://example.com/item/3' },
+                    type: 'Container'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            createHeroCard(4)
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const carouselLayout = document.querySelector('.carousel-layout');
+        const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
+        const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
+        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
+        const secondCardButton = cards[1].querySelector('button');
+
+        const isCardInView = card => {
+          const cardRect = card.getBoundingClientRect();
+          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
+
+          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
+        };
+
+        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
+        const isFlipperHidden = flipper => {
+          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
+          const buttonRect = flipper.getBoundingClientRect();
+
+          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
+        };
+
+        const waitForCarouselSettled = () =>
+          waitFor(
+            () => {
+              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
+              expect(flippers.every(isFlipperHidden)).toBe(true);
+            },
+            { timeout: 5000 }
+          );
+
+        expect(cards).toHaveLength(4);
+        expect(secondCardButton).toHaveProperty('textContent', 'Buy item 2');
+
+        // WHEN: Focus on the first card via keyboard.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ENTER');
+
+        // THEN: The first card has focus, the carousel is at the start.
+        expect(document.activeElement).toBe(cards[0]);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The second card has focus and is scrolled to the center.
+        expect(document.activeElement).toBe(cards[1]);
+        await waitFor(() => expect(isCardInView(cards[1])).toBe(true));
+        await waitForCarouselSettled();
+
+        const centeredScrollLeft = carouselFilmstrip.scrollLeft;
+
+        expect(centeredScrollLeft).toBeGreaterThan(0);
+
+        await host.snapshot('local');
+
+        // WHEN: Press TAB.
+        await host.sendTab();
+
+        // THEN: The button inside the second card has focus, the carousel has not moved.
+        expect(document.activeElement).toBe(secondCardButton);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(centeredScrollLeft);
+
+        await host.snapshot('local');
+
+        // From now on, record every scroll of the carousel and every key press.
+        const keyDownEvents = [];
+        let numScrolls = 0;
+
+        carouselFilmstrip.addEventListener('scroll', () => numScrolls++);
+        window.addEventListener('keydown', event => keyDownEvents.push(event));
+
+        // WHEN: Press LEFT on the button.
+        await host.sendKeys('ARROW_LEFT');
+
+        // THEN: The button keeps focus, the browser does not scroll the carousel.
+        // `defaultPrevented` is the real check: `scrollLeft` can be read before a native scroll would start.
+        expect(keyDownEvents).toHaveLength(1);
+        expect(keyDownEvents[0]).toHaveProperty('defaultPrevented', true);
+        expect(document.activeElement).toBe(secondCardButton);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(centeredScrollLeft);
+
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT on the button.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The button keeps focus, the browser does not scroll the carousel.
+        expect(keyDownEvents).toHaveLength(2);
+        expect(keyDownEvents[1]).toHaveProperty('defaultPrevented', true);
+        expect(document.activeElement).toBe(secondCardButton);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(centeredScrollLeft);
+        expect(numScrolls).toBe(0);
+
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB.
+        await host.sendShiftTab();
+
+        // THEN: The second card has focus, the carousel has not moved.
+        expect(document.activeElement).toBe(cards[1]);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(centeredScrollLeft);
+
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The third card (the Adaptive Card) has focus and is scrolled to the center.
+        expect(document.activeElement).toBe(cards[2]);
+        await waitFor(() => expect(isCardInView(cards[2])).toBe(true));
+        await waitForCarouselSettled();
+
+        const thirdCenteredScrollLeft = carouselFilmstrip.scrollLeft;
+        const thirdCardLink = cards[2].querySelector('[role="link"]');
+
+        expect(thirdCenteredScrollLeft).toBeGreaterThan(centeredScrollLeft);
+
+        await host.snapshot('local');
+
+        // WHEN: Press TAB.
+        await host.sendTab();
+
+        // THEN: The link container inside the third card has focus, the carousel has not moved.
+        expect(document.activeElement).toBe(thirdCardLink);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(thirdCenteredScrollLeft);
+
+        await host.snapshot('local');
+
+        numScrolls = 0;
+
+        // WHEN: Press RIGHT on the link container.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The link container keeps focus, the browser does not scroll the carousel.
+        expect(keyDownEvents.at(-1)).toHaveProperty('key', 'ArrowRight');
+        expect(keyDownEvents.at(-1)).toHaveProperty('defaultPrevented', true);
+        expect(document.activeElement).toBe(thirdCardLink);
+        await waitForCarouselSettled();
+        expect(carouselFilmstrip.scrollLeft).toBe(thirdCenteredScrollLeft);
+        expect(numScrolls).toBe(0);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

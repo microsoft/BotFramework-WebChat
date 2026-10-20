@@ -10,10 +10,7 @@ import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useValueRef from '../hooks/internal/useValueRef';
 
-enum InteractiveType {
-  LINK,
-  WIDGET
-}
+type InteractiveType = 'link' | 'widget';
 
 const { useDateFormatter, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
 
@@ -89,9 +86,9 @@ export default function useActivityAccessibleName(
         messageTextAlt,
         numAttachmentsAlt,
         isSendFailed ? activityInteractiveReasonSendFailedAlt : '',
-        interactiveType === InteractiveType.LINK
+        interactiveType === 'link'
           ? activityInteractiveReasonLinkAlt
-          : interactiveType === InteractiveType.WIDGET
+          : interactiveType === 'widget'
             ? activityInteractiveReasonInteractiveContentAlt
             : '',
         interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : '',
@@ -117,8 +114,7 @@ export default function useActivityAccessibleName(
     const hasLinks = !!bodyRef.current?.querySelector('a');
     const hasWidgets = !!tabbableElements(bodyRef.current).length;
 
-    interactiveTypeRef.current !== hasWidgets &&
-      setInteractiveType(hasLinks ? InteractiveType.LINK : hasWidgets ? InteractiveType.WIDGET : false);
+    interactiveTypeRef.current !== hasWidgets && setInteractiveType(hasLinks ? 'link' : hasWidgets ? 'widget' : false);
   }, [bodyRef, interactiveTypeRef, setInteractiveType]);
 
   return useMemo(() => Object.freeze([accessibleName] as const), [accessibleName]);

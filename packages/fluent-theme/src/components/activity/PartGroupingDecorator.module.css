@@ -118,6 +118,10 @@
       background: currentColor;
       -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
       mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
     }
   }
 
@@ -168,6 +172,19 @@
       height: 0.7em;
       -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
       mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
+    }
+
+    @media (forced-colors: active) {
+      &,
+      &:hover,
+      &:hover:active {
+        border-color: LinkText;
+        color: LinkText;
+      }
     }
   }
   /* #endregion */
@@ -221,6 +238,12 @@
       font-size: var(--webchat__font-size--small);
       height: 24px;
       padding-inline-end: var(--webchat-spacingHorizontalS);
+
+      /* Button chips use the link color like link chips; the badge, divider and text inherit it. */
+      @media (forced-colors: active) {
+        border-color: LinkText;
+        color: LinkText;
+      }
     }
 
     :global(.link-definitions__list-item-body) {
@@ -280,6 +303,10 @@
       mask: var(--webchat__citation__external-link--mask) no-repeat;
       padding: 0;
       width: 1em;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
     }
 
     /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
@@ -451,6 +478,14 @@
     color: var(--webchat-colorNeutralForeground1);
     max-width: 100%;
     min-height: var(--webchat-part-grouping__bubble--min-height);
+  }
+
+  /* Forced colors remove the bubble shadow and fill, so draw a border as the default theme does. */
+  @media (forced-colors: active) {
+    &:not(.part-grouping-decorator--group)
+      :global(.stacked-layout .bubble:not(:has(.activity-loader)) .bubble__content) {
+      border: var(--webchat-strokeWidthThin) solid CanvasText;
+    }
   }
 
   :global(.stacked-layout .bubble .text-content) {
