@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      function getLiveRegionTexts() {
+        return Array.from(pageElements.liveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
+        );
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            // Keep everything announced in the live region, which is made visible by the CSS above.
+            styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60_000 }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A card with a required input and a Submit button.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    errorMessage: 'Name is required',
+                    id: 'firstName',
+                    isRequired: true,
+                    label: 'First name',
+                    // The live region copy of this input is named by `placeholder` only: remove `placeholder` once the copy names inputs by their `label` (#5913).
+                    placeholder: 'First name',
+                    type: 'Input.Text'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.liveRegionStabilized();
+
+        const input = document.querySelector('input.ac-textInput');
+        const liveRegionTextsBeforeSubmit = getLiveRegionTexts();
+        const submitButton = document.querySelector('.ac-pushButton');
+
+        expect(liveRegionTextsBeforeSubmit).not.toContain('Selected');
+        expect(submitButton).toHaveProperty('textContent', 'Submit');
+
+        // WHEN: The "Submit" button is clicked while the required input is empty.
+        await host.click(submitButton);
+
+        // THEN: The card should show the validation error.
+        await waitFor(() => expect(input.classList.contains('ac-input-validation-failed')).toBe(true));
+
+        // THEN: Nothing should be announced, as the action was not performed.
+        expect(getLiveRegionTexts()).toEqual(liveRegionTextsBeforeSubmit);
+        expect(store.getState().activities.filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
+
+        // THEN: The live region should not show "Selected" and the card should show the error.
+        await host.snapshot('local');
+
+        // WHEN: The required input is filled and the "Submit" button is clicked.
+        //       As the action has no `data`, it sends a post back activity, which is not shown in the transcript.
+        await host.click(input);
+        await host.sendKeys('John');
+
+        (await directLine.actPostActivity(() => host.click(submitButton))).resolveAll();
+
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: "Selected" should be announced once.
+        await waitFor(() => expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforeSubmit, 'Selected']));
+
+        // THEN: The live region should show "Selected", the error should be gone and the "Submit" button should look selected.
+        await waitFor(() => expect(input.classList.contains('ac-input-validation-failed')).toBe(false));
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

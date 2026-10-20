@@ -5,6 +5,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
 import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware.js';
 import { getTabIndex, hooks } from 'botframework-webchat-component';
+import { useQueueStaticElement } from 'botframework-webchat-component/internal.js';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, {
@@ -67,6 +68,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const contentRef = useRef<HTMLDivElement>();
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
+  const queueStaticElement = useQueueStaticElement();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const scrollToEnd = useScrollToEnd();
   const selectedDescriptionId = useUniqueId('webchat__adaptive-card-renderer__selected-description');
@@ -141,7 +143,9 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
       }
 
       // Adaptive Cards calls `onExecuteAction` only after the inputs of the action passed validation.
-      markActionAsSelected(action);
+      // Screen readers do not re-read the description of the focused button after it changed.
+      // Thus, announce "Selected" via the live region.
+      markActionAsSelected(action) && queueStaticElement(localize('ADAPTIVE_CARD_ACTION_SELECTED_ALT'));
 
       const actionTypeName = action.getJsonTypeName();
       const { iconUrl: image, title } = action;
@@ -213,7 +217,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
         console.error(action);
       }
     },
-    [disabledRef, markActionAsSelected, performCardAction, replyToId, scrollToEnd]
+    [disabledRef, localize, markActionAsSelected, performCardAction, queueStaticElement, replyToId, scrollToEnd]
   );
 
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.

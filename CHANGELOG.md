@@ -64,6 +64,7 @@ Legends:
 - Fixed video and animation cards disappearing in production builds when the video URL is relative or invalid, in PR [#5889](https://github.com/microsoft/BotFramework-WebChat/pull/5889), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed timestamps always using the 12-hour clock, such as "4:41 PM" instead of "16:41" in German, in PR [#5920](https://github.com/microsoft/BotFramework-WebChat/pull/5920), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed card action buttons being announced as toggle buttons, and Submit being marked as selected when the card's inputs fail validation, fixes [#4583](https://github.com/microsoft/BotFramework-WebChat/issues/4583), [#5716](https://github.com/microsoft/BotFramework-WebChat/issues/5716), [#5719](https://github.com/microsoft/BotFramework-WebChat/issues/5719), [#5745](https://github.com/microsoft/BotFramework-WebChat/issues/5745), and [#5750](https://github.com/microsoft/BotFramework-WebChat/issues/5750), in PR [#5900](https://github.com/microsoft/BotFramework-WebChat/pull/5900), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed "Selected" not being announced when a card action is pressed, in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
