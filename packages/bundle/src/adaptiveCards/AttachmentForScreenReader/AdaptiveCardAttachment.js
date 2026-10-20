@@ -17,14 +17,18 @@ const { useLocalizer, useRenderMarkdownAsHTML } = hooks;
 // Images are read by their alt text and blocks are separated, as in the live region of message text.
 // If the Markdown engine or Adaptive Cards throws, the visible card shows an error, and the text is read as written.
 function getRenderedText(element) {
-  return onErrorResumeNext(() => {
-    const renderedElement = element.render();
+  return (
+    onErrorResumeNext(() => {
+      const renderedElement = element.render();
 
-    // Plain text, such as a TextRun, is set with innerText, which renders line breaks as <br>; htmlTextAlternatives() reads <br> as nothing.
-    renderedElement?.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+      // Plain text, such as a TextRun, is set with innerText, which renders line breaks as <br>; htmlTextAlternatives() reads <br> as nothing.
+      renderedElement?.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
 
-    return renderedElement ? htmlTextAlternatives(renderedElement).join('').replace(/\s+/gu, ' ').trim() : '';
-  }, element.asString());
+      return renderedElement ? htmlTextAlternatives(renderedElement).join('') : '';
+    }, element.asString()) || ''
+  )
+    .replace(/\s+/gu, ' ')
+    .trim();
 }
 
 // Facts are rendered as text blocks, as Adaptive Cards does.
