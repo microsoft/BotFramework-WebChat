@@ -38,6 +38,20 @@ const CarouselFilmStrip = ({
   const scrollableCallbackRef = useScrollableCallbackRef();
   const scrollTo = useScrollTo();
 
+  // When the keyboard moves the focus into a card from outside of it (TAB or SHIFT-TAB), center the card with react-film,
+  // as LEFT/RIGHT do, instead of leaving it partially visible. Clicking a card or button is not :focus-visible and does not
+  // scroll; text inputs are, so the card is centered for typing.
+  const handleAttachmentsFocus = useCallback(
+    ({ currentTarget, relatedTarget, target }) => {
+      const cards = Array.from(currentTarget.children);
+
+      const index = cards.findIndex(card => card.contains(target));
+
+      ~index && !cards[+index].contains(relatedTarget) && target.matches(':focus-visible') && scrollTo(() => index);
+    },
+    [scrollTo]
+  );
+
   // When a card itself has focus (not a control inside it), LEFT/RIGHT move the focus to the previous/next card
   // (mirrored in RTL), HOME/END to the first/last card. This is a shortcut: every card is still a tab stop.
   const handleAttachmentsKeyDown = useCallback(
@@ -167,6 +181,7 @@ const CarouselFilmStrip = ({
             <div className={classNames['carousel-filmstrip__complimentary-content']}>
               <ul
                 className={cx(classNames['carousel-filmstrip__attachments'], 'react-film__filmstrip__list')}
+                onFocus={handleAttachmentsFocus}
                 onKeyDown={handleAttachmentsKeyDown}
                 ref={itemContainerCallbackRef}
               >
