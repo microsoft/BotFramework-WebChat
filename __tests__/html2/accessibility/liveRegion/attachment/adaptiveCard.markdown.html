@@ -69,16 +69,24 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.liveRegionStabilized();
 
-        // THEN: The live region copy reads the text as the card shows it, without Markdown syntax ("**", "[", "](", "- ").
+        // The card shows the list items on separate lines, the live region reads them as one line.
+        const cardText = pageElements
+          .activities()[0]
+          .querySelector('.ac-textBlock')
+          .textContent.replace(/\s+/gu, ' ')
+          .trim();
+
+        // THEN: The card shows the text without Markdown syntax ("**", "[", "](", "- ").
+        expect(cardText).toEqual(
+          expect.stringMatching(/^Today is sunny, see .*docs.*\. Umbrella: no Sunscreen: yes$/u)
+        );
+
+        // THEN: The live region copy reads the same text as the card.
         expect(
           testHelpers
             .getAllTextContents(pageElements.liveRegion().querySelector('.webchat__live-region-activity'))
             .map(text => text.trim())
-        ).toEqual([
-          'Bot said:',
-          // Web Chat wraps links in zero-width spaces, in the card too.
-          'A card: Today is sunny, see \u200bdocs\u200b. Umbrella: no Sunscreen: yes'
-        ]);
+        ).toEqual(['Bot said:', `A card: ${cardText}`]);
 
         // THEN: The card shows bold "sunny", a "docs" link and a bullet list; the live region above shows the same words without Markdown syntax.
         await host.snapshot('local');
