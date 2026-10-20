@@ -185,6 +185,10 @@
   .link-definitions__list-item-text {
     text-decoration: underline;
 
+    @media (forced-colors: active) {
+      color: LinkText;
+    }
+
     @media not (forced-colors: active) {
       color: var(--webchat__color--accent);
     }

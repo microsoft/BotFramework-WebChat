@@ -28,58 +28,6 @@
       import React from 'react';
       import { createRoot } from 'react-dom/client';
 
-      const aiMessageEntity = Object.freeze({
-        '@context': 'https://schema.org',
-        '@id': '',
-        '@type': 'Message',
-        keywords: Object.freeze(['AIGeneratedContent']),
-        type: 'https://schema.org/Message'
-      });
-
-      // Programming languages are sent as-is in "programmingLanguage", often in lowercase or as an alias.
-      // Only JavaScript, Python, and TypeScript are highlighted by the bundled highlighter.
-      const COLLAPSIBLE_SAMPLES = Object.freeze([
-        Object.freeze({
-          isHighlighted: true,
-          programmingLanguage: 'javascript',
-          text: "console.log('Hello, World!');",
-          title: 'JavaScript'
-        }),
-        Object.freeze({
-          isHighlighted: true,
-          programmingLanguage: 'TS',
-          text: "const greeting: string = 'Hello, World!';",
-          title: 'TypeScript'
-        }),
-        Object.freeze({
-          isHighlighted: false,
-          programmingLanguage: 'c#',
-          text: 'Console.WriteLine("Hello, World!");',
-          title: 'C#'
-        }),
-        // The title of "sh" ("Shell") is overridden via "overrideLocalizedStrings" below.
-        Object.freeze({
-          isHighlighted: false,
-          programmingLanguage: 'sh',
-          text: 'echo "Hello, World!"',
-          title: 'Shell script'
-        }),
-        // Shell dialects keep their own name: only the first letter is capitalized.
-        Object.freeze({
-          isHighlighted: false,
-          programmingLanguage: 'bash',
-          text: "echo 'Hello, World!'",
-          title: 'Bash'
-        }),
-        // Unknown programming language: only the first letter is capitalized.
-        Object.freeze({
-          isHighlighted: false,
-          programmingLanguage: 'cobol',
-          text: 'DISPLAY "Hello, World!".',
-          title: 'Cobol'
-        })
-      ]);
-
       run(async function () {
         const {
           WebChat: { ReactWebChat, testIds }
@@ -99,8 +47,60 @@
 
         await pageConditions.uiConnected();
 
+        const aiMessageEntity = Object.freeze({
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          keywords: Object.freeze(['AIGeneratedContent']),
+          type: 'https://schema.org/Message'
+        });
+
+        // Programming languages are sent as-is in "programmingLanguage", often in lowercase or as an alias.
+        // Only JavaScript, Python, and TypeScript are highlighted by the bundled highlighter.
+        const collapsibleSamples = Object.freeze([
+          Object.freeze({
+            isHighlighted: true,
+            programmingLanguage: 'javascript',
+            text: "console.log('Hello, World!');",
+            title: 'JavaScript'
+          }),
+          Object.freeze({
+            isHighlighted: true,
+            programmingLanguage: 'TS',
+            text: "const greeting: string = 'Hello, World!';",
+            title: 'TypeScript'
+          }),
+          Object.freeze({
+            isHighlighted: false,
+            programmingLanguage: 'c#',
+            text: 'Console.WriteLine("Hello, World!");',
+            title: 'C#'
+          }),
+          // The title of "sh" ("Shell") is overridden via "overrideLocalizedStrings" above.
+          Object.freeze({
+            isHighlighted: false,
+            programmingLanguage: 'sh',
+            text: 'echo "Hello, World!"',
+            title: 'Shell script'
+          }),
+          // Shell dialects keep their own name: only the first letter is capitalized.
+          Object.freeze({
+            isHighlighted: false,
+            programmingLanguage: 'bash',
+            text: "echo 'Hello, World!'",
+            title: 'Bash'
+          }),
+          // Unknown programming language: only the first letter is capitalized.
+          Object.freeze({
+            isHighlighted: false,
+            programmingLanguage: 'cobol',
+            text: 'DISPLAY "Hello, World!".',
+            title: 'Cobol'
+          })
+        ]);
+
         // WHEN: The bot sends collapsible messages with code (emulated).
-        for (const { programmingLanguage, text } of COLLAPSIBLE_SAMPLES) {
+        for (const { programmingLanguage, text } of collapsibleSamples) {
           await directLine.emulateIncomingActivity({
             entities: [
               {
@@ -116,7 +116,7 @@
           });
         }
 
-        await pageConditions.numActivitiesShown(COLLAPSIBLE_SAMPLES.length);
+        await pageConditions.numActivitiesShown(collapsibleSamples.length);
 
         // WHEN: Expand every message.
         for (const summary of document.querySelectorAll('summary.collapsible-content__summary')) {
@@ -129,7 +129,7 @@
         await waitFor(() =>
           expect(
             Array.from(document.querySelectorAll('.code-block-content pre'), pre => pre.classList.contains('shiki'))
-          ).toEqual(COLLAPSIBLE_SAMPLES.map(({ isHighlighted }) => isHighlighted))
+          ).toEqual(collapsibleSamples.map(({ isHighlighted }) => isHighlighted))
         );
 
         await pageConditions.scrollStabilized();
@@ -137,9 +137,9 @@
         // THEN: The code blocks should show the title of the programming language.
         expect(
           Array.from(document.querySelectorAll('.code-block-content__title'), ({ textContent }) => textContent)
-        ).toEqual(COLLAPSIBLE_SAMPLES.map(({ title }) => title));
+        ).toEqual(collapsibleSamples.map(({ title }) => title));
 
-        // THEN: Should match snapshot.
+        // THEN: The 6 expanded messages show their code under the titles JavaScript, TypeScript, C#, Shell script, Bash, and Cobol, only the first 2 highlighted.
         await host.snapshot('local');
 
         // WHEN: The bot sends a message with code in "py" (emulated).
@@ -155,7 +155,7 @@
           type: 'message'
         });
 
-        await pageConditions.numActivitiesShown(COLLAPSIBLE_SAMPLES.length + 1);
+        await pageConditions.numActivitiesShown(collapsibleSamples.length + 1);
         await pageConditions.scrollStabilized();
 
         // WHEN: Click the "View code" button.
@@ -168,7 +168,7 @@
           'Code sample: Python'
         );
 
-        // THEN: Should match snapshot.
+        // THEN: The "View code" dialog shows the Python code under the "Python" title.
         await host.snapshot('local');
       });
     </script>
