@@ -2,6 +2,7 @@
 /* eslint-disable react/forbid-dom-props */
 import { hooks } from 'botframework-webchat-component';
 import { htmlTextAlternatives } from 'botframework-webchat-component/internal.js';
+import { onErrorResumeNext } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
@@ -14,13 +15,16 @@ const { useLocalizer, useRenderMarkdownAsHTML } = hooks;
 
 // Returns the text as the visible card shows it: Adaptive Cards formats {{DATE()}} and {{TIME()}}, then renders the Markdown.
 // Images are read by their alt text and blocks are separated, as in the live region of message text.
+// If the Markdown engine or Adaptive Cards throws, the visible card shows an error, and the text is read as written.
 function getRenderedText(element) {
-  const renderedElement = element.render();
+  return onErrorResumeNext(() => {
+    const renderedElement = element.render();
 
-  // Plain text, such as a TextRun, is set with innerText, which renders line breaks as <br>; htmlTextAlternatives() reads <br> as nothing.
-  renderedElement?.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+    // Plain text, such as a TextRun, is set with innerText, which renders line breaks as <br>; htmlTextAlternatives() reads <br> as nothing.
+    renderedElement?.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
 
-  return renderedElement ? htmlTextAlternatives(renderedElement).join('').replace(/\s+/gu, ' ').trim() : '';
+    return renderedElement ? htmlTextAlternatives(renderedElement).join('').replace(/\s+/gu, ' ').trim() : '';
+  }, element.asString());
 }
 
 // Perform a depth-first search of the visible elements of the Adaptive Card tree, skipping hidden subtrees.
