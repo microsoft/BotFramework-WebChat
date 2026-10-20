@@ -154,7 +154,7 @@ const AdaptiveCardAttachment = ({ content }) => {
 
     walkAllItems(card, node => nodes.push(node));
 
-    // Same Markdown engine as the visible card.
+    // Same Markdown engine as the visible card. This sets a static shared by all cards while rendering, which is safe because every render sets it first.
     setMarkdownEngine(card, renderMarkdownAsHTML);
 
     return nodes
