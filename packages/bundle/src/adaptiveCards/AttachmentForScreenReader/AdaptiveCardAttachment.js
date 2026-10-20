@@ -4,11 +4,22 @@ import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
+import setMarkdownEngine from '../Attachment/private/setMarkdownEngine';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import useParseAdaptiveCardJSON from '../hooks/internal/useParseAdaptiveCardJSON';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useRenderMarkdownAsHTML } = hooks;
+
+// Returns the text as the visible card shows it: Adaptive Cards formats {{DATE()}} and {{TIME()}}, then renders the Markdown.
+function getRenderedText(element) {
+  const renderedElement = element.render();
+
+  // Line breaks are rendered as <br>, which has no text content.
+  renderedElement?.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+
+  return (renderedElement?.textContent || '').replace(/\s+/gu, ' ').trim();
+}
 
 // Perform a depth-first search of the visible elements of the Adaptive Card tree, skipping hidden subtrees.
 // Actions are visited but not walked into, so the card of Action.ShowCard, hidden until opened, is not visited.
@@ -69,6 +80,7 @@ AdaptiveCardChoiceSetInput.propTypes = {
 const AdaptiveCardAttachment = ({ content }) => {
   const localize = useLocalizer();
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const [
     {
       ChoiceSetInput,
@@ -127,19 +139,33 @@ const AdaptiveCardAttachment = ({ content }) => {
 
     walkAllItems(card, node => nodes.push(node));
 
+    // Facts are rendered as text blocks, as Adaptive Cards does.
+    const getFactText = (factSet, text) => {
+      const textBlock = new TextBlock(text);
+
+      textBlock.setParent(factSet);
+
+      return getRenderedText(textBlock);
+    };
+
+    // Same Markdown engine as the visible card.
+    setMarkdownEngine(card, renderMarkdownAsHTML);
+
     return nodes
       .flatMap(node =>
         node instanceof FactSet
-          ? node.facts.map(({ name, value }) => [name, value].filter(Boolean).join(': '))
+          ? node.facts.map(({ name, value }) =>
+              [getFactText(node, name), getFactText(node, value)].filter(Boolean).join(': ')
+            )
           : node instanceof Image
             ? [node.altText]
             : node instanceof RichTextBlock || node instanceof TextBlock
-              ? [node.asString()]
+              ? [getRenderedText(node)]
               : []
       )
       .filter(Boolean)
       .join(' ');
-  }, [card, FactSet, Image, RichTextBlock, TextBlock]);
+  }, [card, FactSet, Image, renderMarkdownAsHTML, RichTextBlock, TextBlock]);
 
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || text, '', '');
 
