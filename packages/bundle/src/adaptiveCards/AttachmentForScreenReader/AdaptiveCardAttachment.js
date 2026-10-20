@@ -27,6 +27,15 @@ function getRenderedText(element) {
   }, element.asString());
 }
 
+// Facts are rendered as text blocks, as Adaptive Cards does.
+function getFactText(TextBlock, factSet, text) {
+  const textBlock = new TextBlock(text);
+
+  textBlock.setParent(factSet);
+
+  return getRenderedText(textBlock);
+}
+
 // Perform a depth-first search of the visible elements of the Adaptive Card tree, skipping hidden subtrees.
 // Actions are visited but not walked into, so the card of Action.ShowCard, hidden until opened, is not visited.
 function walkAllItems(node, fn) {
@@ -145,15 +154,6 @@ const AdaptiveCardAttachment = ({ content }) => {
 
     walkAllItems(card, node => nodes.push(node));
 
-    // Facts are rendered as text blocks, as Adaptive Cards does.
-    const getFactText = (factSet, text) => {
-      const textBlock = new TextBlock(text);
-
-      textBlock.setParent(factSet);
-
-      return getRenderedText(textBlock);
-    };
-
     // Same Markdown engine as the visible card.
     setMarkdownEngine(card, renderMarkdownAsHTML);
 
@@ -161,7 +161,7 @@ const AdaptiveCardAttachment = ({ content }) => {
       .flatMap(node =>
         node instanceof FactSet
           ? node.facts.map(({ name, value }) =>
-              [getFactText(node, name), getFactText(node, value)].filter(Boolean).join(': ')
+              [getFactText(TextBlock, node, name), getFactText(TextBlock, node, value)].filter(Boolean).join(': ')
             )
           : node instanceof Image
             ? [node.altText]
