@@ -28,7 +28,7 @@
   }
 
   /* Two-tone focus indicator, drawn inside the button as the action set clips anything outside of the button. */
-  /* The outer ring is visible against the card, the inner band separates it from the button, including when pressed. */
+  /* The outer ring is visible against the card, the inner band separates it from the button, including when selected. */
   :global(.ac-pushButton:focus-visible) {
     /* The inset shadow starts inside the 1px border, so the band is 2px wide inside the outer ring. */
     box-shadow: inset 0 0 0 calc(var(--webchat__border-width--transcript-visual-keyboard-indicator) + 1px)
@@ -77,7 +77,8 @@
     color: #4f4f4f;
   }
 
-  :global(.ac-pushButton[aria-pressed='true']) {
+  /* The action the user has performed, its "Selected" state is exposed via `aria-describedby`. */
+  :global(.ac-pushButton).adaptive-card-renderer__action--selected {
     background-color: var(--webchat__background--card-push-button, #0063b1);
     border-color: var(--webchat__background--card-push-button, #0063b1);
     color: var(--webchat__color--card-push-button, white);

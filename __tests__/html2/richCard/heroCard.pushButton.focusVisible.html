@@ -97,13 +97,15 @@
         await pageConditions.numActivitiesShown(2);
         await pageConditions.allOutgoingActivitiesSent();
 
-        // THEN: The "Places To Buy" button should be pressed and keep the focus.
-        await waitFor(() => expect(placesToBuyButton.getAttribute('aria-pressed')).toBe('true'));
+        // THEN: The "Places To Buy" button should be selected and keep the focus.
+        await waitFor(async () =>
+          expect((await testHelpers.getAccessibilityNode(placesToBuyButton)).description?.value).toBe('Selected')
+        );
         expect(document.activeElement).toBe(placesToBuyButton);
 
         await pageConditions.scrollToBottomCompleted();
 
-        // THEN: The pressed "Places To Buy" button (blue) keeps the focus indicator, the white band separates it from the black ring.
+        // THEN: The selected "Places To Buy" button (blue) keeps the focus indicator, the white band separates it from the black ring.
         // THEN: The "Place to buy" message is sent below the carousel.
         await host.snapshot('local');
       });

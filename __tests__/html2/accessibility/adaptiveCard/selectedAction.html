@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { AdaptiveCardContent } from 'botframework-webchat/component.js';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      async function getButtonState(button) {
+        const { description, properties, role } = await testHelpers.getAccessibilityNode(button);
+
+        return {
+          description: description?.value,
+          pressed: properties?.find(({ name }) => name === 'pressed')?.value.value,
+          role: role.value
+        };
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+
+        // SETUP: The host applies two classes to the pressed actions.
+        const attachmentMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [{ attachment }] = args;
+
+            return attachment.contentType === 'application/vnd.microsoft.card.adaptive'
+              ? createElement(AdaptiveCardContent, {
+                  actionPerformedClassName: 'card__action--performed card__action--extra',
+                  content: attachment.content
+                })
+              : next(...args);
+          };
+
+        const webChatElement = createElement(ReactWebChat, {
+          attachmentMiddleware: [attachmentMiddleware],
+          directLine,
+          store
+        });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // Similar to the "card actionstyles" command of the mock bot.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [
+                  { style: 'positive', title: 'Positive', type: 'Action.Submit' },
+                  { style: 'default', title: 'Default', type: 'Action.Submit' },
+                  { style: 'destructive', title: 'Destructive', type: 'Action.Submit' }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.2'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          text: 'Showing actionstyles',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [positiveButton, defaultButton, destructiveButton] = document.querySelectorAll('.ac-pushButton');
+
+        expect(positiveButton).toHaveProperty('textContent', 'Positive');
+        expect(defaultButton).toHaveProperty('textContent', 'Default');
+        expect(destructiveButton).toHaveProperty('textContent', 'Destructive');
+
+        // THEN: Action buttons should be plain buttons, not toggle buttons.
+        for (const button of [positiveButton, defaultButton, destructiveButton]) {
+          expect(await getButtonState(button)).toEqual({
+            description: undefined,
+            pressed: undefined,
+            role: 'button'
+          });
+        }
+
+        // WHEN: The "Default" button is clicked.
+        //       As the action has no `data`, it sends a post back activity, which is not shown in the transcript.
+        (await directLine.actPostActivity(() => host.click(defaultButton))).resolveAll();
+
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: The "Default" button should be described as "Selected", and still be a plain button.
+        await waitFor(async () =>
+          expect(await getButtonState(defaultButton)).toEqual({
+            description: 'Selected',
+            pressed: undefined,
+            role: 'button'
+          })
+        );
+
+        // THEN: Other buttons should not be described as "Selected".
+        for (const button of [positiveButton, destructiveButton]) {
+          expect(await getButtonState(button)).toEqual({
+            description: undefined,
+            pressed: undefined,
+            role: 'button'
+          });
+        }
+
+        // THEN: The classes from the host should be applied to the "Default" button only.
+        expect(Array.from(defaultButton.classList)).toEqual(
+          expect.arrayContaining(['card__action--performed', 'card__action--extra'])
+        );
+
+        for (const button of [positiveButton, destructiveButton]) {
+          expect(button.classList.contains('card__action--performed')).toBe(false);
+          expect(button.classList.contains('card__action--extra')).toBe(false);
+        }
+
+        // WHEN: The "Default" button is clicked again.
+        (await directLine.actPostActivity(() => host.click(defaultButton))).resolveAll();
+
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: The "Default" button should stay a plain button described as "Selected", as the decision was made again.
+        expect(await getButtonState(defaultButton)).toEqual({
+          description: 'Selected',
+          pressed: undefined,
+          role: 'button'
+        });
+
+        // THEN: The "Default" button should be shown as selected.
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
