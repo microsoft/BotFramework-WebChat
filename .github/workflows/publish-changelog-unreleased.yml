@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - test-changelog-base # Test only.
     paths:
       - .changelog/**
       - .github/workflows/publish-changelog-unreleased.yml
@@ -33,7 +34,7 @@ permissions: {}
 jobs:
   publish:
     # Not on forks, which would publish their own branch.
-    if: github.repository == 'microsoft/BotFramework-WebChat' && github.ref == 'refs/heads/main'
+    if: github.repository == 'microsoft/BotFramework-WebChat' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test-changelog-base') # Test only.
     name: Publish UNRELEASED.md
     runs-on: ubuntu-latest
 
@@ -64,6 +65,6 @@ jobs:
           GIT_COMMITTER_NAME: github-actions[bot]
         run: |
           node ./scripts/changelog/publish.mjs "$RUNNER_TEMP/UNRELEASED.md" \
-            --branch changelog-unreleased \
+            --branch ${{ github.ref == 'refs/heads/main' && 'changelog-unreleased' || 'test-changelog-unreleased' }} \
             --message "Build from $GITHUB_SHA" \
             | tee --append "$GITHUB_STEP_SUMMARY"
