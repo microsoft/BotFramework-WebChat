@@ -9,10 +9,7 @@ import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useValueRef from '../hooks/internal/useValueRef';
 
-enum InteractiveType {
-  LINK,
-  WIDGET
-}
+type InteractiveType = 'link' | 'widget';
 
 const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
 
@@ -84,9 +81,9 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
         messageTextAlt,
         numAttachmentsAlt,
         isSendFailed ? activityInteractiveReasonSendFailedAlt : '',
-        interactiveType === InteractiveType.LINK
+        interactiveType === 'link'
           ? activityInteractiveReasonLinkAlt
-          : interactiveType === InteractiveType.WIDGET
+          : interactiveType === 'widget'
             ? activityInteractiveReasonInteractiveContentAlt
             : '',
         interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : ''
@@ -110,8 +107,7 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
     const hasLinks = !!bodyRef.current?.querySelector('a');
     const hasWidgets = !!tabbableElements(bodyRef.current).length;
 
-    interactiveTypeRef.current !== hasWidgets &&
-      setInteractiveType(hasLinks ? InteractiveType.LINK : hasWidgets ? InteractiveType.WIDGET : false);
+    interactiveTypeRef.current !== hasWidgets && setInteractiveType(hasLinks ? 'link' : hasWidgets ? 'widget' : false);
   }, [bodyRef, interactiveTypeRef, setInteractiveType]);
 
   return [accessibleName];
