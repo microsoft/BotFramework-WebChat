@@ -110,7 +110,7 @@ export { MyComponentPropsSchema, type MyComponentProps };
 
 - Run new test and all of them must be green
 - Run `npm run precommit` to make sure it pass all linting process
-- Add changelog entry to `CHANGELOG.md`, follow our existing format
+- Add changelog entries to `.changelog/<PR#>-<slug>.md` with `node ./scripts/changelog/new.mjs` after creating the PR, do not edit `CHANGELOG.md`, see `.changelog/README.md`
 
 ## Code review
 
