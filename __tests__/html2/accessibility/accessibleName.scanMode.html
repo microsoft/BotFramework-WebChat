@@ -34,7 +34,10 @@
         await pageConditions.uiConnected();
 
         // GIVEN: The user asks for an animation card and the bot replies with one, similar to the "animationcard" command of the mock bot.
-        await (await directLine.emulateOutgoingActivity('animationcard')).resolveAll();
+        //        Fixed timestamps, as the summary ends with the time the message was sent.
+        const sendMessage = await directLine.emulateOutgoingActivity('animationcard');
+
+        await sendMessage.resolveAll(activity => ({ ...activity, timestamp: '2026-10-17T11:50:00Z' }));
         await directLine.emulateIncomingActivity({
           attachments: [
             {
@@ -49,6 +52,7 @@
               contentType: 'application/vnd.microsoft.card.animation'
             }
           ],
+          timestamp: '2026-10-17T11:51:00Z',
           type: 'message'
         });
 
@@ -74,7 +78,8 @@
             expect.objectContaining({
               ignored: false,
               name: expect.objectContaining({
-                value: 'Bot said: 1 attachment. Message is interactive. Click to interact.'
+                value:
+                  'Bot said: 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
               }),
               role: expect.objectContaining({ value: 'article' })
             })
@@ -97,7 +102,7 @@
           expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
             expect.objectContaining({
               ignored: false,
-              name: expect.objectContaining({ value: 'You said: animationcard' }),
+              name: expect.objectContaining({ value: 'You said: animationcard Sent at October 17 at 11:50 AM' }),
               role: expect.objectContaining({ value: 'article' })
             })
           )
@@ -133,7 +138,8 @@
             expect.objectContaining({
               ignored: false,
               name: expect.objectContaining({
-                value: 'Bot said: 1 attachment. Message is interactive. Click to interact.'
+                value:
+                  'Bot said: 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
               }),
               role: expect.objectContaining({ value: 'article' })
             })
@@ -156,7 +162,7 @@
           expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
             expect.objectContaining({
               ignored: false,
-              name: expect.objectContaining({ value: 'You said: animationcard' }),
+              name: expect.objectContaining({ value: 'You said: animationcard Sent at October 17 at 11:50 AM' }),
               role: expect.objectContaining({ value: 'article' })
             })
           )
