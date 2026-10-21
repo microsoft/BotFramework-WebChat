@@ -107,3 +107,39 @@
     display: contents;
   }
 }
+
+/* Headings are one level lower than written in Markdown ("#" is `<h2>`), keep the look of the level written. */
+/* Same as the browser's default heading styles, with no specificity, so any other style wins. */
+:where(:global(.webchat) .render-markdown [role='heading']) {
+  font-weight: bold;
+}
+
+:where(:global(.webchat) .render-markdown :global(.render-markdown__heading--level-1)) {
+  font-size: 2em;
+  margin-block: 0.67em;
+}
+
+:where(:global(.webchat) .render-markdown :global(.render-markdown__heading--level-2)) {
+  font-size: 1.5em;
+  margin-block: 0.83em;
+}
+
+:where(:global(.webchat) .render-markdown :global(.render-markdown__heading--level-3)) {
+  font-size: 1.17em;
+  margin-block: 1em;
+}
+
+:where(:global(.webchat) .render-markdown :global(.render-markdown__heading--level-4)) {
+  font-size: 1em;
+  margin-block: 1.33em;
+}
+
+:where(:global(.webchat) .render-markdown :global(.render-markdown__heading--level-5)) {
+  font-size: 0.83em;
+  margin-block: 1.67em;
+}
+
+:where(:global(.webchat) .render-markdown :global(.render-markdown__heading--level-6)) {
+  font-size: 0.67em;
+  margin-block: 2.33em;
+}

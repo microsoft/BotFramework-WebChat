@@ -97,7 +97,12 @@
 
         const markdownElement = document.querySelectorAll('dialog .render-markdown')[1];
 
-        expect(markdownElement.innerHTML.startsWith('<h2>Header</h2>\n&lt;p&gt;This is some text')).toBe(true);
+        // "## Header" is one level lower in Web Chat, as the page owns the level-one heading.
+        expect(
+          markdownElement.innerHTML.startsWith(
+            '<h3 class="render-markdown__heading--level-2">Header</h3>\n&lt;p&gt;This is some text'
+          )
+        ).toBe(true);
 
         await host.snapshot('local');
       });
