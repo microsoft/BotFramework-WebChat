@@ -33,7 +33,7 @@
         await pageConditions.uiConnected();
 
         // The summary is hidden from scan mode until the activity is selected with arrow keys, so read its text.
-        const getActivityAccessibleName = activityElement =>
+        const getActivitySummary = activityElement =>
           activityElement.querySelector('.webchat__basic-transcript__activity-active-descendant').textContent;
 
         // GIVEN: a message without links.
@@ -41,10 +41,8 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: the accessible name has no interactive footnote.
-        await waitFor(() =>
-          expect(getActivityAccessibleName(pageElements.activities()[0])).toBe('Bot said: Hello, World!')
-        );
+        // THEN: the summary has no interactive footnote.
+        await waitFor(() => expect(getActivitySummary(pageElements.activities()[0])).toBe('Bot said: Hello, World!'));
 
         // GIVEN: a message with a link.
         await directLine.emulateIncomingActivity({
@@ -54,10 +52,10 @@
 
         await pageConditions.numActivitiesShown(2);
 
-        // THEN: the accessible name tells the message has links and can be interacted with.
+        // THEN: the summary tells the message has links and can be interacted with.
         // Zero-width spaces wrap every link for line breaking, screen readers do not pause on them.
         await waitFor(() =>
-          expect(getActivityAccessibleName(pageElements.activities()[1]).replace(/\u200b/gu, '')).toBe(
+          expect(getActivitySummary(pageElements.activities()[1]).replace(/\u200b/gu, '')).toBe(
             'Bot said: Read the documentation. One or more links in the message. Click to interact.'
           )
         );

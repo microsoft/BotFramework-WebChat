@@ -119,6 +119,55 @@
 
         // THEN: The focus should be on the first button, without a focus indicator in the transcript.
         await host.snapshot('local');
+
+        // WHEN: The animation card is clicked with the mouse, on its bottom-right corner.
+        await host.clickAt(-20, -20, pageElements.activities()[1]);
+
+        // THEN: The animation card should be the active descendant, screen readers should announce its summary.
+        //       The transcript is focused by mouse (not focus-visible), the summary must still be exposed.
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]));
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(document.activeElement.getAttribute('aria-activedescendant')).toBe(botSummaryElement.id);
+        await waitFor(() =>
+          expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toEqual(
+            expect.objectContaining({
+              ignored: false,
+              name: expect.objectContaining({
+                value: 'Bot said: 1 attachment. Message is interactive. Click to interact.'
+              }),
+              role: expect.objectContaining({ value: 'article' })
+            })
+          )
+        );
+
+        // THEN: The summary of the user message should stay hidden from scan mode.
+        await expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus indicator should be around the animation card, without a focus indicator around the transcript.
+        await host.snapshot('local');
+
+        // WHEN: Up arrow key is pressed after the mouse click.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: The message of the user should be the active descendant, screen readers should announce its summary.
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]));
+        expect(document.activeElement.getAttribute('aria-activedescendant')).toBe(userSummaryElement.id);
+        await waitFor(() =>
+          expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
+            expect.objectContaining({
+              ignored: false,
+              name: expect.objectContaining({ value: 'You said: animationcard' }),
+              role: expect.objectContaining({ value: 'article' })
+            })
+          )
+        );
+
+        // THEN: The summary of the animation card should be hidden from scan mode again.
+        await expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus indicator should be around the message of the user.
+        //       The key press makes the focus visible, so the focus indicator around the transcript is back.
+        await host.snapshot('local');
       });
     </script>
   </body>
