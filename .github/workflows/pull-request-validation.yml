@@ -15,6 +15,11 @@ on:
 
   workflow_dispatch: {}
 
+concurrency:
+  # A newer push to the same pull request supersedes the older run.
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+
 defaults:
   run:
     shell: bash
@@ -81,7 +86,7 @@ jobs:
           compression-level: 0
           name: docker
           path: docker.zip
-          retention-days: 1
+          retention-days: 3 # "Re-run failed jobs" needs it after 24 hours.
 
       - name: Pack all packages
         run: npm exec --workspaces -- npm pack
@@ -94,7 +99,7 @@ jobs:
           compression-level: 0
           name: tarballs
           path: tarballs.tar
-          retention-days: 1
+          retention-days: 3 # "Re-run failed jobs" needs it after 24 hours.
 
   build-browser:
     name: Verify build-browser
@@ -286,6 +291,7 @@ jobs:
       matrix:
         shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
         shard-count: [17]
+    timeout-minutes: 30 # Slowest shard takes about 11 minutes.
 
     steps:
       - name: Use Node.js ${{ env.node-version }}
@@ -302,10 +308,31 @@ jobs:
 
       - run: rm docker.zip
 
-      - run: npm clean-install --strict-peer-deps
+      - name: Run npm clean-install --strict-peer-deps
+        run: |
+          # Retry on transient registry errors, such as 502 Bad Gateway and ECONNRESET.
+          for attempt in 1 2 3
+          do
+            npm clean-install --strict-peer-deps && exit 0
+
+            echo "::warning::npm clean-install failed, attempt $attempt of 3."
+            sleep 15
+          done
+
+          exit 1
 
       - name: Run docker compose build
-        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com
+        run: |
+          # Retry on transient registry errors, such as 503 Service Unavailable from mcr.microsoft.com.
+          for attempt in 1 2 3
+          do
+            docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com && exit 0
+
+            echo "::warning::docker compose build failed, attempt $attempt of 3."
+            sleep 15
+          done
+
+          exit 1
 
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
@@ -323,6 +350,7 @@ jobs:
 
             sleep 1
           done
+        timeout-minutes: 3
 
       - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
@@ -377,7 +405,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Merge test result artifacts
+      - continue-on-error: true # Do not error out on re-run, the first attempt already merged and deleted the artifacts
+        name: Merge test result artifacts
         uses: actions/upload-artifact/merge@v4
         with:
           delete-merged: true

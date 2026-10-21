@@ -14,7 +14,7 @@ export {
 } from '../hooks/internal/codeHighlighter/index';
 export { default as useActivityStyleOptions } from '../hooks/internal/useActivityStyleOptions.js';
 export { default as PartGrouping } from '../Middleware/ActivityGrouping/ui/PartGrouping/PartGrouping';
-export { useLiveRegion } from '../providers/LiveRegionTwin/index';
+export { useLiveRegion, useQueueStaticElement } from '../providers/LiveRegionTwin/index';
 export { default as ScreenReaderText } from '../ScreenReaderText';
 export { htmlTextAlternatives } from '../Utils/activityAltText';
 export { default as createIconComponent } from '../Utils/createIconComponent';

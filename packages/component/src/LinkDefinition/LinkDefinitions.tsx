@@ -67,7 +67,6 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
     if (summary && details && details instanceof HTMLDetailsElement) {
       const isDetailsOpen = details.open.toString();
       summary.setAttribute('aria-expanded', isDetailsOpen);
-      summary.setAttribute('aria-pressed', isDetailsOpen);
     }
   }, []);
 
@@ -82,7 +81,6 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
       <summary
         aria-controls={id}
         aria-expanded={defaultOpenString}
-        aria-pressed={defaultOpenString}
         className={classNames['link-definitions__header']}
         ref={summaryRef}
         role="button"

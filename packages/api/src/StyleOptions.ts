@@ -286,6 +286,9 @@ type StrictStyleOptions = {
    * Send box styling
    */
 
+  /**
+   * `true` to hide the send box and its suggested actions, otherwise, `false`. Defaults to `false`.
+   */
   hideSendBox: boolean | undefined;
 
   /**

@@ -22,6 +22,7 @@ import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunct
  *
  * An action is selected only after Adaptive Cards executed it, i.e. `markActionAsSelected()` is called from `onExecuteAction`.
  * Adaptive Cards does not execute an action when its inputs fail validation, e.g. a required input is empty.
+ * `markActionAsSelected()` returns `true` if the action is marked as selected, so the caller can announce it.
  *
  * One exception is the `Action.ShowCard` action. This button represents expand/collapse header of an accordion.
  * Thus, their state is indicated by `aria-expanded` and they are never selected.
@@ -32,9 +33,9 @@ export default function useActionShouldBePushButtonModEffect(
 ): readonly [
   (cardElement: HTMLElement, selectedClassName: string, descriptionId: string) => void,
   () => void,
-  (action: CardObject) => void
+  (action: CardObject) => boolean
 ] {
-  const markActionAsSelectedRef = useRef<((action: CardObject) => void) | undefined>();
+  const markActionAsSelectedRef = useRef<((action: CardObject) => boolean) | undefined>();
   const prevAdaptiveCard = usePrevious(adaptiveCard);
   const pushedCardObjectsRef = useRef<Set<CardObject>>(new Set());
 
@@ -47,10 +48,10 @@ export default function useActionShouldBePushButtonModEffect(
       );
       const undoStack: UndoFunction[] = [];
 
-      const markAsSelected = (actionElement: HTMLElement) =>
+      const markAsSelected = (actionElement: HTMLElement): boolean =>
         // Mods all AC action buttons except those for `Action.ShowCard`, which has `aria-expanded` attribute.
         !actionElement.hasAttribute('aria-expanded') &&
-        undoStack.push(
+        !!undoStack.push(
           durableAddClassWithUndo(actionElement, selectedClassName),
           setOrRemoveAttributeIfFalseWithUndo(actionElement, 'aria-describedby', descriptionId)
         );
@@ -67,7 +68,7 @@ export default function useActionShouldBePushButtonModEffect(
       });
 
       markActionAsSelectedRef.current = ({ renderedElement }: CardObject) =>
-        actionElements.filter(actionElement => actionElement === renderedElement).forEach(markAsSelected);
+        actionElements.some(actionElement => actionElement === renderedElement && markAsSelected(actionElement));
 
       return () => {
         markActionAsSelectedRef.current = undefined;
@@ -83,7 +84,8 @@ export default function useActionShouldBePushButtonModEffect(
   const markActionAsSelected = useCallback(
     (action: CardObject) => {
       pushedCardObjectsRef.current.add(action);
-      markActionAsSelectedRef.current?.(action);
+
+      return !!markActionAsSelectedRef.current?.(action);
     },
     [markActionAsSelectedRef, pushedCardObjectsRef]
   );
