@@ -17,6 +17,12 @@ import styles from './CarouselFilmStrip.module.css';
 
 const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
+// Controls without their own LEFT/RIGHT behavior. Inputs that use arrow keys (text, number, date, radio, range, select)
+// and media are left out. Adaptive Cards render a `selectAction` as `[role="button"]` or, for Action.OpenUrl,
+// `[role="link"]`.
+const CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR =
+  'a[href], button, input[type="button"], input[type="checkbox"], input[type="reset"], input[type="submit"], [role="button"], [role="link"]';
+
 const CarouselFilmStrip = ({
   activity,
   className,
@@ -38,6 +44,20 @@ const CarouselFilmStrip = ({
   const scrollableCallbackRef = useScrollableCallbackRef();
   const scrollTo = useScrollTo();
 
+  // When the keyboard moves the focus into a card from outside of it (TAB or SHIFT-TAB), center the card with react-film,
+  // as LEFT/RIGHT do, instead of leaving it partially visible. Clicking a card or button is not :focus-visible and does not
+  // scroll; text inputs are, so the card is centered for typing.
+  const handleAttachmentsFocus = useCallback(
+    ({ currentTarget, relatedTarget, target }) => {
+      const cards = Array.from(currentTarget.children);
+
+      const index = cards.findIndex(card => card.contains(target));
+
+      ~index && !cards[+index].contains(relatedTarget) && target.matches(':focus-visible') && scrollTo(() => index);
+    },
+    [scrollTo]
+  );
+
   // When a card itself has focus (not a control inside it), LEFT/RIGHT move the focus to the previous/next card
   // (mirrored in RTL), HOME/END to the first/last card. This is a shortcut: every card is still a tab stop.
   const handleAttachmentsKeyDown = useCallback(
@@ -48,7 +68,17 @@ const CarouselFilmStrip = ({
       const index = cards.indexOf(target);
       const rtl = direction === 'rtl';
 
-      if (altKey || ctrlKey || metaKey || shiftKey || !~index) {
+      if (altKey || ctrlKey || metaKey || shiftKey) {
+        return;
+      }
+
+      if (!~index) {
+        // On a button, link, or checkbox inside a card, LEFT/RIGHT do nothing. Otherwise, the browser would scroll the
+        // carousel and react-film would center the card again, or, on a held key, scroll the control out of view.
+        (key === 'ArrowLeft' || key === 'ArrowRight') &&
+          target.matches(CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR) &&
+          event.preventDefault();
+
         return;
       }
 
@@ -144,7 +174,11 @@ const CarouselFilmStrip = ({
         </div>
         <div className={classNames['carousel-filmstrip__content']}>
           {!!activityDisplayText && (
-            <div aria-roledescription="message" className={classNames['carousel-filmstrip__message']} role="group">
+            <div
+              aria-roledescription={localize('ACTIVITY_MESSAGE_ARIA_ROLE_ALT')}
+              className={classNames['carousel-filmstrip__message']}
+              role="group"
+            >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className={classNames['carousel-filmstrip__bubble']}
@@ -167,6 +201,7 @@ const CarouselFilmStrip = ({
             <div className={classNames['carousel-filmstrip__complimentary-content']}>
               <ul
                 className={cx(classNames['carousel-filmstrip__attachments'], 'react-film__filmstrip__list')}
+                onFocus={handleAttachmentsFocus}
                 onKeyDown={handleAttachmentsKeyDown}
                 ref={itemContainerCallbackRef}
               >

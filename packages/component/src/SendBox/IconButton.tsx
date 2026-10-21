@@ -42,6 +42,7 @@ function IconButton(props: IconButtonProps) {
 
   return (
     <AccessibleButton
+      aria-label={alt}
       className={classNames(
         sendBoxButtonStyleSet + '',
         'webchat__icon-button',

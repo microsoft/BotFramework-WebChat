@@ -24,8 +24,7 @@
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
   --webchat-externalLink-mask: var(
     --externalLink-mask,
-    var(--webchat__icon-url--external-link) center center /
-    10px 10px
+    var(--webchat__icon-url--external-link) center center / 10px 10px
   );
   --webchat-externalLink-maxWidth: var(--externalLink-maxWidth, 204px);
 
@@ -118,6 +117,10 @@
       background: currentColor;
       -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
       mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
     }
   }
 
@@ -168,6 +171,19 @@
       height: 0.7em;
       -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
       mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
+    }
+
+    @media (forced-colors: active) {
+      &,
+      &:hover,
+      &:hover:active {
+        border-color: LinkText;
+        color: LinkText;
+      }
     }
   }
   /* #endregion */
@@ -221,6 +237,12 @@
       font-size: var(--webchat__font-size--small);
       height: 24px;
       padding-inline-end: var(--webchat-spacingHorizontalS);
+
+      /* Button chips use the link color like link chips; the badge, divider and text inherit it. */
+      @media (forced-colors: active) {
+        border-color: LinkText;
+        color: LinkText;
+      }
     }
 
     :global(.link-definitions__list-item-body) {
@@ -280,6 +302,10 @@
       mask: var(--webchat__citation__external-link--mask) no-repeat;
       padding: 0;
       width: 1em;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
     }
 
     /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
@@ -451,6 +477,14 @@
     color: var(--webchat-colorNeutralForeground1);
     max-width: 100%;
     min-height: var(--webchat-part-grouping__bubble--min-height);
+  }
+
+  /* Forced colors remove the bubble shadow and fill, so draw a border as the default theme does. */
+  @media (forced-colors: active) {
+    &:not(.part-grouping-decorator--group)
+      :global(.stacked-layout .bubble:not(:has(.activity-loader)) .bubble__content) {
+      border: var(--webchat-strokeWidthThin) solid CanvasText;
+    }
   }
 
   :global(.stacked-layout .bubble .text-content) {
@@ -676,7 +710,7 @@
           }
 
           :global(.ac-pushButton:active),
-          :global(.ac-pushButton[aria-pressed='true']) {
+          :global(.ac-pushButton.adaptive-card-renderer__action--selected) {
             background-color: var(--webchat-colorNeutralBackground1Pressed);
             border-color: var(--webchat-colorNeutralStroke1Pressed);
             color: var(--webchat-colorNeutralForeground1Pressed);
@@ -703,7 +737,7 @@
           }
 
           :global(.ac-pushButton.primary:active),
-          :global(.ac-pushButton.primary[aria-pressed='true']) {
+          :global(.ac-pushButton.primary.adaptive-card-renderer__action--selected) {
             background-color: var(--webchat-colorBrandBackgroundPressed);
             border-color: transparent;
             color: var(--webchat-colorNeutralForegroundOnBrand);

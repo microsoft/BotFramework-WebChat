@@ -60,22 +60,50 @@
         const nextFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Next"]');
         const previousFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Previous"]');
 
-        // WHEN: Press SHIFT-TAB from the send box to move focus to the "Next" flipper.
+        // WHEN: Focus on the send box.
         pageObjects.focusSendBoxTextBox();
-        await host.sendShiftTab(2);
 
-        // THEN: The "Next" flipper should have a visible focus indicator.
+        // THEN: The send box should have the focus.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // THEN: Both flippers show without focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the upload button.
+        await host.sendShiftTab();
+
+        // THEN: The upload button should have the focus.
+        expect(document.activeElement).toHaveProperty('title', 'Upload file');
+
+        // THEN: The upload button shows the focus indicator, both flippers show without focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the "Next" flipper.
+        await host.sendShiftTab();
+
+        // THEN: The "Next" flipper should have the focus.
         expect(document.activeElement).toBe(nextFlipper);
 
         // The flipper background color transitions in 100ms, host.snapshot() waits for 5 identical screenshots in a row.
+        // THEN: The "Next" flipper shows a two-tone focus indicator, the suggested actions show a black border.
         await host.snapshot('local');
 
-        // WHEN: Press SHIFT-TAB twice to move focus to the "Previous" flipper, through the first suggested action.
-        await host.sendShiftTab(2);
+        // WHEN: Press SHIFT-TAB to move focus to the first suggested action.
+        await host.sendShiftTab();
 
-        // THEN: The "Previous" flipper should have a visible focus indicator, the "Next" flipper should not.
+        // THEN: The first suggested action should have the focus.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[0]);
+
+        // THEN: The "Action 1" button shows a dashed focus indicator, both flippers show without focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the "Previous" flipper.
+        await host.sendShiftTab();
+
+        // THEN: The "Previous" flipper should have the focus.
         expect(document.activeElement).toBe(previousFlipper);
 
+        // THEN: The "Previous" flipper shows a two-tone focus indicator, the "Next" flipper does not.
         await host.snapshot('local');
       });
     </script>
