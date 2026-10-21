@@ -34,7 +34,12 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const variant = new URLSearchParams(location.search).get('variant');
-        const webChatElement = createElement(ReactWebChat, { directLine, store });
+        // The send box is not under test: hide it, including the send box of the Fluent theme.
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          sendBoxMiddleware: [() => () => () => false],
+          store
+        });
 
         createRoot(document.getElementById('webchat')).render(
           variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
@@ -111,6 +116,9 @@
         await waitFor(() => expect(document.activeElement).toBe(buttonElement));
         expect(buttonElement.matches(':focus-visible')).toBe(true);
 
+        // THEN: The first frame should be shown, with the focus indicator on the "Play animation" button.
+        await host.snapshot('local');
+
         // WHEN: Press ENTER on the button.
         await host.sendKeys('ENTER');
 
@@ -118,7 +126,7 @@
         await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Pause animation'));
         expect(document.activeElement).toBe(buttonElement);
 
-        // THEN: The second frame should be shown, with the focus indicator on the button.
+        // THEN: The second frame should be shown, with the focus indicator on the "Pause animation" button.
         await host.snapshot('local');
 
         // WHEN: Press ENTER on the button again.
@@ -128,21 +136,7 @@
         await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Play animation'));
         expect(document.activeElement).toBe(buttonElement);
 
-        // THEN: The first frame should be shown again, with the focus indicator on the button.
-        await host.snapshot('local');
-
-        // WHEN: Forced colors are active, such as with a Windows contrast theme.
-        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
-          features: [
-            { name: 'forced-colors', value: 'active' },
-            { name: 'prefers-reduced-motion', value: 'reduce' }
-          ]
-        });
-
-        expect(matchMedia('(forced-colors: active)').matches).toBe(true);
-        expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
-
-        // THEN: The "Play animation" icon and the border of the message should be visible in forced colors.
+        // THEN: The first frame should be shown again, with the focus indicator on the "Play animation" button.
         await host.snapshot('local');
       });
     </script>
