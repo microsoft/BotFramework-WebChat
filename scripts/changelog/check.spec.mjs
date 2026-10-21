@@ -10,6 +10,13 @@ import { changelog, createTestRepository, fragment } from './testing.mjs';
 
 const facility = { afterEach, beforeEach, describe, it };
 
+const CREATE_PULL_REQUEST_FIRST =
+  'create the pull request first ("gh pr create"), then write the fragment with its number, e.g.:\n\n   node ./scripts/changelog/new.mjs --issue 5734 "animation cards showing an empty video player for GIF URLs with a query"';
+
+// Written before the pull request was created.
+const PLACEHOLDER_FRAGMENT =
+  '### Fixed\n\n- Fixed something, in PR [#XXXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXXX), by [@OEvgeny](https://github.com/OEvgeny)\n';
+
 const EDITED_MESSAGE =
   'CHANGELOG.md: the "[Unreleased]" section was edited, add a .changelog/<PR#>-<slug>.md fragment instead';
 
@@ -137,6 +144,134 @@ scenario(
       .when('checked', check())
       .then('should fail', (_, error) =>
         expect(error).toHaveProperty('message', '10-fix.md:1: entry must be under a "### <section>" heading')
+      );
+
+    bdd
+      .given(
+        'a pull request with a fragment with "#XXXX" instead of its number',
+        () =>
+          setUp(({ commit }) =>
+            commit('#10', {
+              '.changelog/10-fix.md': PLACEHOLDER_FRAGMENT
+            })
+          ),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should fail and ask to create the pull request first', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          `.changelog/10-fix.md: "#XXXX" is a placeholder, ${CREATE_PULL_REQUEST_FIRST}`
+        )
+      );
+
+    bdd
+      .given(
+        'a pull request with a fragment with "#XXXX" instead of an issue number',
+        () =>
+          setUp(({ commit }) =>
+            commit('#10', {
+              '.changelog/10-fix.md': fragment(
+                10,
+                'Fixed',
+                'Fixed [#XXXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXXX), something'
+              )
+            })
+          ),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          `.changelog/10-fix.md: "#XXXX" is a placeholder, ${CREATE_PULL_REQUEST_FIRST}`
+        )
+      );
+
+    bdd
+      .given(
+        'a pull request with a fragment named "XXXX-<slug>.md"',
+        () => setUp(({ commit }) => commit('#10', { '.changelog/XXXX-fix.md': fragment(10) })),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should fail and ask to create the pull request first', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          `.changelog/XXXX-fix.md: fragment filename must be "<PR#>-<slug>.md", "XXXX" is a placeholder, ${CREATE_PULL_REQUEST_FIRST}`
+        )
+      );
+
+    bdd
+      .given(
+        'a pull request with its fragment linking another pull request',
+        () => setUp(({ commit }) => commit('#10', { '.changelog/10-fix.md': fragment(9) })),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          '.changelog/10-fix.md: every entry must link its pull request, "[#10](https://github.com/microsoft/BotFramework-WebChat/pull/10)", got "- Fixed something, in PR [#9](https://github.com/microsoft/BotFramework-WebChat/pull/9), by [@OEvgeny](https://github.com/OEvgeny)"'
+        )
+      );
+
+    bdd
+      .given(
+        'a pull request with its fragment linking its number to another pull request',
+        () =>
+          setUp(({ commit }) =>
+            commit('#10', {
+              '.changelog/10-fix.md': fragment(10).replace('/pull/10)', '/pull/9)') // Text says #10, URL says 9.
+            })
+          ),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty('message', expect.stringContaining('every entry must link its pull request'))
+      );
+
+    bdd
+      .given(
+        'a pull request that adds "#XXXX" to the fragment of another pull request',
+        () =>
+          setUp(({ commit }) =>
+            commit('#10', {
+              '.changelog/1-a.md': fragment(
+                1,
+                'Fixed',
+                'Fixed [#XXXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXXX), something'
+              ),
+              '.changelog/10-fix.md': fragment(10)
+            })
+          ),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          `.changelog/1-a.md: "#XXXX" is a placeholder, ${CREATE_PULL_REQUEST_FIRST}`
+        )
+      );
+
+    bdd
+      .given(
+        'a pull request after a fragment with "#XXXX" was merged',
+        () =>
+          setUp(async ({ commit }) => {
+            const base = await commit('#3', { '.changelog/3-c.md': PLACEHOLDER_FRAGMENT });
+
+            await commit('#10', { '.changelog/10-fix.md': fragment(10) });
+
+            return { base };
+          }),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should pass, the merged fragment is fixed in its own pull request', (_, preview) =>
+        expect(preview).toMatch(/^## Changelog\n\nFrom `\.changelog\/10-fix\.md`/u)
       );
 
     bdd

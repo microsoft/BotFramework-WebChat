@@ -300,6 +300,27 @@ scenario(
       .and('should use the options', (_, pullRequest) =>
         expect(pullRequest).toEqual({ author: 'OEvgeny', prNumber: 5920 })
       );
+
+    bdd
+      .given('a branch without pull request', () => ({
+        runGitHubCLI: () => {
+          // Like execFileSync() when "gh pr view" exits with 1.
+          throw new Error('Command failed: gh pr view --json author,number');
+        }
+      }))
+      .when('got', ({ runGitHubCLI }) => {
+        try {
+          return getPullRequest({}, runGitHubCLI);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should ask to create the pull request first', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          'Cannot find the pull request with "gh pr view", create the pull request first ("gh pr create"), then write the fragment with its number, e.g.:\n\n   node ./scripts/changelog/new.mjs --issue 5734 "animation cards showing an empty video player for GIF URLs with a query"'
+        )
+      );
   },
   facility
 );

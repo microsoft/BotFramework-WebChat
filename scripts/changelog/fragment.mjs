@@ -10,11 +10,19 @@
 // Entries are published verbatim, the builder only sorts them into sections.
 
 const FRAGMENT_FILENAME_PATTERN = /^([1-9]\d*)-([a-z\d]+(?:-[a-z\d]+)*)\.md$/u;
+
+// A pull request or issue number not known yet, e.g. "#XXXX", "/pull/XXXX", or a filename starting with "XXXX-".
+const PLACEHOLDER_PATTERN = /(?:^|#|\/(?:issues|pull)\/)X{4,}\b/iu;
+
 const README_FILENAME = 'README.md';
 const REPOSITORY_URL = 'https://github.com/microsoft/BotFramework-WebChat';
 
 // Same order as in CHANGELOG.md, other Keep a Changelog sections are not used.
 const SECTIONS = Object.freeze(['Added', 'Changed', 'Removed', 'Fixed']);
+
+const CREATE_PULL_REQUEST_FIRST = `create the pull request first ("gh pr create"), then write the fragment with its number, e.g.:
+
+   node ./scripts/changelog/new.mjs --issue 5734 "animation cards showing an empty video player for GIF URLs with a query"`;
 
 /**
  * Parses the filename of a fragment.
@@ -126,4 +134,14 @@ function isMain(importMeta) {
   return importMeta.main;
 }
 
-export { isMain, parseFragment, parseFragmentFilename, README_FILENAME, renderSections, REPOSITORY_URL, SECTIONS };
+export {
+  CREATE_PULL_REQUEST_FIRST,
+  isMain,
+  parseFragment,
+  parseFragmentFilename,
+  PLACEHOLDER_PATTERN,
+  README_FILENAME,
+  renderSections,
+  REPOSITORY_URL,
+  SECTIONS
+};
