@@ -51,33 +51,36 @@
 
       // TODO: [P2] Markdown headings from the bot are rendered as-is: "# Heading" becomes a level-one heading, which Web Chat must not contain (#4721).
       //       Remove both `skipCheckAccessibility` when fixed.
-      run(async function () {
-        const { directLine } = adapter;
+      run(
+        async function () {
+          const { directLine } = adapter;
 
-        const fluentTheme = {
-          ...webLightTheme,
-          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
-          colorNeutralForeground1: '#1b1b1b'
-        };
+          const fluentTheme = {
+            ...webLightTheme,
+            // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+            colorNeutralForeground1: '#1b1b1b'
+          };
 
-        createRoot(document.getElementsByTagName('main')[0]).render(
-          createElement(
-            FluentProvider,
-            { className: 'fui-FluentProvider', theme: fluentTheme },
+          createRoot(document.getElementsByTagName('main')[0]).render(
             createElement(
-              FluentThemeProvider,
-              { variant: 'fluent' },
-              createElement(ReactWebChat, { directLine, store })
+              FluentProvider,
+              { className: 'fui-FluentProvider', theme: fluentTheme },
+              createElement(
+                FluentThemeProvider,
+                { variant: 'fluent' },
+                createElement(ReactWebChat, { directLine, store })
+              )
             )
-          )
-        );
+          );
 
-        await pageConditions.uiConnected();
+          await pageConditions.uiConnected();
 
-        await pageConditions.scrollStabilized();
+          await pageConditions.scrollStabilized();
 
-        await host.snapshot('local', { skipCheckAccessibility: true });
-      }, { skipCheckAccessibility: true });
+          await host.snapshot('local', { skipCheckAccessibility: true });
+        },
+        { skipCheckAccessibility: true }
+      );
     </script>
   </body>
 </html>
