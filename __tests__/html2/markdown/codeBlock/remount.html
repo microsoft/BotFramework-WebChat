@@ -55,7 +55,7 @@
 
         await pageConditions.scrollStabilized();
 
-        // THEN: Should match snapshot.
+        // THEN: The message shows the Python code block highlighted, as before the remount.
         await host.snapshot('local');
       });
     </script>
