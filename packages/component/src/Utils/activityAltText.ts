@@ -91,7 +91,10 @@ function htmlTextAlternatives(document: Document): string[] {
     } else if (tagName === 'A' || tagName === 'BUTTON') {
       // Links and citation buttons are separate words, e.g. "settings[1]" should read "settings 1", not "settings1".
       // The zero-width spaces that wrap links are not words, "Read the [docs]" should not get a second space.
-      return /\S$/u.test((node.previousSibling?.textContent || '').replace(/\u200b/gu, '')) ? [' '] : [];
+      // `trimEnd()` does not remove U+200B, it is not a whitespace in JavaScript.
+      const previousText = (node.previousSibling?.textContent || '').replaceAll('\u200b', '');
+
+      return previousText && previousText.trimEnd() === previousText ? [' '] : [];
     } else if (tagName === 'IMG') {
       return [node.getAttribute('alt')];
     } else if (!HTML_INLINE_TAGS.includes(tagName)) {
