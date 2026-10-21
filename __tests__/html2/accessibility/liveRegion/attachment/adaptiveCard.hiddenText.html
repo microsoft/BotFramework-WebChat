@@ -86,7 +86,7 @@
 
         // THEN: The live region copy reads the visible text only, followed by the action button.
         expect(testHelpers.getAllTextContents(liveRegionActivity).map(text => text.trim())).toEqual([
-          'Bot said:',
+          'Bot said',
           'A card: Seattle',
           'Show more'
         ]);

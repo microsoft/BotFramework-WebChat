@@ -48,7 +48,7 @@
         // THEN: the summary has no interactive footnote, only the time the message was sent.
         await waitFor(() =>
           expect(getActivitySummary(pageElements.activities()[0])).toBe(
-            'Bot said: Hello, World! Sent at October 17 at 11:50 AM'
+            'Bot said Hello, World! Sent at October 17 at 11:50 AM'
           )
         );
 
@@ -65,7 +65,7 @@
         // Zero-width spaces wrap every link for line breaking, screen readers do not pause on them.
         await waitFor(() =>
           expect(getActivitySummary(pageElements.activities()[1]).replace(/\u200b/gu, '')).toBe(
-            'Bot said: Read the documentation. One or more links in the message. Click to interact. Sent at October 17 at 11:51 AM'
+            'Bot said Read the documentation. One or more links in the message. Click to interact. Sent at October 17 at 11:51 AM'
           )
         );
       });

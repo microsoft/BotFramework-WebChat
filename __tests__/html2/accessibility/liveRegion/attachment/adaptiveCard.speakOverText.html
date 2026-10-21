@@ -72,7 +72,7 @@
           testHelpers
             .getAllTextContents(pageElements.liveRegion().querySelector('.webchat__live-region-activity'))
             .map(text => text.trim())
-        ).toEqual(['Bot said:', 'A card: Sunny and 21 degrees in Seattle']);
+        ).toEqual(['Bot said', 'A card: Sunny and 21 degrees in Seattle']);
 
         // THEN: The live region shows "A card:" followed by "speak", not the card text.
         await host.snapshot('local');

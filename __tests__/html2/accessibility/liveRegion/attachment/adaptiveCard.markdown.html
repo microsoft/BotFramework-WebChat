@@ -86,7 +86,7 @@
           testHelpers
             .getAllTextContents(pageElements.liveRegion().querySelector('.webchat__live-region-activity'))
             .map(text => text.trim())
-        ).toEqual(['Bot said:', `A card: ${cardText}`]);
+        ).toEqual(['Bot said', `A card: ${cardText}`]);
 
         // THEN: The card shows bold "sunny", a "docs" link and a bullet list; the live region above shows the same words without Markdown syntax.
         await host.snapshot('local');
