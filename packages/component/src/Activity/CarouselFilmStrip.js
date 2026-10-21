@@ -174,7 +174,11 @@ const CarouselFilmStrip = ({
         </div>
         <div className={classNames['carousel-filmstrip__content']}>
           {!!activityDisplayText && (
-            <div aria-roledescription="message" className={classNames['carousel-filmstrip__message']} role="group">
+            <div
+              aria-roledescription={localize('ACTIVITY_MESSAGE_ARIA_ROLE_ALT')}
+              className={classNames['carousel-filmstrip__message']}
+              role="group"
+            >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className={classNames['carousel-filmstrip__bubble']}
