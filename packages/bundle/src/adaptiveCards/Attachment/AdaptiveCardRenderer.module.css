@@ -17,6 +17,11 @@
     padding: var(--webchat__padding--regular);
   }
 
+  /* Elements with "selectAction", such as containers and images, are clickable. Push buttons keep the default cursor of buttons. */
+  :global(.ac-selectable:not(.ac-pushButton)) {
+    cursor: pointer;
+  }
+
   :global(.ac-pushButton) {
     appearance: none;
     background-color: white;
