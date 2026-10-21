@@ -75,7 +75,7 @@
 
         await pageConditions.liveRegionStabilized();
 
-        // THEN: The live region shows what screen readers announce: "Bot said", one line per card from its "speak" property ("A card: Hello, World!", "A card: Please enter your full name"), then the input of the second card.
+        // THEN: The live region shows what screen readers announce: "Bot said", one line per card from its "speak" property ("A card Hello, World!", "A card Please enter your full name"), then the input of the second card.
         await host.snapshot('local');
       });
     </script>

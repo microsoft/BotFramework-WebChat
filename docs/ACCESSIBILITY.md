@@ -367,7 +367,7 @@ Applying the logic to samples above:
    -  Narration will be "Exchange rate: USD 1.00 JPY 0.91"
 -  The message contains a document, such as an insurance policy
    -  If the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
-   -  Narration will be "Insurance policy: A file: 12345678-1234-5678-abcd-12345678abcd.doc"
+   -  Narration will be "Insurance policy: A file 12345678-1234-5678-abcd-12345678abcd.doc"
 
 # Screen reader renderer for custom activities and attachments
 
