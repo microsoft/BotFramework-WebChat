@@ -397,7 +397,7 @@ jobs:
             ./__tests__/html2/**/*.snap-*-diff.png
 
   merge-test-results:
-    if: always()
+    if: ${{ !cancelled() }} # A cancelled run has no test results to merge
     name: Merge test results
     needs:
       - html-test
