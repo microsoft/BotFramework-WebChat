@@ -16,6 +16,7 @@ import getAccessibilityNode from './getAccessibilityNode';
 import getAccessibleName from './getAccessibleName';
 import getAllTextContents from './getAllTextContents';
 import getFocusedAccessibilityNode from './getFocusedAccessibilityNode';
+import getRenderedColor from './getRenderedColor';
 import isCardInView from './isCardInView';
 import isFlipperHidden from './isFlipperHidden';
 import iterateAsyncIterable from './iterateAsyncIterable';
@@ -43,6 +44,7 @@ export {
   getAccessibleName,
   getAllTextContents,
   getFocusedAccessibilityNode,
+  getRenderedColor,
   isCardInView,
   isFlipperHidden,
   iterateAsyncIterable,
