@@ -27,6 +27,13 @@
     background-image: var(--webchat__icon-url--external-link);
     height: 0.75em;
     margin-inline-start: 0.25em;
+
+    /* Forced colors keep background images in their own colors, draw the icon in the link color instead. */
+    @media (forced-colors: active) {
+      background: LinkText;
+      -webkit-mask: var(--webchat__icon-url--external-link) center / contain no-repeat;
+      mask: var(--webchat__icon-url--external-link) center / contain no-repeat;
+    }
   }
 
   /* Citation button */
