@@ -1,7 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import React from 'react';
 
-import ConnectivityStatusConnected from './ConnectivityStatus/Connected';
 import ConnectivityStatusConnecting from './ConnectivityStatus/Connecting';
 import ConnectivityStatusFailedToConnect from './ConnectivityStatus/FailedToConnect';
 import ConnectivityStatusJavaScriptError from './ConnectivityStatus/JavaScriptError';
@@ -11,11 +10,7 @@ const { useDebouncedNotifications } = hooks;
 const BasicConnectivityStatus = ({ className }) => {
   const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();
 
-  if (!connectivityStatus) {
-    return null;
-  }
-
-  switch (connectivityStatus.message) {
+  switch (connectivityStatus?.message) {
     case 'connecting':
       return <ConnectivityStatusConnecting className={className} />;
 
@@ -28,9 +23,10 @@ const BasicConnectivityStatus = ({ className }) => {
     case 'reconnecting':
       return <ConnectivityStatusConnecting className={className} reconnect={true} />;
 
+    // Connected: render nothing, visually or for screen readers, so browse mode goes from the transcript straight to the send box.
     case 'connected':
     default:
-      return <ConnectivityStatusConnected className={className} />;
+      return null;
   }
 };
 
