@@ -19,7 +19,7 @@ The copy may fall behind `main`: the check still passes, and fragments merged si
 
 ## Adding an entry
 
-After `gh pr create`, run:
+Create the pull request first, the fragment needs its number: the check rejects placeholders such as `#XXXX`, and `new.mjs` stops when the branch has no pull request. After `gh pr create`, run:
 
 ```sh
 node ./scripts/changelog/new.mjs --issue 5734 "animation cards showing an empty video player for GIF URLs with a query"
@@ -61,6 +61,8 @@ The "Changelog" check of a pull request passes for:
 - A change: it adds `.changelog/<PR#>-<slug>.md` with its own number, or is labeled `no-changelog`. It must not edit the `[Unreleased]` section of `CHANGELOG.md` or delete fragments.
 - A merge-back of `changelog-unreleased`: it deletes fragments, adds none, changes no other files, and its `CHANGELOG.md` is exactly the one of `main` with the deleted fragments merged in, except for the "Built from" line.
 - A hand edit by a maintainer, labeled `changelog-edit`: it may edit `CHANGELOG.md` and delete fragments, for example a release or a typo fix in merged-back entries. Fragments are still validated.
+
+Every entry of a fragment that the pull request adds or edits must link the pull request of its filename, `[#<PR#>](…/pull/<PR#>)`, without placeholders such as `#XXXX`. Merged fragments are not checked again, so a mistake there does not fail other pull requests or the publish workflow: fix it in a pull request, which is then checked.
 
 A pull request may also edit the fragment of another pull request, for example to fix a typo before it is merged back.
 

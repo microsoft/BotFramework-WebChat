@@ -46,6 +46,11 @@
 
   .transcript-focus-area__activity-list {
     display: grid;
+    /*
+      The `<section>` rendered by `TranscriptActivityList`, a flex item of the scrollable panel. `flex: none` keeps its
+      content height when a host rule such as `section { min-height: 0 }` matches it, otherwise its rows overlap.
+    */
+    flex: none;
     gap: var(--webchat__transcript--spacing);
     padding-block: var(--webchat__transcript--spacing);
   }

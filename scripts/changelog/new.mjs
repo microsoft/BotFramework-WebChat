@@ -18,7 +18,14 @@ import { mkdir, readdir, writeFile } from 'fs/promises';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'util';
-import { isMain, parseFragment, parseFragmentFilename, REPOSITORY_URL, SECTIONS } from './fragment.mjs';
+import {
+  CREATE_PULL_REQUEST_FIRST,
+  isMain,
+  parseFragment,
+  parseFragmentFilename,
+  REPOSITORY_URL,
+  SECTIONS
+} from './fragment.mjs';
 
 const FRAGMENT_DIRECTORY_PATH = fileURLToPath(new URL('../../.changelog/', import.meta.url));
 const GITHUB_LOGIN_PATTERN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/iu;
@@ -147,9 +154,16 @@ async function writeFragment(directoryPath, { entry, prNumber, section, slug }) 
  * @returns {Readonly<{ author: string, prNumber: number }>}
  */
 function getPullRequest({ author, pr }, runGitHubCLI) {
+  const view = () => {
+    try {
+      return runGitHubCLI(['pr', 'view', ...(pr ? [pr] : []), '--json', 'author,number']);
+    } catch (error) {
+      throw new Error(`Cannot find the pull request with "gh pr view", ${CREATE_PULL_REQUEST_FIRST}`, { cause: error });
+    }
+  };
+
   // One call for both, the author is who opened the pull request, not who runs this script.
-  const pullRequest =
-    author && pr ? undefined : JSON.parse(runGitHubCLI(['pr', 'view', ...(pr ? [pr] : []), '--json', 'author,number']));
+  const pullRequest = author && pr ? undefined : JSON.parse(view());
 
   return Object.freeze({ author: author ?? pullRequest.author.login, prNumber: +(pr ?? pullRequest.number) });
 }

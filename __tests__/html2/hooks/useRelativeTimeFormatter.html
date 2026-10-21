@@ -29,24 +29,27 @@
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(async function () {
+        // The formatter reads "now" from the fake clock, so time does not pass between the exact 24 and 48 hours below.
+        const clock = lolex.createClock();
         const { directLine, store } = createDirectLineEmulator();
         const renderHook = createRenderHook(document.getElementById('webchat'), {
           directLine,
           locale: 'yue',
+          ponyfill: clock,
           store
         });
 
         const formatRelativeTime = await renderHook(() => useRelativeTimeFormatter());
 
-        expect(formatRelativeTime(Date.now())).toBe('啱啱');
-        expect(formatRelativeTime(new Date())).toBe('啱啱');
-        expect(formatRelativeTime(new Date().toISOString())).toBe('啱啱');
-        expect(formatRelativeTime(Date.now() - 60000)).toBe('一分鐘前');
-        expect(formatRelativeTime(Date.now() - 120000)).toBe('2 分鐘前');
-        expect(formatRelativeTime(Date.now() - 3600000)).toBe('一個鐘前');
-        expect(formatRelativeTime(Date.now() - 7200000)).toBe('2 小時前');
-        expect(formatRelativeTime(Date.now() - 86400000)).toBe('今日');
-        expect(formatRelativeTime(Date.now() - 172800000)).toBe('尋日');
+        expect(formatRelativeTime(clock.Date.now())).toBe('啱啱');
+        expect(formatRelativeTime(new clock.Date())).toBe('啱啱');
+        expect(formatRelativeTime(new clock.Date().toISOString())).toBe('啱啱');
+        expect(formatRelativeTime(clock.Date.now() - 60000)).toBe('一分鐘前');
+        expect(formatRelativeTime(clock.Date.now() - 120000)).toBe('2 分鐘前');
+        expect(formatRelativeTime(clock.Date.now() - 3600000)).toBe('一個鐘前');
+        expect(formatRelativeTime(clock.Date.now() - 7200000)).toBe('2 小時前');
+        expect(formatRelativeTime(clock.Date.now() - 86400000)).toBe('今日');
+        expect(formatRelativeTime(clock.Date.now() - 172800000)).toBe('尋日');
       });
     </script>
   </body>

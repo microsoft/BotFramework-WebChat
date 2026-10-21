@@ -50,7 +50,11 @@
       run(async function () {
         const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
-        const styleOptions = { subtle: 'Black' };
+        const styleOptions = {
+          // Keep live region entries until they are asserted, the live bot round trip can outlast the default 1 second.
+          internalLiveRegionFadeAfter: 60000,
+          subtle: 'Black'
+        };
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();

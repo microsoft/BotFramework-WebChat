@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -18,7 +18,16 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script type="text/babel" data-presets="env,stage-3,react">
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script data-presets="react" data-type="module" type="text/babel">
+      import { waitFor } from '@testduet/wait-for';
+
       const {
         React: { useCallback, useLayoutEffect, useRef, useState },
         WebChat: {
@@ -137,9 +146,10 @@
 
         // When on top, it should always return the first activity in the transcript.
         await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }));
-        await new Promise(resolve => setTimeout(resolve, 200)); // Wait until "scroll" event
-        expect(lastScrollPosition).toHaveProperty('activityID', '0');
+        await waitFor(() => expect(lastScrollPosition).toHaveProperty('activityID', '0'));
         expect(lastScrollPosition).toHaveProperty('scrollTop', 0);
+
+        // THEN: Should show the transcript scrolled to the top, "#0" first.
         await host.snapshot('local');
 
         // Since "19" is a super-long activity, it should appears on the top of the page.
