@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshots show what is announced. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps what it announced in the live region, so it can be checked and seen in the snapshots.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              hideSendBox: true,
+              internalLiveRegionFadeAfter: 60000,
+              spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        const getLiveRegionTexts = () =>
+          Array.from(pageElements.liveRegion().children, child => testHelpers.getAllTextContents(child).join('\n'));
+
+        // WHEN: Web Chat connected, then the bot sent a message.
+        await pageConditions.uiConnected();
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        // THEN: No "Connectivity Status: …" is announced while Web Chat starts, it would be queued before the message.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            'connecting', // Announced by the toaster, which announces the first notification of every ID.
+            'Bot said:\nHello, World!'
+          ])
+        );
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: The live region shows "connecting" and the message, there is no status bar.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: The connection is interrupted.
+        const { resolve } = directLine.emulateReconnect();
+
+        await pageConditions.connectivityStatusShown('Network interruption occurred. Reconnecting…');
+        await pageConditions.scrollToBottomCompleted(); // The transcript shrinks and sticks to the bottom.
+
+        // THEN: The status bar text is announced, once.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            'connecting',
+            'Bot said:\nHello, World!',
+            'Connectivity Status: Network interruption occurred. Reconnecting…'
+          ])
+        );
+
+        // THEN: The live region shows "Connectivity Status: Network interruption occurred. Reconnecting…" over the status bar "Network interruption occurred. Reconnecting…".
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Reconnected.
+        resolve();
+
+        await waitFor(() => expect(pageElements.connectivityStatus()).toBeFalsy());
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: "Connected" is announced, once.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            'connecting',
+            'Bot said:\nHello, World!',
+            'Connectivity Status: Network interruption occurred. Reconnecting…',
+            'Connectivity Status: Connected'
+          ])
+        );
+
+        // THEN: The live region shows "Connectivity Status: Connected", the status bar is gone.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
