@@ -16,7 +16,7 @@ import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivit
 
 import styles from './CarouselFilmStrip.module.css';
 
-const { useAvatarForBot, useAvatarForUser, useDirection, useStyleOptions } = hooks;
+const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
 // Controls without their own LEFT/RIGHT behavior. Inputs that use arrow keys (text, number, date, radio, range, select)
 // and media are left out. Adaptive Cards render a `selectAction` as `[role="button"]` or, for Action.OpenUrl,
@@ -37,6 +37,7 @@ const CarouselFilmStrip = ({
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
   const [direction] = useDirection();
+  const localize = useLocalizer();
   const showActivityStatus = typeof renderActivityStatus === 'function';
   const classNames = useStyles(styles);
 
@@ -172,7 +173,11 @@ const CarouselFilmStrip = ({
         </div>
         <div className={classNames['carousel-filmstrip__content']}>
           {!!activityDisplayText && (
-            <div aria-roledescription="message" className={classNames['carousel-filmstrip__message']} role="group">
+            <div
+              aria-roledescription={localize('ACTIVITY_MESSAGE_ARIA_ROLE_ALT')}
+              className={classNames['carousel-filmstrip__message']}
+              role="group"
+            >
               <ScreenReaderText text={greetingAlt} />
               <Bubble
                 className={classNames['carousel-filmstrip__bubble']}

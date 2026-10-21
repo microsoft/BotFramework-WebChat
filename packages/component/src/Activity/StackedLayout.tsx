@@ -61,6 +61,7 @@ const StackedLayoutInner = memo(
     showAvatar,
     showNub
   }: StackedLayoutInnerProps) => {
+    const localize = useLocalizer();
     const classNames = useStyles(styles);
     const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
 
@@ -69,7 +70,11 @@ const StackedLayoutInner = memo(
     return (
       <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
         {!!(hasDisplayText || messageThing?.abstract[0]) && (
-          <div aria-roledescription="message" className={cx(classNames['stacked-layout__message-row'])} role="group">
+          <div
+            aria-roledescription={localize('ACTIVITY_MESSAGE_ARIA_ROLE_ALT')}
+            className={cx(classNames['stacked-layout__message-row'])}
+            role="group"
+          >
             <ScreenReaderText text={greetingAlt} />
             <Bubble
               className={classNames['stacked-layout__message']}

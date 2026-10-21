@@ -16,6 +16,7 @@ export { default as useActivityStyleOptions } from '../hooks/internal/useActivit
 export { default as PartGrouping } from '../Middleware/ActivityGrouping/ui/PartGrouping/PartGrouping';
 export { useLiveRegion } from '../providers/LiveRegionTwin/index';
 export { default as ScreenReaderText } from '../ScreenReaderText';
+export { htmlTextAlternatives } from '../Utils/activityAltText';
 export { default as createIconComponent } from '../Utils/createIconComponent';
 export { default as FixedWidthImage } from '../Utils/FixedWidthImage';
 
