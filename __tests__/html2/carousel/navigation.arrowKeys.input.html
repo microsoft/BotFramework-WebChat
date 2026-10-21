@@ -58,88 +58,102 @@
 
         await pageConditions.numActivitiesShown(1);
 
+        // Wait for the live region to clear (1 s): its copy of the cards has text inputs without labels, which would fail the
+        // accessibility checks that run with every snapshot.
+        await waitFor(() => expect(pageElements.liveRegion().children).toHaveLength(0), { timeout: 5000 });
+
         const carouselLayout = document.querySelector('.carousel-layout');
         const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
-        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
         const input = cards[0].querySelector('input');
 
-        const isCardInView = card => {
-          const cardRect = card.getBoundingClientRect();
-          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
+        const expectFocusOnInputWithCarouselAtStart = async () => {
+          expect(document.activeElement).toBe(input);
 
-          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
+          await pageConditions.carouselSettled(carouselLayout);
+
+          expect(carouselFilmstrip.scrollLeft).toBe(0);
         };
-
-        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
-        const isFlipperHidden = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
-          const buttonRect = flipper.getBoundingClientRect();
-
-          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
-        };
-
-        const waitForCarouselSettled = () =>
-          waitFor(
-            () => {
-              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
-              expect(flippers.every(isFlipperHidden)).toBe(true);
-            },
-            { timeout: 5000 }
-          );
 
         // GIVEN: The carousel is scrolled to the start, the second card is not fully in view.
         expect(carouselFilmstrip.scrollLeft).toBe(0);
-        expect(isCardInView(cards[1])).toBe(false);
+        expect(testHelpers.isCardInView(cards[1])).toBe(false);
 
-        // WHEN: Focus on the first card via keyboard, then press TAB to focus on the text input inside it.
+        // WHEN: Focus on the first card via keyboard.
         pageObjects.focusTranscript();
         await host.sendKeys('ENTER');
 
+        // THEN: The first card has focus, the carousel is at the start.
         expect(cards.indexOf(document.activeElement)).toBe(0);
-
-        await host.sendTab();
-
-        // THEN: The text input should have focus.
-        expect(document.activeElement).toBe(input);
-
-        // WHEN: Press END, LEFT, HOME, and RIGHT inside the text input.
-        // THEN: They should move the caret as usual, without moving focus to another card or scrolling the carousel.
-        await host.sendKeys('END');
-        expect(document.activeElement).toBe(input);
-        expect(input).toHaveProperty('selectionStart', 5);
-
-        await host.sendKeys('ARROW_LEFT');
-        expect(document.activeElement).toBe(input);
-        expect(input).toHaveProperty('selectionStart', 4);
-
-        await host.sendKeys('HOME');
-        expect(document.activeElement).toBe(input);
-        expect(input).toHaveProperty('selectionStart', 0);
-
-        await host.sendKeys('ARROW_RIGHT');
-        expect(document.activeElement).toBe(input);
-        expect(input).toHaveProperty('selectionStart', 1);
-
-        await waitForCarouselSettled();
+        await pageConditions.carouselSettled(carouselLayout);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
-
         await host.snapshot('local');
 
-        // WHEN: Press SHIFT-TAB to focus on the first card, then press RIGHT.
-        await host.sendShiftTab();
+        // WHEN: Press TAB to focus on the text input inside the first card.
+        await host.sendTab();
 
-        expect(cards.indexOf(document.activeElement)).toBe(0);
+        // THEN: The text input has focus with all of its text "Hello" selected, the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 0);
+        expect(input).toHaveProperty('selectionEnd', 5);
+        await host.snapshot('local');
 
+        // Arrow keys, HOME, and END inside the text input move the caret as usual, without moving focus to another card or
+        // scrolling the carousel. Snapshots do not show the caret: each step asserts selectionStart and selectionEnd.
+
+        // WHEN: Press END inside the text input.
+        await host.sendKeys('END');
+
+        // THEN: The text input keeps focus with the caret at the end, after "Hello", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 5);
+        expect(input).toHaveProperty('selectionEnd', 5);
+        await host.snapshot('local');
+
+        // WHEN: Press LEFT inside the text input.
+        await host.sendKeys('ARROW_LEFT');
+
+        // THEN: The text input keeps focus with the caret one character left, after "Hell", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 4);
+        expect(input).toHaveProperty('selectionEnd', 4);
+        await host.snapshot('local');
+
+        // WHEN: Press HOME inside the text input.
+        await host.sendKeys('HOME');
+
+        // THEN: The text input keeps focus with the caret at the start, before "Hello", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 0);
+        expect(input).toHaveProperty('selectionEnd', 0);
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT inside the text input.
         await host.sendKeys('ARROW_RIGHT');
 
-        // THEN: The second card should have focus and the carousel should scroll.
-        expect(cards.indexOf(document.activeElement)).toBe(1);
-        await waitFor(() => expect(carouselFilmstrip.scrollLeft).toBeGreaterThan(0));
-        await waitFor(() => expect(isCardInView(cards[1])).toBe(true));
-        await waitForCarouselSettled();
-        expect(isCardInView(cards[1])).toBe(true);
+        // THEN: The text input keeps focus with the caret one character right, after "H", the carousel is at the start.
+        await expectFocusOnInputWithCarouselAtStart();
+        expect(input).toHaveProperty('selectionStart', 1);
+        expect(input).toHaveProperty('selectionEnd', 1);
+        await host.snapshot('local');
 
+        // WHEN: Press SHIFT-TAB to focus on the first card.
+        await host.sendShiftTab();
+
+        // THEN: The first card has focus, the carousel is at the start.
+        expect(cards.indexOf(document.activeElement)).toBe(0);
+        await pageConditions.carouselSettled(carouselLayout);
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT on the first card.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The second card has focus and is scrolled to the center.
+        expect(cards.indexOf(document.activeElement)).toBe(1);
+        await waitFor(() => expect(testHelpers.isCardInView(cards[1])).toBe(true));
+        await pageConditions.carouselSettled(carouselLayout);
+        expect(testHelpers.isCardInView(cards[1])).toBe(true);
         await host.snapshot('local');
       });
     </script>

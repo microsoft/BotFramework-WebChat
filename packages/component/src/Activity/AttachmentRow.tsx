@@ -1,13 +1,16 @@
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import ScreenReaderText from '../ScreenReaderText';
 import Bubble from './Bubble';
 
 import styles from './StackedLayout.module.css';
+
+const { useLocalizer } = hooks;
 
 const attachmentRowPropsSchema = pipe(
   object({
@@ -21,7 +24,7 @@ const attachmentRowPropsSchema = pipe(
   readonly()
 );
 
-type AttachmentRowProps = InferInput<typeof attachmentRowPropsSchema>;
+type AttachmentRowProps = InferReactProps<typeof attachmentRowPropsSchema>;
 
 function AttachmentRow(props: AttachmentRowProps) {
   const {
@@ -33,9 +36,14 @@ function AttachmentRow(props: AttachmentRowProps) {
     showBubble = true
   } = validateProps(attachmentRowPropsSchema, props);
   const classNames = useStyles(styles);
+  const localize = useLocalizer();
 
   return (
-    <div aria-roledescription="attachment" className={classNames['stacked-layout__attachment-row']} role="group">
+    <div
+      aria-roledescription={localize('ACTIVITY_ATTACHMENT_ARIA_ROLE_ALT')}
+      className={classNames['stacked-layout__attachment-row']}
+      role="group"
+    >
       <ScreenReaderText text={attachedAlt} />
       {showBubble ? (
         <Bubble
