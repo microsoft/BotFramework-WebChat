@@ -1,14 +1,44 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/forbid-dom-props */
 import { hooks } from 'botframework-webchat-component';
+import { htmlTextAlternatives } from 'botframework-webchat-component/internal.js';
+import { onErrorResumeNext } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
+import setMarkdownEngine from '../Attachment/private/setMarkdownEngine';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import useParseAdaptiveCardJSON from '../hooks/internal/useParseAdaptiveCardJSON';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useRenderMarkdownAsHTML } = hooks;
+
+// Returns the text as the visible card shows it: Adaptive Cards formats {{DATE()}} and {{TIME()}}, then renders the Markdown.
+// Images are read by their alt text and blocks are separated, as in the live region of message text.
+// If the Markdown engine or Adaptive Cards throws, the visible card shows an error, and the text is read as written.
+function getRenderedText(element) {
+  return (
+    onErrorResumeNext(() => {
+      const renderedElement = element.render();
+
+      // Plain text, such as a TextRun, is set with innerText, which renders line breaks as <br>; htmlTextAlternatives() reads <br> as nothing.
+      renderedElement?.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+
+      return renderedElement ? htmlTextAlternatives(renderedElement).join('') : '';
+    }, element.asString()) || ''
+  )
+    .replace(/\s+/gu, ' ')
+    .trim();
+}
+
+// Facts are rendered as text blocks, as Adaptive Cards does.
+function getFactText(TextBlock, factSet, text) {
+  const textBlock = new TextBlock(text);
+
+  textBlock.setParent(factSet);
+
+  return getRenderedText(textBlock);
+}
 
 // Perform a depth-first search of the visible elements of the Adaptive Card tree, skipping hidden subtrees.
 // Actions are visited but not walked into, so the card of Action.ShowCard, hidden until opened, is not visited.
@@ -69,6 +99,7 @@ AdaptiveCardChoiceSetInput.propTypes = {
 const AdaptiveCardAttachment = ({ content }) => {
   const localize = useLocalizer();
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const [
     {
       ChoiceSetInput,
@@ -127,19 +158,24 @@ const AdaptiveCardAttachment = ({ content }) => {
 
     walkAllItems(card, node => nodes.push(node));
 
+    // Same Markdown engine as the visible card. This sets a static shared by all cards while rendering, which is safe because every render sets it first.
+    setMarkdownEngine(card, renderMarkdownAsHTML);
+
     return nodes
       .flatMap(node =>
         node instanceof FactSet
-          ? node.facts.map(({ name, value }) => [name, value].filter(Boolean).join(': '))
+          ? node.facts.map(({ name, value }) =>
+              [getFactText(TextBlock, node, name), getFactText(TextBlock, node, value)].filter(Boolean).join(': ')
+            )
           : node instanceof Image
             ? [node.altText]
             : node instanceof RichTextBlock || node instanceof TextBlock
-              ? [node.asString()]
+              ? [getRenderedText(node)]
               : []
       )
       .filter(Boolean)
       .join(' ');
-  }, [card, FactSet, Image, RichTextBlock, TextBlock]);
+  }, [card, FactSet, Image, renderMarkdownAsHTML, RichTextBlock, TextBlock]);
 
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || text, '', '');
 
