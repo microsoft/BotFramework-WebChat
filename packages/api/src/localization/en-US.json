@@ -47,6 +47,8 @@
   "ACTIVITY_STATUS_TIMESTAMP_ONE_MINUTE_AGO": "A minute ago",
   "ACTIVITY_STATUS_TIMESTAMP_TODAY": "Today",
   "ACTIVITY_STATUS_TIMESTAMP_YESTERDAY": "Yesterday",
+  "ADAPTIVE_CARD_ACTION_SELECTED_ALT": "Selected",
+  "_ADAPTIVE_CARD_ACTION_SELECTED_ALT.comment": "This is for screen reader only. It is the description of a button in a card after the user pressed it, e.g. \"Snooze, button, Selected\".",
   "ADAPTIVE_CARD_ERROR_BOX_TITLE_PARSE": "Adaptive Card parse error",
   "ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER": "Adaptive Card render error",
   "ANIMATION_PAUSE_BUTTON_ALT": "Pause animation",

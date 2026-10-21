@@ -64,113 +64,100 @@
         const carouselLayout = document.querySelector('.carousel-layout');
         const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
-        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
 
         // In RTL, the next card is on the left.
         const nextKey = dir === 'rtl' ? 'ARROW_LEFT' : 'ARROW_RIGHT';
         const previousKey = dir === 'rtl' ? 'ARROW_RIGHT' : 'ARROW_LEFT';
 
-        const isCardInView = card => {
-          const cardRect = card.getBoundingClientRect();
-          const filmstripRect = carouselFilmstrip.getBoundingClientRect();
-
-          return cardRect.left >= filmstripRect.left && cardRect.right <= filmstripRect.right;
-        };
-
-        // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
-        const isFlipperHidden = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
-          const buttonRect = flipper.getBoundingClientRect();
-
-          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
-        };
-
         const expectFocusOnCard = async index => {
           expect(cards.indexOf(document.activeElement)).toBe(index);
           expect(document.activeElement.matches(':focus-visible')).toBe(true);
 
-          await waitFor(() => expect(isCardInView(cards[index])).toBe(true));
+          await waitFor(() => expect(testHelpers.isCardInView(cards[index])).toBe(true));
+          await pageConditions.carouselSettled(carouselLayout);
 
-          // Wait for the scroll and the flippers to settle.
-          await waitFor(
-            () => {
-              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
-              expect(flippers.every(isFlipperHidden)).toBe(true);
-            },
-            { timeout: 5000 }
-          );
-
-          expect(isCardInView(cards[index])).toBe(true);
+          expect(testHelpers.isCardInView(cards[index])).toBe(true);
         };
 
         // GIVEN: The carousel is scrolled to the start, the second card is not fully in view.
         expect(cards).toHaveLength(4);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
-        expect(isCardInView(cards[1])).toBe(false);
+        expect(testHelpers.isCardInView(cards[1])).toBe(false);
 
         // WHEN: Focus on the first card via keyboard.
         pageObjects.focusTranscript();
         await host.sendKeys('ENTER');
 
-        // THEN: The first card should have focus.
-        expect(cards.indexOf(document.activeElement)).toBe(0);
+        // THEN: The first card has focus, the carousel is at the start.
+        await expectFocusOnCard(0);
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+        await host.snapshot('local');
 
         // WHEN: Press the arrow key towards the next card.
         await host.sendKeys(nextKey);
 
-        // THEN: The second card should have focus and be scrolled into view.
+        // THEN: The second card has focus and is scrolled to the center.
         await expectFocusOnCard(1);
-
         await host.snapshot('local');
 
         // WHEN: Press the arrow key towards the next card again.
         await host.sendKeys(nextKey);
 
-        // THEN: The third card should have focus and be scrolled into view.
+        // THEN: The third card has focus and is scrolled to the center.
         await expectFocusOnCard(2);
+        await host.snapshot('local');
 
         // WHEN: Press the arrow key towards the previous card.
         await host.sendKeys(previousKey);
 
-        // THEN: The second card should have focus.
+        // THEN: The second card has focus again and is scrolled to the center.
         await expectFocusOnCard(1);
+        await host.snapshot('local');
 
         // WHEN: Press END.
         await host.sendKeys('END');
 
-        // THEN: The last card should have focus and the carousel should be scrolled to the end.
+        // THEN: The last card has focus and the carousel is scrolled to the end.
         await expectFocusOnCard(3);
         expect(Math.abs(carouselFilmstrip.scrollLeft)).toBe(
           carouselFilmstrip.scrollWidth - carouselFilmstrip.clientWidth
         );
-
         await host.snapshot('local');
 
         // WHEN: Press the arrow key towards the next card on the last card.
         await host.sendKeys(nextKey);
 
-        // THEN: The last card should keep focus.
+        // THEN: The last card keeps focus and the carousel stays at the end.
         await expectFocusOnCard(3);
+        expect(Math.abs(carouselFilmstrip.scrollLeft)).toBe(
+          carouselFilmstrip.scrollWidth - carouselFilmstrip.clientWidth
+        );
+        await host.snapshot('local');
 
         // WHEN: Press HOME.
         await host.sendKeys('HOME');
 
-        // THEN: The first card should have focus and the carousel should be scrolled to the start.
+        // THEN: The first card has focus and the carousel is scrolled to the start.
         await expectFocusOnCard(0);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
+        await host.snapshot('local');
 
         // WHEN: Press the arrow key towards the previous card on the first card.
         await host.sendKeys(previousKey);
 
-        // THEN: The first card should keep focus and the carousel should stay at the start.
+        // THEN: The first card keeps focus and the carousel stays at the start.
         await expectFocusOnCard(0);
         expect(carouselFilmstrip.scrollLeft).toBe(0);
+        await host.snapshot('local');
 
         // WHEN: Press TAB.
         await host.sendTab();
 
-        // THEN: Tab order should be unchanged, the button inside the first card should have focus.
+        // THEN: Tab order is unchanged: the button inside the first card has focus, the carousel stays at the start.
         expect(document.activeElement).toBe(cards[0].querySelector('button'));
+        await pageConditions.carouselSettled(carouselLayout);
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+        await host.snapshot('local');
       });
     </script>
   </body>

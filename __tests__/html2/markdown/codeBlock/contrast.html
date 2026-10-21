@@ -151,7 +151,7 @@ print(f"{Point(1)!r}", r"\\d+", None, True)`,
           await waitFor(() => expect(document.querySelector('dialog[open] pre.shiki')).toBeTruthy());
           expect(document.querySelector('dialog[open] h2').textContent).toBe(title);
 
-          // THEN: Should match snapshot, and every token should pass the default accessibility check, including color contrast.
+          // THEN: The dialog shows the highlighted code under its title, every token should pass the default accessibility check, including color contrast.
           await host.snapshot('local');
 
           // WHEN: Press ESCAPE.

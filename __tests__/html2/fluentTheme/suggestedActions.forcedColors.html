@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* The host page has a background image and shows it through Web Chat. */
+      body {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 8L8 0' stroke='%23808080' stroke-width='2'/%3E%3C/svg%3E");
+      }
+
+      #webchat {
+        background-color: transparent;
+      }
+
+      .fui-FluentProvider {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webDarkTheme } from '@fluentui/tokens';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider, testIds } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const colorScheme = new URLSearchParams(location.search).get('fluent-theme') === 'dark' ? 'dark' : 'light';
+
+        // GIVEN: A light or dark high contrast theme (such as "Desert" or "Aquatic" on Windows) is active before Web Chat renders.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'forced-colors', value: 'active' },
+            { name: 'prefers-color-scheme', value: colorScheme },
+            { name: 'prefers-reduced-motion', value: 'reduce' }
+          ]
+        });
+
+        expect(window.matchMedia(`(forced-colors: active) and (prefers-color-scheme: ${colorScheme})`).matches).toBe(
+          true
+        );
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const webChatElement = createElement(
+          FluentThemeProvider,
+          { variant: 'fluent' },
+          createElement(ReactWebChat, { directLine, store })
+        );
+
+        // GIVEN: With a dark color scheme, the page uses the dark Fluent UI theme.
+        createRoot(document.getElementById('webchat')).render(
+          colorScheme === 'dark'
+            ? createElement(
+                FluentProvider,
+                { style: { backgroundColor: 'transparent' }, theme: webDarkTheme }, // Also shows the background image.
+                webChatElement
+              )
+            : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a message with 2 suggested actions.
+        await directLine.emulateIncomingActivity({
+          suggestedActions: {
+            actions: [
+              { title: 'Checklist', type: 'imBack', value: 'Checklist' },
+              { title: 'Benefits overview', type: 'imBack', value: 'Benefits overview' }
+            ],
+            to: []
+          },
+          text: 'What would you like to do next?',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Both suggested actions should be shown.
+        await expect(
+          Promise.all(
+            Array.from(document.querySelectorAll(`[data-testid="${testIds.sendBoxSuggestedAction}"]`)).map(element =>
+              testHelpers.getAccessibleName(element)
+            )
+          )
+        ).resolves.toEqual(['Checklist', 'Benefits overview']);
+
+        // THEN: Both suggested actions should have a solid button background, the background image should not show through them.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
