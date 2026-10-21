@@ -31,12 +31,16 @@
 
         // To submit the input form, the number field is mandatory.
         document.querySelector('.ac-adaptiveCard input[type="number"]').focus();
-        host.sendKeys('1');
+        await host.sendKeys('1');
 
         // Click "Submit" button should change the button color
         await host.click(document.querySelector('.ac-actionSet button:nth-of-type(2)'));
+
+        // The bot replies "You posted" with the submitted values, the post back itself is not shown.
+        await pageConditions.numActivitiesShown(3);
         await pageConditions.scrollStabilized();
 
+        // THEN: Should show the red "Submit" button and the "You posted" reply with the submitted values.
         await host.snapshot('local');
       });
     </script>
