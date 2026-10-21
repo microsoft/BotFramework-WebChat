@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import useCodeBlockTag from '../CustomElements/useCodeBlockTagName';
 import useHTMLContentTransformContext from './private/useHTMLContentTransformContext';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlySet<string> }>> = Object.freeze(
   new Map(
@@ -169,6 +169,7 @@ const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlyS
 
 export default function useTransformHTMLContent(): (documentFragment: DocumentFragment) => DocumentFragment {
   const [codeBlockTagName] = useCodeBlockTag();
+  const [{ markdownHeadingLevelOffset }] = useStyleOptions();
   const { transform } = useHTMLContentTransformContext();
 
   const localize = useLocalizer();
@@ -180,8 +181,9 @@ export default function useTransformHTMLContent(): (documentFragment: DocumentFr
         allowedTags: DEFAULT_ALLOWED_TAGS,
         codeBlockTagName,
         documentFragment,
-        externalLinkAlt
+        externalLinkAlt,
+        markdownHeadingLevelOffset
       }),
-    [codeBlockTagName, externalLinkAlt, transform]
+    [codeBlockTagName, externalLinkAlt, markdownHeadingLevelOffset, transform]
   );
 }

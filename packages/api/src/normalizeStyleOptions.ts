@@ -1,4 +1,5 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
+import { integer, is, minValue, number, pipe } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
@@ -17,6 +18,10 @@ const bubbleMinWidthDeprecation = warnOnce(
 
 const hideUploadButtonDeprecation = warnOnce(
   '`styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.'
+);
+
+const markdownHeadingLevelOffsetInvalidValue = warnOnce(
+  '"markdownHeadingLevelOffset" must be an integer of 0 or more, will set to 1.'
 );
 
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
@@ -135,6 +140,12 @@ export default function normalizeStyleOptions({
 
     filledOptions.bubbleAttachmentMinWidth = bubbleMinWidth;
     filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
+  }
+
+  if (!is(pipe(number(), integer(), minValue(0)), filledOptions.markdownHeadingLevelOffset)) {
+    typeof filledOptions.markdownHeadingLevelOffset === 'undefined' || markdownHeadingLevelOffsetInvalidValue();
+
+    filledOptions.markdownHeadingLevelOffset = defaultStyleOptions.markdownHeadingLevelOffset;
   }
 
   if (slowConnectionAfter < 0) {

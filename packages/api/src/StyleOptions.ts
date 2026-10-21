@@ -242,6 +242,17 @@ type StrictStyleOptions = {
   markdownRespectCRLF: boolean | undefined;
 
   /**
+   * Number of levels to lower Markdown headings by, as the page owns the level-one heading.
+   *
+   * Defaults to `1`: `#` renders as `<h2>`. `0` keeps the levels as written.
+   *
+   * Levels beyond 6 render as `<div aria-level="7" role="heading">` and so on, e.g. `######` with the default.
+   *
+   * New in 4.19.3.
+   */
+  markdownHeadingLevelOffset: number | undefined;
+
+  /**
    * Render HTML inside Markdown.
    *
    * `true` to render HTML inside Markdown, otherwise, `false`. Defaults to `true`.
