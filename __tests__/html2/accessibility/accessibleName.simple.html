@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -8,7 +8,16 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(
         async function () {
           const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -29,14 +38,31 @@
 
           const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
 
-          await sendMessage.resolveAll();
+          // WHEN: The echo back of the message, which has a timestamp, arrives before the message is sent.
+          await sendMessage.echoBack(activity => ({ ...activity, timestamp: '2026-10-17T11:50:00Z' }));
 
-          await directLine.emulateIncomingActivity('Aloha!');
+          await directLine.emulateIncomingActivity({ text: 'Aloha!', timestamp: '2026-10-17T11:51:00Z' });
 
-          expect(pageElements.activityActiveDescendantLabels().map(({ innerText }) => innerText)).toEqual([
-            'You said: Hello, World!',
-            'Bot said: Aloha!'
-          ]);
+          // THEN: While the message is being sent, the time should not be narrated, like the activity status.
+          await waitFor(() =>
+            expect(pageElements.activityActiveDescendantLabels().map(({ innerText }) => innerText)).toEqual([
+              'You said: Hello, World!',
+              'Bot said: Aloha! Sent at October 17 at 11:51 AM'
+            ])
+          );
+
+          expect(pageElements.activityStatuses()[0].innerText).toBe('Sending');
+
+          // WHEN: The message is sent.
+          sendMessage.resolvePostActivity();
+
+          // THEN: The time should be narrated after the message, like the timestamp in the activity status.
+          await waitFor(() =>
+            expect(pageElements.activityActiveDescendantLabels().map(({ innerText }) => innerText)).toEqual([
+              'You said: Hello, World! Sent at October 17 at 11:50 AM',
+              'Bot said: Aloha! Sent at October 17 at 11:51 AM'
+            ])
+          );
         },
         { ignoreErrors: true }
       );

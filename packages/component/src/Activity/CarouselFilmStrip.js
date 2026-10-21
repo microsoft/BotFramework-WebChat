@@ -12,6 +12,7 @@ import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 
 import styles from './CarouselFilmStrip.module.css';
 
@@ -127,9 +128,7 @@ const CarouselFilmStrip = ({
   const activityDisplayText = messageBackDisplayText || text;
   const fromUser = role === 'user';
 
-  const greetingAlt = (
-    fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-  ).replace(/\s{2,}/gu, ' ');
+  const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
 
   const initials = fromUser ? userInitials : botInitials;
   const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
