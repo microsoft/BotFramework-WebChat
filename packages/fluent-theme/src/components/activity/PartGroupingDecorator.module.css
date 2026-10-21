@@ -24,7 +24,8 @@
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
   --webchat-externalLink-mask: var(
     --externalLink-mask,
-    var(--webchat__icon-url--external-link) center center / 10px 10px
+    var(--webchat__icon-url--external-link) center center /
+    10px 10px
   );
   --webchat-externalLink-maxWidth: var(--externalLink-maxWidth, 204px);
 

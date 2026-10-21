@@ -108,8 +108,8 @@
     var(--webchat-decorator-borderFlair-animated-color3)
   );
   --webchat-decorator-borderFlair-borderMask:
-    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box, linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%))
-    border-box;
+    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box,
+    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) border-box;
 
   animation:
     borderAnimation-angle 2000ms linear 0ms forwards,
