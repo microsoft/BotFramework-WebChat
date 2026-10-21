@@ -8,7 +8,9 @@
 //   CHANGELOG.md is exactly the one of the base with the deleted fragments merged in, except for the "Built from" line.
 // - A hand edit by a maintainer, labeled "changelog-edit", such as a release: may edit CHANGELOG.md and delete fragments.
 //
-// Every fragment is validated first, whatever the pull request is.
+// Every fragment is validated first, whatever the pull request is. Fragments the pull request adds or edits must also link
+// their pull request in every entry, with the number of the filename, and must not have placeholders such as "#XXXX".
+// Fragments already merged are not checked again, so a mistake there fails neither other pull requests nor publishing.
 //
 // Usage:
 //   node ./scripts/changelog/check.mjs --pr <PR#> [--base <commit>] [--changelog-edit] [--no-changelog] [--output <file>]
@@ -28,7 +30,7 @@ import {
   setBuiltFrom,
   splitUnreleased
 } from './consume.mjs';
-import { isMain, renderSections, REPOSITORY_URL } from './fragment.mjs';
+import { CREATE_PULL_REQUEST_FIRST, isMain, PLACEHOLDER_PATTERN, renderSections, REPOSITORY_URL } from './fragment.mjs';
 
 const ROOT_PATH = fileURLToPath(new URL('../../', import.meta.url));
 const UNRELEASED_URL = `${REPOSITORY_URL}/blob/changelog-unreleased/CHANGELOG.md#unreleased`;
@@ -43,6 +45,29 @@ function getUnreleased(changelog) {
   const { after, before } = splitUnreleased(changelog);
 
   return changelog.slice(before.length, changelog.length - after.length);
+}
+
+/**
+ * Checks that every entry of a fragment links its pull request, the number of the filename, without placeholders.
+ *
+ * @param {Readonly<{ filename: string, prNumber: number, sections: Readonly<Record<string, readonly string[]>> }>} fragment
+ */
+function checkPullRequestLinks({ filename, prNumber, sections }) {
+  const link = `[#${prNumber}](${REPOSITORY_URL}/pull/${prNumber})`;
+
+  for (const entry of Object.values(sections).flat()) {
+    const placeholder = PLACEHOLDER_PATTERN.exec(entry)?.[0];
+
+    if (placeholder) {
+      throw new Error(
+        `${FRAGMENT_DIRECTORY}/${filename}: "${placeholder}" is a placeholder, ${CREATE_PULL_REQUEST_FIRST}`
+      );
+    } else if (!entry.includes(link)) {
+      throw new Error(
+        `${FRAGMENT_DIRECTORY}/${filename}: every entry must link its pull request, "${link}", got "${entry}"`
+      );
+    }
+  }
 }
 
 /**
@@ -78,6 +103,10 @@ function checkPullRequest({
 
   // Validates every fragment, even ones not touched by this pull request.
   consumeChangelog(changelog, fragments);
+
+  fragments
+    .filter(({ filename }) => changedPaths.includes(`${FRAGMENT_DIRECTORY}/${filename}`))
+    .forEach(checkPullRequestLinks);
 
   if (changelogEdit) {
     return '## Changelog\n\nEdited by hand, labeled `changelog-edit`.\n';

@@ -15,9 +15,11 @@ import { parser } from 'keep-a-changelog';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import {
+  CREATE_PULL_REQUEST_FIRST,
   isMain,
   parseFragment,
   parseFragmentFilename,
+  PLACEHOLDER_PATTERN,
   README_FILENAME,
   REPOSITORY_URL,
   SECTIONS
@@ -58,7 +60,11 @@ function readFragments(cwd, commit = 'HEAD') {
   const unknownFilename = filenames.find(filename => !parseFragmentFilename(filename));
 
   if (unknownFilename) {
-    throw new Error(`${FRAGMENT_DIRECTORY}/${unknownFilename}: fragment filename must be "<PR#>-<slug>.md"`);
+    const placeholder = PLACEHOLDER_PATTERN.exec(unknownFilename)?.[0];
+
+    throw new Error(
+      `${FRAGMENT_DIRECTORY}/${unknownFilename}: fragment filename must be "<PR#>-<slug>.md"${placeholder ? `, "${placeholder}" is a placeholder, ${CREATE_PULL_REQUEST_FIRST}` : ''}`
+    );
   }
 
   return Object.freeze(
