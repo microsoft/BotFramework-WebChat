@@ -184,7 +184,7 @@ const BasicToaster = ({ className }) => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <div aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId}>
+        <div className="webchat__toaster__list" id={expandableElementId}>
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
             <div className="webchat__toaster__listItem" key={id}>
               {children}
