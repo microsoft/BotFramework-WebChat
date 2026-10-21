@@ -34,7 +34,12 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const variant = new URLSearchParams(location.search).get('variant');
-        const webChatElement = createElement(ReactWebChat, { directLine, store });
+        // The send box is not under test: hide it, including the send box of the Fluent theme.
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          sendBoxMiddleware: [() => () => () => false],
+          store
+        });
 
         createRoot(document.getElementById('webchat')).render(
           variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
@@ -97,6 +102,14 @@
         pageObjects.focusTranscript();
         await host.sendKeys('ENTER');
 
+        // THEN: The first attachment should have the focus, both flippers should stay hidden.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.activityAttachments()[0][0]));
+        expect(getFlipperBodyOffset(nextFlipper)).toBe(50);
+        expect(previousFlipper.querySelector('.react-film__main__slider--hide')).toBeTruthy();
+
+        // THEN: The first card shows the focus indicator, no flipper is shown.
+        await host.snapshot('local');
+
         // WHEN: Press SHIFT-TAB to move focus to the "Next" flipper.
         await host.sendShiftTab();
 
@@ -106,6 +119,7 @@
         await waitFor(() => expect(getFlipperBodyOffset(nextFlipper)).toBe(0));
         expect(getFocusIndicatorStyle(nextFlipper)).toEqual(visibleFocusIndicatorStyle);
 
+        // THEN: The "Next" flipper shows at the right edge with a two-tone focus indicator, the first card has no focus indicator.
         await host.snapshot('local');
 
         // WHEN: Press SHIFT-TAB to move focus to the "Previous" flipper.
@@ -123,6 +137,7 @@
         // THEN: The "Next" flipper should auto-hide after losing focus (1s delay, then 300ms slide out).
         await waitFor(() => expect(getFlipperBodyOffset(nextFlipper)).toBe(50), { timeout: 2000 });
 
+        // THEN: The "Previous" flipper shows at the left edge with a two-tone focus indicator, the "Next" flipper is hidden.
         await host.snapshot('local');
       });
     </script>

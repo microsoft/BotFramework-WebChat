@@ -75,7 +75,7 @@ export default function ({
         color: '#4F4F4F'
       },
 
-      '& .ac-pushButton[aria-pressed="true"]': {
+      '& .ac-pushButton.adaptive-card-renderer__action--selected': {
         backgroundColor: cardPushButtonBackgroundColor,
         borderColor: cardPushButtonBackgroundColor,
         color: cardPushButtonTextColor,

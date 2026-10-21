@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be seen in the snapshot.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { botAvatarInitials: 'WC', hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot sends a message with an Adaptive Card, a hero card, a file, and a suggested action.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                actions: [{ title: 'OK', type: 'Action.Submit' }],
+                body: [{ text: 'Card 1', type: 'TextBlock' }],
+                speak: 'Card 1',
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            },
+            {
+              content: { buttons: [{ title: 'Go', type: 'imBack', value: 'go' }], text: 'Hero text', title: 'Card 2' },
+              contentType: 'application/vnd.microsoft.card.hero'
+            },
+            { contentType: 'application/octet-stream', name: 'report.zip' }
+          ],
+          from: { role: 'bot' },
+          suggestedActions: { actions: [{ title: 'Help', type: 'imBack', value: 'help' }] },
+          text: 'Here are 2 cards and a file.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const liveRegionActivity = await waitFor(() => {
+          const element = pageElements.liveRegion().querySelector('.webchat__live-region-activity');
+
+          expect(element).toBeTruthy();
+
+          return element;
+        });
+
+        // THEN: The live region should contain the text of the message, the suggested action, the cards, and the file.
+        expect(liveRegionActivity.innerText).toBe(
+          [
+            'Bot WC said:',
+            'Here are 2 cards and a file.',
+            '', // The suggested actions are in a `<p>`, `innerText` puts a blank line around it.
+            'Help',
+            '',
+            'A card: Card 1',
+            'OK',
+            'A card: Card 2 Hero text',
+            'Go',
+            'A file: report.zip'
+          ].join('\n')
+        );
+
+        // THEN: The message should still be announced as a whole.
+        expect(liveRegionActivity.getAttribute('aria-atomic')).toBe('true');
+
+        const accessibilityNodes = await Promise.all(
+          [liveRegionActivity, ...liveRegionActivity.querySelectorAll('*')].map(element =>
+            testHelpers.getAccessibilityNode(element)
+          )
+        );
+
+        // THEN: The message should be a generic container, not an article, screen readers would read "article" before it.
+        expect(accessibilityNodes[0].role?.value).toBe('generic');
+
+        // THEN: Inside the message, only the copies of the buttons should be in the accessibility tree, besides the text.
+        //       On Windows, every other element is a "group" (including generic `<div>` and `<p>`), screen readers would read "group" before each line.
+        expect(
+          accessibilityNodes
+            .slice(1) // The message itself keeps `aria-atomic`, which requires an element in the accessibility tree.
+            .filter(({ ignored }) => !ignored)
+            .map(({ name, role }) => `${role?.value} "${name?.value}"`)
+        ).toEqual(['button "Help"', 'button "OK"', 'button "Go"']);
+
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: The live region (top) shows the message, "Help", "A card: Card 1", "OK", "A card: Card 2 Hero text", "Go" and "A file: report.zip", with no role words such as "article" or "group".
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

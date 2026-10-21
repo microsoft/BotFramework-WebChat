@@ -1,7 +1,7 @@
 import textFormatToContentType from './textFormatToContentType';
 
-function walk<T extends Node>(document: Document, walker: (node: T) => string[]): string[] {
-  const nodes: T[] = [].slice.call(document.childNodes);
+function walk<T extends Node>(root: Node, walker: (node: T) => string[]): string[] {
+  const nodes: T[] = [].slice.call(root.childNodes);
   const results: string[] = [];
 
   while (nodes.length) {
@@ -75,15 +75,15 @@ const HTML_INLINE_TAGS = [
 ];
 
 /**
- * Computes all text from a given HTML document as flattened array. This is best-effort.
+ * Computes all text from the descendants of a given HTML node, such as a document, as flattened array. This is best-effort.
  *
- * @param {Document} document - HTML document to computes texts from.
+ * @param {Node} root - HTML node to compute texts from.
  */
-function htmlTextAlternatives(document: Document): string[] {
+function htmlTextAlternatives(root: Node): string[] {
   // TODO: [P2] #3923 Revisit this logic with W3C standard, we could do a better text alternatives computation.
   //       For example, <abbr title="..."> is not computed.
   //       https://www.w3.org/TR/accname-1.1/#mapping_additional_nd_name
-  return walk<HTMLElement>(document, node => {
+  return walk<HTMLElement>(root, node => {
     const { nodeType, tagName, textContent } = node;
 
     if (nodeType === Node.TEXT_NODE) {
@@ -133,3 +133,5 @@ export default function activityAltText(
 
   return text;
 }
+
+export { htmlTextAlternatives };

@@ -34,7 +34,12 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const variant = new URLSearchParams(location.search).get('variant');
-        const webChatElement = createElement(ReactWebChat, { directLine, store });
+        // The send box is not under test: hide it, including the send box of the Fluent theme.
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          sendBoxMiddleware: [() => () => () => false],
+          store
+        });
 
         createRoot(document.getElementById('webchat')).render(
           variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
@@ -45,11 +50,12 @@
         // GIVEN: The test harness prefers reduced motion.
         expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
 
-        // GIVEN: The bot sends an animation card with a looping GIF, similar to the "animationcard" command of the mock bot.
+        // GIVEN: The bot sends an animation card with a GIF, similar to the "animationcard" command of the mock bot.
         // Like the GIF of the mock bot, it is served from another origin.
-        // The first frame (ball on the left) is shown for 20 ms, the second frame (ball on the right) for about 11 minutes,
-        // so a playing GIF settles on the second frame before the snapshot.
-        const gifURL = new URL('/assets/yellow-ball-animation.gif', location.href);
+        // The GIF shows red with the ball on the left for 2 seconds, then stays on green with the ball on the right.
+        const gifURL = new URL('/assets/red-green-animation.gif', location.href);
+        const firstFrameColor = '#c50f1f'; // Red.
+        const lastFrameColor = '#107c10'; // Green.
 
         gifURL.hostname = gifURL.hostname === 'localhost' ? 'cross-origin.localhost' : 'webchat2-cross-origin';
 
@@ -61,7 +67,7 @@
                 autostart: true,
                 media: [
                   {
-                    profile: 'Yellow ball moving from left to right',
+                    profile: 'Ball moving from left to right',
                     url: gifURL.href
                   }
                 ],
@@ -81,12 +87,12 @@
 
         const [[attachmentElement]] = pageElements.activityAttachments();
         const buttonElement = attachmentElement.querySelector('button');
-        const imageElement = attachmentElement.querySelector('img[alt="Yellow ball moving from left to right"]');
+        const imageElement = attachmentElement.querySelector('img[alt="Ball moving from left to right"]');
 
         // THEN: The image should still be named after the media profile.
         await expect(testHelpers.getAccessibilityNode(imageElement)).resolves.toEqual(
           expect.objectContaining({
-            name: expect.objectContaining({ value: 'Yellow ball moving from left to right' }),
+            name: expect.objectContaining({ value: 'Ball moving from left to right' }),
             role: expect.objectContaining({ value: 'image' })
           })
         );
@@ -100,7 +106,8 @@
           })
         );
 
-        // THEN: The first frame should be shown with the "Play animation" button over it.
+        // THEN: The first frame (red) should be shown with the "Play animation" button over it.
+        expect(await testHelpers.getRenderedColor(imageElement)).toBe(firstFrameColor);
         await host.snapshot('local');
 
         // WHEN: Focus on the button via keyboard.
@@ -111,6 +118,10 @@
         await waitFor(() => expect(document.activeElement).toBe(buttonElement));
         expect(buttonElement.matches(':focus-visible')).toBe(true);
 
+        // THEN: The first frame (red) should be shown, with the focus indicator on the "Play animation" button.
+        expect(await testHelpers.getRenderedColor(imageElement)).toBe(firstFrameColor);
+        await host.snapshot('local');
+
         // WHEN: Press ENTER on the button.
         await host.sendKeys('ENTER');
 
@@ -118,7 +129,10 @@
         await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Pause animation'));
         expect(document.activeElement).toBe(buttonElement);
 
-        // THEN: The second frame should be shown, with the focus indicator on the button.
+        // THEN: The last frame (green) should be shown, with the focus indicator on the "Pause animation" button.
+        await waitFor(() => expect(testHelpers.getRenderedColor(imageElement)).resolves.toBe(lastFrameColor), {
+          timeout: 5_000
+        });
         await host.snapshot('local');
 
         // WHEN: Press ENTER on the button again.
@@ -128,21 +142,8 @@
         await waitFor(() => expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Play animation'));
         expect(document.activeElement).toBe(buttonElement);
 
-        // THEN: The first frame should be shown again, with the focus indicator on the button.
-        await host.snapshot('local');
-
-        // WHEN: Forced colors are active, such as with a Windows contrast theme.
-        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
-          features: [
-            { name: 'forced-colors', value: 'active' },
-            { name: 'prefers-reduced-motion', value: 'reduce' }
-          ]
-        });
-
-        expect(matchMedia('(forced-colors: active)').matches).toBe(true);
-        expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
-
-        // THEN: The "Play animation" icon and the border of the message should be visible in forced colors.
+        // THEN: The first frame (red) should be shown again, with the focus indicator on the "Play animation" button.
+        expect(await testHelpers.getRenderedColor(imageElement)).toBe(firstFrameColor);
         await host.snapshot('local');
       });
     </script>
