@@ -34,6 +34,7 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false, classNames)
 
   return (
     <svg
+      aria-hidden="true"
       className={classNames['bubble__nub']}
       version="1.1"
       viewBox={`0 0 ${nubSize} ${nubSize}`}

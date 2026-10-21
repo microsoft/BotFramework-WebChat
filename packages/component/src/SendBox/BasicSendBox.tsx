@@ -137,7 +137,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
     <div
       aria-describedby={errorMessageId}
       aria-errormessage={errorMessageId}
-      aria-invalid={!!errorMessageId}
+      aria-invalid={!!errorMessageId || undefined}
       className={classNames('webchat__send-box', sendBoxStyleSet + '', rootClassName + '', (className || '') + '')}
       dir={direction}
       onPaste={handlePaste}
