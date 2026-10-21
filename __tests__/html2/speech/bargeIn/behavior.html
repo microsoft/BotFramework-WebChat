@@ -234,7 +234,7 @@
         await pageObjects.clickMicrophoneButton();
 
         // THEN: Should have called SpeechRecognition.abort() once.
-        expect(speechRecognition1.abort).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(speechRecognition1.abort).toHaveBeenCalledTimes(1));
 
         // WHEN: Speech recognition dispatch abort error event.
         speechRecognition1.dispatchEvent(new Event('speechend'));
@@ -250,7 +250,7 @@
         await pageObjects.clickMicrophoneButton();
 
         // THEN: Should create a new instance of SpeechRecognition.
-        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(2);
+        await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(2));
 
         const { value: speechRecognition2 } = ponyfill.SpeechRecognition.mock.results[1];
 

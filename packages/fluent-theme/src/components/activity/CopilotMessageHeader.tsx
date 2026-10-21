@@ -1,6 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat';
-import { type WebChatActivity } from 'botframework-webchat/internal.js';
+import { useActivityStyleOptions, type WebChatActivity } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
 import { custom, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
@@ -8,7 +8,6 @@ import { custom, is, object, optional, pipe, readonly, string, type InferInput }
 import { useStyles } from '../../styles';
 import styles from './CopilotMessageHeader.module.css';
 import isAIGeneratedActivity from './private/isAIGeneratedActivity';
-import useActivityStyleOptions from './private/useActivityStyleOptions';
 import useFirstActivityAuthor from './private/useFirstActivityAuthor';
 
 const { useLocalizer } = hooks;

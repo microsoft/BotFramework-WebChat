@@ -1,18 +1,16 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import { hooks } from 'botframework-webchat-api';
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { Fragment, useMemo } from 'react';
 import { any, object, pipe, readonly } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import activityAltText from '../Utils/activityAltText';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
 import LiveRegionSuggestedActions from './private/LiveRegionSuggestedActions';
-
-const { useAvatarForBot, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__live-region-activity': {
@@ -39,21 +37,14 @@ type LiveRegionActivityProps = InferReactProps<typeof liveRegionActivityPropsSch
 function LiveRegionActivity(props: LiveRegionActivityProps) {
   const { activity } = validateProps(liveRegionActivityPropsSchema, props);
 
-  const [{ initials: botInitials }] = useAvatarForBot();
-  const {
-    from: { role },
-    type
-  } = activity;
+  const { type } = activity;
   const fallbackText: string | undefined =
     type === 'message' ? activity.channelData['webchat:fallback-text'] : undefined;
-  const localize = useLocalizer();
+  const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('accessible name');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);
 
-  const greetingAlt: string = (
-    role === 'user' ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-  ).replace(/\s{2,}/gu, ' ');
   const validFallbackText = fallbackText && typeof fallbackText === 'string';
 
   // Lines are `role="none"`: on Windows, generic `<div>` and `<p>` are exposed as "group", screen readers would read "group" before each line.

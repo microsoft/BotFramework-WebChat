@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -29,7 +29,10 @@
 
           const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
 
-          await directLine.emulateIncomingActivity('Aloha!');
+          // The echo back of the message has a timestamp, but the message is not sent.
+          await sendMessage.echoBack(activity => ({ ...activity, timestamp: '2026-10-17T11:50:00Z' }));
+
+          await directLine.emulateIncomingActivity({ text: 'Aloha!', timestamp: '2026-10-17T11:51:00Z' });
 
           sendMessage.rejectPostActivity(new Error('artificial error'));
 
@@ -40,8 +43,9 @@
           );
 
           expect(pageElements.activityActiveDescendantLabels().map(({ innerText }) => innerText)).toEqual([
+            // The time is only narrated after the message is sent.
             'You said: Hello, World! Send failed. Click to interact.',
-            'Bot said: Aloha!'
+            'Bot said: Aloha! Sent at October 17 at 11:51 AM'
           ]);
         },
         { ignoreErrors: true }

@@ -97,6 +97,9 @@ type StrictStyleOptions = {
   /**
    * Typically rendered as two letters, e.g. 'WC'
    * Empty string is required when setting botAvatarImage
+   *
+   * Screen readers narrate the initials before each bot message, e.g. "Bot WC said:".
+   * The narration prefers per-activity initials in `channelData.webChat.styleOptions.botAvatarInitials`, e.g. for a live agent.
    */
   botAvatarInitials: string | undefined;
 
