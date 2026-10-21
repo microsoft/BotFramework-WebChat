@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const getActivityAccessibleName = activityElement =>
+          testHelpers.getAccessibleName(
+            activityElement.querySelector('.webchat__basic-transcript__activity-active-descendant')
+          );
+
+        // GIVEN: a message without links.
+        await directLine.emulateIncomingActivity({ text: 'Hello, World!', type: 'message' });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: the accessible name has no interactive footnote.
+        await waitFor(async () =>
+          expect(await getActivityAccessibleName(pageElements.activities()[0])).toBe('Bot said: Hello, World!')
+        );
+
+        // GIVEN: a message with a link.
+        await directLine.emulateIncomingActivity({
+          text: 'Read the [documentation](https://example.com/docs).',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: the accessible name tells the message has links and can be interacted with.
+        // Zero-width spaces wrap every link for line breaking, screen readers do not pause on them.
+        await waitFor(async () =>
+          expect((await getActivityAccessibleName(pageElements.activities()[1])).replace(/\u200b/gu, '')).toBe(
+            'Bot said: Read the documentation. One or more links in the message. Click to interact.'
+          )
+        );
+      });
+    </script>
+  </body>
+</html>

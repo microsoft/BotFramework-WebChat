@@ -37,12 +37,15 @@ function AddAttachmentButton(
     [inputRef, onFilesAddedRef]
   );
 
+  const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
+
   return (
     <div className={classNames['sendbox__add-attachment']}>
       <input
         accept={uploadAccept}
-        aria-disabled={props.disabled}
+        aria-disabled={props.disabled || undefined}
         aria-hidden="true"
+        aria-label={uploadFileString}
         className={classNames['sendbox__add-attachment-input']}
         multiple={uploadMultiple}
         onInput={props.disabled ? undefined : handleFileChange}
@@ -52,11 +55,7 @@ function AddAttachmentButton(
         tabIndex={-1}
         type="file"
       />
-      <ToolbarButton
-        aria-label={localize('TEXT_INPUT_UPLOAD_BUTTON_ALT')}
-        data-testid={testIds.sendBoxUploadButton}
-        onClick={handleClick}
-      >
+      <ToolbarButton aria-label={uploadFileString} data-testid={testIds.sendBoxUploadButton} onClick={handleClick}>
         <FluentIcon appearance="text" icon="attachment" />
       </ToolbarButton>
     </div>

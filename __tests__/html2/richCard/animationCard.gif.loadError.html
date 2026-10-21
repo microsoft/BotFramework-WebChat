@@ -36,15 +36,15 @@
 
         await pageConditions.uiConnected();
 
-        // GIVEN: The bot sends an animation card with a GIF URL that does not return an image.
+        // GIVEN: The bot sends an animation card with a GIF data: URL whose content is not an image.
         await directLine.emulateIncomingActivity({
           attachments: [
             {
               content: {
                 media: [
                   {
-                    profile: 'Yellow ball moving from left to right',
-                    url: new URL('/assets/index.css?not-an-image.gif', location.href).href
+                    profile: 'Red and green animation',
+                    url: 'data:image/gif;base64,Tm90IGEgR0lG' // "Not a GIF" in Base64.
                   }
                 ],
                 title: 'Animation card'
@@ -59,7 +59,7 @@
         await pageConditions.numActivitiesShown(1);
 
         const [[attachmentElement]] = pageElements.activityAttachments();
-        const imageElement = attachmentElement.querySelector('img[alt="Yellow ball moving from left to right"]');
+        const imageElement = attachmentElement.querySelector('img[alt="Red and green animation"]');
 
         // THEN: The image should fail to load.
         await waitFor(() => expect(imageElement.complete).toBe(true));

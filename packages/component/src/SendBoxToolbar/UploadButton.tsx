@@ -105,8 +105,9 @@ function UploadButton(props: UploadButtonProps) {
     <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>
       <input
         accept={uploadAccept}
-        aria-disabled={disabled}
+        aria-disabled={disabled || undefined}
         aria-hidden="true"
+        aria-label={uploadFileString}
         className="webchat__upload-button--file-input"
         // Recreates the <input> element after every upload to prevent issues in WebDriver.
         // Otherwise, on second upload, WebDriver will resend files from first upload as new Blob/File instance and it will cause duplicates.
@@ -120,7 +121,7 @@ function UploadButton(props: UploadButtonProps) {
         tabIndex={-1}
         type="file"
       />
-      <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
+      <IconButton alt={uploadFileString} disabled={disabled} onClick={handleClick}>
         <AttachmentIcon checked={!!sendBoxAttachments.length} />
       </IconButton>
     </div>

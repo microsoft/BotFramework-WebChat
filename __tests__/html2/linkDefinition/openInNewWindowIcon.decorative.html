@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: A message with a Markdown link reference definition is received, shown as a reference list below the message.
+        await directLine.emulateIncomingActivity({
+          text: 'Override the proxy settings[1].\n\n[1]: https://example.com/proxy "Proxy settings"\n',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The "open in new window" icon in the link reference is decorative and should be hidden from assistive technologies.
+        const openInNewWindowIcon = document.querySelector('.link-definitions__list-item-box svg');
+
+        expect(openInNewWindowIcon.getAttribute('aria-hidden')).toBe('true');
+        expect(await testHelpers.getAccessibilityNode(openInNewWindowIcon)).toHaveProperty('ignored', true);
+
+        // THEN: The link reference "Proxy settings" is shown with its "open in new window" icon.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

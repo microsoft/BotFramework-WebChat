@@ -31,7 +31,7 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: Bot sends a receipt card with the same content as MockBot's "receiptcard" command.
+        // WHEN: The bot sends a receipt card, similar to the "receiptcard" command of the mock bot.
         await directLine.emulateIncomingActivity({
           attachmentLayout: 'carousel',
           attachments: [
@@ -100,13 +100,13 @@
           ['Order Number', 'Expected Delivery Time', 'Payment Method', 'Delivery Address'].map(getTop)
         );
 
-        // THEN: Should match snapshot.
+        // THEN: The bottom of the receipt card shows the last 2 items, VAT, tax, total, and buttons with wide text spacing, none clipped.
         await host.snapshot('local');
 
         // WHEN: Scrolled to the top of the receipt card.
         await pageObjects.scrollToTop();
 
-        // THEN: Should match snapshot.
+        // THEN: The top of the receipt card shows the title and the facts, each value on the line of its key.
         await host.snapshot('local');
       });
     </script>

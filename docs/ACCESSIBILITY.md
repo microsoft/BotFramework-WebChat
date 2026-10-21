@@ -279,6 +279,7 @@ To make the live region more consistent across browsers and easier to control, w
    -  Screen reader only reads the chat history marked as live region
       -  Web Chat does not narrate attachment contents: attachments can be customized and the DOM tree could be very complex with interactive elements
       -  Empty messages will be narrated if they have suggested actions
+      -  Lines and containers in the copy are `role="none"`, otherwise screen readers on Windows read "group" before every line; custom `attachmentForScreenReaderMiddleware` should do the same
 -  The live region contains activities that were recently
    -  When the DOM element appear in the live region, the screen reader will compute the alternative text and queue it for narration in a first-come-first-serve manner
    -  The screen reader will keep the alternative text in the queue even after the DOM element is removed from the live region
