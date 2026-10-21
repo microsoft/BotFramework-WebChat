@@ -38,28 +38,35 @@
           );
 
         // GIVEN: a message without links.
-        await directLine.emulateIncomingActivity({ text: 'Hello, World!', type: 'message' });
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          timestamp: '2026-10-17T11:50:00Z',
+          type: 'message'
+        });
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: the accessible name has no interactive footnote.
+        // THEN: the accessible name has no interactive footnote, only the time the message was sent.
         await waitFor(async () =>
-          expect(await getActivityAccessibleName(pageElements.activities()[0])).toBe('Bot said: Hello, World!')
+          expect(await getActivityAccessibleName(pageElements.activities()[0])).toBe(
+            'Bot said: Hello, World! Sent at October 17 at 11:50 AM'
+          )
         );
 
         // GIVEN: a message with a link.
         await directLine.emulateIncomingActivity({
           text: 'Read the [documentation](https://example.com/docs).',
+          timestamp: '2026-10-17T11:51:00Z',
           type: 'message'
         });
 
         await pageConditions.numActivitiesShown(2);
 
-        // THEN: the accessible name tells the message has links and can be interacted with.
+        // THEN: the accessible name tells the message has links and can be interacted with, followed by the time.
         // Zero-width spaces wrap every link for line breaking, screen readers do not pause on them.
         await waitFor(async () =>
           expect((await getActivityAccessibleName(pageElements.activities()[1])).replace(/\u200b/gu, '')).toBe(
-            'Bot said: Read the documentation. One or more links in the message. Click to interact.'
+            'Bot said: Read the documentation. One or more links in the message. Click to interact. Sent at October 17 at 11:51 AM'
           )
         );
       });
