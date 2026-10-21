@@ -3,7 +3,11 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
-      /* Emulates a host page with a type selector, which also matches the <section> of the activity list in Web Chat. */
+      /*
+        Emulates a host page with a type selector, which also matches the activity list of Web Chat:
+        `<section class="transcript-focus-area__activity-list">`, rendered by `TranscriptActivityList`.
+        `min-height: 0` would let the activity list shrink below its content.
+      */
       section {
         display: flex;
         flex-direction: column;
