@@ -87,9 +87,19 @@
   }
 
   /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
+  /* Its summary is for arrow key navigation: screen readers in browse or scan mode should not read it after the content. */
   .transcript-focus-area__content-active-descendant {
     inset: calc(var(--webchat__transcript--spacing) / -1) 0 calc(var(--webchat__transcript--spacing) / -1) 0;
     position: absolute;
+    visibility: hidden;
+  }
+
+  /* Only the active descendant of the focused transcript is exposed to assistive technologies. */
+  &:focus
+    .transcript-focus-area__content--focused
+    > .transcript-focus-area__content-overlay
+    .transcript-focus-area__content-active-descendant {
+    visibility: visible;
   }
 
   .transcript-focus-area__terminator {

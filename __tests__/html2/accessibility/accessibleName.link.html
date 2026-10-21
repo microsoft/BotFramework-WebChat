@@ -32,10 +32,9 @@
 
         await pageConditions.uiConnected();
 
-        const getActivityAccessibleName = activityElement =>
-          testHelpers.getAccessibleName(
-            activityElement.querySelector('.webchat__basic-transcript__activity-active-descendant')
-          );
+        // The summary is hidden from scan mode until the activity is selected with arrow keys, so read its text.
+        const getActivitySummary = activityElement =>
+          activityElement.querySelector('.webchat__basic-transcript__activity-active-descendant').textContent;
 
         // GIVEN: a message without links.
         await directLine.emulateIncomingActivity({
@@ -46,9 +45,9 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: the accessible name has no interactive footnote, only the time the message was sent.
-        await waitFor(async () =>
-          expect(await getActivityAccessibleName(pageElements.activities()[0])).toBe(
+        // THEN: the summary has no interactive footnote, only the time the message was sent.
+        await waitFor(() =>
+          expect(getActivitySummary(pageElements.activities()[0])).toBe(
             'Bot said: Hello, World! Sent at October 17 at 11:50 AM'
           )
         );
@@ -62,10 +61,10 @@
 
         await pageConditions.numActivitiesShown(2);
 
-        // THEN: the accessible name tells the message has links and can be interacted with, followed by the time.
+        // THEN: the summary tells the message has links and can be interacted with, followed by the time.
         // Zero-width spaces wrap every link for line breaking, screen readers do not pause on them.
-        await waitFor(async () =>
-          expect((await getActivityAccessibleName(pageElements.activities()[1])).replace(/\u200b/gu, '')).toBe(
+        await waitFor(() =>
+          expect(getActivitySummary(pageElements.activities()[1]).replace(/\u200b/gu, '')).toBe(
             'Bot said: Read the documentation. One or more links in the message. Click to interact. Sent at October 17 at 11:51 AM'
           )
         );
