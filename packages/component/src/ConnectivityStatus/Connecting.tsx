@@ -1,21 +1,21 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import React, { Fragment, memo, useState } from 'react';
+import React, { Fragment, memo } from 'react';
 import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import useForceRender from '../hooks/internal/useForceRender';
-import useTimer from '../hooks/internal/useTimer';
 import useStyleSet from '../hooks/useStyleSet';
+import { useLiveRegion } from '../providers/LiveRegionTwin';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
-const { useDirection, useLocalizer, usePonyfill, useStyleOptions } = hooks;
+const { useDirection, useLocalizer } = hooks;
 
 const connectivityStatusConnectingPropsSchema = pipe(
   object({
-    reconnect: optional(boolean())
+    reconnect: optional(boolean()),
+    slow: optional(boolean())
   }),
   readonly()
 );
@@ -23,30 +23,29 @@ const connectivityStatusConnectingPropsSchema = pipe(
 type ConnectivityStatusConnectingProps = InferInput<typeof connectivityStatusConnectingPropsSchema>;
 
 function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) {
-  const { reconnect = false } = validateProps(connectivityStatusConnectingPropsSchema, props);
+  const { reconnect = false, slow = false } = validateProps(connectivityStatusConnectingPropsSchema, props);
 
-  const [{ Date }] = usePonyfill();
-  const [{ slowConnectionAfter }] = useStyleOptions();
   const [
     { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }
   ] = useStyleSet();
   const [direction] = useDirection();
-  const [initialRenderAt] = useState(() => Date.now());
-  const forceRender = useForceRender();
   const localize = useLocalizer();
 
   const initialConnectionText = localize('CONNECTIVITY_STATUS_ALT_CONNECTING');
   const interruptedConnectionText = localize('CONNECTIVITY_STATUS_ALT_RECONNECTING');
   const slowConnectionText = localize('CONNECTIVITY_STATUS_ALT_SLOW_CONNECTION');
 
-  useTimer(initialRenderAt + slowConnectionAfter, forceRender);
+  const alt = localize(
+    'CONNECTIVITY_STATUS_ALT',
+    slow ? slowConnectionText : reconnect ? interruptedConnectionText : initialConnectionText
+  );
 
-  const now = Date.now();
-  const slow = now >= initialRenderAt + slowConnectionAfter;
+  // Announces "Reconnecting…" and "Slow connection", but not "Connecting…" while Web Chat starts.
+  useLiveRegion(() => (reconnect || slow) && alt, [alt, reconnect, slow]);
 
   return slow ? (
     <Fragment>
-      <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', slowConnectionText)} />
+      <ScreenReaderText text={alt} />
       <div
         aria-hidden={true}
         className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}
@@ -58,9 +57,7 @@ function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) 
     </Fragment>
   ) : (
     <Fragment>
-      <ScreenReaderText
-        text={localize('CONNECTIVITY_STATUS_ALT', reconnect ? interruptedConnectionText : initialConnectionText)}
-      />
+      <ScreenReaderText text={alt} />
       <div
         aria-hidden={true}
         className={classNames('webchat__connectivityStatus', connectivityNotificationStyleSet + '')}
