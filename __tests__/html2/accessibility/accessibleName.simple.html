@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -33,7 +33,8 @@
 
           await directLine.emulateIncomingActivity('Aloha!');
 
-          expect(pageElements.activityActiveDescendantLabels().map(({ innerText }) => innerText)).toEqual([
+          // Summaries are hidden from scan mode until selected with arrow keys, so read their text instead of innerText.
+          expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
             'You said: Hello, World!',
             'Bot said: Aloha!'
           ]);
