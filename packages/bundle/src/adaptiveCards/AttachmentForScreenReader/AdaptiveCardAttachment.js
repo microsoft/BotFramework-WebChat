@@ -65,7 +65,7 @@ const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue, label } })
   const defaultChoice = choices.find(({ value }) => defaultValue === value || (!defaultValue && !value));
 
   return (
-    <div>
+    <div role="none">
       <select
         aria-label={label}
         aria-labelledby={!label && defaultChoice ? labelId : undefined}
@@ -180,8 +180,8 @@ const AdaptiveCardAttachment = ({ content }) => {
   const cardLabel = localize('ATTACHMENT_CARD', card.speak || text, '', '');
 
   return (
-    <article>
-      <div>{cardLabel}</div>
+    <div role="none">
+      <div role="none">{cardLabel}</div>
       {inputs.map((input, index) =>
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
@@ -196,7 +196,7 @@ const AdaptiveCardAttachment = ({ content }) => {
             <input placeholder={input.placeholder} tabIndex={-1} type="number" />
           </label>
         ) : input instanceof OpenUrlAction || input instanceof ShowCardAction || input instanceof SubmitAction ? (
-          <div key={index}>
+          <div key={index} role="none">
             <button tabIndex={-1} type="button">
               {input.title}
             </button>
@@ -220,7 +220,7 @@ const AdaptiveCardAttachment = ({ content }) => {
           false
         )
       )}
-    </article>
+    </div>
   );
 };
 
