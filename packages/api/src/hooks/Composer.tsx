@@ -127,6 +127,24 @@ const DISPATCHERS = {
 
 const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
+/**
+ * Disconnects scheduled by unmounting, by store.
+ *
+ * Strict Mode unmounts and mounts again right after the first mount. DirectLineJS cannot start again after its start is stopped,
+ * so unmounting disconnects one task later, and mounting again in the same task with the same connection cancels it.
+ *
+ * Remove when DirectLineJS can start again after its start is stopped.
+ */
+const pendingDisconnectByDispatch = new WeakMap<
+  ReturnType<typeof useDispatch>,
+  {
+    readonly cancel: () => void;
+    readonly directLine: DirectLineJSBotConnection;
+    readonly userID: string | undefined;
+    readonly username: string | undefined;
+  }
+>();
+
 function createCardActionContext({
   cardActionMiddleware,
   continuous,
@@ -325,21 +343,44 @@ const ComposerCore = ({
   }, [dispatch, sendTypingIndicator]);
 
   useEffect(() => {
-    dispatch(
-      createConnectAction({
-        directLine,
-        userID,
-        username
-      })
-    );
+    const pendingDisconnect = pendingDisconnectByDispatch.get(dispatch);
+
+    pendingDisconnect?.cancel();
+    pendingDisconnectByDispatch.delete(dispatch);
+
+    // Mounted again in the same task with the same connection (e.g. Strict Mode): keep the connection.
+    if (
+      pendingDisconnect?.directLine !== directLine ||
+      pendingDisconnect.userID !== userID ||
+      pendingDisconnect.username !== username
+    ) {
+      pendingDisconnect && dispatch(disconnect());
+
+      dispatch(
+        createConnectAction({
+          directLine,
+          userID,
+          username
+        })
+      );
+    }
 
     return () => {
-      /**
-       * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
-       */
-      dispatch(disconnect());
+      const timeout = ponyfill.setTimeout(() => {
+        pendingDisconnectByDispatch.delete(dispatch);
+
+        /**
+         * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+         */
+        dispatch(disconnect());
+      });
+
+      pendingDisconnectByDispatch.set(
+        dispatch,
+        Object.freeze({ cancel: () => ponyfill.clearTimeout(timeout), directLine, userID, username })
+      );
     };
-  }, [dispatch, directLine, userID, username]);
+  }, [dispatch, directLine, ponyfill, userID, username]);
 
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
 
