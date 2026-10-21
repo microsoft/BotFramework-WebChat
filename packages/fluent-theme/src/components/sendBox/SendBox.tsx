@@ -210,7 +210,6 @@ function SendBox(props: Props) {
   const handleTranscriptNavigation = useTranscriptNavigation();
 
   const aria = {
-    'aria-invalid': 'false' as const,
     ...(errorMessage && {
       'aria-describedby': errorMessageId,
       'aria-errormessage': errorMessageId,

@@ -52,8 +52,10 @@
 
         // GIVEN: The bot sends an animation card with a GIF and no "autostart", which defaults to true.
         // GIVEN: The bot sends another animation card with a GIF and "autostart" set to false.
-        // The first frame of the GIF (ball on the left) is shown for 20 ms, the second frame (ball on the right) for about 11 minutes,
-        // so a playing GIF settles on the second frame before the snapshot.
+        // The GIF shows red with the ball on the left for 2 seconds, then stays on green with the ball on the right.
+        const firstFrameColor = '#c50f1f'; // Red.
+        const lastFrameColor = '#107c10'; // Green.
+
         for (const autostart of [undefined, false]) {
           await directLine.emulateIncomingActivity({
             attachments: [
@@ -62,8 +64,8 @@
                   autostart,
                   media: [
                     {
-                      profile: 'Yellow ball moving from left to right',
-                      url: new URL('/assets/yellow-ball-animation.gif', location.href).href
+                      profile: 'Ball moving from left to right',
+                      url: new URL('/assets/red-green-animation.gif', location.href).href
                     }
                   ],
                   title: autostart === false ? 'Animation card without autostart' : 'Animation card'
@@ -79,9 +81,15 @@
         await pageConditions.numActivitiesShown(2);
         await pageConditions.allImagesLoaded();
 
-        const [autostartButtonElement, noAutostartButtonElement] = pageElements
-          .activityAttachments()
-          .map(([attachmentElement]) => attachmentElement.querySelector('button'));
+        const [[autostartAttachmentElement], [noAutostartAttachmentElement]] = pageElements.activityAttachments();
+        const autostartButtonElement = autostartAttachmentElement.querySelector('button');
+        const autostartImageElement = autostartAttachmentElement.querySelector(
+          'img[alt="Ball moving from left to right"]'
+        );
+        const noAutostartButtonElement = noAutostartAttachmentElement.querySelector('button');
+        const noAutostartImageElement = noAutostartAttachmentElement.querySelector(
+          'img[alt="Ball moving from left to right"]'
+        );
 
         // THEN: The first animation should play and offer a "Pause animation" button.
         await expect(testHelpers.getAccessibilityNode(autostartButtonElement)).resolves.toEqual(
@@ -99,7 +107,11 @@
           })
         );
 
-        // THEN: The first animation should show its second frame and the second animation its first frame, with the button inside the cropped image.
+        // THEN: The first animation should show its last frame (green) and the second animation its first frame (red), with the button inside the cropped image.
+        await waitFor(() => expect(testHelpers.getRenderedColor(autostartImageElement)).resolves.toBe(lastFrameColor), {
+          timeout: 5_000
+        });
+        expect(await testHelpers.getRenderedColor(noAutostartImageElement)).toBe(firstFrameColor);
         await host.snapshot('local');
 
         // WHEN: Click on the "Pause animation" button.
@@ -110,7 +122,9 @@
           expect(testHelpers.getAccessibleName(autostartButtonElement)).resolves.toBe('Play animation')
         );
 
-        // THEN: Both animations should show their first frame.
+        // THEN: Both animations should show their first frame (red).
+        expect(await testHelpers.getRenderedColor(autostartImageElement)).toBe(firstFrameColor);
+        expect(await testHelpers.getRenderedColor(noAutostartImageElement)).toBe(firstFrameColor);
         await host.snapshot('local');
       });
     </script>

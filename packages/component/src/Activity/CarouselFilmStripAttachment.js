@@ -30,7 +30,7 @@ const CarouselFilmStripAttachment = ({
 
   return (
     <li
-      aria-roledescription="attachment"
+      aria-roledescription={localize('ACTIVITY_ATTACHMENT_ARIA_ROLE_ALT')}
       className={cx(
         classNames['carousel-filmstrip-attachment'],
         {

@@ -59,9 +59,11 @@
 
         await pageConditions.uiConnected();
 
-        // GIVEN: The bot sends an animation card with a looping GIF, similar to the "animationcard" command of the mock bot.
+        // GIVEN: The bot sends an animation card with a GIF, similar to the "animationcard" command of the mock bot.
         // Like the GIF of the mock bot, it is served from another origin.
-        const gifURL = new URL('/assets/yellow-ball-animation.gif', location.href);
+        // The GIF shows red with the ball on the left for 2 seconds, then stays on green with the ball on the right.
+        const gifURL = new URL('/assets/red-green-animation.gif', location.href);
+        const firstFrameColor = '#c50f1f'; // Red.
 
         gifURL.hostname = gifURL.hostname === 'localhost' ? 'cross-origin.localhost' : 'webchat2-cross-origin';
 
@@ -73,7 +75,7 @@
                 autostart: true,
                 media: [
                   {
-                    profile: 'Yellow ball moving from left to right',
+                    profile: 'Ball moving from left to right',
                     url: gifURL.href
                   }
                 ],
@@ -93,6 +95,7 @@
 
         const [[attachmentElement]] = pageElements.activityAttachments();
         const buttonElement = attachmentElement.querySelector('button');
+        const imageElement = attachmentElement.querySelector('img[alt="Ball moving from left to right"]');
 
         // WHEN: Focus on the button via keyboard.
         pageObjects.focusTranscript();
@@ -103,7 +106,8 @@
         expect(buttonElement.matches(':focus-visible')).toBe(true);
         await expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Play animation');
 
-        // THEN: The "Play animation" icon, the focus indicator, and the border of the message should be visible in forced colors, over the first frame.
+        // THEN: The "Play animation" icon, the focus indicator, and the border of the message should be visible in forced colors, over the first frame (red).
+        expect(await testHelpers.getRenderedColor(imageElement)).toBe(firstFrameColor);
         await host.snapshot('local');
       });
     </script>
