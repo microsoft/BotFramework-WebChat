@@ -128,22 +128,20 @@ const DISPATCHERS = {
 const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
 /**
- * Disconnects scheduled by unmounting, by store.
+ * Disconnects scheduled by unmounting.
  *
- * Strict Mode unmounts and mounts again right after the first mount. DirectLineJS cannot start again after its start is stopped,
- * so unmounting disconnects one task later, and mounting again in the same task with the same connection cancels it.
+ * Strict Mode unmounts and mounts again right after the first mount, synchronously. DirectLineJS cannot start again after its
+ * start is stopped, so unmounting disconnects in a microtask, and mounting again with the same store and connection cancels it.
+ * Any other mount with the same store or the same Direct Line disconnects first, in the same order as without deferring.
  *
  * Remove when DirectLineJS can start again after its start is stopped.
  */
-const pendingDisconnectByDispatch = new WeakMap<
-  ReturnType<typeof useDispatch>,
-  {
-    readonly cancel: () => void;
-    readonly directLine: DirectLineJSBotConnection;
-    readonly userID: string | undefined;
-    readonly username: string | undefined;
-  }
->();
+const pendingDisconnects = new Set<{
+  readonly directLine: DirectLineJSBotConnection;
+  readonly dispatch: ReturnType<typeof useDispatch>;
+  readonly userID: string | undefined;
+  readonly username: string | undefined;
+}>();
 
 function createCardActionContext({
   cardActionMiddleware,
@@ -343,44 +341,46 @@ const ComposerCore = ({
   }, [dispatch, sendTypingIndicator]);
 
   useEffect(() => {
-    const pendingDisconnect = pendingDisconnectByDispatch.get(dispatch);
+    // Mounted again with the same store and connection (e.g. Strict Mode): keep the connection.
+    const remountedPendingDisconnect = Array.from(pendingDisconnects).find(
+      pendingDisconnect =>
+        pendingDisconnect.directLine === directLine &&
+        pendingDisconnect.dispatch === dispatch &&
+        pendingDisconnect.userID === userID &&
+        pendingDisconnect.username === username
+    );
 
-    pendingDisconnect?.cancel();
-    pendingDisconnectByDispatch.delete(dispatch);
-
-    // Mounted again in the same task with the same connection (e.g. Strict Mode): keep the connection.
-    if (
-      pendingDisconnect?.directLine !== directLine ||
-      pendingDisconnect.userID !== userID ||
-      pendingDisconnect.username !== username
-    ) {
-      pendingDisconnect && dispatch(disconnect());
-
-      dispatch(
-        createConnectAction({
-          directLine,
-          userID,
-          username
-        })
-      );
+    for (const pendingDisconnect of pendingDisconnects) {
+      if (
+        pendingDisconnect !== remountedPendingDisconnect &&
+        (pendingDisconnect.directLine === directLine || pendingDisconnect.dispatch === dispatch)
+      ) {
+        pendingDisconnects.delete(pendingDisconnect);
+        pendingDisconnect.dispatch(disconnect());
+      }
     }
 
+    remountedPendingDisconnect
+      ? pendingDisconnects.delete(remountedPendingDisconnect)
+      : dispatch(
+          createConnectAction({
+            directLine,
+            userID,
+            username
+          })
+        );
+
     return () => {
-      const timeout = ponyfill.setTimeout(() => {
-        pendingDisconnectByDispatch.delete(dispatch);
+      const pendingDisconnect = Object.freeze({ directLine, dispatch, userID, username });
 
-        /**
-         * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
-         */
-        dispatch(disconnect());
-      });
+      pendingDisconnects.add(pendingDisconnect);
 
-      pendingDisconnectByDispatch.set(
-        dispatch,
-        Object.freeze({ cancel: () => ponyfill.clearTimeout(timeout), directLine, userID, username })
-      );
+      /**
+       * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
+       */
+      queueMicrotask(() => pendingDisconnects.delete(pendingDisconnect) && dispatch(disconnect()));
     };
-  }, [dispatch, directLine, ponyfill, userID, username]);
+  }, [dispatch, directLine, userID, username]);
 
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
 
