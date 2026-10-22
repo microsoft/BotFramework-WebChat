@@ -38,7 +38,9 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
 
       activityToGroupMapRef.current = new Map(
         [].concat(
-          Array.from(activityToGroupMapRef.current).filter(([, value]) => !!value && !toRemoveSet.has(value)),
+          Array.from(activityToGroupMapRef.current).filter(
+            ([activityKey, groupKey]) => !!groupKey && (groupKey !== grouping.key || !toRemoveSet.has(activityKey))
+          ),
           Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
         )
       );
