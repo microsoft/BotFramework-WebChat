@@ -13,8 +13,8 @@ export default function carouselSettled(carouselLayout) {
   return became(
     'carousel stopped scrolling and all flippers are hidden',
     () =>
-      !carouselLayout.querySelector('.react-film__main--scrolling') &&
-      Array.from(carouselLayout.querySelectorAll('.react-film__flipper')).every(isFlipperHidden),
+      !carouselLayout.querySelector('.carousel-layout__main--scrolling') &&
+      Array.from(carouselLayout.querySelectorAll('.carousel-flipper')).every(isFlipperHidden),
     5000
   );
 }

@@ -83,7 +83,7 @@
         const carouselLayout = document.querySelector('.carousel-layout');
         const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
         const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
-        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
+        const flippers = Array.from(carouselLayout.querySelectorAll('.carousel-flipper'));
         const secondCardButton = cards[1].querySelector('button');
 
         const isCardInView = card => {
@@ -95,7 +95,7 @@
 
         // The flipper is hidden when its body has slid out of the flipper button (1s delay after scroll stops, then 300ms slide).
         const isFlipperHidden = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
+          const bodyRect = flipper.querySelector('.carousel-flipper__body').getBoundingClientRect();
           const buttonRect = flipper.getBoundingClientRect();
 
           return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
@@ -104,7 +104,7 @@
         const waitForCarouselSettled = () =>
           waitFor(
             () => {
-              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
+              expect(carouselLayout.querySelector('.carousel-layout__main--scrolling')).toBeNull();
               expect(flippers.every(isFlipperHidden)).toBe(true);
             },
             { timeout: 5000 }

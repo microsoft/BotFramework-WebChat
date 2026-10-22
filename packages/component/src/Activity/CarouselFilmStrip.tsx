@@ -1,11 +1,15 @@
 /* eslint complexity: ["error", 30] */
 
+import {
+  useCarouselItemContainerRef,
+  useCarouselScrollableRef,
+  useCarouselScrollToIndex
+} from '@msinternal/botframework-webchat-component-carousel';
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import cx from 'classnames';
-import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
 import React, { memo, useCallback, type FocusEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { boolean, custom, function_, is, literal, object, optional, pipe, readonly, string, union } from 'valibot';
 
@@ -74,11 +78,11 @@ function CarouselFilmStrip(props: CarouselFilmStripProps) {
   const showActivityStatus = typeof renderActivityStatus === 'function';
   const classNames = useStyles(styles);
 
-  const itemContainerCallbackRef = useItemContainerCallbackRef();
-  const scrollableCallbackRef = useScrollableCallbackRef();
-  const scrollTo = useScrollTo();
+  const itemContainerRef = useCarouselItemContainerRef();
+  const scrollableRef = useCarouselScrollableRef();
+  const scrollToIndex = useCarouselScrollToIndex();
 
-  // When the keyboard moves the focus into a card from outside of it (TAB or SHIFT-TAB), center the card with react-film,
+  // When the keyboard moves the focus into a card from outside of it (TAB or SHIFT-TAB), center the card,
   // as LEFT/RIGHT do, instead of leaving it partially visible. Clicking a card or button is not :focus-visible and does not
   // scroll; text inputs are, so the card is centered for typing.
   const handleAttachmentsFocus = useCallback(
@@ -87,9 +91,9 @@ function CarouselFilmStrip(props: CarouselFilmStripProps) {
 
       const index = cards.findIndex(card => card.contains(target));
 
-      ~index && !cards[+index].contains(relatedTarget) && target.matches(':focus-visible') && scrollTo(() => index);
+      ~index && !cards[+index].contains(relatedTarget) && target.matches(':focus-visible') && scrollToIndex(index);
     },
-    [scrollTo]
+    [scrollToIndex]
   );
 
   // When a card itself has focus (not a control inside it), LEFT/RIGHT move the focus to the previous/next card
@@ -110,7 +114,7 @@ function CarouselFilmStrip(props: CarouselFilmStripProps) {
 
       if (!~index) {
         // On a button, link, or checkbox inside a card, LEFT/RIGHT do nothing. Otherwise, the browser would scroll the
-        // carousel and react-film would center the card again, or, on a held key, scroll the control out of view.
+        // carousel, possibly to the next snap position, and scroll the control out of view.
         (key === 'ArrowLeft' || key === 'ArrowRight') &&
           target instanceof Element &&
           target.matches(CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR) &&
@@ -146,11 +150,11 @@ function CarouselFilmStrip(props: CarouselFilmStripProps) {
 
       event.preventDefault();
 
-      // Center the card with react-film, as the flippers do, instead of the native scroll on focus.
+      // Center the card, as the flippers do, instead of the native scroll on focus.
       cards[+nextIndex].focus({ preventScroll: true });
-      scrollTo(() => nextIndex);
+      scrollToIndex(nextIndex);
     },
-    [direction, scrollTo]
+    [direction, scrollToIndex]
   );
 
   const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
@@ -196,7 +200,7 @@ function CarouselFilmStrip(props: CarouselFilmStripProps) {
         'react-film__filmstrip',
         className
       )}
-      ref={scrollableCallbackRef}
+      ref={scrollableRef}
     >
       <div className={classNames['carousel-filmstrip__main']}>
         <div className={classNames['carousel-filmstrip__avatar-gutter']}>
@@ -233,7 +237,7 @@ function CarouselFilmStrip(props: CarouselFilmStripProps) {
                 className={cx(classNames['carousel-filmstrip__attachments'], 'react-film__filmstrip__list')}
                 onFocus={handleAttachmentsFocus}
                 onKeyDown={handleAttachmentsKeyDown}
-                ref={itemContainerCallbackRef}
+                ref={itemContainerRef}
               >
                 {attachments.map((attachment, index) => (
                   <CarouselFilmStripAttachment

@@ -69,7 +69,7 @@
 
         const getFocusIndicatorStyle = flipper => {
           const { boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth } = getComputedStyle(
-            flipper.querySelector('.react-film__flipper__body')
+            flipper.querySelector('.carousel-flipper__body')
           );
 
           return { boxShadow, outlineColor, outlineOffset, outlineStyle, outlineWidth };
@@ -77,7 +77,7 @@
 
         // The flipper is shown when its body has slid into the center of the flipper button.
         const getFlipperBodyOffset = flipper => {
-          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
+          const bodyRect = flipper.querySelector('.carousel-flipper__body').getBoundingClientRect();
           const buttonRect = flipper.getBoundingClientRect();
 
           return Math.round(bodyRect.left + bodyRect.width / 2 - (buttonRect.left + buttonRect.width / 2));
@@ -96,7 +96,7 @@
 
         // GIVEN: The carousel is scrolled to the start, the "Previous" flipper is hidden.
         expect(document.querySelector('.carousel-filmstrip').scrollLeft).toBe(0);
-        expect(previousFlipper.querySelector('.react-film__main__slider--hide')).toBeTruthy();
+        expect(previousFlipper.querySelector('.carousel-flipper__slider--at-edge')).toBeTruthy();
 
         // WHEN: Focus on the first attachment of the carousel via keyboard.
         pageObjects.focusTranscript();
@@ -105,7 +105,7 @@
         // THEN: The first attachment should have the focus, both flippers should stay hidden.
         await waitFor(() => expect(document.activeElement).toBe(pageElements.activityAttachments()[0][0]));
         expect(getFlipperBodyOffset(nextFlipper)).toBe(50);
-        expect(previousFlipper.querySelector('.react-film__main__slider--hide')).toBeTruthy();
+        expect(previousFlipper.querySelector('.carousel-flipper__slider--at-edge')).toBeTruthy();
 
         // THEN: The first card shows the focus indicator, no flipper is shown.
         await host.snapshot('local');

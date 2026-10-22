@@ -4,9 +4,13 @@
   -ms-overflow-style: none;
   overflow-x: scroll;
   overflow-y: hidden;
+  overscroll-behavior-x: contain;
   position: relative; /* This is to keep screen reader text in the destinated area. */
+  /* After a manual scroll, center the nearest card if it is close to the center. */
+  scroll-snap-type: x proximity;
   touch-action: manipulation;
   -webkit-overflow-scrolling: touch;
+  z-index: 0; /* Flippers stack above the filmstrip. */
 
   /* Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function */
   /* https://developer.mozilla.org/en-US/docs/Web/CSS/overflow */
@@ -54,6 +58,10 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
+
+    > * {
+      scroll-snap-align: center;
+    }
   }
 
   .carousel-filmstrip__avatar {

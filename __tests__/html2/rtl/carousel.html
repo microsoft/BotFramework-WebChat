@@ -41,7 +41,8 @@
           await pageConditions.allImagesLoaded();
           await pageConditions.allOutgoingActivitiesSent();
 
-          const leftFlipper = document.querySelector('.react-film__flipper--left');
+          // In RTL, the next flipper is on the left side.
+          const leftFlipper = document.querySelector('.carousel-flipper--next');
 
           await leftFlipper.click();
           await leftFlipper.click();

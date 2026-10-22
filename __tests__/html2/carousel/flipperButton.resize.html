@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const webChatElement = document.getElementById('webchat');
+
+        await host.windowSize(640, 640, webChatElement);
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(webChatElement).render(
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+        );
+
+        await pageConditions.uiConnected();
+
+        const createHeroCard = index => ({
+          content: {
+            buttons: [{ title: `Buy item ${index}`, type: 'imBack', value: `Buy item ${index}` }],
+            text: 'Price: $XXX.XX USD',
+            title: `Details about item ${index}`
+          },
+          contentType: 'application/vnd.microsoft.card.hero'
+        });
+
+        // GIVEN: Web Chat is 640 pixels wide, with a carousel of 2 hero cards.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [createHeroCard(1), createHeroCard(2)],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const carouselLayout = document.querySelector('.carousel-layout');
+        const getFlipperLabels = () =>
+          Array.from(carouselLayout.querySelectorAll('.carousel-flipper'), flipper =>
+            flipper.getAttribute('aria-label')
+          );
+
+        // THEN: Both cards fit, there are no flippers.
+        await pageConditions.carouselSettled(carouselLayout);
+        expect(getFlipperLabels()).toEqual([]);
+
+        await host.snapshot('local');
+
+        // WHEN: Web Chat is narrowed to 360 pixels, without moving the pointer.
+        await host.windowSize(360, 640, webChatElement);
+
+        // THEN: The cards overflow, the flippers are rendered (slid out until hovered), so the keyboard can reach them.
+        await waitFor(() => expect(getFlipperLabels()).toEqual(['Previous', 'Next']));
+        await pageConditions.carouselSettled(carouselLayout);
+
+        await host.snapshot('local');
+
+        // WHEN: The pointer moves over the carousel.
+        await host.hover(carouselLayout.querySelector('.carousel-filmstrip'));
+
+        // THEN: The "Next" flipper slides in, the "Previous" flipper stays out at the start.
+        const [previousFlipper, nextFlipper] = carouselLayout.querySelectorAll('.carousel-flipper');
+
+        await waitFor(() => expect(testHelpers.isFlipperShown(nextFlipper)).toBe(true));
+        expect(testHelpers.isFlipperHidden(previousFlipper)).toBe(true);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -19,6 +19,7 @@ import getFocusedAccessibilityNode from './getFocusedAccessibilityNode';
 import getRenderedColor from './getRenderedColor';
 import isCardInView from './isCardInView';
 import isFlipperHidden from './isFlipperHidden';
+import isFlipperShown from './isFlipperShown';
 import iterateAsyncIterable from './iterateAsyncIterable';
 import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
@@ -47,6 +48,7 @@ export {
   getRenderedColor,
   isCardInView,
   isFlipperHidden,
+  isFlipperShown,
   iterateAsyncIterable,
   preloadImages,
   shareObservable,
