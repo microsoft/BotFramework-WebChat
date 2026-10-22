@@ -16,6 +16,7 @@ type ActivityLogicalGroupingContextType = Readonly<{
   getGroupState: (groupKey: string) => GroupState | undefined;
   getLogicalGroupKey: (activityKey: string) => string | undefined;
   removeLogicalGrouping: (key: string) => void;
+  subscribeLogicalGrouping: (listener: () => void) => () => void;
 }>;
 
 const { contextComponentType, useContext } = createContextAndHook<ActivityLogicalGroupingContextType>(

@@ -21,9 +21,12 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
   const { children } = validateProps(activityLogicalGroupingComposerPropsSchema, props);
 
   const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
-  // A ref, not a state: part grouping adds itself while rendering, and its activities read their group while rendering.
   const activityToGroupMapRef = useRef<ReadonlyMap<string, string | undefined>>(new Map());
+  const listenersRef = useRef<Set<() => void>>(new Set());
 
+  const notify = useCallback(() => listenersRef.current.forEach(listener => listener()), [listenersRef]);
+
+  // Adding and removing notify `useLogicalGroupKey()`, which re-renders: call them from effects, never while rendering.
   const addLogicalGrouping = useCallback(
     (grouping: LogicalGrouping) => {
       const prevGroupingKeys = logicalGroupingsRef.current.get(grouping.key)?.activityKeys ?? [];
@@ -39,21 +42,36 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
           Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
         )
       );
+
+      notify();
     },
-    [activityToGroupMapRef]
+    [activityToGroupMapRef, logicalGroupingsRef, notify]
   );
 
   const removeLogicalGrouping = useCallback(
     (key: string) => {
       logicalGroupingsRef.current.delete(key);
       activityToGroupMapRef.current = new Map([...activityToGroupMapRef.current].filter(([, value]) => value !== key));
+
+      notify();
     },
-    [activityToGroupMapRef]
+    [activityToGroupMapRef, logicalGroupingsRef, notify]
   );
 
   const getLogicalGroupKey = useCallback(
     (activityKey: string): string | undefined => activityToGroupMapRef.current.get(activityKey),
     [activityToGroupMapRef]
+  );
+
+  const subscribeLogicalGrouping = useCallback(
+    (listener: () => void): (() => void) => {
+      listenersRef.current.add(listener);
+
+      return () => {
+        listenersRef.current.delete(listener);
+      };
+    },
+    [listenersRef]
   );
 
   const getGroupState = useCallback(
@@ -77,14 +95,23 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
   );
 
   const contextValue: ActivityLogicalGroupingContextType = useMemo(
-    () => ({
+    () =>
+      Object.freeze({
+        addLogicalGrouping,
+        getGroupBoundaries,
+        getGroupState,
+        getLogicalGroupKey,
+        removeLogicalGrouping,
+        subscribeLogicalGrouping
+      }),
+    [
       addLogicalGrouping,
-      getLogicalGroupKey,
-      getGroupState,
       getGroupBoundaries,
-      removeLogicalGrouping
-    }),
-    [addLogicalGrouping, getLogicalGroupKey, getGroupState, getGroupBoundaries, removeLogicalGrouping]
+      getGroupState,
+      getLogicalGroupKey,
+      removeLogicalGrouping,
+      subscribeLogicalGrouping
+    ]
   );
 
   return createElement(ActivityLogicalGroupingContext.Provider, { value: contextValue }, children);

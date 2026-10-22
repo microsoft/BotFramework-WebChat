@@ -3,5 +3,6 @@ export { default as useAddLogicalGrouping } from './useAddLogicalGrouping';
 export { default as useRemoveLogicalGrouping } from './useRemoveLogicalGrouping';
 export { default as useGetLogicalGroupKey } from './useGetLogicalGroupKey';
 export { default as useGetGroupState } from './useGetGroupState';
+export { default as useLogicalGroupKey } from './useLogicalGroupKey';
 export type { ActivityLogicalGroupingComposerProps } from './ActivityLogicalGroupingComposer';
 export type { LogicalGrouping, GroupState } from './private/ActivityLogicalGroupingContext';

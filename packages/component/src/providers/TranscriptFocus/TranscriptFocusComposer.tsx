@@ -47,11 +47,6 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
     [prefix]
   );
 
-  const getGroupDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
-    (activityKey?: string) => activityKey && getGroupDescendantIdByGroupKey(getGroupKeyByActivityKey(activityKey)),
-    [getGroupDescendantIdByGroupKey, getGroupKeyByActivityKey]
-  );
-
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
 
   // While the transcript or any descendants are not focused, if the transcript is updated, reset the user-selected active descendant.
@@ -404,7 +399,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedGroupKeyState: Object.freeze([rawFocusedActivityGroupKey]) as readonly [string],
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey
+      getGroupDescendantIdByGroupKey
     }),
     [
       activeDescendantId,
@@ -414,7 +409,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedActivityKey,
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey,
+      getGroupDescendantIdByGroupKey,
       rawFocusedActivityGroupKey,
       rawFocusedActivityKey
     ]
