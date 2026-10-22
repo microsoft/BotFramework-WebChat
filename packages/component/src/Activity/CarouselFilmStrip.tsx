@@ -1,11 +1,13 @@
 /* eslint complexity: ["error", 30] */
 
-import { hooks } from 'botframework-webchat-api';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
+import { hooks } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import cx from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
+import React, { memo, useCallback, type FocusEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { boolean, custom, function_, is, literal, object, optional, pipe, readonly, string, union } from 'valibot';
 
 import Bubble from './Bubble';
 import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
@@ -24,15 +26,46 @@ const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleO
 const CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR =
   'a[href], button, input[type="button"], input[type="checkbox"], input[type="reset"], input[type="submit"], [role="button"], [role="link"]';
 
-const CarouselFilmStrip = ({
-  activity,
-  className = '',
-  hideTimestamp = false,
-  renderActivityStatus = false,
-  renderAttachment,
-  renderAvatar = false,
-  showCallout = false
-}) => {
+const carouselFilmStripPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(value => is(object({}), value)),
+    className: optional(string()),
+    hideTimestamp: optional(boolean()),
+    // Legacy render functions use `custom()` to keep their signatures, as `createActivityPolymiddlewareFromLegacy.tsx`
+    // does: `pipe(function_(), args(), returns())` would type them as `(...args: unknown[]) => unknown`.
+    renderActivityStatus: optional(
+      union([
+        literal(false),
+        custom<(options: { readonly hideTimestamp: boolean }) => ReactNode>(value => is(function_(), value))
+      ])
+    ),
+    renderAttachment: custom<
+      (options: { readonly activity: WebChatActivity; readonly attachment: unknown }) => ReactNode
+    >(value => is(function_(), value)),
+    renderAvatar: optional(
+      union([
+        literal(false),
+        custom<(options: { readonly activity: WebChatActivity }) => ReactNode>(value => is(function_(), value))
+      ])
+    ),
+    showCallout: optional(boolean())
+  }),
+  readonly()
+);
+
+type CarouselFilmStripProps = InferReactProps<typeof carouselFilmStripPropsSchema>;
+
+function CarouselFilmStrip(props: CarouselFilmStripProps) {
+  const {
+    activity,
+    className = '',
+    hideTimestamp = false,
+    renderActivityStatus = false,
+    renderAttachment,
+    renderAvatar = false,
+    showCallout = false
+  } = validateProps(carouselFilmStripPropsSchema, props);
+
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
@@ -49,7 +82,7 @@ const CarouselFilmStrip = ({
   // as LEFT/RIGHT do, instead of leaving it partially visible. Clicking a card or button is not :focus-visible and does not
   // scroll; text inputs are, so the card is centered for typing.
   const handleAttachmentsFocus = useCallback(
-    ({ currentTarget, relatedTarget, target }) => {
+    ({ currentTarget, relatedTarget, target }: FocusEvent<HTMLUListElement>) => {
       const cards = Array.from(currentTarget.children);
 
       const index = cards.findIndex(card => card.contains(target));
@@ -62,11 +95,13 @@ const CarouselFilmStrip = ({
   // When a card itself has focus (not a control inside it), LEFT/RIGHT move the focus to the previous/next card
   // (mirrored in RTL), HOME/END to the first/last card. This is a shortcut: every card is still a tab stop.
   const handleAttachmentsKeyDown = useCallback(
-    event => {
+    (event: KeyboardEvent<HTMLUListElement>) => {
       const { altKey, ctrlKey, currentTarget, key, metaKey, shiftKey, target } = event;
-      const cards = Array.from(currentTarget.children);
+      const cards = Array.from(currentTarget.children).filter(
+        (card): card is HTMLElement => card instanceof HTMLElement
+      );
 
-      const index = cards.indexOf(target);
+      const index = cards.findIndex(card => card === target);
       const rtl = direction === 'rtl';
 
       if (altKey || ctrlKey || metaKey || shiftKey) {
@@ -77,6 +112,7 @@ const CarouselFilmStrip = ({
         // On a button, link, or checkbox inside a card, LEFT/RIGHT do nothing. Otherwise, the browser would scroll the
         // carousel and react-film would center the card again, or, on a held key, scroll the control out of view.
         (key === 'ArrowLeft' || key === 'ArrowRight') &&
+          target instanceof Element &&
           target.matches(CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR) &&
           event.preventDefault();
 
@@ -117,16 +153,11 @@ const CarouselFilmStrip = ({
     [direction, scrollTo]
   );
 
-  const {
-    attachments = [],
-    channelData: { messageBack: { displayText: messageBackDisplayText } = {} } = {},
-    from: { role } = {},
-    text,
-    textFormat
-  } = activity;
+  const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
 
-  const activityDisplayText = messageBackDisplayText || text;
-  const fromUser = role === 'user';
+  const activityDisplayText = isMessageOrTyping && (activity.channelData?.messageBack?.displayText || activity.text);
+  const attachments = (isMessageOrTyping && activity.attachments) || [];
+  const fromUser = activity.from?.role === 'user';
 
   const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
 
@@ -182,13 +213,13 @@ const CarouselFilmStrip = ({
               <Bubble
                 className={classNames['carousel-filmstrip__bubble']}
                 fromUser={fromUser}
-                nub={showNub || ((hasAvatar || hasNub) && 'hidden')}
+                nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
               >
                 {renderAttachment({
                   activity,
                   attachment: {
                     content: activityDisplayText,
-                    contentType: textFormatToContentType(textFormat)
+                    contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
                   }
                 })}
               </Bubble>
@@ -235,29 +266,9 @@ const CarouselFilmStrip = ({
       )}
     </div>
   );
-};
+}
 
-CarouselFilmStrip.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array,
-    channelData: PropTypes.shape({
-      messageBack: PropTypes.shape({
-        displayText: PropTypes.string
-      })
-    }),
-    from: PropTypes.shape({
-      role: PropTypes.string.isRequired
-    }).isRequired,
-    text: PropTypes.string,
-    textFormat: PropTypes.string,
-    timestamp: PropTypes.string
-  }).isRequired,
-  className: PropTypes.string,
-  hideTimestamp: PropTypes.bool,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  renderAttachment: PropTypes.func.isRequired,
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  showCallout: PropTypes.bool
-};
+CarouselFilmStrip.displayName = 'CarouselFilmStrip';
 
-export default CarouselFilmStrip;
+export default memo(CarouselFilmStrip);
+export { carouselFilmStripPropsSchema, type CarouselFilmStripProps };
