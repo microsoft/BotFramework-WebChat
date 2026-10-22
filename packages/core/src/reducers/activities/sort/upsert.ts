@@ -64,19 +64,20 @@ const INITIAL_STATE = Object.freeze({
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   const activityLocalId = getLocalIdFromActivity(activity);
   const existingActivity = state.activityMap.get(activityLocalId)?.activity;
+  const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
+  const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
   // An update can leave, join, or move between HowTo groupings.
   // Remove the previous revision first, otherwise it stays in its previous grouping and is shown twice.
+  // Livestream revisions are excluded: their grouping belongs to the session, deleting one revision would break it.
   if (
+    !activityLivestreamingMetadata &&
     existingActivity &&
     getPartGroupingMetadataMap(existingActivity).get('HowTo')?.groupingId !==
       getPartGroupingMetadataMap(activity).get('HowTo')?.groupingId
   ) {
     return upsert(ponyfill, deleteActivityByLocalId(state, activityLocalId), activity);
   }
-
-  const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
-  const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
   // #region Streaming fast path
   //
