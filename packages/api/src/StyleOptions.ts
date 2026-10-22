@@ -253,7 +253,8 @@ type StrictStyleOptions = {
    *
    * New in 4.19.3.
    */
-  markdownHeadingLevelStartAt: number | undefined;
+  // eslint-disable-next-line no-magic-numbers
+  markdownHeadingLevelStartAt: 1 | 2 | 3 | 4 | 5 | 6 | undefined;
 
   /**
    * Render HTML inside Markdown.

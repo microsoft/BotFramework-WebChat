@@ -1,5 +1,5 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
-import { integer, is, maxValue, minValue, number, pipe } from 'valibot';
+import { is, picklist } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
@@ -19,8 +19,6 @@ const bubbleMinWidthDeprecation = warnOnce(
 const hideUploadButtonDeprecation = warnOnce(
   '`styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.'
 );
-
-const MAX_HTML_HEADING_LEVEL = 6;
 
 const markdownHeadingLevelStartAtInvalidValue = warnOnce(
   '"markdownHeadingLevelStartAt" must be an integer from 1 to 6, will set to 2.'
@@ -144,12 +142,9 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
 
-  if (
-    !is(
-      pipe(number(), integer(), minValue(1), maxValue(MAX_HTML_HEADING_LEVEL)),
-      filledOptions.markdownHeadingLevelStartAt
-    )
-  ) {
+  // Same as the type of `markdownHeadingLevelStartAt`.
+  // eslint-disable-next-line no-magic-numbers
+  if (!is(picklist([1, 2, 3, 4, 5, 6]), filledOptions.markdownHeadingLevelStartAt)) {
     typeof filledOptions.markdownHeadingLevelStartAt === 'undefined' || markdownHeadingLevelStartAtInvalidValue();
 
     filledOptions.markdownHeadingLevelStartAt = defaultStyleOptions.markdownHeadingLevelStartAt;

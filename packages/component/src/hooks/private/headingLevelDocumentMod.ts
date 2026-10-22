@@ -2,10 +2,17 @@ const MAX_HTML_HEADING_LEVEL = 6;
 
 // Headings this mod changed are marked with the level written in Markdown, which also keeps their look.
 const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6, [role="heading"][class*="render-markdown__heading--level-"]';
-const WRITTEN_LEVEL_PATTERN = /\brender-markdown__heading--level-([1-6])\b/u;
+const HTML_HEADING_LOCAL_NAME_PATTERN = /^h([1-6])$/u;
+const WRITTEN_LEVEL_CLASS_NAME_PATTERN = /^render-markdown__heading--level-([1-6])$/u;
 
-function getWrittenLevel(headingElement: Element): number {
-  return +(WRITTEN_LEVEL_PATTERN.exec(headingElement.className)?.[1] ?? headingElement.localName.substring(1));
+// Exact class token first, then the tag name; anything else (e.g. `--level-something`) is not a heading of ours.
+function getWrittenLevel(headingElement: Element): number | undefined {
+  const levelString =
+    Array.from(headingElement.classList, className => WRITTEN_LEVEL_CLASS_NAME_PATTERN.exec(className)?.[1]).find(
+      Boolean
+    ) ?? HTML_HEADING_LOCAL_NAME_PATTERN.exec(headingElement.localName)?.[1];
+
+  return levelString ? +levelString : undefined;
 }
 
 /**
@@ -19,11 +26,13 @@ function getWrittenLevel(headingElement: Element): number {
  * Can run again on the same content, e.g. after more Markdown is streamed: only headings with a new level are replaced.
  */
 export default function headingLevelDocumentMod<T extends DocumentFragment | Element>(root: T, startAt: number): T {
-  const headingElements = Array.from(root.querySelectorAll(HEADING_SELECTOR));
-  const minWrittenLevel = Math.min(...headingElements.map(getWrittenLevel));
+  const headings = Array.from(root.querySelectorAll(HEADING_SELECTOR), headingElement =>
+    Object.freeze([headingElement, getWrittenLevel(headingElement)] as const)
+  ).filter((heading): heading is readonly [Element, number] => typeof heading[1] === 'number');
 
-  for (const headingElement of headingElements) {
-    const writtenLevel = getWrittenLevel(headingElement);
+  const minWrittenLevel = Math.min(...headings.map(([, writtenLevel]) => writtenLevel));
+
+  for (const [headingElement, writtenLevel] of headings) {
     const level = writtenLevel - minWrittenLevel + startAt;
     const ariaLevel = level > MAX_HTML_HEADING_LEVEL ? `${level}` : null;
     const localName = ariaLevel ? 'div' : `h${level}`;
