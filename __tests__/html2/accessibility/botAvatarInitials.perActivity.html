@@ -81,17 +81,17 @@
             .map(
               activity => testHelpers.getAllTextContents(activity.querySelector('[aria-roledescription="message"]'))[0]
             )
-        ).toEqual(['Bot BO said:', 'Bot BO said:', 'Bot JO said:', 'Bot JO said:']);
+        ).toEqual(['Bot BO said', 'Bot BO said', 'Bot JO said', 'Bot JO said']);
 
         // THEN: When navigating with arrow keys, the summary of each activity should use the same initials.
         //       The carousel is interactive: it has buttons to scroll its attachments.
         //       Summaries are hidden from scan mode until selected with arrow keys, so read their text.
         await waitFor(() =>
           expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
-            'Bot BO said: Okay, let me connect you with a live agent. Sent at October 17 at 11:50 AM',
-            'Bot BO said: While you wait, here are some options. 2 attachments. Message is interactive. Click to interact. Sent at October 17 at 11:50 AM',
-            "Bot JO said: I'd be happy to help you update your account. Sent at October 17 at 11:51 AM",
-            'Bot JO said: What is your new address? Sent at October 17 at 11:51 AM'
+            'Bot BO said Okay, let me connect you with a live agent. Sent at October 17 at 11:50 AM',
+            'Bot BO said While you wait, here are some options. 2 attachments. Message is interactive. Click to interact. Sent at October 17 at 11:50 AM',
+            "Bot JO said I'd be happy to help you update your account. Sent at October 17 at 11:51 AM",
+            'Bot JO said What is your new address? Sent at October 17 at 11:51 AM'
           ])
         );
 
@@ -102,10 +102,10 @@
               testHelpers.getAllTextContents(article).join('\n')
             )
           ).toEqual([
-            'Bot BO said:\nOkay, let me connect you with a live agent.',
-            'Bot BO said:\nWhile you wait, here are some options.\nA text: Update my address\nA text: Update my phone number',
-            "Bot JO said:\nI'd be happy to help you update your account.",
-            'Bot JO said:\nWhat is your new address?'
+            'Bot BO said\nOkay, let me connect you with a live agent.',
+            'Bot BO said\nWhile you wait, here are some options.\nA text Update my address\nA text Update my phone number',
+            "Bot JO said\nI'd be happy to help you update your account.",
+            'Bot JO said\nWhat is your new address?'
           ])
         );
       });
