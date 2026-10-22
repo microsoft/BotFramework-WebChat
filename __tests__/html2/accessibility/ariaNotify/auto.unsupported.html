@@ -38,7 +38,7 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it.
+        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it, and keeps the live region copy, so it can be checked and seen in the snapshot.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,

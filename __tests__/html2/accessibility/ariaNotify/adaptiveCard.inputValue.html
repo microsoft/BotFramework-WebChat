@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy the announcements are computed from. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main id="webchat"></main>
@@ -37,12 +39,16 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`, and keeps the live region copy, so it can be seen in the snapshot.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,
             store,
-            styleOptions: { announcementTransport: 'aria-notify', hideSendBox: true }
+            styleOptions: {
+              announcementTransport: 'aria-notify',
+              hideSendBox: true,
+              internalLiveRegionFadeAfter: 60000
+            }
           })
         );
 
@@ -112,7 +118,7 @@
           ])
         );
 
-        // THEN: The transcript shows the form.
+        // THEN: The hidden live region (top) shows the inputs with their values, the button and the note, as announced; the transcript shows the form.
         await host.snapshot('local');
       });
     </script>

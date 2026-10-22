@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy the announcements are computed from. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <main id="webchat"></main>
@@ -37,12 +39,12 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it.
+        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it, and keeps the live region copy, so it can be seen in the snapshot.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,
             store,
-            styleOptions: { announcementTransport: 'auto', hideSendBox: true }
+            styleOptions: { announcementTransport: 'auto', hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
           })
         );
 
@@ -73,7 +75,7 @@
         expect(pageElements.liveRegion().hasAttribute('aria-live')).toBe(false);
         expect(pageElements.liveRegion().getAttribute('aria-hidden')).toBe('true');
 
-        // THEN: The transcript shows the message as usual.
+        // THEN: The hidden live region (top) shows "connected" and the message, the same text as announced; the transcript shows the message.
         await host.snapshot('local');
       });
     </script>
