@@ -6,6 +6,7 @@
     <script type="importmap">
       {
         "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
           "react": "https://esm.sh/react@19.3.1?dev",
           "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
           "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
@@ -27,6 +28,7 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
+      import { waitFor } from '@testduet/wait-for';
       import { createElement, version } from 'react';
       import ReactDOM from 'react-dom';
       import { createRoot } from 'react-dom/client';
@@ -44,22 +46,38 @@
         expect(ReactDOM.render).toBeUndefined();
 
         // WHEN: Web Chat is rendered by renderWebChat().
-        // THEN: It throws synchronously, as the IIFE build cannot import "react-dom/client".
-        expect(() => renderWebChat({ directLine, store }, webChatElement)).toThrow(
+        // THEN: It rejects, as the IIFE build cannot import "react-dom/client".
+        await expect(renderWebChat({ directLine, store }, webChatElement)).rejects.toThrow(
           'renderWebChat() needs createRoot() from "react-dom/client" on React 19 or later.'
         );
 
-        // WHEN: Web Chat is rendered with createRoot(), as the error says.
-        createRoot(webChatElement).render(
-          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
-        );
+        // WHEN: Web Chat is rendered with createRoot() without the send box, as the error says.
+        const root = createRoot(webChatElement);
+
+        root.render(createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } }));
 
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity('Hello, World!');
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: Web Chat shows the message.
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+
+        // THEN: Web Chat shows the message without the send box.
+        await host.snapshot('local');
+
+        const transcript = pageElements.transcript();
+
+        // WHEN: The same root renders Web Chat again, with the send box.
+        root.render(createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: false } }));
+
+        // THEN: The send box appears.
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toBeTruthy());
+
+        // THEN: Web Chat is updated, not mounted again: the transcript is the same element.
+        expect(pageElements.transcript()).toBe(transcript);
+
+        // THEN: Web Chat shows the same message with the send box.
         await host.snapshot('local');
       });
     </script>

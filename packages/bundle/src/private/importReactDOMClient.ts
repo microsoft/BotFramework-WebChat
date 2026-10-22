@@ -3,8 +3,8 @@
  *
  * Other builds cannot import it: bundlers fail to build for React 16 and 17, which do not have "react-dom/client".
  *
- * @returns `undefined`, the static build replaces this file with `importReactDOMClient.static.ts`.
+ * @returns A promise resolving to `undefined`, the static build replaces this file with `importReactDOMClient.static.ts`.
  */
-export default function importReactDOMClient(): Promise<unknown> | undefined {
-  return undefined;
+export default function importReactDOMClient(): Promise<unknown> {
+  return Promise.resolve(undefined);
 }
