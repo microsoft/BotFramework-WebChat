@@ -171,10 +171,6 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
   );
 });
 
-ActivityRow.defaultProps = {
-  children: undefined
-};
-
 ActivityRow.displayName = 'ActivityRow';
 
 ActivityRow.propTypes = {
@@ -185,8 +181,7 @@ ActivityRow.propTypes = {
       speak: PropTypes.bool,
       'webchat:fallback-text': PropTypes.string
     })
-  }).isRequired,
-  children: PropTypes.any
+  }).isRequired
 };
 
 export default memo(ActivityRow);

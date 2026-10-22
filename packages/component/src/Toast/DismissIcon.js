@@ -15,10 +15,6 @@ const DismissIcon = ({ className }) => (
   </svg>
 );
 
-DismissIcon.defaultProps = {
-  className: undefined
-};
-
 DismissIcon.propTypes = {
   className: PropTypes.string
 };

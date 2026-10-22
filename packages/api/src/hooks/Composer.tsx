@@ -211,11 +211,6 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-// It seems "react/require-default-props" did not pick up `ComposerCore.defaultProps`.
-// And it falsely complaint `optional?: string` must have a corresponding `ComposerCore.defaultProps.optional = undefined`, even we already set it below.
-// Since we set both TypeScript `Props` class and `ComposerCore.propTypes`, this check will be done there as well.
-// Ignoring it in TypeScript version should be safe, as we have `propTypes` version to protect us.
-
 type ComposerCoreProps = Readonly<{
   /**
    * @deprecated Use `polymiddleware` instead. The `activityMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2027-08-21.
@@ -283,13 +278,13 @@ const ComposerCore = ({
   avatarMiddleware: avatarMiddlewareFromProps,
   cardActionMiddleware,
   children,
-  dir,
+  dir = 'auto',
   directLine,
-  disabled,
+  disabled = false,
   downscaleImageToDataURL,
-  grammars,
+  grammars = EMPTY_ARRAY,
   groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
-  locale,
+  locale = window.navigator.language || 'en-US',
   onTelemetry,
   overrideLocalizedStrings,
   polymiddleware: polymiddlewareFromProps,
@@ -298,12 +293,12 @@ const ComposerCore = ({
   selectVoice,
   sendBoxMiddleware,
   sendBoxToolbarMiddleware,
-  sendTypingIndicator,
+  sendTypingIndicator = false,
   toastMiddleware,
   typingIndicatorMiddleware,
   uiState: rawUIState,
-  userID,
-  username
+  userID = '',
+  username = ''
 }: ComposerCoreProps) => {
   const [ponyfill] = usePonyfill();
   const [styleOptions] = useStyleOptions();
@@ -672,31 +667,6 @@ const ComposerCore = ({
  *       we should clean up the responsibility between Context and Redux store
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
-ComposerCore.defaultProps = {
-  activityStatusMiddleware: undefined,
-  attachmentForScreenReaderMiddleware: undefined,
-  attachmentMiddleware: undefined,
-  avatarMiddleware: undefined,
-  cardActionMiddleware: undefined,
-  children: undefined,
-  dir: 'auto',
-  disabled: false,
-  downscaleImageToDataURL: undefined,
-  grammars: [],
-  groupActivitiesMiddleware: undefined,
-  locale: window.navigator.language || 'en-US',
-  onTelemetry: undefined,
-  overrideLocalizedStrings: undefined,
-  renderMarkdown: undefined,
-  scrollToEndButtonMiddleware: undefined,
-  selectVoice: undefined,
-  sendTypingIndicator: false,
-  toastMiddleware: undefined,
-  typingIndicatorMiddleware: undefined,
-  uiState: undefined,
-  userID: '',
-  username: ''
-};
 
 ComposerCore.propTypes = {
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
@@ -814,11 +784,6 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   );
 };
 
-ComposerWithStore.defaultProps = {
-  onTelemetry: undefined,
-  store: undefined
-};
-
 ComposerWithStore.propTypes = {
   onTelemetry: PropTypes.func,
   store: PropTypes.any
@@ -849,13 +814,6 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions,
       </PonyfillComposer>
     </ErrorBoundary>
   );
-};
-
-Composer.defaultProps = {
-  ...ComposerWithStore.defaultProps,
-  internalRenderErrorBox: undefined,
-  onTelemetry: undefined,
-  ponyfill: undefined
 };
 
 Composer.propTypes = {

@@ -108,11 +108,6 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionCarouselContainer.defaultProps = {
-  children: undefined,
-  className: undefined
-};
-
 SuggestedActionCarouselContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
@@ -148,11 +143,6 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionFlowContainer.defaultProps = {
-  children: undefined,
-  className: undefined
-};
-
 SuggestedActionFlowContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
@@ -182,11 +172,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
-
-SuggestedActionStackedContainer.defaultProps = {
-  children: undefined,
-  className: undefined
 };
 
 SuggestedActionStackedContainer.propTypes = {

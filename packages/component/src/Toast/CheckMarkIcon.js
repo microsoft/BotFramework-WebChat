@@ -18,11 +18,6 @@ const CheckMarkIcon = ({ 'aria-label': ariaLabel, className }) => (
   </svg>
 );
 
-CheckMarkIcon.defaultProps = {
-  'aria-label': undefined,
-  className: undefined
-};
-
 CheckMarkIcon.propTypes = {
   'aria-label': PropTypes.string,
   className: PropTypes.string

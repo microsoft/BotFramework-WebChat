@@ -33,10 +33,6 @@ const NotificationIcon = ({ className, level }) => {
   );
 };
 
-NotificationIcon.defaultProps = {
-  className: undefined
-};
-
 NotificationIcon.propTypes = {
   className: PropTypes.string,
   level: PropTypes.oneOf(['error', 'info', 'success', 'warn']).isRequired
