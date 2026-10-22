@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: The browser supports `ariaNotify()`, recorded instead of announced.
+        const ariaNotify = spyOn(Element.prototype, 'ariaNotify').mockImplementation(() => {});
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { announcementTransport: 'aria-notify', hideSendBox: true }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // The connectivity notification is announced first, see `message.html`.
+        await waitFor(() => expect(ariaNotify).toHaveBeenCalledTimes(1));
+        ariaNotify.mockClear();
+
+        // WHEN: The bot sends an Adaptive Card form with named and pre-filled inputs, as in `liveRegion/attachment/adaptiveCard.inputValue.html`.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Place order', type: 'Action.Submit' }],
+                body: [
+                  { id: 'name', label: 'Your name', type: 'Input.Text', value: 'Ada' },
+                  { id: 'quantity', label: 'Quantity', type: 'Input.Number', value: 3 },
+                  { id: 'date', label: 'Delivery date', type: 'Input.Date', value: '2026-10-20' },
+                  { id: 'note', placeholder: 'Add a note', type: 'Input.Text' }, // No label: the card names it by its placeholder.
+                  {
+                    choices: [
+                      { title: 'Red', value: 'red' },
+                      { title: 'Blue', value: 'blue' }
+                    ],
+                    id: 'color',
+                    label: 'Color',
+                    type: 'Input.ChoiceSet',
+                    value: 'blue'
+                  },
+                  { id: 'gift', title: 'Gift wrap', type: 'Input.Toggle', value: 'true' } // Equals the default "valueOn": checked.
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The card is announced once, with every input of its live region copy read by name and value, then the button, followed by the note of the live region.
+        await waitFor(() =>
+          expect(ariaNotify.mock.calls).toEqual([
+            [
+              [
+                'Bot said',
+                'A card',
+                'Your name Ada',
+                'Quantity 3',
+                'Delivery date 2026-10-20',
+                'Add a note', // Empty: read by name only.
+                'Color Blue', // The title of the selected choice.
+                'Gift wrap', // Checkboxes are read by their label; "checked" is not read, it would need a localized word.
+                'Place order'
+              ].join(' '),
+              { priority: 'normal' }
+            ],
+            [
+              'Message is interactive. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact.',
+              { priority: 'normal' }
+            ]
+          ])
+        );
+
+        // THEN: The transcript shows the form.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

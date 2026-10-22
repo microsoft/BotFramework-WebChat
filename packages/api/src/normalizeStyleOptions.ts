@@ -4,6 +4,10 @@ import { is, picklist } from 'valibot';
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
 
+const announcementTransportInvalidValue = warnOnce(
+  '"announcementTransport" must be "auto", "aria-notify", or "live-region", will set to "live-region".'
+);
+
 const bubbleImageHeightDeprecation = warnOnce(
   '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'
 );
@@ -25,6 +29,16 @@ const markdownHeadingLevelStartAtInvalidValue = warnOnce(
 );
 
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
+
+function normalizeAnnouncementTransport(announcementTransport: unknown): StrictStyleOptions['announcementTransport'] {
+  if (is(picklist(['auto', 'aria-notify', 'live-region']), announcementTransport)) {
+    return announcementTransport;
+  }
+
+  typeof announcementTransport === 'undefined' || announcementTransportInvalidValue();
+
+  return defaultStyleOptions.announcementTransport;
+}
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
@@ -141,6 +155,8 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleAttachmentMinWidth = bubbleMinWidth;
     filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
+
+  filledOptions.announcementTransport = normalizeAnnouncementTransport(filledOptions.announcementTransport);
 
   // Same as the type of `markdownHeadingLevelStartAt`.
   // eslint-disable-next-line no-magic-numbers

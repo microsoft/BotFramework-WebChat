@@ -94,7 +94,7 @@ const ROOT_STYLE = {
 };
 
 const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIProps) => {
-  const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const [{ announcementTransport, internalLiveRegionFadeAfter }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
@@ -137,7 +137,12 @@ const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIP
       <CustomElementsComposer>
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
-            <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+            <LiveRegionTwinComposer
+              announcementTransport={announcementTransport}
+              ariaNotifyTargetRef={rootRef}
+              className="webchat__live-region"
+              fadeAfter={internalLiveRegionFadeAfter}
+            >
               <ModalDialogComposer>
                 {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
                 <SendBoxComposer>

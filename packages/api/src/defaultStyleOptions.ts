@@ -80,6 +80,7 @@ const DEFAULT_OPTIONS: StrictStyleOptions = {
   emojiSet: undefined,
 
   // Live region - Accessibility
+  announcementTransport: 'live-region',
   internalLiveRegionFadeAfter: 1000,
 
   // Markdown

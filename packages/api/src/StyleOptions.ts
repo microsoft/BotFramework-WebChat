@@ -236,6 +236,20 @@ type StrictStyleOptions = {
   internalLiveRegionFadeAfter: number | undefined;
 
   /**
+   * Live region - Accessibility
+   * How Web Chat sends announcements to screen readers, such as new messages and errors:
+   *
+   * - `'live-region'` - Renders them in a live region (`aria-live="polite"`) inside Web Chat
+   * - `'aria-notify'` - Calls `ariaNotify()` on the Web Chat root element, the live region is not used; if the browser does not support `ariaNotify()`, nothing is announced
+   * - `'auto'` - `'aria-notify'` if the browser supports `ariaNotify()`, otherwise `'live-region'`
+   *
+   * The host page can hide the live region from screen readers, for example with `aria-hidden` or `aria-modal` elsewhere; `ariaNotify()` does not depend on it.
+   *
+   * @default 'live-region'
+   */
+  announcementTransport: 'auto' | 'aria-notify' | 'live-region' | undefined;
+
+  /**
    * Markdown styling
    * Parse markdown to ensure carriage return is respected
    */

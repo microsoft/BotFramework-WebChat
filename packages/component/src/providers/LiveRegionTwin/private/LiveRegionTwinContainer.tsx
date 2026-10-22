@@ -1,15 +1,35 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { Fragment } from 'react';
-import { literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import {
+  function_,
+  instance,
+  is,
+  literal,
+  nullable,
+  object,
+  optional,
+  picklist,
+  pipe,
+  readonly,
+  string,
+  union
+} from 'valibot';
 
+import refObject from '../../../types/internal/refObject';
+import getAnnouncementText from './getAnnouncementText';
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
 
+// `ariaNotify()` is not in the DOM typings of TypeScript yet.
+const ariaNotifiableSchema = object({ ariaNotify: function_() });
+
 const liveRegionTwinContainerPropsSchema = pipe(
   object({
+    announcementTransport: picklist(['auto', 'aria-notify', 'live-region']),
     'aria-label': optional(string()),
     'aria-live': union([literal('assertive'), literal('polite')]),
     'aria-roledescription': optional(string()),
+    ariaNotifyTargetRef: refObject(nullable(instance(HTMLElement))),
     className: optional(string()),
     role: optional(string()),
     textElementClassName: optional(string())
@@ -17,45 +37,77 @@ const liveRegionTwinContainerPropsSchema = pipe(
   readonly()
 );
 
-type LiveRegionTwinContainerProps = InferInput<typeof liveRegionTwinContainerPropsSchema>;
+type LiveRegionTwinContainerProps = InferReactProps<typeof liveRegionTwinContainerPropsSchema>;
 
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
 function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
   const {
+    announcementTransport,
     'aria-label': ariaLabel,
     'aria-live': ariaLive,
     'aria-roledescription': ariaRoleDescription,
+    ariaNotifyTargetRef,
     className,
     role,
     textElementClassName
   } = validateProps(liveRegionTwinContainerPropsSchema, props);
 
+  const [ariaNotifySupported, setAriaNotifySupported] = useState(false);
   const [staticElementEntries] = useStaticElementEntries();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastNotifiedKeyRef = useRef(0);
+
+  const transport =
+    announcementTransport === 'auto' ? (ariaNotifySupported ? 'aria-notify' : 'live-region') : announcementTransport;
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.
   // The assumption made us safe to mark everything is rendered.
   // In contrary, if we have 0-to-many at different time, we may falsely mark something as rendered.
   useMarkAllAsRenderedEffect();
 
+  // Detects per instance, on the root element: Web Chat could be rendered in another document, such as an iframe or a popup window.
+  // React attaches the ref of the root element after layout effects of its descendants, so only passive effects can read it on mount.
+  useEffect(() => setAriaNotifySupported(is(ariaNotifiableSchema, ariaNotifyTargetRef.current)), [ariaNotifyTargetRef]);
+
+  // Keys are increasing: entries with a key above the last notified one are new, in queue order, and are notified once, also when React runs effects twice.
+  useEffect(() => {
+    const { current: target } = ariaNotifyTargetRef;
+
+    transport === 'aria-notify' &&
+      staticElementEntries.forEach(({ key }, index) => {
+        if (key > lastNotifiedKeyRef.current) {
+          // When notifying, every entry is rendered in its own element, in queue order.
+          const text = getAnnouncementText(containerRef.current.children.item(index));
+
+          lastNotifiedKeyRef.current = key;
+
+          text && is(ariaNotifiableSchema, target) && target.ariaNotify(text, { priority: 'normal' });
+        }
+      });
+  }, [ariaNotifyTargetRef, staticElementEntries, transport]);
+
+  // When notifying, entries are only rendered to compute their text: the container has no live semantics and is hidden from screen readers, so each entry is announced once.
   return (
     <div
+      aria-hidden={transport === 'aria-notify' || undefined}
       aria-label={ariaLabel}
-      aria-live={ariaLive}
+      aria-live={transport === 'aria-notify' ? undefined : ariaLive}
       aria-roledescription={ariaRoleDescription}
       className={className}
+      ref={containerRef}
       role={role}
     >
-      {staticElementEntries.map(({ element, key }) => {
-        if (typeof element === 'string') {
-          return (
-            <div aria-atomic={true} className={textElementClassName} key={key}>
-              {element}
-            </div>
-          );
-        }
-
-        return <Fragment key={key}>{element}</Fragment>;
-      })}
+      {staticElementEntries.map(({ element, key }) =>
+        transport === 'aria-notify' ? (
+          <div key={key}>{element}</div>
+        ) : typeof element === 'string' ? (
+          <div aria-atomic={true} className={textElementClassName} key={key}>
+            {element}
+          </div>
+        ) : (
+          <Fragment key={key}>{element}</Fragment>
+        )
+      )}
     </div>
   );
 }

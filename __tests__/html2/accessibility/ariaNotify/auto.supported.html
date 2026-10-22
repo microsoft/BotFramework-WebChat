@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: The browser supports `ariaNotify()`, recorded instead of announced.
+        const ariaNotify = spyOn(Element.prototype, 'ariaNotify').mockImplementation(() => {});
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { announcementTransport: 'auto', hideSendBox: true }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a message.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          text: 'Hello, **World**!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The message is announced once, with the text of its live region copy (without Markdown syntax), on the root element of Web Chat.
+        await waitFor(() =>
+          expect(ariaNotify.mock.calls).toEqual([
+            ['connected', { priority: 'normal' }], // The connectivity notification, also queued to the live region today.
+            ['Bot said Hello, World!', { priority: 'normal' }]
+          ])
+        );
+        expect(ariaNotify.mock.contexts).toEqual([
+          document.querySelector('.webchat'),
+          document.querySelector('.webchat')
+        ]);
+
+        // THEN: The live region has no live semantics and is hidden from screen readers, so the message is announced once.
+        expect(pageElements.liveRegion().hasAttribute('aria-live')).toBe(false);
+        expect(pageElements.liveRegion().getAttribute('aria-hidden')).toBe('true');
+
+        // THEN: The transcript shows the message as usual.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
