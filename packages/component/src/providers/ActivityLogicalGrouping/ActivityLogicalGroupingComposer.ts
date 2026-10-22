@@ -7,7 +7,6 @@ import ActivityLogicalGroupingContext, {
   type GroupState,
   type LogicalGrouping
 } from './private/ActivityLogicalGroupingContext';
-import useStateWithOptimisticRef from './private/useStateWithOptimisticRef';
 
 const activityLogicalGroupingComposerPropsSchema = pipe(
   object({
@@ -22,9 +21,8 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
   const { children } = validateProps(activityLogicalGroupingComposerPropsSchema, props);
 
   const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
-  const [_activityToGroupMap, setActivityToGroupMap, activityToGroupMapRef] = useStateWithOptimisticRef<
-    ReadonlyMap<string, string | undefined>
-  >(new Map());
+  // A ref, not a state: part grouping adds itself while rendering, and its activities read their group while rendering.
+  const activityToGroupMapRef = useRef<ReadonlyMap<string, string | undefined>>(new Map());
 
   const addLogicalGrouping = useCallback(
     (grouping: LogicalGrouping) => {
@@ -35,24 +33,22 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
       const toRemoveSet = new Set(prevGroupingKeys).difference(new Set(grouping.activityKeys));
       const toAddSet = new Set(grouping.activityKeys).difference(new Set(prevGroupingKeys));
 
-      setActivityToGroupMap(
-        new Map(
-          [].concat(
-            Array.from(activityToGroupMapRef.current).filter(([, value]) => !!value && !toRemoveSet.has(value)),
-            Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
-          )
+      activityToGroupMapRef.current = new Map(
+        [].concat(
+          Array.from(activityToGroupMapRef.current).filter(([, value]) => !!value && !toRemoveSet.has(value)),
+          Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
         )
       );
     },
-    [activityToGroupMapRef, setActivityToGroupMap]
+    [activityToGroupMapRef]
   );
 
   const removeLogicalGrouping = useCallback(
     (key: string) => {
       logicalGroupingsRef.current.delete(key);
-      setActivityToGroupMap(new Map([...activityToGroupMapRef.current].filter(([, value]) => value !== key)));
+      activityToGroupMapRef.current = new Map([...activityToGroupMapRef.current].filter(([, value]) => value !== key));
     },
-    [activityToGroupMapRef, setActivityToGroupMap]
+    [activityToGroupMapRef]
   );
 
   const getLogicalGroupKey = useCallback(
