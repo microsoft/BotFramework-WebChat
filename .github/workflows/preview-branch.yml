@@ -58,7 +58,7 @@ jobs:
           npm pack
 
       - name: Upload bundle
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: bundle
           path: |
@@ -66,7 +66,7 @@ jobs:
             packages/bundle/stable/**/*
 
       - name: Upload npm-tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: npm-tarball
           path: 'packages/*/*.tgz'
@@ -82,13 +82,13 @@ jobs:
           path: repo
 
       - name: Download bundle
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: bundle
           path: artifacts/bundle
 
       - name: Download npm-tarball
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: npm-tarball
           path: artifacts/npm-tarball
