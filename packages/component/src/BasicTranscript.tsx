@@ -14,14 +14,6 @@ import React, {
   type MutableRefObject,
   type ReactNode
 } from 'react';
-import {
-  Composer as ReactScrollToBottomComposer,
-  Panel as ReactScrollToBottomPanel,
-  useObserveScrollPosition,
-  useScrollTo,
-  useScrollToEnd,
-  useSticky
-} from 'react-scroll-to-bottom';
 import { wrapWith } from 'react-wrap-with';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
@@ -32,14 +24,13 @@ import ActivityTree from './Transcript/ActivityTree';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import { TranscriptFocusArea, TranscriptFocusTerminator } from './Transcript/TranscriptFocus';
 import TranscriptActivityList from './Transcript/TranscriptFocus/TranscriptActivityList';
-import { type ActivityElementMap } from './Transcript/types';
+import useScroller from './Transcript/useScroller';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import { android } from './Utils/detectBrowser';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useDispatchTranscriptFocusByActivityKey from './hooks/internal/useDispatchTranscriptFocusByActivityKey';
-import useNonce from './hooks/internal/useNonce';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import usePrevious from './hooks/internal/usePrevious';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -63,17 +54,23 @@ import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivit
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
+import {
+  TranscriptScrollComposer,
+  TranscriptScrollPanel,
+  useObserveScrollPosition,
+  useScrollTo,
+  useScrollToEnd,
+  useSticky,
+  type ScrollToOptions
+} from './providers/TranscriptScroll';
 
 const {
-  useActivityKeys,
   useDirection,
   useGetActivityByKey,
   useGetKeyByActivityId,
-  useLastAcknowledgedActivityKey,
   useLocalizer,
   useMarkActivityKeyAsRead,
-  useMarkAllAsAcknowledged,
-  useStyleOptions
+  useMarkAllAsAcknowledged
 } = hooks;
 
 const ROOT_STYLE = {
@@ -107,8 +104,6 @@ const ROOT_STYLE = {
   }
 };
 
-type ScrollBehavior = 'auto' | 'smooth';
-type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
 type InternalTranscriptProps = Readonly<{
@@ -155,8 +150,8 @@ const InternalTranscript = memo(
 
       const [numRenderingActivities] = useNumRenderingActivities();
 
-      const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
-      const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
+      const scrollToBottomScrollTo = useScrollTo();
+      const scrollToBottomScrollToEnd = useScrollToEnd();
 
       const scrollTo = useCallback(
         (position: ScrollToPosition, { behavior = 'auto' }: ScrollToOptions = {}) => {
@@ -484,7 +479,7 @@ type InternalTranscriptScrollableProps = Readonly<{
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTranscriptScrollableProps) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
-  const [sticky]: [boolean] = useSticky();
+  const [sticky] = useSticky();
   const localize = useLocalizer();
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
 
@@ -509,7 +504,7 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
 
   return (
     <React.Fragment>
-      <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+      <TranscriptScrollPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         {hasAnyChild && (
           <TranscriptActivityList
@@ -521,126 +516,8 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
           </TranscriptActivityList>
         )}
         <BasicTypingIndicator />
-      </ReactScrollToBottomPanel>
+      </TranscriptScrollPanel>
     </React.Fragment>
-  );
-};
-
-type Scroller = ({ offsetHeight, scrollTop }: { offsetHeight: number; scrollTop: number }) => number;
-
-// "scroller" is the auto-scroll limiter, a.k.a. auto scroll snap.
-const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>): Scroller => {
-  const [activityKeys] = useActivityKeys();
-  const [lastAcknowledgedActivityKey] = useLastAcknowledgedActivityKey();
-  const [styleOptions] = useStyleOptions();
-
-  const activityKeysRef = useValueRef(activityKeys);
-  const lastAcknowledgedActivityKeyRef = useValueRef(lastAcknowledgedActivityKey);
-  const styleOptionsRef = useValueRef(styleOptions);
-
-  return useCallback(
-    ({ offsetHeight, scrollTop }) => {
-      const {
-        current: {
-          autoScrollSnapOnActivity,
-          autoScrollSnapOnActivityOffset,
-          autoScrollSnapOnPage,
-          autoScrollSnapOnPageOffset
-        }
-      } = styleOptionsRef;
-
-      const patchedAutoScrollSnapOnActivity =
-        typeof autoScrollSnapOnActivity === 'number'
-          ? Math.max(0, autoScrollSnapOnActivity)
-          : autoScrollSnapOnActivity
-            ? 1
-            : 0;
-      const patchedAutoScrollSnapOnPage =
-        typeof autoScrollSnapOnPage === 'number'
-          ? Math.max(0, Math.min(1, autoScrollSnapOnPage))
-          : autoScrollSnapOnPage
-            ? 1
-            : 0;
-      const patchedAutoScrollSnapOnActivityOffset =
-        typeof autoScrollSnapOnActivityOffset === 'number' ? autoScrollSnapOnActivityOffset : 0;
-      const patchedAutoScrollSnapOnPageOffset =
-        typeof autoScrollSnapOnPageOffset === 'number' ? autoScrollSnapOnPageOffset : 0;
-
-      if (patchedAutoScrollSnapOnActivity || patchedAutoScrollSnapOnPage) {
-        const { current: activityElementMap } = activityElementMapRef;
-        const { current: activityKeys } = activityKeysRef;
-        const { current: lastAcknowledgedActivityKey } = lastAcknowledgedActivityKeyRef;
-        const values: number[] = [];
-
-        const lastAcknowledgedActivityKeyIndex = activityKeys.indexOf(lastAcknowledgedActivityKey);
-
-        if (~lastAcknowledgedActivityKeyIndex) {
-          // The activity that we acknowledged could be not rendered, such as post back activity.
-          // When calculating scroll snap, we can only base on the first unacknowledged-and-rendering activity.
-          const renderingActivityKeys = Array.from(activityElementMap.keys());
-          let firstUnacknowledgedActivityElementIndex = -1;
-
-          for (const acknowledgedActivityKey of activityKeys.slice(0, lastAcknowledgedActivityKeyIndex + 1).reverse()) {
-            const index = renderingActivityKeys.indexOf(acknowledgedActivityKey);
-
-            if (~index) {
-              if (index !== renderingActivityKeys.length - 1) {
-                firstUnacknowledgedActivityElementIndex = index + 1;
-              }
-
-              break;
-            }
-          }
-
-          if (~firstUnacknowledgedActivityElementIndex) {
-            const activityElements = Array.from(activityElementMap.values());
-
-            if (patchedAutoScrollSnapOnActivity) {
-              // Gets the activity element which we should snap to.
-              const nthUnacknowledgedActivityElement =
-                activityElements[firstUnacknowledgedActivityElementIndex + patchedAutoScrollSnapOnActivity - 1];
-
-              if (nthUnacknowledgedActivityElement) {
-                const nthUnacknowledgedActivityBoundingBoxElement = nthUnacknowledgedActivityElement?.querySelector(
-                  '.webchat__basic-transcript__activity-active-descendant'
-                ) as HTMLElement;
-                const nthUnacknowledgedActivityOffsetTop =
-                  nthUnacknowledgedActivityElement.offsetTop + nthUnacknowledgedActivityBoundingBoxElement.offsetTop;
-
-                values.push(
-                  nthUnacknowledgedActivityOffsetTop +
-                    nthUnacknowledgedActivityBoundingBoxElement.offsetHeight -
-                    offsetHeight -
-                    scrollTop +
-                    patchedAutoScrollSnapOnActivityOffset
-                );
-              }
-            }
-
-            if (patchedAutoScrollSnapOnPage) {
-              const firstUnacknowledgedActivityElement = activityElements[+firstUnacknowledgedActivityElementIndex];
-              const firstUnacknowledgedActivityBoundingBoxElement = firstUnacknowledgedActivityElement.querySelector(
-                '.webchat__basic-transcript__activity-active-descendant'
-              ) as HTMLElement;
-              const firstUnacknowledgedActivityOffsetTop =
-                firstUnacknowledgedActivityElement.offsetTop + firstUnacknowledgedActivityBoundingBoxElement.offsetTop;
-
-              values.push(
-                firstUnacknowledgedActivityOffsetTop -
-                  scrollTop -
-                  offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
-                  patchedAutoScrollSnapOnPageOffset
-              );
-            }
-          }
-        }
-
-        return Math.min(...values);
-      }
-
-      return Infinity;
-    },
-    [activityElementMapRef, activityKeysRef, lastAcknowledgedActivityKeyRef, styleOptionsRef]
   );
 };
 
@@ -649,27 +526,24 @@ type BasicTranscriptProps = Readonly<{
 }>;
 
 const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
-  const [{ stylesRoot }] = useStyleOptions();
-  const [nonce] = useNonce();
   const activityElementMapRef = useActivityElementMapRef();
   const containerRef = useRef<HTMLDivElement>(null);
   const terminatorRef = useRef<HTMLDivElement>(null);
 
   const scroller = useScroller(activityElementMapRef);
-  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
     <ChatHistoryBox className={className}>
       <RenderingActivitiesComposer>
         <TranscriptFocusComposer containerRef={containerRef}>
-          <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
+          <TranscriptScrollComposer scroller={scroller}>
             <ChatHistoryToolbar>
               <ScrollToEndButton terminatorRef={terminatorRef} />
             </ChatHistoryToolbar>
             <GroupedRenderingActivitiesComposer>
               <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
             </GroupedRenderingActivitiesComposer>
-          </ReactScrollToBottomComposer>
+          </TranscriptScrollComposer>
         </TranscriptFocusComposer>
       </RenderingActivitiesComposer>
     </ChatHistoryBox>

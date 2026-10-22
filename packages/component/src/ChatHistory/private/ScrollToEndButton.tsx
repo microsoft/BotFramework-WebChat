@@ -1,23 +1,23 @@
 import { hooks } from 'botframework-webchat-api';
 import React, { Fragment, memo, MutableRefObject, useCallback, useMemo } from 'react';
-import { useAnimatingToEnd, useAtEnd, useScrollToEnd, useSticky } from 'react-scroll-to-bottom';
 import { useRefFrom } from 'use-ref-from';
 
 import useRenderingActivityKeys from '../../providers/RenderingActivities/useRenderingActivityKeys';
 import useFocusByActivityKey from '../../providers/TranscriptFocus/useFocusByActivityKey';
+import { useAnimatingToEnd, useAtEnd, useScrollToEnd, useSticky } from '../../providers/TranscriptScroll';
 
 const { useActivityKeysByRead, useCreateScrollToEndButtonRenderer, useMarkActivityKeyAsRead, useStyleOptions } = hooks;
 
 const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivElement>) => {
   const [renderingActivityKeys] = useRenderingActivityKeys();
-  const [sticky]: [boolean] = useSticky();
-  const [animatingToEnd]: [boolean] = useAnimatingToEnd();
-  const [atEnd]: [boolean] = useAtEnd();
+  const [sticky] = useSticky();
+  const [animatingToEnd] = useAnimatingToEnd();
+  const [atEnd] = useAtEnd();
   const [, unreadActivityKeys] = useActivityKeysByRead();
   const [styleOptions] = useStyleOptions();
   const focusByActivityKey = useFocusByActivityKey();
   const markActivityKeyAsRead = useMarkActivityKeyAsRead();
-  const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
+  const scrollToEnd = useScrollToEnd();
 
   // Acknowledged means either:
   // 1. The user sent a message
