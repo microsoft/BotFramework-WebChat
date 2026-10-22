@@ -1,5 +1,5 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef } from 'react';
 import {
   function_,
   instance,
@@ -22,6 +22,15 @@ import useStaticElementEntries from './useStaticElementEntries';
 
 // `ariaNotify()` is not in the DOM typings of TypeScript yet.
 const ariaNotifiableSchema = object({ ariaNotify: function_() });
+
+let ariaNotifySupported: boolean | undefined;
+
+// Support is a property of the browser engine: it cannot change while rendering, and is the same in iframes and popup windows Web Chat may render into.
+// Checked on first use rather than on load, and cached, so the transport is decided on the first render.
+function isAriaNotifySupported(): boolean {
+  return (ariaNotifySupported ??=
+    typeof globalThis.Element === 'function' && is(ariaNotifiableSchema, globalThis.Element.prototype));
+}
 
 const liveRegionTwinContainerPropsSchema = pipe(
   object({
@@ -52,25 +61,17 @@ function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
     textElementClassName
   } = validateProps(liveRegionTwinContainerPropsSchema, props);
 
-  const [ariaNotifySupported, setAriaNotifySupported] = useState(false);
   const [staticElementEntries] = useStaticElementEntries();
   const containerRef = useRef<HTMLDivElement>(null);
   const lastSeenKeyRef = useRef(0);
 
-  // Falls back to the live region until `ariaNotify()` is detected, and when the browser does not support it.
-  const transport = announcementTransport === 'aria-notify' && ariaNotifySupported ? 'aria-notify' : 'live-region';
+  // Falls back to the live region when the browser does not support `ariaNotify()`.
+  const transport = announcementTransport === 'aria-notify' && isAriaNotifySupported() ? 'aria-notify' : 'live-region';
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.
   // The assumption made us safe to mark everything is rendered.
   // In contrary, if we have 0-to-many at different time, we may falsely mark something as rendered.
   useMarkAllAsRenderedEffect();
-
-  // Detects per instance, on the root element: Web Chat could be rendered in another document, such as an iframe or a popup window.
-  // React attaches the ref of the root element after layout effects of its descendants, so only passive effects can read it on mount.
-  useEffect(() => {
-    announcementTransport === 'aria-notify' &&
-      setAriaNotifySupported(is(ariaNotifiableSchema, ariaNotifyTargetRef.current));
-  }, [announcementTransport, ariaNotifyTargetRef]);
 
   // Keys are increasing: entries with a key above the last seen one are new, in queue order, and are notified once, also when React runs effects twice.
   // Entries are marked as seen in both transports, so switching to `ariaNotify()` does not repeat what the live region has read.
