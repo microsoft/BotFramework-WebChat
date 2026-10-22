@@ -84,8 +84,8 @@
 
         // THEN: The labels are not repeated as text next to the inputs, so screen readers read each label once, as the input name.
         expect(testHelpers.getAllTextContents(activity).map(text => text.trim())).toEqual([
-          'Bot said:',
-          'A card:',
+          'Bot said',
+          'A card',
           'Place order' // The button.
         ]);
 

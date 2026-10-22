@@ -79,7 +79,7 @@
         await pageConditions.liveRegionStabilized();
 
         // THEN: A stacked message, then a carousel message, each with its text and 2 cards.
-        // THEN: The live region (top) shows what screen readers announce for each: "Bot said:", the text, and "A card:" per card, without role descriptions.
+        // THEN: The live region (top) shows what screen readers announce for each: "Bot said", the text, and "A card" per card, without role descriptions.
         await host.snapshot('local');
 
         // THEN: Message and attachments are described in English.

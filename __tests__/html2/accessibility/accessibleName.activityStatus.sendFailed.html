@@ -45,8 +45,8 @@
           // Summaries are hidden from scan mode until selected with arrow keys, so read their text instead of innerText.
           expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
             // The time is only narrated after the message is sent.
-            'You said: Hello, World! Send failed. Click to interact.',
-            'Bot said: Aloha! Sent at October 17 at 11:51 AM'
+            'You said Hello, World! Send failed. Click to interact.',
+            'Bot said Aloha! Sent at October 17 at 11:51 AM'
           ]);
         },
         { ignoreErrors: true }
