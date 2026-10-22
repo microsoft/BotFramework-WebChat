@@ -3,9 +3,8 @@ import { expect } from 'expect';
 import { readFile, writeFile } from 'fs/promises';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import { join } from 'path';
+import { consume, releaseChangelog } from './changelog.mjs';
 import { checkRepository } from './check.mjs';
-import { consume } from './consume.mjs';
-import { releaseChangelog } from './release.mjs';
 import { changelog, createTestRepository, fragment } from './testing.mjs';
 
 const facility = { afterEach, beforeEach, describe, it };
@@ -473,6 +472,25 @@ scenario(
       .when('checked', check({ changelogEdit: true }))
       .then('should pass', (_, preview) =>
         expect(preview).toBe('## Changelog\n\nEdited by hand, labeled `changelog-edit`.\n')
+      );
+
+    bdd
+      .given(
+        'an unknown section in "[Unreleased]" labeled "changelog-edit"',
+        () =>
+          setUp(repository =>
+            editChangelog(repository, content =>
+              content.replace('### Fixed\n\n- Fixed 0', '### Breaking changes\n\n- 💥 0')
+            )
+          ),
+        ({ remove }) => remove()
+      )
+      .when('checked', check({ changelogEdit: true }))
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          'CHANGELOG.md:11: unknown section "Breaking changes" in "[Unreleased]", use one of: Added, Changed, Removed, Fixed'
+        )
       );
 
     bdd
