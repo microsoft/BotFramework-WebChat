@@ -1,0 +1,14 @@
+extends:
+  - ../../.eslintrc.production.yml
+  - ../../.eslintrc.react.yml
+
+# This package is compatible with web browser.
+env:
+  browser: true
+
+rules:
+  # React functional component is better in function style than arrow style.
+  prefer-arrow-callback: off
+
+  # React already deprecated default props.
+  react/require-default-props: off

@@ -1,0 +1,4 @@
+/*.tgz
+/dist/
+/node_modules/
+/tsup.config.bundled_*.mjs

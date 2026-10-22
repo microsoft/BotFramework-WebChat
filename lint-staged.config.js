@@ -14,6 +14,7 @@ module.exports = {
   'packages/bundle/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:bundle'],
   'packages/component/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component'],
   'packages/component-better-link/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component-better-link'],
+  'packages/component-carousel/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component-carousel'],
   'packages/core/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core'],
   'packages/core-debug-api/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-debug-api'],
   'packages/core-graph/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-graph'],

@@ -1,0 +1,82 @@
+{
+  "name": "@msinternal/botframework-webchat-component-carousel",
+  "version": "0.0.0-0",
+  "description": "botframework-webchat-component/carousel package",
+  "main": "./dist/botframework-webchat-component-carousel.js",
+  "types": "./dist/botframework-webchat-component-carousel.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-component-carousel.d.mts",
+        "default": "./dist/botframework-webchat-component-carousel.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component-carousel.d.ts",
+        "default": "./dist/botframework-webchat-component-carousel.js"
+      }
+    }
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "files": [
+    "./dist/**/*",
+    "./src/**/*"
+  ],
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component-carousel#readme",
+  "scripts": {
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "tsup",
+    "bump": "vg bump prod && vg bump dev && vg bump peer && (npm audit fix || exit 0)",
+    "eslint": "npm run precommit",
+    "postversion": "../../scripts/npm/postversion.sh",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "../../scripts/npm/preversion.sh",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../react-valibot/package.json\""
+  },
+  "pinDependencies": {
+    "@types/jest": [
+      "29",
+      "pinned jest@29"
+    ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ]
+  },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-react-valibot": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development"
+  },
+  "devDependencies": {
+    "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
+    "@testduet/given-when-then": "^0.1.0",
+    "@types/jest": "^29.5.14",
+    "@types/react": "^16.14.70",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.6"
+  },
+  "dependencies": {
+    "valibot": "1.4.1"
+  }
+}
