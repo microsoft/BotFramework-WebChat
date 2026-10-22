@@ -95,7 +95,7 @@
 
         // THEN: "Selected" should be announced once, right before the message sent by the button.
         await waitFor(() =>
-          expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said:\nPlaces To Buy'])
+          expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said\nPlaces To Buy'])
         );
 
         // THEN: The live region should show "Selected", and the "Places To Buy" button should look selected and keep the focus.
@@ -108,7 +108,7 @@
 
         // THEN: The "Related Products" button should be focused and nothing new is announced.
         expect(document.activeElement).toBe(relatedProductsButton);
-        expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said:\nPlaces To Buy']);
+        expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said\nPlaces To Buy']);
         await host.snapshot('local');
 
         // WHEN: Press SHIFT + TAB to revisit the selected "Places To Buy" button.
@@ -118,7 +118,7 @@
         //       On revisit, screen readers read "Selected" from the description of the button instead.
         expect(document.activeElement).toBe(placesToBuyButton);
         expect((await testHelpers.getAccessibilityNode(placesToBuyButton)).description?.value).toBe('Selected');
-        expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said:\nPlaces To Buy']);
+        expect(getLiveRegionTexts()).toEqual([...liveRegionTextsBeforePress, 'Selected', 'You said\nPlaces To Buy']);
         await host.snapshot('local');
 
         // WHEN: Press ENTER to press the selected "Places To Buy" button again.
@@ -132,9 +132,9 @@
           expect(getLiveRegionTexts()).toEqual([
             ...liveRegionTextsBeforePress,
             'Selected',
-            'You said:\nPlaces To Buy',
+            'You said\nPlaces To Buy',
             'Selected',
-            'You said:\nPlaces To Buy'
+            'You said\nPlaces To Buy'
           ])
         );
 

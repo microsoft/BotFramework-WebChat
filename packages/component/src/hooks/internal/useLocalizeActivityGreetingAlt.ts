@@ -5,8 +5,8 @@ import { useCallback } from 'react';
 const { useLocalizer, useStyleOptions } = hooks;
 
 /**
- * Returns a function to get the screen reader text narrated before the content of an activity, e.g. "You said:" or
- * "Bot JD said:".
+ * Returns a function to get the screen reader text narrated before the content of an activity, e.g. "You said" or
+ * "Bot JD said".
  *
  * Bot initials set in the per-activity `channelData.webChat.styleOptions.botAvatarInitials` take precedence over
  * `styleOptions.botAvatarInitials`, so each sender is narrated with their own initials, e.g. a bot and a live agent.

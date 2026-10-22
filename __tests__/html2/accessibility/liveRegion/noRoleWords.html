@@ -73,16 +73,16 @@
         // THEN: The live region should contain the text of the message, the suggested action, the cards, and the file.
         expect(liveRegionActivity.innerText).toBe(
           [
-            'Bot WC said:',
+            'Bot WC said',
             'Here are 2 cards and a file.',
             '', // The suggested actions are in a `<p>`, `innerText` puts a blank line around it.
             'Help',
             '',
-            'A card: Card 1',
+            'A card Card 1',
             'OK',
-            'A card: Card 2 Hero text',
+            'A card Card 2 Hero text',
             'Go',
-            'A file: report.zip'
+            'A file report.zip'
           ].join('\n')
         );
 
@@ -109,7 +109,7 @@
 
         await pageConditions.liveRegionStabilized();
 
-        // THEN: The live region (top) shows the message, "Help", "A card: Card 1", "OK", "A card: Card 2 Hero text", "Go" and "A file: report.zip", with no role words such as "article" or "group".
+        // THEN: The live region (top) shows the message, "Help", "A card Card 1", "OK", "A card Card 2 Hero text", "Go" and "A file report.zip", with no role words such as "article" or "group".
         await host.snapshot('local');
       });
     </script>

@@ -47,8 +47,8 @@
           // THEN: While the message is being sent, the time should not be narrated, like the activity status.
           await waitFor(() =>
             expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
-              'You said: Hello, World!',
-              'Bot said: Aloha! Sent at October 17 at 11:51 AM'
+              'You said Hello, World!',
+              'Bot said Aloha! Sent at October 17 at 11:51 AM'
             ])
           );
 
@@ -60,8 +60,8 @@
           // THEN: The time should be narrated after the message, like the timestamp in the activity status.
           await waitFor(() =>
             expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
-              'You said: Hello, World! Sent at October 17 at 11:50 AM',
-              'Bot said: Aloha! Sent at October 17 at 11:51 AM'
+              'You said Hello, World! Sent at October 17 at 11:50 AM',
+              'Bot said Aloha! Sent at October 17 at 11:51 AM'
             ])
           );
         },

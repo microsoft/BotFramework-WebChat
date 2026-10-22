@@ -1,5 +1,6 @@
 import type { AdaptiveCard, GlobalSettings as GlobalSettingsType, HostConfig as HostConfigType } from 'adaptivecards';
 
+import flattenNestedHeadings from './flattenNestedHeadings';
 import setMarkdownEngine from './setMarkdownEngine';
 
 /**
@@ -54,6 +55,9 @@ export default function renderAdaptiveCard(
   if (!element) {
     return { errors: [new Error('Adaptive Card rendered as empty element')] };
   }
+
+  // The Markdown engine does not know whether the `TextBlock` is a heading.
+  flattenNestedHeadings(element);
 
   return { element };
 }

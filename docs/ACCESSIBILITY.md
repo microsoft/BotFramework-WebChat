@@ -367,7 +367,7 @@ Applying the logic to samples above:
    -  Narration will be "Exchange rate: USD 1.00 JPY 0.91"
 -  The message contains a document, such as an insurance policy
    -  If the `text` field is `"Insurance policy:"`, and the attachment contains a file named `12345678-1234-5678-abcd-12345678abcd.doc`
-   -  Narration will be "Insurance policy: A file: 12345678-1234-5678-abcd-12345678abcd.doc"
+   -  Narration will be "Insurance policy: A file 12345678-1234-5678-abcd-12345678abcd.doc"
 
 # Screen reader renderer for custom activities and attachments
 
@@ -399,7 +399,7 @@ We are using `role="feed"` and `role="article"` to represent the chat history an
    -  The feed is rendered only when there are one or more activities, as an empty feed is invalid, in PR [#4420](https://github.com/microsoft/BotFramework-WebChat/pull/4420)
 -  Every activity is an `<article>` element (a group of parts is a `role="article"`), as all children of a feed must be articles
    -  The article has no `aria-roledescription`, see [below](#why-not-describe-the-article-as-a-message)
-   -  Another `role="article"` inside it is named by a screen reader only summary, e.g. "Bot said: …", and is the target of `aria-activedescendant` when the user presses <kbd>UP</kbd> and <kbd>DOWN</kbd> arrow keys
+   -  Another `role="article"` inside it is named by a screen reader only summary, e.g. "Bot said …", and is the target of `aria-activedescendant` when the user presses <kbd>UP</kbd> and <kbd>DOWN</kbd> arrow keys
    -  The summary is not rendered on Android: TalkBack does not support `aria-activedescendant` and would narrate the content twice
    -  In the stacked layout, the content of a message is a `role="group"` with `aria-roledescription="message"`, in PR [#5865](https://github.com/microsoft/BotFramework-WebChat/pull/5865)
 -  New activities are narrated by a separate live region, not by the feed, see [UX: Live region chat history](#ux-live-region-chat-history)
