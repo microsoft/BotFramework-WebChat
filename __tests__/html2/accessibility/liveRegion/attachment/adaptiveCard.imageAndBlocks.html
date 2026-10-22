@@ -82,7 +82,7 @@
           testHelpers
             .getAllTextContents(pageElements.liveRegion().querySelector('.webchat__live-region-activity'))
             .map(text => text.trim())
-        ).toEqual(['Bot said:', 'A card: Bot avatar Weather today Sunny Umbrella: no']);
+        ).toEqual(['Bot said', 'A card Bot avatar Weather today Sunny Umbrella: no']);
 
         // THEN: The card shows the image and three lines; the live region above reads the alt text and the three lines.
         await host.snapshot('local');
