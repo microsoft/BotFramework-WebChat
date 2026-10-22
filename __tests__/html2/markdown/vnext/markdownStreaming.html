@@ -48,8 +48,8 @@
 
       const store = testHelpers.createStore();
 
-      // TODO: [P2] Markdown headings from the bot are rendered as-is: "# Heading" becomes a level-one heading, which Web Chat must not contain (#4721).
-      //       Remove both `skipCheckAccessibility` when fixed.
+      // TODO: [P2] The recorded answer has "##" before its top heading "#", so its first heading is level 3 after the page's level 1 (axe "heading-order").
+      //       Remove both `skipCheckAccessibility` when the recording is fixed.
       run(
         async function () {
           const { directLine } = adapter;
