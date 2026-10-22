@@ -71,7 +71,6 @@ A pull request may also edit the fragment of another pull request, for example t
 | Command                                                 | What it does                                                                                  |
 | ------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `node ./scripts/changelog/new.mjs`                      | Writes the fragment of a pull request                                                         |
-| `node ./scripts/changelog/consume.mjs`                  | Merges the fragments into `CHANGELOG.md` in the order they were merged, deletes them          |
 | `node ./scripts/changelog/check.mjs --pr <PR#>`         | Checks a pull request against `origin/main`, prints its entries                               |
 | `node ./scripts/changelog/publish.mjs`                  | Recreates and force-pushes `changelog-unreleased`, used by the workflow                       |
 | `node ./scripts/changelog/release.mjs <version> <date>` | Merges the fragments, then moves `[Unreleased]` into a new release, label it `changelog-edit` |

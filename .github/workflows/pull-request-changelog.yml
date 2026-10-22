@@ -46,22 +46,8 @@ jobs:
 
       - name: Check the changelog and preview the entries
         env:
-          CHANGELOG_EDIT: ${{ contains(github.event.pull_request.labels.*.name, 'changelog-edit') }}
-          NO_CHANGELOG: ${{ contains(github.event.pull_request.labels.*.name, 'no-changelog') }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          # HEAD is the pull request merged into the base, its first parent is the base.
-          OPTIONS=(--base HEAD^1 --pr "$PULL_REQUEST_NUMBER")
-
-          [[ "$CHANGELOG_EDIT" == true ]] && OPTIONS+=(--changelog-edit)
-          [[ "$NO_CHANGELOG" == true ]] && OPTIONS+=(--no-changelog)
-
-          if node ./scripts/changelog/check.mjs "${OPTIONS[@]}" --output "$RUNNER_TEMP/preview.md" 2> "$RUNNER_TEMP/error.txt"
-          then
-            tee --append "$GITHUB_STEP_SUMMARY" < "$RUNNER_TEMP/preview.md"
-          else
-            # Also on the summary page, where contributors look first.
-            cat "$RUNNER_TEMP/error.txt" >&2
-            printf '## Changelog\n\n~~~text\n%s\n~~~\n' "$(cat "$RUNNER_TEMP/error.txt")" >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
+        # HEAD is the pull request merged into the base, its first parent is the base. The preview, or the error, goes to
+        # the summary page, where contributors look first.
+        run: node ./scripts/changelog/check.mjs --base HEAD^1 --labels "$LABELS" --pr "$PULL_REQUEST_NUMBER" | tee --append "$GITHUB_STEP_SUMMARY"

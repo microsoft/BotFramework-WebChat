@@ -3,8 +3,7 @@ import { expect } from 'expect';
 import { readFile, writeFile } from 'fs/promises';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import { join } from 'path';
-import { consume, consumeChangelog, readFragments, setBuiltFrom } from './consume.mjs';
-import { parseFragment } from './fragment.mjs';
+import { consume, consumeChangelog, parseFragment, readFragments, setBuiltFrom } from './changelog.mjs';
 import { changelog, createTestRepository, fragment } from './testing.mjs';
 
 const facility = { afterEach, beforeEach, describe, it };
@@ -278,6 +277,29 @@ ${POINTER}
       .and('should delete the fragments and keep README.md', ({ git }) =>
         expect(git('status', '--porcelain')).toBe(' D .changelog/1-a.md\n D .changelog/2-b.md\n M CHANGELOG.md')
       );
+
+    bdd
+      .given(
+        'a repository with a fragment',
+        async () => {
+          const repository = await createTestRepository();
+
+          await repository.commit('Initial', { 'CHANGELOG.md': changelog() });
+          await repository.commit('#1', { '.changelog/1-a.md': fragment(1) });
+
+          return repository;
+        },
+        ({ remove }) => remove()
+      )
+      .when('consumed with a transform that fails, such as a release', ({ path }) =>
+        consume(path, () => {
+          throw new Error('Version must be like 4.19.3, got "next"');
+        }).catch(error => error)
+      )
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty('message', 'Version must be like 4.19.3, got "next"')
+      )
+      .and('should not change the working tree', ({ git }) => expect(git('status', '--porcelain')).toBe(''));
   },
   facility
 );

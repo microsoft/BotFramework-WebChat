@@ -59,4 +59,4 @@ jobs:
           GIT_AUTHOR_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: github-actions[bot]
-        run: node ./scripts/changelog/publish.mjs --branch changelog-unreleased | tee --append "$GITHUB_STEP_SUMMARY"
+        run: node ./scripts/changelog/publish.mjs | tee --append "$GITHUB_STEP_SUMMARY"

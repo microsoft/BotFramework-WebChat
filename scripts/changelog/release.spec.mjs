@@ -1,9 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import { afterEach, beforeEach, describe, it } from 'node:test';
-import { consumeChangelog } from './consume.mjs';
-import { parseFragment } from './fragment.mjs';
-import { releaseChangelog } from './release.mjs';
+import { consumeChangelog, parseFragment, releaseChangelog } from './changelog.mjs';
 import { changelog, fragment } from './testing.mjs';
 
 const facility = { afterEach, beforeEach, describe, it };
@@ -87,6 +85,16 @@ scenario(
       }))
       .when('released as 4.19.3', release)
       .then('should give the same result', (_, result) => expect(result).toBe(RELEASED));
+
+    bdd
+      .given('entries without the pointer', () => ({
+        changelog: changelog(`### Fixed\n\n${ENTRY_1}`),
+        fragments: [parseFragment(fragment(2, 'Added'), '2-b.md')]
+      }))
+      .when('released as 4.19.3', release)
+      .then('should leave "[Unreleased]" empty', (_, result) =>
+        expect(result).toBe(RELEASED.replace(`## [Unreleased]\n\n${POINTER}\n\n`, '## [Unreleased]\n\n'))
+      );
 
     bdd
       .given('no entries and no fragments', () => ({ changelog: changelog(), fragments: [] }))

@@ -3,9 +3,8 @@ import { expect } from 'expect';
 import { readFile, writeFile } from 'fs/promises';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import { join } from 'path';
+import { consume, releaseChangelog } from './changelog.mjs';
 import { checkRepository } from './check.mjs';
-import { consume } from './consume.mjs';
-import { releaseChangelog } from './release.mjs';
 import { changelog, createTestRepository, fragment } from './testing.mjs';
 
 const facility = { afterEach, beforeEach, describe, it };

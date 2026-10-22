@@ -13,24 +13,28 @@
 // Fragments already merged are not checked again, so a mistake there fails neither other pull requests nor publishing.
 //
 // Usage:
-//   node ./scripts/changelog/check.mjs --pr <PR#> [--base <commit>] [--changelog-edit] [--no-changelog] [--output <file>]
+//   node ./scripts/changelog/check.mjs --pr <PR#> [--base <commit>] [--labels <label>,...]
 //
 // Reads commits only, not the working tree: HEAD is the pull request merged into "--base", as checked out by GitHub
-// Actions. "--base" is `origin/main` by default.
+// Actions. "--base" is `origin/main` by default. Prints the preview, or the error, as Markdown for the job summary.
 
-import { writeFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'util';
 import {
   CHANGELOG_FILENAME,
   consumeChangelog,
+  CREATE_PULL_REQUEST_FIRST,
+  fail,
   FRAGMENT_DIRECTORY,
+  getUnreleased,
   git,
+  PLACEHOLDER_PATTERN,
   readFragments,
-  setBuiltFrom,
-  splitUnreleased
-} from './consume.mjs';
-import { CREATE_PULL_REQUEST_FIRST, isMain, PLACEHOLDER_PATTERN, renderSections, REPOSITORY_URL } from './fragment.mjs';
+  renderSections,
+  REPOSITORY_URL,
+  runMain,
+  setBuiltFrom
+} from './changelog.mjs';
 
 const ROOT_PATH = fileURLToPath(new URL('../../', import.meta.url));
 const UNRELEASED_URL = `${REPOSITORY_URL}/blob/changelog-unreleased/CHANGELOG.md#unreleased`;
@@ -38,19 +42,9 @@ const UNRELEASED_URL = `${REPOSITORY_URL}/blob/changelog-unreleased/CHANGELOG.md
 const EDITED_MESSAGE = `${CHANGELOG_FILENAME}: the "[Unreleased]" section was edited, add a ${FRAGMENT_DIRECTORY}/<PR#>-<slug>.md fragment instead (see ${FRAGMENT_DIRECTORY}/README.md), only the changelog-unreleased branch and maintainers (label "changelog-edit") write entries to ${CHANGELOG_FILENAME}`;
 
 /**
- * @param {string} changelog
- * @returns {string} The "[Unreleased]" section, from its heading to the next release.
- */
-function getUnreleased(changelog) {
-  const { after, before } = splitUnreleased(changelog);
-
-  return changelog.slice(before.length, changelog.length - after.length);
-}
-
-/**
  * Checks that every entry of a fragment links its pull request, the number of the filename, without placeholders.
  *
- * @param {Readonly<{ filename: string, prNumber: number, sections: Readonly<Record<string, readonly string[]>> }>} fragment
+ * @param {import('./changelog.mjs').Fragment} fragment
  */
 function checkPullRequestLinks({ filename, prNumber, sections }) {
   const link = `[#${prNumber}](${REPOSITORY_URL}/pull/${prNumber})`;
@@ -71,31 +65,21 @@ function checkPullRequestLinks({ filename, prNumber, sections }) {
 }
 
 /**
- * Checks the changelog of a pull request, see the top of this file.
+ * Checks the pull request checked out at HEAD of a Git repository, see the top of this file.
  *
- * @param {Readonly<{
- *   baseChangelog: string,
- *   baseFragments: readonly Readonly<{ filename: string, prNumber: number, sections: Readonly<Record<string, readonly string[]>> }>[],
- *   changedPaths: readonly string[],
- *   changelog: string,
- *   changelogEdit: boolean,
- *   fragments: readonly Readonly<{ filename: string, prNumber: number, sections: Readonly<Record<string, readonly string[]>> }>[],
- *   noChangelog: boolean,
- *   prNumber: number
- * }>} init `fragments` and `changelog` are of the pull request, merged into the base, `changedPaths` are the paths it
- *    changes compared with the base.
+ * @param {string} cwd Path of the Git repository.
+ * @param {Readonly<{ base: string, changelogEdit: boolean, noChangelog: boolean, prNumber: number }>} init
  * @returns {string} Markdown preview for the job summary.
  */
-function checkPullRequest({
-  baseChangelog,
-  baseFragments,
-  changedPaths,
-  changelog,
-  changelogEdit,
-  fragments,
-  noChangelog,
-  prNumber
-}) {
+function checkRepository(cwd, { base, changelogEdit, noChangelog, prNumber }) {
+  const baseChangelog = git(cwd, ['show', `${base}:${CHANGELOG_FILENAME}`]);
+  const baseFragments = readFragments(cwd, base);
+  const changedPaths = git(cwd, ['diff', '--name-only', '--no-renames', '-z', base, 'HEAD'])
+    .split('\0')
+    .filter(Boolean);
+  const changelog = git(cwd, ['show', `HEAD:${CHANGELOG_FILENAME}`]);
+  const fragments = readFragments(cwd);
+
   const filenames = new Set(fragments.map(({ filename }) => filename));
   const baseFilenames = new Set(baseFragments.map(({ filename }) => filename));
   const addedFragments = fragments.filter(({ filename }) => !baseFilenames.has(filename));
@@ -112,13 +96,12 @@ function checkPullRequest({
     return '## Changelog\n\nEdited by hand, labeled `changelog-edit`.\n';
   } else if (deletedFragments.length) {
     const deletedPaths = deletedFragments.map(({ filename }) => `${FRAGMENT_DIRECTORY}/${filename}`);
-    const deleted = deletedPaths.join(', ');
     const otherPaths = changedPaths.filter(path => path !== CHANGELOG_FILENAME && !deletedPaths.includes(path));
 
     // The branch may be built from an older commit than the base, so the "Built from" lines are not compared.
     if (setBuiltFrom(changelog) !== setBuiltFrom(consumeChangelog(baseChangelog, deletedFragments))) {
       throw new Error(
-        `Deleted ${deleted}: only merging back the changelog-unreleased branch, or a pull request labeled "changelog-edit", deletes fragments, and ${CHANGELOG_FILENAME} must then be exactly what the branch built`
+        `Deleted ${deletedPaths.join(', ')}: only merging back the changelog-unreleased branch, or a pull request labeled "changelog-edit", deletes fragments, and ${CHANGELOG_FILENAME} must then be exactly what the branch built`
       );
     } else if (addedFragments.length) {
       throw new Error(
@@ -130,7 +113,7 @@ function checkPullRequest({
       );
     }
 
-    return `## Changelog\n\nMerges back the entries of ${deletedFragments.map(({ filename }) => `\`${FRAGMENT_DIRECTORY}/${filename}\``).join(', ')} from the [\`changelog-unreleased\`](${UNRELEASED_URL}) branch:\n\n${renderSections(deletedFragments)}\n`;
+    return `## Changelog\n\nMerges back the entries of ${deletedPaths.map(path => `\`${path}\``).join(', ')} from the [\`changelog-unreleased\`](${UNRELEASED_URL}) branch:\n\n${renderSections(deletedFragments)}\n`;
   } else if (getUnreleased(changelog) !== getUnreleased(baseChangelog)) {
     throw new Error(EDITED_MESSAGE);
   }
@@ -158,52 +141,38 @@ function checkPullRequest({
     : '## Changelog\n\nNo entries, labeled `no-changelog`.\n';
 }
 
-/**
- * Checks the pull request checked out at HEAD of a Git repository.
- *
- * @param {string} cwd Path of the Git repository.
- * @param {Readonly<{ base: string, changelogEdit: boolean, noChangelog: boolean, prNumber: number }>} init
- * @returns {string} Markdown preview for the job summary.
- */
-function checkRepository(cwd, { base, changelogEdit, noChangelog, prNumber }) {
-  return checkPullRequest({
-    baseChangelog: git(cwd, ['show', `${base}:${CHANGELOG_FILENAME}`]),
-    baseFragments: readFragments(cwd, base),
-    changedPaths: git(cwd, ['diff', '--name-only', '--no-renames', '-z', base, 'HEAD']).split('\0').filter(Boolean),
-    changelog: git(cwd, ['show', `HEAD:${CHANGELOG_FILENAME}`]),
-    changelogEdit,
-    fragments: readFragments(cwd),
-    noChangelog,
-    prNumber
-  });
-}
-
 async function main() {
-  const {
-    values: { base, 'changelog-edit': changelogEdit, 'no-changelog': noChangelog, output, pr }
-  } = parseArgs({
-    options: {
-      base: { default: 'origin/main', type: 'string' },
-      'changelog-edit': { default: false, type: 'boolean' },
-      'no-changelog': { default: false, type: 'boolean' },
-      output: { type: 'string' },
-      pr: { type: 'string' }
-    }
-  });
+  try {
+    const {
+      values: { base, labels, pr }
+    } = parseArgs({
+      options: {
+        base: { default: 'origin/main', type: 'string' },
+        labels: { default: '', type: 'string' },
+        pr: { type: 'string' }
+      }
+    });
 
-  if (!/^[1-9]\d*$/u.test(pr ?? '')) {
-    throw new Error(`--pr must be a pull request number, got "${pr ?? ''}"`);
+    /^[1-9]\d*$/u.test(pr ?? '') || fail(`--pr must be a pull request number, got "${pr ?? ''}"`);
+
+    const labelNames = labels.split(',');
+
+    process.stdout.write(
+      checkRepository(ROOT_PATH, {
+        base,
+        changelogEdit: labelNames.includes('changelog-edit'),
+        noChangelog: labelNames.includes('no-changelog'),
+        prNumber: +pr
+      })
+    );
+  } catch (error) {
+    // Also on the summary page, where contributors look first.
+    process.stdout.write(`## Changelog\n\n~~~text\n${error.message}\n~~~\n`);
+
+    throw error;
   }
-
-  const preview = checkRepository(ROOT_PATH, { base, changelogEdit, noChangelog, prNumber: +pr });
-
-  output ? await writeFile(output, preview) : process.stdout.write(preview);
 }
 
-isMain(import.meta) &&
-  main().catch(error => {
-    console.error(error.message);
-    process.exitCode = 1;
-  });
+runMain(import.meta, main);
 
-export { checkPullRequest, checkRepository };
+export { checkRepository };
