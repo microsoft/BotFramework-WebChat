@@ -9,7 +9,7 @@ import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/c
 
 import styles from './CodeBlock.module.css';
 
-const { useStyleOptions } = hooks;
+const { useStyleOptions, useLocalizer } = hooks;
 
 class CodeBlock extends HTMLElement {
   static observedAttributes = ['theme', 'language'];
@@ -109,25 +109,39 @@ export type CodeBlockProps = Readonly<{
 
 type CodeBlockReactProps = Readonly<{
   codeBlockTheme: 'github-light-default' | 'github-dark-default';
+  copyButtonAltCopied: string;
+  copyButtonAltCopy: string;
   copyButtonTagName: string;
   highlightCode: HighlightCodeFn;
 }>;
 
 const useCodeBlockProps = (copyButtonTagName: string) => {
   const highlightCode = useCodeHighlighter();
+  const localize = useLocalizer();
   const [{ codeBlockTheme }] = useStyleOptions();
+  const copyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
+  const copyButtonAltCopy = localize('COPY_BUTTON_TEXT');
   const propsChangedEventTarget = useMemo<EventTarget>(() => new EventTarget(), []);
   const propsRef = useRef<CodeBlockReactProps>();
 
   useMemo(() => {
     propsRef.current = Object.freeze({
       codeBlockTheme,
+      copyButtonAltCopied,
+      copyButtonAltCopy,
       copyButtonTagName,
       highlightCode
     });
 
     propsChangedEventTarget.dispatchEvent(new CustomEvent('change'));
-  }, [codeBlockTheme, copyButtonTagName, highlightCode, propsChangedEventTarget]);
+  }, [
+    codeBlockTheme,
+    copyButtonAltCopied,
+    copyButtonAltCopy,
+    copyButtonTagName,
+    highlightCode,
+    propsChangedEventTarget
+  ]);
 
   return useMemo(
     () => Object.freeze([propsChangedEventTarget, propsRef] as const),
@@ -169,6 +183,9 @@ export default function useReactCodeBlockClass(copyButtonTagName: string): typeo
             this.copyButtonElement = document.createElement(props.copyButtonTagName);
             this.scheduleUpdate();
           }
+
+          this.copyButtonElement.dataset.altCopy = props.copyButtonAltCopy;
+          this.copyButtonElement.dataset.altCopied = props.copyButtonAltCopied;
         };
 
         connectedCallback(): void {

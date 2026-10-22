@@ -9,7 +9,6 @@ import React, {
   useRef
 } from 'react';
 
-import CustomElementPortalScope from '../providers/CustomElements/CustomElementPortalScope';
 import tabbableElements from '../Utils/tabbableElements';
 import { useRefFrom } from 'use-ref-from';
 
@@ -146,8 +145,6 @@ const FocusTrap = ({
         ref={bodyRef}
       >
         {children}
-        {/* Keyboard and focus events of custom elements in the body, such as the copy button of code blocks, propagate to this focus trap. */}
-        <CustomElementPortalScope containerRef={bodyRef} />
         <div ref={guardRef} tabIndex={0} />
       </div>
       <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />

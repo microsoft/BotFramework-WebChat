@@ -1,12 +1,6 @@
 import { createContext } from 'react';
 
-import type CustomElementPortalRegistry from './CustomElementPortalRegistry';
-
-export type CustomElementsContextType = Readonly<{
-  codeBlockTagName: string;
-  codeBlockCopyButtonTagName: string;
-  portalRegistry: CustomElementPortalRegistry;
-}>;
+export type CustomElementsContextType = Readonly<{ codeBlockTagName: string; codeBlockCopyButtonTagName: string }>;
 
 const CustomElementsContext = createContext<CustomElementsContextType>(
   new Proxy({} as CustomElementsContextType, {
