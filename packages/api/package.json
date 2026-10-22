@@ -160,10 +160,6 @@
     "react-dom": [
       "16.8.6",
       "using react-dom@16.8.6 to make sure this is the minimum supported version"
-    ],
-    "react-redux": [
-      "7",
-      "react-redux@>7 requires newer version of React"
     ]
   },
   "localDependencies": {
@@ -211,7 +207,6 @@
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
     "react-chain-of-responsibility": "0.4.2",
-    "react-redux": "7.2.9",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-reduce-memo": "0.1.0",
