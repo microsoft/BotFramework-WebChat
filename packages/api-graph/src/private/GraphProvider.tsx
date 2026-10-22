@@ -7,7 +7,7 @@ import {
   type GraphSubscriber,
   type Identifier
 } from 'botframework-webchat-core/graph.js';
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useLayoutEffect, useMemo, useState } from 'react';
 import { custom, function_, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
@@ -33,7 +33,9 @@ function GraphProvider(props: GraphProviderProps) {
 
   const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(EMPTY_ARRAY);
 
-  useEffect(() => {
+  // Layout effect: activities already in the store (e.g. rehydrated) must be in this state before the re-render of any other layout effect.
+  // Otherwise, that re-render would see activities in Redux which are not in the graph yet.
+  useLayoutEffect(() => {
     // Sync between graph and `orderedActivities`.
     const handleChange: GraphSubscriber = record => {
       const state = graph.getState();
