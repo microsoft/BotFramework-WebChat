@@ -79,7 +79,7 @@
               ignored: false,
               name: expect.objectContaining({
                 value:
-                  'Bot said: 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
+                  'Bot said 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
               }),
               role: expect.objectContaining({ value: 'article' })
             })
@@ -102,7 +102,7 @@
           expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
             expect.objectContaining({
               ignored: false,
-              name: expect.objectContaining({ value: 'You said: animationcard Sent at October 17 at 11:50 AM' }),
+              name: expect.objectContaining({ value: 'You said animationcard Sent at October 17 at 11:50 AM' }),
               role: expect.objectContaining({ value: 'article' })
             })
           )
@@ -139,7 +139,7 @@
               ignored: false,
               name: expect.objectContaining({
                 value:
-                  'Bot said: 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
+                  'Bot said 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
               }),
               role: expect.objectContaining({ value: 'article' })
             })
@@ -162,7 +162,7 @@
           expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
             expect.objectContaining({
               ignored: false,
-              name: expect.objectContaining({ value: 'You said: animationcard Sent at October 17 at 11:50 AM' }),
+              name: expect.objectContaining({ value: 'You said animationcard Sent at October 17 at 11:50 AM' }),
               role: expect.objectContaining({ value: 'article' })
             })
           )

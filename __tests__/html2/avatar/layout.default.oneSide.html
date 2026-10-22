@@ -11,22 +11,18 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
-      import { createDefaultProps } from './setup.js';
+      import { createDefaultProps, sendUnknownCommand } from './setup.js';
 
       run(
         async function () {
           const {
             React: { createElement },
             ReactDOM: { render },
-            testHelpers: {
-              createStore,
-              token: { fetchDirectLineToken }
-            },
-            WebChat: { createDirectLine, ReactWebChat }
+            testHelpers: { createDirectLineEmulator },
+            WebChat: { ReactWebChat }
           } = window; // Imports in UMD fashion.
 
-          const directLine = createDirectLine({ token: await fetchDirectLineToken() });
-          const store = createStore();
+          const { directLine, store } = createDirectLineEmulator();
 
           function renderWebChat(props) {
             return new Promise(resolve =>
@@ -47,9 +43,11 @@
 
           await pageConditions.uiConnected();
 
-          await pageObjects.sendMessageViaSendBox('normal');
+          await sendUnknownCommand(directLine, 'normal');
           await pageConditions.numActivitiesShown(2);
           await pageConditions.allOutgoingActivitiesSent();
+
+          // THEN: Only the bot avatar is shown.
 
           await host.snapshot('local', { skipCheckAccessibility: true });
 
@@ -57,6 +55,8 @@
           props = { ...props, styleOptions: { ...props.styleOptions, botAvatarInitials: undefined } };
 
           await renderWebChat(props);
+
+          // THEN: Only the user avatar is shown.
 
           await host.snapshot('local', { skipCheckAccessibility: true });
         },

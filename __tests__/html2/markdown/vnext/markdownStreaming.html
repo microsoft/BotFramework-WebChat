@@ -22,13 +22,12 @@
           "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
           "botframework-webchat-core": "/__dist__/packages/bundle/static/botframework-webchat-core.js",
           "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
-          "eventsource-parser": "https://esm.sh/eventsource-parser",
-          "eventsource-parser/": "https://esm.sh/eventsource-parser/",
-          "iter-fest": "https://esm.sh/iter-fest",
-          "react": "https://esm.sh/react@18",
-          "react-dom": "https://esm.sh/react-dom@18",
-          "react-dom/": "https://esm.sh/react-dom@18/",
-          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+          "eventsource-parser/stream": "/__dist__/packages/test/test-assets/out/eventsource-parser/stream.js",
+          "iter-fest": "/__dist__/packages/test/test-assets/out/iter-fest.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
         }
       }
     </script>
@@ -49,36 +48,39 @@
 
       const store = testHelpers.createStore();
 
-      // TODO: [P2] The recorded answer starts with "##", which Web Chat renders as a level-three heading.
-      //       It skips level two after the page's level-one heading (axe "heading-order").
-      //       Remove both `skipCheckAccessibility` when the recording is fixed.
-      run(async function () {
-        const { directLine } = adapter;
+      // TODO: [P2] Markdown headings from the bot are rendered as-is: "# Heading" becomes a level-one heading, which Web Chat must not contain (#4721).
+      //       Remove both `skipCheckAccessibility` when fixed.
+      run(
+        async function () {
+          const { directLine } = adapter;
 
-        const fluentTheme = {
-          ...webLightTheme,
-          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
-          colorNeutralForeground1: '#1b1b1b'
-        };
+          const fluentTheme = {
+            ...webLightTheme,
+            // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+            colorNeutralForeground1: '#1b1b1b'
+          };
 
-        createRoot(document.getElementsByTagName('main')[0]).render(
-          createElement(
-            FluentProvider,
-            { className: 'fui-FluentProvider', theme: fluentTheme },
+          createRoot(document.getElementsByTagName('main')[0]).render(
             createElement(
-              FluentThemeProvider,
-              { variant: 'fluent' },
-              createElement(ReactWebChat, { directLine, store })
+              FluentProvider,
+              { className: 'fui-FluentProvider', theme: fluentTheme },
+              createElement(
+                FluentThemeProvider,
+                { variant: 'fluent' },
+                createElement(ReactWebChat, { directLine, store })
+              )
             )
-          )
-        );
+          );
 
-        await pageConditions.uiConnected();
+          await pageConditions.uiConnected();
 
-        await pageConditions.scrollStabilized();
+          await pageConditions.scrollStabilized();
 
-        await host.snapshot('local', { skipCheckAccessibility: true });
-      }, { skipCheckAccessibility: true });
+          // THEN: The streamed message is rendered as markdown, with math and a code block.
+          await host.snapshot('local', { skipCheckAccessibility: true });
+        },
+        { skipCheckAccessibility: true }
+      );
     </script>
   </body>
 </html>

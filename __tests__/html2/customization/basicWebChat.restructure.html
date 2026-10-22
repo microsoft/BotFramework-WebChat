@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -68,10 +68,11 @@
         const components = surface.childNodes;
         expect(components[0].className).toContain('toaster');
         expect(components[1].className).toContain(classes.sendBox);
-        expect(components[2].textContent).toContain('Connectivity Status');
-        expect(components[3].className).toContain(classes.customComponent);
-        expect(components[4].className).toContain(classes.transcript);
+        // <BasicConnectivityStatus> renders nothing when connected.
+        expect(components[2].className).toContain(classes.customComponent);
+        expect(components[3].className).toContain(classes.transcript);
 
+        // THEN: The send box is on top, followed by the custom component and the empty transcript.
         await host.snapshot('local');
       });
     </script>

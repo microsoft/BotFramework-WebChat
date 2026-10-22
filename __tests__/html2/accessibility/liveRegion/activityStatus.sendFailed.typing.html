@@ -40,7 +40,7 @@
               'live region narrated bot message',
               () => {
                 try {
-                  expect(flush()).toEqual(['Bot said:\nAloha!']);
+                  expect(flush()).toEqual(['Bot said\nAloha!']);
 
                   return true;
                 } catch {

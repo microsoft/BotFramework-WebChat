@@ -19,6 +19,8 @@ Legends:
 
 ## [Unreleased]
 
+Built from [`10c3f60`](https://github.com/microsoft/BotFramework-WebChat/commit/10c3f6020335d8f88e243fa71d7668ea1d482a0c).
+
 [Show most recent changelog](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) for the full changelog as last rebuilt from `main`.
 
 ### Added
@@ -32,6 +34,10 @@ Legends:
 
 - 💥 `useSendMessage`: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - 👷🏻 Visual regression tests now use 5 consecutive screenshots for stability indication, up from 2, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
+- 👷🏻 Changelog entries are now one file per pull request in `.changelog/`, merged into `CHANGELOG.md` on the [`changelog-unreleased`](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) branch, in PR [#5934](https://github.com/microsoft/BotFramework-WebChat/pull/5934), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Card action buttons the user pressed are styled with the `adaptive-card-renderer__action--selected` class instead of `[aria-pressed='true']`: host CSS that targets `.ac-pushButton[aria-pressed='true']` should target `.ac-pushButton.adaptive-card-renderer__action--selected` instead, in PR [#5900](https://github.com/microsoft/BotFramework-WebChat/pull/5900), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Pull request validation now cancels superseded runs, retries `npm clean-install` and `docker compose build`, bounds the Selenium Grid wait and HTML test jobs, keeps build artifacts for 3 days for re-runs, and no longer fails merging test results on re-run, in PR [#5942](https://github.com/microsoft/BotFramework-WebChat/pull/5942), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Changelog check rejects placeholder pull request numbers and fragments that do not link their own pull request, and `new.mjs` asks to create the pull request first when there is none, in PR [#5944](https://github.com/microsoft/BotFramework-WebChat/pull/5944), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 
@@ -69,6 +75,23 @@ Legends:
 - Fixed carousel cards focused with <kbd>TAB</kbd> staying partially out of view, in PR [#5926](https://github.com/microsoft/BotFramework-WebChat/pull/5926), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> on a button inside a carousel card scrolling the carousel, in PR [#5917](https://github.com/microsoft/BotFramework-WebChat/pull/5917), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed [#4906](https://github.com/microsoft/BotFramework-WebChat/issues/4906) and [#4907](https://github.com/microsoft/BotFramework-WebChat/issues/4907), icons being invisible, link references not using the link color, and Fluent messages and Copy button having no border in forced colors, in PR [#5907](https://github.com/microsoft/BotFramework-WebChat/pull/5907), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#4583](https://github.com/microsoft/BotFramework-WebChat/issues/4583), [#5716](https://github.com/microsoft/BotFramework-WebChat/issues/5716), [#5719](https://github.com/microsoft/BotFramework-WebChat/issues/5719), [#5745](https://github.com/microsoft/BotFramework-WebChat/issues/5745), and [#5750](https://github.com/microsoft/BotFramework-WebChat/issues/5750), card action buttons being announced as toggle buttons, and Submit being marked as selected when the card's inputs fail validation, in PR [#5900](https://github.com/microsoft/BotFramework-WebChat/pull/5900), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed Fluent suggested actions showing the page background through them in forced colors, in PR [#5935](https://github.com/microsoft/BotFramework-WebChat/pull/5935), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed screen readers reading Adaptive Card text with its Markdown and `{{DATE()}}` syntax, in PR [#5929](https://github.com/microsoft/BotFramework-WebChat/pull/5929), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed screen readers saying "article" and "group" before new messages and each of their lines in the live region, in PR [#5921](https://github.com/microsoft/BotFramework-WebChat/pull/5921), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed the "message" and "attachment" role descriptions being hard-coded in English, in PR [#5916](https://github.com/microsoft/BotFramework-WebChat/pull/5916), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed animation cards showing an empty video player for animated WebP, APNG, and AVIF images, and for GIF URLs with a query string, related to [#5734](https://github.com/microsoft/BotFramework-WebChat/issues/5734), in PR [#5930](https://github.com/microsoft/BotFramework-WebChat/pull/5930), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#4988](https://github.com/microsoft/BotFramework-WebChat/issues/4988), [#4989](https://github.com/microsoft/BotFramework-WebChat/issues/4989), [#5230](https://github.com/microsoft/BotFramework-WebChat/issues/5230), and [#5388](https://github.com/microsoft/BotFramework-WebChat/issues/5388), missing accessible names and invalid ARIA attributes in the send box, and decorative icons exposed to screen readers, in PR [#5912](https://github.com/microsoft/BotFramework-WebChat/pull/5912), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5049](https://github.com/microsoft/BotFramework-WebChat/issues/5049), Adaptive Cards without a label being announced as an unnamed figure by screen readers, in PR [#5915](https://github.com/microsoft/BotFramework-WebChat/pull/5915), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5130](https://github.com/microsoft/BotFramework-WebChat/issues/5130), clickable containers and images in Adaptive Cards not showing a pointer cursor, in PR [#5915](https://github.com/microsoft/BotFramework-WebChat/pull/5915), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed the Fluent theme ignoring `styleOptions.hideSendBox`, in PR [#5918](https://github.com/microsoft/BotFramework-WebChat/pull/5918), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed "Selected" not being announced when a card action is pressed, in PR [#5928](https://github.com/microsoft/BotFramework-WebChat/pull/5928), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5803](https://github.com/microsoft/BotFramework-WebChat/issues/5803), screen readers announcing all bot messages with the same initials, such as "Bot JO said:" for both a bot and a live agent: the text before each message, the name of the message when navigating with arrow keys, and the live region now prefer the per-activity `channelData.webChat.styleOptions.botAvatarInitials` over `styleOptions.botAvatarInitials`, in PR [#5898](https://github.com/microsoft/BotFramework-WebChat/pull/5898), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5715](https://github.com/microsoft/BotFramework-WebChat/issues/5715) and [#5735](https://github.com/microsoft/BotFramework-WebChat/issues/5735), screen readers not announcing the time of a message when navigating the transcript with arrow keys: the name of each sent message now ends with the same "Sent at" text as its timestamp, in PR [#5898](https://github.com/microsoft/BotFramework-WebChat/pull/5898), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed activities overlapping in the default theme when a host page rule for `section` elements, such as `section { min-height: 0 }`, also matches the activity list, in PR [#5919](https://github.com/microsoft/BotFramework-WebChat/pull/5919), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed 7 flaky HTML tests that snapshot or assert before the state settles, in PR [#5943](https://github.com/microsoft/BotFramework-WebChat/pull/5943), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed screen readers announcing new Adaptive Card inputs without their labels and values, in PR [#5913](https://github.com/microsoft/BotFramework-WebChat/pull/5913), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5737](https://github.com/microsoft/BotFramework-WebChat/issues/5737), screen readers in scan mode reading the arrow-key summary of every message after its content, in PR [#5945](https://github.com/microsoft/BotFramework-WebChat/pull/5945), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
