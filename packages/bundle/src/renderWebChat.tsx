@@ -48,14 +48,12 @@ export default function renderWebChat(ReactWebChat: ComponentType<any>, props: a
     // Also the IIFE build, which bundles React DOM 16.8.6 unless `window.ReactDOM` is set,
     // and the static (ESM) build with the React 18 of its import map.
     ReactDOM.render(children, element);
-  } else if (is(createRootSchema, ReactDOM)) {
-    // React 19 or later with `createRoot()` in "react-dom", e.g. the IIFE build with React 19 in `window.ReactDOM`.
-    renderWithCreateRoot(ReactDOM, children, element);
   } else {
     // React 19 or later: `ReactDOM.render()` was removed, `createRoot()` is only in "react-dom/client".
     const reactDOMClientPromise = importReactDOMClient();
 
-    // npm build: it cannot import "react-dom/client" (bundlers would fail on React 16 and 17), the host must call `createRoot()`.
+    // npm and IIFE builds: they cannot import "react-dom/client" (bundlers would fail on React 16 and 17),
+    // the host must render <ReactWebChat> with `createRoot()` itself.
     if (!reactDOMClientPromise) {
       throw createRootRequiredError();
     }
