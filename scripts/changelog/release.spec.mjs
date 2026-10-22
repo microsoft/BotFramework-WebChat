@@ -110,6 +110,16 @@ scenario(
       .then('should refuse', (_, release) => expect(release).toThrow('No entries to release'));
 
     bdd
+      .given('an unknown section in "[Unreleased]"', () => ({
+        changelog: changelog(`${POINTER}\n\n### Breaking changes\n\n${ENTRY_1}`),
+        fragments: []
+      }))
+      .when('released', init => () => release(init))
+      .then('should refuse', (_, release) =>
+        expect(release).toThrow('CHANGELOG.md:11: unknown section "Breaking changes" in "[Unreleased]"')
+      );
+
+    bdd
       .given('a version already released', () => changelog(`${POINTER}\n\n### Fixed\n\n${ENTRY_1}`))
       .when(
         'released as 4.19.2',

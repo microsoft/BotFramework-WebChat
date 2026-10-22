@@ -476,6 +476,25 @@ scenario(
 
     bdd
       .given(
+        'an unknown section in "[Unreleased]" labeled "changelog-edit"',
+        () =>
+          setUp(repository =>
+            editChangelog(repository, content =>
+              content.replace('### Fixed\n\n- Fixed 0', '### Breaking changes\n\n- 💥 0')
+            )
+          ),
+        ({ remove }) => remove()
+      )
+      .when('checked', check({ changelogEdit: true }))
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          'CHANGELOG.md:11: unknown section "Breaking changes" in "[Unreleased]", use one of: Added, Changed, Removed, Fixed'
+        )
+      );
+
+    bdd
+      .given(
         'an invalid fragment labeled "changelog-edit"',
         () => setUp(({ commit }) => commit('#10', { '.changelog/10-fix.md': '- Fixed a\n' })),
         ({ remove }) => remove()

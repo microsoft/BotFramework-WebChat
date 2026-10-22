@@ -60,7 +60,7 @@ The "Changelog" check of a pull request passes for:
 
 - A change: it adds `.changelog/<PR#>-<slug>.md` with its own number, or is labeled `no-changelog`. It must not edit the `[Unreleased]` section of `CHANGELOG.md` or delete fragments.
 - A merge-back of `changelog-unreleased`: it deletes fragments, adds none, changes no other files, and its `CHANGELOG.md` is exactly the one of `main` with the deleted fragments merged in, except for the "Built from" line.
-- A hand edit by a maintainer, labeled `changelog-edit`: it may edit `CHANGELOG.md` and delete fragments, for example a release or a typo fix in merged-back entries. Fragments are still validated.
+- A hand edit by a maintainer, labeled `changelog-edit`: it may edit `CHANGELOG.md` and delete fragments, for example a release or a typo fix in merged-back entries. Fragments are still validated, and `[Unreleased]` may only have the four sections of fragments, changelog tools do not like unknown ones.
 
 Every entry of a fragment that the pull request adds or edits must link the pull request of its filename, `[#<PR#>](…/pull/<PR#>)`, without placeholders such as `#XXXX`. Merged fragments are not checked again, so a mistake there does not fail other pull requests or the publish workflow: fix it in a pull request, which is then checked.
 

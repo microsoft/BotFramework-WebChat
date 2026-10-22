@@ -274,12 +274,29 @@ function getUnreleased(changelog) {
 }
 
 /**
+ * Released sections are history and not checked, but "[Unreleased]" only takes the sections of `SECTIONS`: changelog
+ * tools do not like unknown ones.
+ *
  * @param {string} changelog Content of CHANGELOG.md.
  * @returns {Readonly<{ preamble: string, sections: Sections }>} `preamble` is the text before the first section, such
  *    as the pointer to the `changelog-unreleased` branch.
  */
 function parseUnreleased(changelog) {
-  const [preamble, ...blocks] = `\n${getUnreleased(changelog)}`.split(/\n### /u);
+  const unreleased = getUnreleased(changelog);
+  const [preamble, ...blocks] = `\n${unreleased}`.split(/\n### /u);
+
+  // The line after "## [Unreleased]", counted from 1.
+  const firstLine = changelog.slice(0, changelog.search(UNRELEASED_PATTERN)).split('\n').length + 1;
+
+  for (const [index, line] of unreleased.split('\n').entries()) {
+    const section = /^### (.*)$/u.exec(line)?.[1].trim();
+
+    section === undefined ||
+      SECTIONS.includes(section) ||
+      fail(
+        `${CHANGELOG_FILENAME}:${firstLine + index}: unknown section "${section}" in "[Unreleased]", use one of: ${SECTIONS.join(', ')}`
+      );
+  }
 
   return Object.freeze({
     preamble: preamble.trim(),
