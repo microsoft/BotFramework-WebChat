@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: renders the copy button of code blocks</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      // React 19 has no UMD build: the IIFE build of Web Chat uses `window.React` and `window.ReactDOM` when they are set.
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { createElement, version } from 'react';
+      import ReactDOM from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        const {
+          WebChat: { ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat rendered with React 19, which no longer has `ReactDOM.render()`.
+        expect(version).toBe('19.3.1');
+        expect(ReactDOM.render).toBeUndefined();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a code block.
+        await directLine.emulateIncomingActivity({
+          text: 'Here is the code:\n\n```\nconsole.log("Hello, World!");\n```',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The code block should have a "Copy" button.
+        const copyButton = await waitFor(() => {
+          const element = document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`);
+
+          expect(element).toBeTruthy();
+
+          return element;
+        });
+
+        const { name, role } = await testHelpers.getAccessibilityNode(copyButton);
+
+        expect(name.value).toBe('Copy');
+        expect(role.value).toBe('button');
+
+        // WHEN: The "Copy" button is clicked.
+        await host.click(copyButton);
+
+        // THEN: The button should change to "Copied".
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copied'));
+
+        // THEN: The code block shows the copy button with a check mark.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

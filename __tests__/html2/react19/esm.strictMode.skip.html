@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: renders in Strict Mode with the ESM build</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      TODO: Remove ".skip" from the file name when both are fixed:
+      - spyip/react-film#110: react-film, bundled in the static build, imports `render` from "react-dom", which React 19 no longer exports, so the static build cannot load.
+      - #5859: React 19 calls `useMemo()` twice in Strict Mode, which defines the same custom element twice and Web Chat renders nothing.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createElement, StrictMode, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: The development build of React 19, which runs the checks of Strict Mode.
+        expect(version).toBe('19.3.1');
+
+        // WHEN: Web Chat is rendered in Strict Mode.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            StrictMode,
+            {},
+            createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a code block.
+        await directLine.emulateIncomingActivity({
+          text: 'Here is the code:\n\n```\nconsole.log("Hello, World!");\n```',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The code block should have a "Copy" button.
+        const copyButton = await waitFor(() => {
+          const element = document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`);
+
+          expect(element).toBeTruthy();
+
+          return element;
+        });
+
+        const { name, role } = await testHelpers.getAccessibilityNode(copyButton);
+
+        expect(name.value).toBe('Copy');
+        expect(role.value).toBe('button');
+
+        // WHEN: The "Copy" button is clicked.
+        await host.click(copyButton);
+
+        // THEN: The button should change to "Copied".
+        await waitFor(async () => expect(await testHelpers.getAccessibleName(copyButton)).toBe('Copied'));
+
+        // THEN: The code block shows the copy button with a check mark.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
