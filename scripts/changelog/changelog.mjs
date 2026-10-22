@@ -10,12 +10,11 @@
 //    - Fixed [#1](https://github.com/microsoft/BotFramework-WebChat/issues/1), ..., in PR [#2](...), by [@user](...)
 //       - Nested bullets are indented by 3 spaces
 //
-// Entries are published verbatim, they are only sorted into sections. The rest of CHANGELOG.md is kept as is: the
-// keep-a-changelog package would reformat the whole file, so it only double-checks the entries that were written.
+// Entries are published verbatim, they are only sorted into sections. The rest of CHANGELOG.md is kept as is, which
+// the keep-a-changelog package cannot do: it would reformat the whole file. The scripts use Node.js built-ins only.
 
 import { execFileSync } from 'child_process';
 import { readFile, rm, writeFile } from 'fs/promises';
-import { parser } from 'keep-a-changelog';
 import { join } from 'path';
 
 // Matches the "Built from" line with the empty lines after it.
@@ -225,17 +224,24 @@ function readFragments(cwd, commit = 'HEAD') {
  * @returns {Sections}
  */
 function mergeSections(sections, fragments) {
-  return SECTIONS.reduce((merged, section) => {
+  const merged = [...sections];
+
+  for (const section of SECTIONS) {
     const entries = fragments.flatMap(fragment => fragment.sections[section] || []).join('\n');
     const index = merged.findIndex(([heading]) => heading === section);
-    const laterIndex = merged.findIndex(([heading]) => SECTIONS.indexOf(heading) > SECTIONS.indexOf(section));
 
-    return !entries
-      ? merged
-      : ~index
-        ? merged.with(index, Object.freeze([section, `${merged[index][1].trimEnd()}\n${entries}`]))
-        : merged.toSpliced(~laterIndex ? laterIndex : merged.length, 0, Object.freeze([section, entries]));
-  }, sections);
+    if (!entries) {
+      continue;
+    } else if (index !== -1) {
+      merged[index] = Object.freeze([section, `${merged[index][1].trimEnd()}\n${entries}`]);
+    } else {
+      const laterIndex = merged.findIndex(([heading]) => SECTIONS.indexOf(heading) > SECTIONS.indexOf(section));
+
+      merged.splice(laterIndex === -1 ? merged.length : laterIndex, 0, Object.freeze([section, entries]));
+    }
+  }
+
+  return Object.freeze(merged);
 }
 
 /**
@@ -305,21 +311,6 @@ function formatUnreleased(changelog, { preamble, sections }, release = '') {
 }
 
 /**
- * Counts the entries of a release, as read by Keep a Changelog.
- *
- * @param {string} changelog Content of CHANGELOG.md.
- * @param {string} [version] Version of the release, `undefined` for "[Unreleased]".
- * @returns {number}
- */
-function countEntries(changelog, version) {
-  const release = parser(changelog).releases.find(
-    ({ version: releaseVersion }) => releaseVersion?.toString() === version
-  );
-
-  return release ? Array.from(release.changes.values()).flat().length : 0;
-}
-
-/**
  * Sets or removes the "Built from" line at the top of "[Unreleased]", there is at most one.
  *
  * @param {string} changelog Content of CHANGELOG.md.
@@ -354,15 +345,8 @@ function setBuiltFrom(changelog, commit) {
 function consumeChangelog(changelog, fragments, { commit } = {}) {
   const builtChangelog = commit && fragments.length ? setBuiltFrom(changelog, commit) : changelog;
   const { preamble, sections } = parseUnreleased(builtChangelog);
-  const result = formatUnreleased(builtChangelog, { preamble, sections: mergeSections(sections, fragments) });
-  const numEntries =
-    countEntries(changelog) + fragments.flatMap(fragment => Object.values(fragment.sections).flat()).length;
-  const numParsedEntries = countEntries(result);
 
-  numParsedEntries === numEntries ||
-    fail(`Keep a Changelog read ${numParsedEntries} entries in "[Unreleased]" instead of ${numEntries}`);
-
-  return result;
+  return formatUnreleased(builtChangelog, { preamble, sections: mergeSections(sections, fragments) });
 }
 
 /**
@@ -374,14 +358,14 @@ function consumeChangelog(changelog, fragments, { commit } = {}) {
  */
 function releaseChangelog(changelog, { date, version }) {
   const unreleasedChangelog = setBuiltFrom(changelog);
+  const { preamble, sections } = parseUnreleased(unreleasedChangelog);
   const unreleasedLink = UNRELEASED_LINK_PATTERN.exec(changelog);
-  const numEntries = countEntries(changelog);
 
   if (!/^\d+\.\d+\.\d+(?:-[\da-z.-]+)?$/iu.test(version)) {
     throw new Error(`Version must be like 4.19.3, got "${version}"`);
   } else if (!/^\d{4}-\d{2}-\d{2}$/u.test(date) || new Date(date).toISOString().slice(0, 10) !== date) {
     throw new Error(`Date must be like 2026-11-03, got "${date}"`);
-  } else if (!numEntries) {
+  } else if (!sections.some(([, body]) => body.trim())) {
     throw new Error(`No entries to release, "[Unreleased]" in ${CHANGELOG_FILENAME} and .changelog/ are empty`);
   } else if (changelog.includes(`\n## [${version}]`)) {
     throw new Error(`${CHANGELOG_FILENAME} already has ${version}`);
@@ -390,8 +374,8 @@ function releaseChangelog(changelog, { date, version }) {
   }
 
   const [, baseURL, previousTag] = unreleasedLink;
-  const { preamble, sections } = parseUnreleased(unreleasedChangelog);
-  const result = formatUnreleased(
+
+  return formatUnreleased(
     unreleasedChangelog,
     { preamble, sections: [] },
     `## [${version}] - ${date}\n\n${formatSections(sections)}\n\n`
@@ -399,13 +383,6 @@ function releaseChangelog(changelog, { date, version }) {
     UNRELEASED_LINK_PATTERN,
     `[Unreleased]: ${baseURL}/compare/v${version}...HEAD\n[${version}]: ${baseURL}/compare/${previousTag}...v${version}`
   );
-
-  const numParsedEntries = countEntries(result, version);
-
-  numParsedEntries === numEntries ||
-    fail(`Keep a Changelog read ${numParsedEntries} entries in ${version} instead of ${numEntries}`);
-
-  return result;
 }
 
 /**

@@ -102,6 +102,14 @@ scenario(
       .then('should refuse', (_, release) => expect(release).toThrow('No entries to release'));
 
     bdd
+      .given('section headings without entries and no fragments', () => ({
+        changelog: changelog(`${POINTER}\n\n### Added\n\n### Fixed\n`),
+        fragments: []
+      }))
+      .when('released', init => () => release(init))
+      .then('should refuse', (_, release) => expect(release).toThrow('No entries to release'));
+
+    bdd
       .given('a version already released', () => changelog(`${POINTER}\n\n### Fixed\n\n${ENTRY_1}`))
       .when(
         'released as 4.19.2',

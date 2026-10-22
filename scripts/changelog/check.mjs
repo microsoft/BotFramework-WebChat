@@ -166,10 +166,9 @@ async function main() {
       })
     );
   } catch (error) {
-    // Also on the summary page, where contributors look first.
+    // Printed once, for the summary page, where contributors look first.
     process.stdout.write(`## Changelog\n\n~~~text\n${error.message}\n~~~\n`);
-
-    throw error;
+    process.exitCode = 1;
   }
 }
 

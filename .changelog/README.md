@@ -68,14 +68,14 @@ A pull request may also edit the fragment of another pull request, for example t
 
 ## Scripts
 
-| Command                                                 | What it does                                                                                  |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `node ./scripts/changelog/new.mjs`                      | Writes the fragment of a pull request                                                         |
-| `node ./scripts/changelog/check.mjs --pr <PR#>`         | Checks a pull request against `origin/main`, prints its entries                               |
-| `node ./scripts/changelog/publish.mjs`                  | Recreates and force-pushes `changelog-unreleased`, used by the workflow                       |
-| `node ./scripts/changelog/release.mjs <version> <date>` | Merges the fragments, then moves `[Unreleased]` into a new release, label it `changelog-edit` |
-| `node --test 'scripts/changelog/*.spec.mjs'`            | Runs the tests                                                                                |
+| Command                                                              | What it does                                                                                                      |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `node ./scripts/changelog/new.mjs`                                   | Writes the fragment of a pull request                                                                             |
+| `node ./scripts/changelog/check.mjs --pr <PR#> --labels <label>,...` | Checks a pull request against `origin/main` as if it had these labels, such as `no-changelog`, prints its entries |
+| `node ./scripts/changelog/publish.mjs`                               | Recreates and force-pushes `changelog-unreleased`, used by the workflow                                           |
+| `node ./scripts/changelog/release.mjs <version> <date>`              | Merges the fragments, then moves `[Unreleased]` into a new release, label it `changelog-edit`                     |
+| `node --test 'scripts/changelog/*.spec.mjs'`                         | Runs the tests                                                                                                    |
 
-Except for `new.mjs`, the scripts read fragments from Git commits, not from the working tree. They need Node.js 22.18, 24.2, or later.
+Except for `new.mjs`, the scripts read fragments from Git commits, not from the working tree. They need Node.js 22.18, 24.2, or later, and no npm packages, except for the tests.
 
 Only the "Publish changelog-unreleased" workflow writes the `changelog-unreleased` branch, and it always force-pushes: do not protect the branch against force pushes.
