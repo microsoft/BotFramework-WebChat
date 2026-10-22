@@ -1,5 +1,5 @@
 import mathRandom from 'math-random';
-import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
 
 import useReactCodeBlockClass from './customElements/CodeBlock';
 import useReactCodeBlockCopyButtonClass from './customElements/CodeBlockCopyButton';
@@ -9,45 +9,47 @@ type CustomElementsComposerProps = Readonly<{
   children?: ReactNode | undefined;
 }>;
 
-const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
-  // eslint-disable-next-line no-magic-numbers
-  const hash = useMemo(() => mathRandom().toString(36).substring(2, 7), []);
+// A tag name cannot be defined twice, but React can register the same class twice, e.g. Strict Mode in React 19 calls `useMemo()` twice.
+const tagNameByClass = new WeakMap<CustomElementConstructor, string>();
 
-  const registerCustomElement = useCallback(
-    (tagName: string, customElementConstructor: CustomElementConstructor): string => {
-      const fullTagName = `webchat-${hash}--${tagName}` as const;
+function registerCustomElement(tagName: string, customElementConstructor: CustomElementConstructor): string {
+  let fullTagName = tagNameByClass.get(customElementConstructor);
 
-      customElements.define(
-        fullTagName,
-        class extends customElementConstructor {
-          static get observedAttributes(): readonly string[] {
-            return Object.freeze(
-              'observedAttributes' in customElementConstructor
-                ? (customElementConstructor.observedAttributes as string[])
-                : []
-            );
-          }
+  if (!fullTagName) {
+    // Every class gets its own tag name, so elements created after a class changed (e.g. a new ponyfill) never use an older class.
+    // eslint-disable-next-line no-magic-numbers
+    fullTagName = `webchat-${mathRandom().toString(36).substring(2, 7)}--${tagName}`;
+
+    customElements.define(
+      fullTagName,
+      class extends customElementConstructor {
+        static get observedAttributes(): readonly string[] {
+          return Object.freeze(
+            'observedAttributes' in customElementConstructor
+              ? (customElementConstructor.observedAttributes as string[])
+              : []
+          );
         }
-      );
+      }
+    );
 
-      return fullTagName;
-    },
-    [hash]
-  );
+    tagNameByClass.set(customElementConstructor, fullTagName);
+  }
 
+  return fullTagName;
+}
+
+const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
   const [CodeBlockCopyButtonClass] = useReactCodeBlockCopyButtonClass();
 
   const codeBlockCopyButtonTagName = useMemo(
     () => registerCustomElement('code-block-copy-button', CodeBlockCopyButtonClass),
-    [CodeBlockCopyButtonClass, registerCustomElement]
+    [CodeBlockCopyButtonClass]
   );
 
   const CodeBlockClass = useReactCodeBlockClass(codeBlockCopyButtonTagName);
 
-  const codeBlockTagName = useMemo(
-    () => registerCustomElement('code-block', CodeBlockClass),
-    [CodeBlockClass, registerCustomElement]
-  );
+  const codeBlockTagName = useMemo(() => registerCustomElement('code-block', CodeBlockClass), [CodeBlockClass]);
 
   const context = useMemo(
     () => Object.freeze({ codeBlockTagName, codeBlockCopyButtonTagName }),
