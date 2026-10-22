@@ -25,7 +25,7 @@ function createBatchedSubscribe(store: WebChatReduxStore): WebChatReduxContextTy
     listeners.add(listener);
 
     // One store subscription notifies every hook in one batch, so they re-render together, as with react-redux@7.
-    // When React 18 becomes the minimum, remove `unstable_batchedUpdates()`: React 18 batches all updates.
+    // Remove `unstable_batchedUpdates()` when every supported React renders with `createRoot()`: legacy `ReactDOM.render()` does not batch updates outside event handlers.
     unsubscribeStore ||= store.subscribe(() =>
       unstable_batchedUpdates(() => listeners.forEach(listener => listener()))
     );
