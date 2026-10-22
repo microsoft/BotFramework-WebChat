@@ -86,15 +86,15 @@
 
         // THEN: The live region copy reads the visible text only, followed by the action button.
         expect(testHelpers.getAllTextContents(liveRegionActivity).map(text => text.trim())).toEqual([
-          'Bot said:',
-          'A card: Seattle',
+          'Bot said',
+          'A card Seattle',
           'Show more'
         ]);
 
         // THEN: The hidden input is not listed.
         expect(liveRegionActivity.querySelectorAll('input')).toHaveLength(0);
 
-        // THEN: The live region shows "A card: Seattle" and the "Show more" button, without the hidden text and input.
+        // THEN: The live region shows "A card Seattle" and the "Show more" button, without the hidden text and input.
         await host.snapshot('local');
       });
     </script>

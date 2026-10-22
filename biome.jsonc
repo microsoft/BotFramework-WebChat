@@ -7,7 +7,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/dist"]
+    "includes": [
+      "**",
+      "!**/dist",
+      // Biome 2.4.16 cannot parse a curried arrow function in the consequent of a conditional (valid TypeScript); remove when Biome parses it.
+      "!packages/api/src/providers/GroupActivities/private/createDefaultGroupActivitiesMiddleware.ts"
+    ]
   },
   "formatter": {
     "indentStyle": "space",

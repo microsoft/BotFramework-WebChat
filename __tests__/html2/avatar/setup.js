@@ -1,4 +1,4 @@
-const createDefaultProps = (extraProps) => ({
+const createDefaultProps = extraProps => ({
   avatarMiddleware: () => next => args => {
     const { activity } = args;
     const { text = '' } = activity;
@@ -56,4 +56,13 @@ const createFullCustomizedProps = args => {
   };
 };
 
-export { createDefaultProps, createFullCustomizedProps };
+// Sends `text` from the send box, then replies like the mock bot does to a command it does not know.
+const sendUnknownCommand = async (directLine, text) => {
+  await (
+    await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox(text, { waitForSend: false }))
+  ).resolveAll();
+
+  await directLine.emulateIncomingActivity(`Unknown command: \`${text}\`.\r\n\r\nType \`help\` to learn more.`);
+};
+
+export { createDefaultProps, createFullCustomizedProps, sendUnknownCommand };

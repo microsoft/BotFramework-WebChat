@@ -92,7 +92,8 @@
 
         // THEN: Should display 1 attachment.
         expect(pageElements.activityAttachments()[0]).toHaveLength(1);
-        expect(pageElements.activityAttachments()[0][0]).toHaveProperty('textContent', 'Bot attached:Card 1');
+        // "Bot attached" is the screen reader text in its own `<div>` before the card "Card 1", `textContent` joins them.
+        expect(pageElements.activityAttachments()[0][0]).toHaveProperty('textContent', 'Bot attachedCard 1');
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
@@ -128,8 +129,8 @@
 
         // THEN: Should display 2 attachments.
         await waitFor(() => expect(pageElements.activityAttachments()[0]).toHaveLength(2));
-        expect(pageElements.activityAttachments()[0][0]).toHaveProperty('textContent', 'Bot attached:Card 1');
-        expect(pageElements.activityAttachments()[0][1]).toHaveProperty('textContent', 'Bot attached:Card 2');
+        expect(pageElements.activityAttachments()[0][0]).toHaveProperty('textContent', 'Bot attachedCard 1');
+        expect(pageElements.activityAttachments()[0][1]).toHaveProperty('textContent', 'Bot attachedCard 2');
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
@@ -165,8 +166,8 @@
 
         // THEN: Should display 2 attachments.
         await waitFor(() => expect(pageElements.activityAttachments()[0]).toHaveLength(2));
-        expect(pageElements.activityAttachments()[0][0]).toHaveProperty('textContent', 'Bot attached:Card A');
-        expect(pageElements.activityAttachments()[0][1]).toHaveProperty('textContent', 'Bot attached:Card B');
+        expect(pageElements.activityAttachments()[0][0]).toHaveProperty('textContent', 'Bot attachedCard A');
+        expect(pageElements.activityAttachments()[0][1]).toHaveProperty('textContent', 'Bot attachedCard B');
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
