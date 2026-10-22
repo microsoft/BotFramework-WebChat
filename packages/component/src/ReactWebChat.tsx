@@ -25,12 +25,6 @@ const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps) 
   </Composer>
 );
 
-ReactWebChat.defaultProps = {
-  className: undefined,
-  role: undefined,
-  ...Composer.defaultProps
-};
-
 const {
   // Excluding "children" from ComposerProps.
   children: _,

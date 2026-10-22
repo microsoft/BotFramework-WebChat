@@ -14,7 +14,7 @@ const { useLocalizer } = hooks;
 const CarouselFilmStripAttachment = ({
   activity,
   attachment,
-  className,
+  className = '',
   fromUser,
   hasAvatar,
   hideNub,
@@ -52,10 +52,6 @@ const CarouselFilmStripAttachment = ({
       </Bubble>
     </li>
   );
-};
-
-CarouselFilmStripAttachment.defaultProps = {
-  className: ''
 };
 
 CarouselFilmStripAttachment.propTypes = {

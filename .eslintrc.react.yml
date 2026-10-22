@@ -102,7 +102,9 @@ rules:
   react/prefer-es6-class: error
   react/prefer-read-only-props: error
   react/prop-types: off # defaultProps/propTypes is being deprecated over TypeScript and default function parameters.
-  react/require-default-props: error
+  react/require-default-props: # React 19 removed defaultProps for function components, use default parameters instead.
+    - error
+    - functions: ignore
   react/self-closing-comp: error
   react/sort-default-props: error
   react/sort-prop-types: error
