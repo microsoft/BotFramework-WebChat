@@ -25,7 +25,7 @@ const ariaNotifiableSchema = object({ ariaNotify: function_() });
 
 const liveRegionTwinContainerPropsSchema = pipe(
   object({
-    announcementTransport: picklist(['auto', 'aria-notify', 'live-region']),
+    announcementTransport: picklist(['aria-notify', 'live-region']),
     'aria-label': optional(string()),
     'aria-live': union([literal('assertive'), literal('polite')]),
     'aria-roledescription': optional(string()),
@@ -55,10 +55,10 @@ function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
   const [ariaNotifySupported, setAriaNotifySupported] = useState(false);
   const [staticElementEntries] = useStaticElementEntries();
   const containerRef = useRef<HTMLDivElement>(null);
-  const lastNotifiedKeyRef = useRef(0);
+  const lastSeenKeyRef = useRef(0);
 
-  const transport =
-    announcementTransport === 'auto' ? (ariaNotifySupported ? 'aria-notify' : 'live-region') : announcementTransport;
+  // Falls back to the live region until `ariaNotify()` is detected, and when the browser does not support it.
+  const transport = announcementTransport === 'aria-notify' && ariaNotifySupported ? 'aria-notify' : 'live-region';
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.
   // The assumption made us safe to mark everything is rendered.
@@ -67,23 +67,28 @@ function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
 
   // Detects per instance, on the root element: Web Chat could be rendered in another document, such as an iframe or a popup window.
   // React attaches the ref of the root element after layout effects of its descendants, so only passive effects can read it on mount.
-  useEffect(() => setAriaNotifySupported(is(ariaNotifiableSchema, ariaNotifyTargetRef.current)), [ariaNotifyTargetRef]);
+  useEffect(() => {
+    announcementTransport === 'aria-notify' &&
+      setAriaNotifySupported(is(ariaNotifiableSchema, ariaNotifyTargetRef.current));
+  }, [announcementTransport, ariaNotifyTargetRef]);
 
-  // Keys are increasing: entries with a key above the last notified one are new, in queue order, and are notified once, also when React runs effects twice.
+  // Keys are increasing: entries with a key above the last seen one are new, in queue order, and are notified once, also when React runs effects twice.
+  // Entries are marked as seen in both transports, so switching to `ariaNotify()` does not repeat what the live region has read.
   useEffect(() => {
     const { current: target } = ariaNotifyTargetRef;
 
-    transport === 'aria-notify' &&
-      staticElementEntries.forEach(({ key }, index) => {
-        if (key > lastNotifiedKeyRef.current) {
+    staticElementEntries.forEach(({ key }, index) => {
+      if (key > lastSeenKeyRef.current) {
+        lastSeenKeyRef.current = key;
+
+        if (transport === 'aria-notify') {
           // When notifying, every entry is rendered in its own element, in queue order.
           const text = getAnnouncementText(containerRef.current.children.item(index));
 
-          lastNotifiedKeyRef.current = key;
-
           text && is(ariaNotifiableSchema, target) && target.ariaNotify(text, { priority: 'normal' });
         }
-      });
+      }
+    });
   }, [ariaNotifyTargetRef, staticElementEntries, transport]);
 
   // When notifying, entries are only rendered to compute their text: the container has no live semantics and is hidden from screen readers, so each entry is announced once.

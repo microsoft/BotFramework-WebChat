@@ -5,7 +5,7 @@ import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
 
 const announcementTransportInvalidValue = warnOnce(
-  '"announcementTransport" must be "auto", "aria-notify", or "live-region", will set to "live-region".'
+  '"announcementTransport" must be "aria-notify" or "live-region", will set to "live-region".'
 );
 
 const bubbleImageHeightDeprecation = warnOnce(
@@ -31,7 +31,7 @@ const markdownHeadingLevelStartAtInvalidValue = warnOnce(
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
 
 function normalizeAnnouncementTransport(announcementTransport: unknown): StrictStyleOptions['announcementTransport'] {
-  if (is(picklist(['auto', 'aria-notify', 'live-region']), announcementTransport)) {
+  if (is(picklist(['aria-notify', 'live-region']), announcementTransport)) {
     return announcementTransport;
   }
 

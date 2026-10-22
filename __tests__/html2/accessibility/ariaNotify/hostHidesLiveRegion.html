@@ -2,8 +2,12 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <!-- Shows the live region, so the snapshot shows the copy the announcements are computed from. -->
-    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* The host page hides the live region of Web Chat from everyone, including screen readers. */
+      .webchat__live-region {
+        display: none !important;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -39,61 +43,39 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()`, and keeps the live region copy, so it can be seen in the snapshot.
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,
             store,
-            styleOptions: {
-              announcementTransport: 'aria-notify',
-              hideSendBox: true,
-              internalLiveRegionFadeAfter: 60000
-            }
+            styleOptions: { announcementTransport: 'aria-notify', hideSendBox: true }
           })
         );
 
         await pageConditions.uiConnected();
 
-        // The connectivity notification is announced first, see `message.html`.
-        await waitFor(() => expect(ariaNotify).toHaveBeenCalledTimes(1));
-        ariaNotify.mockClear();
-
-        // WHEN: The bot sends an Adaptive Card with an image, as in `liveRegion/attachment/adaptiveCard.imageAndBlocks.html`.
+        // WHEN: The bot sends a message.
         await directLine.emulateIncomingActivity({
-          attachments: [
-            {
-              content: {
-                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-                body: [
-                  {
-                    text: '![Bot avatar](/assets/bot-avatar.jpg) Weather today<div>Sunny</div><p>Umbrella: no</p>',
-                    type: 'TextBlock',
-                    wrap: true
-                  }
-                ],
-                type: 'AdaptiveCard',
-                version: '1.5'
-              },
-              contentType: 'application/vnd.microsoft.card.adaptive'
-            }
-          ],
           from: { role: 'bot' },
+          text: 'Hello, **World**!',
           type: 'message'
         });
 
         await pageConditions.numActivitiesShown(1);
-        await waitFor(() =>
-          expect(pageElements.activities()[0].querySelector('img[alt="Bot avatar"]').complete).toBe(true)
-        );
 
-        // THEN: The card is announced once, with the text of its live region copy: the image alt text and the blocks.
+        // THEN: The message is still announced, on the root element of Web Chat, which the host page did not hide.
         await waitFor(() =>
           expect(ariaNotify.mock.calls).toEqual([
-            ['Bot said A card Bot avatar Weather today Sunny Umbrella: no', { priority: 'normal' }]
+            ['connected', { priority: 'normal' }], // The connectivity notification, see `message.html`.
+            ['Bot said Hello, World!', { priority: 'normal' }]
           ])
         );
+        expect(ariaNotify.mock.contexts).toEqual([
+          document.querySelector('.webchat'),
+          document.querySelector('.webchat')
+        ]);
 
-        // THEN: The hidden live region (top) shows "A card Bot avatar" and the three lines, as announced; the transcript shows the card with the image and three lines.
+        // THEN: The live region is not shown (hidden by the host page); the transcript shows the message.
         await host.snapshot('local');
       });
     </script>

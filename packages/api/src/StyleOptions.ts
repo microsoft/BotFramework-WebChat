@@ -240,14 +240,14 @@ type StrictStyleOptions = {
    * How Web Chat sends announcements to screen readers, such as new messages and errors:
    *
    * - `'live-region'` - Renders them in a live region (`aria-live="polite"`) inside Web Chat
-   * - `'aria-notify'` - Calls `ariaNotify()` on the Web Chat root element, the live region is not used; if the browser does not support `ariaNotify()`, nothing is announced
-   * - `'auto'` - `'aria-notify'` if the browser supports `ariaNotify()`, otherwise `'live-region'`
+   * - `'aria-notify'` - Calls `ariaNotify()` on the Web Chat root element instead, the live region is not used; falls back to `'live-region'` if the browser does not support `ariaNotify()`
    *
-   * The host page can hide the live region from screen readers, for example with `aria-hidden` or `aria-modal` elsewhere; `ariaNotify()` does not depend on it.
+   * With `'aria-notify'`, announcements continue when the host page hides only the live region (`.webchat__live-region`) from screen readers.
+   * Like the live region, `ariaNotify()` announces nothing when the Web Chat root element is hidden from screen readers.
    *
    * @default 'live-region'
    */
-  announcementTransport: 'auto' | 'aria-notify' | 'live-region' | undefined;
+  announcementTransport: 'aria-notify' | 'live-region' | undefined;
 
   /**
    * Markdown styling

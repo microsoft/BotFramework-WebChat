@@ -38,12 +38,16 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it, and keeps the live region copy, so it can be checked and seen in the snapshot.
+        // GIVEN: Web Chat is set to send announcements via `ariaNotify()`, and keeps the live region copy, so it can be checked and seen in the snapshot.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,
             store,
-            styleOptions: { announcementTransport: 'auto', hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+            styleOptions: {
+              announcementTransport: 'aria-notify',
+              hideSendBox: true,
+              internalLiveRegionFadeAfter: 60000
+            }
           })
         );
 
@@ -58,7 +62,7 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: The live region is used as today: polite and visible to screen readers.
+        // THEN: Web Chat falls back to the live region, as today: polite and visible to screen readers.
         expect(pageElements.liveRegion().getAttribute('aria-live')).toBe('polite');
         expect(pageElements.liveRegion().hasAttribute('aria-hidden')).toBe(false);
 

@@ -38,44 +38,41 @@
         const ariaNotify = spyOn(Element.prototype, 'ariaNotify').mockImplementation(() => {});
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const root = createRoot(document.getElementById('webchat'));
+        const renderWebChat = announcementTransport =>
+          root.render(
+            createElement(ReactWebChat, {
+              directLine,
+              store,
+              styleOptions: { announcementTransport, hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+            })
+          );
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()` when the browser supports it, and keeps the live region copy, so it can be seen in the snapshot.
-        createRoot(document.getElementById('webchat')).render(
-          createElement(ReactWebChat, {
-            directLine,
-            store,
-            styleOptions: { announcementTransport: 'auto', hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
-          })
-        );
+        // GIVEN: Web Chat sends announcements via the live region, and keeps the live region copy, so it can be seen in the snapshot.
+        renderWebChat('live-region');
 
         await pageConditions.uiConnected();
 
-        // WHEN: The bot sends a message.
-        await directLine.emulateIncomingActivity({
-          from: { role: 'bot' },
-          text: 'Hello, **World**!',
-          type: 'message'
-        });
-
+        // GIVEN: The bot sent a message, read from the live region.
+        await directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'First message', type: 'message' });
         await pageConditions.numActivitiesShown(1);
+        await waitFor(() => expect(pageElements.liveRegion().textContent).toContain('First message'));
 
-        // THEN: The message is announced once, with the text of its live region copy (without Markdown syntax), on the root element of Web Chat.
+        // WHEN: Web Chat is switched to send announcements via `ariaNotify()`.
+        renderWebChat('aria-notify');
+
+        await waitFor(() => expect(pageElements.liveRegion().getAttribute('aria-hidden')).toBe('true'));
+
+        // WHEN: The bot sends another message.
+        await directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Second message', type: 'message' });
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: Only the second message is announced: "connected" and the first message, already in the live region, are not repeated.
         await waitFor(() =>
-          expect(ariaNotify.mock.calls).toEqual([
-            ['connected', { priority: 'normal' }], // The connectivity notification, also queued to the live region today.
-            ['Bot said Hello, World!', { priority: 'normal' }]
-          ])
+          expect(ariaNotify.mock.calls).toEqual([['Bot said Second message', { priority: 'normal' }]])
         );
-        expect(ariaNotify.mock.contexts).toEqual([
-          document.querySelector('.webchat'),
-          document.querySelector('.webchat')
-        ]);
 
-        // THEN: The live region has no live semantics and is hidden from screen readers, so the message is announced once.
-        expect(pageElements.liveRegion().hasAttribute('aria-live')).toBe(false);
-        expect(pageElements.liveRegion().getAttribute('aria-hidden')).toBe('true');
-
-        // THEN: The hidden live region (top) shows "connected" and the message, the same text as announced; the transcript shows the message.
+        // THEN: The hidden live region (top) shows "connected" and both messages; the transcript shows both messages.
         await host.snapshot('local');
       });
     </script>

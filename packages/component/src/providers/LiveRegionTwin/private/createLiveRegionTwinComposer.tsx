@@ -37,10 +37,9 @@ type LiveRegionTwinComposerProps = Readonly<{
    * How static elements are announced, defaults to `'live-region'`:
    *
    * - `'live-region'` - rendered in the container with the `aria-live` attribute
-   * - `'aria-notify'` - their text is sent via `ariaNotify()` on the element of `ariaNotifyTargetRef`, the container has no live semantics
-   * - `'auto'` - `'aria-notify'` if the element of `ariaNotifyTargetRef` supports `ariaNotify()`, otherwise `'live-region'`
+   * - `'aria-notify'` - their text is sent via `ariaNotify()` on the element of `ariaNotifyTargetRef`, the container has no live semantics; `'live-region'` if the element does not support `ariaNotify()`
    */
-  announcementTransport?: 'auto' | 'aria-notify' | 'live-region' | undefined;
+  announcementTransport?: 'aria-notify' | 'live-region' | undefined;
 
   /** Element to call `ariaNotify()` on, such as the root element of Web Chat. */
   ariaNotifyTargetRef: RefObject<HTMLElement | null>;
