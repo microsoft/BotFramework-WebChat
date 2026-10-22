@@ -7,9 +7,8 @@
   <body>
     <main id="webchat"></main>
     <!--
-      TODO: Remove ".skip" from the file name when both are fixed:
-      - spyip/react-film#110: react-film, bundled in the static build, imports `render` from "react-dom", which React 19 no longer exports, so the static build cannot load.
-      - #5859: React 19 calls `useMemo()` twice in Strict Mode, which defines the same custom element twice and Web Chat renders nothing.
+      TODO: Remove ".skip" from the file name when spyip/react-film#110 is released and bumped:
+      react-film, bundled in the static build, imports `render` from "react-dom", which React 19 no longer exports, so the static build cannot load.
     -->
     <script type="importmap">
       {
