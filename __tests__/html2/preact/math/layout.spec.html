@@ -44,9 +44,9 @@
 <body>
   <template id="messages">
     <x-message>
-# Math Module Specification
+## Math Module Specification
 
-## Supported Delimiters
+### Supported Delimiters
 
 Mathematical expressions can be written using three different delimiter styles:
 
@@ -59,7 +59,7 @@ Mathematical expressions can be written using three different delimiter styles:
 > **Context-Sensitive Math** uses `$$...$$` delimiters  
 > Example: $$x^2$$
 
-## Delimiter Behavior
+### Delimiter Behavior
 
 The `\(...\)` delimiter always renders inline, regardless of position:
 
@@ -93,7 +93,7 @@ The `$$...$$` delimiter adapts based on line breaks:
 > Result:
 > $$\frac{7}{8}$$
 
-## Delimiter Behavior
+### Delimiter Behavior
 
 The `\(...\)` and `\[...\]` delimiters can be empty and will render as empty formulas:
 
@@ -110,7 +110,7 @@ The `$$...$$` delimiter requires content to render:
 This guarantees that accidental double dollar signs in text won't be misinterpreted as math formulas.
     </x-message>
     <x-message snapshot-ignore>
-## Unclosed Formula Behavior
+### Unclosed Formula Behavior
 
 When processing mathematical formulas, especially during streaming, unclosed formulas are handled according to specific rules:
 
@@ -150,7 +150,7 @@ When processing mathematical formulas, especially during streaming, unclosed for
 > \frac{1}{2}
   </x-message>
   <x-message snapshot-ignore>
-## Escaping Characters
+### Escaping Characters
 
 Special characters can be escaped to prevent them from being interpreted as formula delimiters:
 
@@ -190,7 +190,7 @@ Special characters can be escaped to prevent them from being interpreted as form
 This escaping system allows for flexible inclusion of delimiters in regular text while maintaining clear rules for formula detection.  </x-message>
   </x-message>
   <x-message>
-## Formula Closure and Nested Content
+### Formula Closure and Nested Content
 
 For any opening `$$`, the next occurrence of `$$` is always treated as its closing delimiter, regardless of content between them:
 

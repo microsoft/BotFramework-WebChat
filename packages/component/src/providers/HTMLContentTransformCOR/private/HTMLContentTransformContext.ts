@@ -11,7 +11,6 @@ export type HTMLContentTransformRequest = Readonly<{
   codeBlockTagName: string;
   documentFragment: DocumentFragment;
   externalLinkAlt: string;
-  markdownHeadingLevelOffset: number;
 }>;
 
 export type HTMLContentTransformFunction = (request: HTMLContentTransformRequest) => DocumentFragment;

@@ -108,7 +108,7 @@
   }
 }
 
-/* Headings are lower than written in Markdown (`styleOptions.markdownHeadingLevelOffset`), keep the look of the level written. */
+/* Headings can have a different level than written in Markdown (`styleOptions.markdownHeadingLevelStartAt`), keep the look of the level written. */
 /* Same as the browser's default heading styles, with no specificity, so any other style wins. */
 :where(:global(.webchat) .render-markdown [role='heading']) {
   font-weight: bold;

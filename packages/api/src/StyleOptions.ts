@@ -242,15 +242,18 @@ type StrictStyleOptions = {
   markdownRespectCRLF: boolean | undefined;
 
   /**
-   * Number of levels to lower Markdown headings by, as the page owns the level-one heading.
+   * Level of the top Markdown heading in each message or Adaptive Cards `TextBlock`, an integer from 1 to 6.
    *
-   * Defaults to `1`: `#` renders as `<h2>`. `0` keeps the levels as written.
+   * Defaults to `2`, as the page owns the level-one heading. Other headings keep their depth below the top heading:
+   * with the default, `#` and `##` render as `<h2>` and `<h3>`, so do `##` and `###`.
+   * Levels beyond 6 render as `<div aria-level="7" role="heading">` and so on.
    *
-   * Levels beyond 6 render as `<div aria-level="7" role="heading">` and so on, e.g. `######` with the default.
+   * Also sets the level of Adaptive Cards `TextBlock` with `style: "heading"` (`textBlock.headingLevel` in the default host config),
+   * Markdown headings inside it render as text.
    *
    * New in 4.19.3.
    */
-  markdownHeadingLevelOffset: number | undefined;
+  markdownHeadingLevelStartAt: number | undefined;
 
   /**
    * Render HTML inside Markdown.

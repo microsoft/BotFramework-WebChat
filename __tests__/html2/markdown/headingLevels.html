@@ -32,7 +32,7 @@
           .querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
         const headingNodes = await Promise.all(Array.from(headingElements, testHelpers.getAccessibilityNode));
 
-        // THEN: Headings start at level 2 because Web Chat is a component and the page owns level 1, "######" is level 7.
+        // THEN: The top heading is level 2 because the page owns level 1, the others keep their depth, "######" is level 7.
         expect(
           headingNodes.map(({ name, properties, role }) => [
             role.value,

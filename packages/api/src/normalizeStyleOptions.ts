@@ -1,5 +1,5 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
-import { integer, is, minValue, number, pipe } from 'valibot';
+import { integer, is, maxValue, minValue, number, pipe } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
@@ -20,8 +20,10 @@ const hideUploadButtonDeprecation = warnOnce(
   '`styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.'
 );
 
-const markdownHeadingLevelOffsetInvalidValue = warnOnce(
-  '"markdownHeadingLevelOffset" must be an integer of 0 or more, will set to 1.'
+const MAX_HTML_HEADING_LEVEL = 6;
+
+const markdownHeadingLevelStartAtInvalidValue = warnOnce(
+  '"markdownHeadingLevelStartAt" must be an integer from 1 to 6, will set to 2.'
 );
 
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
@@ -142,10 +144,15 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
 
-  if (!is(pipe(number(), integer(), minValue(0)), filledOptions.markdownHeadingLevelOffset)) {
-    typeof filledOptions.markdownHeadingLevelOffset === 'undefined' || markdownHeadingLevelOffsetInvalidValue();
+  if (
+    !is(
+      pipe(number(), integer(), minValue(1), maxValue(MAX_HTML_HEADING_LEVEL)),
+      filledOptions.markdownHeadingLevelStartAt
+    )
+  ) {
+    typeof filledOptions.markdownHeadingLevelStartAt === 'undefined' || markdownHeadingLevelStartAtInvalidValue();
 
-    filledOptions.markdownHeadingLevelOffset = defaultStyleOptions.markdownHeadingLevelOffset;
+    filledOptions.markdownHeadingLevelStartAt = defaultStyleOptions.markdownHeadingLevelStartAt;
   }
 
   if (slowConnectionAfter < 0) {
