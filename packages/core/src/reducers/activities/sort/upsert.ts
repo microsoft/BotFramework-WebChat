@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
+import deleteActivityByLocalId from './deleteActivityByLocalId';
 import computePartListTimestamp from './private/computePartListTimestamp';
 import computeSortedActivities from './private/computeSortedActivities';
 import getLogicalTimestamp from './private/getLogicalTimestamp';
@@ -62,6 +63,18 @@ const INITIAL_STATE = Object.freeze({
 
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   const activityLocalId = getLocalIdFromActivity(activity);
+  const existingActivity = state.activityMap.get(activityLocalId)?.activity;
+
+  // An update can leave, join, or move between HowTo groupings.
+  // Remove the previous revision first, otherwise it stays in its previous grouping and is shown twice.
+  if (
+    existingActivity &&
+    getPartGroupingMetadataMap(existingActivity).get('HowTo')?.groupingId !==
+      getPartGroupingMetadataMap(activity).get('HowTo')?.groupingId
+  ) {
+    return upsert(ponyfill, deleteActivityByLocalId(state, activityLocalId), activity);
+  }
+
   const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
   const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
