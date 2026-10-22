@@ -1,14 +1,15 @@
 import createContextAndHook from '../../createContextAndHook';
 
-type GroupState = Readonly<{
-  isCollapsed: boolean;
-}>;
+type GroupState = {
+  readonly isCollapsed: boolean;
+};
 
-type LogicalGrouping = Readonly<{
-  activityKeys: string[];
-  getGroupState?: () => GroupState;
-  key: string;
-}>;
+type LogicalGrouping = {
+  readonly activityKeys: readonly string[];
+  /** Compared by identity: pass the same object until the state changes, so `useGroupState()` does not re-render. */
+  readonly groupState?: GroupState | undefined;
+  readonly key: string;
+};
 
 type ActivityLogicalGroupingContextType = Readonly<{
   addLogicalGrouping: (grouping: LogicalGrouping) => void;
@@ -16,7 +17,8 @@ type ActivityLogicalGroupingContextType = Readonly<{
   getGroupState: (groupKey: string) => GroupState | undefined;
   getLogicalGroupKey: (activityKey: string) => string | undefined;
   removeLogicalGrouping: (key: string) => void;
-  subscribeLogicalGrouping: (listener: () => void) => () => void;
+  subscribeGroupState: (groupKey: string, listener: () => void) => () => void;
+  subscribeLogicalGroupKey: (activityKey: string, listener: () => void) => () => void;
 }>;
 
 const { contextComponentType, useContext } = createContextAndHook<ActivityLogicalGroupingContextType>(

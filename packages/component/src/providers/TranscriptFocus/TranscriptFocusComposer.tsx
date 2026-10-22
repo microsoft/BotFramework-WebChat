@@ -7,8 +7,9 @@ import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
-import { useGetGroupState, useGetLogicalGroupKey } from '../ActivityLogicalGrouping';
-import useGetLogicalGroupBoundaries from '../ActivityLogicalGrouping/useGetLogicalGroupBoundaries';
+import useGetGroupState from '../ActivityLogicalGrouping/private/useGetGroupState';
+import useGetLogicalGroupKey from '../ActivityLogicalGrouping/private/useGetLogicalGroupKey';
+import useGetLogicalGroupBoundaries from '../ActivityLogicalGrouping/private/useGetLogicalGroupBoundaries';
 import useRenderingActivityKeys from '../RenderingActivities/useRenderingActivityKeys';
 import TranscriptFocusContext, { type TranscriptFocusContextType } from './private/Context';
 
@@ -29,6 +30,8 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
   >();
   const [renderingActivityKeys] = useRenderingActivityKeys();
   const [, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
+  // Keyboard navigation looks up arbitrary activities and groups while handling a key press, and nothing here renders from them.
+  // Thus, read them at call time instead of subscribing with `useLogicalGroupKey()` and `useGroupState()`.
   const getGroupBoundaries = useGetLogicalGroupBoundaries();
   const getGroupKeyByActivityKey = useGetLogicalGroupKey();
   const getGroupState = useGetGroupState();

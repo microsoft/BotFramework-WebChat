@@ -13,7 +13,7 @@ import StackedLayoutStatus from '../../../../../Activity/StackedLayoutStatus';
 import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
 import useActiveDescendantId from '../../../../../providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
-import useGetGroupDescendantIdByGroupKey from '../../../../../providers/TranscriptFocus/useGetGroupDescendantIdByGroupKey';
+import useGroupDescendantIdByGroupKey from '../../../../../providers/TranscriptFocus/useGroupDescendantIdByGroupKey';
 import FocusTrap from '../../../../../Transcript/FocusTrap';
 import useRenderActivityProps from '../../../../../Transcript/hooks/useRenderActivityProps';
 import {
@@ -68,7 +68,7 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
   const [activeDescendantId] = useActiveDescendantId();
 
   const focusByGroupKey = useFocusByGroupKey();
-  const groupingActivityDescendantId = useGetGroupDescendantIdByGroupKey()(groupKey);
+  const [groupingActivityDescendantId] = useGroupDescendantIdByGroupKey(groupKey);
 
   const focusSelf = useCallback<(withFocus?: boolean) => void>(
     (withFocus?: boolean) => focusByGroupKey(groupKey, withFocus),

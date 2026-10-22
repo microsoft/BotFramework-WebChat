@@ -72,7 +72,7 @@ describe('TranscriptFocusComposer - focusRelativeActivity', () => {
           const group = groups.get(groupKey) ?? {
             key: groupKey,
             activityKeys: [],
-            getGroupState: () => config.groupStates[groupKey]
+            groupState: config.groupStates[groupKey]
           };
 
           group.activityKeys.push(activityKey);

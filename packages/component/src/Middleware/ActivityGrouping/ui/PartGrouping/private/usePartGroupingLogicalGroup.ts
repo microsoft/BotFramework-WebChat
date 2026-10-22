@@ -1,6 +1,5 @@
 import random from 'math-random';
-import { useCallback, useLayoutEffect, useState } from 'react';
-import { useRefFrom } from 'use-ref-from';
+import { useLayoutEffect, useMemo, useState } from 'react';
 
 import { useAddLogicalGrouping, useRemoveLogicalGrouping } from '../../../../../providers/ActivityLogicalGrouping';
 
@@ -15,19 +14,19 @@ function usePartGroupingLogicalGroup({ activityKeys, isCollapsed }: UsePartGroup
   const addLogicalGrouping = useAddLogicalGrouping();
   const removeLogicalGrouping = useRemoveLogicalGrouping();
 
-  const isCollapsedRef = useRefFrom(isCollapsed);
-
-  const getGroupState = useCallback(() => ({ isCollapsed: isCollapsedRef.current }), [isCollapsedRef]);
+  // Same object until collapsed or expanded, so `useGroupState()` re-renders only then.
+  const groupState = useMemo(() => Object.freeze({ isCollapsed }), [isCollapsed]);
 
   // Adds the group in an effect, not while rendering: Strict Mode runs the cleanup below, then runs this effect again.
-  // A layout effect, so activities using `useLogicalGroupKey()` re-render before the browser paints.
+  // A layout effect, so activities using `useLogicalGroupKey()` or `useGroupState()` re-render before the browser paints.
+  // Collapsing or expanding the group updates it here, which notifies `useGroupState()`.
   useLayoutEffect(() => {
     addLogicalGrouping({
-      activityKeys: Array.from(activityKeys),
-      getGroupState,
+      activityKeys: Object.freeze(Array.from(activityKeys)),
+      groupState,
       key: partGroupKey
     });
-  }, [activityKeys, addLogicalGrouping, getGroupState, partGroupKey]);
+  }, [activityKeys, addLogicalGrouping, groupState, partGroupKey]);
 
   useLayoutEffect(() => () => removeLogicalGrouping(partGroupKey), [partGroupKey, removeLogicalGrouping]);
 
