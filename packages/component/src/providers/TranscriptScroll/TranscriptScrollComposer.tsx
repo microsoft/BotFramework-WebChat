@@ -4,7 +4,7 @@ import React, { memo, useMemo } from 'react';
 import { Composer as ReactScrollToBottomComposer } from 'react-scroll-to-bottom';
 import { args, function_, number, object, optional, pipe, readonly, returns, tuple } from 'valibot';
 
-import useNonce from '../../hooks/internal/useNonce';
+import useNonce from '../../hooks/internal/useNonce.js';
 
 const { useStyleOptions } = hooks;
 

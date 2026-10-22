@@ -5,16 +5,14 @@ type ScrollBehavior = 'auto' | 'smooth';
  *
  * Called before following new content, returns how many pixels to scroll down. `Infinity` means scroll to the end.
  */
-type Scroller = (
-  init: Readonly<{
-    offsetHeight: number;
-    scrollHeight: number;
-    scrollTop: number;
-  }>
-) => number;
+type Scroller = (init: {
+  readonly offsetHeight: number;
+  readonly scrollHeight: number;
+  readonly scrollTop: number;
+}) => number;
 
-type ScrollToOptions = Readonly<{
-  behavior?: ScrollBehavior | undefined;
-}>;
+type ScrollToOptions = {
+  readonly behavior?: ScrollBehavior | undefined;
+};
 
 export { type ScrollBehavior, type Scroller, type ScrollToOptions };

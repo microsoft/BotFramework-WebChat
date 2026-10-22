@@ -2,8 +2,8 @@ import { hooks } from 'botframework-webchat-api';
 import { useCallback, type MutableRefObject } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { type Scroller } from '../providers/TranscriptScroll';
-import { type ActivityElementMap } from './types';
+import { type Scroller } from '../providers/TranscriptScroll/index.js';
+import { type ActivityElementMap } from './types.js';
 
 const { useActivityKeys, useLastAcknowledgedActivityKey, useStyleOptions } = hooks;
 
