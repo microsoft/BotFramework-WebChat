@@ -3,6 +3,8 @@ import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
 import useReactCodeBlockClass from './customElements/CodeBlock';
 import useReactCodeBlockCopyButtonClass from './customElements/CodeBlockCopyButton';
+import CustomElementPortalScope from './CustomElementPortalScope';
+import CustomElementPortalRegistry from './private/CustomElementPortalRegistry';
 import CustomElementsContext from './private/CustomElementsContext';
 
 type CustomElementsComposerProps = Readonly<{
@@ -35,7 +37,9 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
     [hash]
   );
 
-  const [CodeBlockCopyButtonClass] = useReactCodeBlockCopyButtonClass();
+  const portalRegistry = useMemo(() => new CustomElementPortalRegistry(), []);
+
+  const [CodeBlockCopyButtonClass] = useReactCodeBlockCopyButtonClass(portalRegistry);
 
   const codeBlockCopyButtonTagName = useMemo(
     () => registerCustomElement('code-block-copy-button', CodeBlockCopyButtonClass),
@@ -50,11 +54,16 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
   );
 
   const context = useMemo(
-    () => Object.freeze({ codeBlockTagName, codeBlockCopyButtonTagName }),
-    [codeBlockTagName, codeBlockCopyButtonTagName]
+    () => Object.freeze({ codeBlockTagName, codeBlockCopyButtonTagName, portalRegistry }),
+    [codeBlockTagName, codeBlockCopyButtonTagName, portalRegistry]
   );
 
-  return <CustomElementsContext.Provider value={context}>{children}</CustomElementsContext.Provider>;
+  return (
+    <CustomElementsContext.Provider value={context}>
+      {children}
+      <CustomElementPortalScope />
+    </CustomElementsContext.Provider>
+  );
 };
 
 export default memo(CustomElementsComposer);

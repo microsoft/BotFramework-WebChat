@@ -1,21 +1,21 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import { type GlobalScopePonyfill } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
-import { custom, function_, is, object, optional, pipe, readonly, string } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import useAutoResetState from '../../../hooks/internal/useAutoResetState';
 import { ComponentIcon } from '../../../Icon';
 import testIds from '../../../testIds';
+import type CustomElementPortalRegistry from '../private/CustomElementPortalRegistry';
 import wrapAsCustomElement from './wrapAsCustomElement';
 
 import styles from './CodeBlockCopyButton.module.css';
 
-const { usePonyfill } = hooks;
+const { useLocalizer, usePonyfill } = hooks;
 
 // Same as the Copy button of activities.
 const COPIED_DURATION = 5_000;
@@ -23,12 +23,7 @@ const COPIED_DURATION = 5_000;
 const codeBlockCopyButtonPropsSchema = pipe(
   object({
     className: optional(string()),
-    'data-alt-copied': optional(string()),
-    'data-alt-copy': optional(string()),
-    'data-value': optional(string()),
-    ponyfill: custom<Pick<GlobalScopePonyfill, 'clearTimeout' | 'setTimeout'>>(value =>
-      is(object({ clearTimeout: function_(), setTimeout: function_() }), value)
-    )
+    'data-value': optional(string())
   }),
   readonly()
 );
@@ -36,17 +31,13 @@ const codeBlockCopyButtonPropsSchema = pipe(
 type CodeBlockCopyButtonProps = InferReactProps<typeof codeBlockCopyButtonPropsSchema>;
 
 function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
-  const {
-    className,
-    'data-alt-copied': copiedAlt,
-    'data-alt-copy': copyAlt,
-    'data-value': value,
-    ponyfill
-  } = validateProps(codeBlockCopyButtonPropsSchema, props);
+  const { className, 'data-value': value } = validateProps(codeBlockCopyButtonPropsSchema, props);
 
+  const [ponyfill] = usePonyfill();
   const [copied, setCopied] = useAutoResetState(false, COPIED_DURATION, ponyfill);
   const [disabled, setDisabled, disabledRef] = useStateWithRef(false);
   const classNames = useStyles(styles);
+  const localize = useLocalizer();
   const valueRef = useRefFrom(value);
 
   const handleClick = useCallback(() => {
@@ -95,14 +86,14 @@ function CodeBlockCopyButton(props: CodeBlockCopyButtonProps) {
     >
       <ComponentIcon
         aria-hidden={copied ? 'true' : undefined}
-        aria-label={copyAlt}
+        aria-label={localize('COPY_BUTTON_TEXT')}
         className={cx(classNames['code-block-copy-button__icon'], classNames['code-block-copy-button__icon--copy'])}
         icon={copied ? 'copy-code-checkmark' : 'copy-code'}
         role="img"
       />
       <div
         aria-hidden={copied ? undefined : 'true'}
-        aria-label={copiedAlt}
+        aria-label={localize('COPY_BUTTON_COPIED_TEXT')}
         className={cx(classNames['code-block-copy-button__icon'], 'code-block-copy-button__icon--copied')}
         role="img"
       />
@@ -114,30 +105,21 @@ CodeBlockCopyButton.displayName = 'CodeBlockCopyButton';
 
 const MemoizedCodeBlockCopyButton = memo(CodeBlockCopyButton);
 
-function createCodeBlockCopyButtonClass(ponyfill: CodeBlockCopyButtonProps['ponyfill']): typeof HTMLElement {
-  function CodeBlockCopyButtonWithPonyfill(props: Omit<CodeBlockCopyButtonProps, 'ponyfill'>) {
-    return <MemoizedCodeBlockCopyButton {...props} ponyfill={ponyfill} />;
-  }
-
-  CodeBlockCopyButtonWithPonyfill.displayName = 'CodeBlockCopyButtonWithPonyfill';
-
-  return wrapAsCustomElement(CodeBlockCopyButtonWithPonyfill, [
-    'className',
-    'data-alt-copied',
-    'data-alt-copy',
-    'data-value'
-  ]);
-}
-
 /**
  * Creates the custom element class of the copy button of code blocks.
  *
- * The custom element renders in its own React root, outside of the React tree of Web Chat, so the ponyfill is passed down.
+ * The button is rendered through a portal in the React tree of Web Chat.
  */
-export default function useReactCodeBlockCopyButtonClass(): readonly [typeof HTMLElement] {
-  const [ponyfill] = usePonyfill();
-
-  return useMemo(() => Object.freeze([createCodeBlockCopyButtonClass(ponyfill)] as const), [ponyfill]);
+export default function useReactCodeBlockCopyButtonClass(
+  portalRegistry: CustomElementPortalRegistry
+): readonly [typeof HTMLElement] {
+  return useMemo(
+    () =>
+      Object.freeze([
+        wrapAsCustomElement(MemoizedCodeBlockCopyButton, ['className', 'data-value'], portalRegistry)
+      ] as const),
+    [portalRegistry]
+  );
 }
 
 export { codeBlockCopyButtonPropsSchema, type CodeBlockCopyButtonProps };

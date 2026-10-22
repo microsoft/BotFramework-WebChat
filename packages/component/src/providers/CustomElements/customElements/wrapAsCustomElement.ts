@@ -1,85 +1,49 @@
-import { createElement, type ComponentType } from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
+import { type ComponentType } from 'react';
 
-const ConnectionState = {
-  DISCONNECTED: 0,
-  CONNECTED: 1,
-  PENDING: 2
-};
+import type CustomElementPortalRegistry from '../private/CustomElementPortalRegistry';
 
+/**
+ * Creates a custom element class that renders the React component inside the element, through a portal in the React tree of Web Chat.
+ *
+ * Attributes of the element are passed as props, `class` is passed as `className`.
+ */
 export default function wrapAsCustomElement<Props extends { [key: string]: string | undefined } & { children?: never }>(
   component: ComponentType<Props>,
-  propKeys: (keyof Props)[]
+  propKeys: readonly (keyof Props & string)[],
+  portalRegistry: CustomElementPortalRegistry
 ): typeof HTMLElement {
-  type AttributeName = keyof { [K in keyof Props as K extends 'className' ? 'class' : K]: Props[K] } & string;
-
-  const attributeNames = propKeys.map(key => (key === 'className' ? 'class' : key)) as AttributeName[];
+  const attributeNames = Object.freeze(propKeys.map(key => (key === 'className' ? 'class' : key)));
 
   return class ReactWrapper extends HTMLElement {
-    static get observedAttributes(): string[] {
+    static get observedAttributes(): readonly string[] {
       return attributeNames;
     }
 
-    #connected = ConnectionState.DISCONNECTED;
+    #getProps = (): { readonly [key: string]: string } =>
+      Object.freeze(
+        Object.fromEntries(
+          propKeys.flatMap(key => {
+            const value = this.getAttribute(key === 'className' ? 'class' : key);
 
-    constructor() {
-      super();
+            return typeof value === 'string' ? [[key, value]] : [];
+          })
+        )
+      );
 
-      const propMap = (this.#propMap = new Map<keyof Props, null | string | undefined>());
-
-      for (const key of attributeNames) {
-        const value = this.getAttribute(key);
-
-        typeof value === 'string' && propMap.set(key === 'class' ? 'className' : key, value);
-      }
+    #update() {
+      portalRegistry.update(this, component, this.#getProps);
     }
 
-    #propMap: Map<keyof Props, string>;
-
-    #getProps(): Props {
-      const propEntries: [keyof Props, string][] = Array.from<[keyof Props, string]>(this.#propMap.entries());
-
-      return Object.freeze(Object.fromEntries(propEntries) as Props);
-    }
-
-    attributeChangedCallback(name: AttributeName, _oldValue: string, newValue: string) {
-      if (name === 'class') {
-        name = 'className';
-      }
-
-      const prevProps = new Map(this.#propMap);
-
-      if (typeof newValue === 'string') {
-        this.#propMap.set(name, newValue);
-      } else {
-        this.#propMap.delete(name);
-      }
-
-      const areEqual =
-        prevProps.size === this.#propMap.size &&
-        Array.from(new Set(prevProps.keys()).union(new Set(this.#propMap))).every((key: string) =>
-          Object.is(prevProps.get(key), this.#propMap.get(key))
-        );
-
-      // For every attribute change, browser will call this function again. It is not batched.
-      !areEqual &&
-        this.#connected === ConnectionState.CONNECTED &&
-        render(createElement(component, this.#getProps()), this);
+    attributeChangedCallback() {
+      this.#update();
     }
 
     connectedCallback() {
-      this.#connected !== ConnectionState.PENDING && render(createElement(component, this.#getProps()), this);
-      this.#connected = ConnectionState.CONNECTED;
+      this.#update();
     }
 
-    async disconnectedCallback() {
-      this.#connected = ConnectionState.PENDING;
-      await Promise.resolve();
-      if (this.#connected === ConnectionState.PENDING) {
-        this.#connected = ConnectionState.DISCONNECTED;
-        unmountComponentAtNode(this);
-        this.replaceChildren();
-      }
+    disconnectedCallback() {
+      this.#update();
     }
   };
 }
