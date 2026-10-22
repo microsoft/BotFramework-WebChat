@@ -7,8 +7,6 @@ import { useRefFrom } from 'use-ref-from';
  *
  * Setting the value again restarts the interval.
  *
- * The ponyfill is passed in, so components rendered outside of the React tree of Web Chat (custom elements) can use it.
- *
  * @returns A tuple of the current value, and the function to set it.
  */
 export default function useAutoResetState<T>(

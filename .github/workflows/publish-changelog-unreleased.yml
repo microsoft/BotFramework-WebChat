@@ -49,9 +49,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
-          cache: npm
-
-      - run: npm clean-install --ignore-scripts --strict-peer-deps
 
       - name: Merge .changelog/ into CHANGELOG.md and push to changelog-unreleased
         env:
@@ -59,4 +56,4 @@ jobs:
           GIT_AUTHOR_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: github-actions[bot]
-        run: node ./scripts/changelog/publish.mjs --branch changelog-unreleased | tee --append "$GITHUB_STEP_SUMMARY"
+        run: node ./scripts/changelog/publish.mjs | tee --append "$GITHUB_STEP_SUMMARY"
