@@ -246,6 +246,8 @@ type StrictStyleOptions = {
    * Like the live region, `ariaNotify()` announces nothing when the Web Chat root element is hidden from screen readers.
    *
    * @default 'live-region'
+   *
+   * @deprecated This is an experimental style option and should not be used without understanding its risk.
    */
   announcementTransport: 'aria-notify' | 'live-region' | undefined;
 
