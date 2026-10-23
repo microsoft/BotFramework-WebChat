@@ -26,7 +26,9 @@ export default function createKeyedSubscription<K>(): KeyedSubscription<K> {
 
       return () => {
         listeners.delete(listener);
-        listeners.size || listenersByKey.delete(key);
+
+        // Deletes only this set: after it emptied, a later subscribe may have put a new set under the same key.
+        !listeners.size && listenersByKey.get(key) === listeners && listenersByKey.delete(key);
       };
     }
   });

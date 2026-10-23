@@ -78,15 +78,28 @@ scenario(
         expect(listeners.b).not.toHaveBeenCalled();
         expect(listeners.g).toHaveBeenCalledTimes(1);
       })
+      .when('"a" moves from group "g" to group "h"', ({ context, listeners }) => {
+        Object.values(listeners).forEach(listener => listener.mockClear());
+
+        context.addLogicalGrouping({ activityKeys: ['a'], groupState: EXPANDED, key: 'h' });
+      })
+      .then('only "a" should be notified, and its group key should read "h"', ({ context, listeners }) => {
+        expect(listeners.a).toHaveBeenCalledTimes(1);
+        expect(listeners.b).not.toHaveBeenCalled();
+        expect(listeners.g).not.toHaveBeenCalled();
+        expect(context.getLogicalGroupKey('a')).toBe('h');
+      })
       .when('group "g" is removed', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
         context.removeLogicalGrouping('g');
       })
-      .then('"a", "b" and "g" should be notified', ({ listeners }) => {
-        expect(listeners.a).toHaveBeenCalledTimes(1);
+      .then('"b" and "g" should be notified, "a" should stay in "h"', ({ context, listeners }) => {
+        expect(listeners.a).not.toHaveBeenCalled(); // "a" moved to "h" before "g" was removed.
         expect(listeners.b).toHaveBeenCalledTimes(1);
         expect(listeners.g).toHaveBeenCalledTimes(1);
+        expect(context.getLogicalGroupKey('a')).toBe('h');
+        expect(context.getLogicalGroupKey('b')).toBeUndefined();
       });
   },
   JestGlobals

@@ -36,3 +36,32 @@ scenario(
   },
   JestGlobals
 );
+
+scenario(
+  'createKeyedSubscription with an unsubscribe called twice',
+  bdd => {
+    bdd
+      .given('a listener of "a" unsubscribed, then a new listener of "a"', () => {
+        const { notify, subscribe } = createKeyedSubscription<string>();
+        const prevListener = JestGlobals.jest.fn();
+        const unsubscribePrev = subscribe('a', prevListener);
+
+        unsubscribePrev();
+
+        const nextListener = JestGlobals.jest.fn();
+
+        subscribe('a', nextListener);
+
+        return { nextListener, notify, prevListener, unsubscribePrev };
+      })
+      .when('the first unsubscribe is called again and "a" is notified', ({ notify, unsubscribePrev }) => {
+        unsubscribePrev();
+        notify(['a']);
+      })
+      .then('the new listener should still be called', ({ nextListener, prevListener }) => {
+        expect(nextListener).toHaveBeenCalledTimes(1);
+        expect(prevListener).not.toHaveBeenCalled();
+      });
+  },
+  JestGlobals
+);

@@ -11,15 +11,15 @@ type LogicalGrouping = {
   readonly key: string;
 };
 
-type ActivityLogicalGroupingContextType = Readonly<{
-  addLogicalGrouping: (grouping: LogicalGrouping) => void;
-  getGroupBoundaries: (groupKey: string) => [string | undefined, string | undefined];
-  getGroupState: (groupKey: string) => GroupState | undefined;
-  getLogicalGroupKey: (activityKey: string) => string | undefined;
-  removeLogicalGrouping: (key: string) => void;
-  subscribeGroupState: (groupKey: string, listener: () => void) => () => void;
-  subscribeLogicalGroupKey: (activityKey: string, listener: () => void) => () => void;
-}>;
+type ActivityLogicalGroupingContextType = {
+  readonly addLogicalGrouping: (grouping: LogicalGrouping) => void;
+  readonly getGroupBoundaries: (groupKey: string) => [string | undefined, string | undefined];
+  readonly getGroupState: (groupKey: string) => GroupState | undefined;
+  readonly getLogicalGroupKey: (activityKey: string) => string | undefined;
+  readonly removeLogicalGrouping: (key: string) => void;
+  readonly subscribeGroupState: (groupKey: string, listener: () => void) => () => void;
+  readonly subscribeLogicalGroupKey: (activityKey: string, listener: () => void) => () => void;
+};
 
 const { contextComponentType, useContext } = createContextAndHook<ActivityLogicalGroupingContextType>(
   'ActivityLogicalGroupingContext'
