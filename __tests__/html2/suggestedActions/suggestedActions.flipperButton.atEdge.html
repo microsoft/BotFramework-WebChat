@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const dir = new URLSearchParams(location.search).get('dir') || 'ltr';
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            dir,
+            directLine,
+            store,
+            styleOptions: {
+              // By default, a disabled flipper looks the same as an enabled one, make it lighter so the snapshots show it.
+              transcriptOverlayButtonBackgroundOnDisabled: 'rgba(0, 0, 0, .2)'
+            }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: 6 suggested actions, they overflow.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: [1, 2, 3, 4, 5, 6].map(index => ({
+              title: `Action ${index}`,
+              type: 'imBack',
+              value: `Action ${index}`
+            })),
+            to: []
+          },
+          text: 'Please select one of the actions below',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await waitFor(() =>
+          expect(document.querySelectorAll('.webchat__suggested-actions .carousel-flipper')).toHaveLength(2)
+        );
+
+        const filmstrip = document.querySelector('.webchat__suggested-actions__carousel-filmstrip');
+        const nextFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Next"]');
+        const previousFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Previous"]');
+
+        // THEN: At the start, the "Previous" flipper is disabled (lighter), the "Next" flipper is not.
+        // In RTL, the start is on the right side: "Previous" is on the right, "Next" on the left.
+        expect(previousFlipper.getAttribute('aria-disabled')).toBe('true');
+        expect(nextFlipper.hasAttribute('aria-disabled')).toBe(false);
+
+        await host.snapshot('local');
+
+        // WHEN: The suggested actions are scrolled to the end, e.g. by swiping.
+        // In RTL, `scrollLeft` is negative towards the end.
+        filmstrip.scrollLeft = dir === 'rtl' ? -filmstrip.scrollWidth : filmstrip.scrollWidth;
+
+        // THEN: At the end, the "Next" flipper is disabled (lighter), the "Previous" flipper is not.
+        await waitFor(() => expect(nextFlipper.getAttribute('aria-disabled')).toBe('true'));
+        expect(previousFlipper.hasAttribute('aria-disabled')).toBe(false);
+
+        await host.snapshot('local');
+
+        // WHEN: Focus on the send box and press SHIFT-TAB to move focus to the upload button.
+        pageObjects.focusSendBoxTextBox();
+        await host.sendShiftTab();
+
+        // THEN: The upload button has the focus.
+        expect(document.activeElement).toHaveProperty('title', 'Upload file');
+
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB.
+        await host.sendShiftTab();
+
+        // THEN: The disabled "Next" flipper has the focus: it is still in the tab order, with a focus indicator.
+        expect(document.activeElement).toBe(nextFlipper);
+        expect(nextFlipper.getAttribute('aria-disabled')).toBe('true');
+
+        await host.snapshot('local');
+
+        // WHEN: Press ENTER on the disabled "Next" flipper.
+        const { scrollLeft } = filmstrip;
+
+        await host.sendKeys('ENTER');
+
+        // THEN: Nothing scrolls, the "Next" flipper keeps the focus and stays disabled.
+        expect(filmstrip.scrollLeft).toBe(scrollLeft);
+        expect(document.activeElement).toBe(nextFlipper);
+        expect(nextFlipper.getAttribute('aria-disabled')).toBe('true');
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
