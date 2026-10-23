@@ -1,5 +1,5 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
-import { is, picklist } from 'valibot';
+import { fallback, is, optional, parse, picklist } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
@@ -31,13 +31,14 @@ const markdownHeadingLevelStartAtInvalidValue = warnOnce(
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
 
 function normalizeAnnouncementTransport(announcementTransport: unknown): StrictStyleOptions['announcementTransport'] {
-  if (is(picklist(['aria-notify', 'live-region']), announcementTransport)) {
-    return announcementTransport;
-  }
+  return parse(
+    fallback(optional(picklist(['aria-notify', 'live-region']), 'live-region'), () => {
+      announcementTransportInvalidValue();
 
-  typeof announcementTransport === 'undefined' || announcementTransportInvalidValue();
-
-  return defaultStyleOptions.announcementTransport;
+      return 'live-region';
+    }),
+    announcementTransport
+  );
 }
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
