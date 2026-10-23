@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: renderWebChat() of the IIFE build renders with the root passed</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      // React 19 has no UMD build: the IIFE build of Web Chat uses `window.React` and `window.ReactDOM` when they are set.
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { version } from 'react';
+      import ReactDOM from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: { renderWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const webChatElement = document.getElementById('webchat');
+
+        // GIVEN: React 19, which no longer has `ReactDOM.render()`.
+        expect(version).toBe('19.3.1');
+        expect(ReactDOM.render).toBeUndefined();
+
+        // WHEN: Web Chat is rendered by renderWebChat() into the element.
+        // THEN: It throws, asking for a root: React 19 removed `ReactDOM.render()`.
+        expect(() => renderWebChat({ directLine, store }, webChatElement)).toThrow(
+          'renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
+        );
+
+        // WHEN: Web Chat is rendered by renderWebChat() with something that is neither an element nor a root.
+        // THEN: It throws.
+        expect(() => renderWebChat({ directLine, store }, {})).toThrow(
+          'renderWebChat() expects an HTMLElement or a root from createRoot().'
+        );
+
+        // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() instead of the element, without the send box, as the error says.
+        const root = createRoot(webChatElement);
+
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, root);
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+        await pageConditions.numActivitiesShown(1);
+
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+
+        // THEN: Web Chat shows the message without the send box.
+        await host.snapshot('local');
+
+        const transcript = pageElements.transcript();
+
+        // WHEN: renderWebChat() is called again with the same root, with the send box.
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, root);
+
+        // THEN: The send box appears.
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toBeTruthy());
+
+        // THEN: Web Chat is updated, not mounted again: the transcript is the same element.
+        expect(pageElements.transcript()).toBe(transcript);
+
+        // THEN: Web Chat shows the same message with the send box.
+        await host.snapshot('local');
+
+        // WHEN: The root is unmounted.
+        root.unmount();
+
+        // THEN: Web Chat is gone: it was rendered by the root passed.
+        expect(pageElements.transcript()).toBeFalsy();
+      });
+    </script>
+  </body>
+</html>

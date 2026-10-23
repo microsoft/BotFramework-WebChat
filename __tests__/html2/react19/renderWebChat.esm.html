@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>renderWebChat() renders with the root passed when ReactDOM.render() is unavailable (ESM build)</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!--
+      React 18 with "react-dom" emulating React 19 (no `ReactDOM.render()`).
+      TODO: Use React 19 when https://github.com/spyip/react-film/pull/110 is released and bumped: the static build cannot load with React 19 until then.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "./asset/reactDOMWithoutRender.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import ReactDOM from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const webChatElement = document.getElementById('webchat');
+
+        // GIVEN: "react-dom" without `ReactDOM.render()`, like React 19.
+        expect(ReactDOM.render).toBeUndefined();
+
+        // WHEN: Web Chat is rendered by renderWebChat() into the element.
+        // THEN: It throws, asking for a root: the page imports "react-dom/client", not Web Chat.
+        expect(() => renderWebChat({ directLine, store }, webChatElement)).toThrow(
+          'renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
+        );
+
+        // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() of the page, without the send box.
+        const root = createRoot(webChatElement);
+
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, root);
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+        await pageConditions.numActivitiesShown(1);
+
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+
+        // THEN: Web Chat shows the message without the send box.
+        await host.snapshot('local');
+
+        const transcript = pageElements.transcript();
+
+        // WHEN: renderWebChat() is called again with the same root, with the send box.
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, root);
+
+        // THEN: The send box appears.
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toBeTruthy());
+
+        // THEN: The same root is updated: the transcript is not mounted again.
+        expect(pageElements.transcript()).toBe(transcript);
+
+        // THEN: Web Chat shows the same message with the send box.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
