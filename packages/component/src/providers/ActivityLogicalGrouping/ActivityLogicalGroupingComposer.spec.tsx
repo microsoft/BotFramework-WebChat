@@ -51,7 +51,7 @@ scenario(
         return { context, listeners };
       })
       .when('group "g" is added with "a"', ({ context }) => {
-        context.addLogicalGrouping({ activityKeys: ['a'], groupState: EXPANDED, key: 'g' });
+        context.setLogicalGrouping('g', { activityKeys: ['a'], groupState: EXPANDED });
       })
       .then('"a" and "g" should be notified, not "b"', ({ listeners }) => {
         expect(listeners.a).toHaveBeenCalledTimes(1);
@@ -61,7 +61,7 @@ scenario(
       .when('group "g" is updated with "b" added, same state', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
-        context.addLogicalGrouping({ activityKeys: ['a', 'b'], groupState: EXPANDED, key: 'g' });
+        context.setLogicalGrouping('g', { activityKeys: ['a', 'b'], groupState: EXPANDED });
       })
       .then('only "b" should be notified', ({ listeners }) => {
         expect(listeners.a).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ scenario(
       .when('group "g" collapses', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
-        context.addLogicalGrouping({ activityKeys: ['a', 'b'], groupState: COLLAPSED, key: 'g' });
+        context.setLogicalGrouping('g', { activityKeys: ['a', 'b'], groupState: COLLAPSED });
       })
       .then('only "g" should be notified', ({ listeners }) => {
         expect(listeners.a).not.toHaveBeenCalled();
@@ -81,7 +81,7 @@ scenario(
       .when('"a" moves from group "g" to group "h"', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
-        context.addLogicalGrouping({ activityKeys: ['a'], groupState: EXPANDED, key: 'h' });
+        context.setLogicalGrouping('h', { activityKeys: ['a'], groupState: EXPANDED });
       })
       .then('only "a" should be notified, and its group key should read "h"', ({ context, listeners }) => {
         expect(listeners.a).toHaveBeenCalledTimes(1);

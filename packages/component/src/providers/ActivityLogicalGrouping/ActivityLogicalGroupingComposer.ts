@@ -42,13 +42,13 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
     [activityToGroupMapRef, logicalGroupKeySubscription]
   );
 
-  // Adding and removing notify `useGroupState()` and `useLogicalGroupKey()`, which re-render: call them from effects, never while rendering.
-  const addLogicalGrouping = useCallback(
-    (grouping: LogicalGrouping) => {
-      const prevGrouping = logicalGroupingsRef.current.get(grouping.key);
+  // Setting and removing notify `useGroupState()` and `useLogicalGroupKey()`, which re-render: call them from effects, never while rendering.
+  const setLogicalGrouping = useCallback(
+    (key: string, grouping: LogicalGrouping) => {
+      const prevGrouping = logicalGroupingsRef.current.get(key);
       const prevGroupingKeys = prevGrouping?.activityKeys ?? [];
 
-      logicalGroupingsRef.current.set(grouping.key, grouping);
+      logicalGroupingsRef.current.set(key, grouping);
 
       const toRemoveSet = new Set(prevGroupingKeys).difference(new Set(grouping.activityKeys));
       const toAddSet = new Set(grouping.activityKeys).difference(new Set(prevGroupingKeys));
@@ -57,14 +57,14 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
         new Map(
           [].concat(
             Array.from(activityToGroupMapRef.current).filter(
-              ([activityKey, groupKey]) => !!groupKey && (groupKey !== grouping.key || !toRemoveSet.has(activityKey))
+              ([activityKey, groupKey]) => !!groupKey && (groupKey !== key || !toRemoveSet.has(activityKey))
             ),
-            Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
+            Array.from(toAddSet).map(activityKey => [activityKey, key] as const)
           )
         )
       );
 
-      prevGrouping?.groupState !== grouping.groupState && groupStateSubscription.notify([grouping.key]);
+      prevGrouping?.groupState !== grouping.groupState && groupStateSubscription.notify([key]);
     },
     [activityToGroupMapRef, groupStateSubscription, logicalGroupingsRef, setActivityToGroupMap]
   );
@@ -104,22 +104,22 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
   const contextValue: ActivityLogicalGroupingContextType = useMemo(
     () =>
       Object.freeze({
-        addLogicalGrouping,
         getGroupBoundaries,
         getGroupState,
         getLogicalGroupKey,
         removeLogicalGrouping,
+        setLogicalGrouping,
         subscribeGroupState: groupStateSubscription.subscribe,
         subscribeLogicalGroupKey: logicalGroupKeySubscription.subscribe
       }),
     [
-      addLogicalGrouping,
       getGroupBoundaries,
       getGroupState,
       getLogicalGroupKey,
       groupStateSubscription,
       logicalGroupKeySubscription,
-      removeLogicalGrouping
+      removeLogicalGrouping,
+      setLogicalGrouping
     ]
   );
 

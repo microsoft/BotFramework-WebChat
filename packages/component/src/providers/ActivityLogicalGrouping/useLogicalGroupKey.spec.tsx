@@ -9,17 +9,17 @@ import { render } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 
 import ActivityLogicalGroupingComposer from './ActivityLogicalGroupingComposer';
-import useAddLogicalGrouping from './useAddLogicalGrouping';
 import useLogicalGroupKey from './useLogicalGroupKey';
+import useSetLogicalGrouping from './useSetLogicalGrouping';
 
 type Renders = { readonly a: (string | undefined)[]; readonly b: (string | undefined)[] };
 
 function Group({ activityKeys }: { readonly activityKeys: string[] }) {
-  const addLogicalGrouping = useAddLogicalGrouping();
+  const setLogicalGrouping = useSetLogicalGrouping();
 
   useLayoutEffect(() => {
-    addLogicalGrouping({ activityKeys, key: 'g' });
-  }, [activityKeys, addLogicalGrouping]);
+    setLogicalGrouping('g', { activityKeys });
+  }, [activityKeys, setLogicalGrouping]);
 
   return null;
 }
