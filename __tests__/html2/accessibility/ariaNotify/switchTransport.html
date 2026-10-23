@@ -39,12 +39,16 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const root = createRoot(document.getElementById('webchat'));
-        const renderWebChat = announcementTransport =>
+        const renderWebChat = assistiveTechnologyAnnouncementTransport =>
           root.render(
             createElement(ReactWebChat, {
               directLine,
               store,
-              styleOptions: { announcementTransport, hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+              styleOptions: {
+                assistiveTechnologyAnnouncementTransport,
+                hideSendBox: true,
+                internalLiveRegionFadeAfter: 60000
+              }
             })
           );
 

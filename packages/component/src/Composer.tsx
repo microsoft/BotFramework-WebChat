@@ -94,7 +94,7 @@ const ROOT_STYLE = {
 };
 
 const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIProps) => {
-  const [{ announcementTransport, internalLiveRegionFadeAfter }] = useStyleOptions();
+  const [{ assistiveTechnologyAnnouncementTransport, internalLiveRegionFadeAfter }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
@@ -138,7 +138,7 @@ const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIP
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
             <LiveRegionTwinComposer
-              announcementTransport={announcementTransport}
+              announcementTransport={assistiveTechnologyAnnouncementTransport}
               ariaNotifyTargetRef={rootRef}
               className="webchat__live-region"
               fadeAfter={internalLiveRegionFadeAfter}

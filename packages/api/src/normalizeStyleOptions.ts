@@ -4,8 +4,8 @@ import { fallback, is, optional, parse, picklist } from 'valibot';
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
 
-const announcementTransportInvalidValue = warnOnce(
-  '"announcementTransport" must be "aria-notify" or "live-region", will set to "live-region".'
+const assistiveTechnologyAnnouncementTransportInvalidValue = warnOnce(
+  '"assistiveTechnologyAnnouncementTransport" must be "aria-notify" or "live-region", will set to "live-region".'
 );
 
 const bubbleImageHeightDeprecation = warnOnce(
@@ -30,14 +30,16 @@ const markdownHeadingLevelStartAtInvalidValue = warnOnce(
 
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
 
-function normalizeAnnouncementTransport(announcementTransport: unknown): StrictStyleOptions['announcementTransport'] {
+function normalizeAssistiveTechnologyAnnouncementTransport(
+  assistiveTechnologyAnnouncementTransport: unknown
+): StrictStyleOptions['assistiveTechnologyAnnouncementTransport'] {
   return parse(
     fallback(optional(picklist(['aria-notify', 'live-region']), 'live-region'), () => {
-      announcementTransportInvalidValue();
+      assistiveTechnologyAnnouncementTransportInvalidValue();
 
       return 'live-region';
     }),
-    announcementTransport
+    assistiveTechnologyAnnouncementTransport
   );
 }
 
@@ -157,7 +159,9 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
 
-  filledOptions.announcementTransport = normalizeAnnouncementTransport(filledOptions.announcementTransport);
+  filledOptions.assistiveTechnologyAnnouncementTransport = normalizeAssistiveTechnologyAnnouncementTransport(
+    filledOptions.assistiveTechnologyAnnouncementTransport
+  );
 
   // Same as the type of `markdownHeadingLevelStartAt`.
   // eslint-disable-next-line no-magic-numbers
