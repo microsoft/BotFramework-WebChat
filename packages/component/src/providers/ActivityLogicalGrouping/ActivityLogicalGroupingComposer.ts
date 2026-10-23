@@ -1,10 +1,10 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { createElement, memo, useCallback, useMemo, useRef } from 'react';
+import { createElement, memo, useCallback, useMemo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
+import createKeyedStore from '../../hooks/internal/createKeyedStore';
 import ActivityLogicalGroupingContext, {
   type ActivityLogicalGroupingContextType,
-  type GroupState,
   type LogicalGrouping
 } from './private/ActivityLogicalGroupingContext';
 
@@ -20,71 +20,43 @@ type ActivityLogicalGroupingComposerProps = InferInput<typeof activityLogicalGro
 const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerProps) => {
   const { children } = validateProps(activityLogicalGroupingComposerPropsSchema, props);
 
-  const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
-  // A ref, not a state: part grouping adds itself while rendering, and its activities read their group while rendering.
-  const activityToGroupMapRef = useRef<ReadonlyMap<string, string | undefined>>(new Map());
+  // Both stores notify only the keys whose value changed.
+  const logicalGroupingStore = useMemo(() => createKeyedStore<LogicalGrouping>(), []);
+  const logicalGroupKeyStore = useMemo(() => createKeyedStore<string>(), []);
 
-  const addLogicalGrouping = useCallback(
-    (grouping: LogicalGrouping) => {
-      const prevGroupingKeys = logicalGroupingsRef.current.get(grouping.key)?.activityKeys ?? [];
+  // Removes the activity from the group, unless it has already moved to another group.
+  const leaveLogicalGrouping = useCallback(
+    (activityKey: string, key: string) =>
+      logicalGroupKeyStore.get(activityKey) === key && logicalGroupKeyStore.delete(activityKey),
+    [logicalGroupKeyStore]
+  );
 
-      logicalGroupingsRef.current.set(grouping.key, grouping);
+  // Setting and removing re-render the activities that subscribed: call them from effects, never while rendering.
+  const setLogicalGrouping = useCallback(
+    (key: string, grouping: LogicalGrouping) => {
+      logicalGroupingStore
+        .get(key)
+        ?.activityKeys.forEach(
+          activityKey => !grouping.activityKeys.includes(activityKey) && leaveLogicalGrouping(activityKey, key)
+        );
 
-      const toRemoveSet = new Set(prevGroupingKeys).difference(new Set(grouping.activityKeys));
-      const toAddSet = new Set(grouping.activityKeys).difference(new Set(prevGroupingKeys));
-
-      activityToGroupMapRef.current = new Map(
-        [].concat(
-          Array.from(activityToGroupMapRef.current).filter(([, value]) => !!value && !toRemoveSet.has(value)),
-          Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
-        )
-      );
+      logicalGroupingStore.set(key, grouping);
+      grouping.activityKeys.forEach(activityKey => logicalGroupKeyStore.set(activityKey, key));
     },
-    [activityToGroupMapRef]
+    [leaveLogicalGrouping, logicalGroupKeyStore, logicalGroupingStore]
   );
 
   const removeLogicalGrouping = useCallback(
     (key: string) => {
-      logicalGroupingsRef.current.delete(key);
-      activityToGroupMapRef.current = new Map([...activityToGroupMapRef.current].filter(([, value]) => value !== key));
+      logicalGroupingStore.get(key)?.activityKeys.forEach(activityKey => leaveLogicalGrouping(activityKey, key));
+      logicalGroupingStore.delete(key);
     },
-    [activityToGroupMapRef]
+    [leaveLogicalGrouping, logicalGroupingStore]
   );
 
-  const getLogicalGroupKey = useCallback(
-    (activityKey: string): string | undefined => activityToGroupMapRef.current.get(activityKey),
-    [activityToGroupMapRef]
-  );
-
-  const getGroupState = useCallback(
-    (groupKey: string): GroupState | undefined => {
-      const group = logicalGroupingsRef.current.get(groupKey);
-      return group?.getGroupState?.();
-    },
-    [logicalGroupingsRef]
-  );
-
-  const getGroupBoundaries = useCallback(
-    (groupKey: string): [string, string] => {
-      const group = logicalGroupingsRef.current.get(groupKey);
-      if (!group || !group.activityKeys.length) {
-        return [undefined, undefined];
-      }
-      // eslint-disable-next-line no-magic-numbers
-      return [group.activityKeys.at(0), group.activityKeys.at(-1)];
-    },
-    [logicalGroupingsRef]
-  );
-
-  const contextValue: ActivityLogicalGroupingContextType = useMemo(
-    () => ({
-      addLogicalGrouping,
-      getLogicalGroupKey,
-      getGroupState,
-      getGroupBoundaries,
-      removeLogicalGrouping
-    }),
-    [addLogicalGrouping, getLogicalGroupKey, getGroupState, getGroupBoundaries, removeLogicalGrouping]
+  const contextValue = useMemo<ActivityLogicalGroupingContextType>(
+    () => Object.freeze({ logicalGroupKeyStore, logicalGroupingStore, removeLogicalGrouping, setLogicalGrouping }),
+    [logicalGroupKeyStore, logicalGroupingStore, removeLogicalGrouping, setLogicalGrouping]
   );
 
   return createElement(ActivityLogicalGroupingContext.Provider, { value: contextValue }, children);
