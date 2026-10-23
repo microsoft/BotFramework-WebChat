@@ -35,7 +35,7 @@ function Carousel() {
 
 - Direction-agnostic: reading order comes from the computed `direction` of the scrollable element, with the standard RTL model (negative `scrollLeft`).
 - `atStart`, `atEnd` and `overflowing` have a 1-pixel tolerance, so fractional zoom does not leave them stale.
-- Updates on scroll and on resize of the scrollable or the item container (`ResizeObserver`): viewport resize, late image loads, added items.
+- Updates on scroll, on resize of the scrollable or of any item (`ResizeObserver`: viewport resize, late image loads; items can overflow the item container without resizing it), and when items are added or removed (`MutationObserver`).
 - `scrolling` is `true` until 500 ms after the last scroll event.
 - Scrolls with `behavior: 'smooth'`, or `'auto'` under `prefers-reduced-motion: reduce`. Repeated steps continue from where the running smooth scroll will end.
 - Only the scrollable element scrolls (`scrollTo()`, not `scrollIntoView()`), so the transcript does not move.

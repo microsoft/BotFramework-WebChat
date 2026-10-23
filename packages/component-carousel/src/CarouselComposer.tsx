@@ -102,11 +102,28 @@ function CarouselComposer(props: CarouselComposerProps) {
       pendingPositionRef.current = undefined;
     };
 
-    // Resizing the scrollable or the item container (viewport resize, late image load, added items) can change the edges.
+    // Resizing the scrollable or an item (viewport resize, late image load) can change the edges.
+    // Items are observed one by one: they can overflow the item container without resizing it.
     const resizeObserver = new ResizeObserver(update);
 
-    resizeObserver.observe(scrollable);
-    itemContainer && resizeObserver.observe(itemContainer);
+    const observe = () => {
+      resizeObserver.disconnect();
+      resizeObserver.observe(scrollable);
+
+      if (itemContainer) {
+        resizeObserver.observe(itemContainer);
+
+        for (const item of Array.from(itemContainer.children)) {
+          resizeObserver.observe(item);
+        }
+      }
+    };
+
+    // Items added or removed: observe the new set, the initial observations update the edges.
+    const mutationObserver = new MutationObserver(observe);
+
+    observe();
+    itemContainer && mutationObserver.observe(itemContainer, { childList: true });
 
     scrollable.addEventListener('pointerdown', handleUserScroll, { passive: true });
     scrollable.addEventListener('scroll', handleScroll, { passive: true });
@@ -114,6 +131,7 @@ function CarouselComposer(props: CarouselComposerProps) {
 
     return () => {
       clearTimeout(scrollingTimeout);
+      mutationObserver.disconnect();
       resizeObserver.disconnect();
 
       scrollable.removeEventListener('pointerdown', handleUserScroll);
