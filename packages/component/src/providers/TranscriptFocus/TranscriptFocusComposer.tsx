@@ -7,10 +7,10 @@ import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
-import { useGetGroupState, useGetLogicalGroupKey } from '../ActivityLogicalGrouping';
-import useGetLogicalGroupBoundaries from '../ActivityLogicalGrouping/useGetLogicalGroupBoundaries';
+import { useActivityLogicalGroupingContext } from '../ActivityLogicalGrouping/private/ActivityLogicalGroupingContext';
 import useRenderingActivityKeys from '../RenderingActivities/useRenderingActivityKeys';
 import TranscriptFocusContext, { type TranscriptFocusContextType } from './private/Context';
+import getGroupDescendantId from './private/getGroupDescendantId';
 
 type TranscriptFocusComposerProps = Readonly<{
   children?: ReactNode | undefined;
@@ -29,9 +29,20 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
   >();
   const [renderingActivityKeys] = useRenderingActivityKeys();
   const [, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
-  const getGroupBoundaries = useGetLogicalGroupBoundaries();
-  const getGroupKeyByActivityKey = useGetLogicalGroupKey();
-  const getGroupState = useGetGroupState();
+  // Keyboard navigation reads arbitrary activities and groups at event time and renders nothing from them: it does not subscribe.
+  const { logicalGroupKeyStore, logicalGroupingStore } = useActivityLogicalGroupingContext();
+  const getGroupKeyByActivityKey = logicalGroupKeyStore.get;
+  // The logical grouping carries `isCollapsed`, as the group state did.
+  const getGroupState = logicalGroupingStore.get;
+
+  const getGroupBoundaries = useCallback(
+    (groupKey: string): readonly [string | undefined, string | undefined] => {
+      const activityKeys = getGroupState(groupKey)?.activityKeys ?? [];
+
+      return Object.freeze([activityKeys.at(0), activityKeys.at(-1)] as const);
+    },
+    [getGroupState]
+  );
 
   // As we need to use IDREF for `aria-activedescendant`,
   // this prefix will differentiate multiple instances of transcript on the same page.
@@ -43,13 +54,8 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
   );
 
   const getGroupDescendantIdByGroupKey: (groupKey?: string) => string | undefined = useCallback(
-    (groupKey?: string) => groupKey && `webchat__transcript-focus-${prefix}__group-${groupKey}`,
+    (groupKey?: string) => getGroupDescendantId(prefix, groupKey),
     [prefix]
-  );
-
-  const getGroupDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
-    (activityKey?: string) => activityKey && getGroupDescendantIdByGroupKey(getGroupKeyByActivityKey(activityKey)),
-    [getGroupDescendantIdByGroupKey, getGroupKeyByActivityKey]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
@@ -404,7 +410,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedGroupKeyState: Object.freeze([rawFocusedActivityGroupKey]) as readonly [string],
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey
+      prefix
     }),
     [
       activeDescendantId,
@@ -414,7 +420,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedActivityKey,
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey,
+      prefix,
       rawFocusedActivityGroupKey,
       rawFocusedActivityKey
     ]
