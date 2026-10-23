@@ -1,14 +1,26 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type Context, type ReactNode } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type Context,
+  type ReactNode,
+  type RefObject
+} from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { type LiveRegionTwinContextType } from './LiveRegionTwinComposer';
 import LiveRegionTwinContainer from './LiveRegionTwinContainer';
+import isAriaNotifySupported from './isAriaNotifySupported';
 
 import type { StaticElement, StaticElementEntry } from './types';
 
 const { usePonyfill } = hooks;
 
+const DEFAULT_ANNOUNCEMENT_TRANSPORT = 'live-region';
 const DEFAULT_ARIA_LIVE = 'polite';
 const DEFAULT_FADE_AFTER = 1000;
 
@@ -22,6 +34,17 @@ type LiveRegionTwinComposerProps = Readonly<{
   /** Optional "aria-roledescription" attribute for the live region twin container. */
   'aria-roledescription'?: string;
 
+  /**
+   * How static elements are announced, defaults to `'live-region'`:
+   *
+   * - `'live-region'` - rendered in the container with the `aria-live` attribute
+   * - `'aria-notify'` - their text is sent via `ariaNotify()` on the element of `ariaNotifyTargetRef`, the container has no live semantics; `'live-region'` if the element does not support `ariaNotify()`
+   */
+  announcementTransport?: 'aria-notify' | 'live-region' | undefined;
+
+  /** Element to call `ariaNotify()` on, such as the root element of Web Chat. */
+  ariaNotifyTargetRef: RefObject<HTMLElement | null>;
+
   /** Optional "className" attribute for the live region twin container. */
   className?: string;
 
@@ -31,6 +54,8 @@ type LiveRegionTwinComposerProps = Readonly<{
    * When lowering this value, make sure screen reader can continue to pick up new static elements before fading out.
    *
    * If this prop is updated, it will be reflected in next queueing elements.
+   *
+   * Does not apply when notifying via `ariaNotify()`: static elements are removed right after they are announced.
    */
   fadeAfter?: number;
 
@@ -45,7 +70,7 @@ type LiveRegionTwinComposerProps = Readonly<{
 
 /**
  * Live region twin is an UI component for queueing texts or elements to the screen reader using
- * a container element with `aria-live` attribute set.
+ * a container element with `aria-live` attribute set, or `ariaNotify()` (see `announcementTransport`).
  *
  * After the text is rendered and queued, it will be removed to reduce burden on the DOM tree.
  * Currently, we assume the assistive technologies should pick up the text within 1 second of rendering.
@@ -56,9 +81,11 @@ type LiveRegionTwinComposerProps = Readonly<{
  */
 const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContextType>) => {
   const LiveRegionTwinComposer = ({
+    announcementTransport = DEFAULT_ANNOUNCEMENT_TRANSPORT,
     'aria-label': ariaLabel,
     'aria-live': ariaLive = DEFAULT_ARIA_LIVE,
     'aria-roledescription': ariaRoleDescription,
+    ariaNotifyTargetRef,
     children,
     className,
     fadeAfter = DEFAULT_FADE_AFTER,
@@ -67,10 +94,14 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
   }: LiveRegionTwinComposerProps) => {
     const [{ clearTimeout, setTimeout }] = usePonyfill();
     const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
-    const fadeAfterRef = useRefFrom(fadeAfter);
     const markAllAsRenderedTimeoutIdRef = useRef<any>();
     const nextKeyRef = useRef<number>(1);
+    // Falls back to the live region when the browser does not support `ariaNotify()`.
+    const transport =
+      announcementTransport === 'aria-notify' && isAriaNotifySupported() ? 'aria-notify' : 'live-region';
 
+    // When notifying, static elements are only rendered to compute the text to announce: no screen reader reads them, so they are removed right after.
+    const fadeAfterRef = useRefFrom(transport === 'aria-notify' ? 0 : fadeAfter);
     const staticElementEntriesRef = useRefFrom(staticElementEntries);
 
     // This function is called by an effect hook `useMarkAllAsRenderedEffect`, it must be designed with converging in mind.
@@ -138,9 +169,11 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
           aria-label={ariaLabel}
           aria-live={ariaLive}
           aria-roledescription={ariaRoleDescription}
+          ariaNotifyTargetRef={ariaNotifyTargetRef}
           className={className}
           role={role}
           textElementClassName={textElementClassName}
+          transport={transport}
         />
         {children}
       </Provider>
