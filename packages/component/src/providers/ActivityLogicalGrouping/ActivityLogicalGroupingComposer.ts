@@ -1,5 +1,5 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { createElement, memo, useCallback, useMemo, useState } from 'react';
+import { createElement, memo, useCallback, useMemo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import createKeyedStore from '../../hooks/internal/createKeyedStore';
@@ -21,8 +21,8 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
   const { children } = validateProps(activityLogicalGroupingComposerPropsSchema, props);
 
   // Both stores notify only the keys whose value changed.
-  const [logicalGroupingStore] = useState(() => createKeyedStore<LogicalGrouping>());
-  const [logicalGroupKeyStore] = useState(() => createKeyedStore<string>());
+  const logicalGroupingStore = useMemo(() => createKeyedStore<LogicalGrouping>(), []);
+  const logicalGroupKeyStore = useMemo(() => createKeyedStore<string>(), []);
 
   // Removes the activity from the group, unless it has already moved to another group.
   const leaveLogicalGrouping = useCallback(
