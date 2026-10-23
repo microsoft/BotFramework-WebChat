@@ -41,11 +41,13 @@
             flipper.getAttribute('aria-label')
           );
 
-        // GIVEN: 2 short suggested actions.
+        const longTitles = ['Yes, continue with the next step', 'No, go back to the main menu'];
+
+        // GIVEN: 2 long suggested actions.
         await directLine.emulateIncomingActivity({
           from: { role: 'bot' },
           suggestedActions: {
-            actions: ['Yes', 'No'].map(title => ({ title, type: 'imBack', value: title })),
+            actions: longTitles.map(title => ({ title, type: 'imBack', value: title })),
             to: []
           },
           text: 'Do you want to continue?',
@@ -55,21 +57,17 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.suggestedActionsShown();
 
-        // THEN: Both suggested actions fit, there are no flippers.
-        expect(getFlipperLabels()).toEqual([]);
+        // THEN: The suggested actions overflow, both flippers are shown.
+        // Starts long: before the first measurement, there are no flippers either, so "no flippers" proves nothing.
+        await waitFor(() => expect(getFlipperLabels()).toEqual(['Previous', 'Next']));
 
         await host.snapshot('local');
 
-        // WHEN: The bot replaces them with 2 longer suggested actions.
-        // The suggested action elements are reused and grow, their list keeps its width.
+        // WHEN: The bot replaces them with 2 short suggested actions.
         await directLine.emulateIncomingActivity({
           from: { role: 'bot' },
           suggestedActions: {
-            actions: ['Yes, continue with the next step', 'No, go back to the main menu'].map(title => ({
-              title,
-              type: 'imBack',
-              value: title
-            })),
+            actions: ['Yes', 'No'].map(title => ({ title, type: 'imBack', value: title })),
             to: []
           },
           text: 'Are you sure?',
@@ -77,11 +75,31 @@
         });
 
         await pageConditions.numActivitiesShown(2);
+        await waitFor(() => expect(pageElements.suggestedActions()[0].textContent).toBe('Yes'));
+
+        // THEN: Both suggested actions fit, the flippers are gone.
+        await waitFor(() => expect(getFlipperLabels()).toEqual([]));
+
+        await host.snapshot('local');
+
+        // WHEN: The bot replaces them with the 2 long suggested actions again.
+        // The suggested action elements are reused and grow, their list keeps its width.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: longTitles.map(title => ({ title, type: 'imBack', value: title })),
+            to: []
+          },
+          text: 'Really?',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
         await waitFor(() =>
           expect(pageElements.suggestedActions()[0].textContent).toBe('Yes, continue with the next step')
         );
 
-        // THEN: The suggested actions overflow, both flippers are shown.
+        // THEN: The suggested actions overflow again, both flippers are shown.
         await waitFor(() => expect(getFlipperLabels()).toEqual(['Previous', 'Next']));
 
         await host.snapshot('local');

@@ -1,7 +1,7 @@
 /*
  * Geometry, colors and timing are the same as react-film's, which rendered these flippers before.
- * The container sets the size with `--webchat__carousel-flipper--box-width` and `--webchat__carousel-flipper--size`,
- * and optionally the cursor with `--webchat__carousel-flipper--cursor`.
+ * The container can set the size with `--webchat__carousel-flipper--box-width` and `--webchat__carousel-flipper--size`
+ * (react-film's 60 and 40 pixels if not set), and the cursor with `--webchat__carousel-flipper--cursor`.
  */
 :global(.webchat) .carousel-flipper {
   background: transparent;
@@ -15,7 +15,7 @@
   top: 0;
   touch-action: none;
   user-select: none;
-  width: var(--webchat__carousel-flipper--box-width);
+  width: var(--webchat__carousel-flipper--box-width, 60px);
   z-index: 1;
 
   &.carousel-flipper--next {
@@ -49,7 +49,7 @@
     .carousel-flipper__slider {
       /* The previous flipper slides towards inline-start, the next flipper towards inline-end. */
       --webchat__carousel-flipper__slider--offset: calc(
-        (var(--webchat__carousel-flipper--box-width) + var(--webchat__carousel-flipper--size)) / -2
+        (var(--webchat__carousel-flipper--box-width, 60px) + var(--webchat__carousel-flipper--size, 40px)) / -2
       );
 
       transition-delay: 1s;
@@ -73,22 +73,14 @@
     color: var(--webchat__color--transcript-overlay-button);
     font-family: 'Consolas', monospace;
     font-size: 16px;
-    height: var(--webchat__carousel-flipper--size);
-    line-height: var(--webchat__carousel-flipper--size);
+    height: var(--webchat__carousel-flipper--size, 40px);
+    line-height: var(--webchat__carousel-flipper--size, 40px);
     outline: 0;
     overflow: hidden;
     position: relative;
     transition-duration: 100ms;
     transition-property: background-color;
-    width: var(--webchat__carousel-flipper--size);
-  }
-
-  &:disabled,
-  &[aria-disabled='true'] {
-    .carousel-flipper__body {
-      background-color: var(--webchat__background--transcript-overlay-button-disabled);
-      color: var(--webchat__color--transcript-overlay-button-disabled);
-    }
+    width: var(--webchat__carousel-flipper--size, 40px);
   }
 
   &:focus .carousel-flipper__body {
@@ -101,6 +93,15 @@
     background-color: var(--webchat__background--transcript-overlay-button-hover);
     color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
     transition-duration: 0s;
+  }
+
+  /* After focus and hover: a focused disabled flipper keeps its disabled look, with the focus indicator. */
+  &:disabled,
+  &[aria-disabled='true'] {
+    .carousel-flipper__body {
+      background-color: var(--webchat__background--transcript-overlay-button-disabled);
+      color: var(--webchat__color--transcript-overlay-button-disabled);
+    }
   }
 
   /* Two-tone focus indicator: visible against both the flipper and any content behind it. */

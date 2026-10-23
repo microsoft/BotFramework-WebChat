@@ -53,8 +53,9 @@
         await pageConditions.numActivitiesShown(1);
 
         // The suggested actions overflow, the flippers are shown after measuring the filmstrip.
+        // Deprecated `react-film__*` class name: still emitted for existing customizations.
         await waitFor(() =>
-          expect(document.querySelectorAll('.webchat__suggested-actions .carousel-flipper')).toHaveLength(2)
+          expect(document.querySelectorAll('.webchat__suggested-actions .react-film__flipper')).toHaveLength(2)
         );
 
         const nextFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Next"]');
@@ -104,6 +105,7 @@
         expect(document.activeElement).toBe(previousFlipper);
 
         // THEN: The "Previous" flipper shows a two-tone focus indicator, the "Next" flipper does not.
+        // At the start, "Previous" is disabled: it keeps its normal colors (same as enabled by default), not the darker focus ones.
         await host.snapshot('local');
       });
     </script>

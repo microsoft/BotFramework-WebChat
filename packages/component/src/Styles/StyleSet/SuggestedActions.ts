@@ -28,14 +28,21 @@ export default function createSuggestedActionsStyle({
       position: 'relative',
 
       '&.webchat__suggested-actions--carousel-layout': {
-        // Read by the carousel flippers (`packages/component/src/Carousel/CarouselFlipper.module.css`).
-        '--webchat__carousel-flipper--box-width': `${suggestedActionsCarouselFlipperBoxWidth}px`,
+        // Read by the carousel flippers (`packages/component/src/Carousel/CarouselFlipper.module.css`), which fall back to
+        // react-film's 60 and 40 pixels when not numbers, as react-film did.
+        '--webchat__carousel-flipper--box-width':
+          typeof suggestedActionsCarouselFlipperBoxWidth === 'number'
+            ? `${suggestedActionsCarouselFlipperBoxWidth}px`
+            : undefined,
         // Same as react-film, which rendered these flippers before: `undefined` is a pointer, empty means unset.
         '--webchat__carousel-flipper--cursor':
           typeof suggestedActionsCarouselFlipperCursor === 'undefined'
             ? 'pointer'
             : suggestedActionsCarouselFlipperCursor || undefined,
-        '--webchat__carousel-flipper--size': `${suggestedActionsCarouselFlipperSize}px`,
+        '--webchat__carousel-flipper--size':
+          typeof suggestedActionsCarouselFlipperSize === 'number'
+            ? `${suggestedActionsCarouselFlipperSize}px`
+            : undefined,
 
         '& .webchat__suggested-actions__carousel': {
           paddingBottom: paddingRegular / 2,
@@ -49,13 +56,6 @@ export default function createSuggestedActionsStyle({
           },
 
           '& .carousel-flipper': {
-            '&:disabled, &[aria-disabled="true"]': {
-              '& .carousel-flipper__body': {
-                backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
-                color: transcriptOverlayButtonColorOnDisabled
-              }
-            },
-
             '&:focus .carousel-flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
               color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
@@ -73,6 +73,14 @@ export default function createSuggestedActionsStyle({
             '&:hover .carousel-flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnHover,
               color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
+            },
+
+            // After focus and hover: a focused disabled flipper keeps its disabled look, with the focus indicator.
+            '&:disabled, &[aria-disabled="true"]': {
+              '& .carousel-flipper__body': {
+                backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+                color: transcriptOverlayButtonColorOnDisabled
+              }
             },
 
             '& .carousel-flipper__body': {
@@ -124,11 +132,11 @@ export default function createSuggestedActionsStyle({
         '& .carousel-flipper + .webchat__suggested-actions__carousel-filmstrip .webchat__suggested-actions__carousel-item':
           {
             '&:first-child': {
-              paddingInlineStart: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+              paddingInlineStart: `calc(var(--webchat__carousel-flipper--size, 40px) + ${paddingRegular * 1.5}px)`
             },
 
             '&:last-child': {
-              paddingInlineEnd: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+              paddingInlineEnd: `calc(var(--webchat__carousel-flipper--size, 40px) + ${paddingRegular * 1.5}px)`
             }
           }
       },
