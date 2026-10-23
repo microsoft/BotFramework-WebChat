@@ -109,6 +109,80 @@ scenario(
       .then('the reader should re-render with the missed value', ({ store }) =>
         expect(store.renders.a).toStrictEqual([undefined, 'missed'])
       );
+
+    bdd
+      .given('a reader of "a", "a" is "1" and "b" is "2"', () => {
+        const container = document.createElement('div');
+        const store = createStore();
+
+        store.values.set('a', '1');
+        store.values.set('b', '2');
+
+        act(() => {
+          render(<MemoizedReader store={store} valueKey="a" />, container);
+        });
+
+        return { container, store };
+      })
+      .when('the reader switches to "b"', ({ container, store }) => {
+        act(() => {
+          render(<MemoizedReader store={store} valueKey="b" />, container);
+        });
+      })
+      .then('the reader should render "2" from its first render with "b"', ({ store }) => {
+        expect(store.renders.a).toStrictEqual(['1']);
+        // Re-renders once: its state holds "1" until the re-check after subscribing to "b".
+        expect(store.renders.b).toStrictEqual(['2', '2']);
+      })
+      .when('"a" changes and is notified', ({ store }) => {
+        store.values.set('a', '3');
+
+        act(() => store.subscription.notify(['a']));
+      })
+      .then('the reader should not re-render, it unsubscribed from "a"', ({ store }) =>
+        expect(store.renders.b).toStrictEqual(['2', '2'])
+      )
+      .when('"b" changes and is notified', ({ store }) => {
+        store.values.set('b', '4');
+
+        act(() => store.subscription.notify(['b']));
+      })
+      .then('the reader should re-render with the new value of "b"', ({ store }) =>
+        expect(store.renders.b).toStrictEqual(['2', '2', '4'])
+      );
+
+    bdd
+      .given('a reader of a value which is a function', () => {
+        const container = document.createElement('div');
+        const renders: (() => void)[] = [];
+        const subscription = createKeyedSubscription<string>();
+        const values = { current: JestGlobals.jest.fn() };
+        const getValue = () => values.current;
+
+        function FunctionReader() {
+          renders.push(useKeyedSubscriptionValue(subscription.subscribe, 'a', getValue)[0]);
+
+          return null;
+        }
+
+        act(() => {
+          render(<FunctionReader />, container);
+        });
+
+        return { initialValue: values.current, renders, subscription, values };
+      })
+      .when('the value changes to another function and is notified', ({ subscription, values }) => {
+        values.current = JestGlobals.jest.fn();
+
+        act(() => subscription.notify(['a']));
+      })
+      .then('the reader should re-render with the new function', ({ initialValue, renders, values }) =>
+        expect(renders).toStrictEqual([initialValue, values.current])
+      )
+      .and('neither function should be called, they are values, not state updaters', ({ initialValue, values }) => {
+        expect(initialValue).not.toHaveBeenCalled();
+        expect(values.current).not.toHaveBeenCalled();
+      });
   },
   JestGlobals
 );

@@ -1,10 +1,6 @@
-import { useLayoutEffect, useMemo, useReducer, useRef } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 
 import { type KeyedSubscription } from './createKeyedSubscription';
-
-function increment(value: number): number {
-  return value + 1;
-}
 
 /**
  * Returns `[getValue(key)]` and re-renders when its result changes (compared by identity) after `key` is notified.
@@ -16,32 +12,20 @@ export default function useKeyedSubscriptionValue<K, T>(
   key: K,
   getValue: (key: K) => T
 ): readonly [T] {
-  const [, forceRender] = useReducer(increment, 0);
-
   const value = getValue(key);
-  const valueRef = useRef<T>(value);
+
+  // The state only triggers re-renders, React skips them when the value did not change.
+  // Function forms: React would call a function `T` as an initializer or updater.
+  const [, setValue] = useState<T>(() => value);
 
   useLayoutEffect(() => {
-    valueRef.current = value;
-  });
-
-  useLayoutEffect(() => {
-    const handleChange = () => {
-      const nextValue = getValue(key);
-
-      if (nextValue !== valueRef.current) {
-        // Remembers the new value now, so another notification before the re-render does not re-render again.
-        valueRef.current = nextValue;
-
-        forceRender();
-      }
-    };
+    const handleChange = () => setValue(() => getValue(key));
 
     // Catches changes between render and subscription.
     handleChange();
 
     return subscribe(key, handleChange);
-  }, [forceRender, getValue, key, subscribe, valueRef]);
+  }, [getValue, key, subscribe]);
 
   return useMemo(() => Object.freeze([value] as const), [value]);
 }
