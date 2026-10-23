@@ -8,6 +8,7 @@ import React, {
   Fragment,
   memo,
   useCallback,
+  useLayoutEffect,
   useMemo,
   useRef,
   type KeyboardEventHandler,
@@ -493,15 +494,10 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
 
   const stickyChangedToTrue = prevSticky !== sticky && sticky;
 
-  useMemo(
-    () =>
-      stickyChangedToTrue &&
-      // TODO: [P2] Both `markActivityKeyAsRead` and `markAllAsAcknowledged` hook are setters of useState.
-      //       This means, in a render loop, we will be calling setter and will cause another re-render.
-      //       This is not trivial but we should think if there is a way to avoid this.
-      markAllAsAcknowledged(),
-    [markAllAsAcknowledged, stickyChangedToTrue]
-  );
+  // `markAllAsAcknowledged` is a setter of <ActivityAcknowledgementComposer>, it cannot be called while rendering this component.
+  useLayoutEffect(() => {
+    stickyChangedToTrue && markAllAsAcknowledged();
+  }, [markAllAsAcknowledged, stickyChangedToTrue]);
 
   // We need to check if `children` is `false` or not.
   // If `children` is `false`, React.Children.count(children) will still return 1 (truthy).
