@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: the IIFE build of the Fluent theme sends a message and shows the reply</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      // React 19 has no UMD build: the IIFE builds of Web Chat and the Fluent theme use `window.React` and `window.ReactDOM`.
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createElement, version } from 'react';
+      import ReactDOM from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: The Fluent theme rendered with React 19, which no longer has `ReactDOM.render()`.
+        expect(version).toBe('19.3.1');
+        expect(ReactDOM.render).toBeUndefined();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine, store }))
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: A message is sent through the send box.
+        const sendMessage = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Aloha!', { waitForSend: false })
+        );
+
+        await sendMessage.resolveAll();
+
+        // WHEN: The bot replies.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Aloha! How can I help?',
+          type: 'message'
+        });
+
+        // THEN: The transcript shows the message and the reply.
+        await pageConditions.numActivitiesShown(2);
+
+        const [sent, reply] = pageElements.activities();
+
+        expect(sent.textContent).toContain('Aloha!');
+        expect(reply.textContent).toContain('Aloha! How can I help?');
+
+        // THEN: The Fluent theme shows the message, the reply and its send box.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
