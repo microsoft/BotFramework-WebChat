@@ -74,7 +74,7 @@ Notes:
 
 -  Adaptive Cards unofficially supports RTL, and the changes above will also change the UI of your Adaptive Cards
 -  Markdown supports RTL.
--  The card carousel `react-film` supports RTL
+-  The card carousel supports RTL
 -  `video` and `audio` do not natively support RTL, and therefore videos and audio clips will continue to appear in LTR format.
 
 ## Completed code
