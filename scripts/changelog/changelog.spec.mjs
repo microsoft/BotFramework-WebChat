@@ -3,8 +3,7 @@ import { expect } from 'expect';
 import { readFile, writeFile } from 'fs/promises';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import { join } from 'path';
-import { consume, consumeChangelog, readFragments, setBuiltFrom } from './consume.mjs';
-import { parseFragment } from './fragment.mjs';
+import { consume, consumeChangelog, parseFragment, readFragments, setBuiltFrom } from './changelog.mjs';
 import { changelog, createTestRepository, fragment } from './testing.mjs';
 
 const facility = { afterEach, beforeEach, describe, it };
@@ -112,6 +111,43 @@ scenario(
 
     bdd
       .given('"[Unreleased]" with entries and no fragments', () => changelog(`${POINTER}\n\n### Fixed\n\n- Fixed 1`))
+      .when('merged', changelog => consumeChangelog(changelog, []))
+      .then('should not change anything', (changelog, result) => expect(result).toBe(changelog));
+
+    bdd
+      .given('"[Unreleased]" with the four sections and breaking changes', () =>
+        changelog(
+          `${POINTER}\n\n### Added\n\n- 💥 Added 1\n\n### Changed\n\n- Changed 1\n\n### Removed\n\n- 💥 Removed 1\n\n### Fixed\n\n- Fixed 1`
+        )
+      )
+      .when('merged with a fragment', changelog => consumeChangelog(changelog, [parseFragment(fragment(2), '2-b.md')]))
+      .then('should add the entry', (changelog, result) =>
+        expect(result).toBe(
+          changelog.replace(
+            '- Fixed 1\n',
+            '- Fixed 1\n- Fixed something, in PR [#2](https://github.com/microsoft/BotFramework-WebChat/pull/2), by [@OEvgeny](https://github.com/OEvgeny)\n'
+          )
+        )
+      );
+
+    bdd
+      .given('"[Unreleased]" with an unknown section', () =>
+        changelog(`${POINTER}\n\n### Breaking changes\n\n- 💥 Removed 1`)
+      )
+      .when('merged', changelog => () => consumeChangelog(changelog, []))
+      .then('should fail with the line of the heading', (_, merge) =>
+        expect(merge).toThrow(
+          'CHANGELOG.md:11: unknown section "Breaking changes" in "[Unreleased]", use one of: Added, Changed, Removed, Fixed'
+        )
+      );
+
+    bdd
+      .given('an unknown section in a release, not in "[Unreleased]"', () =>
+        changelog(`${POINTER}\n\n### Fixed\n\n- Fixed 1`).replace(
+          '## [4.19.2] - 2026-10-08\n\n### Fixed',
+          '## [4.19.2] - 2026-10-08\n\n### Breaking changes'
+        )
+      )
       .when('merged', changelog => consumeChangelog(changelog, []))
       .then('should not change anything', (changelog, result) => expect(result).toBe(changelog));
 
@@ -278,6 +314,29 @@ ${POINTER}
       .and('should delete the fragments and keep README.md', ({ git }) =>
         expect(git('status', '--porcelain')).toBe(' D .changelog/1-a.md\n D .changelog/2-b.md\n M CHANGELOG.md')
       );
+
+    bdd
+      .given(
+        'a repository with a fragment',
+        async () => {
+          const repository = await createTestRepository();
+
+          await repository.commit('Initial', { 'CHANGELOG.md': changelog() });
+          await repository.commit('#1', { '.changelog/1-a.md': fragment(1) });
+
+          return repository;
+        },
+        ({ remove }) => remove()
+      )
+      .when('consumed with a transform that fails, such as a release', ({ path }) =>
+        consume(path, () => {
+          throw new Error('Version must be like 4.19.3, got "next"');
+        }).catch(error => error)
+      )
+      .then('should fail', (_, error) =>
+        expect(error).toHaveProperty('message', 'Version must be like 4.19.3, got "next"')
+      )
+      .and('should not change the working tree', ({ git }) => expect(git('status', '--porcelain')).toBe(''));
   },
   facility
 );

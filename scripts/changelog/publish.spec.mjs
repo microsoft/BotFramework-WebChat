@@ -48,7 +48,7 @@ async function setUp() {
     git(clonePath, 'config', 'user.email', 'bot@example.com');
     git(clonePath, 'config', 'user.name', 'Bot');
 
-    return publish(clonePath, { branch: 'changelog-unreleased', remote: 'origin' });
+    return publish(clonePath);
   };
 
   return { developer, path, remotePath, runWorkflow };

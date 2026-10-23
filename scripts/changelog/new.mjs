@@ -20,12 +20,12 @@ import { fileURLToPath } from 'url';
 import { parseArgs } from 'util';
 import {
   CREATE_PULL_REQUEST_FIRST,
-  isMain,
   parseFragment,
   parseFragmentFilename,
   REPOSITORY_URL,
+  runMain,
   SECTIONS
-} from './fragment.mjs';
+} from './changelog.mjs';
 
 const FRAGMENT_DIRECTORY_PATH = fileURLToPath(new URL('../../.changelog/', import.meta.url));
 const GITHUB_LOGIN_PATTERN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/iu;
@@ -211,10 +211,6 @@ async function main() {
   console.log(`Wrote ${path}`);
 }
 
-isMain(import.meta) &&
-  main().catch(error => {
-    console.error(error.message);
-    process.exitCode = 1;
-  });
+runMain(import.meta, main);
 
 export { formatEntry, formatIssueReferences, getPullRequest, MARKERS, toSlug, writeFragment };

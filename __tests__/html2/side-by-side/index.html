@@ -832,6 +832,12 @@ Use the command to install required dependencies:
 
         const fluentProviderTheme = isDarkTheme ? {
           ...createDarkTheme(customBrandRamp),
+          // createDarkTheme() maps links to brand[90–110], all under 4.5:1 on #292929 with this ramp (brand[100] is 2.81:1).
+          // brand[130] and brand[140] are 5.65:1 and 7.41:1.
+          colorBrandForegroundLink: customBrandRamp[130],
+          colorBrandForegroundLinkHover: customBrandRamp[140],
+          colorBrandForegroundLinkPressed: customBrandRamp[130],
+          colorBrandForegroundLinkSelected: customBrandRamp[130],
           colorNeutralBackground1Disabled: '#101010',
           colorNeutralBackground1Hover: '#101010',
           colorNeutralForeground5: '#424242'
@@ -923,11 +929,7 @@ Use the command to install required dependencies:
           await host.sendKeys('TAB');
           await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
-          // TODO: [P2] In the "View code" dialog, the FAQ link does not have enough color contrast in the dark theme.
-          //       Remove `skipCheckAccessibility` for the dark theme when fixed.
-          await host.snapshot('local', {
-            skipCheckAccessibility: skipCheckAccessibility || searchParams.get('theme') === 'fluent-dark'
-          });
+          await host.snapshot('local', { skipCheckAccessibility });
           await host.sendKeys('ENTER');
           await host.snapshot('local', { skipCheckAccessibility });
         },

@@ -42,7 +42,6 @@ import {
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
 import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
@@ -85,7 +84,8 @@ import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
-import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
+import { useDispatch } from './internal/WebChatReduxContext';
+import WebChatReduxProvider from './internal/WebChatReduxProvider';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import useVoiceHandlers from './internal/useVoiceHandlers';
 import activityFallbackPolymiddleware from './middleware/activityFallbackPolymiddleware';
@@ -811,7 +811,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <Provider context={WebChatReduxContext} store={memoizedStore}>
+    <WebChatReduxProvider store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
         <GraphProvider store={memoizedStore}>
           <ActivityKeyerComposer>
@@ -821,7 +821,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
           </ActivityKeyerComposer>
         </GraphProvider>
       </ReduxStoreComposer>
-    </Provider>
+    </WebChatReduxProvider>
   );
 };
 

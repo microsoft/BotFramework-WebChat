@@ -149,9 +149,6 @@
       "16.8.6",
       "using react-dom@16.8.6 to make sure this is the minimum supported version"
     ],
-    "react-redux": [
-      "7"
-    ],
     "react-scroll-to-bottom": [
       "main"
     ],
@@ -211,7 +208,6 @@
     "react-chain-of-responsibility": "0.4.2",
     "react-dictate-button": "4.0.1",
     "react-film": "4.0.0",
-    "react-redux": "7.2.9",
     "react-say": "2.2.1",
     "react-scroll-to-bottom": "4.2.1-main.53844f5",
     "react-wrap-with": "0.1.0",

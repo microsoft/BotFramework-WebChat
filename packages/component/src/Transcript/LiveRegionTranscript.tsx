@@ -7,7 +7,7 @@ import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
 import tabbableElements from '../Utils/tabbableElements';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
-import { useQueueStaticElement } from '../providers/LiveRegionTwin';
+import { useLiveRegion, useQueueStaticElement } from '../providers/LiveRegionTwin';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
 import isPresentational from './LiveRegion/isPresentational';
 import useTypistNames from './useTypistNames';
@@ -128,7 +128,7 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
     keyedActivities
   ]);
 
-  useMemo(() => typingIndicator && queueStaticElement(typingIndicator), [queueStaticElement, typingIndicator]);
+  useLiveRegion(() => typingIndicator, [typingIndicator]);
 
   return <LiveRegionSendFailed />;
 };
