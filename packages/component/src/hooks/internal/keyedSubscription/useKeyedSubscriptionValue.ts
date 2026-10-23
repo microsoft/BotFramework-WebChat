@@ -14,12 +14,18 @@ export default function useKeyedSubscriptionValue<K, T>(
 ): readonly [T] {
   const value = getValue(key);
 
-  // The state only triggers re-renders, React skips them when the value did not change.
-  // Function forms: React would call a function `T` as an initializer or updater.
-  const [, setValue] = useState<T>(() => value);
+  // The state only triggers re-renders, React skips them when the same tuple is returned.
+  // It holds the key with the value: after a key switch, the state still holds the previous key, so the re-check always re-renders,
+  // even if the new key's value has just changed to the previous key's value.
+  const [, setState] = useState<readonly [K, T]>(() => Object.freeze([key, value] as const));
 
   useLayoutEffect(() => {
-    const handleChange = () => setValue(() => getValue(key));
+    const handleChange = () =>
+      setState(state => {
+        const nextValue = getValue(key);
+
+        return state[0] === key && state[1] === nextValue ? state : Object.freeze([key, nextValue] as const);
+      });
 
     // Catches changes between render and subscription.
     handleChange();

@@ -47,6 +47,17 @@ function SetValueBeforeSubscribe({ store }: { readonly store: Store }) {
   return null;
 }
 
+// Placed before `<Reader>`: its layout effect runs after the old subscription is cleaned up and before `<Reader>` subscribes.
+// Changes "b" to the value of "a" and notifies "b", which nobody subscribed to yet.
+function SetBToAOnMount({ store }: { readonly store: Store }) {
+  useLayoutEffect(() => {
+    store.values.set('b', store.values.get('a'));
+    store.subscription.notify(['b']);
+  }, [store]);
+
+  return null;
+}
+
 scenario(
   'useKeyedSubscriptionValue',
   bdd => {
@@ -131,7 +142,7 @@ scenario(
       })
       .then('the reader should render "2" from its first render with "b"', ({ store }) => {
         expect(store.renders.a).toStrictEqual(['1']);
-        // Re-renders once: its state holds "1" until the re-check after subscribing to "b".
+        // Re-renders once: its state holds "a" until the re-check after subscribing to "b".
         expect(store.renders.b).toStrictEqual(['2', '2']);
       })
       .when('"a" changes and is notified', ({ store }) => {
@@ -150,6 +161,44 @@ scenario(
       .then('the reader should re-render with the new value of "b"', ({ store }) =>
         expect(store.renders.b).toStrictEqual(['2', '2', '4'])
       );
+
+    bdd
+      .given('a reader of "a", "a" is "1" and "b" is "2"', () => {
+        const container = document.createElement('div');
+        const store = createStore();
+
+        store.values.set('a', '1');
+        store.values.set('b', '2');
+
+        // `{false}` keeps the reader at the same position as in the next render, so it updates instead of remounting.
+        act(() => {
+          render(
+            <Fragment>
+              {false}
+              <MemoizedReader store={store} valueKey="a" />
+            </Fragment>,
+            container
+          );
+        });
+
+        return { container, store };
+      })
+      .when('the reader switches to "b" as "b" changes to "1" before it subscribes', ({ container, store }) => {
+        act(() => {
+          render(
+            <Fragment>
+              <SetBToAOnMount store={store} />
+              <MemoizedReader store={store} valueKey="b" />
+            </Fragment>,
+            container
+          );
+        });
+      })
+      .then('the reader should re-render with "1", the new value of "b"', ({ store }) => {
+        expect(store.values.get('b')).toBe('1');
+        // Rendered "2" first, then "1" after the re-check, although "1" is also the last value of "a".
+        expect(store.renders.b).toStrictEqual(['2', '1']);
+      });
 
     bdd
       .given('a reader of a value which is a function', () => {
