@@ -93,7 +93,7 @@ React 19 works as a preview when `react-dom/client` is in the import map: `rende
 
 - the React 19 fixes ([#5963](https://github.com/microsoft/BotFramework-WebChat/pull/5963) and the `react-film` migration) have not landed
 - no CI job builds a React 19 / webpack 5 consumer
-- the shipped typings import `prop-types`, which fails with `@types/react@19` (TS7016)
+- the shipped typings import `prop-types`, which fails with `@types/react@19` and `skipLibCheck: false` (TS7016)
 - `react-scroll-to-bottom` still uses `defaultProps` on function components
 - the repacked "latest supported" React under `/static/` is still React 18
 - npm hosts on React 19 must render `<ReactWebChat>` with `createRoot()`, as `renderWebChat()` rejects there
@@ -240,7 +240,7 @@ Then, run the following JavaScript code to render Web Chat into the placeholder.
 renderWebChat({ directLine }, document.getElementById('webchat'));
 ```
 
-> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM, or `createRoot()` when `render()` is not available (React 19).
+> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM, or `createRoot()` when `render()` is not available (React 19, ESM build only).
 
 ### Using `<ReactWebChat>` component
 
