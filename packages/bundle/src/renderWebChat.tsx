@@ -5,6 +5,9 @@ import { custom, function_, is, object, picklist } from 'valibot';
 /** A root from `createRoot()` of "react-dom/client". */
 type RenderWebChatRoot = { render(children: ReactNode): void };
 
+/** Containers `ReactDOM.render()` accepts, `null` included as in its typings (it throws at run time). */
+type RenderWebChatContainer = Element | Document | DocumentFragment | null;
+
 type RenderWebChat = {
   /**
    * Renders Web Chat into an element, or with a root from `createRoot()`.
@@ -14,7 +17,7 @@ type RenderWebChat = {
    *    React 19 or later removed `ReactDOM.render()`: pass `createRoot(element)` instead of the element.
    * @throws When an element is passed on React 19 or later, or when `elementOrRoot` is neither an element nor a root.
    */
-  (props: any, elementOrRoot: HTMLElement | RenderWebChatRoot): void;
+  (props: any, elementOrRoot: RenderWebChatContainer | RenderWebChatRoot): void;
 };
 
 // Same as `Node.ELEMENT_NODE`, `Node.DOCUMENT_NODE` and `Node.DOCUMENT_FRAGMENT_NODE`, without needing `Node` on import.
@@ -24,7 +27,7 @@ const DOCUMENT_FRAGMENT_NODE = 11;
 
 // Containers `ReactDOM.render()` accepts: element, document and document fragment, by `nodeType` to work across realms.
 // Checked before `renderSchema`: some custom elements (e.g. Lit) have their own `render()` method.
-const containerSchema = custom<HTMLElement>(value =>
+const containerSchema = custom<Exclude<RenderWebChatContainer, null>>(value =>
   is(object({ nodeType: picklist([DOCUMENT_FRAGMENT_NODE, DOCUMENT_NODE, ELEMENT_NODE]) }), value)
 );
 
@@ -34,7 +37,7 @@ const renderSchema = object({ render: function_() });
 export default function renderWebChat(
   ReactWebChat: ComponentType<any>,
   props: any,
-  elementOrRoot: HTMLElement | RenderWebChatRoot
+  elementOrRoot: RenderWebChatContainer | RenderWebChatRoot
 ): void {
   const children = <ReactWebChat {...props} />;
 
@@ -56,4 +59,4 @@ export default function renderWebChat(
   }
 }
 
-export { type RenderWebChat, type RenderWebChatRoot };
+export { type RenderWebChat, type RenderWebChatContainer, type RenderWebChatRoot };

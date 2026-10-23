@@ -29,7 +29,7 @@ test('Element should be rendered by ReactDOM.render()', () => {
 test('DocumentFragment should be rendered by ReactDOM.render() as a container', () => {
   const fragment = document.createDocumentFragment();
 
-  renderWebChat(ReactWebChat, {}, fragment as unknown as HTMLElement);
+  renderWebChat(ReactWebChat, {}, fragment);
 
   expect(render).toHaveBeenCalledTimes(1);
   expect(render.mock.calls[0][1]).toBe(fragment);
