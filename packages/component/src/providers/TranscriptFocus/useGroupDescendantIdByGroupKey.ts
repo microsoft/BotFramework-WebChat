@@ -1,17 +1,13 @@
-import { useMemo } from 'react';
-
+import useKeyedSubscriptionValue from '../../hooks/internal/keyedSubscription/useKeyedSubscriptionValue';
 import useTranscriptFocusContext from './private/useContext';
 
 /**
- * Returns the ID of the group's active descendant element, for `aria-activedescendant`.
+ * Returns the ID of the group's active descendant element, for `aria-activedescendant`, or `undefined` without a group key.
  *
- * The ID is derived from the group key and the transcript instance, so the component re-renders when either changes.
+ * Re-renders when `<TranscriptFocusComposer>` notifies that the ID of this group changed.
  */
 export default function useGroupDescendantIdByGroupKey(groupKey?: string | undefined): readonly [string | undefined] {
-  const { getGroupDescendantIdByGroupKey } = useTranscriptFocusContext();
+  const { getGroupDescendantIdByGroupKey, subscribeGroupDescendantId } = useTranscriptFocusContext();
 
-  return useMemo(
-    () => Object.freeze([getGroupDescendantIdByGroupKey(groupKey)] as const),
-    [getGroupDescendantIdByGroupKey, groupKey]
-  );
+  return useKeyedSubscriptionValue(subscribeGroupDescendantId, groupKey, getGroupDescendantIdByGroupKey);
 }

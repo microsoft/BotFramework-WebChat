@@ -1,6 +1,8 @@
 type KeyedSubscription<K> = {
   /** Calls the listeners of each key. Call it after commit (e.g. from an effect), as listeners may re-render. */
   readonly notify: (keys: Iterable<K>) => void;
+  /** Calls the listeners of every subscribed key, for a change that affects all keys. Call it after commit, as `notify()`. */
+  readonly notifyAll: () => void;
   /** Calls the listener when the key is notified, until unsubscribed. */
   readonly subscribe: (key: K, listener: () => void) => () => void;
 };
@@ -9,15 +11,19 @@ type KeyedSubscription<K> = {
 export default function createKeyedSubscription<K>(): KeyedSubscription<K> {
   const listenersByKey = new Map<K, Set<() => void>>();
 
-  return Object.freeze({
-    notify: (keys: Iterable<K>) => {
-      for (const key of new Set(keys)) {
-        // Copies the listeners: a listener may unsubscribe while being notified.
-        for (const listener of Array.from(listenersByKey.get(key) ?? [])) {
-          listener();
-        }
+  const notify = (keys: Iterable<K>) => {
+    for (const key of new Set(keys)) {
+      // Copies the listeners: a listener may unsubscribe while being notified.
+      for (const listener of Array.from(listenersByKey.get(key) ?? [])) {
+        listener();
       }
-    },
+    }
+  };
+
+  return Object.freeze({
+    notify,
+    // Copies the keys: a listener may subscribe or unsubscribe while being notified.
+    notifyAll: () => notify(Array.from(listenersByKey.keys())),
     subscribe: (key: K, listener: () => void) => {
       const listeners = listenersByKey.get(key) ?? new Set();
 

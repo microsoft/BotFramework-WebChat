@@ -1,8 +1,17 @@
 /* eslint-disable no-magic-numbers */
 import random from 'math-random';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, type MutableRefObject, type ReactNode } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
+  type MutableRefObject,
+  type ReactNode
+} from 'react';
 
+import createKeyedSubscription from '../../hooks/internal/keyedSubscription/createKeyedSubscription';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
@@ -48,6 +57,15 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
   const getGroupDescendantIdByGroupKey: (groupKey?: string) => string | undefined = useCallback(
     (groupKey?: string) => groupKey && `webchat__transcript-focus-${prefix}__group-${groupKey}`,
     [prefix]
+  );
+
+  const [groupDescendantIdSubscription] = useState(() => createKeyedSubscription<string | undefined>());
+
+  // Notifies `useGroupDescendantIdByGroupKey()` of every group when the getter's output can change, i.e. when `prefix` changes.
+  // Today, `prefix` is per instance, so this only runs on mount, when the subscribers already have the current ID.
+  useLayoutEffect(
+    () => groupDescendantIdSubscription.notifyAll(),
+    [getGroupDescendantIdByGroupKey, groupDescendantIdSubscription]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
@@ -397,7 +415,8 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedGroupKeyState: Object.freeze([rawFocusedActivityGroupKey]) as readonly [string],
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByGroupKey
+      getGroupDescendantIdByGroupKey,
+      subscribeGroupDescendantId: groupDescendantIdSubscription.subscribe
     }),
     [
       activeDescendantId,
@@ -408,6 +427,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusRelativeActivity,
       getDescendantIdByActivityKey,
       getGroupDescendantIdByGroupKey,
+      groupDescendantIdSubscription,
       rawFocusedActivityGroupKey,
       rawFocusedActivityKey
     ]

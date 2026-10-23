@@ -11,6 +11,7 @@ type TranscriptFocusContextType = {
   focusRelativeActivity: (delta: number) => void;
   getDescendantIdByActivityKey: (activityKey?: string) => string | undefined;
   getGroupDescendantIdByGroupKey: (groupKey?: string) => string | undefined;
+  subscribeGroupDescendantId: (groupKey: string | undefined, listener: () => void) => () => void;
 };
 
 const TranscriptFocusContext = createContext<TranscriptFocusContextType>(undefined);

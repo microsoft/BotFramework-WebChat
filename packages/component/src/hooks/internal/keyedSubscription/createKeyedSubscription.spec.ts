@@ -8,7 +8,7 @@ scenario(
   bdd => {
     bdd
       .given('listeners subscribed to "a" and "b"', () => {
-        const { notify, subscribe } = createKeyedSubscription<string>();
+        const { notify, notifyAll, subscribe } = createKeyedSubscription<string>();
         const listenerA = JestGlobals.jest.fn();
         const listenerB = JestGlobals.jest.fn();
 
@@ -16,6 +16,7 @@ scenario(
           listenerA,
           listenerB,
           notify,
+          notifyAll,
           unsubscribeA: subscribe('a', listenerA),
           unsubscribeB: subscribe('b', listenerB)
         };
@@ -32,6 +33,11 @@ scenario(
       .then('only the listener of "b" should be called', ({ listenerA, listenerB }) => {
         expect(listenerA).toHaveBeenCalledTimes(1); // From the first notification.
         expect(listenerB).toHaveBeenCalledTimes(1);
+      })
+      .when('all keys are notified', ({ notifyAll }) => notifyAll())
+      .then('only the listener still subscribed should be called', ({ listenerA, listenerB }) => {
+        expect(listenerA).toHaveBeenCalledTimes(1);
+        expect(listenerB).toHaveBeenCalledTimes(2);
       });
   },
   JestGlobals
