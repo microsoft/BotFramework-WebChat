@@ -118,8 +118,7 @@ When deploying to locked down environment, clients may not have access to smart 
     "imports": {
       "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
       "react": "https://cdn.botframework.com/4.19.0/static/react.baseline.js",
-      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline.js",
-      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline/client.js"
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline.js"
     }
   }
 </script>
