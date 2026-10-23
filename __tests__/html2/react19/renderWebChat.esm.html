@@ -37,7 +37,8 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const webChatElement = document.getElementById('webchat');
 
-        // GIVEN: "react-dom" without `ReactDOM.render()`, like React 19.
+        // GIVEN: "react-dom" of React 18 without `ReactDOM.render()`, like React 19.
+        expect(ReactDOM.version).toEqual(expect.stringMatching(/^18\./u)); // React 18 underneath the emulation, see the import map.
         expect(ReactDOM.render).toBeUndefined();
 
         // WHEN: Web Chat is rendered by renderWebChat() into the element.
