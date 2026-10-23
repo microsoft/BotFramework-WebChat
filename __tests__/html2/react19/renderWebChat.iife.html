@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>React 19: renderWebChat() of the IIFE build asks for createRoot()</title>
+    <title>React 19: renderWebChat() of the IIFE build renders with the root passed</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script type="importmap">
       {
@@ -29,13 +29,13 @@
     <main id="webchat"></main>
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
-      import { createElement, version } from 'react';
+      import { version } from 'react';
       import ReactDOM from 'react-dom';
       import { createRoot } from 'react-dom/client';
 
       run(async function () {
         const {
-          WebChat: { ReactWebChat, renderWebChat }
+          WebChat: { renderWebChat }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -45,16 +45,22 @@
         expect(version).toBe('19.3.1');
         expect(ReactDOM.render).toBeUndefined();
 
-        // WHEN: Web Chat is rendered by renderWebChat().
-        // THEN: It rejects, as the IIFE build cannot import "react-dom/client".
-        await expect(renderWebChat({ directLine, store }, webChatElement)).rejects.toThrow(
-          'renderWebChat() needs createRoot() from "react-dom/client" on React 19 or later.'
+        // WHEN: Web Chat is rendered by renderWebChat() into the element.
+        // THEN: It throws, asking for a root: React 19 removed `ReactDOM.render()`.
+        expect(() => renderWebChat({ directLine, store }, webChatElement)).toThrow(
+          'renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
         );
 
-        // WHEN: Web Chat is rendered with createRoot() without the send box, as the error says.
+        // WHEN: Web Chat is rendered by renderWebChat() with something that is neither an element nor a root.
+        // THEN: It throws.
+        expect(() => renderWebChat({ directLine, store }, {})).toThrow(
+          'renderWebChat() expects an HTMLElement or a root from createRoot().'
+        );
+
+        // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() instead of the element, without the send box, as the error says.
         const root = createRoot(webChatElement);
 
-        root.render(createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } }));
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, root);
 
         await pageConditions.uiConnected();
 
@@ -68,8 +74,8 @@
 
         const transcript = pageElements.transcript();
 
-        // WHEN: The same root renders Web Chat again, with the send box.
-        root.render(createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: false } }));
+        // WHEN: renderWebChat() is called again with the same root, with the send box.
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, root);
 
         // THEN: The send box appears.
         await waitFor(() => expect(pageElements.sendBoxTextBox()).toBeTruthy());
@@ -79,6 +85,12 @@
 
         // THEN: Web Chat shows the same message with the send box.
         await host.snapshot('local');
+
+        // WHEN: The root is unmounted.
+        root.unmount();
+
+        // THEN: Web Chat is gone: it was rendered by the root passed.
+        expect(pageElements.transcript()).toBeFalsy();
       });
     </script>
   </body>

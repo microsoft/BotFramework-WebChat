@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>renderWebChat() renders with createRoot() when ReactDOM.render() is unavailable (ESM build)</title>
+    <title>renderWebChat() renders with the root passed when ReactDOM.render() is unavailable (ESM build)</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
@@ -28,20 +28,29 @@
       import { waitFor } from '@testduet/wait-for';
       import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
       import ReactDOM from 'react-dom';
+      import { createRoot } from 'react-dom/client';
 
       run(async function () {
         // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
         window.WebChat = { createStoreWithOptions, testIds };
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const webChatElement = document.getElementById('webchat');
 
         // GIVEN: "react-dom" without `ReactDOM.render()`, like React 19.
         expect(ReactDOM.render).toBeUndefined();
 
-        // WHEN: Web Chat is rendered by renderWebChat() without the send box.
-        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, document.getElementById('webchat'));
+        // WHEN: Web Chat is rendered by renderWebChat() into the element.
+        // THEN: It throws, asking for a root: the page imports "react-dom/client", not Web Chat.
+        expect(() => renderWebChat({ directLine, store }, webChatElement)).toThrow(
+          'renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
+        );
 
-        // THEN: Web Chat is rendered through createRoot() from "react-dom/client", the only way left.
+        // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() of the page, without the send box.
+        const root = createRoot(webChatElement);
+
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, root);
+
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity('Hello, World!');
@@ -54,8 +63,8 @@
 
         const transcript = pageElements.transcript();
 
-        // WHEN: renderWebChat() is called again on the same element, with the send box.
-        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, document.getElementById('webchat'));
+        // WHEN: renderWebChat() is called again with the same root, with the send box.
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, root);
 
         // THEN: The send box appears.
         await waitFor(() => expect(pageElements.sendBoxTextBox()).toBeTruthy());
