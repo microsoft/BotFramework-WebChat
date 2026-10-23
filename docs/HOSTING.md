@@ -89,6 +89,8 @@ For React web apps, it is important to have all React components rendered with t
 
 To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
+React 19 is supported when `react-dom/client` is in the import map: `renderWebChat()` renders with `createRoot()`, as `ReactDOM.render()` was removed in React 19.
+
 When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 (latest supported) as ESM under the `/static/` directory.
 
 <details>
@@ -118,8 +120,7 @@ When deploying to locked down environment, clients may not have access to smart 
     "imports": {
       "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
       "react": "https://cdn.botframework.com/4.19.0/static/react.baseline.js",
-      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline.js",
-      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline/client.js"
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline.js"
     }
   }
 </script>
@@ -172,6 +173,8 @@ The following code snippet will host Web Chat using an IIFE build.
 ```
 
 Web Chat will use the React runtime (in UMD flavor) from `window.React` variable if available. Otherwise, Web Chat will use the React runtime bundled in Web Chat.
+
+React 19 has no UMD flavor: set both `window.React` and `window.ReactDOM` before loading Web Chat, then render `<ReactWebChat>` with `createRoot()`, as `renderWebChat()` cannot import `react-dom/client` in the IIFE build.
 </details>
 
 ### NPM: Import via `npm install`
