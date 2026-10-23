@@ -52,9 +52,9 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // The suggested actions overflow, react-film shows the flippers after measuring the filmstrip.
+        // The suggested actions overflow, the flippers are shown after measuring the filmstrip.
         await waitFor(() =>
-          expect(document.querySelectorAll('.webchat__suggested-actions .react-film__flipper')).toHaveLength(2)
+          expect(document.querySelectorAll('.webchat__suggested-actions .carousel-flipper')).toHaveLength(2)
         );
 
         const nextFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Next"]');

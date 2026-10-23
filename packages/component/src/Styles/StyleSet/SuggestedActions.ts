@@ -5,6 +5,8 @@ import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSuggestedActionsStyle({
   paddingRegular,
+  suggestedActionsCarouselFlipperBoxWidth,
+  suggestedActionsCarouselFlipperCursor,
   suggestedActionsCarouselFlipperSize,
   suggestedActionsFlowMaxHeight,
   suggestedActionsStackedHeight,
@@ -26,6 +28,15 @@ export default function createSuggestedActionsStyle({
       position: 'relative',
 
       '&.webchat__suggested-actions--carousel-layout': {
+        // Read by the carousel flippers (`packages/component/src/Carousel/CarouselFlipper.module.css`).
+        '--webchat__carousel-flipper--box-width': `${suggestedActionsCarouselFlipperBoxWidth}px`,
+        // Same as react-film, which rendered these flippers before: `undefined` is a pointer, empty means unset.
+        '--webchat__carousel-flipper--cursor':
+          typeof suggestedActionsCarouselFlipperCursor === 'undefined'
+            ? 'pointer'
+            : suggestedActionsCarouselFlipperCursor || undefined,
+        '--webchat__carousel-flipper--size': `${suggestedActionsCarouselFlipperSize}px`,
+
         '& .webchat__suggested-actions__carousel': {
           paddingBottom: paddingRegular / 2,
           paddingTop: paddingRegular / 2,
@@ -37,25 +48,21 @@ export default function createSuggestedActionsStyle({
             paddingTop: paddingRegular / 2
           },
 
-          '& .react-film__filmstrip': {
-            scrollbarWidth: 'none'
-          },
-
-          '& .react-film__flipper': {
+          '& .carousel-flipper': {
             '&:disabled, &[aria-disabled="true"]': {
-              '& .react-film__flipper__body': {
+              '& .carousel-flipper__body': {
                 backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
                 color: transcriptOverlayButtonColorOnDisabled
               }
             },
 
-            '&:focus .react-film__flipper__body': {
+            '&:focus .carousel-flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
               color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
             },
 
             // Two-tone focus indicator: visible against both the flipper and the background behind it.
-            '&:focus-visible .react-film__flipper__body': {
+            '&:focus-visible .carousel-flipper__body': {
               boxShadow: `0 0 0 2px ${transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor}`,
               outlineColor: suggestedActionsVisualKeyboardIndicatorColor,
               outlineOffset: 2,
@@ -63,12 +70,12 @@ export default function createSuggestedActionsStyle({
               outlineWidth: suggestedActionsVisualKeyboardIndicatorWidth
             },
 
-            '&:hover .react-film__flipper__body': {
+            '&:hover .carousel-flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnHover,
               color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
             },
 
-            '& .react-film__flipper__body': {
+            '& .carousel-flipper__body': {
               background: transcriptOverlayButtonBackground,
               color: transcriptOverlayButtonColor,
               outline: 0
@@ -76,45 +83,54 @@ export default function createSuggestedActionsStyle({
           }
         },
 
-        '&:not(.webchat__suggested-actions--rtl)': {
-          '& .react-film__filmstrip__item:first-child': {
-            paddingLeft: paddingRegular / 2
-          },
+        '& .webchat__suggested-actions__carousel-main': {
+          overflow: 'hidden',
+          position: 'relative'
+        },
 
-          '& .react-film__filmstrip__item:last-child': {
-            paddingRight: paddingRegular / 2
-          },
+        '& .webchat__suggested-actions__carousel-filmstrip': {
+          MsOverflowStyle: 'none',
+          overflowX: 'scroll',
+          overflowY: 'hidden',
+          overscrollBehaviorX: 'contain',
+          position: 'relative',
+          scrollbarWidth: 'none',
+          touchAction: 'manipulation',
+          zIndex: 0, // Flippers stack above the filmstrip.
 
-          '& .react-film__flipper + .react-film__filmstrip': {
-            '& .react-film__filmstrip__item:first-child': {
-              paddingLeft: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
-            },
-
-            '& .react-film__filmstrip__item:last-child': {
-              paddingRight: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
-            }
+          '&::-webkit-scrollbar': {
+            display: 'none'
           }
         },
 
-        '&.webchat__suggested-actions--rtl': {
-          '& .react-film__filmstrip__item:first-child': {
-            paddingRight: paddingRegular / 2
+        '& .webchat__suggested-actions__carousel-list': {
+          display: 'flex',
+          listStyleType: 'none',
+          margin: 0,
+          padding: 0
+        },
+
+        '& .webchat__suggested-actions__carousel-item': {
+          '&:first-child': {
+            paddingInlineStart: paddingRegular / 2
           },
 
-          '& .react-film__filmstrip__item:last-child': {
-            paddingLeft: paddingRegular / 2
-          },
+          '&:last-child': {
+            paddingInlineEnd: paddingRegular / 2
+          }
+        },
 
-          '& .react-film__flipper + .react-film__filmstrip': {
-            '& .react-film__filmstrip__item:first-child': {
-              paddingRight: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+        // When flippers are shown, the first and last items are not covered by them.
+        '& .carousel-flipper + .webchat__suggested-actions__carousel-filmstrip .webchat__suggested-actions__carousel-item':
+          {
+            '&:first-child': {
+              paddingInlineStart: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
             },
 
-            '& .react-film__filmstrip__item:last-child': {
-              paddingLeft: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
+            '&:last-child': {
+              paddingInlineEnd: suggestedActionsCarouselFlipperSize + paddingRegular * 1.5
             }
           }
-        }
       },
 
       '&.webchat__suggested-actions--flow-layout': {

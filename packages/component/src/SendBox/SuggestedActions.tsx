@@ -1,16 +1,21 @@
 /* eslint react/no-array-index-key: "off" */
 
+import {
+  useCarouselItemContainerRef,
+  useCarouselScrollableRef,
+  useCarouselState
+} from '@msinternal/botframework-webchat-component-carousel';
 import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { Children, memo, useCallback, useMemo, useRef } from 'react';
-import { createBasicStyleSet as createBasicStyleSetForReactFilm, ReactFilm } from 'react-film';
+import React, { Children, memo, useCallback, useRef } from 'react';
 import { object, optional, pipe, readonly, string } from 'valibot';
 
+import CarouselComposer from '../Carousel/CarouselComposer';
+import CarouselFlipper from '../Carousel/CarouselFlipper';
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocusWithin from '../hooks/internal/useFocusWithin';
-import useNonce from '../hooks/internal/useNonce';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
@@ -43,43 +48,74 @@ const suggestedActionsContainerPropsSchema = pipe(
 
 type SuggestedActionsContainerProps = InferReactProps<typeof suggestedActionsContainerPropsSchema>;
 
+const suggestedActionCarouselPropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
+
+type SuggestedActionCarouselProps = InferReactProps<typeof suggestedActionCarouselPropsSchema>;
+
+function SuggestedActionCarousel(props: SuggestedActionCarouselProps) {
+  const { children } = validateProps(suggestedActionCarouselPropsSchema, props);
+
+  const [{ atEnd, atStart, overflowing, scrolling }] = useCarouselState();
+  const [direction] = useDirection();
+  const itemContainerRef = useCarouselItemContainerRef();
+  const localize = useLocalizer();
+  const scrollableRef = useCarouselScrollableRef();
+
+  // Unlike the attachment carousel, flippers are always shown: at the edge, they are disabled.
+  // The `react-film__*` class names are deprecated and have no styles.
+  return (
+    <div className="webchat__suggested-actions__carousel" dir={direction}>
+      <div
+        className={classNames('webchat__suggested-actions__carousel-main', 'react-film__main', {
+          'react-film__main--scrolling': scrolling
+        })}
+      >
+        {overflowing && (
+          <CarouselFlipper
+            aria-label={localize('SUGGESTED_ACTIONS_FLIPPER_PREVIOUS_ALT')}
+            atEdge={atStart}
+            mode="previous"
+          />
+        )}
+        <div
+          className={classNames('webchat__suggested-actions__carousel-filmstrip', 'react-film__filmstrip')}
+          ref={scrollableRef}
+        >
+          <ul
+            className={classNames('webchat__suggested-actions__carousel-list', 'react-film__filmstrip__list')}
+            ref={itemContainerRef}
+          >
+            {Children.map(children, child => (
+              <li className={classNames('webchat__suggested-actions__carousel-item', 'react-film__filmstrip__item')}>
+                {child}
+              </li>
+            ))}
+          </ul>
+        </div>
+        {overflowing && (
+          <CarouselFlipper aria-label={localize('SUGGESTED_ACTIONS_FLIPPER_NEXT_ALT')} atEdge={atEnd} mode="next" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+SuggestedActionCarousel.displayName = 'SuggestedActionCarousel';
+
 function SuggestedActionCarouselContainer(props: SuggestedActionsContainerProps) {
   const { children, className, label } = validateProps(suggestedActionsContainerPropsSchema, props);
 
-  const [
-    {
-      suggestedActionsCarouselFlipperBoxWidth,
-      suggestedActionsCarouselFlipperCursor,
-      suggestedActionsCarouselFlipperSize
-    }
-  ] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const [direction] = useDirection();
-  const [nonce] = useNonce();
-  const localize = useLocalizer();
   const ref = useRef<HTMLDivElement>(null);
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
-  const filmStyleSet = useMemo(
-    () =>
-      createBasicStyleSetForReactFilm({
-        autoHide: false,
-        cursor: suggestedActionsCarouselFlipperCursor,
-        flipperBoxWidth: suggestedActionsCarouselFlipperBoxWidth,
-        flipperSize: suggestedActionsCarouselFlipperSize
-      }),
-    [
-      suggestedActionsCarouselFlipperBoxWidth,
-      suggestedActionsCarouselFlipperCursor,
-      suggestedActionsCarouselFlipperSize
-    ]
-  );
-  const nextFlipperAriaLabel = localize('SUGGESTED_ACTIONS_FLIPPER_NEXT_ALT');
-  const previousFlipperAriaLabel = localize('SUGGESTED_ACTIONS_FLIPPER_PREVIOUS_ALT');
-
   const [focusedWithin] = useFocusWithin(ref);
-  const leftFlipperAriaLabel = direction === 'rtl' ? nextFlipperAriaLabel : previousFlipperAriaLabel;
-  const rightFlipperAriaLabel = direction === 'rtl' ? previousFlipperAriaLabel : nextFlipperAriaLabel;
 
   return (
     // TODO: The content of suggested actions should be the labelled by the activity.
@@ -102,20 +138,9 @@ function SuggestedActionCarouselContainer(props: SuggestedActionsContainerProps)
       role="toolbar"
     >
       {!!Children.count(children) && (
-        <ReactFilm
-          autoCenter={false}
-          className="webchat__suggested-actions__carousel"
-          dir={direction}
-          flipperBlurFocusOnClick={true}
-          leftFlipperAriaLabel={leftFlipperAriaLabel}
-          nonce={nonce}
-          rightFlipperAriaLabel={rightFlipperAriaLabel}
-          showDots={false}
-          showScrollBar={false}
-          styleSet={filmStyleSet}
-        >
-          {children}
-        </ReactFilm>
+        <CarouselComposer>
+          <SuggestedActionCarousel>{children}</SuggestedActionCarousel>
+        </CarouselComposer>
       )}
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>

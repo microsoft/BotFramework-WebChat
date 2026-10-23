@@ -631,17 +631,23 @@ type StrictStyleOptions = {
    */
 
   /**
-   * Cursor when mouseover on flipper
+   * Cursor when mouseover on flipper, `undefined` for `pointer`, empty string to inherit.
+   *
+   * Applied to the flipper through the `--webchat__carousel-flipper--cursor` CSS custom property.
    */
   suggestedActionsCarouselFlipperCursor: string | undefined;
 
   /**
-   * Flipper bounding box size
+   * Flipper bounding box size, in pixels.
+   *
+   * Applied to the flipper through the `--webchat__carousel-flipper--box-width` CSS custom property.
    */
   suggestedActionsCarouselFlipperBoxWidth: number | undefined;
 
   /**
-   * Flipper button's visible size
+   * Flipper button's visible size, in pixels.
+   *
+   * Applied to the flipper through the `--webchat__carousel-flipper--size` CSS custom property.
    */
   suggestedActionsCarouselFlipperSize: number | undefined;
 

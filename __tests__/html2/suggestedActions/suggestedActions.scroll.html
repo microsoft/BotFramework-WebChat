@@ -30,7 +30,7 @@
         // THEN: It should scroll to the right.
         await pageConditions.became(
           'suggested actions scrolled to the right',
-          () => document.querySelector('.react-film__filmstrip').scrollLeft > 0,
+          () => document.querySelector('.webchat__suggested-actions__carousel-filmstrip').scrollLeft > 0,
           1000
         );
 
@@ -40,7 +40,7 @@
         // THEN: It should scroll back to the origin.
         await pageConditions.became(
           'suggested actions scrolled back to the origin',
-          () => document.querySelector('.react-film__filmstrip').scrollLeft === 0,
+          () => document.querySelector('.webchat__suggested-actions__carousel-filmstrip').scrollLeft === 0,
           1000
         );
       });
