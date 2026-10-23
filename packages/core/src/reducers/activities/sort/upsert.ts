@@ -81,7 +81,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #region Streaming fast path
   //
-  // For revision 2..N-1 of an existing, non-finalized livestream session without HowTo grouping:
+  // For a new revision 2..N-1 of an existing, non-finalized livestream session without HowTo grouping:
   // avoid the heavier full rebuild path, including sortedChatHistoryList recomputation,
   // computeSortedActivities, and full position resequencing. This is still not constant-time:
   // the fast path continues to clone Maps and update sortedActivities, but it avoids the
@@ -91,9 +91,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const existingSession = state.livestreamSessionMap.get(sessionId);
     const finalized = activityLivestreamingMetadata.type === 'final activity';
 
+    // A re-sent revision (same local ID) takes the slow path, which replaces its previous entry.
     if (
       existingSession &&
       !existingSession.finalized &&
+      !existingActivity &&
       !finalized &&
       !getPartGroupingMetadataMap(activity).has('HowTo')
     ) {
@@ -231,7 +233,8 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
 
   // #endregion
 
-  // Slow path: full recalculation for non-streaming, first/final revisions, reorders, or HowTo grouping.
+  // Slow path: full recalculation for non-streaming, first/final revisions, re-sent revisions, reorders,
+  // or HowTo grouping.
   const nextActivityIdToLocalIdMap = new Map(state.activityIdToLocalIdMap);
   const nextActivityMap = new Map(state.activityMap);
   const nextClientActivityIdToLocalIdMap = new Map(state.clientActivityIdToLocalIdMap);
@@ -292,7 +295,10 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const nextLivestreamSessionMapEntry = {
       activities: Object.freeze(
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
-          livestreamSessionMapEntry ? livestreamSessionMapEntry.activities : [],
+          // Remove the previous entry of a re-sent revision, otherwise it is shown twice.
+          livestreamSessionMapEntry
+            ? livestreamSessionMapEntry.activities.filter(entry => entry.activityLocalId !== activityLocalId)
+            : [],
           Object.freeze({
             activityLocalId,
             logicalTimestamp,
