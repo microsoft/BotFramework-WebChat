@@ -638,14 +638,14 @@ type StrictStyleOptions = {
   suggestedActionsCarouselFlipperCursor: string | undefined;
 
   /**
-   * Flipper bounding box size, in pixels.
+   * Flipper bounding box size, in pixels, `undefined` for 60.
    *
    * Applied to the flipper through the `--webchat__carousel-flipper--box-width` CSS custom property.
    */
   suggestedActionsCarouselFlipperBoxWidth: number | undefined;
 
   /**
-   * Flipper button's visible size, in pixels.
+   * Flipper button's visible size, in pixels, `undefined` for 40.
    *
    * Applied to the flipper through the `--webchat__carousel-flipper--size` CSS custom property.
    */
