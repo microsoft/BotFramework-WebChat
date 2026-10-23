@@ -56,13 +56,6 @@ export default function createSuggestedActionsStyle({
           },
 
           '& .carousel-flipper': {
-            '&:disabled, &[aria-disabled="true"]': {
-              '& .carousel-flipper__body': {
-                backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
-                color: transcriptOverlayButtonColorOnDisabled
-              }
-            },
-
             '&:focus .carousel-flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
               color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
@@ -80,6 +73,14 @@ export default function createSuggestedActionsStyle({
             '&:hover .carousel-flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnHover,
               color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor
+            },
+
+            // After focus and hover: a focused disabled flipper keeps its disabled look, with the focus indicator.
+            '&:disabled, &[aria-disabled="true"]': {
+              '& .carousel-flipper__body': {
+                backgroundColor: transcriptOverlayButtonBackgroundOnDisabled,
+                color: transcriptOverlayButtonColorOnDisabled
+              }
             },
 
             '& .carousel-flipper__body': {

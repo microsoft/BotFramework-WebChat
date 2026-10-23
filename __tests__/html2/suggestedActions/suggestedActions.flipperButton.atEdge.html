@@ -102,6 +102,7 @@
         await host.sendShiftTab();
 
         // THEN: The disabled "Next" flipper has the focus: it is still in the tab order, with a focus indicator.
+        // It keeps its disabled look (lighter).
         expect(document.activeElement).toBe(nextFlipper);
         expect(nextFlipper.getAttribute('aria-disabled')).toBe('true');
 

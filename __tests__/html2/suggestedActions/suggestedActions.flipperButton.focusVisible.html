@@ -105,6 +105,7 @@
         expect(document.activeElement).toBe(previousFlipper);
 
         // THEN: The "Previous" flipper shows a two-tone focus indicator, the "Next" flipper does not.
+        // At the start, "Previous" is disabled: it keeps its normal colors (same as enabled by default), not the darker focus ones.
         await host.snapshot('local');
       });
     </script>

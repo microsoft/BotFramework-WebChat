@@ -83,14 +83,6 @@
     width: var(--webchat__carousel-flipper--size, 40px);
   }
 
-  &:disabled,
-  &[aria-disabled='true'] {
-    .carousel-flipper__body {
-      background-color: var(--webchat__background--transcript-overlay-button-disabled);
-      color: var(--webchat__color--transcript-overlay-button-disabled);
-    }
-  }
-
   &:focus .carousel-flipper__body {
     background-color: var(--webchat__background--transcript-overlay-button-focus);
     color: var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
@@ -101,6 +93,15 @@
     background-color: var(--webchat__background--transcript-overlay-button-hover);
     color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
     transition-duration: 0s;
+  }
+
+  /* After focus and hover: a focused disabled flipper keeps its disabled look, with the focus indicator. */
+  &:disabled,
+  &[aria-disabled='true'] {
+    .carousel-flipper__body {
+      background-color: var(--webchat__background--transcript-overlay-button-disabled);
+      color: var(--webchat__color--transcript-overlay-button-disabled);
+    }
   }
 
   /* Two-tone focus indicator: visible against both the flipper and any content behind it. */
