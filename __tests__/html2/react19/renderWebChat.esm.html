@@ -8,7 +8,7 @@
     <main id="webchat"></main>
     <!--
       React 18 with "react-dom" emulating React 19 (no `ReactDOM.render()`).
-      TODO: Use React 19 when https://github.com/spyip/react-film/pull/110 is released and bumped: the static build cannot load with React 19 until then.
+      TODO: Use React 19 once the static build no longer bundles react-film, which imports `render` from "react-dom" (removed, or https://github.com/spyip/react-film/pull/110 released and bumped): it fails to load with React 19 until then.
     -->
     <script type="importmap">
       {
