@@ -4,7 +4,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import React, { memo, useCallback, type MouseEvent } from 'react';
-import { boolean, object, picklist, pipe, readonly, string } from 'valibot';
+import { boolean, object, optional, picklist, pipe, readonly, string } from 'valibot';
 
 import styles from './CarouselFlipper.module.css';
 
@@ -13,7 +13,13 @@ const { useDirection } = hooks;
 const carouselFlipperPropsSchema = pipe(
   object({
     'aria-label': string(),
+    /** Cannot scroll further in this direction. */
     atEdge: boolean(),
+    /**
+     * Slide out unless the container shows it (hover, scrolling) or it has focus, and at the edge unless it has keyboard
+     * focus. Without auto-hide, the flipper is always shown and is disabled at the edge.
+     */
+    autoHide: optional(boolean()),
     mode: picklist(['next', 'previous'])
   }),
   readonly()
@@ -22,7 +28,7 @@ const carouselFlipperPropsSchema = pipe(
 type CarouselFlipperProps = InferReactProps<typeof carouselFlipperPropsSchema>;
 
 function CarouselFlipper(props: CarouselFlipperProps) {
-  const { 'aria-label': ariaLabel, atEdge, mode } = validateProps(carouselFlipperPropsSchema, props);
+  const { 'aria-label': ariaLabel, atEdge, autoHide = false, mode } = validateProps(carouselFlipperPropsSchema, props);
 
   const [direction] = useDirection();
   const classNames = useStyles(styles);
@@ -45,10 +51,13 @@ function CarouselFlipper(props: CarouselFlipperProps) {
 
   return (
     <button
+      // Not `disabled`: the flipper keeps the focus when it reaches the edge.
+      aria-disabled={atEdge && !autoHide ? 'true' : undefined}
       aria-label={ariaLabel}
       className={cx(
         classNames['carousel-flipper'],
         next ? classNames['carousel-flipper--next'] : classNames['carousel-flipper--previous'],
+        { [classNames['carousel-flipper--auto-hide']]: autoHide },
         'react-film__flipper',
         'react-film__main__overlay',
         left ? 'react-film__flipper--left' : 'react-film__flipper--right'

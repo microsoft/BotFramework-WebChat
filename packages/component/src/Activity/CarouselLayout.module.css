@@ -1,4 +1,8 @@
 :global(.webchat) .carousel-layout {
+  /* Same as react-film's defaults. */
+  --webchat__carousel-flipper--box-width: 60px;
+  --webchat__carousel-flipper--size: 40px;
+
   overflow: hidden;
   position: relative;
 

@@ -1,17 +1,18 @@
-import { CarouselComposer, useCarouselState } from '@msinternal/botframework-webchat-component-carousel';
+import { useCarouselState } from '@msinternal/botframework-webchat-component-carousel';
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
-import React, { Fragment, memo, useMemo } from 'react';
+import React, { Fragment, memo } from 'react';
 import { omit, pipe, readonly } from 'valibot';
 
+import CarouselComposer from '../Carousel/CarouselComposer';
+import CarouselFlipper from '../Carousel/CarouselFlipper';
 import CarouselFilmStrip, { carouselFilmStripPropsSchema } from './CarouselFilmStrip';
-import CarouselFlipper from './CarouselFlipper';
 
 import styles from './CarouselLayout.module.css';
 
-const { useLocalizer, usePonyfill } = hooks;
+const { useLocalizer } = hooks;
 
 // Same props as the filmstrip, except `className`.
 const carouselLayoutPropsSchema = pipe(omit(carouselFilmStripPropsSchema.pipe[0], ['className']), readonly());
@@ -50,8 +51,18 @@ function CarouselLayoutCore(props: CarouselLayoutProps) {
         />
         {overflowing && (
           <Fragment>
-            <CarouselFlipper aria-label={localize('CAROUSEL_FLIPPER_PREVIOUS_ALT')} atEdge={atStart} mode="previous" />
-            <CarouselFlipper aria-label={localize('CAROUSEL_FLIPPER_NEXT_ALT')} atEdge={atEnd} mode="next" />
+            <CarouselFlipper
+              aria-label={localize('CAROUSEL_FLIPPER_PREVIOUS_ALT')}
+              atEdge={atStart}
+              autoHide={true}
+              mode="previous"
+            />
+            <CarouselFlipper
+              aria-label={localize('CAROUSEL_FLIPPER_NEXT_ALT')}
+              atEdge={atEnd}
+              autoHide={true}
+              mode="next"
+            />
           </Fragment>
         )}
       </div>
@@ -62,12 +73,8 @@ function CarouselLayoutCore(props: CarouselLayoutProps) {
 CarouselLayoutCore.displayName = 'CarouselLayoutCore';
 
 function CarouselLayout(props: CarouselLayoutProps) {
-  const [{ clearTimeout, setTimeout }] = usePonyfill();
-
-  const ponyfill = useMemo(() => Object.freeze({ clearTimeout, setTimeout }), [clearTimeout, setTimeout]);
-
   return (
-    <CarouselComposer ponyfill={ponyfill}>
+    <CarouselComposer>
       <CarouselLayoutCore {...props} />
     </CarouselComposer>
   );

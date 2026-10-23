@@ -1,0 +1,115 @@
+/*
+ * Geometry, colors and timing are the same as react-film's, which rendered these flippers before.
+ * The container sets the size with `--webchat__carousel-flipper--box-width` and `--webchat__carousel-flipper--size`,
+ * and optionally the cursor with `--webchat__carousel-flipper--cursor`.
+ */
+:global(.webchat) .carousel-flipper {
+  background: transparent;
+  border: 0;
+  /* Without the custom property, the cursor is inherited, as if not set. */
+  cursor: var(--webchat__carousel-flipper--cursor);
+  height: 100%;
+  outline: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  touch-action: none;
+  user-select: none;
+  width: var(--webchat__carousel-flipper--box-width);
+  z-index: 1;
+
+  &.carousel-flipper--next {
+    inset-inline-end: 0;
+  }
+
+  &.carousel-flipper--previous {
+    inset-inline-start: 0;
+  }
+
+  .carousel-flipper__slider {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  &.carousel-flipper--next .carousel-flipper__slider {
+    inset-inline-end: var(--webchat__carousel-flipper__slider--offset, 0px);
+  }
+
+  &.carousel-flipper--previous .carousel-flipper__slider {
+    inset-inline-start: var(--webchat__carousel-flipper__slider--offset, 0px);
+  }
+
+  /* Auto-hide: hidden by sliding out of the button, after a delay; the container can slide it in, except at the edge. */
+  &.carousel-flipper--auto-hide {
+    .carousel-flipper__slider {
+      /* The previous flipper slides towards inline-start, the next flipper towards inline-end. */
+      --webchat__carousel-flipper__slider--offset: calc(
+        (var(--webchat__carousel-flipper--box-width) + var(--webchat__carousel-flipper--size)) / -2
+      );
+
+      transition-delay: 1s;
+      transition-duration: 300ms;
+      transition-property: left, right;
+    }
+
+    /* Focusing a flipper slides it in, unless it is at the edge. */
+    &:focus .carousel-flipper__slider:not(.carousel-flipper__slider--at-edge),
+    /* Keyboard focus also shows the flipper at the edge, so keyboard users can see where the focus is. */
+    &:focus-visible .carousel-flipper__slider {
+      --webchat__carousel-flipper__slider--offset: 0px;
+
+      transition-delay: 0s;
+    }
+  }
+
+  .carousel-flipper__body {
+    background-color: var(--webchat__background--transcript-overlay-button);
+    border-radius: 50%;
+    color: var(--webchat__color--transcript-overlay-button);
+    font-family: 'Consolas', monospace;
+    font-size: 16px;
+    height: var(--webchat__carousel-flipper--size);
+    line-height: var(--webchat__carousel-flipper--size);
+    outline: 0;
+    overflow: hidden;
+    position: relative;
+    transition-duration: 100ms;
+    transition-property: background-color;
+    width: var(--webchat__carousel-flipper--size);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    .carousel-flipper__body {
+      background-color: var(--webchat__background--transcript-overlay-button-disabled);
+      color: var(--webchat__color--transcript-overlay-button-disabled);
+    }
+  }
+
+  &:focus .carousel-flipper__body {
+    background-color: var(--webchat__background--transcript-overlay-button-focus);
+    color: var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
+    transition-duration: 0s;
+  }
+
+  &:hover .carousel-flipper__body {
+    background-color: var(--webchat__background--transcript-overlay-button-hover);
+    color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
+    transition-duration: 0s;
+  }
+
+  /* Two-tone focus indicator: visible against both the flipper and any content behind it. */
+  &:focus-visible .carousel-flipper__body {
+    box-shadow: 0 0 0 2px
+      var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
+    outline: var(--webchat__border-width--transcript-visual-keyboard-indicator)
+      var(--webchat__border-style--transcript-visual-keyboard-indicator)
+      var(--webchat__color--transcript-visual-keyboard-indicator);
+    outline-offset: 2px;
+  }
+}
