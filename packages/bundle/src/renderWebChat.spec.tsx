@@ -44,6 +44,18 @@ test('Root should be rendered by root.render() instead of ReactDOM.render()', ()
   expect(render).not.toHaveBeenCalled();
 });
 
+test('Error from root.render() should be thrown synchronously to the host', () => {
+  // React throws this when rendering with a root after `root.unmount()`.
+  const root = {
+    render: jest.fn(() => {
+      throw new Error('Cannot update an unmounted root.');
+    })
+  };
+
+  expect(() => renderWebChat(ReactWebChat, {}, root)).toThrow('Cannot update an unmounted root.');
+  expect(root.render).toHaveBeenCalledTimes(1);
+});
+
 test('Element on React 19 should throw an error asking for a root', () => {
   // React 19 removed `ReactDOM.render()`.
   Object.assign(ReactDOM, { render: undefined });
