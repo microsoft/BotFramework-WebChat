@@ -1,8 +1,6 @@
 /** @jest-environment @happy-dom/jest-environment */
 /* eslint no-magic-numbers: "off" */
 
-import 'core-js/features/set/index.js';
-
 import * as JestGlobals from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import React, { useContext } from 'react';

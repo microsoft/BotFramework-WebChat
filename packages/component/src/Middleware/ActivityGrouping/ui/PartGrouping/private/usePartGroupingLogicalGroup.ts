@@ -14,9 +14,9 @@ function usePartGroupingLogicalGroup({ activityKeys, isCollapsed }: UsePartGroup
   const removeLogicalGrouping = useRemoveLogicalGrouping();
   const setLogicalGrouping = useSetLogicalGrouping();
 
-  // Sets the group in an effect, not while rendering: Strict Mode runs the cleanup below, then runs this effect again.
-  // A layout effect, so activities using `useLogicalGroupKey()` or `useGroupIsCollapsed()` re-render before the browser paints.
-  // Collapsing or expanding the group updates it here, which notifies `useGroupIsCollapsed()`.
+  // In layout effects, not while rendering: setting re-renders the activities before paint.
+  // Strict Mode runs the cleanup below, then this effect again.
+  // Removed in its own effect, so a change of `activityKeys` updates the group instead of removing and adding it.
   useLayoutEffect(() => {
     setLogicalGrouping(partGroupKey, { activityKeys: Object.freeze(Array.from(activityKeys)), isCollapsed });
   }, [activityKeys, isCollapsed, partGroupKey, setLogicalGrouping]);
