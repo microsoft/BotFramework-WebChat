@@ -19,7 +19,7 @@ Legends:
 
 ## [Unreleased]
 
-Built from [`10c3f60`](https://github.com/microsoft/BotFramework-WebChat/commit/10c3f6020335d8f88e243fa71d7668ea1d482a0c).
+Built from [`60c356a`](https://github.com/microsoft/BotFramework-WebChat/commit/60c356ac4fc8006573e1c7916e91ba350dde996b).
 
 [Show most recent changelog](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) for the full changelog as last rebuilt from `main`.
 
@@ -29,6 +29,7 @@ Built from [`10c3f60`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - `hooks/useSendMessage`: added `replyToId`, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - `hooks/useSendMessageBack`: added `replyToId`, in PR [#5871](https://github.com/microsoft/BotFramework-WebChat/pull/5871), by [@compulim](https://github.com/compulim)
 - Added [#5743](https://github.com/microsoft/BotFramework-WebChat/issues/5743), <kbd>LEFT</kbd>/<kbd>RIGHT</kbd> (mirrored in right-to-left) and <kbd>HOME</kbd>/<kbd>END</kbd> to move the focus between carousel cards when a card has focus, in PR [#5904](https://github.com/microsoft/BotFramework-WebChat/pull/5904), by [@OEvgeny](https://github.com/OEvgeny)
+- `renderWebChat()`: added support of a root from `createRoot()` for React 19, related to [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552) and [#5850](https://github.com/microsoft/BotFramework-WebChat/issues/5850), in PR [#5963](https://github.com/microsoft/BotFramework-WebChat/pull/5963), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
@@ -38,6 +39,11 @@ Built from [`10c3f60`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - 💥 Card action buttons the user pressed are styled with the `adaptive-card-renderer__action--selected` class instead of `[aria-pressed='true']`: host CSS that targets `.ac-pushButton[aria-pressed='true']` should target `.ac-pushButton.adaptive-card-renderer__action--selected` instead, in PR [#5900](https://github.com/microsoft/BotFramework-WebChat/pull/5900), by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Pull request validation now cancels superseded runs, retries `npm clean-install` and `docker compose build`, bounds the Selenium Grid wait and HTML test jobs, keeps build artifacts for 3 days for re-runs, and no longer fails merging test results on re-run, in PR [#5942](https://github.com/microsoft/BotFramework-WebChat/pull/5942), by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Changelog check rejects placeholder pull request numbers and fragments that do not link their own pull request, and `new.mjs` asks to create the pull request first when there is none, in PR [#5944](https://github.com/microsoft/BotFramework-WebChat/pull/5944), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Changed [#4940](https://github.com/microsoft/BotFramework-WebChat/issues/4940), Markdown headings start at level 2 in each message, set the new `styleOptions.markdownHeadingLevelStartAt` to change it, also for Adaptive Cards headings, in PR [#5950](https://github.com/microsoft/BotFramework-WebChat/pull/5950), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Function components: moved `defaultProps` into default parameters, `ReactWebChat.defaultProps` and `Composer.defaultProps` are removed, related to [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552), in PR [#5956](https://github.com/microsoft/BotFramework-WebChat/pull/5956), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Changelog scripts: one shared module instead of two, fewer options, and a shorter pull request check step, with the same output, in PR [#5959](https://github.com/microsoft/BotFramework-WebChat/pull/5959), by [@OEvgeny](https://github.com/OEvgeny)
+- Code block copy button: rendered as a custom element, without `ReactDOM.render()`, related to [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552), in PR [#5961](https://github.com/microsoft/BotFramework-WebChat/pull/5961), by [@OEvgeny](https://github.com/OEvgeny)
+- Removed the `react-redux` dependency, which conflicted with React 19 as a peer dependency, related to [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552), in PR [#5964](https://github.com/microsoft/BotFramework-WebChat/pull/5964), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 
@@ -92,6 +98,16 @@ Built from [`10c3f60`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - 👷🏻 Fixed 7 flaky HTML tests that snapshot or assert before the state settles, in PR [#5943](https://github.com/microsoft/BotFramework-WebChat/pull/5943), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed screen readers announcing new Adaptive Card inputs without their labels and values, in PR [#5913](https://github.com/microsoft/BotFramework-WebChat/pull/5913), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed [#5737](https://github.com/microsoft/BotFramework-WebChat/issues/5737), screen readers in scan mode reading the arrow-key summary of every message after its content, in PR [#5945](https://github.com/microsoft/BotFramework-WebChat/pull/5945), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#3938](https://github.com/microsoft/BotFramework-WebChat/issues/3938), screen readers reading "Connected" in browse mode instead of announcing when the connection is lost and restored, in PR [#5946](https://github.com/microsoft/BotFramework-WebChat/pull/5946), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed Biome errors on `main` that failed the pre-commit hook for every staged CSS file, in PR [#5948](https://github.com/microsoft/BotFramework-WebChat/pull/5948), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed flaky HTML tests that depend on the live bot, remote files, or anti-aliased pixels, in PR [#5952](https://github.com/microsoft/BotFramework-WebChat/pull/5952), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#4363](https://github.com/microsoft/BotFramework-WebChat/issues/4363), screen readers reading "colon" after "Bot said", "You said" and the attachment prefixes in English, in PR [#5949](https://github.com/microsoft/BotFramework-WebChat/pull/5949), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed Fluent starter prompt cards having no visible border in forced colors, in PR [#5954](https://github.com/microsoft/BotFramework-WebChat/pull/5954), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5859](https://github.com/microsoft/BotFramework-WebChat/issues/5859) and [#5127](https://github.com/microsoft/BotFramework-WebChat/issues/5127), Web Chat rendering nothing (React 19) or staying on "Connecting…" when rendered in React Strict Mode, in PR [#5951](https://github.com/microsoft/BotFramework-WebChat/pull/5951), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed the `playground` and "Download localization strings" workflows failing on deprecated `actions/upload-artifact` versions, in PR [#5953](https://github.com/microsoft/BotFramework-WebChat/pull/5953), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed state updates while rendering that React development builds logged as "Cannot update a component while rendering a different component", from the toaster, the typing indicator, the "New messages" button, and part grouping, in PR [#5958](https://github.com/microsoft/BotFramework-WebChat/pull/5958), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed grouped messages showing avatars and breaking keyboard navigation in React Strict Mode, in PR [#5966](https://github.com/microsoft/BotFramework-WebChat/pull/5966), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed activities updated into, out of, or between part groupings rendered twice, in PR [#5967](https://github.com/microsoft/BotFramework-WebChat/pull/5967), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
