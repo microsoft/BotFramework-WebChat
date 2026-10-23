@@ -38,9 +38,6 @@ function createWatcherPlugin(name) {
 
 /** @type { import('esbuild').BuildOptions } */
 const config = {
-  alias: {
-    'html-react-parser': '@msinternal/html-react-parser'
-  },
   bundle: true,
   chunkNames: `botframework-webchat-fluent-theme.[name]-[hash]`,
   entryNames: `[name]`,

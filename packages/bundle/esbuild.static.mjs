@@ -65,7 +65,6 @@ const BASE_CONFIG = {
     adaptivecards: '@msinternal/adaptivecards',
     'base64-js': '@msinternal/base64-js',
     'botframework-directlinejs': '@msinternal/botframework-directlinejs',
-    'html-react-parser': '@msinternal/html-react-parser',
     'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
     'object-assign': '@msinternal/object-assign',
     'react-is': '@msinternal/react-is'
