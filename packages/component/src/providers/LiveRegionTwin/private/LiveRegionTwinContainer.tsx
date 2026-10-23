@@ -1,47 +1,24 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { Fragment, useEffect, useRef } from 'react';
-import {
-  function_,
-  instance,
-  is,
-  literal,
-  nullable,
-  object,
-  optional,
-  picklist,
-  pipe,
-  readonly,
-  string,
-  union
-} from 'valibot';
+import { instance, is, literal, nullable, object, optional, picklist, pipe, readonly, string, union } from 'valibot';
 
 import refObject from '../../../types/internal/refObject';
 import getAnnouncementText from './getAnnouncementText';
+import { ariaNotifiableSchema } from './isAriaNotifySupported';
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
 
-// `ariaNotify()` is not in the DOM typings of TypeScript yet.
-const ariaNotifiableSchema = object({ ariaNotify: function_() });
-
-let ariaNotifySupported: boolean | undefined;
-
-// Support is a property of the browser engine: it cannot change while rendering, and is the same in iframes and popup windows Web Chat may render into.
-// Checked on first use rather than on load, because pages and tests may polyfill or remove `ariaNotify()` after Web Chat loads; cached, so the transport is decided on the first render.
-function isAriaNotifySupported(): boolean {
-  return (ariaNotifySupported ??=
-    typeof globalThis.Element === 'function' && is(ariaNotifiableSchema, globalThis.Element.prototype));
-}
-
 const liveRegionTwinContainerPropsSchema = pipe(
   object({
-    announcementTransport: picklist(['aria-notify', 'live-region']),
     'aria-label': optional(string()),
     'aria-live': union([literal('assertive'), literal('polite')]),
     'aria-roledescription': optional(string()),
     ariaNotifyTargetRef: refObject(nullable(instance(HTMLElement))),
     className: optional(string()),
     role: optional(string()),
-    textElementClassName: optional(string())
+    textElementClassName: optional(string()),
+    // `'aria-notify'` only when the browser supports `ariaNotify()`.
+    transport: picklist(['aria-notify', 'live-region'])
   }),
   readonly()
 );
@@ -51,22 +28,19 @@ type LiveRegionTwinContainerProps = InferReactProps<typeof liveRegionTwinContain
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
 function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
   const {
-    announcementTransport,
     'aria-label': ariaLabel,
     'aria-live': ariaLive,
     'aria-roledescription': ariaRoleDescription,
     ariaNotifyTargetRef,
     className,
     role,
-    textElementClassName
+    textElementClassName,
+    transport
   } = validateProps(liveRegionTwinContainerPropsSchema, props);
 
   const [staticElementEntries] = useStaticElementEntries();
   const containerRef = useRef<HTMLDivElement>(null);
   const lastSeenKeyRef = useRef(0);
-
-  // Falls back to the live region when the browser does not support `ariaNotify()`.
-  const transport = announcementTransport === 'aria-notify' && isAriaNotifySupported() ? 'aria-notify' : 'live-region';
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.
   // The assumption made us safe to mark everything is rendered.
@@ -92,7 +66,7 @@ function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
     });
   }, [ariaNotifyTargetRef, staticElementEntries, transport]);
 
-  // When notifying, entries are only rendered to compute their text: the container has no live semantics and is hidden from screen readers, so each entry is announced once.
+  // When notifying, entries are only rendered to compute their text, and removed right after: the container has no live semantics and is hidden from screen readers, so each entry is announced once.
   return (
     <div
       aria-hidden={transport === 'aria-notify' || undefined}

@@ -39,7 +39,7 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()`, and keeps the live region copy, so it can be seen in the snapshot.
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,
@@ -47,7 +47,7 @@
             styleOptions: {
               announcementTransport: 'aria-notify',
               hideSendBox: true,
-              internalLiveRegionFadeAfter: 60000
+              internalLiveRegionFadeAfter: 60000 // Would keep live region entries for 60 seconds, does not apply to `ariaNotify()`.
             }
           })
         );
@@ -79,7 +79,10 @@
         expect(pageElements.liveRegion().hasAttribute('aria-live')).toBe(false);
         expect(pageElements.liveRegion().getAttribute('aria-hidden')).toBe('true');
 
-        // THEN: The hidden live region (top) shows "connected" and the message, the same text as announced; the transcript shows the message.
+        // THEN: The live region is emptied right after announcing, without waiting 60 seconds: its copy of the message is only rendered to compute the text.
+        await waitFor(() => expect(pageElements.liveRegion().childElementCount).toBe(0));
+
+        // THEN: The live region (top) is empty, there is nothing for screen readers to read from it; the transcript shows the message.
         await host.snapshot('local');
       });
     </script>

@@ -232,6 +232,7 @@ type StrictStyleOptions = {
   /**
    * Live region - Accessibility
    * New activities will be rendered in the non-visual live region and removed after a certain amount of time. Modify this property to change fade time.
+   * Does not apply when announcing via `ariaNotify()` (`announcementTransport: 'aria-notify'`): they are removed right after they are announced.
    */
   internalLiveRegionFadeAfter: number | undefined;
 

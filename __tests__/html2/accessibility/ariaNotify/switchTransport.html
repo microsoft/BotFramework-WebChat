@@ -48,7 +48,7 @@
             })
           );
 
-        // GIVEN: Web Chat sends announcements via the live region, and keeps the live region copy, so it can be seen in the snapshot.
+        // GIVEN: Web Chat sends announcements via the live region, and keeps its entries for 60 seconds.
         renderWebChat('live-region');
 
         await pageConditions.uiConnected();
@@ -72,7 +72,10 @@
           expect(ariaNotify.mock.calls).toEqual([['Bot said Second message', { priority: 'normal' }]])
         );
 
-        // THEN: The hidden live region (top) shows "connected" and both messages; the transcript shows both messages.
+        // THEN: The live region is emptied, without waiting 60 seconds: after the switch, it is not read anymore.
+        await waitFor(() => expect(pageElements.liveRegion().childElementCount).toBe(0));
+
+        // THEN: The live region (top) is empty; the transcript shows both messages.
         await host.snapshot('local');
       });
     </script>

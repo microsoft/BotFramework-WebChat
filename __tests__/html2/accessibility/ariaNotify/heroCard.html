@@ -39,7 +39,7 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: Web Chat sends announcements via `ariaNotify()`, and keeps the live region copy, so it can be seen in the snapshot.
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
         createRoot(document.getElementById('webchat')).render(
           createElement(ReactWebChat, {
             directLine,
@@ -47,7 +47,7 @@
             styleOptions: {
               announcementTransport: 'aria-notify',
               hideSendBox: true,
-              internalLiveRegionFadeAfter: 60000
+              internalLiveRegionFadeAfter: 60000 // Would keep live region entries for 60 seconds, does not apply to `ariaNotify()`.
             }
           })
         );
@@ -82,12 +82,6 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.allImagesLoaded();
 
-        // THEN: The live region copy has the image as `<img alt>` and the buttons as `<button>` elements.
-        expect(pageElements.liveRegion().querySelector('img').getAttribute('alt')).toBe('Bot avatar');
-        expect(
-          Array.from(pageElements.liveRegion().querySelectorAll('button'), ({ textContent }) => textContent)
-        ).toEqual(['Tomorrow', 'Next week']);
-
         // THEN: The card is announced once, with the alt text of the image and the buttons as separate words ("Tomorrow Next week", not "TomorrowNext week"), then its note.
         await waitFor(() =>
           expect(ariaNotify.mock.calls).toEqual([
@@ -103,7 +97,10 @@
           ])
         );
 
-        // THEN: The hidden live region (top) shows the card copy with the alt text "Bot avatar" and the two buttons; the transcript shows the hero card.
+        // THEN: The live region is emptied right after announcing, without waiting 60 seconds: its copy of the card is only rendered to compute the text.
+        await waitFor(() => expect(pageElements.liveRegion().childElementCount).toBe(0));
+
+        // THEN: The live region (top) is empty, there is nothing for screen readers to read from it; the transcript shows the hero card.
         await host.snapshot('local');
       });
     </script>
