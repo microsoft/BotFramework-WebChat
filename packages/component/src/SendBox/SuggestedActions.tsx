@@ -1,10 +1,11 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { Children, memo, useCallback, useMemo, useRef } from 'react';
 import { createBasicStyleSet as createBasicStyleSetForReactFilm, ReactFilm } from 'react-film';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
@@ -31,7 +32,20 @@ const ROOT_STYLE = {
   }
 };
 
-const SuggestedActionCarouselContainer = ({ children, className, label }) => {
+const suggestedActionsContainerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    className: optional(string()),
+    label: string()
+  }),
+  readonly()
+);
+
+type SuggestedActionsContainerProps = InferReactProps<typeof suggestedActionsContainerPropsSchema>;
+
+function SuggestedActionCarouselContainer(props: SuggestedActionsContainerProps) {
+  const { children, className, label } = validateProps(suggestedActionsContainerPropsSchema, props);
+
   const [
     {
       suggestedActionsCarouselFlipperBoxWidth,
@@ -43,7 +57,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   const [direction] = useDirection();
   const [nonce] = useNonce();
   const localize = useLocalizer();
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>(null);
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const filmStyleSet = useMemo(
@@ -82,12 +96,12 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
         },
         rootClassName,
         suggestedActionsStyleSet + '',
-        (className || '') + ''
+        className
       )}
       ref={ref}
       role="toolbar"
     >
-      {!!children && !!React.Children.count(children) && (
+      {!!Children.count(children) && (
         <ReactFilm
           autoCenter={false}
           className="webchat__suggested-actions__carousel"
@@ -106,15 +120,13 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
+}
 
-SuggestedActionCarouselContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
+SuggestedActionCarouselContainer.displayName = 'SuggestedActionCarouselContainer';
 
-const SuggestedActionFlowContainer = ({ children, className, label }) => {
+function SuggestedActionFlowContainer(props: SuggestedActionsContainerProps) {
+  const { children, className, label } = validateProps(suggestedActionsContainerPropsSchema, props);
+
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -127,13 +139,13 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
         'webchat__suggested-actions--flow-layout',
         rootClassName,
         suggestedActionsStyleSet + '',
-        (className || '') + ''
+        className
       )}
       role="toolbar"
     >
-      {!!children && !!React.Children.count(children) && (
+      {!!Children.count(children) && (
         <div className="webchat__suggested-actions__flow-box">
-          {React.Children.map(children, child => (
+          {Children.map(children, child => (
             <div className="webchat__suggested-actions__flow-item-box">{child}</div>
           ))}
         </div>
@@ -141,15 +153,13 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
+}
 
-SuggestedActionFlowContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
+SuggestedActionFlowContainer.displayName = 'SuggestedActionFlowContainer';
 
-const SuggestedActionStackedContainer = ({ children, className, label }) => {
+function SuggestedActionStackedContainer(props: SuggestedActionsContainerProps) {
+  const { children, className, label } = validateProps(suggestedActionsContainerPropsSchema, props);
+
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -162,29 +172,30 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
         'webchat__suggested-actions--stacked-layout',
         rootClassName,
         suggestedActionsStyleSet + '',
-        (className || '') + ''
+        className
       )}
       role="toolbar"
     >
-      {!!children && !!React.Children.count(children) && (
-        <div className="webchat__suggested-actions__stack">{children}</div>
-      )}
+      {!!Children.count(children) && <div className="webchat__suggested-actions__stack">{children}</div>}
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
+}
 
-SuggestedActionStackedContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
+SuggestedActionStackedContainer.displayName = 'SuggestedActionStackedContainer';
 
-type SuggestedActionsProps = Readonly<{
-  className?: string;
-}>;
+const suggestedActionsPropsSchema = pipe(
+  object({
+    className: optional(string())
+  }),
+  readonly()
+);
 
-const SuggestedActions = ({ className }: SuggestedActionsProps) => {
+type SuggestedActionsProps = InferReactProps<typeof suggestedActionsPropsSchema>;
+
+function SuggestedActions(props: SuggestedActionsProps) {
+  const { className } = validateProps(suggestedActionsPropsSchema, props);
+
   const [suggestedActions] = useSuggestedActionsHooks().useSuggestedActions();
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const localize = useLocalizer();
@@ -242,35 +253,28 @@ const SuggestedActions = ({ className }: SuggestedActionsProps) => {
   });
 
   // If there are no suggested actions, we will render nothing.
-  if (!children.length) {
-    return null;
-  }
-
-  if (suggestedActionLayout === 'flow') {
-    return (
-      <RovingTabIndexComposer onEscapeKey={handleEscapeKey}>
-        <SuggestedActionFlowContainer className={className} label={label}>
-          {children}
-        </SuggestedActionFlowContainer>
-      </RovingTabIndexComposer>
-    );
-  } else if (suggestedActionLayout === 'stacked') {
-    return (
-      <RovingTabIndexComposer onEscapeKey={handleEscapeKey} orientation="vertical">
-        <SuggestedActionStackedContainer className={className} label={label}>
-          {children}
-        </SuggestedActionStackedContainer>
-      </RovingTabIndexComposer>
-    );
-  }
-
-  return (
+  return !children.length ? null : suggestedActionLayout === 'flow' ? (
+    <RovingTabIndexComposer onEscapeKey={handleEscapeKey}>
+      <SuggestedActionFlowContainer className={className} label={label}>
+        {children}
+      </SuggestedActionFlowContainer>
+    </RovingTabIndexComposer>
+  ) : suggestedActionLayout === 'stacked' ? (
+    <RovingTabIndexComposer onEscapeKey={handleEscapeKey} orientation="vertical">
+      <SuggestedActionStackedContainer className={className} label={label}>
+        {children}
+      </SuggestedActionStackedContainer>
+    </RovingTabIndexComposer>
+  ) : (
     <RovingTabIndexComposer onEscapeKey={handleEscapeKey}>
       <SuggestedActionCarouselContainer className={className} label={label}>
         {children}
       </SuggestedActionCarouselContainer>
     </RovingTabIndexComposer>
   );
-};
+}
 
-export default SuggestedActions;
+SuggestedActions.displayName = 'SuggestedActions';
+
+export default memo(SuggestedActions);
+export { suggestedActionsPropsSchema, type SuggestedActionsProps };
