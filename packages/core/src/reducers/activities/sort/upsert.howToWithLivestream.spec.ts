@@ -513,3 +513,50 @@ scenario('re-sending an older revision of a finalized livestream in a grouping w
       expect(state.sortedActivities).toEqual([activityToExpectation(activity3, 1_000)]);
     });
 });
+
+scenario('re-sending a revision of an ongoing livestream in a grouping', bdd => {
+  const activity1 = buildActivity(
+    {
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
+      text: 'A quick',
+      timestamp: new Date(1_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity2 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'A quick brown fox',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  bdd
+    .given('an ongoing livestream session with 2 revisions in a part grouping', () =>
+      upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2)
+    )
+    // Same ID, e.g. delivered again after a reconnect.
+    .when('the second revision is re-sent', state => upsert({ Date }, state, activity2))
+    .then('should keep 2 revisions in the livestream session', (_, state) => {
+      expect(state.livestreamSessionMap.get('a-00001' as LivestreamSessionId)).toEqual({
+        activities: [
+          expect.objectContaining({ activityLocalId: '_:a-00001' as LocalId }),
+          expect.objectContaining({ activityLocalId: '_:a-00002' as LocalId })
+        ],
+        finalized: false,
+        logicalTimestamp: 1_000
+      } satisfies LivestreamSessionMapEntry);
+    })
+    .and('`sortedActivities` should have each revision once', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity1, 1_000),
+        activityToExpectation(activity2, 2_000)
+      ]);
+    });
+});

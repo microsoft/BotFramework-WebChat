@@ -91,9 +91,11 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const existingSession = state.livestreamSessionMap.get(sessionId);
     const finalized = activityLivestreamingMetadata.type === 'final activity';
 
+    // A re-sent revision (same local ID) takes the slow path, which replaces its previous entry.
     if (
       existingSession &&
       !existingSession.finalized &&
+      !existingActivity &&
       !finalized &&
       !getPartGroupingMetadataMap(activity).has('HowTo')
     ) {
@@ -292,7 +294,10 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const nextLivestreamSessionMapEntry = {
       activities: Object.freeze(
         insertSorted<LivestreamSessionMapEntryActivityEntry>(
-          livestreamSessionMapEntry ? livestreamSessionMapEntry.activities : [],
+          // Remove the previous entry of a re-sent revision, otherwise it is shown twice.
+          livestreamSessionMapEntry
+            ? livestreamSessionMapEntry.activities.filter(entry => entry.activityLocalId !== activityLocalId)
+            : [],
           Object.freeze({
             activityLocalId,
             logicalTimestamp,
