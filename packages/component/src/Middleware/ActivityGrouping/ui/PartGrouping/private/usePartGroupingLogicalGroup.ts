@@ -1,5 +1,5 @@
 import random from 'math-random';
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 
 import { useAddLogicalGrouping, useRemoveLogicalGrouping } from '../../../../../providers/ActivityLogicalGrouping';
 
@@ -10,7 +10,7 @@ type UsePartGroupingLogicalGroupOptions = {
 
 function usePartGroupingLogicalGroup({ activityKeys, isCollapsed }: UsePartGroupingLogicalGroupOptions): string {
   // eslint-disable-next-line no-magic-numbers
-  const [partGroupKey] = useState(() => `part-${random().toString(36).slice(2, 11)}`);
+  const partGroupKey = useMemo(() => `part-${random().toString(36).slice(2, 11)}`, []);
   const addLogicalGrouping = useAddLogicalGrouping();
   const removeLogicalGrouping = useRemoveLogicalGrouping();
 
