@@ -1,6 +1,7 @@
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import React, { type ComponentType, type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { custom, function_, is, object, picklist } from 'valibot';
+import { args, custom, function_, is, object, picklist, pipe, tuple } from 'valibot';
 
 /** A root from `createRoot()` of "react-dom/client". */
 type RenderWebChatRoot = { render(children: ReactNode): void };
@@ -26,13 +27,16 @@ const DOCUMENT_NODE = 9;
 const DOCUMENT_FRAGMENT_NODE = 11;
 
 // Containers `ReactDOM.render()` accepts: element, document and document fragment, by `nodeType` to work across realms.
-// Checked before `renderSchema`: some custom elements (e.g. Lit) have their own `render()` method.
+// Checked before `reactRootSchema`: some custom elements (e.g. Lit) have their own `render()` method.
 const containerSchema = custom<Exclude<RenderWebChatContainer, null>>(value =>
   is(object({ nodeType: picklist([DOCUMENT_FRAGMENT_NODE, DOCUMENT_NODE, ELEMENT_NODE]) }), value)
 );
 
-// Both `ReactDOM.render()` (React 18 or earlier) and `root.render()`.
-const renderSchema = object({ render: function_() });
+// `ReactDOM.render(children, container)`, React 18 or earlier.
+const legacyReactDOMSchema = object({ render: pipe(function_(), args(tuple([reactNode(), containerSchema]))) });
+
+// `root.render(children)`, root from `createRoot()` of "react-dom/client".
+const reactRootSchema = object({ render: pipe(function_(), args(tuple([reactNode()]))) });
 
 export default function renderWebChat(
   ReactWebChat: ComponentType<any>,
@@ -43,7 +47,7 @@ export default function renderWebChat(
 
   if (is(containerSchema, elementOrRoot)) {
     // React 19 or later removed `ReactDOM.render()`: Web Chat does not import "react-dom/client", the host creates the root.
-    if (!is(renderSchema, ReactDOM)) {
+    if (!is(legacyReactDOMSchema, ReactDOM)) {
       throw new Error(
         'botframework-webchat: renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
       );
@@ -51,7 +55,7 @@ export default function renderWebChat(
 
     // React 16 to 18, and Preact. Also the IIFE build, which bundles React DOM 16.8.6 unless `window.ReactDOM` is set.
     ReactDOM.render(children, elementOrRoot);
-  } else if (is(renderSchema, elementOrRoot)) {
+  } else if (is(reactRootSchema, elementOrRoot)) {
     // The host created the root: render with it on any React version, it is the host's to unmount.
     elementOrRoot.render(children);
   } else {
