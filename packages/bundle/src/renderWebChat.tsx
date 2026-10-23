@@ -1,6 +1,6 @@
 import React, { type ComponentType, type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { custom, function_, is, literal, object } from 'valibot';
+import { custom, function_, is, object, picklist } from 'valibot';
 
 import importReactDOMClient from './private/importReactDOMClient';
 
@@ -20,8 +20,16 @@ type RenderWebChat = {
 };
 
 const createRootSchema = object({ createRoot: function_() });
+// Same as `Node.ELEMENT_NODE`, `Node.DOCUMENT_NODE` and `Node.DOCUMENT_FRAGMENT_NODE`, without needing `Node` on import.
+const ELEMENT_NODE = 1;
+const DOCUMENT_NODE = 9;
+const DOCUMENT_FRAGMENT_NODE = 11;
+
+// Containers `ReactDOM.render()` accepts: element, document and document fragment, by `nodeType` to work across realms.
 // Checked before `renderSchema`: some custom elements (e.g. Lit) have their own `render()` method.
-const elementSchema = custom<HTMLElement>(value => is(object({ nodeType: literal(1) }), value));
+const elementSchema = custom<HTMLElement>(value =>
+  is(object({ nodeType: picklist([DOCUMENT_FRAGMENT_NODE, DOCUMENT_NODE, ELEMENT_NODE]) }), value)
+);
 // Both `ReactDOM.render()` (React 18 or earlier) and `root.render()`.
 const renderSchema = object({ render: function_() });
 
