@@ -32,7 +32,7 @@
       run(async function () {
         const webChatElement = document.getElementById('webchat');
 
-        await host.windowSize(640, 640, webChatElement);
+        await host.windowSize(360, 640, webChatElement);
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -40,7 +40,12 @@
 
         await pageConditions.uiConnected();
 
-        // GIVEN: Web Chat is 640 pixels wide, with 4 suggested actions.
+        const getFlipperLabels = () =>
+          Array.from(document.querySelectorAll('.webchat__suggested-actions .carousel-flipper'), flipper =>
+            flipper.getAttribute('aria-label')
+          );
+
+        // GIVEN: Web Chat is 360 pixels wide, with 4 suggested actions.
         await directLine.emulateIncomingActivity({
           from: { role: 'bot' },
           suggestedActions: {
@@ -58,29 +63,25 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.suggestedActionsShown();
 
-        const getFlipperLabels = () =>
-          Array.from(document.querySelectorAll('.webchat__suggested-actions .carousel-flipper'), flipper =>
-            flipper.getAttribute('aria-label')
-          );
-
-        // THEN: All 4 suggested actions fit, there are no flippers.
-        expect(getFlipperLabels()).toEqual([]);
-
-        await host.snapshot('local');
-
-        // WHEN: Web Chat is narrowed to 360 pixels, without moving the pointer.
-        await host.windowSize(360, 640, webChatElement);
-
         // THEN: The suggested actions overflow, both flippers are shown.
+        // Starts narrow: before the first measurement, there are no flippers either, so "no flippers" proves nothing.
         await waitFor(() => expect(getFlipperLabels()).toEqual(['Previous', 'Next']));
 
         await host.snapshot('local');
 
-        // WHEN: Web Chat is widened back to 640 pixels.
+        // WHEN: Web Chat is widened to 640 pixels, without moving the pointer.
         await host.windowSize(640, 640, webChatElement);
 
-        // THEN: All 4 suggested actions fit again, the flippers are gone.
+        // THEN: All 4 suggested actions fit, the flippers are gone.
         await waitFor(() => expect(getFlipperLabels()).toEqual([]));
+
+        await host.snapshot('local');
+
+        // WHEN: Web Chat is narrowed back to 360 pixels.
+        await host.windowSize(360, 640, webChatElement);
+
+        // THEN: The suggested actions overflow again, both flippers are shown.
+        await waitFor(() => expect(getFlipperLabels()).toEqual(['Previous', 'Next']));
 
         await host.snapshot('local');
       });
