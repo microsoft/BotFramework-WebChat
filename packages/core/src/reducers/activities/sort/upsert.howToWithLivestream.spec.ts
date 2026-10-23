@@ -382,3 +382,134 @@ scenario('upserting plain activity in the same grouping', bdd => {
       expect(state.sortedActivities).toEqual([activityToExpectation(activity3, 1_000)]);
     });
 });
+
+scenario('re-sending the final revision of a livestream in a grouping without `isPartOf`', bdd => {
+  const activity1 = buildActivity(
+    {
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
+      text: 'A quick',
+      timestamp: new Date(1_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity2 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamType: 'final' },
+      id: 'a-00002',
+      text: 'A quick brown fox jumped over the lazy dogs.',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'message'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  // Same ID as the final revision, without `isPartOf`.
+  const activity2WithoutGrouping = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamType: 'final' },
+      id: 'a-00002',
+      text: 'A quick brown fox jumped over the lazy dogs.',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'message'
+    },
+    undefined
+  );
+
+  bdd
+    .given('a finalized livestream session in a part grouping', () =>
+      upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2)
+    )
+    .when('the final revision is re-sent without `isPartOf`', state =>
+      upsert({ Date }, state, activity2WithoutGrouping)
+    )
+    .then('the livestream session should stay finalized', (_, state) => {
+      expect(state.livestreamSessionMap.get('a-00001' as LivestreamSessionId)).toHaveProperty('finalized', true);
+    })
+    .and('`sortedChatHistoryList` should only have the part grouping', (_, state) => {
+      expect(state.sortedChatHistoryList).toEqual([
+        {
+          howToGroupingId: '_:how-to:00001' as HowToGroupingId,
+          logicalTimestamp: 2_000,
+          type: 'how to grouping'
+        }
+      ] satisfies SortedChatHistory);
+    })
+    .and('the final revision should be rendered once', (_, state) => {
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity2, 1_000)]);
+    });
+});
+
+scenario('re-sending an older revision of a finalized livestream in a grouping without `isPartOf`', bdd => {
+  const activity1 = buildActivity(
+    {
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
+      text: 'A quick',
+      timestamp: new Date(1_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity2 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'A quick brown fox',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity3 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamType: 'final' },
+      id: 'a-00003',
+      text: 'A quick brown fox jumped over the lazy dogs.',
+      timestamp: new Date(3_000).toISOString(),
+      type: 'message'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  // Same ID as the second revision, without `isPartOf`.
+  const activity2WithoutGrouping = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'A quick brown fox',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    undefined
+  );
+
+  bdd
+    .given('a finalized livestream session in a part grouping', () =>
+      upsert({ Date }, upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2), activity3)
+    )
+    .when('the second revision is re-sent without `isPartOf`', state =>
+      upsert({ Date }, state, activity2WithoutGrouping)
+    )
+    .then('should keep the second revision in `activityMap`', (_, state) => {
+      expect(state.activityMap.get('_:a-00002' as LocalId)?.activity).toEqual(activityToExpectation(activity2));
+    })
+    .and('should keep the livestream session finalized with all revisions', (_, state) => {
+      expect(state.livestreamSessionMap.get('a-00001' as LivestreamSessionId)).toEqual({
+        activities: [
+          expect.objectContaining({ activityLocalId: '_:a-00001' as LocalId }),
+          expect.objectContaining({ activityLocalId: '_:a-00002' as LocalId }),
+          expect.objectContaining({ activityLocalId: '_:a-00003' as LocalId })
+        ],
+        finalized: true,
+        logicalTimestamp: 3_000
+      } satisfies LivestreamSessionMapEntry);
+    })
+    .and('the final revision should be rendered once', (_, state) => {
+      expect(state.sortedActivities).toEqual([activityToExpectation(activity3, 1_000)]);
+    });
+});

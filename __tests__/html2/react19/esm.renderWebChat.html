@@ -25,6 +25,7 @@
       import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
       import { version } from 'react';
       import ReactDOM from 'react-dom';
+      import { createRoot } from 'react-dom/client';
 
       run(async function () {
         // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
@@ -36,8 +37,11 @@
         expect(version).toBe('19.3.1');
         expect(ReactDOM.render).toBeUndefined();
 
-        // WHEN: Web Chat is rendered by renderWebChat().
-        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, document.getElementById('webchat'));
+        // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() of the page.
+        renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          createRoot(document.getElementById('webchat'))
+        );
 
         await pageConditions.uiConnected();
 

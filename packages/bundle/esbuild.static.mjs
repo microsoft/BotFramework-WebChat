@@ -38,17 +38,6 @@ const isomorphicReactPlugin = {
   }
 };
 
-// "react-dom/client" is resolved by the import map of the page: only the static build can import it on demand.
-const importReactDOMClientPlugin = {
-  name: 'import-react-dom-client',
-  setup(build) {
-    // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /\/private\/importReactDOMClient$/ }, ({ path, resolveDir }) => ({
-      path: resolve(resolveDir, `${path}.static.ts`)
-    }));
-  }
-};
-
 function createWatcherPlugin(name) {
   /** @type { import('esbuild').Plugin } */
   return {
@@ -92,7 +81,6 @@ const BASE_CONFIG = {
   metafile: true,
   plugins: [
     cssPlugin,
-    importReactDOMClientPlugin,
     injectCSSPlugin({
       ignoreCSSEntries: ['static/botframework-webchat/component.css'],
       stylesPlaceholder: bundleStyleContentPlaceholder

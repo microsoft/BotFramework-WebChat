@@ -48,7 +48,7 @@
         };
 
         // WHEN: Web Chat is rendered by renderWebChat() with the root instead of the element, without the send box.
-        await renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, recordingRoot);
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, recordingRoot);
 
         // THEN: The root rendered Web Chat once.
         expect(renderedChildren).toHaveLength(1);
@@ -66,7 +66,7 @@
         const transcript = pageElements.transcript();
 
         // WHEN: renderWebChat() is called again with the same root, with the send box.
-        await renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, recordingRoot);
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, recordingRoot);
 
         // THEN: The root rendered Web Chat again.
         expect(renderedChildren).toHaveLength(2);

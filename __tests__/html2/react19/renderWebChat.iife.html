@@ -45,22 +45,22 @@
         expect(version).toBe('19.3.1');
         expect(ReactDOM.render).toBeUndefined();
 
-        // WHEN: Web Chat is rendered by renderWebChat() without a root.
-        // THEN: It rejects, as the IIFE build cannot import "react-dom/client".
-        await expect(renderWebChat({ directLine, store }, webChatElement)).rejects.toThrow(
-          'renderWebChat() needs createRoot() from "react-dom/client" on React 19 or later. Pass a root from createRoot() instead of the element,'
+        // WHEN: Web Chat is rendered by renderWebChat() into the element.
+        // THEN: It throws, asking for a root: React 19 removed `ReactDOM.render()`.
+        expect(() => renderWebChat({ directLine, store }, webChatElement)).toThrow(
+          'renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
         );
 
         // WHEN: Web Chat is rendered by renderWebChat() with something that is neither an element nor a root.
-        // THEN: It rejects.
-        await expect(renderWebChat({ directLine, store }, {})).rejects.toThrow(
+        // THEN: It throws.
+        expect(() => renderWebChat({ directLine, store }, {})).toThrow(
           'renderWebChat() expects an HTMLElement or a root from createRoot().'
         );
 
         // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() instead of the element, without the send box, as the error says.
         const root = createRoot(webChatElement);
 
-        await renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, root);
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, root);
 
         await pageConditions.uiConnected();
 
@@ -75,7 +75,7 @@
         const transcript = pageElements.transcript();
 
         // WHEN: renderWebChat() is called again with the same root, with the send box.
-        await renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, root);
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: false } }, root);
 
         // THEN: The send box appears.
         await waitFor(() => expect(pageElements.sendBoxTextBox()).toBeTruthy());

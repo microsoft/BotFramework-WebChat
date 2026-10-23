@@ -51,7 +51,7 @@
         expect(typeof chatContainer.render).toBe('function');
 
         // WHEN: Web Chat is rendered by renderWebChat() into the custom element, without the send box.
-        await renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, chatContainer);
+        renderWebChat({ directLine, store, styleOptions: { hideSendBox: true } }, chatContainer);
 
         // THEN: The custom element is treated as an element, not as a root: its `render()` is not called.
         expect(numRenderCalls).toBe(0);

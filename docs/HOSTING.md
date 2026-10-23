@@ -89,14 +89,13 @@ For React web apps, it is important to have all React components rendered with t
 
 To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
-React 19 works as a preview when `react-dom/client` is in the import map: `renderWebChat()` renders with `createRoot()`, as `ReactDOM.render()` was removed in React 19. You can also pass your own root instead of the element: `renderWebChat(props, createRoot(element))`. It is not supported yet:
+React 19 works as a preview: as `ReactDOM.render()` was removed in React 19, create a root with `createRoot()` from `react-dom/client` and pass it instead of the element: `renderWebChat(props, createRoot(element))`. It is not supported yet:
 
 - the React 19 fixes ([#5963](https://github.com/microsoft/BotFramework-WebChat/pull/5963) and the `react-film` migration) have not landed
 - no CI job builds a React 19 / webpack 5 consumer
 - the shipped typings import `prop-types`, which fails with `@types/react@19` and `skipLibCheck: false` (TS7016)
 - `react-scroll-to-bottom` still uses `defaultProps` on function components
 - the repacked "latest supported" React under `/static/` is still React 18
-- npm hosts on React 19 must pass a root to `renderWebChat(props, createRoot(element))`, as `renderWebChat()` cannot import `react-dom/client` there
 
 When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 (latest supported) as ESM under the `/static/` directory.
 
@@ -181,7 +180,7 @@ The following code snippet will host Web Chat using an IIFE build.
 
 Web Chat will use the React runtime (in UMD flavor) from `window.React` variable if available. Otherwise, Web Chat will use the React runtime bundled in Web Chat.
 
-React 19 has no UMD flavor: set both `window.React` and `window.ReactDOM` before loading Web Chat, then pass a root to `renderWebChat(props, createRoot(element))`, as `renderWebChat()` cannot import `react-dom/client` in the IIFE build.
+React 19 has no UMD flavor: set both `window.React` and `window.ReactDOM` before loading Web Chat, then pass a root: `renderWebChat(props, createRoot(element))`.
 </details>
 
 ### NPM: Import via `npm install`
@@ -240,7 +239,13 @@ Then, run the following JavaScript code to render Web Chat into the placeholder.
 renderWebChat({ directLine }, document.getElementById('webchat'));
 ```
 
-> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM, or `createRoot()` when `render()` is not available (React 19, ESM build only). When a root from `createRoot()` is passed instead of the element, it renders with `root.render()`.
+> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM. React 19 removed `render()`: create a root with `createRoot()` from `react-dom/client` and pass it instead of the element.
+
+```tsx
+import { createRoot } from 'react-dom/client';
+
+renderWebChat({ directLine }, createRoot(document.getElementById('webchat')));
+```
 
 ### Using `<ReactWebChat>` component
 

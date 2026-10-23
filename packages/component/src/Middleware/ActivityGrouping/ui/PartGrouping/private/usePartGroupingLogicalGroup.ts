@@ -1,9 +1,7 @@
 import random from 'math-random';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useRefFrom } from 'use-ref-from';
-import { useStateWithRef } from 'use-state-with-ref';
+import { useLayoutEffect, useMemo } from 'react';
 
-import { useAddLogicalGrouping, useRemoveLogicalGrouping } from '../../../../../providers/ActivityLogicalGrouping';
+import { useRemoveLogicalGrouping, useSetLogicalGrouping } from '../../../../../providers/ActivityLogicalGrouping';
 
 type UsePartGroupingLogicalGroupOptions = {
   activityKeys: readonly string[];
@@ -12,27 +10,18 @@ type UsePartGroupingLogicalGroupOptions = {
 
 function usePartGroupingLogicalGroup({ activityKeys, isCollapsed }: UsePartGroupingLogicalGroupOptions): string {
   // eslint-disable-next-line no-magic-numbers
-  const [partGroupKey, _setPartKey, partKeyRef] = useStateWithRef(() => `part-${random().toString(36).slice(2, 11)}`);
-  const addLogicalGrouping = useAddLogicalGrouping();
+  const partGroupKey = useMemo(() => `part-${random().toString(36).slice(2, 11)}`, []);
   const removeLogicalGrouping = useRemoveLogicalGrouping();
+  const setLogicalGrouping = useSetLogicalGrouping();
 
-  const isCollapsedRef = useRefFrom(isCollapsed);
+  // In layout effects, not while rendering: setting re-renders the activities before paint.
+  // Strict Mode runs the cleanup below, then this effect again.
+  // Removed in its own effect, so a change of `activityKeys` updates the group instead of removing and adding it.
+  useLayoutEffect(() => {
+    setLogicalGrouping(partGroupKey, { activityKeys: Object.freeze(Array.from(activityKeys)), isCollapsed });
+  }, [activityKeys, isCollapsed, partGroupKey, setLogicalGrouping]);
 
-  const getGroupState = useCallback(() => ({ isCollapsed: isCollapsedRef.current }), [isCollapsedRef]);
-
-  useMemo(
-    () =>
-      addLogicalGrouping({
-        key: partKeyRef.current,
-        activityKeys: Array.from(activityKeys),
-        getGroupState
-      }),
-    [activityKeys, addLogicalGrouping, getGroupState, partKeyRef]
-  );
-
-  const removeLogicalGroupingRef = useRefFrom(removeLogicalGrouping);
-
-  useEffect(() => () => removeLogicalGroupingRef.current(partKeyRef.current), [partKeyRef, removeLogicalGroupingRef]);
+  useLayoutEffect(() => () => removeLogicalGrouping(partGroupKey), [partGroupKey, removeLogicalGrouping]);
 
   return partGroupKey;
 }
