@@ -59,7 +59,9 @@ export default function renderWebChat(
     // The host created the root: render with it on any React version, it is the host's to unmount.
     elementOrRoot.render(children);
   } else {
-    throw new Error('botframework-webchat: renderWebChat() expects an HTMLElement or a root from createRoot().');
+    throw new Error(
+      'botframework-webchat: renderWebChat() expects an HTMLElement or a root from ReactDOM.createRoot().'
+    );
   }
 }
 

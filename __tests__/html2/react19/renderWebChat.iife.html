@@ -54,7 +54,7 @@
         // WHEN: Web Chat is rendered by renderWebChat() with something that is neither an element nor a root.
         // THEN: It throws.
         expect(() => renderWebChat({ directLine, store }, {})).toThrow(
-          'renderWebChat() expects an HTMLElement or a root from createRoot().'
+          'renderWebChat() expects an HTMLElement or a root from ReactDOM.createRoot().'
         );
 
         // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() instead of the element, without the send box, as the error says.

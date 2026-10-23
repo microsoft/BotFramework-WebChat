@@ -67,5 +67,5 @@ test('Element on React 19 should throw an error asking for a root', () => {
 
 test('Neither a container nor a root should throw', () =>
   expect(() => renderWebChat(ReactWebChat, {}, {} as unknown as HTMLElement)).toThrow(
-    'renderWebChat() expects an HTMLElement or a root from createRoot().'
+    'renderWebChat() expects an HTMLElement or a root from ReactDOM.createRoot().'
   ));
