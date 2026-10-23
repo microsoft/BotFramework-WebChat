@@ -18,7 +18,7 @@ function Group({ activityKeys }: { readonly activityKeys: string[] }) {
   const setLogicalGrouping = useSetLogicalGrouping();
 
   useLayoutEffect(() => {
-    setLogicalGrouping('g', { activityKeys });
+    setLogicalGrouping('g', { activityKeys, isCollapsed: false });
   }, [activityKeys, setLogicalGrouping]);
 
   return null;

@@ -71,7 +71,7 @@ describe('TranscriptFocusComposer - focusRelativeActivity', () => {
         for (const [activityKey, groupKey] of Object.entries(config.groupKeyMappings)) {
           const group = groups.get(groupKey) ?? {
             activityKeys: [],
-            groupState: config.groupStates[groupKey]
+            isCollapsed: !!config.groupStates[groupKey]?.isCollapsed
           };
 
           group.activityKeys.push(activityKey);

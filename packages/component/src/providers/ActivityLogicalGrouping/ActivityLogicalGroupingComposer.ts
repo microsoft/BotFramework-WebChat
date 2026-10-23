@@ -5,7 +5,6 @@ import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 import createKeyedSubscription from '../../hooks/internal/keyedSubscription/createKeyedSubscription';
 import ActivityLogicalGroupingContext, {
   type ActivityLogicalGroupingContextType,
-  type GroupState,
   type LogicalGrouping
 } from './private/ActivityLogicalGroupingContext';
 
@@ -23,7 +22,7 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
 
   const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
   const activityToGroupMapRef = useRef<ReadonlyMap<string, string | undefined>>(new Map());
-  const [groupStateSubscription] = useState(() => createKeyedSubscription<string>());
+  const [groupIsCollapsedSubscription] = useState(() => createKeyedSubscription<string>());
   const [logicalGroupKeySubscription] = useState(() => createKeyedSubscription<string>());
 
   // Notifies only the activities whose group key changed.
@@ -42,7 +41,7 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
     [activityToGroupMapRef, logicalGroupKeySubscription]
   );
 
-  // Setting and removing notify `useGroupState()` and `useLogicalGroupKey()`, which re-render: call them from effects, never while rendering.
+  // Setting and removing notify `useGroupIsCollapsed()` and `useLogicalGroupKey()`, which re-render: call them from effects, never while rendering.
   const setLogicalGrouping = useCallback(
     (key: string, grouping: LogicalGrouping) => {
       const prevGrouping = logicalGroupingsRef.current.get(key);
@@ -64,9 +63,9 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
         )
       );
 
-      prevGrouping?.groupState !== grouping.groupState && groupStateSubscription.notify([key]);
+      prevGrouping?.isCollapsed !== grouping.isCollapsed && groupIsCollapsedSubscription.notify([key]);
     },
-    [activityToGroupMapRef, groupStateSubscription, logicalGroupingsRef, setActivityToGroupMap]
+    [activityToGroupMapRef, groupIsCollapsedSubscription, logicalGroupingsRef, setActivityToGroupMap]
   );
 
   const removeLogicalGrouping = useCallback(
@@ -74,9 +73,9 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
       logicalGroupingsRef.current.delete(key);
 
       setActivityToGroupMap(new Map([...activityToGroupMapRef.current].filter(([, value]) => value !== key)));
-      groupStateSubscription.notify([key]);
+      groupIsCollapsedSubscription.notify([key]);
     },
-    [activityToGroupMapRef, groupStateSubscription, logicalGroupingsRef, setActivityToGroupMap]
+    [activityToGroupMapRef, groupIsCollapsedSubscription, logicalGroupingsRef, setActivityToGroupMap]
   );
 
   const getLogicalGroupKey = useCallback(
@@ -84,8 +83,8 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
     [activityToGroupMapRef]
   );
 
-  const getGroupState = useCallback(
-    (groupKey: string): GroupState | undefined => logicalGroupingsRef.current.get(groupKey)?.groupState,
+  const getGroupIsCollapsed = useCallback(
+    (groupKey: string): boolean | undefined => logicalGroupingsRef.current.get(groupKey)?.isCollapsed,
     [logicalGroupingsRef]
   );
 
@@ -105,18 +104,18 @@ const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerP
     () =>
       Object.freeze({
         getGroupBoundaries,
-        getGroupState,
+        getGroupIsCollapsed,
         getLogicalGroupKey,
         removeLogicalGrouping,
         setLogicalGrouping,
-        subscribeGroupState: groupStateSubscription.subscribe,
+        subscribeGroupIsCollapsed: groupIsCollapsedSubscription.subscribe,
         subscribeLogicalGroupKey: logicalGroupKeySubscription.subscribe
       }),
     [
       getGroupBoundaries,
-      getGroupState,
+      getGroupIsCollapsed,
       getLogicalGroupKey,
-      groupStateSubscription,
+      groupIsCollapsedSubscription,
       logicalGroupKeySubscription,
       removeLogicalGrouping,
       setLogicalGrouping

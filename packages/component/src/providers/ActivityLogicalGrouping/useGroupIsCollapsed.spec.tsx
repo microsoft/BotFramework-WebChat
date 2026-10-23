@@ -10,13 +10,12 @@ import { act } from 'react-dom/test-utils';
 
 import usePartGroupingLogicalGroup from '../../Middleware/ActivityGrouping/ui/PartGrouping/private/usePartGroupingLogicalGroup';
 import ActivityLogicalGroupingComposer from './ActivityLogicalGroupingComposer';
-import { type GroupState } from './private/ActivityLogicalGroupingContext';
-import useGroupState from './useGroupState';
+import useGroupIsCollapsed from './useGroupIsCollapsed';
 
-type Renders = (GroupState | undefined)[];
+type Renders = (boolean | undefined)[];
 
 function Reader({ groupKey, renders }: { readonly groupKey: string; readonly renders: Renders }) {
-  renders.push(useGroupState(groupKey)[0]);
+  renders.push(useGroupIsCollapsed(groupKey)[0]);
 
   return null;
 }
@@ -57,7 +56,7 @@ function renderGroups(
 }
 
 scenario(
-  'useGroupState',
+  'useGroupIsCollapsed',
   bdd => {
     bdd
       .given('an empty transcript', (): { container: HTMLElement; renders1: Renders; renders2: Renders } => ({
@@ -69,9 +68,9 @@ scenario(
         renderGroups(container, { isGroup1Collapsed: false, renders1, renders2 })
       )
       .then('both readers should see an expanded group', ({ renders1, renders2 }) => {
-        // Rendered before the group is added in a layout effect, then re-rendered with its state before paint.
-        expect(renders1).toStrictEqual([undefined, { isCollapsed: false }]);
-        expect(renders2).toStrictEqual([undefined, { isCollapsed: false }]);
+        // Rendered before the group is added in a layout effect, then re-rendered with the group before paint.
+        expect(renders1).toStrictEqual([undefined, false]);
+        expect(renders2).toStrictEqual([undefined, false]);
       })
       .when('group 1 collapses', ({ container, renders1, renders2 }) => {
         renders1.splice(0);
@@ -79,9 +78,7 @@ scenario(
 
         renderGroups(container, { isGroup1Collapsed: true, renders1, renders2 });
       })
-      .then('group 1 reader should re-render once, collapsed', ({ renders1 }) =>
-        expect(renders1).toStrictEqual([{ isCollapsed: true }])
-      )
+      .then('group 1 reader should re-render once, collapsed', ({ renders1 }) => expect(renders1).toStrictEqual([true]))
       .and('group 2 reader should not re-render, its group did not change', ({ renders2 }) =>
         expect(renders2).toStrictEqual([])
       )
@@ -91,9 +88,7 @@ scenario(
 
         renderGroups(container, { isGroup1Collapsed: false, renders1, renders2 });
       })
-      .then('group 1 reader should re-render once, expanded', ({ renders1 }) =>
-        expect(renders1).toStrictEqual([{ isCollapsed: false }])
-      )
+      .then('group 1 reader should re-render once, expanded', ({ renders1 }) => expect(renders1).toStrictEqual([false]))
       .and('group 2 reader should not re-render', ({ renders2 }) => expect(renders2).toStrictEqual([]));
   },
   JestGlobals

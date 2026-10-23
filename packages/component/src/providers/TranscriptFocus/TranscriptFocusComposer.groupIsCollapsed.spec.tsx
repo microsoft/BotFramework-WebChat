@@ -61,7 +61,7 @@ function getFocusedId({ contexts }: Result): string | undefined {
 }
 
 scenario(
-  'TranscriptFocusComposer reads the latest group state while handling a key press',
+  'TranscriptFocusComposer reads whether the group is collapsed while handling a key press',
   bdd => {
     bdd
       .given('a transcript with an expanded part group followed by activity "c"', () => {

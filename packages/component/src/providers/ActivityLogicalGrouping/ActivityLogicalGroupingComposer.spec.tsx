@@ -20,9 +20,6 @@ function ContextReader({ contexts }: { readonly contexts: ActivityLogicalGroupin
   return null;
 }
 
-const COLLAPSED = Object.freeze({ isCollapsed: true });
-const EXPANDED = Object.freeze({ isCollapsed: false });
-
 scenario(
   'ActivityLogicalGroupingComposer notifies only the keys that changed',
   bdd => {
@@ -46,22 +43,22 @@ scenario(
 
         context.subscribeLogicalGroupKey('a', listeners.a);
         context.subscribeLogicalGroupKey('b', listeners.b);
-        context.subscribeGroupState('g', listeners.g);
+        context.subscribeGroupIsCollapsed('g', listeners.g);
 
         return { context, listeners };
       })
       .when('group "g" is added with "a"', ({ context }) => {
-        context.setLogicalGrouping('g', { activityKeys: ['a'], groupState: EXPANDED });
+        context.setLogicalGrouping('g', { activityKeys: ['a'], isCollapsed: false });
       })
       .then('"a" and "g" should be notified, not "b"', ({ listeners }) => {
         expect(listeners.a).toHaveBeenCalledTimes(1);
         expect(listeners.b).not.toHaveBeenCalled();
         expect(listeners.g).toHaveBeenCalledTimes(1);
       })
-      .when('group "g" is updated with "b" added, same state', ({ context, listeners }) => {
+      .when('group "g" is updated with "b" added, still expanded', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
-        context.setLogicalGrouping('g', { activityKeys: ['a', 'b'], groupState: EXPANDED });
+        context.setLogicalGrouping('g', { activityKeys: ['a', 'b'], isCollapsed: false });
       })
       .then('only "b" should be notified', ({ listeners }) => {
         expect(listeners.a).not.toHaveBeenCalled();
@@ -71,7 +68,7 @@ scenario(
       .when('group "g" collapses', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
-        context.setLogicalGrouping('g', { activityKeys: ['a', 'b'], groupState: COLLAPSED });
+        context.setLogicalGrouping('g', { activityKeys: ['a', 'b'], isCollapsed: true });
       })
       .then('only "g" should be notified', ({ listeners }) => {
         expect(listeners.a).not.toHaveBeenCalled();
@@ -81,7 +78,7 @@ scenario(
       .when('"a" moves from group "g" to group "h"', ({ context, listeners }) => {
         Object.values(listeners).forEach(listener => listener.mockClear());
 
-        context.setLogicalGrouping('h', { activityKeys: ['a'], groupState: EXPANDED });
+        context.setLogicalGrouping('h', { activityKeys: ['a'], isCollapsed: false });
       })
       .then('only "a" should be notified, and its group key should read "h"', ({ context, listeners }) => {
         expect(listeners.a).toHaveBeenCalledTimes(1);
