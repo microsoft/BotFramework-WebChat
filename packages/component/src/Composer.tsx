@@ -512,11 +512,5 @@ const Composer = ({
   );
 };
 
-Composer.propTypes = {
-  ...APIComposer.propTypes,
-  ...ComposerCore.propTypes,
-  children: PropTypes.any
-};
-
 export default Composer;
 export type { ComposerProps };

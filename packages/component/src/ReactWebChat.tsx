@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import BasicWebChat from './BasicWebChat';
@@ -24,18 +23,6 @@ const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps) 
     <BasicWebChat className={className} role={role} />
   </Composer>
 );
-
-const {
-  // Excluding "children" from ComposerProps.
-  children: _,
-  ...composerPropTypesWithoutChildren
-} = Composer.propTypes;
-
-ReactWebChat.propTypes = {
-  className: PropTypes.string,
-  role: PropTypes.string,
-  ...composerPropTypesWithoutChildren
-};
 
 export default ReactWebChat;
 
