@@ -1,0 +1,4 @@
+:global(.webchat) .basic-transcript__transcript {
+  margin: 0;
+  padding: 0;
+}

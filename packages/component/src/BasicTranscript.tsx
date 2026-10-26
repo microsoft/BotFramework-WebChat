@@ -1,6 +1,7 @@
 // TODO: [P2] Fix ESLint error `no-use-before-define`
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, {
@@ -52,7 +53,6 @@ import {
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
 import useFocus from './hooks/useFocus';
-import useStyleSet from './hooks/useStyleSet';
 import ChatHistoryDOMComposer from './providers/ChatHistoryDOM/ChatHistoryDOMComposer';
 import useActivityElementMapRef from './providers/ChatHistoryDOM/useActivityElementRef';
 import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer';
@@ -64,6 +64,8 @@ import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivit
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
+
+import styles from './BasicTranscript.module.css';
 
 const {
   useActivityKeys,
@@ -484,10 +486,10 @@ type InternalTranscriptScrollableProps = Readonly<{
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTranscriptScrollableProps) => {
-  const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [sticky]: [boolean] = useSticky();
   const localize = useLocalizer();
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
+  const transcriptClassNames = useStyles(styles);
 
   const prevSticky = usePrevious(sticky);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
@@ -510,7 +512,11 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
         {hasAnyChild && (
           <TranscriptActivityList
             aria-roledescription={transcriptRoleDescription}
-            className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+            // `webchat__basic-transcript__transcript` is still styled by `ROOT_STYLE` and selected by tests, until the transcript moves to CSS Modules.
+            className={classNames(
+              transcriptClassNames['basic-transcript__transcript'],
+              'webchat__basic-transcript__transcript'
+            )}
             role="feed"
           >
             {children}
