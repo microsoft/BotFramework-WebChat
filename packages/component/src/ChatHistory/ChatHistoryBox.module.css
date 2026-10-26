@@ -1,0 +1,14 @@
+:global(.webchat) .chat-history-box {
+  display: flex;
+  flex: auto;
+  overflow: hidden;
+  position: relative;
+
+  .chat-history-box__toolbar {
+    inset-block-end: 5px;
+    inset-inline-end: 20px;
+    isolation: isolate;
+    position: absolute;
+    z-index: 1;
+  }
+}

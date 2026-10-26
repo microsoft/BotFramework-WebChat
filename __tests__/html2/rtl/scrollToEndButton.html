@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat in Hebrew (right-to-left) on a left-to-right page.
+        renderWebChat(
+          { directLine, locale: 'he-IL', store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: Enough messages to scroll the transcript.
+        for (let index = 1; index <= 20; index++) {
+          // eslint-disable-next-line no-await-in-loop
+          await directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: `הודעה ${index}`, type: 'message' });
+        }
+
+        await pageConditions.numActivitiesShown(20);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: The user scrolls to the top and a new message arrives.
+        await pageObjects.scrollToTop();
+        await directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'הודעה חדשה', type: 'message' });
+
+        // THEN: The "New messages" button should show, laid out right-to-left.
+        await pageConditions.scrollToEndButtonShown();
+        await pageConditions.scrollStabilized(0);
+
+        expect(pageElements.scrollToEndButton().matches(':dir(rtl)')).toBe(true);
+
+        // THEN: The button should be at the bottom-left corner of the transcript, the end side in right-to-left.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

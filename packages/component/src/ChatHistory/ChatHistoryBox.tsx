@@ -1,9 +1,10 @@
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
-import { useStyleSet } from '../hooks';
+import styles from './ChatHistoryBox.module.css';
 
 const chatHistoryBoxPropsSchema = pipe(
   object({
@@ -13,14 +14,14 @@ const chatHistoryBoxPropsSchema = pipe(
   readonly()
 );
 
-type ChatHistoryBoxProps = InferInput<typeof chatHistoryBoxPropsSchema>;
+type ChatHistoryBoxProps = InferReactProps<typeof chatHistoryBoxPropsSchema>;
 
 function ChatHistoryBox(props: ChatHistoryBoxProps) {
   const { children, className } = validateProps(chatHistoryBoxPropsSchema, props);
 
-  const [{ chatHistoryBox }] = useStyleSet();
+  const classNames = useStyles(styles);
 
-  return <div className={classNames('webchat__chat-history-box', className, chatHistoryBox)}>{children}</div>;
+  return <div className={cx(classNames['chat-history-box'], className)}>{children}</div>;
 }
 
 export default memo(ChatHistoryBox);

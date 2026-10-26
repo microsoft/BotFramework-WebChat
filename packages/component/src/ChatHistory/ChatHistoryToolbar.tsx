@@ -1,8 +1,10 @@
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly } from 'valibot';
+
+import styles from './ChatHistoryBox.module.css';
 
 const { useDirection } = hooks;
 
@@ -13,20 +15,17 @@ const chatHistoryToolbarPropsSchema = pipe(
   readonly()
 );
 
-type ChatHistoryToolbarProps = InferInput<typeof chatHistoryToolbarPropsSchema>;
+type ChatHistoryToolbarProps = InferReactProps<typeof chatHistoryToolbarPropsSchema>;
 
 function ChatHistoryToolbar(props: ChatHistoryToolbarProps) {
   const { children } = validateProps(chatHistoryToolbarPropsSchema, props);
 
   const [direction] = useDirection();
+  const classNames = useStyles(styles);
 
+  // The toolbar is outside of the transcript, which sets its own `dir`, so it needs `dir` for its logical position.
   return (
-    <div
-      className={classNames(
-        'webchat__chat-history-box__toolbar',
-        direction === 'rtl' ? 'webchat__chat-history-box__toolbar--rtl' : ''
-      )}
-    >
+    <div className={classNames['chat-history-box__toolbar']} dir={direction}>
       {children}
     </div>
   );
