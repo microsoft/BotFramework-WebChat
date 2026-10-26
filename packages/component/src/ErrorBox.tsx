@@ -1,12 +1,14 @@
 /* eslint no-console: "off" */
 
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import React, { Fragment, memo, useEffect } from 'react';
-import { object, optional, pipe, readonly, string, unknown, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string, unknown } from 'valibot';
 
-import useStyleSet from './hooks/useStyleSet';
 import ScreenReaderText from './ScreenReaderText';
+
+import styles from './ErrorBox.module.css';
 
 const { useLocalizer, useTrackException } = hooks;
 
@@ -24,7 +26,7 @@ const errorBoxPropsSchema = pipe(
 /**
  * @deprecated This component is deprecated and will be removed on or after 2027-08-16.
  */
-type ErrorBoxProps = InferInput<typeof errorBoxPropsSchema>;
+type ErrorBoxProps = InferReactProps<typeof errorBoxPropsSchema>;
 
 /**
  * @deprecated This component is deprecated and will be removed on or after 2027-08-16.
@@ -32,7 +34,7 @@ type ErrorBoxProps = InferInput<typeof errorBoxPropsSchema>;
 function ErrorBox(props: ErrorBoxProps) {
   const { error, type = '' } = validateProps(errorBoxPropsSchema, props);
 
-  const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
   const localize = useLocalizer();
   const trackException = useTrackException();
 
@@ -52,7 +54,7 @@ function ErrorBox(props: ErrorBoxProps) {
   return (
     <Fragment>
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
-      <div className={errorBoxStyleSet}>
+      <div className={classNames['error-box']}>
         <div>{type}</div>
         {/* The callstack between production and development are different, thus, we should hide it for visual regression test */}
         {error instanceof Error ? (

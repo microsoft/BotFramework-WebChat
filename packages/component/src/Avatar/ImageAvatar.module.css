@@ -1,0 +1,13 @@
+:global(.webchat) .imageAvatar {
+  align-items: center;
+  display: flex;
+  height: var(--webchat__size--avatar);
+  justify-content: center;
+  overflow: clip;
+  width: var(--webchat__size--avatar);
+
+  .imageAvatar__image {
+    height: auto;
+    width: 100%;
+  }
+}
