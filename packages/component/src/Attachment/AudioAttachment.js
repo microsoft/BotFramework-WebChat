@@ -1,14 +1,16 @@
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import AudioContent from './AudioContent';
-import useStyleSet from '../hooks/useStyleSet';
+
+import styles from './AudioAttachment.module.css';
 
 const AudioAttachment = ({ attachment }) => {
-  const [{ audioAttachment: audioAttachmentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
 
   return (
-    <div className={audioAttachmentStyleSet}>
+    <div className={classNames['audio-attachment']}>
       <AudioContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );

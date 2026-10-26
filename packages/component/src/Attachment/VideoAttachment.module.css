@@ -1,0 +1,27 @@
+:global(.webchat) .video-attachment {
+  /* Same corners as the bubble, which clips the player. */
+  border-radius: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  /* The browser draws the focus ring of <video> outside of the player, where the bubble clips it. The rest is not visible over a dark video. */
+  /* Draw a two-tone focus indicator on top of the player instead: the ring, and a band in the bubble background color to separate it from the video. */
+  /* The indicator follows the bubble corners. When the bubble has padding and does not clip the player, the player is rounded like the indicator. */
+  > video:focus-visible {
+    border-radius: inherit;
+    outline: 0;
+  }
+
+  &:has(> video:focus-visible)::after {
+    border-color: var(--webchat__color--transcript-visual-keyboard-indicator);
+    border-radius: inherit;
+    border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
+    box-shadow: inset 0 0 0 2px var(--webchat__background--bubble);
+    content: '';
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+}

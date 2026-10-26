@@ -1,9 +1,10 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
+import styles from './VimeoContent.module.css';
 
 const { useLocalizer } = hooks;
 
@@ -17,12 +18,12 @@ const vimeoContentPropsSchema = pipe(
   readonly()
 );
 
-type VimeoContentProps = InferInput<typeof vimeoContentPropsSchema>;
+type VimeoContentProps = InferReactProps<typeof vimeoContentPropsSchema>;
 
 function VimeoContent(props: VimeoContentProps) {
   const { alt, autoPlay = false, embedID, loop = false } = validateProps(vimeoContentPropsSchema, props);
 
-  const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
   const localize = useLocalizer();
 
   const search = new URLSearchParams({
@@ -39,7 +40,7 @@ function VimeoContent(props: VimeoContentProps) {
     <iframe
       allowFullScreen={true}
       aria-label={alt}
-      className={vimeoContentStyleSet}
+      className={classNames['vimeo-content']}
       sandbox="allow-same-origin allow-scripts"
       src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
       title={title}

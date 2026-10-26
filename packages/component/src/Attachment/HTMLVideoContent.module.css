@@ -1,0 +1,4 @@
+:global(.webchat) .video-content {
+  height: var(--webchat__height--video);
+  width: 100%;
+}

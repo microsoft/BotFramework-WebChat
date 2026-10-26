@@ -12,8 +12,10 @@ jest.mock('@msinternal/botframework-webchat-react-valibot', () => ({
   validateProps: (_: unknown, props: unknown) => props
 }));
 
-// The video player needs the Web Chat context, it is not under test.
-jest.mock('../hooks/useStyleSet', () => () => [{ videoContent: '' }]);
+// Unit tests do not load CSS, styles are not under test.
+jest.mock('./HTMLVideoContent.module.css', () => ({}));
+jest.mock('./VimeoContent.module.css', () => ({}));
+jest.mock('./YouTubeContent.module.css', () => ({}));
 
 test.each([
   ['root-relative', '/videos/intro.mp4'],

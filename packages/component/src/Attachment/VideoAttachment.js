@@ -1,22 +1,16 @@
-import classNames from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useStyleSet from '../hooks/useStyleSet';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import VideoContent from './VideoContent';
 
-const ROOT_STYLE = {
-  display: 'flex',
-  flexDirection: 'column'
-};
+import styles from './VideoAttachment.module.css';
 
 const VideoAttachment = ({ attachment }) => {
-  const [{ videoAttachment: videoAttachmentStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const classNames = useStyles(styles);
 
   return (
-    <div className={classNames(rootClassName, videoAttachmentStyleSet + '')}>
+    <div className={classNames['video-attachment']}>
       <VideoContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );

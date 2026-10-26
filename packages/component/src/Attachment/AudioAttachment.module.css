@@ -1,0 +1,22 @@
+:global(.webchat) .audio-attachment {
+  display: flex;
+  min-height: var(--webchat__size--avatar);
+  position: relative;
+
+  /* The browser draws the focus ring of <audio> outside of the player, where the bubble clips it, and under the player controls. */
+  /* Draw the focus indicator on top of the player instead, in the same pill shape as the player (Chromium uses `border-radius: 100px`). */
+  > audio:focus-visible {
+    outline: 0;
+  }
+
+  &:has(> audio:focus-visible)::after {
+    border-color: var(--webchat__color--transcript-visual-keyboard-indicator);
+    border-radius: 100px;
+    border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
+    content: '';
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+}

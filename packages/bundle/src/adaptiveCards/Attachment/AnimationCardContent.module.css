@@ -26,7 +26,7 @@
         display: block;
       }
 
-      /* Same two-tone focus indicator as video attachments, see `Styles/StyleSet/VideoAttachment.ts` in the component package. */
+      /* Same two-tone focus indicator as video attachments, see `Attachment/VideoAttachment.module.css` in the component package. */
       /* It follows the clipped top corners. When the bubble does not clip the video, the video is rounded like the indicator. */
       > video:focus-visible {
         border-radius: inherit;

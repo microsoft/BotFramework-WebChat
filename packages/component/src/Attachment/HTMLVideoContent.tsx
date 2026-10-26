@@ -1,8 +1,9 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
+import styles from './HTMLVideoContent.module.css';
 
 const htmlVideoContentPropsSchema = pipe(
   object({
@@ -15,18 +16,18 @@ const htmlVideoContentPropsSchema = pipe(
   readonly()
 );
 
-type HTMLVideoContentProps = InferInput<typeof htmlVideoContentPropsSchema>;
+type HTMLVideoContentProps = InferReactProps<typeof htmlVideoContentPropsSchema>;
 
 function HTMLVideoContent(props: HTMLVideoContentProps) {
   const { alt, autoPlay = false, loop = false, poster, src } = validateProps(htmlVideoContentPropsSchema, props);
 
-  const [{ videoContent: videoContentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles);
 
   return (
     <video
       aria-label={alt}
       autoPlay={autoPlay}
-      className={videoContentStyleSet}
+      className={classNames['video-content']}
       controls={true}
       loop={loop}
       poster={poster}

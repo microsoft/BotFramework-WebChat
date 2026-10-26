@@ -53,6 +53,7 @@ const CustomPropertyNames = Object.freeze({
   FontMonospace: '--webchat__font--monospace',
   FontSizeSmall: '--webchat__font-size--small',
   FontSizeTranscriptTerminator: '--webchat__font-size--transcript-terminator',
+  HeightVideo: '--webchat__height--video',
   IconURLExternalLink: '--webchat__icon-url--external-link',
   MaxHeightImageBubble: '--webchat__max-height--image-bubble',
   MaxHeightSendBoxAttachmentBar: '--webchat__max-height--send-box-attachment-bar',
