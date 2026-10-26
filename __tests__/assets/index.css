@@ -21,7 +21,7 @@ body {
   width: 360px;
 }
 
-.webchat__tooltip {
+.tooltip {
   transition-duration: 0.01ms !important;
 }
 

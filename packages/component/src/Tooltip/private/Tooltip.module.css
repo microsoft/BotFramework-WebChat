@@ -1,0 +1,55 @@
+/* The element that hosts the tooltip positions it and shows it, e.g. `.thumb-button` in `ThumbButton.module.css`. */
+:global(.webchat) .tooltip {
+  --webchat__tooltip-tip-size: 8.484px;
+  --webchat__tooltip-background: #fff;
+  --webchat__tooltip-anchor-inline-start: 50%;
+
+  background: var(--webchat__tooltip-background);
+  border-radius: 4px;
+  color: #242424;
+  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.14)) drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.12));
+  font-size: 12px;
+  inline-size: max-content;
+  isolation: isolate;
+  line-height: 16px;
+  margin: 0;
+  max-inline-size: 30ch;
+  opacity: 0;
+  padding: 6px 12px;
+  pointer-events: none;
+  position: absolute;
+  text-align: start;
+  transition: opacity 0.2s ease;
+  user-select: none;
+  will-change: filter;
+
+  &::after {
+    background: inherit;
+    color: currentColor;
+    content: '';
+    inset: 0;
+    position: absolute;
+  }
+
+  &.tooltip--block-start,
+  &.tooltip--block-end {
+    text-align: center;
+  }
+
+  &.tooltip--block-start {
+    inset-block-end: calc(100% + 7px);
+    inset-inline-start: 50%;
+    transform: translate(calc(-1 * var(--webchat__tooltip-anchor-inline-start)), 0);
+
+    &::after {
+      border: 1px solid var(--webchat__tooltip-background);
+      border-bottom-left-radius: 2px;
+      clip-path: polygon(0% 0%, 100% 100%, 0% 100%);
+      height: var(--webchat__tooltip-tip-size);
+      inset-block-start: calc(100% - 6px);
+      inset-inline-start: calc(var(--webchat__tooltip-anchor-inline-start) - var(--webchat__tooltip-tip-size) / 2);
+      transform: rotate(-45deg);
+      width: var(--webchat__tooltip-tip-size);
+    }
+  }
+}

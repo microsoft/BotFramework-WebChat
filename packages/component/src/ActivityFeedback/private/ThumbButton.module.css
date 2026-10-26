@@ -5,7 +5,15 @@
   display: grid;
   grid-template-areas: 'main';
   height: 16px;
+  position: relative; /* Positions the tooltip. */
   width: 16px;
+
+  /* Shows the tooltip when the button is hovered, focused, or pressed. */
+  &:is(:hover, :focus-visible, :active) > .thumb-button__tooltip,
+  &:has(:is(:hover, :focus-visible, :active)) > .thumb-button__tooltip {
+    opacity: 1;
+    transition-delay: 400ms;
+  }
 
   .thumb-button__input {
     appearance: none;
