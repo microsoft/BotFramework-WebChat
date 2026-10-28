@@ -236,9 +236,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      // Both resolve only through "exports" in package.json, which webpack 4 does not support.
-      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js',
-      'botframework-webchat/schema.js$': 'botframework-webchat/dist/botframework-webchat.schema.js'
+      // Resolves only through "exports" in package.json, which webpack 4 does not support.
+      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js'
     }
   }
 };
@@ -246,7 +245,7 @@ module.exports = {
 
 - If your app already transpiles `node_modules`, add these packages to its rule instead.
 - `@redux-devtools/extension` 4 has no `"main"`. Instead of the alias, you can pin it to 3.3.0, which has one, with `"overrides"` (npm, pnpm) or `"resolutions"` (Yarn).
-- Other subpaths, such as `botframework-webchat/hook.js`, have a file at the package root and need no alias.
+- Subpaths, such as `botframework-webchat/hook.js`, have a file at the package root and need no alias. Web Chat 4.19.2 and earlier lack `schema.js` there: also alias `'botframework-webchat/schema.js$'` to `'botframework-webchat/dist/botframework-webchat.schema.js'`.
 
 ## Step 2: Constructing chat adapter
 

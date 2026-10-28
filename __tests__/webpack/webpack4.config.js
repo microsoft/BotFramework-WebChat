@@ -42,9 +42,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      // Both resolve only through "exports" in package.json, which webpack 4 does not support.
-      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js',
-      'botframework-webchat/schema.js$': 'botframework-webchat/dist/botframework-webchat.schema.js'
+      // Resolves only through "exports" in package.json, which webpack 4 does not support.
+      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js'
     }
   }
 };
