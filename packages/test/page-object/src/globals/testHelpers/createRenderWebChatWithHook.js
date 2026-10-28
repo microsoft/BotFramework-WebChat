@@ -8,8 +8,6 @@ const RunHook = ({ fn, resolve }) => {
   return false;
 };
 
-RunHook.defaultProps = { fn: undefined };
-
 RunHook.propTypes = {
   fn: PropTypes.func,
   resolve: PropTypes.func.isRequired
