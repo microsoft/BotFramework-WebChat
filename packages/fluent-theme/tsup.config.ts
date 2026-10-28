@@ -18,6 +18,12 @@ const umdResolvePlugin = {
 
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^react-dom$/ }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/react-dom.ts')
+    }));
+
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
     build.onResolve({ filter: /^botframework-webchat-api$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts')
     }));
