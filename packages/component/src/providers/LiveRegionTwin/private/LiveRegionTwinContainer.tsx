@@ -1,10 +1,22 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { Fragment, useEffect, useRef } from 'react';
-import { instance, is, literal, nullable, object, optional, picklist, pipe, readonly, string, union } from 'valibot';
+import {
+  function_,
+  instance,
+  is,
+  literal,
+  nullable,
+  object,
+  optional,
+  picklist,
+  pipe,
+  readonly,
+  string,
+  union
+} from 'valibot';
 
 import refObject from '../../../types/internal/refObject';
 import getAnnouncementText from './getAnnouncementText';
-import { ariaNotifiableSchema } from './isAriaNotifySupported';
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
 
@@ -17,11 +29,14 @@ const liveRegionTwinContainerPropsSchema = pipe(
     className: optional(string()),
     role: optional(string()),
     textElementClassName: optional(string()),
-    // `'aria-notify'` only when the browser supports `ariaNotify()`.
+    // `normalizeStyleOptions()` sets `'aria-notify'` only when the browser supports `ariaNotify()`.
     transport: picklist(['aria-notify', 'live-region'])
   }),
   readonly()
 );
+
+// `ariaNotify()` is not in the DOM typings of TypeScript yet.
+const ariaNotifiableSchema = object({ ariaNotify: function_() });
 
 type LiveRegionTwinContainerProps = InferReactProps<typeof liveRegionTwinContainerPropsSchema>;
 

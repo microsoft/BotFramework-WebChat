@@ -14,7 +14,6 @@ import { useRefFrom } from 'use-ref-from';
 
 import { type LiveRegionTwinContextType } from './LiveRegionTwinComposer';
 import LiveRegionTwinContainer from './LiveRegionTwinContainer';
-import isAriaNotifySupported from './isAriaNotifySupported';
 
 import type { StaticElement, StaticElementEntry } from './types';
 
@@ -38,7 +37,7 @@ type LiveRegionTwinComposerProps = Readonly<{
    * How static elements are announced, defaults to `'live-region'`:
    *
    * - `'live-region'` - rendered in the container with the `aria-live` attribute
-   * - `'aria-notify'` - their text is sent via `ariaNotify()` on the element of `ariaNotifyTargetRef`, the container has no live semantics; `'live-region'` if the element does not support `ariaNotify()`
+   * - `'aria-notify'` - their text is sent via `ariaNotify()` on the element of `ariaNotifyTargetRef`, the container has no live semantics; set it only when the browser supports `ariaNotify()`
    */
   announcementTransport?: 'aria-notify' | 'live-region' | undefined;
 
@@ -96,12 +95,9 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
     const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
     const markAllAsRenderedTimeoutIdRef = useRef<any>();
     const nextKeyRef = useRef<number>(1);
-    // Falls back to the live region when the browser does not support `ariaNotify()`.
-    const transport =
-      announcementTransport === 'aria-notify' && isAriaNotifySupported() ? 'aria-notify' : 'live-region';
 
     // When notifying, static elements are only rendered to compute the text to announce: no screen reader reads them, so they are removed right after.
-    const fadeAfterRef = useRefFrom(transport === 'aria-notify' ? 0 : fadeAfter);
+    const fadeAfterRef = useRefFrom(announcementTransport === 'aria-notify' ? 0 : fadeAfter);
     const staticElementEntriesRef = useRefFrom(staticElementEntries);
 
     // This function is called by an effect hook `useMarkAllAsRenderedEffect`, it must be designed with converging in mind.
@@ -173,7 +169,7 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
           className={className}
           role={role}
           textElementClassName={textElementClassName}
-          transport={transport}
+          transport={announcementTransport}
         />
         {children}
       </Provider>

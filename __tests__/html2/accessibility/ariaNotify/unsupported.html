@@ -13,6 +13,7 @@
           "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
           "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
           "react": "/__dist__/packages/bundle/static/react.js",
           "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
           "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
@@ -25,6 +26,7 @@
 
       import { waitFor } from '@testduet/wait-for';
       import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { spyOn } from 'jest-mock';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
 
@@ -35,6 +37,8 @@
         // GIVEN: The browser does not support `ariaNotify()`, as in browsers before Chrome 141 or Firefox 150.
         delete Document.prototype.ariaNotify;
         delete Element.prototype.ariaNotify;
+
+        spyOn(console, 'warn');
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -61,6 +65,16 @@
         });
 
         await pageConditions.numActivitiesShown(1);
+
+        // THEN: Web Chat warns once that it falls back to the live region.
+        expect(console.warn).toHaveBeenCalledWith(
+          'botframework-webchat: "assistiveTechnologyAnnouncementTransport" is "aria-notify" but this browser does not support ariaNotify(), will set to "live-region".'
+        );
+        expect(
+          console.warn.mock.calls.filter(([message]) =>
+            `${message}`.includes('assistiveTechnologyAnnouncementTransport')
+          )
+        ).toHaveLength(1);
 
         // THEN: Web Chat falls back to the live region, as today: polite and visible to screen readers.
         expect(pageElements.liveRegion().getAttribute('aria-live')).toBe('polite');

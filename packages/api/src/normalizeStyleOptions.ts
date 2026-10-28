@@ -1,11 +1,15 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
-import { fallback, is, optional, parse, picklist } from 'valibot';
+import { fallback, function_, is, object, optional, parse, picklist } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
 
 const assistiveTechnologyAnnouncementTransportInvalidValue = warnOnce(
   '"assistiveTechnologyAnnouncementTransport" must be "aria-notify" or "live-region", will set to "live-region".'
+);
+
+const assistiveTechnologyAnnouncementTransportUnsupported = warnOnce(
+  '"assistiveTechnologyAnnouncementTransport" is "aria-notify" but this browser does not support ariaNotify(), will set to "live-region".'
 );
 
 const bubbleImageHeightDeprecation = warnOnce(
@@ -33,7 +37,7 @@ const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot b
 function normalizeAssistiveTechnologyAnnouncementTransport(
   assistiveTechnologyAnnouncementTransport: unknown
 ): StrictStyleOptions['assistiveTechnologyAnnouncementTransport'] {
-  return parse(
+  const transport = parse(
     fallback(optional(picklist(['aria-notify', 'live-region']), 'live-region'), () => {
       assistiveTechnologyAnnouncementTransportInvalidValue();
 
@@ -41,6 +45,18 @@ function normalizeAssistiveTechnologyAnnouncementTransport(
     }),
     assistiveTechnologyAnnouncementTransport
   );
+
+  // `ariaNotify()` is not in the DOM typings of TypeScript yet. Without DOM (no `Element`), it is not supported either.
+  if (
+    transport === 'aria-notify' &&
+    !(typeof globalThis.Element === 'function' && is(object({ ariaNotify: function_() }), globalThis.Element.prototype))
+  ) {
+    assistiveTechnologyAnnouncementTransportUnsupported();
+
+    return 'live-region';
+  }
+
+  return transport;
 }
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
