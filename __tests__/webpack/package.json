@@ -1,0 +1,13 @@
+{
+  "name": "@msinternal/botframework-webchat-webpack-consumer",
+  "version": "0.0.0-0",
+  "description": "A consumer app bundling Web Chat with webpack 4 or 5, see test.sh",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "7.29.7",
+    "@babel/preset-env": "7.29.7",
+    "babel-loader": "8.4.1",
+    "jsdom": "30.1.3"
+  }
+}

@@ -281,6 +281,43 @@ jobs:
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
+  webpack-test:
+    name: Webpack test (webpack@${{ matrix.webpack }}, react@${{ matrix.react }})
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        react: [16.8.6, 18.3.1] # TODO: Add React 19 when react-film supports it.
+        webpack: [4.47.0, 5.107.2]
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          sparse-checkout: __tests__/webpack
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+          cache-dependency-path: __tests__/webpack/package.json
+
+      - name: Download tarballs
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+
+      # TODO: Remove continue-on-error when webpack 4 resolves "@redux-devtools/extension" and "botframework-webchat/schema.js", both are "exports"-only.
+      - continue-on-error: ${{ startsWith(matrix.webpack, '4.') }}
+        name: Bundle with webpack@${{ matrix.webpack }} and react@${{ matrix.react }}
+        run: ./__tests__/webpack/test.sh ${{ matrix.webpack }} ${{ matrix.react }} ./packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     needs:
