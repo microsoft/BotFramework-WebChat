@@ -196,17 +196,11 @@ webpack 4 supports neither `"exports"` in `package.json` nor syntax newer than E
 ```js
 const { sep } = require('path');
 
-// Packages that ship syntax newer than ES2019 (e.g. `?.`, `#private`, `1_000`), which webpack 4 cannot parse.
+// Dependencies of Web Chat that ship syntax newer than ES2019 (e.g. `?.`, `#private`, `1_000`), which webpack 4 cannot parse.
 const transpilePackages = [
-  'botframework-webchat',
-  'botframework-webchat-api',
-  'botframework-webchat-component',
-  'botframework-webchat-core',
-  'botframework-webchat-fluent-theme',
   'event-as-promise',
   'htmlparser2',
   'iter-fest',
-  'katex',
   'micromark-util-decode-numeric-character-reference',
   'micromark-util-sanitize-uri',
   'microsoft-cognitiveservices-speech-sdk',

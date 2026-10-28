@@ -1,18 +1,13 @@
 // The webpack 4 workarounds from docs/HOSTING.md ("Bundling with webpack 4"), keep both the same: CI checks the documented ones.
+// Web Chat itself ships ES2019 and is deliberately not transpiled, so these legs fail if it starts shipping newer syntax.
 
 const { sep } = require('path');
 
-// Packages that ship syntax newer than ES2019 (e.g. `?.`, `#private`, `1_000`), which webpack 4 cannot parse.
+// Dependencies of Web Chat that ship syntax newer than ES2019 (e.g. `?.`, `#private`, `1_000`), which webpack 4 cannot parse.
 const transpilePackages = [
-  'botframework-webchat',
-  'botframework-webchat-api',
-  'botframework-webchat-component',
-  'botframework-webchat-core',
-  'botframework-webchat-fluent-theme',
   'event-as-promise',
   'htmlparser2',
   'iter-fest',
-  'katex',
   'micromark-util-decode-numeric-character-reference',
   'micromark-util-sanitize-uri',
   'microsoft-cognitiveservices-speech-sdk',
