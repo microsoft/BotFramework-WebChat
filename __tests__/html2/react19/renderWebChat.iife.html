@@ -43,6 +43,7 @@
 
         // GIVEN: React 19, which no longer has `ReactDOM.render()`.
         expect(version).toBe('19.3.1');
+        expect(ReactDOM.version).toEqual(expect.stringMatching(/^19\./u));
         expect(ReactDOM.render).toBeUndefined();
 
         // WHEN: Web Chat is rendered by renderWebChat() into the element.
@@ -54,7 +55,7 @@
         // WHEN: Web Chat is rendered by renderWebChat() with something that is neither an element nor a root.
         // THEN: It throws.
         expect(() => renderWebChat({ directLine, store }, {})).toThrow(
-          'renderWebChat() expects an HTMLElement or a root from createRoot().'
+          'renderWebChat() expects an HTMLElement or a root from ReactDOM.createRoot().'
         );
 
         // WHEN: Web Chat is rendered by renderWebChat() with a root from createRoot() instead of the element, without the send box, as the error says.

@@ -47,6 +47,7 @@
 
         // GIVEN: Web Chat rendered with React 19, which no longer has `ReactDOM.render()`.
         expect(version).toBe('19.3.1');
+        expect(ReactDOM.version).toEqual(expect.stringMatching(/^19\./u));
         expect(ReactDOM.render).toBeUndefined();
 
         createRoot(document.getElementById('webchat')).render(

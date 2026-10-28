@@ -8,7 +8,7 @@
     <main id="webchat"></main>
     <!--
       React 18 with "react-dom" emulating React 19 (no `ReactDOM.render()`).
-      TODO: Use React 19 when https://github.com/spyip/react-film/pull/110 is released and bumped: the static build cannot load with React 19 until then.
+      TODO: Use React 19 once the static build no longer bundles react-film, which imports `render` from "react-dom" (removed, or https://github.com/spyip/react-film/pull/110 released and bumped): it fails to load with React 19 until then.
     -->
     <script type="importmap">
       {
@@ -37,7 +37,8 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const webChatElement = document.getElementById('webchat');
 
-        // GIVEN: "react-dom" without `ReactDOM.render()`, like React 19.
+        // GIVEN: "react-dom" of React 18 without `ReactDOM.render()`, like React 19.
+        expect(ReactDOM.version).toEqual(expect.stringMatching(/^18\./u)); // React 18 underneath the emulation, see the import map.
         expect(ReactDOM.render).toBeUndefined();
 
         // WHEN: Web Chat is rendered by renderWebChat() into the element.
