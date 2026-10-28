@@ -191,7 +191,7 @@ import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webc
 
 #### Bundling with webpack 4
 
-webpack 4 supports neither `"exports"` in `package.json` nor syntax newer than ES2019. To bundle Web Chat 4.19, add the following to `webpack.config.js` and install `babel-loader@8` and `@babel/preset-env`. Our CI tests it with webpack 4.47.0.
+webpack 4 cannot parse syntax newer than ES2019. To bundle Web Chat, add the following to `webpack.config.js` and install `babel-loader@8` and `@babel/preset-env`. Our CI tests it with webpack 4.47.0.
 
 ```js
 const { sep } = require('path');
@@ -233,19 +233,17 @@ module.exports = {
         }
       }
     ]
-  },
-  resolve: {
-    alias: {
-      // Resolves only through "exports" in package.json, which webpack 4 does not support.
-      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js'
-    }
   }
 };
 ```
 
 - If your app already transpiles `node_modules`, add these packages to its rule instead.
-- `@redux-devtools/extension` 4 has no `"main"`. Instead of the alias, you can pin it to 3.3.0, which has one, with `"overrides"` (npm, pnpm) or `"resolutions"` (Yarn).
-- Subpaths, such as `botframework-webchat/hook.js`, have a file at the package root and need no alias. Web Chat 4.19.2 and earlier lack `schema.js` there: also alias `'botframework-webchat/schema.js$'` to `'botframework-webchat/dist/botframework-webchat.schema.js'`.
+- webpack 4 does not support `"exports"` in `package.json`. Web Chat 4.19.2 and earlier also need these in `resolve.alias`:
+
+   ```js
+   '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js',
+   'botframework-webchat/schema.js$': 'botframework-webchat/dist/botframework-webchat.schema.js'
+   ```
 
 ## Step 2: Constructing chat adapter
 

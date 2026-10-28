@@ -1,4 +1,3 @@
-import { composeWithDevTools } from '@redux-devtools/extension';
 import { applyMiddleware, createStore as createReduxStore, type Middleware, type Store } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
@@ -126,7 +125,10 @@ export function withOptions(
   store = createReduxStore(
     createReducer(ponyfill, restrictedStoreDebugAPI),
     initialState || {},
-    options.devTools ? composeWithDevTools(enhancer) : enhancer
+    // The Redux DevTools browser extension sets this global, Redux Toolkit reads it the same way.
+    options.devTools && typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(enhancer)
+      : enhancer
   );
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.

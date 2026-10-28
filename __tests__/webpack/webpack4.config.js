@@ -39,11 +39,5 @@ module.exports = {
         }
       }
     ]
-  },
-  resolve: {
-    alias: {
-      // Resolves only through "exports" in package.json, which webpack 4 does not support.
-      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js'
-    }
   }
 };
