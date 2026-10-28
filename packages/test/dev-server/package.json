@@ -20,7 +20,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "express": "^5.2.1",
     "serve-handler": "^6.1.7"
   }
