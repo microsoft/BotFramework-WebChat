@@ -91,7 +91,6 @@ To choose between different version of React runtime, modify the import map and 
 
 React 19 works as a preview: as `ReactDOM.render()` was removed in React 19, create a root with `createRoot()` from `react-dom/client` and pass it instead of the element: `renderWebChat(props, createRoot(element))`. It is not supported yet:
 
-- the React 19 fixes ([#5963](https://github.com/microsoft/BotFramework-WebChat/pull/5963) and the `react-film` migration) have not landed
 - no CI job builds a React 19 / webpack 5 consumer
 - the shipped typings import `prop-types`, which fails with `@types/react@19` and `skipLibCheck: false` (TS7016)
 - `react-scroll-to-bottom` still uses `defaultProps` on function components
