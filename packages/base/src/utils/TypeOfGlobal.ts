@@ -5,7 +5,6 @@
  * (Node.js types) or `SpeechRecognition` (`@types/dom-speech-recognition`), so consumers without these types do not get
  * "Cannot find name".
  */
-type TypeOfGlobal<Name extends string, Fallback = never> =
-  typeof globalThis extends Record<Name, infer T> ? T : Fallback;
+type TypeOfGlobal<Name extends string, Fallback> = typeof globalThis extends Record<Name, infer T> ? T : Fallback;
 
 export { type TypeOfGlobal };
