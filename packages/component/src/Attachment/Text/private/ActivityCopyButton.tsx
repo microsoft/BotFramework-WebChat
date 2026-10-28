@@ -2,16 +2,19 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { instance, nullable, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useAutoResetState from '../../../hooks/internal/useAutoResetState';
 import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import refObject from '../../../types/internal/refObject';
 import ActivityButton from './ActivityButton';
 
 import styles from './ActivityCopyButton.module.css';
 
-const { useLocalizer, useUIState } = hooks;
+const { useLocalizer, usePonyfill, useUIState } = hooks;
+
+const COPIED_DURATION = 5_000;
 
 const activityCopyButtonPropsSchema = pipe(
   object({
@@ -23,32 +26,20 @@ const activityCopyButtonPropsSchema = pipe(
 
 type ActivityCopyButtonProps = InferInput<typeof activityCopyButtonPropsSchema>;
 
-const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
+function ActivityCopyButton(props: ActivityCopyButtonProps) {
   const { className, targetRef } = validateProps(activityCopyButtonPropsSchema, props);
 
-  const classNames = useStyles(styles);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [ponyfill] = usePonyfill();
+  const [copied, setCopied] = useAutoResetState(false, COPIED_DURATION, ponyfill);
   const [uiState] = useUIState();
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const classNames = useStyles(styles);
   const localize = useLocalizer();
   const queueStaticElement = useQueueStaticElement();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
   const disabled = !permissionGranted || uiState === 'disabled';
-
-  useEffect(() => {
-    const { current } = buttonRef;
-
-    if (current) {
-      const handleAnimationEnd = () =>
-        current.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
-      current.addEventListener('animationend', handleAnimationEnd);
-
-      return () => current.removeEventListener('animationend', handleAnimationEnd);
-    }
-  }, [buttonRef, classNames]);
 
   const handleClick = useCallback(() => {
     const htmlText = targetRef.current?.outerHTML;
@@ -63,16 +54,11 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       ])
       .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
-    buttonRef.current?.classList.remove(...classNames['activity-copy-button--copied'].split(/\s+/gu));
-
-    // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
-    // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
-    buttonRef.current?.offsetWidth;
-
-    buttonRef.current?.classList.add(...classNames['activity-copy-button--copied'].split(/\s+/gu));
+    // Activating again restarts the confirmation.
+    setCopied(true);
 
     queueStaticElement(<div className={classNames['activity-copy-button__copy-announcement']}>{copiedText}</div>);
-  }, [classNames, copiedText, queueStaticElement, targetRef]);
+  }, [classNames, copiedText, queueStaticElement, setCopied, targetRef]);
 
   useEffect(() => {
     let unmounted = false;
@@ -90,18 +76,19 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
 
   return (
     <ActivityButton
-      className={cx(classNames['activity-copy-button'], className)}
+      className={cx(classNames['activity-copy-button'], className, {
+        [classNames['activity-copy-button--copied']]: copied
+      })}
       data-testid="copy button"
       disabled={disabled}
       icon="copy"
       onClick={handleClick}
-      ref={buttonRef}
       text={copyText}
     >
       <span className={classNames['activity-copy-button__copied-text']}>{copiedText}</span>
     </ActivityButton>
   );
-};
+}
 
 ActivityCopyButton.displayName = 'ActivityCopyButton';
 

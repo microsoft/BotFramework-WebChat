@@ -46,6 +46,7 @@
   --webchat-colorStrokeFocus2: var(--colorStrokeFocus2, #000000);
 
   --webchat-colorBrandStroke2: var(--colorBrandStroke2, #9edcf7);
+  --webchat-colorBrandStroke2Hover: var(--colorBrandStroke2Hover, #5fc7f3);
   --webchat-colorBrandStroke2Pressed: var(--colorBrandStroke2Pressed, #01384d);
 
   --webchat-colorTransparentStroke: var(--colorTransparentStroke, transparent);
@@ -293,13 +294,9 @@
   scrollbar-gutter: stable;
 }
 
-/* Transcript focus indicator color when in focus-visible state */
-:global(.webchat-fluent).theme
-  :global(
-    .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
-    + .transcript-focus-area__transcript-indicator
-  ) {
-  border-color: var(--webchat-colorStrokeFocus2);
+/* Transcript focus indicator color */
+:global(.webchat-fluent).theme :global(.transcript-focus-area__transcript-indicator) {
+  --webchat__color--transcript-visual-keyboard-indicator: var(--webchat-colorStrokeFocus2);
 }
 
 /* Transcript Content indicator without focus-visible state */
@@ -473,8 +470,17 @@
     width: 20px;
     transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
+    /* Without a border, the button has no visible boundary in forced colors, so draw one as the default theme does. */
+    @media (forced-colors: active) {
+      border: var(--webchat-strokeWidthThin) solid ButtonText;
+    }
+
     :global(.code-block-copy-button__icon) {
       --webchat__component-icon--color: currentColor;
+
+      @media (forced-colors: active) {
+        --webchat__component-icon--color: ButtonText;
+      }
     }
 
     &:hover {
@@ -644,17 +650,19 @@
     width: 20px;
 
     --webchat__component-icon--color: var(--webchat-colorNeutralForeground2);
+
+    @media (forced-colors: active) {
+      --webchat__component-icon--color: buttonText;
+    }
   }
 }
 
-/* Copy button */
-:global(.webchat-fluent).theme :global(.activity-copy-button) {
-  :global(.activity-copy-button__copied-text) {
-    background-color: var(--webchat-colorNeutralBackground1);
-  }
+/* Pause button over animated images: a band in the button background around the focus indicator keeps it visible over any image */
+:global(.webchat-fluent).theme :global(.activity-button.animated-image-content__button):focus-visible::after {
+  outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorNeutralBackground1);
 
-  &:global(.activity-copy-button--copied) :global(.activity-copy-button__copied-text) {
-    animation-duration: var(--webchat-durationUltraSlow);
+  @media (forced-colors: active) {
+    outline-color: ButtonFace;
   }
 }
 

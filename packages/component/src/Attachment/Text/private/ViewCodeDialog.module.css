@@ -36,7 +36,6 @@
 
 :global(.webchat) .view-code-dialog__title {
   margin: 0 auto 0 0;
-  text-transform: capitalize;
 }
 
 :global(.webchat) .view-code-dialog .view-code-dialog__body {

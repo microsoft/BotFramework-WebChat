@@ -42,10 +42,9 @@ import {
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
-import { type StyleOptions } from '../StyleOptions';
+import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
@@ -71,7 +70,7 @@ import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
-import CardActionMiddleware from '../types/CardActionMiddleware';
+import CardActionMiddleware, { type PerformCardAction } from '../types/CardActionMiddleware';
 import { type ContextOf } from '../types/ContextOf';
 import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../types/LocalizedStrings';
@@ -85,7 +84,8 @@ import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
-import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
+import { useDispatch } from './internal/WebChatReduxContext';
+import WebChatReduxProvider from './internal/WebChatReduxProvider';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import useVoiceHandlers from './internal/useVoiceHandlers';
 import activityFallbackPolymiddleware from './middleware/activityFallbackPolymiddleware';
@@ -127,13 +127,30 @@ const DISPATCHERS = {
 
 const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
+/**
+ * Disconnects scheduled by unmounting.
+ *
+ * Strict Mode unmounts and mounts again right after the first mount, synchronously. DirectLineJS cannot start again after its
+ * start is stopped, so unmounting disconnects in a microtask, and mounting again with the same store and connection cancels it.
+ * Any other mount with the same store or the same Direct Line disconnects first, in the same order as without deferring.
+ *
+ * Remove when DirectLineJS can start again after its start is stopped.
+ */
+const pendingDisconnects = new Set<{
+  readonly directLine: DirectLineJSBotConnection;
+  readonly dispatch: ReturnType<typeof useDispatch>;
+  readonly userID: string | undefined;
+  readonly username: string | undefined;
+}>();
+
 function createCardActionContext({
   cardActionMiddleware,
   continuous,
   directLine,
   dispatch,
   markAllAsAcknowledged,
-  ponyfill
+  ponyfill,
+  styleOptions
 }: {
   cardActionMiddleware: readonly CardActionMiddleware[];
   continuous: boolean;
@@ -141,15 +158,16 @@ function createCardActionContext({
   dispatch: (...args: unknown[]) => unknown;
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
-}) {
+  styleOptions: StrictStyleOptions;
+}): { readonly onCardAction: PerformCardAction } {
   const runMiddleware = applyMiddleware(
     'card action',
     ...cardActionMiddleware,
     createDefaultCardActionMiddleware()
-  )({ dispatch });
+  )({ dispatch, ponyfill, styleOptions });
 
   return {
-    onCardAction: (cardAction, { target }: { target?: any } = {}) => {
+    onCardAction: (cardAction, { target }: { target?: any } = {}, init) => {
       markAllAsAcknowledged();
 
       // Stop speech recognition only if under interactive mode.
@@ -180,6 +198,7 @@ function createCardActionContext({
                 return value;
               }
             : null,
+        replyToId: init?.replyToId,
         target
       });
     }
@@ -207,11 +226,6 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
-
-// It seems "react/require-default-props" did not pick up `ComposerCore.defaultProps`.
-// And it falsely complaint `optional?: string` must have a corresponding `ComposerCore.defaultProps.optional = undefined`, even we already set it below.
-// Since we set both TypeScript `Props` class and `ComposerCore.propTypes`, this check will be done there as well.
-// Ignoring it in TypeScript version should be safe, as we have `propTypes` version to protect us.
 
 type ComposerCoreProps = Readonly<{
   /**
@@ -280,13 +294,13 @@ const ComposerCore = ({
   avatarMiddleware: avatarMiddlewareFromProps,
   cardActionMiddleware,
   children,
-  dir,
+  dir = 'auto',
   directLine,
-  disabled,
+  disabled = false,
   downscaleImageToDataURL,
-  grammars,
+  grammars = EMPTY_ARRAY,
   groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
-  locale,
+  locale = window.navigator.language || 'en-US',
   onTelemetry,
   overrideLocalizedStrings,
   polymiddleware: polymiddlewareFromProps,
@@ -295,12 +309,12 @@ const ComposerCore = ({
   selectVoice,
   sendBoxMiddleware,
   sendBoxToolbarMiddleware,
-  sendTypingIndicator,
+  sendTypingIndicator = false,
   toastMiddleware,
   typingIndicatorMiddleware,
   uiState: rawUIState,
-  userID,
-  username
+  userID = '',
+  username = ''
 }: ComposerCoreProps) => {
   const [ponyfill] = usePonyfill();
   const [styleOptions] = useStyleOptions();
@@ -322,19 +336,44 @@ const ComposerCore = ({
   }, [dispatch, sendTypingIndicator]);
 
   useEffect(() => {
-    dispatch(
-      createConnectAction({
-        directLine,
-        userID,
-        username
-      })
+    // Mounted again with the same store and connection (e.g. Strict Mode): keep the connection.
+    const remountedPendingDisconnect = Array.from(pendingDisconnects).find(
+      pendingDisconnect =>
+        pendingDisconnect.directLine === directLine &&
+        pendingDisconnect.dispatch === dispatch &&
+        pendingDisconnect.userID === userID &&
+        pendingDisconnect.username === username
     );
 
+    for (const pendingDisconnect of pendingDisconnects) {
+      if (
+        pendingDisconnect !== remountedPendingDisconnect &&
+        (pendingDisconnect.directLine === directLine || pendingDisconnect.dispatch === dispatch)
+      ) {
+        pendingDisconnects.delete(pendingDisconnect);
+        pendingDisconnect.dispatch(disconnect());
+      }
+    }
+
+    remountedPendingDisconnect
+      ? pendingDisconnects.delete(remountedPendingDisconnect)
+      : dispatch(
+          createConnectAction({
+            directLine,
+            userID,
+            username
+          })
+        );
+
     return () => {
+      const pendingDisconnect = Object.freeze({ directLine, dispatch, userID, username });
+
+      pendingDisconnects.add(pendingDisconnect);
+
       /**
        * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
        */
-      dispatch(disconnect());
+      queueMicrotask(() => pendingDisconnects.delete(pendingDisconnect) && dispatch(disconnect()));
     };
   }, [dispatch, directLine, userID, username]);
 
@@ -348,16 +387,10 @@ const ComposerCore = ({
         directLine,
         dispatch,
         markAllAsAcknowledged,
-        ponyfill
+        ponyfill,
+        styleOptions
       }),
-    [
-      cardActionMiddleware,
-      directLine,
-      dispatch,
-      markAllAsAcknowledged,
-      ponyfill,
-      styleOptions.speechRecognitionContinuous
-    ]
+    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill, styleOptions]
   );
 
   const patchedSelectVoice = useMemo(
@@ -675,31 +708,6 @@ const ComposerCore = ({
  *       we should clean up the responsibility between Context and Redux store
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
-ComposerCore.defaultProps = {
-  activityStatusMiddleware: undefined,
-  attachmentForScreenReaderMiddleware: undefined,
-  attachmentMiddleware: undefined,
-  avatarMiddleware: undefined,
-  cardActionMiddleware: undefined,
-  children: undefined,
-  dir: 'auto',
-  disabled: false,
-  downscaleImageToDataURL: undefined,
-  grammars: [],
-  groupActivitiesMiddleware: undefined,
-  locale: window.navigator.language || 'en-US',
-  onTelemetry: undefined,
-  overrideLocalizedStrings: undefined,
-  renderMarkdown: undefined,
-  scrollToEndButtonMiddleware: undefined,
-  selectVoice: undefined,
-  sendTypingIndicator: false,
-  toastMiddleware: undefined,
-  typingIndicatorMiddleware: undefined,
-  uiState: undefined,
-  userID: '',
-  username: ''
-};
 
 ComposerCore.propTypes = {
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
@@ -803,7 +811,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <Provider context={WebChatReduxContext} store={memoizedStore}>
+    <WebChatReduxProvider store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
         <GraphProvider store={memoizedStore}>
           <ActivityKeyerComposer>
@@ -813,13 +821,8 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
           </ActivityKeyerComposer>
         </GraphProvider>
       </ReduxStoreComposer>
-    </Provider>
+    </WebChatReduxProvider>
   );
-};
-
-ComposerWithStore.defaultProps = {
-  onTelemetry: undefined,
-  store: undefined
 };
 
 ComposerWithStore.propTypes = {
@@ -852,13 +855,6 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions,
       </PonyfillComposer>
     </ErrorBoundary>
   );
-};
-
-Composer.defaultProps = {
-  ...ComposerWithStore.defaultProps,
-  internalRenderErrorBox: undefined,
-  onTelemetry: undefined,
-  ponyfill: undefined
 };
 
 Composer.propTypes = {

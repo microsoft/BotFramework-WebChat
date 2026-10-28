@@ -5,6 +5,7 @@
     <script type="importmap">
       {
         "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
           "jest-mock": "https://esm.sh/jest-mock",
           "react": "https://esm.sh/react@18.3.1",
           "react-dom": "https://esm.sh/react-dom@18.3.1",
@@ -24,6 +25,7 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
+      import { waitFor } from '@testduet/wait-for';
       import { fn, spyOn } from 'jest-mock';
       import React, { createElement, memo } from 'react';
       import { createRoot } from 'react-dom/client';
@@ -68,15 +70,24 @@
         // THEN: Should have error log.
         //       Currently attachment middleware is using console.warn instead of console.error.
         //       Once we migrate to polymiddleware, it should be console.error.
+        //       The live region renders the activity after the transcript, wait for it.
+        await waitFor(() => {
+          expect(consoleWarn).toHaveBeenCalled();
+        });
+
         expect(consoleWarn).toHaveBeenCalledTimes(1);
         expect(consoleWarn.mock.calls[0][0]).toBe(
           'No renderer for attachment for screen reader of type "x-unknown-attachment"'
         );
 
         // THEN: Should emit as exception event.
+        //       The error box tracks the exception in an effect after it is rendered, wait for it.
+        await waitFor(() => {
+          expect(onTelemetry.mock.calls.find(call => call[0]?.type === 'exception')).toBeTruthy();
+        });
+
         const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
 
-        expect(exceptionEvent).toBeTruthy();
         expect(exceptionEvent[0].error.message).toBe('No renderer for attachment of type "x-unknown-attachment"');
 
         await host.snapshot('local');

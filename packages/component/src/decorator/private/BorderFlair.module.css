@@ -93,7 +93,10 @@
   --webchat-decorator-borderFlair-color3: var(--webchat-borderFlair-color3, var(--webchat__border-animation--color-3));
   --webchat-decorator-borderFlair-color1Fade: var(--webchat-borderFlair-color1Fade, transparent);
   --webchat-decorator-borderFlair-color2Fade: var(--webchat-borderFlair-color2Fade, transparent);
-  --webchat-decorator-borderFlair-color3Fade: var(--webchat-borderFlair-color1Fade, transparent);
+  --webchat-decorator-borderFlair-color3Fade: var(
+    --webchat-borderFlair-color3Fade,
+    var(--webchat-borderFlair-color1Fade, transparent)
+  );
   --webchat-decorator-borderFlair-borderSize: var(--webchat-borderFlair-borderSize, 2px);
 
   /* Helper variables */
@@ -105,8 +108,8 @@
     var(--webchat-decorator-borderFlair-animated-color3)
   );
   --webchat-decorator-borderFlair-borderMask:
-    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box, linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%))
-    border-box;
+    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box,
+    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) border-box;
 
   animation:
     borderAnimation-angle 2000ms linear 0ms forwards,

@@ -230,7 +230,13 @@ Then, run the following JavaScript code to render Web Chat into the placeholder.
 renderWebChat({ directLine }, document.getElementById('webchat'));
 ```
 
-> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM.
+> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM. React 19 removed `render()`: create a root with `createRoot()` from `react-dom/client` and pass it instead of the element.
+
+```tsx
+import { createRoot } from 'react-dom/client';
+
+renderWebChat({ directLine }, createRoot(document.getElementById('webchat')));
+```
 
 ### Using `<ReactWebChat>` component
 

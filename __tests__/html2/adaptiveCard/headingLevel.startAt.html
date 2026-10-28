@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      .visually-hidden {
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!-- The host page has a level-two heading for Web Chat, below the level-one heading added by the test harness. -->
+      <h2 class="visually-hidden">Chat with us</h2>
+      <div id="webchat"></div>
+    </main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Headings start at level 3, below the host's level-two heading.
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true, markdownHeadingLevelStartAt: 3 } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends an Adaptive Card with a heading text block.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [
+                  {
+                    style: 'heading',
+                    text: 'Order summary',
+                    type: 'TextBlock'
+                  },
+                  {
+                    text: 'Two items, ready to ship.',
+                    type: 'TextBlock'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const headingElements = pageElements
+          .activities()[0]
+          .querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
+        const headingNodes = await Promise.all(Array.from(headingElements, testHelpers.getAccessibilityNode));
+
+        // THEN: The heading of the text block is level 3, the same start as Markdown headings.
+        expect(
+          headingNodes.map(({ name, properties, role }) => [
+            role.value,
+            name.value,
+            properties.find(({ name }) => name === 'level')?.value.value
+          ])
+        ).toEqual([['heading', 'Order summary', 3]]);
+
+        // THEN: The heading shows "Order summary" in the heading style of the card.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

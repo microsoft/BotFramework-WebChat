@@ -71,7 +71,8 @@ function SuggestedActions() {
             | 'playVideo'
             | 'postBack'
             | 'showImage'
-            | 'signin';
+            | 'signin'
+            | 'webchat:callURL';
           value?: { [key: string]: any } | string;
         };
 

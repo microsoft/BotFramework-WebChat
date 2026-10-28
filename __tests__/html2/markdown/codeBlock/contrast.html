@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Code block: every syntax-highlighted token has enough color contrast</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/",
+          "react-jsx-runtime": "https://esm.sh/react@18/jsx-runtime"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .fui-FluentProvider {
+        display: contents;
+
+        --webchat__color--surface: var(--colorNeutralBackground3);
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webDarkTheme } from '@fluentui/tokens';
+      import { waitFor } from '@testduet/wait-for';
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // Comments, keywords, strings, and other tokens in every language Web Chat highlights.
+      const SAMPLES = Object.freeze([
+        Object.freeze({
+          programmingLanguage: 'javascript',
+          text: `// Line comment.
+/** Block comment. */
+import { readFile } from 'node:fs/promises';
+
+export default class Greeter extends EventTarget {
+  #name = 'World';
+
+  async greet(times = 3) {
+    const pattern = /^hello\\s+\\w+$/u;
+    const text = 'Hello'.repeat(times);
+
+    return text.match(pattern) ?? null;
+  }
+}`,
+          title: 'JavaScript'
+        }),
+        Object.freeze({
+          programmingLanguage: 'typescript',
+          text: `// Line comment.
+type Shape = { readonly kind: 'circle'; radius: number };
+
+export function area(shape: Shape): number {
+  return Math.PI * shape.radius ** 2; /* Block comment. */
+}`,
+          title: 'TypeScript'
+        }),
+        Object.freeze({
+          programmingLanguage: 'python',
+          text: `# Line comment.
+@dataclass
+class Point:
+    """Docstring."""
+
+    x: int = 0
+
+    def distance(self, other: "Point") -> float:
+        return math.sqrt((self.x - other.x) ** 2)  # Trailing comment.
+
+print(f"{Point(1)!r}", r"\\d+", None, True)`,
+          title: 'Python'
+        })
+      ]);
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const searchParams = new URLSearchParams(location.search);
+
+        const webChatElement = React.createElement(ReactWebChat, {
+          directLine,
+          store,
+          styleOptions: { codeBlockTheme: searchParams.get('code-block-theme') ?? 'github-light-default' }
+        });
+
+        const themedElement =
+          searchParams.get('theme') === 'fluent'
+            ? React.createElement(FluentThemeProvider, null, webChatElement)
+            : webChatElement;
+
+        // The code block theme does not follow the color scheme: Web Chat in a dark Fluent UI theme can use either code block theme.
+        createRoot(document.getElementById('webchat')).render(
+          searchParams.get('fluent-theme') === 'dark'
+            ? React.createElement(
+                FluentProvider,
+                { className: 'fui-FluentProvider', theme: webDarkTheme },
+                themedElement
+              )
+            : themedElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends AI-generated code in every language Web Chat highlights (emulated).
+        for (const { programmingLanguage, text } of SAMPLES) {
+          await directLine.emulateIncomingActivity({
+            entities: [
+              {
+                '@context': 'https://schema.org',
+                '@id': '',
+                '@type': 'Message',
+                isBasedOn: { '@type': 'SoftwareSourceCode', programmingLanguage, text },
+                keywords: ['AIGeneratedContent'],
+                type: 'https://schema.org/Message'
+              }
+            ],
+            from: { role: 'bot' },
+            text: `Here is a sample in ${programmingLanguage}.`,
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(SAMPLES.length);
+
+        // The accessibility check cannot measure the color contrast of text in the transcript: the transcript focus overlays cover it.
+        // The "View code" dialog shows the same highlighted code outside of the transcript.
+        for (const [index, { title }] of SAMPLES.entries()) {
+          // WHEN: Click the "View code" button of the message.
+          await host.click(document.querySelectorAll(`[data-testid="${testIds.viewCodeButton}"]`)[index]);
+
+          // THEN: The "View code" dialog should show the code highlighted.
+          await waitFor(() => expect(document.querySelector('dialog[open] pre.shiki')).toBeTruthy());
+          expect(document.querySelector('dialog[open] h2').textContent).toBe(title);
+
+          // THEN: The dialog shows the highlighted code under its title, every token should pass the default accessibility check, including color contrast.
+          await host.snapshot('local');
+
+          // WHEN: Press ESCAPE.
+          await host.sendKeys('ESCAPE');
+
+          // THEN: The dialog should close.
+          await waitFor(() => expect(document.querySelector('dialog[open]')).toBeNull());
+        }
+      });
+    </script>
+  </body>
+</html>

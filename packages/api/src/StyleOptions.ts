@@ -97,6 +97,9 @@ type StrictStyleOptions = {
   /**
    * Typically rendered as two letters, e.g. 'WC'
    * Empty string is required when setting botAvatarImage
+   *
+   * Screen readers narrate the initials before each bot message, e.g. "Bot WC said".
+   * The narration prefers per-activity initials in `channelData.webChat.styleOptions.botAvatarInitials`, e.g. for a live agent.
    */
   botAvatarInitials: string | undefined;
 
@@ -130,7 +133,9 @@ type StrictStyleOptions = {
    * 'Bubble' refers to the container of the activit(ies) from the bot and user. Below, non-'fromUser' props refer to styling for the bot activities.
    */
 
+  /** Background color of the bubble, also used for the inner band of the focus indicator of video attachments and videos in animation cards. */
   bubbleBackground: string | undefined;
+
   bubbleBorderColor: string | undefined;
   bubbleBorderRadius: number | undefined;
   bubbleBorderStyle: string | undefined;
@@ -237,6 +242,21 @@ type StrictStyleOptions = {
   markdownRespectCRLF: boolean | undefined;
 
   /**
+   * Level of the top Markdown heading in each message or Adaptive Cards `TextBlock`, an integer from 1 to 6.
+   *
+   * Defaults to `2`, as the page owns the level-one heading. Other headings keep their depth below the top heading:
+   * with the default, `#` and `##` render as `<h2>` and `<h3>`, so do `##` and `###`.
+   * Levels beyond 6 render as `<div aria-level="7" role="heading">` and so on.
+   *
+   * Also sets the level of Adaptive Cards `TextBlock` with `style: "heading"` (`textBlock.headingLevel` in the default host config),
+   * Markdown headings inside it render as text.
+   *
+   * New in 4.19.3.
+   */
+  // eslint-disable-next-line no-magic-numbers
+  markdownHeadingLevelStartAt: 1 | 2 | 3 | 4 | 5 | 6 | undefined;
+
+  /**
    * Render HTML inside Markdown.
    *
    * `true` to render HTML inside Markdown, otherwise, `false`. Defaults to `true`.
@@ -281,6 +301,9 @@ type StrictStyleOptions = {
    * Send box styling
    */
 
+  /**
+   * `true` to hide the send box and its suggested actions, otherwise, `false`. Defaults to `false`.
+   */
   hideSendBox: boolean | undefined;
 
   /**
@@ -652,13 +675,13 @@ type StrictStyleOptions = {
    */
   suggestedActionsStackedLayoutButtonTextWrap: boolean | undefined;
 
-  /** Suggested actions: Visual keyboard indicator color for the container. */
+  /** Suggested actions: Visual keyboard indicator color for the container and the flipper buttons in carousel layout. */
   suggestedActionsVisualKeyboardIndicatorColor: string | undefined;
 
-  /** Suggested actions: Visual keyboard indicator style for the container. */
+  /** Suggested actions: Visual keyboard indicator style for the container and the flipper buttons in carousel layout. */
   suggestedActionsVisualKeyboardIndicatorStyle: string | undefined;
 
-  /** Suggested actions: Visual keyboard indicator width for the container. */
+  /** Suggested actions: Visual keyboard indicator width for the container and the flipper buttons in carousel layout. */
   suggestedActionsVisualKeyboardIndicatorWidth: number | undefined;
 
   /**
@@ -697,8 +720,13 @@ type StrictStyleOptions = {
   transcriptActivityVisualKeyboardIndicatorStyle: string | undefined;
   transcriptActivityVisualKeyboardIndicatorWidth: number | string | undefined;
 
+  /** Transcript: Visual keyboard indicator color for the transcript, carousel layout (attachments and flipper buttons), card action buttons, audio and video attachments, and videos in animation cards. */
   transcriptVisualKeyboardIndicatorColor: string | undefined;
+
+  /** Transcript: Visual keyboard indicator style for the transcript, carousel layout (attachments and flipper buttons), card action buttons, audio and video attachments, and videos in animation cards. */
   transcriptVisualKeyboardIndicatorStyle: string | undefined;
+
+  /** Transcript: Visual keyboard indicator width for the transcript, carousel layout (attachments and flipper buttons), card action buttons, audio and video attachments, and videos in animation cards. */
   transcriptVisualKeyboardIndicatorWidth: number | string | undefined;
 
   /**
@@ -921,6 +949,32 @@ type StrictStyleOptions = {
    * @default 'auto'
    */
   showMicrophoneButton: 'auto' | 'hide' | undefined;
+
+  /**
+   * `webchat:callURL` action popup window height (in pixels)
+   *
+   * @default 640
+   */
+  callURLActionPopupWindowHeight: number | undefined;
+
+  /**
+   * `webchat:callURL` action popup window width (in pixels)
+   *
+   * @default 480
+   */
+  callURLActionPopupWindowWidth: number | undefined;
+
+  /**
+   * `webchat:callURL` action: origins to open in a trusted popup and have access to `window.opener`, delimited by comma. Same origin is always trusted.
+   *
+   * Default: `undefined`, no cross origins are trusted.
+   *
+   * Security concern: cross origins in this allowlist must be fully trusted, maintained properly, and frequently audited.
+   * Content from these origins could potentially access data and manipulate the page where Web Chat is hosted.
+   *
+   * @default undefined
+   */
+  callURLActionTrustedOrigin: string | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

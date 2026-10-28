@@ -3,18 +3,16 @@ import { useEffect, useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import { SEND_FAILED } from '../types/internal/SendStatus';
+import { SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import activityAltText from '../Utils/activityAltText';
 import tabbableElements from '../Utils/tabbableElements';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useValueRef from '../hooks/internal/useValueRef';
 
-enum InteractiveType {
-  LINK,
-  WIDGET
-}
+type InteractiveType = 'link' | 'widget';
 
-const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
+const { useDateFormatter, useGetKeyByActivity, useLocalizer, useSendStatusByActivityKey } = hooks;
 
 const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   few: 'ACTIVITY_NUM_ATTACHMENTS_FEW_ALT',
@@ -31,11 +29,13 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
  *
  * Due to a bug in Safari, accessible name for active descendant must be a string but not a DOM element.
  */
-export default function useActivityAccessibleName(activity: WebChatActivity, bodyRef: RefObject<HTMLElement>) {
-  const [{ initials: botInitials }] = useAvatarForBot();
+export default function useActivityAccessibleName(
+  activity: WebChatActivity,
+  bodyRef: RefObject<HTMLElement>
+): readonly [string] {
   const [interactiveType, setInteractiveType] = useState<InteractiveType | false>(false);
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
-  const fromSelf = activity.from?.role === 'user';
+  const formatDate = useDateFormatter();
   const getKeyByActivity = useGetKeyByActivity();
   const localize = useLocalizer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -53,14 +53,7 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
   /** "Send failed." */
   const activityInteractiveReasonSendFailedAlt = localize('ACTIVITY_INTERACTIVE_REASON_SEND_FAILED_ALT');
   const activityKey = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
-  const greetingAlt = useMemo(
-    () =>
-      (fromSelf ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')).replace(
-        /\s{2,}/gu,
-        ' '
-      ),
-    [botInitials, fromSelf, localize]
-  );
+  const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
   const interactiveTypeRef = useValueRef(interactiveType);
   const messageTextAlt = useMemo(
     () => activityAltText(activity, renderMarkdownAsHTML),
@@ -71,9 +64,18 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
     [localizeWithPlural, numAttachments]
   );
 
-  const isSendFailed = useMemo(
-    () => sendStatusByActivityKey.get(activityKey) === SEND_FAILED,
-    [activityKey, sendStatusByActivityKey]
+  // Like the activity status, an activity without a send status is sent, e.g. from the bot.
+  const sendStatus = sendStatusByActivityKey.get(activityKey) || SENT;
+
+  const isSendFailed = sendStatus === SEND_FAILED;
+
+  /** "Sent at October 17 at 4:00 PM", only after the activity is sent, like the timestamp in the activity status. */
+  const sentAtAlt = useMemo(
+    () =>
+      activity.timestamp && sendStatus === SENT
+        ? localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(activity.timestamp))
+        : '',
+    [activity.timestamp, formatDate, localize, sendStatus]
   );
 
   const accessibleName = useMemo(
@@ -84,12 +86,13 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
         messageTextAlt,
         numAttachmentsAlt,
         isSendFailed ? activityInteractiveReasonSendFailedAlt : '',
-        interactiveType === InteractiveType.LINK
+        interactiveType === 'link'
           ? activityInteractiveReasonLinkAlt
-          : interactiveType === InteractiveType.WIDGET
+          : interactiveType === 'widget'
             ? activityInteractiveReasonInteractiveContentAlt
             : '',
-        interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : ''
+        interactiveType || isSendFailed ? activityInteractiveFootNoteAlt : '',
+        sentAtAlt
       ]
         .filter(Boolean)
         .join(' '),
@@ -102,7 +105,8 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
       interactiveType,
       isSendFailed,
       messageTextAlt,
-      numAttachmentsAlt
+      numAttachmentsAlt,
+      sentAtAlt
     ]
   );
 
@@ -110,9 +114,8 @@ export default function useActivityAccessibleName(activity: WebChatActivity, bod
     const hasLinks = !!bodyRef.current?.querySelector('a');
     const hasWidgets = !!tabbableElements(bodyRef.current).length;
 
-    interactiveTypeRef.current !== hasWidgets &&
-      setInteractiveType(hasLinks ? InteractiveType.LINK : hasWidgets ? InteractiveType.WIDGET : false);
+    interactiveTypeRef.current !== hasWidgets && setInteractiveType(hasLinks ? 'link' : hasWidgets ? 'widget' : false);
   }, [bodyRef, interactiveTypeRef, setInteractiveType]);
 
-  return [accessibleName];
+  return useMemo(() => Object.freeze([accessibleName] as const), [accessibleName]);
 }

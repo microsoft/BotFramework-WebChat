@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
 import useWebChatUIContext from './internal/useWebChatUIContext';
+import headingLevelDocumentMod from './private/headingLevelDocumentMod';
 
 import styles from './RenderMarkdown.module.css';
 
@@ -51,7 +52,11 @@ export default function useRenderMarkdownAsHTML(
       (markdown => {
         const html = renderMarkdown(markdown, styleOptions, { externalLinkAlt });
 
-        const documentFragment = transformHTMLContent(parseDocumentFragmentFromString(html));
+        // After the HTML content transform, which would remove `aria-level`, `class` and `role` of headings.
+        const documentFragment = headingLevelDocumentMod(
+          transformHTMLContent(parseDocumentFragmentFromString(html)),
+          styleOptions.markdownHeadingLevelStartAt
+        );
 
         const rootElement = document.createElement('div');
 

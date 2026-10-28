@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <button class="first-button" type="button">First button on the page</button>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The user asks for an animation card and the bot replies with one, similar to the "animationcard" command of the mock bot.
+        //        Fixed timestamps, as the summary ends with the time the message was sent.
+        const sendMessage = await directLine.emulateOutgoingActivity('animationcard');
+
+        await sendMessage.resolveAll(activity => ({ ...activity, timestamp: '2026-10-17T11:50:00Z' }));
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                autoloop: true,
+                autostart: true,
+                media: [{ profile: 'animation', url: '/assets/red-green-animation.gif' }],
+                subtitle: 'animation',
+                text: 'No buttons, No Image, Autoloop, Autostart, Sharable',
+                title: 'title'
+              },
+              contentType: 'application/vnd.microsoft.card.animation'
+            }
+          ],
+          timestamp: '2026-10-17T11:51:00Z',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+
+        // The summary of each activity, which screen readers announce when the activity is selected with arrow keys.
+        const [userSummaryElement, botSummaryElement] = pageElements.activityActiveDescendantLabels();
+
+        // THEN: Before the transcript is focused, screen readers in scan mode should not read any summary.
+        await expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toHaveProperty('ignored', true);
+        await expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // WHEN: TAB key is pressed to focus on the transcript.
+        document.querySelector('.first-button').focus();
+        await host.sendTab();
+
+        // THEN: The last activity should be the active descendant, screen readers should announce its summary.
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]));
+        expect(document.activeElement.getAttribute('aria-activedescendant')).toBe(botSummaryElement.id);
+        await waitFor(() =>
+          expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toEqual(
+            expect.objectContaining({
+              ignored: false,
+              name: expect.objectContaining({
+                value:
+                  'Bot said 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
+              }),
+              role: expect.objectContaining({ value: 'article' })
+            })
+          )
+        );
+
+        // THEN: The summary of the other activity should stay hidden from scan mode.
+        await expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus indicator should be around the animation card.
+        await host.snapshot('local');
+
+        // WHEN: Up arrow key is pressed.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: The message of the user should be the active descendant, screen readers should announce its summary.
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]));
+        expect(document.activeElement.getAttribute('aria-activedescendant')).toBe(userSummaryElement.id);
+        await waitFor(() =>
+          expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
+            expect.objectContaining({
+              ignored: false,
+              name: expect.objectContaining({ value: 'You said animationcard Sent at October 17 at 11:50 AM' }),
+              role: expect.objectContaining({ value: 'article' })
+            })
+          )
+        );
+
+        // THEN: The summary of the animation card should be hidden from scan mode again.
+        await expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus indicator should be around the message of the user.
+        await host.snapshot('local');
+
+        // WHEN: SHIFT-TAB key is pressed to move the focus out of the transcript.
+        await host.sendShiftTab();
+
+        // THEN: Screen readers in scan mode should not read any summary.
+        await waitFor(() => expect(document.activeElement).toBe(document.querySelector('.first-button')));
+        await expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toHaveProperty('ignored', true);
+        await expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus should be on the first button, without a focus indicator in the transcript.
+        await host.snapshot('local');
+
+        // WHEN: The animation card is clicked with the mouse, on its bottom-right corner.
+        await host.clickAt(-20, -20, pageElements.activities()[1]);
+
+        // THEN: The animation card should be the active descendant, screen readers should announce its summary.
+        //       The transcript is focused by mouse (not focus-visible), the summary must still be exposed.
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]));
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(document.activeElement.getAttribute('aria-activedescendant')).toBe(botSummaryElement.id);
+        await waitFor(() =>
+          expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toEqual(
+            expect.objectContaining({
+              ignored: false,
+              name: expect.objectContaining({
+                value:
+                  'Bot said 1 attachment. Message is interactive. Click to interact. Sent at October 17 at 11:51 AM'
+              }),
+              role: expect.objectContaining({ value: 'article' })
+            })
+          )
+        );
+
+        // THEN: The summary of the user message should stay hidden from scan mode.
+        await expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus indicator should be around the animation card, without a focus indicator around the transcript.
+        await host.snapshot('local');
+
+        // WHEN: Up arrow key is pressed after the mouse click.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: The message of the user should be the active descendant, screen readers should announce its summary.
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]));
+        expect(document.activeElement.getAttribute('aria-activedescendant')).toBe(userSummaryElement.id);
+        await waitFor(() =>
+          expect(testHelpers.getAccessibilityNode(userSummaryElement)).resolves.toEqual(
+            expect.objectContaining({
+              ignored: false,
+              name: expect.objectContaining({ value: 'You said animationcard Sent at October 17 at 11:50 AM' }),
+              role: expect.objectContaining({ value: 'article' })
+            })
+          )
+        );
+
+        // THEN: The summary of the animation card should be hidden from scan mode again.
+        await expect(testHelpers.getAccessibilityNode(botSummaryElement)).resolves.toHaveProperty('ignored', true);
+
+        // THEN: The focus indicator should be around the message of the user.
+        //       The key press makes the focus visible, so the focus indicator around the transcript is back.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

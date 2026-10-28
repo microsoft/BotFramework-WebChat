@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      /* Text spacing from WCAG 2.2 Success Criterion 1.4.12, as applied by testers. */
+      * {
+        letter-spacing: 0.12em !important;
+        line-height: 1.5 !important;
+        word-spacing: 0.16em !important;
+      }
+
+      p {
+        margin-bottom: 2em !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a receipt card, similar to the "receiptcard" command of the mock bot.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [
+            {
+              content: {
+                buttons: [
+                  { title: 'imBack Button', type: 'imBack', value: 'imBack Action' },
+                  { title: 'postBack Button', type: 'postBack', value: 'postBack Action' }
+                ],
+                facts: [
+                  { key: 'Order Number', value: 'Value 1' },
+                  { key: 'Expected Delivery Time', value: 'Value 2' },
+                  { key: 'Payment Method', value: 'Value 3' },
+                  { key: 'Delivery Address', value: 'Value 4' }
+                ],
+                items: [
+                  {
+                    image: { alt: 'Microsoft Surface Alt', url: '../basic/assets/surface1.jpg' },
+                    price: '$XXX',
+                    subtitle: 'Surface Pro 4 is a powerful, versatile, lightweight laptop.',
+                    text: 'Surface does more. Just like you. For one device that does everything, you need more than a mobile OS.',
+                    title: 'Surface Pro 4'
+                  },
+                  {
+                    image: { alt: 'Microsoft Surface Alt', url: '../basic/assets/surface1.jpg' },
+                    price: '$XXX',
+                    title: 'Surface Pro 4 (2) - No subtitle, No text.'
+                  },
+                  { price: '$XXX', title: 'Surface Pro 4 (3) - No subtitle, No text, No image' }
+                ],
+                tax: 'XXX.XX',
+                title: 'Surface Pro 4',
+                total: '0.10',
+                vat: '0.01'
+              },
+              contentType: 'application/vnd.microsoft.card.receipt'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.allImagesLoaded();
+        await pageConditions.scrollStabilized();
+
+        const [activityElement] = pageElements.activities();
+
+        // THEN: No text in the receipt card should be clipped.
+        expect(
+          Array.from(activityElement.querySelectorAll('.ac-textBlock, .ac-textBlock *'))
+            .filter(
+              ({ clientHeight, clientWidth, scrollHeight, scrollWidth }) =>
+                scrollHeight > clientHeight || scrollWidth > clientWidth
+            )
+            .map(({ textContent }) => textContent)
+        ).toEqual([]);
+
+        // THEN: Every fact value should be on the same line as its key.
+        const getTop = text =>
+          Array.from(activityElement.querySelectorAll('.ac-textBlock'))
+            .find(({ textContent }) => textContent === text)
+            .getBoundingClientRect().top;
+
+        expect(['Value 1', 'Value 2', 'Value 3', 'Value 4'].map(getTop)).toEqual(
+          ['Order Number', 'Expected Delivery Time', 'Payment Method', 'Delivery Address'].map(getTop)
+        );
+
+        // THEN: The bottom of the receipt card shows the last 2 items, VAT, tax, total, and buttons with wide text spacing, none clipped.
+        await host.snapshot('local');
+
+        // WHEN: Scrolled to the top of the receipt card.
+        await pageObjects.scrollToTop();
+
+        // THEN: The top of the receipt card shows the title and the facts, each value on the line of its key.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

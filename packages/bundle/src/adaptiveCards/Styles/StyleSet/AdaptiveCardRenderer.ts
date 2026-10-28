@@ -1,5 +1,10 @@
 import type { FullBundleStyleOptions } from '../../../types/FullBundleStyleOptions';
 
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5666), customizing it has no effect.
+ * The live styles are in `packages/bundle/src/adaptiveCards/Attachment/AdaptiveCardRenderer.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function ({
   cardPushButtonBackgroundColor,
   cardPushButtonTextColor,
@@ -70,7 +75,7 @@ export default function ({
         color: '#4F4F4F'
       },
 
-      '& .ac-pushButton[aria-pressed="true"]': {
+      '& .ac-pushButton.adaptive-card-renderer__action--selected': {
         backgroundColor: cardPushButtonBackgroundColor,
         borderColor: cardPushButtonBackgroundColor,
         color: cardPushButtonTextColor,

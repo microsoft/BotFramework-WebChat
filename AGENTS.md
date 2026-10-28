@@ -54,7 +54,7 @@
 
 ```tsx
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { number, object, pipe, readonly } from 'valibot';
 
 // Use valibot to validate props.
@@ -72,9 +72,9 @@ function MyComponent(props: MyComponentProps) {
   // Call `validateProps` to get a validated props.
   const { children } = validateProps(MyComponentPropsSchema, props);
 
-  // Use `<>` instead of `<Fragment>`.
-  // Never export `children` by itself, always wrap with `<>`.
-  return <>{children}</>;
+  // Use `<Fragment>` instead of `<>` (enforced by `react/jsx-fragments`).
+  // Never export `children` by itself, always wrap with `<Fragment>`.
+  return <Fragment>{children}</Fragment>;
 }
 
 // Set `displayName`.
@@ -99,6 +99,8 @@ export { MyComponentPropsSchema, type MyComponentProps };
 - Follow other HTML files under the same folder on how to write tests
 - Page conditions, page elements, and page objects can be found at `/packages/test/page-object/src/globals`
 - Use `expect` instead of `assert`
+- For visual changes, let snapshots (VRT) do the work instead of asserting computed CSS, assert state such as focus, role, name, and attributes
+- Wait for effects of asynchronous work (e.g. after `host.click()`) with `waitFor()` from `@testduet/wait-for` and `expect`, not with sleeps
 - Use `@testduet/given-when-then` package instead of xUnit style `describe`/`before`/`test`/`after`
 - Prefer integration/end-to-end testing than unit testing
 - Use as realistic setup as possible, such as using `msw` than mocking calls
@@ -108,7 +110,7 @@ export { MyComponentPropsSchema, type MyComponentProps };
 
 - Run new test and all of them must be green
 - Run `npm run precommit` to make sure it pass all linting process
-- Add changelog entry to `CHANGELOG.md`, follow our existing format
+- Add changelog entries to `.changelog/<PR#>-<slug>.md` with `node ./scripts/changelog/new.mjs` after creating the PR, do not edit `CHANGELOG.md` (only maintainers do, with the `changelog-edit` label), see `.changelog/README.md`
 
 ## Code review
 

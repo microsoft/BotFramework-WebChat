@@ -179,7 +179,7 @@ const ComposerCore = ({
   renderMarkdown,
   storeDebugAPI,
   styleSet,
-  suggestedActionsAccessKey,
+  suggestedActionsAccessKey = 'A a Å å',
   webSpeechPonyfillFactory
 }: ComposerCoreProps) => {
   const [dictateAbortable, setDictateAbortable] = useState();
@@ -313,15 +313,6 @@ const ComposerCore = ({
       </WebChatUIContext.Provider>
     </SayComposer>
   );
-};
-
-ComposerCore.defaultProps = {
-  extraStyleSet: undefined,
-  nonce: undefined,
-  renderMarkdown: undefined,
-  styleSet: undefined,
-  suggestedActionsAccessKey: 'A a Å å',
-  webSpeechPonyfillFactory: undefined
 };
 
 ComposerCore.propTypes = {
@@ -519,12 +510,6 @@ const Composer = ({
       </StyleToEmotionObjectComposer>
     </APIComposer>
   );
-};
-
-Composer.defaultProps = {
-  ...APIComposer.defaultProps,
-  ...ComposerCore.defaultProps,
-  children: undefined
 };
 
 Composer.propTypes = {

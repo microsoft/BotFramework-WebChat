@@ -49,13 +49,13 @@ jobs:
           docker push ${{ env.DOCKER_IMAGE }}:latest
           docker push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
 
-      - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2.3.1
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: build
           path: ${{ env.DOCKERFILE_PATH }}/build.tgz
 
       - name: Publish to ${{ env.APP_NAME }}
-        uses: azure/webapps-deploy@v2.1
+        uses: azure/webapps-deploy@798e43877120eda6a2a690a4f212c545e586ae31 # v2.1.6
         with:
           app-name: ${{ env.APP_NAME }}
           images: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}

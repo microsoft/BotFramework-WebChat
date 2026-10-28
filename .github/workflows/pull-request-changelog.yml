@@ -1,0 +1,53 @@
+name: Pull request changelog
+
+on:
+  pull_request:
+    branches:
+      - main
+
+    # "labeled" and "unlabeled" for the "changelog-edit" and "no-changelog" labels.
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+      - unlabeled
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 24
+
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    name: Changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # To compare with the base, and to order entries by the time their fragment was merged.
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --ignore-scripts --strict-peer-deps
+
+      - name: Run unit tests of scripts/changelog
+        run: node --test 'scripts/changelog/*.spec.mjs'
+
+      - name: Check the changelog and preview the entries
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        # HEAD is the pull request merged into the base, its first parent is the base. The preview, or the error, goes to
+        # the summary page, where contributors look first.
+        run: node ./scripts/changelog/check.mjs --base HEAD^1 --labels "$LABELS" --pr "$PULL_REQUEST_NUMBER" | tee --append "$GITHUB_STEP_SUMMARY"

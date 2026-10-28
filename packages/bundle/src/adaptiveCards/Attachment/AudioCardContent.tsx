@@ -1,13 +1,14 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import CommonCard from './CommonCard';
 import { directLineMediaCardSchema } from './private/directLineSchema';
+import MediaList from './private/MediaList';
 
 import styles from './AudioCardContent.module.css';
 
@@ -17,29 +18,33 @@ const audioCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: directLineMediaCardSchema,
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
 
-type AudioCardContentProps = InferInput<typeof audioCardContentPropsSchema>;
+type AudioCardContentProps = InferReactProps<typeof audioCardContentPropsSchema>;
 
 function AudioCardContent(props: AudioCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = validateProps(audioCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(audioCardContentPropsSchema, props);
 
-  const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
+  const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [], title } = content;
   const classNames = useStyles(styles);
 
   return (
     <div className={classNames['audio-card-attachment']}>
-      <ul className="media-list">
+      <MediaList>
         {media.map(({ url }, index) => (
-          <li key={index}>
-            <AudioContent autoPlay={autostart} loop={autoloop} poster={imageURL} src={url} />
-          </li>
+          <AudioContent alt={title} autoPlay={autostart} key={index} loop={autoloop} poster={imageURL} src={url} />
         ))}
-      </ul>
-      <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
+      </MediaList>
+      <CommonCard
+        actionPerformedClassName={actionPerformedClassName}
+        content={content}
+        disabled={disabled}
+        replyToId={replyToId}
+      />
     </div>
   );
 }

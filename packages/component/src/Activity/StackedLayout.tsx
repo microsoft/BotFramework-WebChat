@@ -19,8 +19,9 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useUniqueId from '../hooks/internal/useUniqueId';
-import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
+import useLocalizeProgrammingLanguage from '../hooks/internal/useLocalizeProgrammingLanguage';
+import { useLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
 import CodeBlockContent from './CodeBlockContent';
@@ -41,7 +42,6 @@ type StackedLayoutInnerProps = Readonly<{
   hasAvatar: boolean;
   hasDisplayText: boolean;
   hasNub: boolean;
-  id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
   renderBubbleContent: (title?: string | undefined, showStatus?: boolean) => ReactNode;
   showAvatar?: boolean | undefined;
@@ -56,30 +56,23 @@ const StackedLayoutInner = memo(
     hasAvatar,
     hasDisplayText,
     hasNub,
-    id,
     renderAvatar,
     renderBubbleContent,
     showAvatar,
     showNub
   }: StackedLayoutInnerProps) => {
-    const [{ initials: botInitials }] = useAvatarForBot();
     const localize = useLocalizer();
     const classNames = useStyles(styles);
+    const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
-    const greetingAlt = (
-      fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-    ).replace(/\s{2,}/gu, ' ');
 
     return (
       <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
         {!!(hasDisplayText || messageThing?.abstract[0]) && (
           <div
-            aria-roledescription="message"
+            aria-roledescription={localize('ACTIVITY_MESSAGE_ARIA_ROLE_ALT')}
             className={cx(classNames['stacked-layout__message-row'])}
-            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-            /* eslint-disable-next-line react/forbid-dom-props */
-            id={id}
             role="group"
           >
             <ScreenReaderText text={greetingAlt} />
@@ -122,8 +115,8 @@ const StackedLayout = ({
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
+  const localizeProgrammingLanguage = useLocalizeProgrammingLanguage();
   const classNames = useStyles(styles);
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
@@ -151,8 +144,8 @@ const StackedLayout = ({
   const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const otherInitials = fromUser ? botInitials : userInitials;
   const otherNubSize = fromUser ? bubbleNubSize : bubbleFromUserNubSize;
-  const activityKey = useGetKeyByActivity()(activity);
-  const isInGroup = !!useGetLogicalGroupKey()(activityKey);
+  const [logicalGroupKey] = useLogicalGroupKey(useGetKeyByActivity()(activity));
+  const isInGroup = !!logicalGroupKey;
 
   const hasAvatar = (initials || typeof initials === 'string') && !isInGroup;
   const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';
@@ -225,7 +218,7 @@ const StackedLayout = ({
               code={firstSoftwareSourceCode.text[0]}
               key={syntheticAttachments.length}
               language={firstSoftwareSourceCode.programmingLanguage[0]}
-              title={firstSoftwareSourceCode.programmingLanguage[0]}
+              title={localizeProgrammingLanguage(firstSoftwareSourceCode.programmingLanguage[0])}
             />
           </AttachmentRow>
         );
@@ -255,6 +248,7 @@ const StackedLayout = ({
     hasNub,
     isCollapsible,
     localize,
+    localizeProgrammingLanguage,
     messageThing,
     otherInitials,
     renderAttachment,
@@ -280,7 +274,6 @@ const StackedLayout = ({
 
   return (
     <StackedLayoutRoot
-      ariaLabelId={activityDisplayText ? ariaLabelId : undefined}
       extraTrailing={extraTrailing}
       fromUser={fromUser}
       hideAvatar={hasAvatar && !showAvatar}
@@ -297,7 +290,6 @@ const StackedLayout = ({
         hasAvatar={hasAvatar}
         hasDisplayText={!!activityDisplayText?.length || isCollapsible}
         hasNub={hasNub}
-        id={ariaLabelId}
         renderAvatar={renderAvatar}
         renderBubbleContent={renderBubbleContent}
         showAvatar={showAvatar}

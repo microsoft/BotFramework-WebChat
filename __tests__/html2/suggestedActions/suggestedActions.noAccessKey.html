@@ -50,7 +50,11 @@
       run(async function () {
         const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
-        const styleOptions = { subtle: 'Black' };
+        const styleOptions = {
+          // Keep live region entries until they are asserted, the live bot round trip can outlast the default 1 second.
+          internalLiveRegionFadeAfter: 60000,
+          subtle: 'Black'
+        };
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
@@ -95,8 +99,8 @@
             )
           ).toEqual([
             'connecting',
-            'You said:\nsuggested-actions',
-            'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
+            'You said\nsuggested-actions',
+            'Bot said\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
             'Message has suggested actions. Press shift tab 2 to 3 times to select them.'
           ]);
         });

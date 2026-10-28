@@ -1,11 +1,20 @@
 {
   "headers": [
     {
-      "source": "*",
+      "source": "/**/*",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "no-cache no-store no-transform"
+        }
+      ]
+    },
+    {
+      "source": "/**/*.coop-noopener-allow-popups.*",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "noopener-allow-popups"
         }
       ]
     }

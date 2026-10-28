@@ -2,13 +2,12 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import styles from './StackedLayout.module.css';
 
 const stackedLayoutRootPropsSchema = pipe(
   object({
-    ariaLabelId: optional(string()),
     children: optional(reactNode()),
     extraTrailing: optional(boolean()),
     fromUser: optional(boolean()),
@@ -28,7 +27,6 @@ type StackedLayoutRootProps = InferInput<typeof stackedLayoutRootPropsSchema>;
 
 const StackedLayoutRoot = memo((props: StackedLayoutRootProps) => {
   const {
-    ariaLabelId,
     children,
     extraTrailing,
     fromUser,
@@ -46,7 +44,6 @@ const StackedLayoutRoot = memo((props: StackedLayoutRootProps) => {
 
   return (
     <div
-      aria-labelledby={ariaLabelId}
       className={cx(classNames['stacked-layout'], {
         [classNames['stacked-layout--from-user']]: fromUser,
         [classNames['stacked-layout--extra-trailing']]: extraTrailing,

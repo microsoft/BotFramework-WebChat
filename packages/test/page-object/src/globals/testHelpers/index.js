@@ -11,8 +11,16 @@ import createRenderWebChatWithHook from './createRenderWebChatWithHook';
 import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
 import createStore, { createStoreWithOptions } from './createStore';
 import depthFirstWalk from './depthFirstWalk';
+import getAccessibilityAncestors from './getAccessibilityAncestors';
+import getAccessibilityNode from './getAccessibilityNode';
+import getAccessibleName from './getAccessibleName';
 import getAllTextContents from './getAllTextContents';
+import getFocusedAccessibilityNode from './getFocusedAccessibilityNode';
+import getRenderedColor from './getRenderedColor';
+import isCardInView from './isCardInView';
+import isFlipperHidden from './isFlipperHidden';
 import iterateAsyncIterable from './iterateAsyncIterable';
+import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
 import sleep from './sleep';
 import stringToArrayBuffer from './stringToArrayBuffer';
@@ -31,8 +39,16 @@ export {
   createStore,
   createStoreWithOptions,
   depthFirstWalk,
+  getAccessibilityAncestors,
+  getAccessibilityNode,
+  getAccessibleName,
   getAllTextContents,
+  getFocusedAccessibilityNode,
+  getRenderedColor,
+  isCardInView,
+  isFlipperHidden,
   iterateAsyncIterable,
+  preloadImages,
   shareObservable,
   sleep,
   speech,

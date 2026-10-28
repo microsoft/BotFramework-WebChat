@@ -28,13 +28,6 @@ const FullComposer = (props: FullComposerProps) => (
   </AddFullBundle>
 );
 
-FullComposer.defaultProps = {
-  ...Composer.defaultProps,
-  adaptiveCardsHostConfig: undefined,
-  adaptiveCardsPackage: undefined,
-  children: undefined
-};
-
 FullComposer.propTypes = {
   ...Composer.propTypes,
   adaptiveCardsHostConfig: PropTypes.any,

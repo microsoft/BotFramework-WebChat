@@ -1,5 +1,10 @@
 import CSSTokens from '../CSSTokens';
 
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5669), customizing it has no effect.
+ * The live styles are in `packages/component/src/ActivityFeedback/private/ThumbButton.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function () {
   return {
     '&.webchat__thumb-button': {
@@ -87,11 +92,7 @@ export default function () {
         '&.webchat__thumb-button--has-submitted:has(.webchat__thumb-button__input:not(:checked):not([aria-pressed="true"])) .webchat__thumb-button__tooltip':
           {
             display: 'none'
-          },
-
-        '&.webchat__thumb-button--has-submitted .webchat__thumb-button__tooltip': {
-          '--webchat__tooltip-anchor-inline-start': '20%'
-        }
+          }
       }
     }
   };

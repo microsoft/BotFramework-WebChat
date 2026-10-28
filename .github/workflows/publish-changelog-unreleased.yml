@@ -1,0 +1,59 @@
+name: Publish changelog-unreleased
+
+# On every push to main, recreates the "changelog-unreleased" branch from the pushed commit: one commit that merges
+# .changelog/*.md into the "[Unreleased]" section of CHANGELOG.md and deletes them, or the pushed commit itself when
+# there are no fragments.
+#
+# To merge the entries back into main, push a copy of the branch and open the pull request from the copy, see
+# .changelog/README.md: pushes made with GITHUB_TOKEN do not run checks, and this workflow rewrites the branch.
+#
+# Only this workflow writes the branch, always with a force push: do not protect it against force pushes.
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch: {}
+
+concurrency:
+  # The latest run rebuilds everything, older runs can be cancelled.
+  cancel-in-progress: true
+  group: changelog-unreleased
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 24
+
+permissions: {}
+
+jobs:
+  publish:
+    # Not on forks, which would publish their own branch.
+    if: github.repository == 'microsoft/BotFramework-WebChat' && github.ref == 'refs/heads/main'
+    name: Publish changelog-unreleased
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # To force-push the changelog-unreleased branch.
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Entries are ordered by the time their fragment was merged.
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Merge .changelog/ into CHANGELOG.md and push to changelog-unreleased
+        env:
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+        run: node ./scripts/changelog/publish.mjs | tee --append "$GITHUB_STEP_SUMMARY"

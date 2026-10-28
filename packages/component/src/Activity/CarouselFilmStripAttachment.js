@@ -14,7 +14,7 @@ const { useLocalizer } = hooks;
 const CarouselFilmStripAttachment = ({
   activity,
   attachment,
-  className,
+  className = '',
   fromUser,
   hasAvatar,
   hideNub,
@@ -30,7 +30,7 @@ const CarouselFilmStripAttachment = ({
 
   return (
     <li
-      aria-roledescription="attachment"
+      aria-roledescription={localize('ACTIVITY_ATTACHMENT_ARIA_ROLE_ALT')}
       className={cx(
         classNames['carousel-filmstrip-attachment'],
         {
@@ -52,10 +52,6 @@ const CarouselFilmStripAttachment = ({
       </Bubble>
     </li>
   );
-};
-
-CarouselFilmStripAttachment.defaultProps = {
-  className: ''
 };
 
 CarouselFilmStripAttachment.propTypes = {

@@ -58,16 +58,51 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
   return Object.freeze({
     activities: createActivitiesStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/Text/private/ActivityButton.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     activityButton: createActivityButtonStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/Text/private/ActivityCopyButton.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     activityCopyButton: createActivityCopyButtonStyle(),
     audioAttachment: createAudioAttachmentStyle(),
     audioContent: createAudioContentStyle(),
     autoResizeTextArea: createAutoResizeTextAreaStyle(strictStyleOptions),
     avatar: createAvatarStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5553), customizing it has no effect.
+     * The live styles are in `packages/component/src/Transcript/TranscriptFocus/TranscriptFocus.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     basicTranscript: createBasicTranscriptStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5668), customizing it has no effect.
+     * The live styles are in `packages/component/src/Activity/Bubble.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     bubble: createBubbleStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5668), customizing it has no effect.
+     * The live styles are in `packages/component/src/Activity/CarouselFilmStrip.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     carouselFilmStrip: createCarouselFilmStrip(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5668), customizing it has no effect.
+     * The live styles are in `packages/component/src/Activity/CarouselFilmStripAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     carouselFilmStripAttachment: createCarouselFilmStripAttachment(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5668), customizing it has no effect.
+     * The live styles are in `packages/component/src/Activity/CarouselLayout.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     carouselFlipper: createCarouselFlipper(strictStyleOptions),
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
@@ -84,6 +119,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5506), customizing it has no effect.
+     * The live styles are in `packages/component/src/Activity/StackedLayout.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
     suggestedAction: createSuggestedActionStyle(strictStyleOptions),
     suggestedActions: createSuggestedActionsStyle(strictStyleOptions),
@@ -101,12 +141,42 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
     chatHistoryBox: createChatHistoryBoxStyleSet(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/Text/private/CitationModal.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     citationModalDialog: createCitationModalDialogStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+     * The live styles are in `packages/component/src/LinkDefinition/LinkDefinitions.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+     * The live styles are in `packages/component/src/hooks/RenderMarkdown.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     renderMarkdown: createRenderMarkdownStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5669), customizing it has no effect.
+     * The live styles are in `packages/component/src/ActivityStatus/ActivityStatus.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     sendStatus: createSendStatusStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/Text/TextContent.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     textContent: createTextContentStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.0 (PR #5669), customizing it has no effect.
+     * The live styles are in `packages/component/src/ActivityFeedback/private/ThumbButton.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     thumbButton: createThumbButtonStyle(),
     tooltip: createTooltipStyle()
   } as const);

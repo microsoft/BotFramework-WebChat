@@ -14,6 +14,7 @@ export {
   PartGrouping,
   ScreenReaderText,
   serializeDocumentFragmentIntoString,
+  useActivityStyleOptions,
   useCodeHighlighter,
   useLiveRegion,
   type HighlightCodeFn

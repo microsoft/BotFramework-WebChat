@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { useSendPostBack } from 'botframework-webchat/hook.js';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(
+        async function () {
+          const { directLine, store } = createDirectLineEmulator();
+
+          const renderHook = createRenderHook(
+            document.getElementById('webchat'),
+            { directLine, store },
+            { renderWebChat: true }
+          );
+
+          const sendPostBack = await renderHook(() => useSendPostBack());
+
+          await pageConditions.uiConnected();
+
+          const { activity, resolveAll } = await directLine.actPostActivity(async () =>
+            sendPostBack('Hello, World!', { replyToId: 'a-00001' })
+          );
+
+          expect(activity).toEqual(
+            expect.objectContaining({
+              channelData: expect.objectContaining({ postBack: true }),
+              replyToId: 'a-00001',
+              // THEN: Should use "text" instead of "value".
+              text: 'Hello, World!',
+              type: 'message'
+            })
+          );
+
+          await resolveAll();
+
+          directLine.emulateIncomingActivity(
+            `\`\`\`\n${JSON.stringify(
+              {
+                ...activity,
+                channelData: { ...activity.channelData, clientActivityID: '...' },
+                from: '...',
+                localTimestamp: '...',
+                localTimezone: '...'
+              },
+              null,
+              2
+            )}\n\`\`\``
+          );
+
+          await pageConditions.numActivitiesShown(1);
+
+          await host.snapshot('local');
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

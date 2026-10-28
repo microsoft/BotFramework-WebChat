@@ -54,6 +54,15 @@ export default function createSuggestedActionsStyle({
               color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
             },
 
+            // Two-tone focus indicator: visible against both the flipper and the background behind it.
+            '&:focus-visible .react-film__flipper__body': {
+              boxShadow: `0 0 0 2px ${transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor}`,
+              outlineColor: suggestedActionsVisualKeyboardIndicatorColor,
+              outlineOffset: 2,
+              outlineStyle: suggestedActionsVisualKeyboardIndicatorStyle,
+              outlineWidth: suggestedActionsVisualKeyboardIndicatorWidth
+            },
+
             '&:hover .react-film__flipper__body': {
               backgroundColor: transcriptOverlayButtonBackgroundOnHover,
               color: transcriptOverlayButtonColorOnHover || transcriptOverlayButtonColor

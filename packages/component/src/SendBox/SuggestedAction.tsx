@@ -47,7 +47,8 @@ const suggestedActionPropsSchema = pipe(
         literal('playVideo'),
         literal('postBack'),
         literal('showImage'),
-        literal('signin')
+        literal('signin'),
+        literal('webchat:callURL')
       ])
     ),
     value: any()
@@ -98,8 +99,9 @@ function SuggestedAction(props: SuggestedActionProps) {
         //       Instead, we should pass a "cardAction" props.
         performCardAction({ displayText, text, type, value } as DirectLineCardAction, { target });
 
-        // Since "openUrl" action do not submit, the suggested action buttons do not hide after click.
-        type === 'openUrl' && setSuggestedActions([]);
+        // Since "openUrl" and "webchat:callURL" actions do not actually submit or send any activity,
+        // suggested action buttons will not hide automatically after click. We need to hide it manually.
+        (type === 'openUrl' || type === 'webchat:callURL') && setSuggestedActions([]);
 
         scrollToEnd();
       })();

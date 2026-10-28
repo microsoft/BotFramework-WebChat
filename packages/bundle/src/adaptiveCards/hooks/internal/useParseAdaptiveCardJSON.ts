@@ -28,7 +28,7 @@ export default function useParseAdaptiveCardJSON() {
   const [direction] = useDirection();
   const [{ adaptiveCardsParserMaxVersion }] = useStyleOptions();
 
-  const { AdaptiveCard, SerializationContext, Version } = adaptiveCardsPackage;
+  const { AdaptiveCard, OpenUrlAction, SerializationContext, Version } = adaptiveCardsPackage;
 
   const maxVersion = useMemo(() => {
     const maxVersion = Version.parse(adaptiveCardsParserMaxVersion, new SerializationContext());
@@ -52,6 +52,20 @@ export default function useParseAdaptiveCardJSON() {
       const errors = [];
       const serializationContext = new SerializationContext(maxVersion);
 
+      serializationContext.actionRegistry.register(
+        'Action.OpenUrlDialog',
+        // Adaptive Cards own `OpenUrlAction.JsonTypeName` was not made extensible.
+        // @ts-expect-error
+        class OpenUrlDialogAction extends OpenUrlAction {
+          static readonly JsonTypeName: string = 'Action.OpenUrlDialog';
+
+          // eslint-disable-next-line class-methods-use-this
+          getJsonTypeName(): string {
+            return OpenUrlDialogAction.JsonTypeName;
+          }
+        }
+      );
+
       card.parse(content, serializationContext);
 
       const { eventCount } = serializationContext;
@@ -70,6 +84,6 @@ export default function useParseAdaptiveCardJSON() {
 
       return card;
     },
-    [AdaptiveCard, adaptiveCardsPackage, direction, maxVersion, SerializationContext]
+    [AdaptiveCard, adaptiveCardsPackage, direction, maxVersion, OpenUrlAction, SerializationContext]
   );
 }

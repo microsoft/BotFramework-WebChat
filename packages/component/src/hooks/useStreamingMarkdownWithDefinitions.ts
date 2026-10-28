@@ -9,6 +9,7 @@ import { useRefFrom } from 'use-ref-from';
 
 import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
 import useWebChatUIContext from './internal/useWebChatUIContext';
+import headingLevelDocumentMod from './private/headingLevelDocumentMod';
 
 import styles from './RenderMarkdown.module.css';
 
@@ -49,6 +50,8 @@ export default function useStreamingMarkdownWithDefinitions(
   const localize = useLocalizer();
   const transformHTMLContent = useTransformHTMLContent();
   const styleOptionsRef = useRefFrom(styleOptions);
+
+  const { markdownHeadingLevelStartAt } = styleOptions;
 
   const classNames = useStyles(styles);
 
@@ -134,7 +137,18 @@ export default function useStreamingMarkdownWithDefinitions(
     } else {
       streamingRenderer.next(chunk, options);
     }
-  }, [containerClassName, containerRef, finalize, markdown, streamingRenderer, transformHTMLContent]);
+
+    // Runs on the whole message to find its top heading, which could arrive in a later chunk.
+    headingLevelDocumentMod(container, markdownHeadingLevelStartAt);
+  }, [
+    containerClassName,
+    containerRef,
+    finalize,
+    markdown,
+    markdownHeadingLevelStartAt,
+    streamingRenderer,
+    transformHTMLContent
+  ]);
 
   const fallbackHTML = useMemo<string | undefined>(() => {
     if (hasStreamingSupport || !renderMarkdown || !markdown) {
@@ -163,7 +177,11 @@ export default function useStreamingMarkdownWithDefinitions(
       return;
     }
 
-    const documentFragment = transformHTMLContent(parseDocumentFragmentFromString(fallbackHTML));
+    // After the HTML content transform, which would remove `aria-level`, `class` and `role` of headings.
+    const documentFragment = headingLevelDocumentMod(
+      transformHTMLContent(parseDocumentFragmentFromString(fallbackHTML)),
+      markdownHeadingLevelStartAt
+    );
     const wrapper = document.createElement('div');
 
     wrapper.className = containerClassName || '';
@@ -171,7 +189,14 @@ export default function useStreamingMarkdownWithDefinitions(
 
     container.textContent = '';
     container.appendChild(wrapper);
-  }, [containerClassName, containerRef, fallbackHTML, streamingRenderer, transformHTMLContent]);
+  }, [
+    containerClassName,
+    containerRef,
+    fallbackHTML,
+    markdownHeadingLevelStartAt,
+    streamingRenderer,
+    transformHTMLContent
+  ]);
 
   useLayoutEffect(() => {
     if (streamingRenderer || fallbackHTML !== undefined) {

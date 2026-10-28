@@ -24,7 +24,7 @@
       import { createElement } from 'react';
 
       const {
-        testHelpers: { createDirectLineEmulator }
+        testHelpers: { createDirectLineEmulator, preloadImages }
       } = window;
 
       testHelpers.hideKnownError();
@@ -33,6 +33,9 @@
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(async function () {
+        // Decode avatar images before they are rendered, so screenshots are stable.
+        await preloadImages('/assets/bot-avatar.jpg', '/assets/user-avatar.jpg');
+
         const { directLine, store } = createDirectLineEmulator();
 
         const MiddlewareAvatar = ({ activity, children, fromUser }) =>

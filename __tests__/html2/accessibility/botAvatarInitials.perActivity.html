@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      const withBotAvatarInitials = botAvatarInitials => ({ webChat: { styleOptions: { botAvatarInitials } } });
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: The global bot initials are the live agent's, like a host which updates them when an agent joins.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              botAvatarInitials: 'JO',
+              internalLiveRegionFadeAfter: 60000 // Keep messages in the live region until they are checked.
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: A bot and a live agent send messages, each with their own initials in `channelData.webChat.styleOptions`.
+        await directLine.emulateIncomingActivity({
+          channelData: withBotAvatarInitials('BO'),
+          from: { id: 'bot', name: 'Bot', role: 'bot' },
+          text: 'Okay, let me connect you with a live agent.',
+          timestamp: '2026-10-17T11:50:05Z'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [
+            { content: 'Update my address', contentType: 'text/plain' },
+            { content: 'Update my phone number', contentType: 'text/plain' }
+          ],
+          channelData: withBotAvatarInitials('BO'),
+          from: { id: 'bot', name: 'Bot', role: 'bot' },
+          text: 'While you wait, here are some options.',
+          timestamp: '2026-10-17T11:50:06Z'
+        });
+
+        await directLine.emulateIncomingActivity({
+          channelData: withBotAvatarInitials('JO'),
+          from: { id: 'agent-john', name: 'John', role: 'bot' },
+          text: "I'd be happy to help you update your account.",
+          timestamp: '2026-10-17T11:51:00Z'
+        });
+
+        // WHEN: Another message comes without per-activity initials.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'agent-john', name: 'John', role: 'bot' },
+          text: 'What is your new address?',
+          timestamp: '2026-10-17T11:51:30Z'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        // THEN: In scan mode, the greeting before each message should use the initials of its activity, otherwise, the global ones.
+        expect(
+          pageElements
+            .activities()
+            .map(
+              activity => testHelpers.getAllTextContents(activity.querySelector('[aria-roledescription="message"]'))[0]
+            )
+        ).toEqual(['Bot BO said', 'Bot BO said', 'Bot JO said', 'Bot JO said']);
+
+        // THEN: When navigating with arrow keys, the summary of each activity should use the same initials.
+        //       The carousel is interactive: it has buttons to scroll its attachments.
+        //       Summaries are hidden from scan mode until selected with arrow keys, so read their text.
+        await waitFor(() =>
+          expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
+            'Bot BO said Okay, let me connect you with a live agent. Sent at October 17 at 11:50 AM',
+            'Bot BO said While you wait, here are some options. 2 attachments. Message is interactive. Click to interact. Sent at October 17 at 11:50 AM',
+            "Bot JO said I'd be happy to help you update your account. Sent at October 17 at 11:51 AM",
+            'Bot JO said What is your new address? Sent at October 17 at 11:51 AM'
+          ])
+        );
+
+        // THEN: The live region should announce each activity with the same initials.
+        await waitFor(() =>
+          expect(
+            [].map.call(pageElements.liveRegion().querySelectorAll('.webchat__live-region-activity'), article =>
+              testHelpers.getAllTextContents(article).join('\n')
+            )
+          ).toEqual([
+            'Bot BO said\nOkay, let me connect you with a live agent.',
+            'Bot BO said\nWhile you wait, here are some options.\nA text Update my address\nA text Update my phone number',
+            "Bot JO said\nI'd be happy to help you update your account.",
+            'Bot JO said\nWhat is your new address?'
+          ])
+        );
+      });
+    </script>
+  </body>
+</html>

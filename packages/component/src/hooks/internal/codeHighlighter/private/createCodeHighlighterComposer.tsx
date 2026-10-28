@@ -4,7 +4,14 @@ import { useCodeHighlighter, type CodeHighlighterContextType, type HighlightCode
 
 const createCodeHighlighterComposer =
   ({ Provider }: React.Context<CodeHighlighterContextType>) =>
-  ({ children, highlightCode }: Readonly<{ children: ReactNode; highlightCode: HighlightCodeFn }>) => {
+  ({
+    children,
+    highlightCode
+  }: {
+    readonly children: ReactNode;
+    // Code is highlighted by the upstream highlighter until this one is set, e.g. while it is loading.
+    readonly highlightCode?: HighlightCodeFn | undefined;
+  }) => {
     const previousCodeHighlighter = useCodeHighlighter();
 
     const safeHighlightCode = useCallback<HighlightCodeFn>(
@@ -21,9 +28,9 @@ const createCodeHighlighterComposer =
 
     const CodeHighlighterContextValue = useMemo(
       () => ({
-        highlightCode: safeHighlightCode
+        highlightCode: highlightCode ? safeHighlightCode : previousCodeHighlighter
       }),
-      [safeHighlightCode]
+      [highlightCode, previousCodeHighlighter, safeHighlightCode]
     );
 
     return <Provider value={CodeHighlighterContextValue}>{children}</Provider>;

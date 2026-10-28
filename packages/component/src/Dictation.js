@@ -110,10 +110,6 @@ const Dictation = ({ onError }) => {
   );
 };
 
-Dictation.defaultProps = {
-  onError: undefined
-};
-
 Dictation.propTypes = {
   onError: PropTypes.func
 };
