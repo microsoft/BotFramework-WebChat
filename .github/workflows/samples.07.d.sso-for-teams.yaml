@@ -25,14 +25,14 @@ jobs:
 
     steps:
       - name: Checking out for ${{ github.ref }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
 
       - name: Read variables
         id: variables
         run: |
           echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
 
-      - uses: azure/docker-login@v1
+      - uses: azure/docker-login@83efeb77770c98b620c73055fbb59b2847e17dc0 # v1.0.1
         with:
           login-server: ${{ env.DOCKER_REGISTRY }}
           username: ${{ secrets.SAMPLES_DOCKER_USERNAME }}
@@ -49,13 +49,13 @@ jobs:
           docker push ${{ env.DOCKER_IMAGE }}:latest
           docker push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: build
           path: ${{ env.DOCKERFILE_PATH }}/build.tgz
 
       - name: Publish to ${{ env.APP_NAME }}
-        uses: azure/webapps-deploy@v2.1
+        uses: azure/webapps-deploy@798e43877120eda6a2a690a4f212c545e586ae31 # v2.1.6
         with:
           app-name: ${{ env.APP_NAME }}
           images: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
