@@ -189,6 +189,71 @@ Then, import Web Chat into your code:
 import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 ```
 
+#### Bundling with webpack 4
+
+webpack 4 supports neither `"exports"` in `package.json` nor syntax newer than ES2019. To bundle Web Chat 4.19, add the following to `webpack.config.js` and install `babel-loader@8` and `@babel/preset-env`. Our CI tests it with webpack 4.47.0.
+
+```js
+const { sep } = require('path');
+
+// Packages that ship syntax newer than ES2019 (e.g. `?.`, `#private`, `1_000`), which webpack 4 cannot parse.
+const transpilePackages = [
+  'botframework-webchat',
+  'botframework-webchat-api',
+  'botframework-webchat-component',
+  'botframework-webchat-core',
+  'botframework-webchat-fluent-theme',
+  'event-as-promise',
+  'htmlparser2',
+  'iter-fest',
+  'katex',
+  'micromark-util-decode-numeric-character-reference',
+  'micromark-util-sanitize-uri',
+  'microsoft-cognitiveservices-speech-sdk',
+  'mime',
+  'react-dictate-button',
+  'react-film',
+  'swiper',
+  'valibot',
+  'web-speech-cognitive-services'
+];
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      // Lets .mjs import named exports from CommonJS, like create-react-app@4.
+      { include: /node_modules/u, test: /\.mjs$/u, type: 'javascript/auto' },
+      {
+        // The innermost package in the path: "node_modules/react-film/node_modules/mime/…" is "mime".
+        include: path => transpilePackages.includes(path.split(`${sep}node_modules${sep}`).pop().split(sep)[0]),
+        test: /\.m?js$/u,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            configFile: false,
+            presets: [['@babel/preset-env', { modules: false, targets: 'chrome 70' }]], // ES2018, which webpack 4 parses.
+            sourceType: 'unambiguous'
+          }
+        }
+      }
+    ]
+  },
+  resolve: {
+    alias: {
+      // Both resolve only through "exports" in package.json, which webpack 4 does not support.
+      '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js',
+      'botframework-webchat/schema.js$': 'botframework-webchat/dist/botframework-webchat.schema.js'
+    }
+  }
+};
+```
+
+- If your app already transpiles `node_modules`, add these packages to its rule instead.
+- `@redux-devtools/extension` 4 has no `"main"`. Instead of the alias, you can pin it to 3.3.0, which has one, with `"overrides"` (npm, pnpm) or `"resolutions"` (Yarn).
+- Other subpaths, such as `botframework-webchat/hook.js`, have a file at the package root and need no alias.
+
 ## Step 2: Constructing chat adapter
 
 > Note: Web Chat is a UI component, does not contains any network code, and is not responsible for communicating with the chat service. Web Chat render the messages (a.k.a. activities) provided by the chat adapter.

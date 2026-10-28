@@ -12,29 +12,10 @@ webpack(
   {
     entry: resolve(__dirname, 'src/index.js'),
     mode: 'production',
-    module: {
-      rules: webpack.version.startsWith('4.')
-        ? [
-            // Like create-react-app@4: webpack 4 cannot parse ES2020 (e.g. `?.`), so apps transpile node_modules too.
-            {
-              test: /\.m?js$/u,
-              type: 'javascript/auto', // Lets .mjs import named exports from CommonJS.
-              use: {
-                loader: 'babel-loader',
-                options: {
-                  babelrc: false,
-                  configFile: false,
-                  presets: [['@babel/preset-env', { modules: false, targets: 'chrome 70' }]],
-                  sourceType: 'unambiguous'
-                }
-              }
-            }
-          ]
-        : []
-    },
     // "auto" (webpack 5 default) needs `document.currentScript` to load chunks, which jsdom does not set in load.js.
     output: { filename: 'main.js', path: resolve(__dirname, 'dist'), publicPath: '/' },
-    performance: { hints: false }
+    performance: { hints: false },
+    ...(webpack.version.startsWith('4.') && require('./webpack4.config.js'))
   },
   (error, stats) => {
     if (error) {

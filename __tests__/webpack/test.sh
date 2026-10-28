@@ -16,7 +16,7 @@ mapfile -t tarballs < <(realpath "$@")
 cp -R "$(dirname "$0")/." "$app_dir"
 cd "$app_dir"
 
-npm install --no-audit --no-fund --prefer-offline \
+npm install --no-audit --no-fund \
   "react@$react_version" \
   "react-dom@$react_version" \
   "webpack@$webpack_version" \
