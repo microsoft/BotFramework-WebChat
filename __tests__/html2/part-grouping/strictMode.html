@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: keeps the group after Strict Mode re-runs effects</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@18.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?dev"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      // Strict Mode only re-runs effects with the development build of React 18 or later.
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { createElement, StrictMode } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const root = createRoot(document.getElementById('webchat'));
+
+        const render = styleOptions =>
+          root.render(createElement(StrictMode, {}, createElement(ReactWebChat, { directLine, store, styleOptions })));
+
+        // GIVEN: Web Chat rendered in Strict Mode, which mounts, cleans up, and mounts every effect again.
+        render({ botAvatarInitials: 'B', hideSendBox: true });
+
+        await pageConditions.uiConnected();
+
+        const createActivity = (id, text) => ({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              isPartOf: { '@id': '_:group-1', '@type': 'HowTo' },
+              type: 'https://schema.org/Message'
+            }
+          ],
+          from: { role: 'bot' },
+          id,
+          text,
+          type: 'message'
+        });
+
+        const activeDescendant = () =>
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'));
+        const avatarInitials = () =>
+          Array.from(document.querySelectorAll('.webchat__initialsAvatar__initials'), ({ textContent }) => textContent);
+
+        // WHEN: 2 messages of the same group arrive.
+        directLine.emulateIncomingActivity(createActivity('a-00001', 'Part 1 of the group.'));
+        directLine.emulateIncomingActivity(createActivity('a-00002', 'Part 2 of the group.'));
+
+        await pageConditions.numActivitiesShown(2);
+
+        // WHEN: Web Chat re-renders the messages without changing the group.
+        render({ botAvatarInitials: 'R', hideSendBox: true });
+
+        // THEN: Only the group shows an avatar, the messages inside it do not.
+        await waitFor(() => expect(avatarInitials()).toEqual(['R']));
+        await pageConditions.scrollStabilized();
+
+        await host.snapshot('local');
+
+        // WHEN: The transcript is focused.
+        pageObjects.focusTranscript();
+
+        // THEN: The last message of the group is focused.
+        await waitFor(() => expect(pageElements.focusedActivity()?.textContent).toContain('Part 2 of the group.'));
+
+        await host.snapshot('local');
+
+        // WHEN: Pressing ARROW_UP.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: The first message of the group is focused.
+        await waitFor(() => expect(pageElements.focusedActivity()?.textContent).toContain('Part 1 of the group.'));
+
+        await host.snapshot('local');
+
+        // WHEN: Pressing ARROW_UP again.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: The group is focused, not a message in it.
+        await waitFor(() => {
+          expect(activeDescendant()?.closest('.part-grouping-activity')).toBeTruthy();
+          expect(pageElements.focusedActivity()).toBeUndefined();
+        });
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

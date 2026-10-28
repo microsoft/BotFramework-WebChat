@@ -1,22 +1,20 @@
+import { type ReadonlyKeyedStore } from '../../../hooks/internal/createKeyedStore';
 import createContextAndHook from '../../createContextAndHook';
 
-type GroupState = Readonly<{
-  isCollapsed: boolean;
-}>;
+type LogicalGrouping = {
+  readonly activityKeys: readonly string[];
+  readonly isCollapsed: boolean;
+};
 
-type LogicalGrouping = Readonly<{
-  activityKeys: string[];
-  getGroupState?: () => GroupState;
-  key: string;
-}>;
-
-type ActivityLogicalGroupingContextType = Readonly<{
-  addLogicalGrouping: (grouping: LogicalGrouping) => void;
-  getGroupBoundaries: (groupKey: string) => [string | undefined, string | undefined];
-  getGroupState: (groupKey: string) => GroupState | undefined;
-  getLogicalGroupKey: (activityKey: string) => string | undefined;
-  removeLogicalGrouping: (key: string) => void;
-}>;
+type ActivityLogicalGroupingContextType = {
+  /** Group key by activity key. Read with `useLogicalGroupKey()` while rendering, or `get()` at event time. */
+  readonly logicalGroupKeyStore: ReadonlyKeyedStore<string>;
+  /** Logical grouping by group key. */
+  readonly logicalGroupingStore: ReadonlyKeyedStore<LogicalGrouping>;
+  readonly removeLogicalGrouping: (key: string) => void;
+  /** Adds the logical grouping, or replaces the one with the same key. */
+  readonly setLogicalGrouping: (key: string, grouping: LogicalGrouping) => void;
+};
 
 const { contextComponentType, useContext } = createContextAndHook<ActivityLogicalGroupingContextType>(
   'ActivityLogicalGroupingContext'
@@ -26,6 +24,5 @@ export default contextComponentType;
 export {
   useContext as useActivityLogicalGroupingContext,
   type ActivityLogicalGroupingContextType,
-  type GroupState,
   type LogicalGrouping
 };
