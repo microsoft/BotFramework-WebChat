@@ -13,7 +13,7 @@ import createMarkdownStreamingRenderer, {
   type StreamingNextResult,
   type StreamingRenderer,
   type StreamingRenderOptions
-} from './createStreamingRenderer';
+} from './createMarkdownStreamingRenderer';
 import { math, mathHtml } from './mathExtension';
 import { createDecorate } from './private/createDecorate';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
