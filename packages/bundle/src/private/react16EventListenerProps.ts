@@ -1,4 +1,4 @@
-// Every event prop of React 16, from its event plugins.
+// Every event prop of React 16, from its event plugins, except the ones that block scrolling (see below).
 const REACT_16_EVENT_PROP_NAMES = Object.freeze([
   'onAbort',
   'onAnimationEnd',
@@ -78,12 +78,11 @@ const REACT_16_EVENT_PROP_NAMES = Object.freeze([
   'onToggle',
   'onTouchCancel',
   'onTouchEnd',
-  'onTouchMove',
-  'onTouchStart',
+  // Without `onTouchMove`, `onTouchStart` and `onWheel`: React 16 listens to them as blocking (not passive), which can delay
+  // scrolling. Web Chat does not use them.
   'onTransitionEnd',
   'onVolumeChange',
-  'onWaiting',
-  'onWheel'
+  'onWaiting'
 ] as const);
 
 function noop() {
@@ -91,10 +90,10 @@ function noop() {
 }
 
 /**
- * A no-op handler for every event of React 16.
+ * A no-op handler for every event of React 16 that Web Chat may use.
  *
  * React 16 listens to an event on the root of the container when it first renders a handler for it.
- * Rendering these props makes React 16 listen to every event.
+ * Rendering these props makes React 16 listen to these events.
  */
 const react16EventListenerProps: { readonly [name: string]: () => void } = Object.freeze(
   Object.fromEntries(REACT_16_EVENT_PROP_NAMES.map(name => [name, noop]))

@@ -136,7 +136,7 @@ test('Element outside of a shadow root on React 16 should render without a porta
   expect(render.mock.calls[0][0]).toEqual(expect.objectContaining({ type: ReactWebChat }));
 });
 
-test('React 16 event handlers should cover every event of React DOM 16.8.6', () => {
+test('React 16 event handlers should cover every event of React DOM 16.8.6 except the ones that block scrolling', () => {
   const actualReactDOM = jest.requireActual('react-dom');
 
   // Private API of React DOM 16.8.6: `Events[4]` is the dispatch config of every event, by event name.
@@ -147,6 +147,7 @@ test('React 16 event handlers should cover every event of React DOM 16.8.6', () 
   expect(Object.keys(react16EventListenerProps).sort()).toEqual(
     Object.values(eventNameDispatchConfigs)
       .map(({ phasedRegistrationNames, registrationName }) => registrationName || phasedRegistrationNames.bubbled)
+      .filter(name => !['onTouchMove', 'onTouchStart', 'onWheel'].includes(name))
       .sort()
   );
 });
