@@ -1,3 +1,4 @@
+import htmlInlineTagNames from './htmlInlineTagNames';
 import textFormatToContentType from './textFormatToContentType';
 
 function walk<T extends Node>(root: Node, walker: (node: T) => string[]): string[] {
@@ -15,65 +16,6 @@ function walk<T extends Node>(root: Node, walker: (node: T) => string[]): string
   return results;
 }
 
-// From https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements
-const HTML_INLINE_TAGS = [
-  'A',
-  'ABBR',
-  'ACRONYM',
-  'AUDIO',
-  'B',
-  'BDI',
-  'BDO',
-  'BIG',
-  'BR',
-  'BUTTON',
-  'CANVAS',
-  'CITE',
-  'CODE',
-  'DATA',
-  'DATALIST',
-  'DEL',
-  'DFN',
-  'EM',
-  'EMBED',
-  'I',
-  'IFRAME',
-  'IMG',
-  'INPUT',
-  'INS',
-  'KBD',
-  'LABEL',
-  'MAP',
-  'MARK',
-  'METER',
-  'NOSCRIPT',
-  'OBJECT',
-  'OUTPUT',
-  'PICTURE',
-  'PROGRESS',
-  'Q',
-  'RUBY',
-  'S',
-  'SAMP',
-  'SCRIPT',
-  'SELECT',
-  'SLOT',
-  'SMALL',
-  'SPAN',
-  'STRONG',
-  'SUB',
-  'SUP',
-  'SVG',
-  'TEMPLATE',
-  'TEXTAREA',
-  'TIME',
-  'U',
-  'TT',
-  'VAR',
-  'VIDEO',
-  'WBR'
-];
-
 /**
  * Computes all text from the descendants of a given HTML node, such as a document, as flattened array. This is best-effort.
  *
@@ -90,7 +32,7 @@ function htmlTextAlternatives(root: Node): string[] {
       return [textContent];
     } else if (tagName === 'IMG') {
       return [node.getAttribute('alt')];
-    } else if (!HTML_INLINE_TAGS.includes(tagName)) {
+    } else if (!htmlInlineTagNames.includes(tagName)) {
       return ['\n'];
     }
   });

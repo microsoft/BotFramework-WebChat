@@ -87,7 +87,7 @@ function findTopLevelBlocks(events: ReadonlyArray<Event>): readonly BlockBoundar
   return blocks;
 }
 
-export default function createStreamingRenderer(
+export default function createMarkdownStreamingRenderer(
   { markdownRenderHTML, markdownRespectCRLF }: StreamingRenderOptions,
   { externalLinkAlt }: StreamingRenderInit
 ): StreamingRenderer {

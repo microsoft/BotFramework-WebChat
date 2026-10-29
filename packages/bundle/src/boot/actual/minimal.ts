@@ -7,9 +7,10 @@ const { object: buildInfoObject, version } = buildInfo;
 // #endregion
 
 export { concatMiddleware, createStyleSet, testIds, withEmoji } from 'botframework-webchat-component';
+export { type ReactWebChatProps } from 'botframework-webchat-component/component.js';
 export { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 export { default as createBrowserWebSpeechPonyfillFactory } from '../../createBrowserWebSpeechPonyfillFactory';
-export { ReactWebChat, type ReactWebChatProps } from './component/minimal';
+export { ReactWebChat } from './component/minimal';
 export { default as createDirectLine } from './private/createDirectLine';
 export { default as createDirectLineAppServiceExtension } from './private/createDirectLineAppServiceExtension';
 export { renderWebChat } from './renderWebChat/minimal';
