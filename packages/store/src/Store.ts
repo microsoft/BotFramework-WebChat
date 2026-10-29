@@ -26,6 +26,7 @@ class Store {
         // - All `hasPart` node must be in the system, and is inverse of `isPartOf`
         // - All `isPartOf` node must be in the system
         // - All node reference which has a blank node identifier (_:*) must be in the system
+        // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
         // - THINK: Upsert/delete called twice with same node ID in the same transaction?
 
         this.#notifyAll();
