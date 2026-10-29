@@ -307,6 +307,11 @@ jobs:
             react-version: 18.3.1
           - react: 19
             react-version: 19.3.1
+        # react-film 4.0.0 imports `render` from react-dom, which React 19 removed, so webpack 5 fails on the missing export.
+        # Re-enable when react-film is removed: https://github.com/microsoft/BotFramework-WebChat/issues/5552.
+        exclude:
+          - bundler: webpack 5
+            react: 19
     timeout-minutes: 10
 
     steps:
