@@ -1,14 +1,13 @@
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
 const { version: reactDOMVersion } = createRequire(import.meta.url)('react-dom/package.json');
 
 export default defineConfig({
-  resolve: {
-    // React 16 has no "react-dom/client".
-    alias: reactDOMVersion.startsWith('16.')
-      ? { 'react-dom/client': fileURLToPath(new URL('./src/react-dom-client.react16.js', import.meta.url)) }
-      : {}
+  define: {
+    // The entry in index.html ("%VITE_ENTRY%", Vite's HTML constant replacement).
+    'import.meta.env.VITE_ENTRY': JSON.stringify(
+      reactDOMVersion.startsWith('16.') ? '/src/index.react16.js' : '/src/index.js'
+    )
   }
 });
