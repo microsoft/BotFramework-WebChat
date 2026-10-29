@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
   useActivityLogicalGroupingContext,
   type ActivityLogicalGroupingContextType
@@ -11,5 +13,11 @@ export default function useLogicalGroupingStores(): Pick<
   ActivityLogicalGroupingContextType,
   'logicalGroupKeyStore' | 'logicalGroupingStore'
 > {
-  return useActivityLogicalGroupingContext();
+  const { logicalGroupKeyStore, logicalGroupingStore } = useActivityLogicalGroupingContext();
+
+  // The composer creates both stores once, so this object never changes.
+  return useMemo(
+    () => Object.freeze({ logicalGroupKeyStore, logicalGroupingStore }),
+    [logicalGroupKeyStore, logicalGroupingStore]
+  );
 }

@@ -1,8 +1,16 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
-import { is, picklist } from 'valibot';
+import { fallback, function_, is, object, optional, parse, picklist } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
+
+const assistiveTechnologyAnnouncementTransportInvalidValue = warnOnce(
+  '"assistiveTechnologyAnnouncementTransport" must be "aria-notify" or "live-region", will set to "live-region".'
+);
+
+const assistiveTechnologyAnnouncementTransportUnsupported = warnOnce(
+  '"assistiveTechnologyAnnouncementTransport" is "aria-notify" but this browser does not support ariaNotify(), will set to "live-region".'
+);
 
 const bubbleImageHeightDeprecation = warnOnce(
   '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'
@@ -25,6 +33,31 @@ const markdownHeadingLevelStartAtInvalidValue = warnOnce(
 );
 
 const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
+
+function normalizeAssistiveTechnologyAnnouncementTransport(
+  assistiveTechnologyAnnouncementTransport: unknown
+): StrictStyleOptions['assistiveTechnologyAnnouncementTransport'] {
+  const transport = parse(
+    fallback(optional(picklist(['aria-notify', 'live-region']), 'live-region'), () => {
+      assistiveTechnologyAnnouncementTransportInvalidValue();
+
+      return 'live-region';
+    }),
+    assistiveTechnologyAnnouncementTransport
+  );
+
+  // `ariaNotify()` is not in the DOM typings of TypeScript yet. Without DOM (no `Element`), it is not supported either.
+  if (
+    transport === 'aria-notify' &&
+    !(typeof globalThis.Element === 'function' && is(object({ ariaNotify: function_() }), globalThis.Element.prototype))
+  ) {
+    assistiveTechnologyAnnouncementTransportUnsupported();
+
+    return 'live-region';
+  }
+
+  return transport;
+}
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
@@ -141,6 +174,10 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleAttachmentMinWidth = bubbleMinWidth;
     filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
+
+  filledOptions.assistiveTechnologyAnnouncementTransport = normalizeAssistiveTechnologyAnnouncementTransport(
+    filledOptions.assistiveTechnologyAnnouncementTransport
+  );
 
   // Same as the type of `markdownHeadingLevelStartAt`.
   // eslint-disable-next-line no-magic-numbers
