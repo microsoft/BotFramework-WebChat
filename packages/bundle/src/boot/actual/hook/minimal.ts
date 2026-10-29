@@ -100,7 +100,5 @@ export {
   useVoiceRecordingMuted,
   useVoiceSelector,
   useVoiceState,
-  useWebSpeechPonyfill,
-  type DropZoneState,
-  type SendBoxFocusOptions
+  useWebSpeechPonyfill
 } from 'botframework-webchat-component/hook.js';
