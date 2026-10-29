@@ -1,7 +1,22 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
-import React, { type ComponentType, type ReactNode } from 'react';
+import React, { Fragment, type ComponentType, type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { args, custom, function_, is, object, picklist, pipe, tuple } from 'valibot';
+import {
+  args,
+  custom,
+  function_,
+  is,
+  literal,
+  object,
+  optional,
+  picklist,
+  pipe,
+  startsWith,
+  string,
+  tuple
+} from 'valibot';
+
+import react16EventListenerProps from './private/react16EventListenerProps';
 
 /** A root from `createRoot()` of "react-dom/client". */
 type RenderWebChatRoot = { render(children: ReactNode): void };
@@ -38,6 +53,14 @@ const legacyReactDOMSchema = object({ render: pipe(function_(), args(tuple([reac
 // `root.render(children)`, root from `createRoot()` of "react-dom/client".
 const reactRootSchema = object({ render: pipe(function_(), args(tuple([reactNode()]))) });
 
+// React DOM 16.13 added `version`, earlier versions do not have it.
+const react16DOMSchema = object({ createPortal: function_(), version: optional(pipe(string(), startsWith('16.'))) });
+
+// A shadow root, by `nodeType` and `host` to work across realms.
+const shadowRootSchema = custom<ShadowRoot>(value =>
+  is(object({ host: object({ nodeType: literal(ELEMENT_NODE) }), nodeType: literal(DOCUMENT_FRAGMENT_NODE) }), value)
+);
+
 export default function renderWebChat(
   ReactWebChat: ComponentType<any>,
   props: any,
@@ -53,8 +76,23 @@ export default function renderWebChat(
       );
     }
 
+    const rootNode = elementOrRoot.getRootNode?.();
+
     // React 16 to 18, and Preact. Also the IIFE build, which bundles React DOM 16.8.6 unless `window.ReactDOM` is set.
-    ReactDOM.render(children, elementOrRoot);
+    ReactDOM.render(
+      // React 16 listens to events on the document, unless the container is a document or a shadow root.
+      // In a shadow root, the document gets events retargeted to the shadow host, React 16 ignores every click and keystroke.
+      // A portal into the shadow root makes React 16 listen there too. React 17 listens on the container: remove with React 16.
+      is(react16DOMSchema, ReactDOM) && rootNode !== elementOrRoot && is(shadowRootSchema, rootNode) ? (
+        <Fragment>
+          {children}
+          {ReactDOM.createPortal(<span hidden={true} {...react16EventListenerProps} />, rootNode)}
+        </Fragment>
+      ) : (
+        children
+      ),
+      elementOrRoot
+    );
   } else if (is(reactRootSchema, elementOrRoot)) {
     // The host created the root: render with it on any React version, it is the host's to unmount.
     elementOrRoot.render(children);
