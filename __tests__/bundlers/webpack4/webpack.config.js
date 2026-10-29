@@ -1,5 +1,10 @@
-// The webpack 4 workarounds from docs/HOSTING.md ("Bundling with webpack 4"), keep both the same: CI checks the documented ones.
+// webpack's getting-started config, plus the webpack 4 workarounds from docs/HOSTING.md ("Bundling with webpack 4") from
+// `const { sep }` on: keep them the same, CI checks the documented ones.
 // Web Chat itself ships ES2019 and is deliberately not transpiled, so these legs fail if it starts shipping newer syntax.
+
+const path = require('path');
+
+const { version: reactDOMVersion } = require('react-dom/package.json');
 
 const { sep } = require('path');
 
@@ -20,6 +25,18 @@ const transpilePackages = [
 ];
 
 module.exports = {
+  entry: './src/index.js',
+  mode: 'production',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  resolve: {
+    // React 16 has no "react-dom/client".
+    alias: reactDOMVersion.startsWith('16.')
+      ? { 'react-dom/client$': path.resolve(__dirname, 'src/react-dom-client.react16.js') }
+      : {}
+  },
   module: {
     rules: [
       // Lets .mjs import named exports from CommonJS, like create-react-app@4.

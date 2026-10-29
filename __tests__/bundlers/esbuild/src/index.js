@@ -1,3 +1,5 @@
+// Same in every app folder (CI diffs them): a Web Chat app, rendering a message from a fake chat adapter.
+
 import ReactWebChat, { createDirectLine, renderWebChat } from 'botframework-webchat';
 import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
 import { Composer } from 'botframework-webchat/component.js';
@@ -5,6 +7,7 @@ import { WebChatDecorator } from 'botframework-webchat/decorator.js';
 import { useActivities } from 'botframework-webchat/hook.js';
 import { createActivityPolymiddleware } from 'botframework-webchat/middleware.js';
 import { createElement } from 'react';
+import { createRoot } from 'react-dom/client'; // On React 16, the bundler config points it to react-dom-client.react16.js.
 
 // Every import must be defined: a bundler can resolve a subpath to an empty module without an error.
 // "botframework-webchat/schema.js" is imported by the Fluent theme.
@@ -34,7 +37,7 @@ function observableOf(...values) {
   });
 }
 
-// A chat adapter that connects at once and receives one message from the bot, browser.mjs waits for it.
+// A chat adapter that connects at once and receives one message from the bot.
 const directLine = Object.freeze({
   activity$: observableOf({
     from: { id: 'bot', role: 'bot' },
@@ -48,6 +51,6 @@ const directLine = Object.freeze({
   postActivity: () => observableOf('a-00002')
 });
 
-export default function createApp() {
-  return createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine }));
-}
+createRoot(document.getElementById('webchat')).render(
+  createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine }))
+);

@@ -289,32 +289,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Names without versions (webpack: major only), so check names stay the same when versions are bumped.
-        bundler: [esbuild, vite, webpack 4, webpack 5]
+        bundler: [esbuild, vite, webpack4, webpack5] # Folders under __tests__/bundlers/.
         react: [16, 18, 19]
-        include:
-          - bundler: esbuild
-            bundler-package: esbuild@0.28.2
-          - bundler: vite
-            bundler-package: vite@8.3.5
-          - bundler: webpack 4
-            bundler-package: webpack@4.47.0
-          - bundler: webpack 5
-            bundler-package: webpack@5.107.2
-          - react: 16
-            react-version: 16.8.6
-          - react: 18
-            react-version: 18.3.1
-          - react: 19
-            react-version: 19.3.1
         # react-film 4.0.0 imports `render` from react-dom, which React 19 removed, so webpack 5 fails on the missing export.
         # Re-enable when react-film is updated.
         exclude:
-          - bundler: webpack 5
+          - bundler: webpack5
             react: 19
     timeout-minutes: 10
     env:
       NODE_ENV: production # Apps ship production builds; with "test", Vite bundles React's development build.
+      npm_config_include: dev # NODE_ENV=production makes npm omit devDependencies, which have the bundlers.
+    defaults:
+      run:
+        working-directory: __tests__/bundlers/${{ matrix.bundler }}
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -326,7 +314,9 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
           cache: npm
-          cache-dependency-path: __tests__/bundlers/package.json
+          cache-dependency-path: |
+            __tests__/bundlers/package.json
+            __tests__/bundlers/${{ matrix.bundler }}/package.json
 
       - name: Download tarballs
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -335,10 +325,27 @@ jobs:
 
       - name: Extract tarballs
         run: tar -xvf tarballs.tar
+        working-directory: .
+
+      - name: Check that the app is the same in every folder
+        run: diff --recursive ../esbuild/src src
+
+      - run: npm install
+
+      - run: npm run react${{ matrix.react }}
+
+      - name: Install tarballs
+        run: npm install --no-save ../../../packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+
+      - run: npm run build
+
+      - name: Install the runner
+        run: npm install
+        working-directory: __tests__/bundlers
 
       # Renders in the Google Chrome preinstalled on the runner.
-      - name: Bundle with ${{ matrix.bundler-package }} and react@${{ matrix.react-version }}, render in Chrome
-        run: ./__tests__/bundlers/test.sh ${{ matrix.bundler-package }} ${{ matrix.react-version }} ./packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+      - name: Render in Chrome
+        run: node ../run.mjs ${{ matrix.bundler }}
 
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})

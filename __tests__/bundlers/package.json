@@ -1,12 +1,10 @@
 {
-  "name": "@msinternal/botframework-webchat-bundlers-consumer",
+  "name": "@msinternal/botframework-webchat-bundlers",
   "version": "0.0.0-0",
-  "description": "A consumer app bundling Web Chat with esbuild, Vite, or webpack 4 or 5, see test.sh",
+  "description": "Checks that the Web Chat apps in the folders here render in Chrome, see README.md",
   "private": true,
   "license": "MIT",
-  "devDependencies": {
-    "@babel/core": "7.29.7",
-    "@babel/preset-env": "7.29.7",
-    "babel-loader": "8.4.1"
+  "dependencies": {
+    "chrome-launcher": "1.2.2"
   }
 }

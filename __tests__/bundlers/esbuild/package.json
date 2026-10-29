@@ -1,0 +1,22 @@
+{
+  "name": "@msinternal/botframework-webchat-bundlers-esbuild",
+  "version": "0.0.0-0",
+  "description": "A Web Chat app bundled with esbuild, see ../README.md",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.mjs",
+    "react16": "npm install --save-exact react@16.8.6 react-dom@16.8.6",
+    "react18": "npm install --save-exact react@18.3.1 react-dom@18.3.1",
+    "react19": "npm install --save-exact react@19.3.1 react-dom@19.3.1"
+  },
+  "dependencies": {
+    "botframework-webchat": "4.19.2",
+    "botframework-webchat-fluent-theme": "4.19.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}
