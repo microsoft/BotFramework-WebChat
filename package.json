@@ -20,6 +20,7 @@
     "packages/test/dev-server",
     "packages/test/harness",
     "packages/test/web-server",
+    "packages/store",
     "packages/core-debug-api",
     "packages/core-graph",
     "packages/core-json-ld",
