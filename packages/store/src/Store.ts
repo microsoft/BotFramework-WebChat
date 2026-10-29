@@ -1,35 +1,50 @@
 import { parse } from 'valibot';
 import { nodeSchema, type Node } from './node/Node.ts';
+import type { Identifier } from './node/NodeIdentifier.ts';
 
 interface StoreSource {
   start(controller: StoreController): void;
 }
 
 interface StoreController {
+  edit(transactor: (transaction: StoreTransaction) => void): void;
+}
+
+interface StoreTransaction {
   upsertNode<T extends Node>(node: T): void;
 }
 
 class Store {
   constructor(source: StoreSource) {
     const controller: StoreController = {
-      // TODO: This should be a transaction, instead of a single operation.
-      //       Multiple nodes can be added at once and they could cross reference each other.
-      //       We need to add all of the nodes at once, auto-fix relationships, and verify the graph integrity.
-      upsertNode: node => {
-        const safeNode = parse(nodeSchema, node);
+      // Multiple nodes can be added at once and they could cross reference each other.
+      // We need to add all of the nodes at once, auto-fix relationships, and verify the graph integrity.
+      edit: transactor => {
+        const affectedNodeIds = new Set<Identifier>();
 
-        this.#state.set(safeNode['@id'], safeNode);
+        transactor({
+          upsertNode: node => {
+            const safeNode = parse(nodeSchema, node);
+            const id = safeNode['@id'];
 
-        // TODO: Auto-fix relationship for `hasPart` and `isPartOf`.
+            this.#state.set(id, safeNode);
 
-        // INTEGRITY:
-        // - All `hasPart` node must be in the system, and is inverse of `isPartOf`
-        // - All `isPartOf` node must be in the system
-        // - All node reference which has a blank node identifier (_:*) must be in the system
-        // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
-        // - THINK: Upsert/delete called twice with same node ID in the same transaction?
+            affectedNodeIds.add(id);
+          }
+        });
 
-        this.#notifyAll();
+        if (affectedNodeIds.size) {
+          // TODO: Auto-fix relationship for `hasPart` and `isPartOf`.
+
+          // INTEGRITY:
+          // - All `hasPart` node must be in the system, and is inverse of `isPartOf`
+          // - All `isPartOf` node must be in the system
+          // - All node reference which has a blank node identifier (_:*) must be in the system
+          // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
+          // - THINK: Upsert/delete called twice with same node ID in the same transaction?
+
+          this.#notifyAll();
+        }
       }
     };
 
