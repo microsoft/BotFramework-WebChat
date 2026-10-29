@@ -12,8 +12,8 @@ import {
   type InferOutput
 } from 'valibot';
 import { identifierSchema } from './NodeIdentifier.ts';
-import { propertyValueSchema } from './PropertyValue.ts';
 import { nodeReferenceSchema } from './NodeReference.ts';
+import { propertyValueSchema } from './PropertyValue.ts';
 
 const nodeSchema = pipe(
   objectWithRest(
