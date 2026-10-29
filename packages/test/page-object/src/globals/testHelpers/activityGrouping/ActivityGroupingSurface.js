@@ -248,10 +248,6 @@ const ActivityGroupingSurface = ({ children }) => {
   return <ActivityGroupingContext.Provider value={context}>{children}</ActivityGroupingContext.Provider>;
 };
 
-ActivityGroupingSurface.defaultProps = {
-  children: undefined
-};
-
 ActivityGroupingSurface.propTypes = {
   children: PropTypes.any
 };

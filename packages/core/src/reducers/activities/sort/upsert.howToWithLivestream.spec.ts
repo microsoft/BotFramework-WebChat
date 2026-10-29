@@ -513,3 +513,138 @@ scenario('re-sending an older revision of a finalized livestream in a grouping w
       expect(state.sortedActivities).toEqual([activityToExpectation(activity3, 1_000)]);
     });
 });
+
+scenario('re-sending a revision of an ongoing livestream in a grouping', bdd => {
+  const activity1 = buildActivity(
+    {
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
+      text: 'A quick',
+      timestamp: new Date(1_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity2 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'A quick brown fox',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  // Same ID with a changed text, e.g. delivered again after a reconnect.
+  const activity2Changed = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'a-00002:CHANGED',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  bdd
+    .given('an ongoing livestream session with 2 revisions in a part grouping', () =>
+      upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2)
+    )
+    .when('the second revision is re-sent with a changed text', state => upsert({ Date }, state, activity2Changed))
+    .then('`activityMap` should have the changed revision', (_, state) => {
+      expect(state.activityMap.get('_:a-00002' as LocalId)).toEqual({
+        activity: activityToExpectation(activity2Changed),
+        activityLocalId: '_:a-00002' as LocalId,
+        logicalTimestamp: 2_000,
+        type: 'activity'
+      } satisfies ActivityMapEntry);
+    })
+    .and('should keep 2 revisions in the livestream session', (_, state) => {
+      expect(state.livestreamSessionMap.get('a-00001' as LivestreamSessionId)).toEqual({
+        activities: [
+          expect.objectContaining({ activityLocalId: '_:a-00001' as LocalId }),
+          expect.objectContaining({ activityLocalId: '_:a-00002' as LocalId })
+        ],
+        finalized: false,
+        logicalTimestamp: 1_000
+      } satisfies LivestreamSessionMapEntry);
+    })
+    .and('`sortedActivities` should have the changed revision once', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        activityToExpectation(activity1, 1_000),
+        activityToExpectation(activity2Changed, 2_000)
+      ]);
+    });
+});
+
+scenario('re-sending a middle revision of an ongoing livestream in a grouping', bdd => {
+  const activity1 = buildActivity(
+    {
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
+      text: 'A quick',
+      timestamp: new Date(1_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity2 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'A quick brown fox',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  const activity3 = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 3, streamType: 'streaming' },
+      id: 'a-00003',
+      text: 'A quick brown fox jumped',
+      timestamp: new Date(3_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  // Same ID as the middle revision with a changed text, e.g. delivered again after a reconnect.
+  const activity2Changed = buildActivity(
+    {
+      channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-00002',
+      text: 'a-00002:CHANGED',
+      timestamp: new Date(2_000).toISOString(),
+      type: 'typing'
+    },
+    { isPartOf: [{ '@id': '_:how-to:00001', '@type': 'HowTo' }], position: 1 }
+  );
+
+  bdd
+    .given('an ongoing livestream session with 3 revisions in a part grouping', () =>
+      upsert({ Date }, upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2), activity3)
+    )
+    .when('the second revision is re-sent with a changed text', state => upsert({ Date }, state, activity2Changed))
+    .then('`activityMap` should have the changed revision', (_, state) => {
+      expect(state.activityMap.get('_:a-00002' as LocalId)).toEqual({
+        activity: activityToExpectation(activity2Changed),
+        activityLocalId: '_:a-00002' as LocalId,
+        logicalTimestamp: 2_000,
+        type: 'activity'
+      } satisfies ActivityMapEntry);
+    })
+    .and('`sortedActivities` should have the changed revision once, before the third revision', (_, state) => {
+      expect(state.sortedActivities).toEqual([
+        // Positions are not asserted: the slow path may resequence them, only the order matters.
+        activityToExpectation(activity1),
+        activityToExpectation(activity2Changed),
+        activityToExpectation(activity3)
+      ]);
+    });
+});

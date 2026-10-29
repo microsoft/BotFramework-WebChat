@@ -1,4 +1,9 @@
-/* globals SpeechGrammarList, SpeechRecognition, SpeechSynthesis */
+/* globals SpeechSynthesis */
+
+import { type TypeOfGlobal } from '@msinternal/botframework-webchat-base/utils';
+
+// `SpeechGrammarList` and `SpeechRecognition` are not in TypeScript's DOM library, they come from `@types/dom-speech-recognition`.
+// Use `typeof SpeechGrammarList`/`typeof SpeechRecognition` again when TypeScript's DOM library includes them.
 
 type WebSpeechPonyfill = {
   /**
@@ -9,10 +14,10 @@ type WebSpeechPonyfill = {
   resumeAudioContext?: () => Promise<void>;
 
   /** Polyfill for Web Speech API `SpeechGrammarList` class. */
-  SpeechGrammarList?: typeof SpeechGrammarList;
+  SpeechGrammarList?: TypeOfGlobal<'SpeechGrammarList', new () => object>;
 
   /** Polyfill for Web Speech API `SpeechRecognition` class. */
-  SpeechRecognition?: typeof SpeechRecognition;
+  SpeechRecognition?: TypeOfGlobal<'SpeechRecognition', new () => object>;
 
   /** Polyfill for Web Speech API `speechSynthesis` instance. */
   speechSynthesis?: SpeechSynthesis;

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: an activity updated into a group</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { botAvatarInitials: 'B', hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const avatarInitials = () =>
+          Array.from(document.querySelectorAll('.webchat__initialsAvatar__initials'), ({ textContent }) => textContent);
+        const getGroup = () => document.querySelector('.part-grouping-activity');
+        const textsInGroup = () =>
+          Array.from(
+            getGroup().querySelectorAll('.webchat__basic-transcript__activity'),
+            ({ textContent }) => textContent
+          );
+
+        const createMessageEntity = (position, isPartOf) => ({
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          abstract: `Step ${position}`, // Shown as the title.
+          // Parts of a group show their status as a checkmark circle, and are sorted by their position.
+          ...(isPartOf && { creativeWorkStatus: 'Published', isPartOf, position }),
+          type: 'https://schema.org/Message'
+        });
+        const howTo = { '@id': '_:how-to-1', '@type': 'HowTo' };
+
+        // GIVEN: "Step 1" and "Step 3" in a HowTo group, and "Step 2" on its own.
+        await directLine.emulateIncomingActivity({
+          entities: [createMessageEntity(1, howTo)],
+          from: { role: 'bot' },
+          id: 'a-1',
+          text: 'Text of step 1',
+          timestamp: 1_000,
+          type: 'message'
+        });
+        await directLine.emulateIncomingActivity({
+          entities: [createMessageEntity(2)],
+          from: { role: 'bot' },
+          id: 'a-2',
+          text: 'Text of step 2',
+          timestamp: 2_000,
+          type: 'message'
+        });
+        await directLine.emulateIncomingActivity({
+          entities: [createMessageEntity(3, howTo)],
+          from: { role: 'bot' },
+          id: 'a-3',
+          text: 'Text of step 3',
+          timestamp: 3_000,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.scrollStabilized();
+
+        // THEN: "Step 2" on its own with an avatar and no checkmark circle, above the group of "Step 1" and "Step 3".
+        expect(textsInGroup()).toEqual([expect.stringContaining('Step 1'), expect.stringContaining('Step 3')]);
+        expect(pageElements.activities()[0].closest('.part-grouping-activity')).toBeNull();
+        expect(pageElements.activities()[0].querySelector('.stacked-layout__message-status')).toBeNull();
+
+        await host.snapshot('local');
+
+        // WHEN: "Step 2" is re-sent with the same ID, now with `isPartOf` (and the part status).
+        await directLine.emulateIncomingActivity({
+          entities: [createMessageEntity(2, howTo)],
+          from: { role: 'bot' },
+          id: 'a-2',
+          text: 'Text of step 2, updated into the group',
+          timestamp: 2_000,
+          type: 'message'
+        });
+
+        // THEN: "Step 2" is rendered once, inside the group, between "Step 1" and "Step 3".
+        await waitFor(() =>
+          expect(pageElements.activityContents().map(({ textContent }) => textContent)).toEqual([
+            expect.stringContaining('Text of step 1'),
+            expect.stringContaining('Text of step 2, updated into the group'),
+            expect.stringContaining('Text of step 3')
+          ])
+        );
+
+        expect(textsInGroup()).toEqual([
+          expect.stringContaining('Step 1'),
+          expect.stringContaining('Step 2'),
+          expect.stringContaining('Step 3')
+        ]);
+        expect(avatarInitials()).toEqual(['B']); // The avatar of the group.
+
+        await pageConditions.scrollStabilized();
+
+        // THEN: 1 group with 1 avatar, each step has a checkmark circle.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

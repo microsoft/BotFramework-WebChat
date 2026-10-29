@@ -1,5 +1,4 @@
 import { Components, type ComposerProps } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
 import React from 'react';
 import AddFullBundle, { type AddFullBundleProps, type AddFullBundleChildren } from './AddFullBundle';
 
@@ -13,7 +12,7 @@ type ComposerPropsChildren = ComposerProps['children'];
  * The union type of ComposerProps and AddFullBundleProps was not resolving correctly, so manually constructing the type here.
  */
 type FullComposerProps = Omit<BaseFullComposerProps, 'children'> & {
-  children?: ComposerPropsChildren | AddFullBundleChildren;
+  readonly children?: ComposerPropsChildren | AddFullBundleChildren | undefined;
 };
 
 const FullComposer = (props: FullComposerProps) => (
@@ -27,13 +26,6 @@ const FullComposer = (props: FullComposerProps) => (
     )}
   </AddFullBundle>
 );
-
-FullComposer.propTypes = {
-  ...Composer.propTypes,
-  adaptiveCardsHostConfig: PropTypes.any,
-  adaptiveCardsPackage: PropTypes.any,
-  children: PropTypes.any
-};
 
 export default FullComposer;
 
