@@ -281,6 +281,59 @@ jobs:
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
+  bundler-test:
+    name: Bundler test (${{ matrix.bundler }}, React ${{ matrix.react }})
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        bundler: [esbuild, vite, webpack4, webpack5] # Folders under __tests__/bundlers/.
+        react: [16, 18, 19]
+    timeout-minutes: 10
+    env:
+      NODE_ENV: production # Apps ship production builds; with "test", Vite bundles React's development build.
+      npm_config_include: dev # NODE_ENV=production makes npm omit devDependencies, which have the bundlers.
+    defaults:
+      run:
+        working-directory: __tests__/bundlers/${{ matrix.bundler }}
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          sparse-checkout: __tests__/bundlers
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+          cache-dependency-path: __tests__/bundlers/${{ matrix.bundler }}/package.json
+
+      - name: Download tarballs
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: tarballs
+
+      - name: Extract tarballs
+        run: tar -xvf tarballs.tar
+        working-directory: .
+
+      - name: Check that the app is the same in every folder
+        run: diff --recursive ../esbuild/src src
+
+      - run: npm install
+
+      - name: Install React ${{ matrix.react }} and the tarballs
+        run: npm run react${{ matrix.react }} -- ../../../packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+
+      - run: npm run build
+
+      # Renders in the Chrome of the Docker image built from __tests__/bundlers/Dockerfile.
+      - name: Render in Chrome
+        run: node ../run.mjs ${{ matrix.bundler }}
+
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     needs:
