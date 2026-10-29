@@ -6,15 +6,32 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack",
+    "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
     "react16": "npm install --no-save react@16.8.6 react-dom@16.8.6",
     "react18": "npm install --no-save react@18.3.1 react-dom@18.3.1",
     "react19": "npm install --no-save react@19.3.1 react-dom@19.3.1"
   },
-  "dependencies": {
-    "botframework-webchat": "4.19.2",
-    "botframework-webchat-fluent-theme": "4.19.2",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+  "pinDependencies": {
+    "@babel/core": [
+      "7",
+      "babel-loader@8 needs Babel 7"
+    ],
+    "@babel/preset-env": [
+      "7",
+      "babel-loader@8 needs Babel 7"
+    ],
+    "babel-loader": [
+      "8",
+      "babel-loader@9 needs webpack 5"
+    ],
+    "webpack": [
+      "4",
+      "this app tests webpack 4"
+    ],
+    "webpack-cli": [
+      "3",
+      "webpack-cli@3 is the one from webpack 4's docs"
+    ]
   },
   "devDependencies": {
     "@babel/core": "7.29.7",

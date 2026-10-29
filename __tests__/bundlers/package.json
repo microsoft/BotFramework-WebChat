@@ -4,6 +4,9 @@
   "description": "Checks that the Web Chat apps in the folders here render in Chrome, see README.md",
   "private": true,
   "license": "MIT",
+  "scripts": {
+    "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)"
+  },
   "dependencies": {
     "chrome-launcher": "1.2.2"
   }

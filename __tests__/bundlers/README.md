@@ -24,4 +24,4 @@ node ../run.mjs vite
 
 `run.mjs` starts the Chrome that [chrome-launcher](https://www.npmjs.com/package/chrome-launcher) finds, or the one in `CHROME_PATH`. On WSL, chrome-launcher looks for Chrome on Windows and fails if it is not installed there: set `CHROME_PATH` to a Linux Chrome, then chrome-launcher leaves a `C:\Users\…\lighthouse.*` folder in the current folder.
 
-The React scripts install the tarballs in the same `npm install`: a separate `npm install` would put back the React and Web Chat versions from `package.json`.
+The React scripts install the tarballs in the same `npm install`: a separate `npm install` would remove React and Web Chat, which are not in `package.json`.
