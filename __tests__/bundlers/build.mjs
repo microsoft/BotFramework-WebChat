@@ -35,6 +35,10 @@ const html = script => `<!DOCTYPE html>
 </html>
 `;
 
+// Production builds, like consumer apps ship, regardless of NODE_ENV (Vite would otherwise use it, e.g. "test").
+// Development builds of React log warnings, which browser.mjs fails on.
+const define = Object.freeze({ 'process.env.NODE_ENV': JSON.stringify('production') });
+
 console.log(`Bundling ${entry} with ${bundler}@${bundlerVersion} and react@${reactVersion}.`);
 
 if (bundler === 'esbuild') {
@@ -43,6 +47,7 @@ if (bundler === 'esbuild') {
   // Throws on errors, prints warnings.
   await build({
     bundle: true,
+    define,
     entryPoints: [resolve(here, entry)],
     minify: true,
     outfile: resolve(here, 'dist/main.js')
@@ -53,7 +58,7 @@ if (bundler === 'esbuild') {
 
   // Vite bundles from index.html. Throws on errors, prints warnings.
   await writeFile(resolve(here, 'index.html'), html(`<script src="/${entry}" type="module"></script>`));
-  await build({ logLevel: 'warn', root: here });
+  await build({ define, logLevel: 'warn', mode: 'production', root: here });
 } else if (bundler === 'webpack') {
   const webpack = require('webpack');
 

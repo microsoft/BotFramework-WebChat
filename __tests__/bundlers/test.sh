@@ -17,10 +17,11 @@ mapfile -t tarballs < <(realpath "$@")
 cp -R "$(dirname "$0")/." "$app_dir"
 cd "$app_dir"
 
-# The devDependencies in package.json are for webpack4.config.js only.
-[[ $bundler_package == webpack@4.* ]] || omit_dev=--omit=dev
+# The devDependencies in package.json are for webpack4.config.js only (explicit: NODE_ENV=production omits them by default).
+dev=--omit=dev
+[[ $bundler_package == webpack@4.* ]] && dev=--include=dev
 
-npm install --no-audit --no-fund ${omit_dev:-} \
+npm install --no-audit --no-fund "$dev" \
   "$bundler_package" \
   "react@$react_version" \
   "react-dom@$react_version" \

@@ -313,6 +313,8 @@ jobs:
           - bundler: webpack 5
             react: 19
     timeout-minutes: 10
+    env:
+      NODE_ENV: production # Consumer apps ship production builds; with the workflow's "test", Vite would bundle React's development build.
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
