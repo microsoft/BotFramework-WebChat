@@ -308,13 +308,13 @@ jobs:
           - react: 19
             react-version: 19.3.1
         # react-film 4.0.0 imports `render` from react-dom, which React 19 removed, so webpack 5 fails on the missing export.
-        # Re-enable when react-film is removed: https://github.com/microsoft/BotFramework-WebChat/issues/5552.
+        # Re-enable when react-film is updated.
         exclude:
           - bundler: webpack 5
             react: 19
     timeout-minutes: 10
     env:
-      NODE_ENV: production # Consumer apps ship production builds; with the workflow's "test", Vite would bundle React's development build.
+      NODE_ENV: production # Apps ship production builds; with "test", Vite bundles React's development build.
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
