@@ -232,8 +232,25 @@ type StrictStyleOptions = {
   /**
    * Live region - Accessibility
    * New activities will be rendered in the non-visual live region and removed after a certain amount of time. Modify this property to change fade time.
+   * Does not apply when announcing via `ariaNotify()` (`assistiveTechnologyAnnouncementTransport: 'aria-notify'`): they are removed right after they are announced.
    */
   internalLiveRegionFadeAfter: number | undefined;
+
+  /**
+   * Live region - Accessibility
+   * How Web Chat sends announcements to screen readers, such as new messages and errors:
+   *
+   * - `'live-region'` - Renders them in a live region (`aria-live="polite"`) inside Web Chat
+   * - `'aria-notify'` - Calls `ariaNotify()` on the Web Chat root element instead, the live region is not used; falls back to `'live-region'` if the browser does not support `ariaNotify()`
+   *
+   * With `'aria-notify'`, announcements continue when the host page hides only the live region (`.webchat__live-region`) from screen readers.
+   * Like the live region, `ariaNotify()` announces nothing when the Web Chat root element is hidden from screen readers.
+   *
+   * @default 'live-region'
+   *
+   * @deprecated This is an experimental style option and should not be used without understanding its risk.
+   */
+  assistiveTechnologyAnnouncementTransport: 'aria-notify' | 'live-region' | undefined;
 
   /**
    * Markdown styling
