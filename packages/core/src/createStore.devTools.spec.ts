@@ -16,12 +16,22 @@ scenario('withOptions() with Redux DevTools', bdd => {
     .and(
       'the Redux DevTools browser extension',
       options => {
-        // Same as the extension: composes its own enhancer with the one passed in.
-        const composeEnhancers = jest.fn((enhancer: StoreEnhancer) => enhancer);
+        const devToolsCreateStore = jest.fn();
+
+        // Same as the extension: wraps the enhancer passed in, here to record the store it creates.
+        const composeEnhancers = jest.fn(
+          (enhancer: StoreEnhancer): StoreEnhancer =>
+            createStore =>
+            (...args) => {
+              devToolsCreateStore();
+
+              return enhancer(createStore)(...args);
+            }
+        );
 
         window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ = composeEnhancers;
 
-        return { composeEnhancers, options };
+        return { composeEnhancers, devToolsCreateStore, options };
       },
       () => {
         delete window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
@@ -36,6 +46,9 @@ scenario('withOptions() with Redux DevTools', bdd => {
     })
     .then('the extension should be called only with devTools: true', ({ composeEnhancers, options }) =>
       expect(composeEnhancers.mock.calls).toEqual(options.devTools ? [[expect.any(Function)]] : [])
+    )
+    .and('the store should be created by the enhancer the extension returned', ({ devToolsCreateStore, options }) =>
+      expect(devToolsCreateStore).toHaveBeenCalledTimes(options.devTools ? 1 : 0)
     )
     .and('the store should work', (_, store) =>
       expect(store.getState()).toHaveProperty('sendBoxValue', 'Hello, World!')
