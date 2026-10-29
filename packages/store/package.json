@@ -23,5 +23,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.1"
+  },
+  "dependencies": {
+    "valibot": "1.2.0"
   }
 }
