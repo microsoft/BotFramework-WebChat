@@ -5,7 +5,7 @@
 
 ### Changed
 
-- Removed `@redux-devtools/extension` package in `botframework-webchat-core`, Redux DevTools still works through the browser extension, in PR [#5977](https://github.com/microsoft/BotFramework-WebChat/pull/5977), by [@OEvgeny](https://github.com/OEvgeny)
+- `botframework-webchat-core` connects to Redux DevTools without the `@redux-devtools/extension` package, in PR [#5977](https://github.com/microsoft/BotFramework-WebChat/pull/5977), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
