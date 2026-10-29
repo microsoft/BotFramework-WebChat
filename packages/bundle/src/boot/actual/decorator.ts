@@ -5,9 +5,6 @@ export {
   createActivityBorderMiddleware,
   createActivityGroupingMiddleware,
   DecoratorComposer,
-  useDecoratorRequest,
-  type ActivityBorderDecoratorProps,
-  type DecoratorMiddleware,
-  type InferDecoratorRequest
+  useDecoratorRequest
 } from 'botframework-webchat-api/decorator.js';
 export { BorderFlair, BorderLoader, WebChatDecorator } from 'botframework-webchat-component/decorator.js';
