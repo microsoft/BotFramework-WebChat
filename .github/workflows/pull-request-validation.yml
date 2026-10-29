@@ -332,10 +332,8 @@ jobs:
 
       - run: npm install
 
-      - run: npm run react${{ matrix.react }}
-
-      - name: Install tarballs
-        run: npm install --no-save ../../../packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+      - name: Install React ${{ matrix.react }} and the tarballs
+        run: npm run react${{ matrix.react }} -- ../../../packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
 
       - run: npm run build
 

@@ -11,8 +11,7 @@ Build the tarballs first (`npm run build`, then `npm exec --workspaces -- npm pa
 ```sh
 cd __tests__/bundlers/vite
 npm install
-npm run react16 # Or react18 (default) or react19, it changes package.json
-npm install --no-save ../../../packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+npm run react16 -- ../../../packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz # Or react18, react19
 npm run build
 ```
 
@@ -23,6 +22,6 @@ Then open `dist/index.html` in a browser (Vite: `npm run preview`), or run the c
 node ../run.mjs vite
 ```
 
-`run.mjs` starts the Chrome that [chrome-launcher](https://www.npmjs.com/package/chrome-launcher) finds, or the one in `CHROME_PATH` (on WSL, chrome-launcher looks for Chrome on Windows).
+`run.mjs` starts the Chrome that [chrome-launcher](https://www.npmjs.com/package/chrome-launcher) finds, or the one in `CHROME_PATH`. On WSL, chrome-launcher looks for Chrome on Windows and fails if it is not installed there: set `CHROME_PATH` to a Linux Chrome, then chrome-launcher leaves a `C:\Users\…\lighthouse.*` folder in the current folder.
 
-Install the tarballs after the React version: `npm install` puts back the published Web Chat from `package.json`.
+The React scripts install the tarballs in the same `npm install`: a separate `npm install` would put back the React and Web Chat versions from `package.json`.

@@ -1,5 +1,5 @@
 // webpack's getting-started config, plus the webpack 4 workarounds from docs/HOSTING.md ("Bundling with webpack 4") from
-// `const { sep }` on: keep them the same, CI checks the documented ones.
+// `const { sep }` on: keep them the same, CI tests them.
 // Web Chat itself ships ES2019 and is deliberately not transpiled, so these legs fail if it starts shipping newer syntax.
 
 const path = require('path');

@@ -23,9 +23,15 @@ const server = createServer(async (request, response) => {
   const { pathname } = new URL(request.url, 'http://localhost');
 
   if (pathname === '/__runner/report') {
-    report(JSON.parse(Buffer.concat(await Array.fromAsync(request))));
+    try {
+      report(JSON.parse(Buffer.concat(await Array.fromAsync(request))));
+      response.end();
+    } catch (error) {
+      report({ errors: [`Invalid report from the page: ${error.message}`] });
+      response.writeHead(400).end();
+    }
 
-    return response.end();
+    return;
   }
 
   try {
