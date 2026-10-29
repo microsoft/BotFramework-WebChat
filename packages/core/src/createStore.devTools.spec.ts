@@ -7,6 +7,13 @@ import type { StoreEnhancer } from 'redux';
 import setSendBox from './actions/setSendBox';
 import { withOptions } from './createStore';
 
+// The global the Redux DevTools browser extension sets.
+type WindowWithReduxDevTools = Window & {
+  __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: ((enhancer: StoreEnhancer) => StoreEnhancer) | undefined;
+};
+
+const devToolsWindow: WindowWithReduxDevTools = window;
+
 scenario('withOptions() with Redux DevTools', bdd => {
   bdd.given
     .oneOf([
@@ -29,12 +36,12 @@ scenario('withOptions() with Redux DevTools', bdd => {
             }
         );
 
-        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ = composeEnhancers;
+        devToolsWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ = composeEnhancers;
 
         return { composeEnhancers, devToolsCreateStore, options };
       },
       () => {
-        delete window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+        delete devToolsWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
       }
     )
     .when('a store is created and an action is dispatched', ({ options }) => {
