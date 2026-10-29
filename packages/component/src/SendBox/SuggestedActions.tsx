@@ -36,7 +36,8 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
     {
       suggestedActionsCarouselFlipperBoxWidth,
       suggestedActionsCarouselFlipperCursor,
-      suggestedActionsCarouselFlipperSize
+      suggestedActionsCarouselFlipperSize,
+      stylesRoot
     }
   ] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
@@ -99,6 +100,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
           showDots={false}
           showScrollBar={false}
           styleSet={filmStyleSet}
+          stylesRoot={stylesRoot}
         >
           {children}
         </ReactFilm>
