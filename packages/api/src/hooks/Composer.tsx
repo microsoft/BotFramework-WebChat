@@ -857,13 +857,6 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions,
   );
 };
 
-Composer.propTypes = {
-  ...ComposerWithStore.propTypes,
-  internalRenderErrorBox: PropTypes.any,
-  onTelemetry: PropTypes.func,
-  ponyfill: PropTypes.any
-};
-
 export default Composer;
 
 export type { ComposerProps };

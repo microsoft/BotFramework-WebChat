@@ -8,12 +8,12 @@ import katex from 'katex';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
-import createStreamingRenderer, {
+import createMarkdownStreamingRenderer, {
   type StreamingNextOptions,
   type StreamingNextResult,
   type StreamingRenderer,
   type StreamingRenderOptions
-} from './createStreamingRenderer';
+} from './createMarkdownStreamingRenderer';
 import { math, mathHtml } from './mathExtension';
 import { createDecorate } from './private/createDecorate';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
@@ -67,6 +67,7 @@ export default function render(
   return serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown).trim();
 }
 
-render.createStreamingRenderer = createStreamingRenderer;
+// The function is named differently than the property: in our typings, `typeof createStreamingRenderer` would refer to the property itself.
+render.createStreamingRenderer = createMarkdownStreamingRenderer;
 
 export { type StreamingNextOptions, type StreamingNextResult, type StreamingRenderer, type StreamingRenderOptions };

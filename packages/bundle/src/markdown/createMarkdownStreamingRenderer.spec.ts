@@ -1,13 +1,13 @@
 /** @jest-environment @happy-dom/jest-environment */
 /// <reference types="jest" />
 
-import createStreamingRenderer, { STREAMING_ERROR } from './createStreamingRenderer';
+import createMarkdownStreamingRenderer, { STREAMING_ERROR } from './createMarkdownStreamingRenderer';
 
-const OPTIONS: Parameters<typeof createStreamingRenderer>[0] = {
+const OPTIONS: Parameters<typeof createMarkdownStreamingRenderer>[0] = {
   markdownRespectCRLF: false
 };
 
-const INIT: Parameters<typeof createStreamingRenderer>[1] = {
+const INIT: Parameters<typeof createMarkdownStreamingRenderer>[1] = {
   externalLinkAlt: 'Opens in a new window'
 };
 
@@ -18,7 +18,7 @@ function setup() {
 
   document.body.appendChild(container);
 
-  const renderer = createStreamingRenderer(OPTIONS, INIT);
+  const renderer = createMarkdownStreamingRenderer(OPTIONS, INIT);
 
   currentContainer = container;
 
@@ -80,7 +80,7 @@ function splitBySentinel(container: HTMLElement): [string, string] | null {
   return [committedDiv.innerHTML.trim(), activeDiv.innerHTML.trim()];
 }
 
-describe('createStreamingRenderer', () => {
+describe('createMarkdownStreamingRenderer', () => {
   afterEach(() => {
     if (!currentContainer) {
       return;
