@@ -3,24 +3,24 @@ type Node = {
   readonly '@type': Set<string>;
 };
 
-interface StoreController {
-  (transactor: StoreTransactor): void;
+interface StoreSource {
+  start(controller: StoreController): void;
 }
 
-interface StoreTransactor {
-  upsertNode(node: Node): void;
+interface StoreController {
+  upsertNode<T extends Node>(node: T): void;
 }
 
 class Store {
-  constructor(controller: StoreController) {
-    const transactor: StoreTransactor = {
-      upsertNode: (node: Node) => {
+  constructor(source: StoreSource) {
+    const controller: StoreController = {
+      upsertNode: node => {
         this.#state.set(node['@id'], node);
         this.#notifyAll();
       }
     };
 
-    controller(transactor);
+    source.start(controller);
   }
 
   #listeners: Set<() => void> = new Set<() => void>();
@@ -46,3 +46,4 @@ class Store {
 }
 
 export default Store;
+export type { StoreSource as StoreController, StoreController as StoreTransactor };
