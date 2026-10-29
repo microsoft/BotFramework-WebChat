@@ -27,7 +27,7 @@ To look at the app as served to that Chrome, run the image yourself and browse `
 
 ```sh
 docker build --build-arg APP=vite --tag webchat-bundler-vite ..
-docker run --rm --publish 8000:8000 webchat-bundler-vite
+docker run --rm --publish 127.0.0.1:8000:8000 webchat-bundler-vite
 ```
 
 The image has a copy of `dist/`: build it again after `npm run build`.

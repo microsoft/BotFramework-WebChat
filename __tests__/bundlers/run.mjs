@@ -12,12 +12,12 @@ const TIMEOUT = 60_000;
 const app = process.argv[2];
 const docker = async (...args) => (await promisify(execFile)('docker', args)).stdout.trim();
 
-// Resolves with the first truthy value of fn(), which is called every 100 ms.
-async function poll(fn, message) {
+// Resolves with the first truthy value of getValue(), which is called every 100 ms.
+async function poll(getValue, message) {
   const deadline = Date.now() + TIMEOUT;
 
   for (;;) {
-    const value = await fn();
+    const value = await getValue();
 
     if (value) {
       return value;
@@ -67,12 +67,13 @@ try {
     const response = await fetch(new URL(path, webDriverURL), {
       body: body && JSON.stringify(body),
       headers: { 'content-type': 'application/json' },
-      method
+      method,
+      signal: AbortSignal.timeout(TIMEOUT)
     });
     const { value } = await response.json();
 
     if (!response.ok) {
-      throw new Error(`WebDriver ${method} /${path}: ${value.message}`);
+      throw new Error(`WebDriver ${method} /${path}: ${value?.message ?? response.statusText}`);
     }
 
     return value;
@@ -111,7 +112,8 @@ try {
     console.log(ok ? `Web Chat bundled by ${app} rendered the bot message.` : `Failed to render the ${app} app.`);
     process.exitCode = ok ? 0 : 1;
   } finally {
-    await webDriver('DELETE', `session/${sessionId}`);
+    // Ignore errors here, so they don't replace the error of a session that already ended.
+    await webDriver('DELETE', `session/${sessionId}`).catch(() => {});
   }
 } finally {
   await removeContainer();
