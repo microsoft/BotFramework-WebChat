@@ -1,4 +1,5 @@
-// Injected by run.mjs before the app's scripts: records errors, and reports once Web Chat shows the bot message.
+// Injected before the app's scripts (see Dockerfile): records errors, and reports in `window.bundlerTestResult` once Web
+// Chat shows the bot message, for run.mjs to read over WebDriver.
 
 (() => {
   const errors = [];
@@ -31,7 +32,7 @@
 
     if (rendered || errors.length) {
       clearInterval(interval);
-      fetch('/__runner/report', { body: JSON.stringify({ errors, ok: rendered && !errors.length }), method: 'POST' });
+      window.bundlerTestResult = Object.freeze({ errors: Object.freeze([...errors]), ok: rendered && !errors.length });
     }
   }, 100);
 })();

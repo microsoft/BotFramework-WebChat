@@ -309,9 +309,7 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
           cache: npm
-          cache-dependency-path: |
-            __tests__/bundlers/package.json
-            __tests__/bundlers/${{ matrix.bundler }}/package.json
+          cache-dependency-path: __tests__/bundlers/${{ matrix.bundler }}/package.json
 
       - name: Download tarballs
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -332,11 +330,7 @@ jobs:
 
       - run: npm run build
 
-      - name: Install the runner
-        run: npm install
-        working-directory: __tests__/bundlers
-
-      # Renders in the Google Chrome preinstalled on the runner.
+      # Renders in the Chrome of the Docker image built from __tests__/bundlers/Dockerfile.
       - name: Render in Chrome
         run: node ../run.mjs ${{ matrix.bundler }}
 

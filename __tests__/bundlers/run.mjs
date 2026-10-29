@@ -1,64 +1,118 @@
-// Serves <folder>/dist/ with report.js injected before the app's scripts, and opens it in headless Chrome: passes when
-// report.js reports that Web Chat shows the bot message without errors.
+// Builds the Dockerfile here for <folder>/dist/ (Chrome with the app served on port 8000) and opens the app over
+// WebDriver: passes when report.js reports that Web Chat shows the bot message without errors.
 //
 // Usage: node run.mjs <esbuild | vite | webpack4 | webpack5>
 
-import { launch } from 'chrome-launcher';
-import { access, readFile } from 'node:fs/promises';
-import { createServer } from 'node:http';
-import { extname, join, normalize } from 'node:path';
+import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
-const CONTENT_TYPES = Object.freeze({ '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8' });
 const TIMEOUT = 60_000;
 
-const root = fileURLToPath(new URL(`${process.argv[2]}/dist/`, import.meta.url));
-const { promise: reported, resolve: report } = Promise.withResolvers();
+const app = process.argv[2];
+const docker = async (...args) => (await promisify(execFile)('docker', args)).stdout.trim();
 
-await access(join(root, 'index.html')); // Fails with the path when the app is not built.
+// Resolves with the first truthy value of fn(), which is called every 100 ms.
+async function poll(fn, message) {
+  const deadline = Date.now() + TIMEOUT;
 
-setTimeout(() => report({ errors: [`No report from the page in ${TIMEOUT / 1000} seconds.`] }), TIMEOUT).unref();
+  for (;;) {
+    const value = await fn();
 
-const server = createServer(async (request, response) => {
-  const { pathname } = new URL(request.url, 'http://localhost');
-
-  if (pathname === '/__runner/report') {
-    try {
-      report(JSON.parse(Buffer.concat(await Array.fromAsync(request))));
-      response.end();
-    } catch (error) {
-      report({ errors: [`Invalid report from the page: ${error.message}`] });
-      response.writeHead(400).end();
+    if (value) {
+      return value;
+    } else if (Date.now() > deadline) {
+      throw new Error(`${message} in ${TIMEOUT / 1000} seconds.`);
     }
 
-    return;
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
+}
+
+console.time('Built the image');
+
+await docker(
+  'build',
+  '--build-arg',
+  `APP=${app}`,
+  '--tag',
+  `webchat-bundler-${app}`,
+  fileURLToPath(new URL('.', import.meta.url))
+);
+
+console.timeEnd('Built the image');
+
+const container = `webchat-bundler-${app}-${process.pid}`;
+let removingContainer;
+const removeContainer = () => (removingContainer ||= docker('rm', '--force', container));
+
+// Registered before `docker run`, which can be interrupted after it created the container.
+['SIGINT', 'SIGTERM'].forEach(signal => process.once(signal, () => removeContainer().finally(() => process.exit(1))));
+
+await docker(
+  'run',
+  '--detach',
+  '--name',
+  container,
+  '--publish',
+  '127.0.0.1::4444',
+  '--shm-size=2g',
+  `webchat-bundler-${app}`
+);
+
+try {
+  const webDriverURL = `http://${await docker('port', container, '4444')}/`;
+
+  async function webDriver(method, path, body) {
+    const response = await fetch(new URL(path, webDriverURL), {
+      body: body && JSON.stringify(body),
+      headers: { 'content-type': 'application/json' },
+      method
+    });
+    const { value } = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`WebDriver ${method} /${path}: ${value.message}`);
+    }
+
+    return value;
+  }
+
+  console.time('WebDriver ready');
+
+  await poll(
+    () =>
+      webDriver('GET', 'status').then(
+        ({ ready }) => ready,
+        () => false
+      ),
+    'WebDriver is not ready'
+  );
+
+  console.timeEnd('WebDriver ready');
+  console.time('Rendered');
+
+  const { sessionId } = await webDriver('POST', 'session', {
+    capabilities: { alwaysMatch: { browserName: 'chrome' } }
+  });
 
   try {
-    const path =
-      pathname === '/__runner/report.js'
-        ? fileURLToPath(new URL('report.js', import.meta.url))
-        : join(root, normalize(pathname).replace(/\/$/u, '/index.html'));
-    const body = await readFile(path);
+    // "localhost" is the container, where the Dockerfile serves the app.
+    await webDriver('POST', `session/${sessionId}/url`, { url: 'http://localhost:8000/' });
 
-    response
-      .writeHead(200, { 'content-type': CONTENT_TYPES[extname(path)] || 'application/octet-stream' })
-      .end(
-        path.endsWith('.html') ? `${body}`.replace(/<head>/iu, '$&<script src="/__runner/report.js"></script>') : body
-      );
-  } catch {
-    response.writeHead(404).end();
+    const { errors, ok } = await poll(
+      () =>
+        webDriver('POST', `session/${sessionId}/execute/sync`, { args: [], script: 'return window.bundlerTestResult' }),
+      'No report from the page'
+    );
+
+    console.timeEnd('Rendered');
+    errors.forEach(error => console.error(error));
+    console.log(ok ? `Web Chat bundled by ${app} rendered the bot message.` : `Failed to render the ${app} app.`);
+    process.exitCode = ok ? 0 : 1;
+  } finally {
+    await webDriver('DELETE', `session/${sessionId}`);
   }
-});
-
-await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-
-const chrome = await launch({ chromeFlags: ['--headless'], startingUrl: `http://127.0.0.1:${server.address().port}/` });
-const { errors, ok } = await reported;
-
-chrome.kill();
-server.close();
-
-errors.forEach(error => console.error(error));
-console.log(ok ? `Web Chat bundled in ${root} rendered the bot message.` : `Failed to render ${root}.`);
-process.exitCode = ok ? 0 : 1;
+} finally {
+  await removeContainer();
+}
