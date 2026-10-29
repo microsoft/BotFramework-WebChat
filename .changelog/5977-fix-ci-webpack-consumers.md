@@ -9,4 +9,4 @@
 
 ### Fixed
 
-- Fixed `botframework-webchat/schema.js` failing to resolve in webpack 4, in PR [#5977](https://github.com/microsoft/BotFramework-WebChat/pull/5977), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed webpack 4 failing to resolve `botframework-webchat/schema.js` and `@redux-devtools/extension`, in PR [#5977](https://github.com/microsoft/BotFramework-WebChat/pull/5977), by [@OEvgeny](https://github.com/OEvgeny)

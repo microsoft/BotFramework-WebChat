@@ -189,9 +189,9 @@ Then, import Web Chat into your code:
 import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 ```
 
-#### Bundling with webpack 4
+webpack 5, esbuild and Vite need no changes to bundle Web Chat; our CI renders Web Chat bundled by each of them in Chrome. The exception is webpack 5 with React 19, which fails on react-film importing `render` from `react-dom` until react-film is removed ([#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552)); until then, set `module.parser.javascript.exportsPresence: 'warn'` in `webpack.config.js`.
 
-webpack 5, esbuild and Vite need no changes to bundle Web Chat; our CI renders Web Chat bundled by each of them in Chrome.
+#### Bundling with webpack 4
 
 webpack 4 cannot parse syntax newer than ES2019. To bundle Web Chat, add the following to `webpack.config.js` and install `babel-loader@8` and `@babel/preset-env`. Our CI tests it with webpack 4.47.0.
 
