@@ -1,7 +1,5 @@
-type Node = {
-  readonly '@id': string;
-  readonly '@type': Set<string>;
-};
+import { parse } from 'valibot';
+import { nodeSchema, type Node } from './node/Node.ts';
 
 interface StoreSource {
   start(controller: StoreController): void;
@@ -14,8 +12,22 @@ interface StoreController {
 class Store {
   constructor(source: StoreSource) {
     const controller: StoreController = {
+      // TODO: This should be a transaction, instead of a single operation.
+      //       Multiple nodes can be added at once and they could cross reference each other.
+      //       We need to add all of the nodes at once, auto-fix relationships, and verify the graph integrity.
       upsertNode: node => {
-        this.#state.set(node['@id'], node);
+        const safeNode = parse(nodeSchema, node);
+
+        this.#state.set(safeNode['@id'], safeNode);
+
+        // TODO: Auto-fix relationship for `hasPart` and `isPartOf`.
+
+        // INTEGRITY:
+        // - All `hasPart` node must be in the system, and is inverse of `isPartOf`
+        // - All `isPartOf` node must be in the system
+        // - All node reference which has a blank node identifier (_:*) must be in the system
+        // - THINK: Upsert/delete called twice with same node ID in the same transaction?
+
         this.#notifyAll();
       }
     };
