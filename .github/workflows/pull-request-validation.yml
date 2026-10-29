@@ -281,39 +281,45 @@ jobs:
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
-  webpack-test:
-    name: Webpack test (webpack ${{ matrix.webpack }}, React ${{ matrix.react }})
+  bundler-test:
+    name: Bundler test (${{ matrix.bundler }}, React ${{ matrix.react }})
     needs:
       - build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Major versions only, so check names stay the same when versions are bumped.
-        react: [16, 18] # TODO: Add React 19 when react-film supports it.
-        webpack: [4, 5]
+        # Names without versions (webpack: major only), so check names stay the same when versions are bumped.
+        bundler: [esbuild, vite, webpack 4, webpack 5]
+        react: [16, 18, 19]
         include:
+          - bundler: esbuild
+            bundler-package: esbuild@0.28.2
+          - bundler: vite
+            bundler-package: vite@8.3.5
+          - bundler: webpack 4
+            bundler-package: webpack@4.47.0
+          - bundler: webpack 5
+            bundler-package: webpack@5.107.2
           - react: 16
             react-version: 16.8.6
           - react: 18
             react-version: 18.3.1
-          - webpack: 4
-            webpack-version: 4.47.0
-          - webpack: 5
-            webpack-version: 5.107.2
+          - react: 19
+            react-version: 19.3.1
     timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          sparse-checkout: __tests__/webpack
+          sparse-checkout: __tests__/bundlers
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.node-version }}
           cache: npm
-          cache-dependency-path: __tests__/webpack/package.json
+          cache-dependency-path: __tests__/bundlers/package.json
 
       - name: Download tarballs
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -323,8 +329,9 @@ jobs:
       - name: Extract tarballs
         run: tar -xvf tarballs.tar
 
-      - name: Bundle with webpack@${{ matrix.webpack-version }} and react@${{ matrix.react-version }}
-        run: ./__tests__/webpack/test.sh ${{ matrix.webpack-version }} ${{ matrix.react-version }} ./packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
+      # Renders in the Google Chrome preinstalled on the runner.
+      - name: Bundle with ${{ matrix.bundler-package }} and react@${{ matrix.react-version }}, render in Chrome
+        run: ./__tests__/bundlers/test.sh ${{ matrix.bundler-package }} ${{ matrix.react-version }} ./packages/{api,bundle,component,core,directlinespeech,fluent-theme}/*.tgz
 
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
