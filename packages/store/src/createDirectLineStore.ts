@@ -7,10 +7,12 @@ type DirectLineStoreInit = {
 function createDirectLineStore(_init: DirectLineStoreInit): Store {
   return new Store({
     start(controller) {
-      controller.upsertNode({
-        '@id': '_:a-00001',
-        '@type': new Set(['Message']),
-        text: ['Hello, World!']
+      controller.edit(transaction => {
+        transaction.upsertNode({
+          '@id': '_:a-00001',
+          '@type': new Set(['Message']),
+          text: ['Hello, World!']
+        });
       });
     }
   });
