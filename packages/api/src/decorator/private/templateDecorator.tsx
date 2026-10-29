@@ -108,6 +108,11 @@ export default function templateDecorator<
   };
 }
 
-export type InferMiddleware<T extends ReturnType<typeof templateDecorator>> = T['~types']['middleware'];
-export type InferProps<T extends ReturnType<typeof templateDecorator>> = T['~types']['props'];
-export type InferRequest<T extends ReturnType<typeof templateDecorator>> = T['~types']['request'];
+// Only constrain on `~types`: under `strictFunctionTypes`, a template with specific props is not assignable to `ReturnType<typeof templateDecorator>`.
+type TemplateDecoratorTypes = {
+  readonly '~types': { readonly middleware: unknown; readonly props: unknown; readonly request: unknown };
+};
+
+export type InferMiddleware<T extends TemplateDecoratorTypes> = T['~types']['middleware'];
+export type InferProps<T extends TemplateDecoratorTypes> = T['~types']['props'];
+export type InferRequest<T extends TemplateDecoratorTypes> = T['~types']['request'];
