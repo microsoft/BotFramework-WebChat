@@ -1,4 +1,6 @@
 {
-  "compilerOptions": {},
+  "compilerOptions": {
+    "allowImportingTsExtensions": true
+  },
   "extends": "@msinternal/botframework-webchat-tsconfig/current"
 }

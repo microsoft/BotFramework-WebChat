@@ -20,5 +20,8 @@
     "build": "npm run build:run",
     "build:run": "tsup",
     "test": "node --test"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1"
   }
 }

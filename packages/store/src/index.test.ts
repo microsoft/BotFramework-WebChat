@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { test } from 'node:test';
 
 test('import should work', async () => {
