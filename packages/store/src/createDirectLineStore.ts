@@ -8,9 +8,9 @@ function createDirectLineStore(_init: DirectLineStoreInit): Store {
   return new Store({
     start(controller) {
       controller.upsertNode({
-        '@id': 'a-00001',
+        '@id': '_:a-00001',
         '@type': new Set(['Message']),
-        text: 'Hello, World!'
+        text: ['Hello, World!']
       });
     }
   });
