@@ -341,7 +341,7 @@
       }
     }
 
-    :global(.activity-button__text) {
+    .activity-button__text {
       font-size: 0;
       height: 0;
       overflow: clip;

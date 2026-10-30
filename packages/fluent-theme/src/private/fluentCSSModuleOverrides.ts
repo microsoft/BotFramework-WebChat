@@ -6,6 +6,7 @@
 // PartGroupingDecorator.module.css
 const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'activity-button',
+  'activity-button__text',
   'activity-status',
   'adaptive-card-renderer',
   'adaptive-card-renderer__action--selected',
