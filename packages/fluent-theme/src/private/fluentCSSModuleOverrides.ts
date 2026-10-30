@@ -8,7 +8,8 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'code-block-content',
   'code-block-content__code-block',
   'code-block-content__header',
-  'code-block-copy-button'
+  'code-block-copy-button',
+  'transcript-focus-area__activity-list'
 ]);
 
 // SendBox.module.css
@@ -51,6 +52,11 @@ const themeOverrides: readonly string[] = Object.freeze([
   'thumb-button--large',
   'thumb-button__image',
   'thumb-button__input',
+  'transcript-focus-area',
+  'transcript-focus-area__content--focused',
+  'transcript-focus-area__content-overlay',
+  'transcript-focus-area__indicator',
+  'transcript-focus-area__transcript-indicator',
   'view-code-dialog',
   'view-code-dialog__body',
   'view-code-dialog__footer',

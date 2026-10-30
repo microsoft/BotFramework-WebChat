@@ -285,7 +285,7 @@
   }
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area) {
+:global(.webchat-fluent).theme.variant-copilot .transcript-focus-area {
   --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
 }
 
@@ -295,28 +295,27 @@
 }
 
 /* Transcript focus indicator color */
-:global(.webchat-fluent).theme :global(.transcript-focus-area__transcript-indicator) {
+:global(.webchat-fluent).theme .transcript-focus-area__transcript-indicator {
   --webchat__color--transcript-visual-keyboard-indicator: var(--webchat-colorStrokeFocus2);
 }
 
 /* Transcript Content indicator without focus-visible state */
-:global(.webchat-fluent).theme :global(.transcript-focus-area:not(:focus-visible) .transcript-focus-area__indicator) {
+:global(.webchat-fluent).theme .transcript-focus-area:not(:focus-visible) .transcript-focus-area__indicator {
   /* Hide activity focus when no focus-visible state */
   display: none;
 }
 
 /* Transcript Focus indicator when content focused */
-:global(.webchat-fluent).theme
-  :global(.transcript-focus-area:focus-visible:has(.transcript-focus-area__content--focused)) {
-  :global(.transcript-focus-area__transcript-indicator) {
+:global(.webchat-fluent).theme .transcript-focus-area:focus-visible:has(.transcript-focus-area__content--focused) {
+  .transcript-focus-area__transcript-indicator {
     /* Hide transcript focus when an activity is focused */
     display: none;
   }
 }
 
 /* Transcript focused content */
-:global(.webchat-fluent).theme :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
-  :global(.transcript-focus-area__indicator) {
+:global(.webchat-fluent).theme .transcript-focus-area:focus-visible .transcript-focus-area__content--focused {
+  .transcript-focus-area__indicator {
     /* Hide transcript activity focus when the content is focused */
     display: none;
   }
@@ -340,8 +339,7 @@
     }
   }
 
-  &:has(:global(.collapsible-grouping))
-    > :global(.transcript-focus-area__content-overlay .transcript-focus-area__indicator) {
+  &:has(:global(.collapsible-grouping)) > .transcript-focus-area__content-overlay .transcript-focus-area__indicator {
     display: none;
   }
 
@@ -384,7 +382,8 @@
 
 /* Transcript focused content copilot variant */
 :global(.webchat-fluent).theme.variant-copilot
-  :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
+  .transcript-focus-area:focus-visible
+  .transcript-focus-area__content--focused {
   :global(.collapsible-grouping)::after {
     inset: -4px;
   }
