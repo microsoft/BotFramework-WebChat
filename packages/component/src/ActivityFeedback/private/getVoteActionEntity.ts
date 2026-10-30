@@ -1,7 +1,7 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { isOfType } from 'botframework-webchat-core/json-ld.js';
 import { type OrgSchemaAction } from 'botframework-webchat-core/org-schema.js';
-import { is, literal, object } from 'valibot';
+import { is, literal, looseObject } from 'valibot';
 
 /**
  * Finds the `VoteAction` entity the bot sent for the action, unparsed, including properties unknown to Schema.org.
@@ -22,7 +22,7 @@ export default function getVoteActionEntity(
 
   return typeof actionOption === 'string'
     ? activity.entities?.find(entity =>
-        is(object({ actionOption: literal(actionOption), type: literal('https://schema.org/VoteAction') }), entity)
+        is(looseObject({ actionOption: literal(actionOption), type: literal('https://schema.org/VoteAction') }), entity)
       )
     : undefined;
 }
