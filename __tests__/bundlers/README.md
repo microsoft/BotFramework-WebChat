@@ -4,6 +4,8 @@ Each folder is a Web Chat app, set up the way the getting-started docs of its bu
 
 CI builds every app with React 16, 18 and 19 and the tarballs of the pull request, then `run.mjs` opens it in Chrome 141 in Docker: the app must show the bot message, without errors in the console, uncaught errors or failed loads.
 
+The esbuild, Vite and webpack 5 apps also build `element.html`: Web Chat as a custom element, from `botframework-webchat/custom-element.js` (`src/element.js`), checked the same way. webpack 4 cannot import it: it ignores `exports` in `package.json`, and the element is only there, as an ES module.
+
 `run.mjs` builds the [`Dockerfile`](Dockerfile) for the app (the [Selenium standalone Chrome image](https://github.com/SeleniumHQ/docker-selenium) with the app's `dist/` served on port 8000 and [`report.js`](report.js) injected), runs it, and talks WebDriver to it: opens `http://localhost:8000/` in the container, reads the result that `report.js` stores in `window.bundlerTestResult`, then removes the container.
 
 ## Debugging an app

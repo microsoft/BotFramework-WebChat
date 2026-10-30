@@ -1,4 +1,5 @@
 /dist/*
+!/dist/element.html
 !/dist/index.html
 /node_modules
 /package-lock.json

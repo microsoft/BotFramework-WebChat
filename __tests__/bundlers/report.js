@@ -25,10 +25,13 @@
   addEventListener('unhandledrejection', ({ reason }) => errors.push(reason?.stack || String(reason)));
 
   const interval = setInterval(() => {
+    // element.html renders Web Chat in the shadow root of <webchat-element>, null until the element is defined.
+    const element = document.querySelector('webchat-element');
+    const root = element ? element.shadowRoot : document;
     const rendered =
       document.readyState === 'complete' &&
-      !!document.querySelector('[role="feed"]')?.textContent.includes('Hello from the bot.') &&
-      !!document.querySelector('textarea');
+      !!root?.querySelector('[role="feed"]')?.textContent.includes('Hello from the bot.') &&
+      !!root.querySelector('textarea');
 
     if (rendered || errors.length) {
       clearInterval(interval);

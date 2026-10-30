@@ -25,6 +25,8 @@ const transpilePackages = [
 ];
 
 module.exports = {
+  // Without src/element.js: webpack 4 ignores "exports" in package.json, so it cannot import the ESM-only
+  // "botframework-webchat/custom-element.js".
   entry: reactDOMVersion.startsWith('16.') ? './src/index.react16.js' : './src/index.js',
   mode: 'production',
   output: {

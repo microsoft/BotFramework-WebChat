@@ -7,7 +7,10 @@ const { version: reactDOMVersion } = createRequire(import.meta.url)('react-dom/p
 
 await esbuild.build({
   bundle: true,
-  entryPoints: [reactDOMVersion.startsWith('16.') ? 'src/index.react16.js' : 'src/index.js'],
+  entryPoints: {
+    element: 'src/element.js',
+    main: reactDOMVersion.startsWith('16.') ? 'src/index.react16.js' : 'src/index.js'
+  },
   minify: true,
-  outfile: 'dist/main.js'
+  outdir: 'dist'
 });

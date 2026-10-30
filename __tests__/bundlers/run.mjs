@@ -1,9 +1,11 @@
 // Builds the Dockerfile here for <folder>/dist/ (Chrome with the app served on port 8000) and opens the app over
-// WebDriver: passes when report.js reports that Web Chat shows the bot message without errors.
+// WebDriver: passes when report.js reports that Web Chat shows the bot message without errors, on index.html and, if the
+// app has one, on element.html (Web Chat as a custom element).
 //
 // Usage: node run.mjs <esbuild | vite | webpack4 | webpack5>
 
 import { execFile } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
@@ -11,6 +13,9 @@ const TIMEOUT = 60_000;
 
 const app = process.argv[2];
 const docker = async (...args) => (await promisify(execFile)('docker', args)).stdout.trim();
+const pages = Object.freeze(
+  existsSync(new URL(`${app}/dist/element.html`, import.meta.url)) ? ['', 'element.html'] : ['']
+);
 
 // Resolves with the first truthy value of getValue(), which is called every 100 ms.
 async function poll(getValue, message) {
@@ -91,7 +96,6 @@ try {
   );
 
   console.timeEnd('WebDriver ready');
-  console.time('Rendered');
 
   const { sessionId } = await webDriver('POST', 'session', {
     capabilities: { alwaysMatch: { browserName: 'chrome' } }
@@ -99,18 +103,29 @@ try {
 
   try {
     // "localhost" is the container, where the Dockerfile serves the app.
-    await webDriver('POST', `session/${sessionId}/url`, { url: 'http://localhost:8000/' });
+    for (const page of pages) {
+      console.time(`Rendered /${page}`);
 
-    const { errors, ok } = await poll(
-      () =>
-        webDriver('POST', `session/${sessionId}/execute/sync`, { args: [], script: 'return window.bundlerTestResult' }),
-      'No report from the page'
-    );
+      await webDriver('POST', `session/${sessionId}/url`, { url: `http://localhost:8000/${page}` });
 
-    console.timeEnd('Rendered');
-    errors.forEach(error => console.error(error));
-    console.log(ok ? `Web Chat bundled by ${app} rendered the bot message.` : `Failed to render the ${app} app.`);
-    process.exitCode = ok ? 0 : 1;
+      const { errors, ok } = await poll(
+        () =>
+          webDriver('POST', `session/${sessionId}/execute/sync`, {
+            args: [],
+            script: 'return window.bundlerTestResult'
+          }),
+        `No report from /${page}`
+      );
+
+      console.timeEnd(`Rendered /${page}`);
+      errors.forEach(error => console.error(error));
+      console.log(
+        ok
+          ? `Web Chat bundled by ${app} rendered the bot message on /${page}.`
+          : `Failed to render the ${app} app /${page}.`
+      );
+      ok || (process.exitCode = 1);
+    }
   } finally {
     // Ignore errors here, so they don't replace the error of a session that already ended.
     await webDriver('DELETE', `session/${sessionId}`).catch(() => {});

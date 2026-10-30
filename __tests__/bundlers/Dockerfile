@@ -10,8 +10,8 @@ ARG APP
 COPY --chown=seluser ${APP}/dist/ /home/seluser/app/
 COPY report.js /home/seluser/app/__runner/
 
-# Injects report.js before the app's scripts.
-RUN sed -i 's|<head>|&<script src="/__runner/report.js"></script>|i' /home/seluser/app/index.html
+# Injects report.js before the app's scripts, on every page.
+RUN sed -i 's|<head>|&<script src="/__runner/report.js"></script>|i' /home/seluser/app/*.html
 
 COPY <<EOF /etc/supervisor/conf.d/app.conf
 [program:app]
