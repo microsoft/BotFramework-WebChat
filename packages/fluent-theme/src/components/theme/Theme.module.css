@@ -300,7 +300,7 @@
 }
 
 /* Tooltip */
-:global(.webchat-fluent).theme :global(.webchat__tooltip) {
+:global(.webchat-fluent).theme .tooltip {
   --webchat__tooltip-background: var(--tooltip-background, var(--webchat-colorNeutralBackground1));
 
   color: var(--webchat-colorNeutralForeground1);
