@@ -21,7 +21,7 @@ for (const packageName of Array.from(dependingLocalPackages)) {
     const packageJSON = await readPackage({ cwd: resolve(root, workspace) });
 
     if (packageJSON.name === packageName) {
-      for (const transientLocalPackageName of Object.keys(packageJSON.localDependencies)) {
+      for (const transientLocalPackageName of Object.keys(packageJSON.localDependencies || {})) {
         dependingLocalPackages.delete(transientLocalPackageName);
       }
 
