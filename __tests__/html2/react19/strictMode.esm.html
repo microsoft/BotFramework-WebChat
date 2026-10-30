@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: sends a message, flips a carousel and clicks a suggested action in Strict Mode (ESM build)</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createElement, StrictMode, useEffect, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        let numMounts = 0;
+
+        const MountCounter = () => {
+          useEffect(() => {
+            numMounts++;
+          }, []);
+
+          return null;
+        };
+
+        // GIVEN: The development build of React 19, which runs the checks of Strict Mode.
+        expect(version).toBe('19.3.1');
+
+        // WHEN: Web Chat is rendered in Strict Mode.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(StrictMode, {}, createElement(MountCounter), createElement(ReactWebChat, { directLine, store }))
+        );
+
+        // THEN: Strict Mode should mount, unmount, and mount again.
+        await waitFor(() => expect(numMounts).toBe(2));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The user types a message and presses ENTER.
+        const { activity: typedActivity, resolveAll: resolveTypedActivity } = await directLine.actPostActivity(
+          async () => {
+            await host.click(pageElements.sendBoxTextBox());
+            await host.sendKeys('Hello, World!', 'ENTER');
+
+            await pageConditions.numActivitiesShown(1);
+          }
+        );
+
+        await resolveTypedActivity();
+
+        expect(typedActivity).toHaveProperty('text', 'Hello, World!');
+
+        const createHeroCard = index => ({
+          content: { title: `Item ${index}` },
+          contentType: 'application/vnd.microsoft.card.hero'
+        });
+
+        // WHEN: The bot replies with a carousel of 3 cards and a suggested action.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [createHeroCard(1), createHeroCard(2), createHeroCard(3)],
+          suggestedActions: { actions: [{ title: 'USA', type: 'imBack', value: 'USA' }] },
+          text: 'Where are you from?'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.suggestedActionsShown();
+
+        const carouselLayout = document.querySelector('.carousel-layout');
+        const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
+        const flippers = Array.from(carouselLayout.querySelectorAll('.react-film__flipper'));
+
+        // The flipper is hidden when its body has slid out of the flipper button (1s delay after hover or scroll ends, then 300ms slide).
+        const isFlipperHidden = flipper => {
+          const bodyRect = flipper.querySelector('.react-film__flipper__body').getBoundingClientRect();
+          const buttonRect = flipper.getBoundingClientRect();
+
+          return bodyRect.right <= buttonRect.left || bodyRect.left >= buttonRect.right;
+        };
+
+        const waitForCarouselSettled = () =>
+          waitFor(
+            () => {
+              expect(carouselLayout.querySelector('.react-film__main--scrolling')).toBeNull();
+              expect(flippers.every(isFlipperHidden)).toBe(true);
+            },
+            { timeout: 5000 }
+          );
+
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        await waitForCarouselSettled();
+        await pageConditions.scrollStabilized();
+
+        // THEN: "Hello, World!" is sent, the bot shows the carousel at its first card and the "USA" suggested action.
+        await host.snapshot('local');
+
+        // WHEN: The "Next" flipper of the carousel is clicked, then the mouse leaves the carousel.
+        await host.click(carouselLayout.querySelector('[aria-label="Next"]'));
+        await waitFor(() => expect(carouselFilmstrip.scrollLeft).toBeGreaterThan(0));
+        await host.hover(pageElements.sendBoxTextBox());
+
+        await waitForCarouselSettled();
+
+        // THEN: The carousel is scrolled away from its first card.
+        await host.snapshot('local');
+
+        const carouselScrollLeft = carouselFilmstrip.scrollLeft;
+
+        // WHEN: The user clicks the suggested action.
+        const { activity: clickedActivity, resolveAll: resolveClickedActivity } = await directLine.actPostActivity(
+          async () => {
+            await pageObjects.clickNthSuggestedAction(1);
+            await pageConditions.numActivitiesShown(3);
+          }
+        );
+
+        await resolveClickedActivity();
+
+        expect(clickedActivity).toHaveProperty('text', 'USA');
+
+        await waitFor(() => expect(pageElements.suggestedActions()).toHaveLength(0));
+        await pageConditions.scrollStabilized();
+
+        // The carousel keeps its position.
+        expect(document.querySelector('.carousel-layout .carousel-filmstrip').scrollLeft).toBe(carouselScrollLeft);
+
+        // THEN: "USA" is sent and the suggested action is gone.
+        // `run()` ends with `host.done()`, which fails on any `console.error`, where React 19 logs its development warnings.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
