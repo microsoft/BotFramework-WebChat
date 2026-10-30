@@ -1,76 +1,55 @@
-import insertSorted from '../../private/insertSorted';
-import type { GraphIdentifier, GraphNode, GraphTransaction } from '../types';
-import {
-  HOW_TO_TYPE,
-  IDENTIFIER,
-  LIVESTREAM_SESSION_TYPE,
-  LOCAL_TIMESTAMP,
-  LOGICAL_TIMESTAMP,
-  PART_POSITION,
-  STREAM_SEQUENCE
-} from '../vocabulary';
-import getOrderedParts from './getOrderedParts';
+import type { GraphIdentifier, GraphNode } from '../types';
+import { HOW_TO_TYPE, IDENTIFIER, LOGICAL_TIMESTAMP } from '../vocabulary';
 import { getNumber, getParentId, hasType, toNumberValues, withProperties } from './nodeProperties';
+import { getSortKeys, setSortKeys, toSortKey, type SortKey } from './sortKeys';
+import type WorkingGraph from './WorkingGraph';
 
-// The transcript is a tree of `hasPart`/`isPartOf`: Conversation → (Message | livestream session | HowTo),
+// The transcript is a tree of `isPartOf` links: Conversation → (Message | livestream session | HowTo),
 // HowTo → (Message | livestream session), livestream session → Message revisions.
 // Every part has a `position` relative to its parent, strictly increasing in display order.
+//
+// Core writes `isPartOf` only. `OPINIONS.md` says the store auto-inverses `hasPart`/`isPartOf` (a TODO in `Store.ts`);
+// writing `hasPart` ourselves meant re-validating a set that grows with the transcript on every action.
 //
 // Like `upsert.ts` before, every level is an insertion sort: arrival order decides ties and parts without sort keys.
 // A stateless sort over a snapshot cannot reproduce this, so positions are written at upsert time.
 
 const POSITION_INCREMENT = 1_000;
 
-/** Compare result meaning "not greater": the new part goes after it, which keeps arrival order. */
-const NOT_GREATER = -1;
+/**
+ * "Is `x` greater than `part`", on sort keys. Same results as the compare functions of `upsert.ts` (`> 0`).
+ */
+type IsGreater = (x: SortKey, part: SortKey) => boolean;
 
-type CompareFn = (x: GraphNode, y: GraphNode) => number;
-
-type HowToPlacement = { readonly howToId: GraphIdentifier; readonly position: number | undefined };
-
-function isMessage(node: GraphNode): boolean {
-  return !hasType(node, HOW_TO_TYPE) && !hasType(node, LIVESTREAM_SESSION_TYPE);
-}
-
-// Compare logical timestamps if both have them, otherwise local timestamps if both are messages and have them.
-// Otherwise -1 ("not greater"), which keeps arrival order.
-const compareInConversation: CompareFn = (x, y) => {
-  const xLogicalTimestamp = getNumber(x, LOGICAL_TIMESTAMP);
-  const yLogicalTimestamp = getNumber(y, LOGICAL_TIMESTAMP);
-
-  if (typeof xLogicalTimestamp !== 'undefined' && typeof yLogicalTimestamp !== 'undefined') {
-    return xLogicalTimestamp - yLogicalTimestamp;
-  }
-
-  if (isMessage(x) && isMessage(y)) {
-    const xLocalTimestamp = getNumber(x, LOCAL_TIMESTAMP);
-    const yLocalTimestamp = getNumber(y, LOCAL_TIMESTAMP);
-
-    if (typeof xLocalTimestamp !== 'undefined' && typeof yLocalTimestamp !== 'undefined') {
-      return xLocalTimestamp - yLocalTimestamp;
-    }
-  }
-
-  return NOT_GREATER;
+type HowToPlacement = {
+  readonly groupingId: string;
+  readonly howToId: GraphIdentifier;
+  readonly position: number | undefined;
 };
 
-const compareInHowTo: CompareFn = (x, y) => {
-  const xPosition = getNumber(x, PART_POSITION);
-  const yPosition = getNumber(y, PART_POSITION);
+// Compare logical timestamps if both have them, otherwise local timestamps if both are messages and have them
+// (`localTimestamp` is only set on messages). Otherwise "not greater", which keeps arrival order.
+const isGreaterInConversation: IsGreater = (x, part) =>
+  typeof x.logicalTimestamp !== 'undefined' && typeof part.logicalTimestamp !== 'undefined'
+    ? x.logicalTimestamp - part.logicalTimestamp > 0
+    : typeof x.localTimestamp !== 'undefined' &&
+      typeof part.localTimestamp !== 'undefined' &&
+      x.localTimestamp - part.localTimestamp > 0;
 
-  return typeof xPosition === 'undefined' || typeof yPosition === 'undefined' ? NOT_GREATER : xPosition - yPosition;
-};
+const isGreaterInHowTo: IsGreater = (x, part) =>
+  typeof x.partPosition !== 'undefined' &&
+  typeof part.partPosition !== 'undefined' &&
+  x.partPosition - part.partPosition > 0;
 
 // The final revision has no sequence number and sorts last.
-const compareInLivestreamSession: CompareFn = (x, y) =>
-  (getNumber(x, STREAM_SEQUENCE) ?? Infinity) - (getNumber(y, STREAM_SEQUENCE) ?? Infinity);
+const isGreaterInLivestreamSession: IsGreater = (x, part) => x.streamSequence - part.streamSequence > 0;
 
 function getPositionInParent(node: GraphNode | undefined, parentId: GraphIdentifier): number | undefined {
   return getParentId(node) === parentId ? node?.position : undefined;
 }
 
-function getRequiredNode(transaction: GraphTransaction, id: GraphIdentifier): GraphNode {
-  const node = transaction.getNode(id);
+function getRequiredNode(working: WorkingGraph, id: GraphIdentifier): GraphNode {
+  const node = working.getNode(id);
 
   if (!node) {
     throw new Error(`botframework-webchat: Cannot find node "${id}" in the activities graph`);
@@ -80,178 +59,194 @@ function getRequiredNode(transaction: GraphTransaction, id: GraphIdentifier): Gr
 }
 
 /**
- * Writes the parts of a parent in the given order: `hasPart` on the parent, `isPartOf` and `position` on the parts.
+ * Writes the parts of a parent in the given order: `isPartOf` and `position` on the parts, and the part index.
  * An existing position is kept if it is still increasing, otherwise the part gets `last + 1` if it fits before the next
  * part, or `last + 1000` (the same rule as `upsert.ts` used for `webchat:internal:position`).
+ *
+ * Parts before `fromIndex` are in order already. Renumbering stops at the first kept position after `fromIndex`: the
+ * parts after it were in order before and still are (same result as renumbering the whole list).
  */
 function writeParts(
-  transaction: GraphTransaction,
+  working: WorkingGraph,
   parentId: GraphIdentifier,
-  partIds: readonly GraphIdentifier[]
+  partIds: readonly GraphIdentifier[],
+  fromIndex: number
 ): void {
-  let lastPosition = 0;
+  let lastPosition =
+    (fromIndex && getPositionInParent(working.getNode(partIds[fromIndex - 1] ?? parentId), parentId)) || 0;
 
-  for (const [index, partId] of partIds.entries()) {
-    const part = getRequiredNode(transaction, partId);
+  for (let index = fromIndex; index < partIds.length; index++) {
+    // eslint-disable-next-line security/detect-object-injection
+    const part = getRequiredNode(working, partIds[index] ?? parentId);
     const position = getPositionInParent(part, parentId);
     const nextPartId = partIds[index + 1];
-    const nextSiblingPosition = nextPartId && getPositionInParent(transaction.getNode(nextPartId), parentId);
+    const nextSiblingPosition = nextPartId && getPositionInParent(working.getNode(nextPartId), parentId);
+
+    if (typeof position !== 'undefined' && position > lastPosition) {
+      if (index > fromIndex) {
+        break;
+      }
+
+      lastPosition = position;
+
+      continue;
+    }
 
     const nextPosition =
-      typeof position !== 'undefined' && position > lastPosition
-        ? position
-        : nextPartId && typeof nextSiblingPosition !== 'undefined' && lastPosition + 1 <= nextSiblingPosition
-          ? lastPosition + 1
-          : lastPosition + POSITION_INCREMENT;
+      nextPartId && typeof nextSiblingPosition !== 'undefined' && lastPosition + 1 <= nextSiblingPosition
+        ? lastPosition + 1
+        : lastPosition + POSITION_INCREMENT;
 
-    nextPosition === position ||
-      transaction.upsertNode(
-        withProperties(part, { isPartOf: new Set([Object.freeze({ '@id': parentId })]), position: nextPosition })
-      );
+    working.setNode(
+      withProperties(part, { isPartOf: new Set([Object.freeze({ '@id': parentId })]), position: nextPosition })
+    );
 
     lastPosition = nextPosition;
   }
 
-  transaction.upsertNode(
-    withProperties(getRequiredNode(transaction, parentId), {
-      hasPart: new Set(partIds.map(partId => Object.freeze({ '@id': partId })))
-    })
-  );
+  working.setParts(parentId, partIds);
 }
 
 /**
- * Places a part in its parent: removes it if present, then inserts it after every part not greater than it.
- * With `keepPlace`, a part already in the parent stays where it is.
+ * Places a part in its parent: removes it if present, then inserts it before the first part greater than it (the same
+ * as `insertSorted()`). With `keepPlace`, a part already in the parent stays where it is.
  */
 function placePart(
-  transaction: GraphTransaction,
+  working: WorkingGraph,
   parentId: GraphIdentifier,
   partId: GraphIdentifier,
-  compareFn: CompareFn,
+  isGreater: IsGreater,
   { keepPlace }: { readonly keepPlace: boolean }
 ): void {
-  const parts = getOrderedParts(id => transaction.getNode(id), parentId);
-  const part = getRequiredNode(transaction, partId);
+  const partIds = working.getParts(parentId);
+  const currentIndex = partIds.indexOf(partId);
 
-  const nextParts =
-    keepPlace && parts.some(({ '@id': id }) => id === partId)
-      ? parts
-      : insertSorted(
-          parts.filter(({ '@id': id }) => id !== partId),
-          part,
-          compareFn
-        );
+  if (keepPlace && ~currentIndex) {
+    writeParts(working, parentId, partIds, currentIndex);
 
-  writeParts(
-    transaction,
-    parentId,
-    nextParts.map(({ '@id': id }) => id)
-  );
+    return;
+  }
+
+  const getNode = (id: GraphIdentifier) => getRequiredNode(working, id);
+  const partKey = toSortKey(getNode(partId));
+  const nextPartIds = partIds.slice();
+  const nextKeys = getSortKeys(partIds, getNode).slice();
+
+  if (~currentIndex) {
+    nextPartIds.splice(currentIndex, 1);
+    nextKeys.splice(currentIndex, 1);
+  }
+
+  const greaterIndex = nextKeys.findIndex(key => isGreater(key, partKey));
+  const insertIndex = ~greaterIndex ? greaterIndex : nextKeys.length;
+
+  nextPartIds.splice(insertIndex, 0, partId);
+  nextKeys.splice(insertIndex, 0, partKey);
+
+  writeParts(working, parentId, nextPartIds, insertIndex);
+
+  // `writeParts()` stores `nextPartIds` as is (frozen): its keys are the ones spliced here.
+  setSortKeys(working.getParts(parentId), nextKeys);
 }
 
 /** Removes a part from its parent. Returns the ID of the former parent. */
-function detachPart(transaction: GraphTransaction, partId: GraphIdentifier): GraphIdentifier | undefined {
-  const part = transaction.getNode(partId);
+function detachPart(working: WorkingGraph, partId: GraphIdentifier): GraphIdentifier | undefined {
+  const part = working.getNode(partId);
   const parentId = getParentId(part);
-  const parent = parentId && transaction.getNode(parentId);
 
-  if (!part || !parentId || !parent) {
+  if (!part || !parentId) {
     return undefined;
   }
 
-  transaction.upsertNode(
-    withProperties(parent, {
-      hasPart: new Set(Array.from(parent.hasPart ?? []).filter(({ '@id': id }) => id !== partId))
-    })
+  working.setParts(
+    parentId,
+    working.getParts(parentId).filter(id => id !== partId)
   );
-
-  transaction.upsertNode(withProperties(part, { isPartOf: undefined, position: undefined }));
+  working.setNode(withProperties(part, { isPartOf: undefined, position: undefined }));
 
   return parentId;
 }
 
-function computeHowToTimestamp(transaction: GraphTransaction, howToId: GraphIdentifier): number | undefined {
-  return getOrderedParts(id => transaction.getNode(id), howToId).reduce<number | undefined>((max, part) => {
-    const logicalTimestamp = getNumber(part, LOGICAL_TIMESTAMP);
+function computeHowToTimestamp(working: WorkingGraph, howToId: GraphIdentifier): number | undefined {
+  return working.getParts(howToId).reduce<number | undefined>((max, partId) => {
+    const logicalTimestamp = getNumber(working.getNode(partId), LOGICAL_TIMESTAMP);
 
     return typeof logicalTimestamp === 'undefined' ? max : Math.max(max ?? -Infinity, logicalTimestamp);
   }, undefined);
 }
 
 /** Recomputes the timestamp of a HowTo in place, without moving it (as `deleteActivityByLocalId.ts` did). */
-function refreshHowToTimestamp(transaction: GraphTransaction, howToId: GraphIdentifier): void {
-  transaction.upsertNode(
-    withProperties(getRequiredNode(transaction, howToId), {
-      [LOGICAL_TIMESTAMP]: toNumberValues(computeHowToTimestamp(transaction, howToId))
-    })
-  );
+function refreshHowToTimestamp(working: WorkingGraph, howToId: GraphIdentifier): void {
+  const howTo = getRequiredNode(working, howToId);
+  const logicalTimestamp = computeHowToTimestamp(working, howToId);
+
+  getNumber(howTo, LOGICAL_TIMESTAMP) === logicalTimestamp ||
+    working.setNode(withProperties(howTo, { [LOGICAL_TIMESTAMP]: toNumberValues(logicalTimestamp) }));
 }
 
 /** Creates the node if missing. `identifier` keeps the sender's ID of a grouping or session. */
 function ensureNode(
-  transaction: GraphTransaction,
+  working: WorkingGraph,
   id: GraphIdentifier,
   type: string,
   identifier?: string | undefined
 ): GraphNode {
-  transaction.getNode(id) ||
-    transaction.upsertNode({
+  working.getNode(id) ||
+    working.setNode({
       '@id': id,
       '@type': new Set([type]),
       ...(typeof identifier === 'undefined' ? {} : { [IDENTIFIER]: [identifier] })
     });
 
-  return getRequiredNode(transaction, id);
+  return getRequiredNode(working, id);
 }
 
 /**
  * After a part left a parent: an emptied HowTo leaves the conversation, otherwise its timestamp is recomputed in place.
  * Like core's delete, the HowTo is not re-sorted.
  */
-function afterPartLeft(transaction: GraphTransaction, formerParentId: GraphIdentifier | undefined): void {
-  const formerParent = formerParentId && transaction.getNode(formerParentId);
-
-  if (!formerParentId || !formerParent || !hasType(formerParent, HOW_TO_TYPE)) {
+function afterPartLeft(working: WorkingGraph, formerParentId: GraphIdentifier | undefined): void {
+  if (!formerParentId || !hasType(working.getNode(formerParentId), HOW_TO_TYPE)) {
     return;
   }
 
-  if (formerParent.hasPart?.size) {
-    refreshHowToTimestamp(transaction, formerParentId);
+  if (working.getParts(formerParentId).length) {
+    refreshHowToTimestamp(working, formerParentId);
   } else {
     // QUESTION(William): the store has no delete, so the empty HowTo stays in the graph, outside of the tree.
-    detachPart(transaction, formerParentId);
+    detachPart(working, formerParentId);
   }
 }
 
 /** Places a part (message or livestream session) in the conversation, either directly or through its HowTo. */
 function placeInConversation(
-  transaction: GraphTransaction,
+  working: WorkingGraph,
   conversationId: GraphIdentifier,
   partId: GraphIdentifier,
-  howToPlacement: (HowToPlacement & { readonly groupingId: string }) | undefined
+  howToPlacement: HowToPlacement | undefined
 ): void {
   if (!howToPlacement) {
-    placePart(transaction, conversationId, partId, compareInConversation, { keepPlace: false });
+    placePart(working, conversationId, partId, isGreaterInConversation, { keepPlace: false });
 
     return;
   }
 
   const { groupingId, howToId, position } = howToPlacement;
 
-  ensureNode(transaction, howToId, HOW_TO_TYPE, groupingId);
+  ensureNode(working, howToId, HOW_TO_TYPE, groupingId);
 
   // A position-less update keeps its place in the HowTo.
-  placePart(transaction, howToId, partId, compareInHowTo, { keepPlace: typeof position === 'undefined' });
-  refreshHowToTimestamp(transaction, howToId);
-  placePart(transaction, conversationId, howToId, compareInConversation, { keepPlace: false });
+  placePart(working, howToId, partId, isGreaterInHowTo, { keepPlace: typeof position === 'undefined' });
+  refreshHowToTimestamp(working, howToId);
+  placePart(working, conversationId, howToId, isGreaterInConversation, { keepPlace: false });
 }
 
 export {
   afterPartLeft,
-  compareInLivestreamSession,
   detachPart,
   ensureNode,
   getRequiredNode,
+  isGreaterInLivestreamSession,
   placeInConversation,
   placePart,
   refreshHowToTimestamp,

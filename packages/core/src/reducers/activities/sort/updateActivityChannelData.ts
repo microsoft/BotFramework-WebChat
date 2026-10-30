@@ -1,8 +1,9 @@
-import { check, parse, pipe, string, type GenericSchema } from 'valibot';
-import { replaceActivity } from './graph/activityNode';
-import deriveState from './graph/deriveState';
+import { check, is, parse, pipe, string, type GenericSchema } from 'valibot';
+import { replaceActivity, setSendStatus } from './graph/activityNode';
+import editState from './graph/editState';
 import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
-import type { Activity, State } from './types';
+import { SendStatusSchema } from './property/SendStatus';
+import type { State } from './types';
 
 const channelDataNameSchema: GenericSchema<
   Exclude<string, 'state' | 'streamId' | 'streamSequence' | 'streamType' | `webchat:${string}`>
@@ -38,9 +39,8 @@ function updateActivityChannelDataInternalSkipNameCheck(
   value: unknown
 ): State {
   const activityEntry = state.activityMap.get(activityLocalId);
-  const node = state.graph?.store.getSnapshot().get(activityLocalId);
 
-  if (!activityEntry || !state.graph || !node) {
+  if (!activityEntry) {
     throw new Error(`botframework-webchat: no activity found with internal ID ${activityLocalId}`);
   }
 
@@ -48,19 +48,29 @@ function updateActivityChannelDataInternalSkipNameCheck(
     throw new Error(`botframework-webchat: no activity found in sortedActivities with internal ID ${activityLocalId}`);
   }
 
-  // TODO: [P0] We will freeze activity in future.
-  const nextActivity: Activity = {
-    ...activityEntry.activity,
-    channelData: {
-      ...activityEntry.activity.channelData,
-      [name]: value
-    } as any
-  };
+  return editState(state, working => {
+    const node = working.getNode(activityLocalId);
 
-  // Replaces the activity in its node, without moving it.
-  state.graph.edit(transaction => replaceActivity(transaction, node, nextActivity));
+    if (!node) {
+      throw new Error(`botframework-webchat: no activity found with internal ID ${activityLocalId}`);
+    }
 
-  return deriveState(state.graph);
+    if (name === 'webchat:send-status' && is(SendStatusSchema, value)) {
+      // The send status lives on the node (`urn:microsoft:webchat:send-status`); the activity is left as-is.
+      setSendStatus(working, node, value);
+    } else {
+      // TODO: [P0] We will freeze activity in future.
+      replaceActivity(working, node, {
+        ...activityEntry.activity,
+        channelData: {
+          ...activityEntry.activity.channelData,
+          [name]: value
+        } as any
+      });
+    }
+
+    return true;
+  });
 }
 
 /**
