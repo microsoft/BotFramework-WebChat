@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat element: React 18 from the import map renders with createRoot() of "react-dom/client"</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* Same as "body.jest input" in index.css, which does not reach into the shadow root: caret-color is inherited. */
+      webchat-element {
+        caret-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <webchat-element nonce="a1b2c3"></webchat-element>
+      <div id="other-parent"></div>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import runWebChatElementTest from './private/runWebChatElementTest.mjs';
+
+      // React 18.3.1, development build: createRoot() of "react-dom" would log a warning, the element uses "react-dom/client".
+      runWebChatElementTest({ reactMajorVersion: '18' });
+    </script>
+  </body>
+</html>

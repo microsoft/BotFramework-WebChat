@@ -1,45 +1,44 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>
-      Web Chat element: React 18 from window.React renders the Fluent theme into the shadow root of the element
-    </title>
+    <title>Web Chat element: the Fluent theme renders into the shadow root of the element</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   </head>
   <body>
     <main>
-      <webchat-element id="webchat"></webchat-element>
+      <webchat-element></webchat-element>
     </main>
     <script type="importmap">
       {
         "imports": {
-          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
         }
       }
     </script>
     <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
       import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { WebChatElement } from 'botframework-webchat/custom-element.js';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
 
       run(async function () {
-        const {
-          React: { version },
-          WebChat: { createWebChatElementClass, FluentThemeProvider }
-        } = window;
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
-        const webChatElement = document.getElementById('webchat');
-
-        // GIVEN: React 18 in `window.React` and `window.ReactDOM`, which has createRoot(): no createRoot is passed.
-        expect(version).toMatch(/^18\./u);
+        const webChatElement = document.querySelector('webchat-element');
 
         // WHEN: The element is defined, then the Fluent theme and props are set.
-        customElements.define('webchat-element', createWebChatElementClass());
+        customElements.define('webchat-element', WebChatElement);
 
         webChatElement.themeProvider = FluentThemeProvider;
         webChatElement.props = { directLine, store, styleOptions: { disableFileUpload: true } };

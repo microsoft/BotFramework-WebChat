@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>
+      Web Chat element: React 17 from the import map, without "react-dom/client", renders with ReactDOM.render()
+    </title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* Same as "body.jest input" in index.css, which does not reach into the shadow root: caret-color is inherited. */
+      webchat-element {
+        caret-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <webchat-element nonce="a1b2c3"></webchat-element>
+      <div id="other-parent"></div>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "https://esm.sh/react@17.0.2?dev",
+          "react-dom": "https://esm.sh/react-dom@17.0.2?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import runWebChatElementTest from './private/runWebChatElementTest.mjs';
+
+      runWebChatElementTest({ reactMajorVersion: '17' });
+    </script>
+  </body>
+</html>
