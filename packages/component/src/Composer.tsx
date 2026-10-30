@@ -319,7 +319,8 @@ const ComposerCore = ({
   );
 };
 
-type ComposerProps = APIComposerProps & ComposerCoreProps;
+// `ComposerCore` renders `children` as nodes, the render function of the API `<Composer>` is not supported here.
+type ComposerProps = Omit<APIComposerProps, 'children'> & ComposerCoreProps;
 
 const Composer = ({
   activityMiddleware,

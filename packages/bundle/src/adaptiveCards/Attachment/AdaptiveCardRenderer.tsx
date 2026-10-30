@@ -69,7 +69,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [uiState] = useUIState();
-  const contentRef = useRef<HTMLDivElement>();
+  const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
   const queueStaticElement = useQueueStaticElement();
@@ -227,7 +227,9 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
 
-  const lastRenderRef = useRef<{ readonly inputs: readonly unknown[]; readonly result: AdaptiveCardRenderResult }>();
+  const lastRenderRef = useRef<
+    { readonly inputs: readonly unknown[]; readonly result: AdaptiveCardRenderResult } | undefined
+  >(undefined);
 
   const { element, errors } = useMemo<AdaptiveCardRenderResult>(() => {
     const inputs = Object.freeze([

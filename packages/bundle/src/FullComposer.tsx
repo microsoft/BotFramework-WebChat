@@ -15,13 +15,11 @@ type FullComposerProps = Omit<BaseFullComposerProps, 'children'> & {
   readonly children?: ComposerPropsChildren | AddFullBundleChildren | undefined;
 };
 
-const FullComposer = (props: FullComposerProps) => (
+const FullComposer = ({ children, ...props }: FullComposerProps) => (
   <AddFullBundle {...props}>
     {extraProps => (
       <Composer {...props} {...extraProps}>
-        {/* We need to spread, thus, we cannot we destructuring assignment. */}
-        {/* eslint-disable-next-line react/destructuring-assignment */}
-        {props.children}
+        {typeof children === 'function' ? children(extraProps) : children}
       </Composer>
     )}
   </AddFullBundle>
