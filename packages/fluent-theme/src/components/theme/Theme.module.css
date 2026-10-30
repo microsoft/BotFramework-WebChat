@@ -667,17 +667,17 @@
 }
 
 /* Feedback button */
-:global(.webchat-fluent).theme :global(.thumb-button),
-:global(.webchat-fluent).theme :global(.thumb-button.thumb-button--large) {
-  :global(.thumb-button__image) {
+:global(.webchat-fluent).theme .thumb-button,
+:global(.webchat-fluent).theme .thumb-button.thumb-button--large {
+  .thumb-button__image {
     color: var(--webchat-colorNeutralForeground1);
   }
 
-  &:has(:global(.thumb-button__input):focus-visible) {
+  &:has(.thumb-button__input:focus-visible) {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 
-  &:has(:global(.thumb-button__input)[aria-disabled='true']) :global(.thumb-button__image) {
+  &:has(.thumb-button__input[aria-disabled='true']) .thumb-button__image {
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
 }
@@ -698,26 +698,26 @@
 }
 
 /* Feedback Form */
-:global(.webchat-fluent).theme :global(.feedback-form) {
-  :global(.feedback-form__form-header) {
+:global(.webchat-fluent).theme .feedback-form {
+  .feedback-form__form-header {
     color: var(--webchat-colorNeutralForeground1);
     font-size: var(--webchat-fontSizeBase300);
     font-weight: var(--webchat-fontWeightRegular);
     line-height: var(--webchat-lineHeightBase300);
   }
 
-  :global(.feedback-form__form) {
+  .feedback-form__form {
     gap: var(--webchat-spacingVerticalXS);
   }
 
-  :global(.feedback-form__form-footer) {
+  .feedback-form__form-footer {
     color: var(--webchat-colorNeutralForeground1);
     font-size: var(--webchat-fontSizeBase100);
     font-weight: var(--webchat-fontWeightRegular);
     line-height: var(--webchat-lineHeightBase200);
   }
 
-  :global(.feedback-form__submit-button) {
+  .feedback-form__submit-button {
     background-color: var(--webchat-colorBrandBackground);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackground);
     border-radius: var(--webchat-borderRadiusMedium);
@@ -743,7 +743,7 @@
     }
   }
 
-  :global(.feedback-form__cancel-button) {
+  .feedback-form__cancel-button {
     background-color: var(--webchat-colorNeutralBackground1);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
     border-radius: var(--webchat-borderRadiusMedium);
@@ -770,7 +770,7 @@
     }
   }
 
-  :global(.feedback-form__text-box) {
+  .feedback-form__text-box {
     background-color: var(--webchat-colorNeutralBackground1);
     border-radius: var(--webchat-borderRadiusMedium);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
