@@ -6,6 +6,9 @@
 const { readdirSync, readFileSync } = require('fs');
 const { dirname, join } = require('path');
 
+// Only the styles runtime names its context, minifiers keep string literals.
+const STYLES_RUNTIME_MARKER = 'WebChat.CSSModuleThemeContext';
+
 // Lists the build outputs that bundle the styles runtime, per format, from esbuild metafiles (tsup `metafile: true`).
 function outputsWithStylesRuntime(packageName) {
   const distPath = dirname(require.resolve(packageName));
@@ -41,6 +44,15 @@ test('botframework-webchat-component should bundle the styles runtime into one c
   expect(Object.keys(outputs).sort()).toEqual(['metafile-cjs.json', 'metafile-esm.json']);
   expect(outputs['metafile-cjs.json']).toHaveLength(1);
   expect(outputs['metafile-esm.json']).toHaveLength(1);
+
+  // The marker used by the botframework-webchat-fluent-theme test below is in the styles runtime chunks.
+  [...outputs['metafile-cjs.json'], ...outputs['metafile-esm.json']].forEach(output =>
+    expect(
+      // Paths come from the esbuild metafile, not from user input.
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      readFileSync(join(dirname(require.resolve('botframework-webchat-component')), '..', output), 'utf8')
+    ).toContain(STYLES_RUNTIME_MARKER)
+  );
 });
 
 test('botframework-webchat should not bundle its own copy of the styles runtime', () =>
@@ -51,9 +63,22 @@ test('botframework-webchat should not bundle its own copy of the styles runtime'
     'metafile-iife.json': []
   }));
 
-test('botframework-webchat-fluent-theme should not bundle the styles runtime', () =>
-  expect(outputsWithStylesRuntime('botframework-webchat-fluent-theme')).toEqual({
-    'metafile-cjs.json': [],
-    'metafile-esm.json': [],
-    'metafile-iife.json': []
-  }));
+test('botframework-webchat-fluent-theme should not bundle the styles runtime', () => {
+  // The package does not publish its esbuild metafiles ("files" in package.json), so check the published scripts.
+  const distPath = dirname(require.resolve('botframework-webchat-fluent-theme'));
+  const scripts = readdirSync(distPath).filter(name => /\.m?js$/u.test(name));
+
+  // CommonJS, ES modules, and the development and production IIFE builds; no chunks.
+  expect(scripts.sort()).toEqual([
+    'botframework-webchat-fluent-theme.development.js',
+    'botframework-webchat-fluent-theme.js',
+    'botframework-webchat-fluent-theme.mjs',
+    'botframework-webchat-fluent-theme.production.min.js'
+  ]);
+  expect(
+    scripts.filter(name =>
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      readFileSync(join(distPath, name), 'utf8').includes(STYLES_RUNTIME_MARKER)
+    )
+  ).toEqual([]);
+});
