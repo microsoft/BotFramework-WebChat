@@ -58,7 +58,7 @@
         expect(pageElements.byTestId(testIds.sendBoxContainer).getAttribute('dir')).toBe('rtl');
         expect(pageElements.transcript().getAttribute('dir')).toBe('rtl');
 
-        // THEN: The send box shows its placeholder on the right and the send button on the left, mirroring the transcript.
+        // THEN: The send box shows its placeholder on the right, and the send button on the left with its icon pointing left, mirroring the transcript.
         await host.snapshot('local');
       });
     </script>
