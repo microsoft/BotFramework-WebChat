@@ -64,7 +64,8 @@ function createCodeBlockCopyButtonClass(
     }
 
     disconnectedCallback(): void {
-      this.#setCopied(false);
+      // `CodeBlock.update()` moves the button synchronously, keep "Copied" if it is connected again by then.
+      Promise.resolve().then(() => this.isConnected || this.#setCopied(false));
     }
 
     #handleClick = (): void => {

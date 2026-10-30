@@ -10,7 +10,6 @@ const createCodeHighlighterComposer =
   }: {
     readonly children: ReactNode;
     // Code is highlighted by the upstream highlighter until this one is set, e.g. while it is loading.
-    // eslint-disable-next-line react/require-default-props
     readonly highlightCode?: HighlightCodeFn | undefined;
   }) => {
     const previousCodeHighlighter = useCodeHighlighter();

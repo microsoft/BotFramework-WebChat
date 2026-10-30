@@ -34,6 +34,7 @@ const ROOT_STYLE = {
 const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   const [
     {
+      stylesRoot,
       suggestedActionsCarouselFlipperBoxWidth,
       suggestedActionsCarouselFlipperCursor,
       suggestedActionsCarouselFlipperSize
@@ -99,6 +100,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
           showDots={false}
           showScrollBar={false}
           styleSet={filmStyleSet}
+          stylesRoot={stylesRoot}
         >
           {children}
         </ReactFilm>
@@ -106,11 +108,6 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
-
-SuggestedActionCarouselContainer.defaultProps = {
-  children: undefined,
-  className: undefined
 };
 
 SuggestedActionCarouselContainer.propTypes = {
@@ -148,11 +145,6 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionFlowContainer.defaultProps = {
-  children: undefined,
-  className: undefined
-};
-
 SuggestedActionFlowContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
@@ -182,11 +174,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
-
-SuggestedActionStackedContainer.defaultProps = {
-  children: undefined,
-  className: undefined
 };
 
 SuggestedActionStackedContainer.propTypes = {

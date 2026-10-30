@@ -1,0 +1,436 @@
+/* eslint-disable no-magic-numbers */
+import katex from 'katex';
+import { compile, parse, postprocess, preprocess } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
+import type { Event, Options } from 'micromark-util-types';
+import { betterLinkDocumentMod } from 'botframework-webchat-component/internal.js';
+
+import { math, mathHtml } from './mathExtension';
+import { createDecorate } from './private/createDecorate';
+import extractDefinitionsFromEvents, { type MarkdownLinkDefinition } from './private/extractDefinitionsFromEvents';
+import { pre as respectCRLFPre } from './private/respectCRLF';
+
+type StreamingRenderInit = Readonly<{
+  externalLinkAlt: string;
+}>;
+
+type StreamingRenderOptions = Readonly<{
+  markdownRenderHTML?: boolean | undefined;
+  markdownRespectCRLF: boolean;
+}>;
+
+type StreamingNextOptions = Readonly<{
+  container: HTMLElement;
+  containerClassName?: string | undefined;
+  transformFragment?: ((fragment: DocumentFragment) => DocumentFragment) | undefined;
+}>;
+
+type StreamingNextResult = Readonly<{
+  definitions: readonly MarkdownLinkDefinition[];
+}>;
+
+type StreamingRenderer = Readonly<{
+  finalize: (options: StreamingNextOptions) => StreamingNextResult;
+  next: (chunk: string, options: StreamingNextOptions) => void;
+  reset: () => void;
+}>;
+
+export const STREAMING_ERROR = Symbol('markdown streaming error');
+
+// Top-level block token types emitted by micromark.
+// An exit event at depth 0 for one of these types marks a committed block boundary.
+const TOP_LEVEL_BLOCK_TYPES: ReadonlySet<string> = new Set([
+  'atxHeading',
+  'blockQuote',
+  'codeFenced',
+  'codeIndented',
+  'content',
+  'htmlFlow',
+  'listOrdered',
+  'listUnordered',
+  'setextHeading',
+  'table',
+  'thematicBreak',
+  'math'
+]);
+
+type BlockBoundary = {
+  readonly endOffset: number;
+  readonly startOffset: number;
+  readonly type: string;
+};
+
+function findTopLevelBlocks(events: ReadonlyArray<Event>): readonly BlockBoundary[] {
+  const blocks: Array<{ endOffset: number; startOffset: number; type: string }> = [];
+  let depth = 0;
+
+  for (const [action, token] of events) {
+    if (!TOP_LEVEL_BLOCK_TYPES.has(token.type)) {
+      continue;
+    }
+
+    if (action === 'enter') {
+      if (!depth) {
+        blocks.push({ endOffset: -1, startOffset: token.start.offset, type: token.type });
+      }
+
+      depth++;
+    } else {
+      depth--;
+
+      if (!depth && blocks.length) {
+        blocks.at(-1).endOffset = token.end.offset;
+      }
+    }
+  }
+
+  return blocks;
+}
+
+export default function createMarkdownStreamingRenderer(
+  { markdownRenderHTML, markdownRespectCRLF }: StreamingRenderOptions,
+  { externalLinkAlt }: StreamingRenderInit
+): StreamingRenderer {
+  const micromarkOptions: Options = {
+    allowDangerousHtml: markdownRenderHTML ?? true,
+    allowDangerousProtocol: true,
+    extensions: [gfm(), math()],
+    htmlExtensions: [
+      gfmHtml(),
+      mathHtml({
+        renderMath: (content, isDisplay) =>
+          katex.renderToString(content, {
+            displayMode: isDisplay,
+            output: 'mathml'
+          })
+      })
+    ]
+  };
+
+  const domParser = new DOMParser();
+
+  // Parser state.
+  let previousMarkdown = '';
+  const emptyDefinitions: readonly MarkdownLinkDefinition[] = Object.freeze([]);
+
+  // DOM reconciliation state.
+  let wrapperDiv: HTMLDivElement | null = null;
+  let activeSentinel: Comment | null = null;
+
+  function parseEvents(source: string): Event[] {
+    return postprocess(
+      parse(micromarkOptions)
+        .document()
+        .write(preprocess()(source, undefined, true))
+    );
+  }
+
+  function applyTransform(
+    fragment: DocumentFragment,
+    transformFragment: ((fragment: DocumentFragment) => DocumentFragment) | undefined
+  ): DocumentFragment {
+    return transformFragment ? transformFragment(fragment) : fragment;
+  }
+
+  function ensureWrapper(container: HTMLElement, containerClassName: string | undefined): HTMLDivElement {
+    if (wrapperDiv && container.contains(wrapperDiv)) {
+      wrapperDiv.className = containerClassName || '';
+
+      return wrapperDiv;
+    }
+
+    const wrapper = document.createElement('div');
+
+    wrapper.className = containerClassName || '';
+    container.textContent = '';
+    container.appendChild(wrapper);
+    wrapperDiv = wrapper;
+    activeSentinel = null;
+
+    return wrapper;
+  }
+
+  function setError(error: unknown, wrapper: HTMLElement) {
+    wrapper.dataset.renderError = String(error instanceof Error ? error.message : error);
+    wrapper.dataset.renderErrorCount = String(Number(wrapper.dataset.renderErrorCount || '0') + 1);
+    // eslint-disable-next-line security/detect-object-injection
+    (wrapper as any)[STREAMING_ERROR] = error;
+  }
+
+  const knownDefinitions: Set<string> = new Set();
+  function extractDefinitions(events: ReadonlyArray<Event>) {
+    for (const [action, token, ctx] of events) {
+      token.type === 'definition' && action === 'exit' && knownDefinitions.add(ctx.sliceSerialize(token) + '\n');
+    }
+  }
+
+  let lastStepDefinitionOffset = 0;
+  let lastCommittedBlockEndOffset = 0;
+  let stepEvents: Event[] = [];
+  function step(markdown: string): Event[] {
+    const markdownTail = markdown.slice(lastCommittedBlockEndOffset);
+
+    const doc = parse(micromarkOptions).document();
+    const prep = preprocess();
+
+    // Ensure definitions are resolved during parse phase
+    if (knownDefinitions.size) {
+      for (const definition of knownDefinitions) {
+        doc.write(prep(definition, undefined, false));
+      }
+
+      const lastDefinitionTokenOffset = doc.events.at(-1)?.[1].end.offset;
+      if (typeof lastDefinitionTokenOffset !== 'number') {
+        throw new Error('Failed to extract definition token offset');
+      }
+
+      lastStepDefinitionOffset = lastDefinitionTokenOffset;
+    } else {
+      lastStepDefinitionOffset = 0;
+    }
+
+    const tailEvents = doc.write(prep(markdownTail, undefined, true));
+    stepEvents = postprocess(tailEvents);
+    return stepEvents;
+  }
+
+  function commit(block: BlockBoundary): string {
+    const compiler = compile(micromarkOptions);
+
+    // Extract all available definitions to prevent compiler crashes
+    // on definitions appearing after the block boundary.
+    extractDefinitions(stepEvents);
+
+    // Rather than trying to restore compiler state, we parse and fed the definitions
+    // back to the compiler as if they appear in the markdown.
+    if (knownDefinitions.size) {
+      const doc = parse(micromarkOptions).document();
+      const prep = preprocess();
+      for (const definition of knownDefinitions) {
+        doc.write(prep(definition, undefined, false));
+      }
+
+      compiler(postprocess(doc.write(prep('', undefined, true))));
+    }
+
+    const newCommittedOffset = block.startOffset;
+    const newCommittedEvents = stepEvents.filter(([, token]) => token.start.offset < newCommittedOffset);
+
+    // Offset the committed block by the provided boundary start
+    // excluding the offset of definitions upserted during the step.
+    lastCommittedBlockEndOffset += newCommittedOffset - lastStepDefinitionOffset;
+
+    return compiler(newCommittedEvents);
+  }
+
+  function revert() {
+    lastStepDefinitionOffset = 0;
+    stepEvents = [];
+  }
+
+  function cleanup() {
+    revert();
+    activeSentinel = null;
+    lastCommittedBlockEndOffset = 0;
+    knownDefinitions.clear();
+  }
+
+  function renderNext(chunk: string, options: StreamingNextOptions): void {
+    const isAppend = !!previousMarkdown;
+    previousMarkdown += chunk;
+
+    if (!previousMarkdown) {
+      cleanup();
+
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+      wrapper.replaceChildren();
+
+      return;
+    }
+
+    let processedMarkdown = previousMarkdown;
+
+    if (markdownRespectCRLF) {
+      processedMarkdown = respectCRLFPre(processedMarkdown);
+    }
+
+    try {
+      // Incremental path: re-parse only from the last committed block boundary.
+      if (isAppend) {
+        const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+        if (activeSentinel && wrapper.contains(activeSentinel)) {
+          const tailEvents = step(processedMarkdown);
+          const tailBlocks = findTopLevelBlocks(tailEvents);
+          const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
+
+          if (tailBlocks.length <= 1) {
+            // Fast path: active block grew, no new committed blocks.
+            // Replace only the active zone (after sentinel).
+            const tailHTML = compile(micromarkOptions)(tailEvents);
+            const activeDoc = domParser.parseFromString(tailHTML.trim(), 'text/html');
+            const activeFragment = activeDoc.createDocumentFragment();
+
+            activeFragment.append(...Array.from(activeDoc.body.childNodes));
+            betterLinkDocumentMod(activeFragment, decorate);
+
+            const activeRange = document.createRange();
+
+            activeRange.setStartAfter(activeSentinel);
+            activeRange.setEndAfter(wrapper.lastChild!);
+            activeRange.deleteContents();
+
+            wrapper.append(applyTransform(activeFragment, options.transformFragment));
+          } else {
+            // New block boundary in tail: commit newly-finished blocks, replace active.
+            const committedTailHTML = commit(tailBlocks.at(-1));
+            const committedDoc = domParser.parseFromString(committedTailHTML, 'text/html');
+            const committedFragment = committedDoc.createDocumentFragment();
+
+            const activeEvents = step(processedMarkdown);
+            const activeHTML = compile(micromarkOptions)(activeEvents);
+            const activeDoc = domParser.parseFromString(activeHTML.trim(), 'text/html');
+            const activeFragment = activeDoc.createDocumentFragment();
+
+            committedFragment.append(...Array.from(committedDoc.body.childNodes));
+            betterLinkDocumentMod(committedFragment, decorate);
+
+            activeFragment.append(...Array.from(activeDoc.body.childNodes));
+            betterLinkDocumentMod(activeFragment, decorate);
+
+            // Remove old sentinel and active zone.
+            const tailRange = document.createRange();
+
+            tailRange.setStartBefore(activeSentinel);
+            tailRange.setEndAfter(wrapper.lastChild!);
+            tailRange.deleteContents();
+
+            // Append newly committed, new sentinel, active.
+            activeSentinel = document.createComment('');
+
+            wrapper.append(
+              applyTransform(committedFragment, options.transformFragment),
+              activeSentinel,
+              applyTransform(activeFragment, options.transformFragment)
+            );
+          }
+
+          return;
+        }
+      }
+    } catch (error) {
+      setError(error, ensureWrapper(options.container, options.containerClassName));
+    }
+
+    // Full reparse path.
+    cleanup();
+    const fullEvents = step(processedMarkdown);
+    const blocks = findTopLevelBlocks(fullEvents);
+    const wrapper = ensureWrapper(options.container, options.containerClassName);
+    const decorate = createDecorate(emptyDefinitions, externalLinkAlt);
+
+    try {
+      if (blocks.length >= 2) {
+        const committedHTML = commit(blocks.at(-1));
+        const committedDoc = domParser.parseFromString(committedHTML, 'text/html');
+        const committedFragment = committedDoc.createDocumentFragment();
+
+        const activeEvents = step(processedMarkdown);
+        const activeHTML = compile(micromarkOptions)(activeEvents);
+        const activeDoc = domParser.parseFromString(activeHTML.trim(), 'text/html');
+        const activeFragment = activeDoc.createDocumentFragment();
+
+        committedFragment.append(...Array.from(committedDoc.body.childNodes));
+        betterLinkDocumentMod(committedFragment, decorate);
+
+        activeFragment.append(...Array.from(activeDoc.body.childNodes));
+        betterLinkDocumentMod(activeFragment, decorate);
+
+        activeSentinel = document.createComment('');
+
+        wrapper.replaceChildren(
+          applyTransform(committedFragment, options.transformFragment),
+          activeSentinel,
+          applyTransform(activeFragment, options.transformFragment)
+        );
+
+        return;
+      }
+    } catch (error) {
+      setError(error, ensureWrapper(options.container, options.containerClassName));
+
+      cleanup();
+    }
+
+    // Single block — full replace, no sentinel.
+    activeSentinel = null;
+
+    const rawHTML = compile(micromarkOptions)(fullEvents);
+    const parsedDocument = domParser.parseFromString(rawHTML.trim(), 'text/html');
+    const fragment = parsedDocument.createDocumentFragment();
+
+    fragment.append(...Array.from(parsedDocument.body.childNodes));
+    betterLinkDocumentMod(fragment, decorate);
+
+    wrapper.replaceChildren(applyTransform(fragment, options.transformFragment));
+  }
+
+  return Object.freeze({
+    finalize(options: StreamingNextOptions): StreamingNextResult {
+      if (!previousMarkdown) {
+        const wrapper = ensureWrapper(options.container, options.containerClassName);
+
+        wrapper.replaceChildren();
+
+        return Object.freeze({ definitions: Object.freeze([]) });
+      }
+
+      let processedMarkdown = previousMarkdown;
+
+      if (markdownRespectCRLF) {
+        processedMarkdown = respectCRLFPre(processedMarkdown);
+      }
+
+      const fullEvents = parseEvents(processedMarkdown);
+      const rawHTML = compile(micromarkOptions)(fullEvents);
+      const finalDoc = domParser.parseFromString(rawHTML.trim(), 'text/html');
+      const fragment = finalDoc.createDocumentFragment();
+
+      const definitions = extractDefinitionsFromEvents(fullEvents);
+      const wrapper = ensureWrapper(options.container, options.containerClassName);
+      const decorate = createDecorate(definitions, externalLinkAlt);
+
+      fragment.append(...Array.from(finalDoc.body.childNodes));
+      betterLinkDocumentMod(fragment, decorate);
+
+      activeSentinel = null;
+
+      // Full replace on finalize — no incremental path needed.
+      wrapper.replaceChildren(applyTransform(fragment, options.transformFragment));
+
+      return Object.freeze({ definitions });
+    },
+
+    next(chunk: string, options: StreamingNextOptions): void {
+      try {
+        renderNext(chunk, options);
+      } finally {
+        revert();
+      }
+    },
+
+    reset(): void {
+      previousMarkdown = '';
+      cleanup();
+    }
+  });
+}
+
+export {
+  type MarkdownLinkDefinition,
+  type StreamingNextOptions,
+  type StreamingNextResult,
+  type StreamingRenderer,
+  type StreamingRenderOptions
+};

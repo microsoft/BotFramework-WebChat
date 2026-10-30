@@ -13,7 +13,7 @@
         "types": "./dist/botframework-webchat-fluent-theme.d.mts",
         "default": "./dist/botframework-webchat-fluent-theme.mjs"
       },
-      "required": {
+      "require": {
         "types": "./dist/botframework-webchat-fluent-theme.d.ts",
         "default": "./dist/botframework-webchat-fluent-theme.js"
       }

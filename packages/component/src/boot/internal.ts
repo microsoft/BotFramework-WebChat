@@ -5,7 +5,15 @@ export {
   type BetterLinkDocumentModAttributeSetter,
   type BetterLinkDocumentModDecoration
 } from '@msinternal/botframework-webchat-component-better-link';
-export { InjectStyleElements, injectStyleElementsPropsSchema } from '@msinternal/botframework-webchat-styles/react';
+// The styles package is bundled into every package that imports it, and each copy has its own React context.
+// Other packages must use this copy, so a theme above Web Chat reaches every useStyles().
+export {
+  combineCSSModules,
+  CSSModuleThemeComposer,
+  InjectStyleElements,
+  injectStyleElementsPropsSchema,
+  useStyles
+} from '@msinternal/botframework-webchat-styles/react';
 export { default as ActivityButton } from '../Attachment/Text/private/ActivityButton';
 export {
   CodeHighlighterComposer,

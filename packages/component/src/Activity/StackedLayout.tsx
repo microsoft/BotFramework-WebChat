@@ -21,7 +21,7 @@ import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfS
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
 import useLocalizeProgrammingLanguage from '../hooks/internal/useLocalizeProgrammingLanguage';
-import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
+import { useLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
 import CodeBlockContent from './CodeBlockContent';
@@ -144,8 +144,8 @@ const StackedLayout = ({
   const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const otherInitials = fromUser ? botInitials : userInitials;
   const otherNubSize = fromUser ? bubbleNubSize : bubbleFromUserNubSize;
-  const activityKey = useGetKeyByActivity()(activity);
-  const isInGroup = !!useGetLogicalGroupKey()(activityKey);
+  const [logicalGroupKey] = useLogicalGroupKey(useGetKeyByActivity()(activity));
+  const isInGroup = !!logicalGroupKey;
 
   const hasAvatar = (initials || typeof initials === 'string') && !isInGroup;
   const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';

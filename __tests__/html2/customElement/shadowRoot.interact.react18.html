@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <webchat-element>
+      <template shadowrootmode="open">
+        <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+        <style>
+          /* Same as "body.jest input" in index.css, which does not reach into the shadow root: no blinking caret in snapshots. */
+          input {
+            caret-color: transparent;
+          }
+        </style>
+        <main id="webchat"></main>
+      </template>
+    </webchat-element>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const { shadowRoot } = document.querySelector('webchat-element');
+
+        // GIVEN: Web Chat with React DOM 18.3.1 renders into an element inside a shadow root.
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { disableFileUpload: true, stylesRoot: shadowRoot } },
+          shadowRoot.getElementById('webchat')
+        );
+
+        pageElements.root(shadowRoot);
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The user types a message and presses ENTER.
+        const { activity: typedActivity, resolveAll: resolveTypedActivity } = await directLine.actPostActivity(
+          async () => {
+            await host.click(pageElements.sendBoxTextBox());
+            await host.sendKeys('Hello, World!', 'ENTER');
+
+            await pageConditions.numActivitiesShown(1);
+          }
+        );
+
+        await resolveTypedActivity();
+
+        expect(typedActivity).toHaveProperty('text', 'Hello, World!');
+        expect(shadowRoot.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // WHEN: The bot replies with a suggested action.
+        await directLine.emulateIncomingActivity({
+          suggestedActions: { actions: [{ title: 'USA', type: 'imBack', value: 'USA' }] },
+          text: 'Where are you from?'
+        });
+
+        await pageConditions.suggestedActionsShown();
+
+        // THEN: "Hello, World!" is sent, the bot asks "Where are you from?", the send box is empty and has the focus.
+        await host.snapshot('local');
+
+        // WHEN: The user clicks the suggested action.
+        const { activity: clickedActivity, resolveAll: resolveClickedActivity } = await directLine.actPostActivity(
+          async () => {
+            await pageObjects.clickNthSuggestedAction(1);
+            await pageConditions.numActivitiesShown(3);
+          }
+        );
+
+        await resolveClickedActivity();
+
+        expect(clickedActivity).toHaveProperty('text', 'USA');
+
+        await waitFor(() => expect(pageElements.suggestedActions()).toHaveLength(0));
+
+        // Clicking a suggested action moves the focus to the send box.
+        await waitFor(() => expect(shadowRoot.activeElement).toBe(pageElements.sendBoxTextBox()));
+
+        // THEN: "USA" is sent, the suggested action is gone and the send box has the focus.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

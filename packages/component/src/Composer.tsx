@@ -94,7 +94,7 @@ const ROOT_STYLE = {
 };
 
 const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIProps) => {
-  const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const [{ assistiveTechnologyAnnouncementTransport, internalLiveRegionFadeAfter }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
@@ -137,7 +137,12 @@ const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIP
       <CustomElementsComposer>
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
-            <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+            <LiveRegionTwinComposer
+              announcementTransport={assistiveTechnologyAnnouncementTransport}
+              ariaNotifyTargetRef={rootRef}
+              className="webchat__live-region"
+              fadeAfter={internalLiveRegionFadeAfter}
+            >
               <ModalDialogComposer>
                 {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
                 <SendBoxComposer>
@@ -179,7 +184,7 @@ const ComposerCore = ({
   renderMarkdown,
   storeDebugAPI,
   styleSet,
-  suggestedActionsAccessKey,
+  suggestedActionsAccessKey = 'A a Å å',
   webSpeechPonyfillFactory
 }: ComposerCoreProps) => {
   const [dictateAbortable, setDictateAbortable] = useState();
@@ -313,15 +318,6 @@ const ComposerCore = ({
       </WebChatUIContext.Provider>
     </SayComposer>
   );
-};
-
-ComposerCore.defaultProps = {
-  extraStyleSet: undefined,
-  nonce: undefined,
-  renderMarkdown: undefined,
-  styleSet: undefined,
-  suggestedActionsAccessKey: 'A a Å å',
-  webSpeechPonyfillFactory: undefined
 };
 
 ComposerCore.propTypes = {
@@ -519,18 +515,6 @@ const Composer = ({
       </StyleToEmotionObjectComposer>
     </APIComposer>
   );
-};
-
-Composer.defaultProps = {
-  ...APIComposer.defaultProps,
-  ...ComposerCore.defaultProps,
-  children: undefined
-};
-
-Composer.propTypes = {
-  ...APIComposer.propTypes,
-  ...ComposerCore.propTypes,
-  children: PropTypes.any
 };
 
 export default Composer;

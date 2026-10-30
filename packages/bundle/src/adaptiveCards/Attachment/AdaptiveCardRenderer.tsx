@@ -1,11 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
 import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware.js';
 import { getTabIndex, hooks } from 'botframework-webchat-component';
-import { useQueueStaticElement } from 'botframework-webchat-component/internal.js';
+import { useQueueStaticElement, useStyles } from 'botframework-webchat-component/internal.js';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, {

@@ -42,7 +42,7 @@ const injectStyleElementsPropsSchema = pipe(
 
 type InjectStyleElementsProps = {
   // eslint does not recognize destructuring via validateProps().
-  // eslint-disable-next-line react/no-unused-prop-types, react/require-default-props
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly at?: Node | undefined;
   // eslint-disable-next-line react/no-unused-prop-types
   readonly nonce: string | undefined;

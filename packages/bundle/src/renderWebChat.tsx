@@ -1,70 +1,100 @@
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import React, { type ComponentType, type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { function_, is, object } from 'valibot';
+import {
+  args,
+  custom,
+  function_,
+  is,
+  literal,
+  object,
+  optional,
+  picklist,
+  pipe,
+  startsWith,
+  string,
+  tuple
+} from 'valibot';
 
-import importReactDOMClient from './private/importReactDOMClient';
+/** A root from `createRoot()` of "react-dom/client". */
+type RenderWebChatRoot = { render(children: ReactNode): void };
 
-type Root = { render(children: ReactNode): void };
+/** Containers `ReactDOM.render()` accepts, `null` included as in its typings (it throws at run time). */
+type RenderWebChatContainer = Element | Document | DocumentFragment | null;
 
-const createRootSchema = object({ createRoot: function_() });
-// Both `ReactDOM.render()` (React 18 or earlier) and `root.render()`.
-const renderSchema = object({ render: function_() });
+type RenderWebChat = {
+  /**
+   * Renders Web Chat into an element, or with a root from `createRoot()`.
+   *
+   * @param props Props of `<ReactWebChat>`.
+   * @param elementOrRoot Element to render Web Chat into with `ReactDOM.render()`, or a root from `createRoot()` of "react-dom/client" to render Web Chat with.
+   *    React 19 or later removed `ReactDOM.render()`: pass `createRoot(element)` instead of the element.
+   * @throws When an element is passed on React 19 or later, an element inside a shadow root on React 16, or when `elementOrRoot` is neither an element nor a root.
+   */
+  (props: any, elementOrRoot: RenderWebChatContainer | RenderWebChatRoot): void;
+};
 
-// `createRoot()` can only be called once per element, rendering again reuses its root.
-const rootByElement = new WeakMap<HTMLElement, Root>();
+// Same as `Node.ELEMENT_NODE`, `Node.DOCUMENT_NODE` and `Node.DOCUMENT_FRAGMENT_NODE`, without needing `Node` on import.
+const ELEMENT_NODE = 1;
+const DOCUMENT_NODE = 9;
+const DOCUMENT_FRAGMENT_NODE = 11;
 
-function createRootRequiredError(cause?: unknown): Error {
-  return new Error(
-    'botframework-webchat: renderWebChat() needs createRoot() from "react-dom/client" on React 19 or later. Render <ReactWebChat> with createRoot() instead, or add "react-dom/client" to the import map of the ESM build.',
-    { cause }
-  );
-}
+// Containers `ReactDOM.render()` accepts: element, document and document fragment, by `nodeType` to work across realms.
+// Checked before `reactRootSchema`: some custom elements (e.g. Lit) have their own `render()` method.
+const containerSchema = custom<Exclude<RenderWebChatContainer, null>>(value =>
+  is(object({ nodeType: picklist([DOCUMENT_FRAGMENT_NODE, DOCUMENT_NODE, ELEMENT_NODE]) }), value)
+);
 
-function renderWithCreateRoot(reactDOMClient: unknown, children: ReactNode, element: HTMLElement): void {
-  if (!is(createRootSchema, reactDOMClient)) {
-    throw createRootRequiredError();
-  }
+// `ReactDOM.render(children, container)`, React 18 or earlier.
+const legacyReactDOMSchema = object({ render: pipe(function_(), args(tuple([reactNode(), containerSchema]))) });
 
-  let root = rootByElement.get(element);
+// `root.render(children)`, root from `createRoot()` of "react-dom/client".
+const reactRootSchema = object({ render: pipe(function_(), args(tuple([reactNode()]))) });
 
-  if (!root) {
-    const createdRoot = reactDOMClient.createRoot(element);
+// React DOM 16.13 added `version`, earlier versions do not have it.
+const react16DOMSchema = object({ createPortal: function_(), version: optional(pipe(string(), startsWith('16.'))) });
 
-    if (!is(renderSchema, createdRoot)) {
-      throw new Error('botframework-webchat: createRoot() did not return a root.');
-    }
+// A shadow root, by `nodeType` and `host` to work across realms.
+const shadowRootSchema = custom<ShadowRoot>(value =>
+  is(object({ host: object({ nodeType: literal(ELEMENT_NODE) }), nodeType: literal(DOCUMENT_FRAGMENT_NODE) }), value)
+);
 
-    rootByElement.set(element, (root = createdRoot));
-  }
-
-  root.render(children);
-}
-
-export default function renderWebChat(ReactWebChat: ComponentType<any>, props: any, element: HTMLElement): void {
+export default function renderWebChat(
+  ReactWebChat: ComponentType<any>,
+  props: any,
+  elementOrRoot: RenderWebChatContainer | RenderWebChatRoot
+): void {
   const children = <ReactWebChat {...props} />;
 
-  if (is(renderSchema, ReactDOM)) {
-    // React 16 to 18, and Preact: render as before.
-    // Also the IIFE build, which bundles React DOM 16.8.6 unless `window.ReactDOM` is set,
-    // and the static (ESM) build with the React 18 of its import map.
-    ReactDOM.render(children, element);
-  } else {
-    // React 19 or later: `ReactDOM.render()` was removed, `createRoot()` is only in "react-dom/client".
-    const reactDOMClientPromise = importReactDOMClient();
-
-    // npm and IIFE builds: they cannot import "react-dom/client" (bundlers would fail on React 16 and 17),
-    // the host must render <ReactWebChat> with `createRoot()` itself.
-    if (!reactDOMClientPromise) {
-      throw createRootRequiredError();
+  if (is(containerSchema, elementOrRoot)) {
+    // React 19 or later removed `ReactDOM.render()`: Web Chat does not import "react-dom/client", the host creates the root.
+    if (!is(legacyReactDOMSchema, ReactDOM)) {
+      throw new Error(
+        'botframework-webchat: renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
+      );
     }
 
-    // Static (ESM) build: "react-dom/client" is imported through the import map of the page.
-    // `renderWebChat()` has already returned when it settles: log errors instead of leaving an unhandled rejection.
-    reactDOMClientPromise
-      .then(
-        reactDOMClient => renderWithCreateRoot(reactDOMClient, children, element),
-        error => console.error(createRootRequiredError(error))
-      )
-      .catch(error => console.error(error));
+    const rootNode = elementOrRoot.getRootNode?.();
+
+    // React 16 listens to events on the document, unless the container is a document or a shadow root.
+    // In a shadow root, the document gets events retargeted to the shadow host, React 16 would ignore every click and keystroke.
+    // React 17 listens on the container: remove with React 16.
+    if (is(react16DOMSchema, ReactDOM) && rootNode !== elementOrRoot && is(shadowRootSchema, rootNode)) {
+      throw new Error(
+        'botframework-webchat: renderWebChat() on React 16 does not support an element inside a shadow root, React 16 would ignore clicks and typing. Pass the shadow root itself instead of the element, or use React 17 or later (with webchat.js, set window.React and window.ReactDOM before loading it).'
+      );
+    }
+
+    // React 16 to 18, and Preact. Also the IIFE build, which bundles React DOM 16.8.6 unless `window.ReactDOM` is set.
+    ReactDOM.render(children, elementOrRoot);
+  } else if (is(reactRootSchema, elementOrRoot)) {
+    // The host created the root: render with it on any React version, it is the host's to unmount.
+    elementOrRoot.render(children);
+  } else {
+    throw new Error(
+      'botframework-webchat: renderWebChat() expects an HTMLElement or a root from ReactDOM.createRoot().'
+    );
   }
 }
+
+export { type RenderWebChat, type RenderWebChatContainer, type RenderWebChatRoot };
