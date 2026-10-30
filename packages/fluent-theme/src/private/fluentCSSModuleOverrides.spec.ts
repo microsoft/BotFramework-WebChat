@@ -6,7 +6,7 @@ import { readdirSync, readFileSync } from 'fs';
 import { transform } from 'lightningcss';
 import { join } from 'path';
 
-import { partGroupingDecoratorOverrides, themeOverrides } from './fluentCSSModuleOverrides';
+import { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides } from './fluentCSSModuleOverrides';
 
 const PACKAGES_PATH = join(__dirname, '../../..');
 
@@ -53,6 +53,7 @@ const webChatLocalNames = new Set([...listCSSModules('component'), ...listCSSMod
 
 const OVERRIDES_BY_FLUENT_CSS_MODULE: Readonly<Record<string, readonly string[]>> = Object.freeze({
   'fluent-theme/src/components/activity/PartGroupingDecorator.module.css': partGroupingDecoratorOverrides,
+  'fluent-theme/src/components/sendBox/SendBox.module.css': sendBoxOverrides,
   'fluent-theme/src/components/theme/Theme.module.css': themeOverrides
 });
 

@@ -11,6 +11,20 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'code-block-copy-button'
 ]);
 
+// SendBox.module.css
+const sendBoxOverrides: readonly string[] = Object.freeze([
+  'send-box-attachment-bar',
+  'send-box-attachment-bar--as-list-item',
+  'send-box-attachment-bar-item',
+  'send-box-attachment-bar-item--as-list-item',
+  'send-box-attachment-bar-item--as-thumbnail',
+  'send-box-attachment-bar-item-file-preview',
+  'send-box-attachment-bar-item-file-preview--as-list-item',
+  'send-box-attachment-bar-item__delete-button',
+  'send-box-attachment-bar-item__preview',
+  'send-box-attachment-bar__box'
+]);
+
 // Theme.module.css
 const themeOverrides: readonly string[] = Object.freeze([
   'code-block',
@@ -28,6 +42,11 @@ const themeOverrides: readonly string[] = Object.freeze([
   'feedback-form__form-header',
   'feedback-form__submit-button',
   'feedback-form__text-box',
+  'send-box-attachment-bar',
+  'send-box-attachment-bar--as-list-item',
+  'text-area',
+  'text-area--scroll',
+  'text-area-input',
   'thumb-button',
   'thumb-button--large',
   'thumb-button__image',
@@ -38,4 +57,4 @@ const themeOverrides: readonly string[] = Object.freeze([
   'view-code-dialog__title'
 ]);
 
-export { partGroupingDecoratorOverrides, themeOverrides };
+export { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides };

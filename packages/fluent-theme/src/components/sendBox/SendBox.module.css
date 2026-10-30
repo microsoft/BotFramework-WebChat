@@ -77,31 +77,31 @@
   }
 }
 
-:global(.webchat-fluent) .sendbox__attachment-bar:global(.send-box-attachment-bar) {
-  :global(.send-box-attachment-bar__box) {
+:global(.webchat-fluent) .sendbox__attachment-bar.send-box-attachment-bar {
+  .send-box-attachment-bar__box {
     gap: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalXS);
   }
 
-  &:global(.send-box-attachment-bar--as-list-item) {
+  &.send-box-attachment-bar--as-list-item {
     margin-inline-end: calc(-1 * var(--webchat-spacingHorizontalS));
   }
 
-  &:global(.send-box-attachment-bar--as-list-item .send-box-attachment-bar__box:not(:empty)) {
+  &.send-box-attachment-bar--as-list-item .send-box-attachment-bar__box:not(:empty) {
     padding: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalXS);
   }
 
-  :global(.send-box-attachment-bar-item.send-box-attachment-bar-item--as-list-item) {
+  .send-box-attachment-bar-item.send-box-attachment-bar-item--as-list-item {
     box-shadow: var(--webchat-shadow2);
     border-radius: var(--webchat-borderRadiusMedium);
     padding: var(--webchat-spacingVerticalXXS) var(--webchat-spacingHorizontalXXS);
   }
 
-  :global(.send-box-attachment-bar-item.send-box-attachment-bar-item--as-thumbnail) {
+  .send-box-attachment-bar-item.send-box-attachment-bar-item--as-thumbnail {
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Selected);
     border-radius: var(--webchat-borderRadiusXLarge);
   }
 
-  :global(.send-box-attachment-bar-item .send-box-attachment-bar-item__delete-button) {
+  .send-box-attachment-bar-item .send-box-attachment-bar-item__delete-button {
     background-color: var(--webchat-colorNeutralBackground1);
     border-radius: var(--webchat-borderRadiusMedium);
     color: var(--webchat-colorNeutralForeground1);
@@ -128,14 +128,12 @@
     }
   }
 
-  :global(
-      .send-box-attachment-bar-item.send-box-attachment-bar-item.send-box-attachment-bar-item.send-box-attachment-bar-item--as-list-item
-      .send-box-attachment-bar-item__preview
-    ) {
+  .send-box-attachment-bar-item.send-box-attachment-bar-item.send-box-attachment-bar-item.send-box-attachment-bar-item--as-list-item
+    .send-box-attachment-bar-item__preview {
     padding-inline: var(--webchat-spacingHorizontalS);
   }
 
-  :global(.send-box-attachment-bar-item-file-preview.send-box-attachment-bar-item-file-preview--as-list-item) {
+  .send-box-attachment-bar-item-file-preview.send-box-attachment-bar-item-file-preview--as-list-item {
     gap: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
   }
 }
