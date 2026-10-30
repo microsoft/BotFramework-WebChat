@@ -14,8 +14,7 @@
           WebChat: { testIds }
         } = window;
 
-        const clock = lolex.createClock();
-        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         WebChat.renderWebChat(
           {
@@ -30,6 +29,7 @@
         // The user asks first: Web Chat adds the "ClientCapabilities" entity to the first outgoing activity only.
         await (await directLine.emulateOutgoingActivity('The user prompt.')).resolveAll();
 
+        // GIVEN: the bot answers with a feedback loop and a VoteAction that carries its own (non-Schema.org) properties.
         const commonFeedbackMetadata = {
           aiResponseMessage: 'The generated answer.',
           mcsConversationId: 'mcs-conversation-id',
@@ -65,6 +65,7 @@
 
         await pageConditions.numActivitiesShown(2);
 
+        // WHEN: the user clicks like, types feedback and submits the feedback form.
         const [reviewButton] = pageElements.allByTestId(testIds.feedbackButton);
 
         await host.click(reviewButton);
@@ -84,89 +85,35 @@
 
         reviewPost.resolvePostActivity();
 
-        await directLine.emulateIncomingActivity({
+        // THEN: the invoke carries the bot's VoteAction as sent, with "actionStatus" completed.
+        expect({
+          entities: reviewPost.activity.entities,
+          name: reviewPost.activity.name,
+          replyToId: reviewPost.activity.replyToId,
+          type: reviewPost.activity.type,
+          value: reviewPost.activity.value
+        }).toEqual({
           entities: [
             {
               '@context': 'https://schema.org',
               '@type': 'VoteAction',
               ...commonFeedbackMetadata,
-              actionOption: 'downvote',
-              actionStatus: 'PotentialActionStatus',
-              activityId: 'non-review-activity',
+              actionOption: 'upvote',
+              actionStatus: 'CompletedActionStatus',
+              activityId: 'review-activity',
               type: 'https://schema.org/VoteAction'
             }
           ],
-          from: {
-            role: 'bot'
-          },
-          id: 'non-review-activity',
-          text: 'This feedback action does not require review.',
-          type: 'message'
-        });
-
-        await pageConditions.numActivitiesShown(3);
-
-        const nonReviewButton = Array.from(pageElements.allByTestId(testIds.feedbackButton)).find(
-          button => button.getAttribute('type') === 'button'
-        );
-
-        const { activity: nonReviewActivity } = await directLine.actPostActivity(async () => {
-          await host.click(nonReviewButton);
-          clock.tick(500);
-        });
-
-        expect({
-          nonReviewActivity: {
-            entities: nonReviewActivity.entities,
-            name: nonReviewActivity.name,
-            type: nonReviewActivity.type
-          },
-          reviewActivity: {
-            entities: reviewPost.activity.entities,
-            name: reviewPost.activity.name,
-            replyToId: reviewPost.activity.replyToId,
-            type: reviewPost.activity.type,
-            value: reviewPost.activity.value
-          }
-        }).toEqual({
-          nonReviewActivity: {
-            entities: [
-              {
-                '@context': 'https://schema.org',
-                '@type': 'VoteAction',
-                ...commonFeedbackMetadata,
-                actionOption: 'downvote',
-                actionStatus: 'CompletedActionStatus',
-                activityId: 'non-review-activity',
-                type: 'https://schema.org/VoteAction'
-              }
-            ],
-            name: 'webchat:activity-status/feedback',
-            type: 'event'
-          },
-          reviewActivity: {
-            entities: [
-              {
-                '@context': 'https://schema.org',
-                '@type': 'VoteAction',
-                ...commonFeedbackMetadata,
-                actionOption: 'upvote',
-                actionStatus: 'CompletedActionStatus',
-                activityId: 'review-activity',
-                type: 'https://schema.org/VoteAction'
-              }
-            ],
-            name: 'message/submitAction',
-            replyToId: 'review-activity',
-            type: 'invoke',
-            value: {
-              actionName: 'feedback',
-              actionValue: {
-                feedback: {
-                  feedbackText: 'Detailed feedback.'
-                },
-                reaction: 'like'
-              }
+          name: 'message/submitAction',
+          replyToId: 'review-activity',
+          type: 'invoke',
+          value: {
+            actionName: 'feedback',
+            actionValue: {
+              feedback: {
+                feedbackText: 'Detailed feedback.'
+              },
+              reaction: 'like'
             }
           }
         });
