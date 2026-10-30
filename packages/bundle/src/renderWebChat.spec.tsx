@@ -14,7 +14,9 @@ let render: jest.Mock;
 
 beforeEach(() => {
   render = jest.fn();
-  Object.assign(ReactDOM, { render });
+
+  // React DOM 16.8.6 has no `version`.
+  Object.assign(ReactDOM, { createPortal: jest.fn(), render, version: undefined });
 });
 
 test('Element should be rendered by ReactDOM.render()', () => {
@@ -69,3 +71,56 @@ test('Neither a container nor a root should throw', () =>
   expect(() => renderWebChat(ReactWebChat, {}, {} as unknown as HTMLElement)).toThrow(
     'renderWebChat() expects an HTMLElement or a root from ReactDOM.createRoot().'
   ));
+
+describe('Element in a shadow root', () => {
+  let element: HTMLElement;
+  let shadowRoot: ShadowRoot;
+
+  beforeEach(() => {
+    element = document.createElement('div');
+    shadowRoot = document.createElement('div').attachShadow({ mode: 'open' });
+
+    shadowRoot.append(element);
+  });
+
+  test('on React 16 should throw an error suggesting the shadow root or React 17', () => {
+    expect(() => renderWebChat(ReactWebChat, {}, element)).toThrow(
+      'renderWebChat() on React 16 does not support an element inside a shadow root, React 16 would ignore clicks and typing. Pass the shadow root itself instead of the element, or use React 17 or later (with webchat.js, set window.React and window.ReactDOM before loading it).'
+    );
+    expect(render).not.toHaveBeenCalled();
+  });
+
+  test('on React 16.14 should throw', () => {
+    Object.assign(ReactDOM, { version: '16.14.0' });
+
+    expect(() => renderWebChat(ReactWebChat, {}, element)).toThrow('on React 16 does not support');
+    expect(render).not.toHaveBeenCalled();
+  });
+
+  test('on React 17 or later should be rendered by ReactDOM.render()', () => {
+    Object.assign(ReactDOM, { version: '17.0.2' });
+
+    renderWebChat(ReactWebChat, {}, element);
+
+    expect(render).toHaveBeenCalledTimes(1);
+    expect(render.mock.calls[0][1]).toBe(element);
+  });
+
+  test('passed as the shadow root itself on React 16 should be rendered by ReactDOM.render()', () => {
+    renderWebChat(ReactWebChat, {}, shadowRoot);
+
+    expect(render).toHaveBeenCalledTimes(1);
+    expect(render.mock.calls[0][1]).toBe(shadowRoot);
+  });
+});
+
+test('Element outside of a shadow root on React 16 should be rendered by ReactDOM.render()', () => {
+  const element = document.createElement('div');
+
+  document.body.append(element);
+  renderWebChat(ReactWebChat, {}, element);
+  element.remove();
+
+  expect(render).toHaveBeenCalledTimes(1);
+  expect(render.mock.calls[0][1]).toBe(element);
+});
