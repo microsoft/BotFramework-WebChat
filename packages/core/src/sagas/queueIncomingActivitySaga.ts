@@ -1,86 +1,59 @@
-import { call, cancelled, fork, put, race, select, take } from 'redux-saga/effects';
+import { buffers, channel, type Channel } from 'redux-saga';
+import { fork, put, select, take } from 'redux-saga/effects';
 
-import incomingActivity, { INCOMING_ACTIVITY } from '../actions/incomingActivity';
+import incomingActivity from '../actions/incomingActivity';
 import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
 import activityFromBot from '../definitions/activityFromBot';
-import activitiesSelector, { ofType as activitiesOfType } from '../selectors/activities';
-import sleep from '../utils/sleep';
+import type { ActivitiesGraph } from '../reducers/activities/sort/graph/createActivitiesGraph';
+import { hasBotActivity, hasReplyTarget } from '../reducers/activities/sort/graph/queries';
+import { ofType as activitiesOfType } from '../selectors/activities';
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import type { ReduxState } from '../types/internal/ReduxState';
+import type { WebChatActivity } from '../types/WebChatActivity';
+import ReplyToIdHold from './private/ReplyToIdHold';
 import whileConnected from './effects/whileConnected';
 
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-
-// We will hold up the replying activity if the originating activity did not arrive, up to 5 seconds.
-const REPLY_TIMEOUT = 5000;
-
-function* takeEveryAndSelect(actionType, selector, fn) {
-  // select() will free up the code execution.
-  // If we pair up with takeEvery(), it will allow actions to slip through.
-  // Thus, we are writing one that don't use takeEvery().
-  while (!(yield cancelled())) {
-    const action = yield take(actionType);
-    const state = yield select(selector);
-
-    yield fork(fn, action, state);
-  }
-}
-
-// Wait for specific activity to arrive in the transcript.
-// We will use the initial set of activities to close time gaps between select() and take().
-// If another activity with the same "replyToId" is already rendered (in the "activities" array),
-// we will skip the wait as we already waited long enough for the missing activity to show up.
-function* waitForActivityId(replyToId, initialActivities) {
-  let activities = initialActivities;
-
-  for (;;) {
-    const replied = activities.find(activity => activity.id === replyToId || activity.replyToId === replyToId);
-
-    if (replied) {
-      break;
-    }
-
-    const {
-      payload: { activity }
-    } = yield take(INCOMING_ACTIVITY);
-
-    if (activity.id === replyToId) {
-      break;
-    }
-
-    activities = yield select(activitiesSelector);
-  }
-}
+// The activities graph (William's store) is mutable: the same instance stays current, the state only replaces it if the
+// state is replaced (e.g. rehydrated).
+const graphSelector = ({ groupedActivities }: ReduxState): ActivitiesGraph | undefined => groupedActivities.graph;
 
 function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: GlobalScopePonyfill) {
-  yield takeEveryAndSelect(
-    QUEUE_INCOMING_ACTIVITY,
-    activitiesSelector,
-    function* queueIncomingActivity({ payload: { activity } }, initialActivities) {
-      // This is for resolving an accessibility issue.
-      // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then release this one.
-      const { replyToId } = activity;
-      const initialBotActivities = initialActivities.filter(({ from: { role } }) => role === 'bot');
+  let graph: ActivitiesGraph | undefined = yield select(graphSelector);
 
-      // To speed up the first activity render time, we do not delay the first activity from the bot.
-      // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
-      // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
-      if (replyToId && initialBotActivities.length) {
-        // Either the activity replied to is in the transcript or after timeout.
-        const result = yield race({
-          _: waitForActivityId(replyToId, initialActivities),
-          timeout: call(sleep, REPLY_TIMEOUT, ponyfill)
-        });
+  const releaseChannel: Channel<WebChatActivity> = channel(buffers.expanding());
 
-        if ('timeout' in result) {
-          console.warn(
-            `botframework-webchat: Timed out while waiting for activity "${replyToId}" which activity "${activity.id}" is replying to.`,
-            {
-              activity,
-              replyToId
-            }
-          );
-        }
+  // This is for resolving an accessibility issue.
+  // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then
+  // release this one. The hold reads the transcript from the graph.
+  const hold = new ReplyToIdHold<WebChatActivity>({
+    clock:
+      ponyfill.clearTimeout && ponyfill.setTimeout
+        ? { clearTimeout: ponyfill.clearTimeout, setTimeout: ponyfill.setTimeout }
+        : undefined,
+    hasReplyTarget: replyToId => !!graph && hasReplyTarget(graph, replyToId),
+    // To speed up the first activity render time, we do not delay the first activity from the bot.
+    // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
+    // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
+    isHoldEnabled: () => !!graph && hasBotActivity(graph),
+    release: activity => releaseChannel.put(activity)
+  });
+
+  try {
+    yield fork(function* queueIncomingActivities() {
+      for (;;) {
+        const {
+          payload: { activity }
+        } = yield take(QUEUE_INCOMING_ACTIVITY);
+
+        graph = yield select(graphSelector);
+
+        hold.push(activity);
       }
+    });
+
+    for (;;) {
+      const activity: WebChatActivity = yield take(releaseChannel);
 
       yield put(incomingActivity(activity));
 
@@ -102,8 +75,16 @@ function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: Global
           yield put(setSuggestedActions());
         }
       }
+
+      // The released activity is in the graph now: release replies waiting for it.
+      graph = yield select(graphSelector);
+      hold.recheck();
     }
-  );
+  } finally {
+    // On disconnect, held activities are dropped, as the saga holding them was cancelled before.
+    hold.close();
+    releaseChannel.close();
+  }
 }
 
 export default function* queueIncomingActivitySaga(ponyfill: GlobalScopePonyfill) {
