@@ -32,12 +32,10 @@
 
         // GIVEN: the message entity has like and dislike actions with the bot's own (non-Schema.org) properties, without feedback loop.
         const customProperties = {
-          activityId: 'a-00001',
-          aiResponseMessage: 'The generated answer.',
-          mcsConversationId: 'mcs-conversation-id',
-          prompt: 'The user prompt.',
-          promptId: 'prompt-id',
-          utteranceHappenTimeRef: new Date('2026-10-30T12:34:56.000Z') // A Date object, not a string.
+          customDate: new Date('2026-10-30T12:34:56.000Z'), // A Date object, not a string.
+          customId: 'custom-id',
+          customObject: { nested: { value: 1 } },
+          customText: 'Custom text.'
         };
 
         await directLine.emulateIncomingActivity({
@@ -46,10 +44,6 @@
               '@context': 'https://schema.org',
               '@id': '',
               '@type': 'Message',
-              author: {
-                '@type': 'Person',
-                name: 'Agent'
-              },
               keywords: ['AllowCopy'],
               potentialAction: [
                 {
