@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
@@ -20,13 +19,6 @@ const VideoAttachment = ({ attachment }) => {
       <VideoContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );
-};
-
-VideoAttachment.propTypes = {
-  attachment: PropTypes.shape({
-    contentUrl: PropTypes.string.isRequired,
-    name: PropTypes.string
-  }).isRequired
 };
 
 export default VideoAttachment;

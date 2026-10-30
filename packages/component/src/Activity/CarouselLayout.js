@@ -10,7 +10,6 @@ import {
 } from 'react-film';
 
 import cx from 'classnames';
-import PropTypes from 'prop-types';
 import React, { memo, useMemo } from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
@@ -69,17 +68,6 @@ const CarouselLayoutCore = ({
   );
 };
 
-CarouselLayoutCore.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array
-  }).isRequired,
-  hideTimestamp: PropTypes.bool,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  renderAttachment: PropTypes.func.isRequired,
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  showCallout: PropTypes.bool
-};
-
 const CarouselLayout = props => {
   const { activity: { attachments = [] } = {} } = props;
   const [direction] = useDirection();
@@ -99,10 +87,6 @@ const CarouselLayout = props => {
       <CarouselLayoutCore {...props} />
     </FilmComposer>
   );
-};
-
-CarouselLayout.propTypes = {
-  ...CarouselLayoutCore.propTypes
 };
 
 export default memo(CarouselLayout);

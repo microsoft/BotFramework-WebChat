@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import CheckMarkIcon from './CheckMarkIcon';
@@ -31,11 +30,6 @@ const NotificationIcon = ({ className, level }) => {
       )}
     </React.Fragment>
   );
-};
-
-NotificationIcon.propTypes = {
-  className: PropTypes.string,
-  level: PropTypes.oneOf(['error', 'info', 'success', 'warn']).isRequired
 };
 
 export default NotificationIcon;

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 const CheckMarkIcon = ({ 'aria-label': ariaLabel, className }) => (
@@ -17,10 +16,5 @@ const CheckMarkIcon = ({ 'aria-label': ariaLabel, className }) => (
     />
   </svg>
 );
-
-CheckMarkIcon.propTypes = {
-  'aria-label': PropTypes.string,
-  className: PropTypes.string
-};
 
 export default CheckMarkIcon;

@@ -1,12 +1,11 @@
 import type { GlobalScopePonyfill } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React, { useMemo, useRef, type PropsWithChildren } from 'react';
 
 import type { ContextOf } from '../../types/ContextOf';
 import PonyfillContext from './private/PonyfillContext';
 
 type Props = PropsWithChildren<{
-  ponyfill?: Partial<GlobalScopePonyfill>;
+  readonly ponyfill?: Partial<GlobalScopePonyfill> | undefined;
 }>;
 
 const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
@@ -83,10 +82,6 @@ const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
   );
 
   return <PonyfillContext.Provider value={contextValue}>{children}</PonyfillContext.Provider>;
-};
-
-PonyfillComposer.propTypes = {
-  ponyfill: PropTypes.any
 };
 
 export default PonyfillComposer;

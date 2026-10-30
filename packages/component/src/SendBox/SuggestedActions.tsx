@@ -2,7 +2,6 @@
 
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { createBasicStyleSet as createBasicStyleSetForReactFilm, ReactFilm } from 'react-film';
 
@@ -110,12 +109,6 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionCarouselContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
-
 const SuggestedActionFlowContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -145,12 +138,6 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionFlowContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
-
 const SuggestedActionStackedContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -174,12 +161,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
-
-SuggestedActionStackedContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
 };
 
 type SuggestedActionsProps = Readonly<{

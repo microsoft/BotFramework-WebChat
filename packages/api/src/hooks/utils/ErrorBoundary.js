@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 const RenderChildrenFunction = ({ children }) => (typeof children === 'function' ? children() : children);
 
@@ -25,15 +24,5 @@ class ErrorBoundary extends Component {
     return !hasError && <RenderChildrenFunction>{children}</RenderChildrenFunction>;
   }
 }
-
-ErrorBoundary.defaultProps = {
-  children: undefined,
-  onError: undefined
-};
-
-ErrorBoundary.propTypes = {
-  children: PropTypes.any,
-  onError: PropTypes.func
-};
 
 export default ErrorBoundary;

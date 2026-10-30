@@ -1,5 +1,4 @@
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 const { useLocalizer } = hooks;
@@ -10,12 +9,6 @@ const TextAttachment = ({ attachment: { content = '' } = {} }) => {
   const label = localize('ATTACHMENT_TEXT', content);
 
   return <div role="none">{label}</div>;
-};
-
-TextAttachment.propTypes = {
-  attachment: PropTypes.shape({
-    content: PropTypes.string.isRequired
-  }).isRequired
 };
 
 export default TextAttachment;

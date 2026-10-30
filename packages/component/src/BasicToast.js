@@ -3,7 +3,6 @@
 
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
 import ScreenReaderText from './ScreenReaderText';
@@ -68,15 +67,6 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
       </button>
     </div>
   );
-};
-
-BasicToast.propTypes = {
-  notification: PropTypes.shape({
-    alt: PropTypes.string,
-    id: PropTypes.string.isRequired,
-    level: PropTypes.string.isRequired,
-    message: PropTypes.string.isRequired
-  }).isRequired
 };
 
 export default BasicToast;

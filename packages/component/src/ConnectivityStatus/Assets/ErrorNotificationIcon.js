@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 const { useDirection } = hooks;
@@ -24,11 +23,6 @@ const ErrorNotificationIcon = ({ className = '', size = 1 }) => {
       />
     </svg>
   );
-};
-
-ErrorNotificationIcon.propTypes = {
-  className: PropTypes.string,
-  size: PropTypes.number
 };
 
 export default ErrorNotificationIcon;

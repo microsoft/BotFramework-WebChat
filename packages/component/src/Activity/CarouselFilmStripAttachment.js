@@ -1,7 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import Bubble from './Bubble';
@@ -52,29 +51,6 @@ const CarouselFilmStripAttachment = ({
       </Bubble>
     </li>
   );
-};
-
-CarouselFilmStripAttachment.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array,
-    from: PropTypes.shape({
-      role: PropTypes.string.isRequired
-    }).isRequired,
-    text: PropTypes.string,
-    textFormat: PropTypes.string,
-    timestamp: PropTypes.string
-  }).isRequired,
-  attachment: PropTypes.shape({
-    content: PropTypes.any
-  }).isRequired,
-  className: PropTypes.string,
-  fromUser: PropTypes.any.isRequired,
-  hasAvatar: PropTypes.any.isRequired,
-  hideNub: PropTypes.bool.isRequired,
-  index: PropTypes.number.isRequired,
-  renderAttachment: PropTypes.func.isRequired,
-  showAvatar: PropTypes.bool.isRequired,
-  showNub: PropTypes.bool.isRequired
 };
 
 export default CarouselFilmStripAttachment;
