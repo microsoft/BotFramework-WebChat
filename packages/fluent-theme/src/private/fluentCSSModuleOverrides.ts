@@ -5,10 +5,32 @@
 
 // PartGroupingDecorator.module.css
 const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
+  'activity-status',
+  'border-flair',
+  'bubble',
+  'bubble--from-user',
+  'bubble__content',
+  'carousel-filmstrip__alignment-pad',
+  'carousel-filmstrip__avatar-gutter',
+  'carousel-layout',
   'code-block-content',
   'code-block-content__code-block',
   'code-block-content__header',
   'code-block-copy-button',
+  'component-icon',
+  'message-status-loader',
+  'stacked-layout',
+  'stacked-layout--no-message',
+  'stacked-layout__attachment',
+  'stacked-layout__attachment-list',
+  'stacked-layout__attachment-row',
+  'stacked-layout__bubble',
+  'stacked-layout__content',
+  'stacked-layout__main',
+  'stacked-layout__message-status',
+  'stacked-layout__message-status--incomplete',
+  'stacked-layout__status',
+  'stacked-layout__title',
   'transcript-focus-area__activity-list'
 ]);
 
@@ -28,6 +50,9 @@ const sendBoxOverrides: readonly string[] = Object.freeze([
 
 // Theme.module.css
 const themeOverrides: readonly string[] = Object.freeze([
+  'bubble',
+  'bubble__content',
+  'bubble__nub-pad',
   'code-block',
   'code-block-content',
   'code-block-content__code-block',
