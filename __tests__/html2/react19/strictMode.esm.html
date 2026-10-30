@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>React 19: sends a message, flips a carousel and clicks a suggested action in Strict Mode (ESM build)</title>
+    <title>React 19: sends a message, flips a carousel, clicks a suggested action and submits an Adaptive Card in Strict Mode (ESM build)</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
@@ -144,6 +144,52 @@
         expect(document.querySelector('.carousel-layout .carousel-filmstrip').scrollLeft).toBe(carouselScrollLeft);
 
         // THEN: "USA" is sent and the suggested action is gone.
+        await host.snapshot('local');
+
+        // WHEN: The bot sends an Adaptive Card with a text input and a "Submit" button without `data`, which sends the inputs as a post back.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [{ id: 'firstName', label: 'First name', type: 'Input.Text' }],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(4);
+
+        const input = document.querySelector('.ac-textInput input, input.ac-textInput');
+        const submitButton = document.querySelector('.ac-pushButton');
+
+        // WHEN: "John" is typed into the input and the "Submit" button is clicked.
+        await host.click(input);
+        await host.sendKeys('John');
+
+        const { activity: submittedActivity, resolveAll: resolveSubmittedActivity } = await directLine.actPostActivity(
+          () => host.click(submitButton)
+        );
+
+        await resolveSubmittedActivity();
+
+        // THEN: The post back should have the typed value.
+        expect(submittedActivity).toHaveProperty('value', { firstName: 'John' });
+
+        // Clicking "Submit" selects it, after the post back.
+        await waitFor(async () =>
+          expect((await testHelpers.getAccessibilityNode(submitButton)).description?.value).toBe('Selected')
+        );
+
+        await pageConditions.scrollStabilized();
+
+        // THEN: The card shows "John" in the input.
         // `run()` ends with `host.done()`, which fails on any `console.error`, where React 19 logs its development warnings.
         await host.snapshot('local');
       });

@@ -52,6 +52,11 @@ const adaptiveCardRendererPropsSchema = pipe(
 
 type AdaptiveCardRendererProps = InferInput<typeof adaptiveCardRendererPropsSchema>;
 
+type AdaptiveCardRenderResult = {
+  readonly element?: HTMLElement | undefined;
+  readonly errors?: readonly Error[] | undefined;
+};
+
 function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const {
     actionPerformedClassName,
@@ -222,7 +227,26 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
 
-  const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
+  const lastRenderRef = useRef<{ readonly inputs: readonly unknown[]; readonly result: AdaptiveCardRenderResult }>();
+
+  const { element, errors } = useMemo<AdaptiveCardRenderResult>(() => {
+    const inputs = Object.freeze([
+      adaptiveCard,
+      adaptiveCardsHostConfig,
+      GlobalSettings,
+      HostConfig,
+      renderMarkdownAsHTML,
+      setTabIndexAtCardRoot
+    ]);
+
+    const { current: lastRender } = lastRenderRef;
+
+    // Render the card once per inputs: the card reads its inputs from the DOM of its last render.
+    // React 19 in Strict Mode calls `useMemo()` twice and keeps the first result, the inputs on screen would be detached from the card.
+    if (lastRender && lastRender.inputs.every((value, index) => Object.is(value, inputs.at(index)))) {
+      return lastRender.result;
+    }
+
     undoActionShouldBePushButtonMod();
     undoActiveElementMod();
     undoDisabledMod();
@@ -230,12 +254,18 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     undoPersistValuesMod();
     undoRoleMod();
 
-    return renderAdaptiveCard(adaptiveCard, {
-      adaptiveCardsHostConfig,
-      adaptiveCardsPackage: { GlobalSettings, HostConfig },
-      renderMarkdownAsHTML,
-      setTabIndexAtCardRoot
-    });
+    const result: AdaptiveCardRenderResult = Object.freeze(
+      renderAdaptiveCard(adaptiveCard, {
+        adaptiveCardsHostConfig,
+        adaptiveCardsPackage: { GlobalSettings, HostConfig },
+        renderMarkdownAsHTML,
+        setTabIndexAtCardRoot
+      })
+    );
+
+    lastRenderRef.current = Object.freeze({ inputs, result });
+
+    return result;
   }, [
     adaptiveCard,
     adaptiveCardsHostConfig,
