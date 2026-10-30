@@ -195,7 +195,7 @@
 }
 
 /* Style Options override */
-:global(.webchat-fluent).theme :global(.webchat__css-custom-properties) {
+:global(.webchat-fluent).theme .css-custom-properties {
   --webchat__color--accent: var(--webchat-colorBrandForeground1);
   --webchat__color--subtle: var(--webchat-colorNeutralForeground2);
   --webchat__color--timestamp: var(--webchat-colorNeutralForeground3);
@@ -217,18 +217,18 @@
   --webchat__border-animation--color-3: #b47cf8;
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {
+:global(.webchat-fluent).theme.variant-copilot .css-custom-properties {
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalL)
     var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalSNudge);
   --webchat__max-height--image-bubble: max(480px, 90cqb);
 }
 
 /* Transcript surface */
-:global(.webchat-fluent).theme :global(.webchat__surface) {
+:global(.webchat-fluent).theme .surface {
   background-color: var(--webchat__color--surface);
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.webchat__surface) {
+:global(.webchat-fluent).theme.variant-copilot .surface {
   box-sizing: border-box;
   padding-inline-start: var(--webchat-spacingHorizontalMNudge);
 }
