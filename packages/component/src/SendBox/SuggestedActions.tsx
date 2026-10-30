@@ -34,10 +34,10 @@ const ROOT_STYLE = {
 const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   const [
     {
+      stylesRoot,
       suggestedActionsCarouselFlipperBoxWidth,
       suggestedActionsCarouselFlipperCursor,
-      suggestedActionsCarouselFlipperSize,
-      stylesRoot
+      suggestedActionsCarouselFlipperSize
     }
   ] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();

@@ -5,7 +5,9 @@ import { is } from 'valibot';
 import {
   containerSchema,
   legacyReactDOMSchema,
+  react16DOMSchema,
   reactRootSchema,
+  shadowRootSchema,
   type RenderWebChatContainer
 } from './private/reactDOMSchemas';
 
@@ -19,7 +21,7 @@ type RenderWebChat = {
    * @param props Props of `<ReactWebChat>`.
    * @param elementOrRoot Element to render Web Chat into with `ReactDOM.render()`, or a root from `createRoot()` of "react-dom/client" to render Web Chat with.
    *    React 19 or later removed `ReactDOM.render()`: pass `createRoot(element)` instead of the element.
-   * @throws When an element is passed on React 19 or later, or when `elementOrRoot` is neither an element nor a root.
+   * @throws When an element is passed on React 19 or later, an element inside a shadow root on React 16, or when `elementOrRoot` is neither an element nor a root.
    */
   (props: any, elementOrRoot: RenderWebChatContainer | RenderWebChatRoot): void;
 };
@@ -36,6 +38,17 @@ export default function renderWebChat(
     if (!is(legacyReactDOMSchema, ReactDOM)) {
       throw new Error(
         'botframework-webchat: renderWebChat() on React 19 or later needs a root: pass createRoot(element) from "react-dom/client" instead of the element.'
+      );
+    }
+
+    const rootNode = elementOrRoot.getRootNode?.();
+
+    // React 16 listens to events on the document, unless the container is a document or a shadow root.
+    // In a shadow root, the document gets events retargeted to the shadow host, React 16 would ignore every click and keystroke.
+    // React 17 listens on the container: remove with React 16.
+    if (is(react16DOMSchema, ReactDOM) && rootNode !== elementOrRoot && is(shadowRootSchema, rootNode)) {
+      throw new Error(
+        'botframework-webchat: renderWebChat() on React 16 does not support an element inside a shadow root, React 16 would ignore clicks and typing. Pass the shadow root itself instead of the element, or use React 17 or later (with webchat.js, set window.React and window.ReactDOM before loading it).'
       );
     }
 

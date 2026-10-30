@@ -1,5 +1,18 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
-import { args, custom, function_, is, object, picklist, pipe, tuple } from 'valibot';
+import {
+  args,
+  custom,
+  function_,
+  is,
+  literal,
+  object,
+  optional,
+  picklist,
+  pipe,
+  startsWith,
+  string,
+  tuple
+} from 'valibot';
 
 /** Containers `ReactDOM.render()` accepts, `null` included as in its typings (it throws at run time). */
 type RenderWebChatContainer = Element | Document | DocumentFragment | null;
@@ -21,4 +34,19 @@ const legacyReactDOMSchema = object({ render: pipe(function_(), args(tuple([reac
 // `root.render(children)`, root from `createRoot()` of "react-dom/client".
 const reactRootSchema = object({ render: pipe(function_(), args(tuple([reactNode()]))) });
 
-export { containerSchema, legacyReactDOMSchema, reactRootSchema, type RenderWebChatContainer };
+// React DOM 16.13 added `version`, earlier versions do not have it.
+const react16DOMSchema = object({ createPortal: function_(), version: optional(pipe(string(), startsWith('16.'))) });
+
+// A shadow root, by `nodeType` and `host` to work across realms.
+const shadowRootSchema = custom<ShadowRoot>(value =>
+  is(object({ host: object({ nodeType: literal(ELEMENT_NODE) }), nodeType: literal(DOCUMENT_FRAGMENT_NODE) }), value)
+);
+
+export {
+  containerSchema,
+  legacyReactDOMSchema,
+  react16DOMSchema,
+  reactRootSchema,
+  shadowRootSchema,
+  type RenderWebChatContainer
+};
