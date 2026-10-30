@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: { testIds }
+        } = window;
+
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const commonFeedbackMetadata = {
+          aiResponseMessage: 'The generated answer.',
+          mcsConversationId: 'mcs-conversation-id',
+          prompt: 'The user prompt.',
+          promptId: 'prompt-id'
+        };
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            feedbackLoop: {
+              disclaimer: 'Tell us more.',
+              type: 'default'
+            }
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'VoteAction',
+              ...commonFeedbackMetadata,
+              actionOption: 'upvote',
+              actionStatus: 'PotentialActionStatus',
+              activityId: 'review-activity',
+              type: 'https://schema.org/VoteAction'
+            }
+          ],
+          from: {
+            role: 'bot'
+          },
+          id: 'review-activity',
+          text: 'This feedback action requires review.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [reviewButton] = pageElements.allByTestId(testIds.feedbackButton);
+
+        await host.click(reviewButton);
+
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId(testIds.feedbackSendBox),
+          1000
+        );
+
+        await host.sendKeys('Detailed feedback.');
+
+        const reviewPost = await directLine.actPostActivity(async () => {
+          await host.sendTab(1);
+          await host.sendKeys('ENTER');
+        });
+
+        reviewPost.resolvePostActivity();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'VoteAction',
+              ...commonFeedbackMetadata,
+              actionOption: 'downvote',
+              actionStatus: 'PotentialActionStatus',
+              activityId: 'non-review-activity',
+              type: 'https://schema.org/VoteAction'
+            }
+          ],
+          from: {
+            role: 'bot'
+          },
+          id: 'non-review-activity',
+          text: 'This feedback action does not require review.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        const nonReviewButton = Array.from(pageElements.allByTestId(testIds.feedbackButton)).find(
+          button => button.getAttribute('type') === 'button'
+        );
+
+        const { activity: nonReviewActivity } = await directLine.actPostActivity(async () => {
+          await host.click(nonReviewButton);
+          clock.tick(500);
+        });
+
+        expect({
+          nonReviewActivity: {
+            entities: nonReviewActivity.entities,
+            name: nonReviewActivity.name,
+            type: nonReviewActivity.type
+          },
+          reviewActivity: {
+            entities: reviewPost.activity.entities,
+            name: reviewPost.activity.name,
+            replyToId: reviewPost.activity.replyToId,
+            type: reviewPost.activity.type,
+            value: reviewPost.activity.value
+          }
+        }).toEqual({
+          nonReviewActivity: {
+            entities: [
+              {
+                '@context': 'https://schema.org',
+                '@type': 'VoteAction',
+                ...commonFeedbackMetadata,
+                actionOption: 'downvote',
+                actionStatus: 'CompletedActionStatus',
+                activityId: 'non-review-activity',
+                type: 'https://schema.org/VoteAction'
+              }
+            ],
+            name: 'webchat:activity-status/feedback',
+            type: 'event'
+          },
+          reviewActivity: {
+            entities: [
+              {
+                '@context': 'https://schema.org',
+                '@type': 'VoteAction',
+                ...commonFeedbackMetadata,
+                actionOption: 'upvote',
+                actionStatus: 'CompletedActionStatus',
+                activityId: 'review-activity',
+                type: 'https://schema.org/VoteAction'
+              }
+            ],
+            name: 'message/submitAction',
+            replyToId: 'review-activity',
+            type: 'invoke',
+            value: {
+              actionName: 'feedback',
+              actionValue: {
+                feedback: {
+                  feedbackText: 'Detailed feedback.'
+                },
+                reaction: 'like'
+              }
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
