@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>
+      Web Chat element: React 18 from window.React renders the Fluent theme into the shadow root of the element
+    </title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main>
+      <webchat-element id="webchat"></webchat-element>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          React: { version },
+          WebChat: { createWebChatElementClass, FluentThemeProvider }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const webChatElement = document.getElementById('webchat');
+
+        // GIVEN: React 18 in `window.React` and `window.ReactDOM`, which has createRoot(): no createRoot is passed.
+        expect(version).toMatch(/^18\./u);
+
+        // WHEN: The element is defined, then the Fluent theme and props are set.
+        customElements.define('webchat-element', createWebChatElementClass());
+
+        webChatElement.themeProvider = FluentThemeProvider;
+        webChatElement.props = { directLine, store, styleOptions: { disableFileUpload: true } };
+
+        const { shadowRoot } = webChatElement;
+
+        pageElements.root(shadowRoot);
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          suggestedActions: { actions: [{ title: 'USA', type: 'imBack', value: 'USA' }] },
+          text: 'Where are you from?'
+        });
+
+        // The Fluent theme renders suggested actions with its own test ID.
+        await waitFor(() => expect(pageElements.allByTestId('send box suggested action')).toHaveLength(1));
+
+        // THEN: Web Chat and all of its styles, the Fluent theme's included, are inside the shadow root, none in the document.
+        expect(shadowRoot.contains(pageElements.transcript())).toBe(true);
+        expect(document.querySelectorAll('style[data-emotion], style[data-webchat-injected]')).toHaveLength(0);
+
+        // THEN: The bot asks "Where are you from?" with the "USA" suggested action, in the Fluent theme.
+        await host.snapshot('local');
+
+        // WHEN: The element is removed from the document.
+        webChatElement.remove();
+
+        // THEN: Web Chat and its styles are removed from the shadow root.
+        await waitFor(() => expect(shadowRoot.childNodes).toHaveLength(0));
+      });
+    </script>
+  </body>
+</html>
