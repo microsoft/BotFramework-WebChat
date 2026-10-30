@@ -11,6 +11,9 @@ interface StoreController {
 }
 
 interface StoreTransaction {
+  // QUESTION(William): smallest read API so a transaction can compute derived values (e.g. sort positions) from the
+  //                    graph. Reads include nodes upserted earlier in the same transaction.
+  getNode(id: Identifier): Node | undefined;
   upsertNode<T extends Node>(node: T): void;
 }
 
@@ -23,6 +26,7 @@ class Store {
         const affectedNodeIds = new Set<Identifier>();
 
         transactor({
+          getNode: id => this.#state.get(id),
           upsertNode: node => {
             const safeNode = parse(nodeSchema, node);
             const id = safeNode['@id'];
@@ -74,4 +78,4 @@ class Store {
 }
 
 export default Store;
-export type { StoreSource as StoreController, StoreController as StoreTransactor };
+export type { StoreSource as StoreController, StoreController as StoreTransactor, StoreTransaction };
