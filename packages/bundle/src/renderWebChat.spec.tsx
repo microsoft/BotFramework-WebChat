@@ -3,7 +3,6 @@
 
 import ReactDOM from 'react-dom';
 
-import react16EventListenerProps from './private/react16EventListenerProps';
 import renderWebChat from './renderWebChat';
 
 // `render` is set before each test, the React 19 test removes it.
@@ -11,15 +10,13 @@ jest.mock('react-dom', () => ({ __esModule: true, default: {} }));
 
 const ReactWebChat = () => null;
 
-let createPortal: jest.Mock;
 let render: jest.Mock;
 
 beforeEach(() => {
-  createPortal = jest.fn((children, container) => ({ children, container }));
   render = jest.fn();
 
   // React DOM 16.8.6 has no `version`.
-  Object.assign(ReactDOM, { createPortal, render, version: undefined });
+  Object.assign(ReactDOM, { createPortal: jest.fn(), render, version: undefined });
 });
 
 test('Element should be rendered by ReactDOM.render()', () => {
@@ -86,68 +83,44 @@ describe('Element in a shadow root', () => {
     shadowRoot.append(element);
   });
 
-  test('on React 16 should render a portal into the shadow root with every event handler', () => {
-    renderWebChat(ReactWebChat, {}, element);
-
-    expect(createPortal).toHaveBeenCalledTimes(1);
-    expect(createPortal.mock.calls[0][0].props).toEqual({ hidden: true, ...react16EventListenerProps });
-    expect(createPortal.mock.calls[0][1]).toBe(shadowRoot);
-    expect(render.mock.calls[0][0].props.children).toEqual([
-      expect.objectContaining({ type: ReactWebChat }),
-      createPortal.mock.results[0].value
-    ]);
-    expect(render.mock.calls[0][1]).toBe(element);
+  test('on React 16 should throw an error suggesting the shadow root or React 17', () => {
+    expect(() => renderWebChat(ReactWebChat, {}, element)).toThrow(
+      'renderWebChat() on React 16 does not support an element inside a shadow root, React 16 would ignore clicks and typing. Pass the shadow root itself instead of the element, or use React 17 or later (with webchat.js, set window.React and window.ReactDOM before loading it).'
+    );
+    expect(render).not.toHaveBeenCalled();
   });
 
-  test('on React 16.14 should render a portal into the shadow root', () => {
+  test('on React 16.14 should throw', () => {
     Object.assign(ReactDOM, { version: '16.14.0' });
 
-    renderWebChat(ReactWebChat, {}, element);
-
-    expect(createPortal).toHaveBeenCalledTimes(1);
+    expect(() => renderWebChat(ReactWebChat, {}, element)).toThrow('on React 16 does not support');
+    expect(render).not.toHaveBeenCalled();
   });
 
-  test('on React 17 or later should render without a portal', () => {
+  test('on React 17 or later should be rendered by ReactDOM.render()', () => {
     Object.assign(ReactDOM, { version: '17.0.2' });
 
     renderWebChat(ReactWebChat, {}, element);
 
-    expect(createPortal).not.toHaveBeenCalled();
-    expect(render.mock.calls[0][0]).toEqual(expect.objectContaining({ type: ReactWebChat }));
+    expect(render).toHaveBeenCalledTimes(1);
+    expect(render.mock.calls[0][1]).toBe(element);
   });
 
-  test('rendered into the shadow root itself should render without a portal', () => {
+  test('passed as the shadow root itself on React 16 should be rendered by ReactDOM.render()', () => {
     renderWebChat(ReactWebChat, {}, shadowRoot);
 
-    expect(createPortal).not.toHaveBeenCalled();
-    expect(render.mock.calls[0][0]).toEqual(expect.objectContaining({ type: ReactWebChat }));
+    expect(render).toHaveBeenCalledTimes(1);
     expect(render.mock.calls[0][1]).toBe(shadowRoot);
   });
 });
 
-test('Element outside of a shadow root on React 16 should render without a portal', () => {
+test('Element outside of a shadow root on React 16 should be rendered by ReactDOM.render()', () => {
   const element = document.createElement('div');
 
   document.body.append(element);
   renderWebChat(ReactWebChat, {}, element);
   element.remove();
 
-  expect(createPortal).not.toHaveBeenCalled();
-  expect(render.mock.calls[0][0]).toEqual(expect.objectContaining({ type: ReactWebChat }));
-});
-
-test('React 16 event handlers should cover every event of React DOM 16.8.6 except the ones that block scrolling', () => {
-  const actualReactDOM = jest.requireActual('react-dom');
-
-  // Private API of React DOM 16.8.6: `Events[4]` is the dispatch config of every event, by event name.
-  const [, , , , eventNameDispatchConfigs] = actualReactDOM.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.Events;
-
-  // React DOM 16.8.6 has no `version`.
-  expect(actualReactDOM).not.toHaveProperty('version');
-  expect(Object.keys(react16EventListenerProps).sort()).toEqual(
-    Object.values(eventNameDispatchConfigs)
-      .map(({ phasedRegistrationNames, registrationName }) => registrationName || phasedRegistrationNames.bubbled)
-      .filter(name => !['onTouchMove', 'onTouchStart', 'onWheel'].includes(name))
-      .sort()
-  );
+  expect(render).toHaveBeenCalledTimes(1);
+  expect(render.mock.calls[0][1]).toBe(element);
 });
