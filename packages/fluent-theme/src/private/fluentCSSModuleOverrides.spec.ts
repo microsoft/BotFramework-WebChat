@@ -4,7 +4,7 @@ import * as JestGlobals from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { readdirSync, readFileSync } from 'fs';
 import { transform } from 'lightningcss';
-import { join } from 'path';
+import { join, relative } from 'path';
 
 import { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides } from './fluentCSSModuleOverrides';
 
@@ -92,6 +92,18 @@ scenario(
       )
       .and('the lists should be sorted', (_, results) =>
         results.forEach(({ localNames }) => expect(localNames).toEqual([...localNames].sort()))
+      );
+
+    bdd
+      .given('every Fluent CSS module', () => listCSSModules('fluent-theme'))
+      .when('reading the class names it selects through :global()', paths =>
+        paths.map(path => ({
+          path: relative(PACKAGES_PATH, path),
+          webChatGlobalClassNames: getGlobalClassNames(path).filter(className => webChatLocalNames.has(className))
+        }))
+      )
+      .then('none should be a local name of a Web Chat CSS module', (_, results) =>
+        expect(results.filter(({ webChatGlobalClassNames }) => webChatGlobalClassNames.length)).toEqual([])
       );
   },
   JestGlobals
