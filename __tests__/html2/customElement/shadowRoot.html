@@ -60,6 +60,8 @@
 
         await pageConditions.uiConnected();
         await pageConditions.scrollToBottomCompleted();
+
+        // THEN: Web Chat in the shadow root shows the transcript, styled through `stylesRoot`.
         await host.snapshot('local');
 
         for (const style of document.querySelector('webchat-element').shadowRoot.querySelectorAll('style')) {
