@@ -65,6 +65,9 @@
 
         await pageConditions.numActivitiesShown(2);
 
+        // THEN: the bot's answer shows the like and dislike buttons, not pressed.
+        await host.snapshot('local');
+
         // WHEN: the user clicks like, types feedback and submits the feedback form.
         const [reviewButton] = pageElements.allByTestId(testIds.feedbackButton);
 
@@ -76,7 +79,16 @@
           1000
         );
 
+        // Move the pointer away, so the button tooltip does not show.
+        await host.moveTo(10, 10, document.getElementById('webchat'));
+
+        // THEN: the like button is pressed and the feedback form is open with the disclaimer, focus in its text box.
+        await host.snapshot('local');
+
         await host.sendKeys('Detailed feedback.');
+
+        // THEN: the feedback form shows the typed text.
+        await host.snapshot('local');
 
         const reviewPost = await directLine.actPostActivity(async () => {
           await host.sendTab(1);
@@ -84,6 +96,15 @@
         });
 
         reviewPost.resolvePostActivity();
+
+        await pageConditions.became(
+          'feedback form is closed',
+          () => !pageElements.byTestId(testIds.feedbackSendBox),
+          1000
+        );
+
+        // THEN: the feedback form is closed after submit, the like button stays pressed and both buttons are disabled.
+        await host.snapshot('local');
 
         // THEN: the invoke carries the bot's VoteAction as sent, with "actionStatus" completed.
         expect({

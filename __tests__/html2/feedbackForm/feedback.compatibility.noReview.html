@@ -60,6 +60,9 @@
 
         await pageConditions.numActivitiesShown(2);
 
+        // THEN: the bot's answer shows a single dislike button, not pressed.
+        await host.snapshot('local');
+
         // WHEN: the user clicks the only feedback button (dislike) and the 500 ms debounce passes.
         const [nonReviewButton] = pageElements.allByTestId(testIds.feedbackButton);
 
@@ -67,6 +70,12 @@
           await host.click(nonReviewButton);
           clock.tick(500);
         });
+
+        // Move the pointer away, so the button tooltip does not show.
+        await host.moveTo(10, 10, document.getElementById('webchat'));
+
+        // THEN: the dislike button is pressed.
+        await host.snapshot('local');
 
         // THEN: the event carries the bot's VoteAction as sent, with "actionStatus" completed.
         expect({
