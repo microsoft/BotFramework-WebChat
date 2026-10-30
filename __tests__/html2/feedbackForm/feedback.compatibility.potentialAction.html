@@ -87,7 +87,7 @@
         // THEN: the like button is pressed.
         await host.snapshot('local');
 
-        // THEN: the event carries the like action as sent, with "actionStatus" completed and "type" added.
+        // THEN: the event carries the like action as sent, only "actionStatus" is completed.
         expect({
           entities: likeActivity.entities,
           name: likeActivity.name,
@@ -97,8 +97,7 @@
             {
               '@type': 'LikeAction',
               ...customProperties,
-              actionStatus: 'CompletedActionStatus',
-              type: 'https://schema.org/LikeAction'
+              actionStatus: 'CompletedActionStatus'
             }
           ],
           name: 'webchat:activity-status/feedback',
@@ -116,7 +115,7 @@
         // THEN: the dislike button is pressed, the like button is not.
         await host.snapshot('local');
 
-        // THEN: the event carries the dislike action as sent, with "actionStatus" completed and "type" added.
+        // THEN: the event carries the dislike action as sent, only "actionStatus" is completed.
         expect({
           entities: dislikeActivity.entities,
           name: dislikeActivity.name,
@@ -126,8 +125,7 @@
             {
               '@type': 'DislikeAction',
               ...customProperties,
-              actionStatus: 'CompletedActionStatus',
-              type: 'https://schema.org/DislikeAction'
+              actionStatus: 'CompletedActionStatus'
             }
           ],
           name: 'webchat:activity-status/feedback',

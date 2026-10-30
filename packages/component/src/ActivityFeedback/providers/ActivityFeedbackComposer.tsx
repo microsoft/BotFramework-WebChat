@@ -245,12 +245,11 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const { current: feedbackText } = feedbackTextRef;
       const isLegacyAction = isOfType('VoteAction', action);
       const entity = isLegacyAction ? rest : action;
-      const type = new URL(entity['@type'][0] ?? '', entity['@context'] ?? 'https://schema.org').href;
       const originalActionEntity = getOriginalActionEntity(activityFromPropsRef.current, action);
 
       // Send the action as the bot sent it, so the bot can read its custom properties (e.g. prompt ID), as Web Chat 4.18 did.
       const completedActionEntity = originalActionEntity
-        ? Object.freeze({ type, ...originalActionEntity, actionStatus: 'CompletedActionStatus' })
+        ? Object.freeze({ ...originalActionEntity, actionStatus: 'CompletedActionStatus' })
         : undefined;
 
       // TODO: We should update this to use W3C Hydra.1
@@ -274,7 +273,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
             completedActionEntity ?? {
               ...entity,
               actionOption: entity.actionOption[0], // TODO: Service should accept plural.
-              type
+              type: new URL(entity['@type'][0] ?? '', entity['@context'] ?? 'https://schema.org').href
             }
           ],
           name: 'webchat:activity-status/feedback',
