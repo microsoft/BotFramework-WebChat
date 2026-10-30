@@ -13,6 +13,7 @@ import { custom, is, object, optional, parse, pipe, readonly, safeParse, type In
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import canActionResubmit from '../private/canActionResubmit';
 import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackLoop';
+import getVoteActionEntity from '../private/getVoteActionEntity.js';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import isActionRequireReview from '../private/isActionRequireReview';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
@@ -124,6 +125,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
     [activityFromProps]
   );
 
+  const activityFromPropsRef = useRefFrom(activityFromProps);
   const activityRef = useRefFrom(activity);
 
   const actionStateRef = useRef<ActionState | undefined>(undefined);
@@ -242,10 +244,18 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
       const { current: feedbackText } = feedbackTextRef;
       const isLegacyAction = isOfType('VoteAction', action);
+      const voteActionEntity = getVoteActionEntity(activityFromPropsRef.current, action);
+
+      // Send the bot's own `VoteAction` back unparsed, so the bot can read its custom properties (e.g. prompt ID).
+      const completedVoteActionEntity = voteActionEntity && {
+        ...voteActionEntity,
+        actionStatus: 'CompletedActionStatus'
+      };
 
       // TODO: We should update this to use W3C Hydra.1
       if (isActionRequireReview(action)) {
         postActivity({
+          entities: completedVoteActionEntity ? [completedVoteActionEntity] : [],
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
           type: 'invoke',
@@ -262,7 +272,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
         postActivity({
           entities: [
-            {
+            completedVoteActionEntity ?? {
               ...entity,
               actionOption: entity.actionOption[0], // TODO: Service should accept plural.
               type: new URL(entity['@type'][0] ?? '', entity['@context'] ?? 'https://schema.org').href
@@ -273,7 +283,15 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         } as any);
       }
     },
-    [actionsRef, actionStateRef, activityRef, feedbackTextRef, postActivity, setActionStateWithRefresh]
+    [
+      actionsRef,
+      actionStateRef,
+      activityFromPropsRef,
+      activityRef,
+      feedbackTextRef,
+      postActivity,
+      setActionStateWithRefresh
+    ]
   );
 
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
