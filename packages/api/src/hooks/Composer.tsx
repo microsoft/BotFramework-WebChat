@@ -58,7 +58,6 @@ import {
 } from '../middleware/SendBoxToolbarMiddleware';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
-import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
@@ -678,24 +677,22 @@ const ComposerCore = ({
   return (
     <WebChatAPIContext.Provider value={context}>
       <CapabilitiesComposer>
-        <ActivityListenerComposer>
-          <ActivitySendStatusComposer>
-            <ActivityTypingComposer>
-              <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
-                <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                  <GroupActivitiesComposer groupActivitiesMiddleware={groupActivitiesMiddleware}>
-                    <PolymiddlewareComposer polymiddleware={polymiddleware}>
-                      <SpeechToSpeechComposer>
-                        {typeof children === 'function' ? children(context) : children}
-                      </SpeechToSpeechComposer>
-                    </PolymiddlewareComposer>
-                  </GroupActivitiesComposer>
-                  <ActivitySendStatusTelemetryComposer />
-                </SendBoxToolbarMiddlewareProvider>
-              </SendBoxMiddlewareProvider>
-            </ActivityTypingComposer>
-          </ActivitySendStatusComposer>
-        </ActivityListenerComposer>
+        <ActivitySendStatusComposer>
+          <ActivityTypingComposer>
+            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
+                <GroupActivitiesComposer groupActivitiesMiddleware={groupActivitiesMiddleware}>
+                  <PolymiddlewareComposer polymiddleware={polymiddleware}>
+                    <SpeechToSpeechComposer>
+                      {typeof children === 'function' ? children(context) : children}
+                    </SpeechToSpeechComposer>
+                  </PolymiddlewareComposer>
+                </GroupActivitiesComposer>
+                <ActivitySendStatusTelemetryComposer />
+              </SendBoxToolbarMiddlewareProvider>
+            </SendBoxMiddlewareProvider>
+          </ActivityTypingComposer>
+        </ActivitySendStatusComposer>
       </CapabilitiesComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
