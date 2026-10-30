@@ -57,6 +57,7 @@ scenario(
       .given('a module with a non-string class name', () => Object.freeze([Object.freeze({ bubble: 1 })]))
       .when('combined', cssModules => {
         try {
+          // @ts-expect-error: invalid input on purpose.
           combineCSSModules(...cssModules);
         } catch (error) {
           return error;

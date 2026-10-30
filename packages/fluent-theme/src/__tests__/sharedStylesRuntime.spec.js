@@ -43,8 +43,8 @@ test('botframework-webchat-component should bundle the styles runtime into one c
   expect(outputs['metafile-esm.json']).toHaveLength(1);
 });
 
-test('botframework-webchat should not bundle the styles runtime', () =>
-  // IIFE builds get it from botframework-webchat-component.
+test('botframework-webchat should not bundle its own copy of the styles runtime', () =>
+  // IIFE builds (webchat.js) contain one copy, inside the botframework-webchat-component code they inline.
   expect(outputsWithStylesRuntime('botframework-webchat')).toEqual({
     'metafile-cjs.json': [],
     'metafile-esm.json': [],

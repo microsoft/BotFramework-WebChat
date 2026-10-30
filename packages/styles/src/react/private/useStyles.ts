@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react';
 
 import { localClassName, type ClassNameTransform } from './classNameTransforms';
-import CSSModuleThemeContext from './CSSModuleThemeContext';
+import CSSModuleThemeContext, { type CSSModuleTheme } from './CSSModuleThemeContext';
 
 /**
  * Maps every local name of a CSS module to the class names its element should carry:
@@ -10,7 +10,7 @@ import CSSModuleThemeContext from './CSSModuleThemeContext';
  * 2. the module's own hashed class name,
  * 3. the classes of the same local name from `CSSModuleThemeContext`, if any.
  */
-function useStyles<T extends CSSModuleClasses>(styles: T, transform: ClassNameTransform = localClassName): T {
+function useStyles<T extends CSSModuleTheme>(styles: T, transform: ClassNameTransform = localClassName): T {
   const theme = useContext(CSSModuleThemeContext);
 
   // @ts-expect-error: entries/fromEntries don't allow to specify keys type
