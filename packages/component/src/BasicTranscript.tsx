@@ -1,6 +1,7 @@
 // TODO: [P2] Fix ESLint error `no-use-before-define`
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, {
@@ -37,7 +38,6 @@ import { type ActivityElementMap } from './Transcript/types';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import { android } from './Utils/detectBrowser';
-import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
 import useDispatchTranscriptFocusByActivityKey from './hooks/internal/useDispatchTranscriptFocusByActivityKey';
 import useNonce from './hooks/internal/useNonce';
@@ -65,6 +65,8 @@ import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelati
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
 
+import styles from './BasicTranscript.module.css';
+
 const {
   useActivityKeys,
   useDirection,
@@ -76,37 +78,6 @@ const {
   useMarkAllAsAcknowledged,
   useStyleOptions
 } = hooks;
-
-const ROOT_STYLE = {
-  '&.webchat__basic-transcript': {
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    // Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button.
-    // Stacking context help isolating elements that use "z-index" from global pollution.
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
-    position: 'relative',
-
-    '& .webchat__basic-transcript__filler': {
-      flex: 1
-    },
-
-    '& .webchat__basic-transcript__scrollable': {
-      display: 'flex',
-      flexDirection: 'column',
-      overflowX: 'hidden',
-      WebkitOverflowScrolling: 'touch'
-    },
-
-    '& .webchat__basic-transcript__transcript': {
-      listStyleType: 'none'
-    },
-
-    '& .webchat__basic-transcript__activity-focus-target': {
-      pointerEvents: 'none'
-    }
-  }
-};
 
 type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
@@ -135,8 +106,9 @@ const InternalTranscript = memo(
       const getActivityByKey = useGetActivityByKey();
       const getKeyByActivityId = useGetKeyByActivityId();
       const localize = useLocalizer();
-      const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
       const rootElementRef = useRef<HTMLDivElement>(null);
+      // Keeps the "webchat__basic-transcript" class names.
+      const transcriptClassNames = useStyles(styles, webChatPrefixedClassName);
 
       const focusedKeyRef = useValueRef(focusedKey);
       const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
@@ -444,7 +416,7 @@ const InternalTranscript = memo(
           // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
           aria-activedescendant={android ? undefined : activeDescendantId}
           aria-label={transcriptAriaLabel}
-          className={classNames('webchat__basic-transcript', rootClassName, (className || '') + '')}
+          className={classNames(transcriptClassNames['basic-transcript'], (className || '') + '')}
           dir={direction}
           onFocus={handleFocus}
           onKeyDown={handleTranscriptKeyDown}
@@ -488,6 +460,8 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
   const [sticky]: [boolean] = useSticky();
   const localize = useLocalizer();
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
+  // Keeps the "webchat__basic-transcript" class names.
+  const transcriptClassNames = useStyles(styles, webChatPrefixedClassName);
 
   const prevSticky = usePrevious(sticky);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
@@ -505,8 +479,8 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
 
   return (
     <React.Fragment>
-      <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
-        <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
+      <ReactScrollToBottomPanel className={transcriptClassNames['basic-transcript__scrollable']}>
+        <div aria-hidden={true} className={transcriptClassNames['basic-transcript__filler']} onFocus={onFocusFiller} />
         {hasAnyChild && (
           <TranscriptActivityList
             aria-roledescription={transcriptRoleDescription}

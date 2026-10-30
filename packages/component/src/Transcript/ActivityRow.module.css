@@ -1,0 +1,5 @@
+/* No styles of its own: the rule declares the local name, so useStyles() returns it and themes can style it. */
+/* Lightning CSS does not export local names of empty rules, and ":not(*)" never matches. */
+:global(.webchat) .basic-transcript__activity-body:not(*) {
+  display: none;
+}
