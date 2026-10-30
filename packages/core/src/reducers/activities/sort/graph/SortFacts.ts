@@ -10,18 +10,15 @@ import {
   readonly,
   string,
   union,
-  type InferInput,
   type InferOutput
 } from 'valibot';
-import { nodeSchema } from '../node/Node.ts';
 
 /**
- * Sort facts of a message, extracted by the source (e.g. from a Direct Line activity) before the message enters the
- * graph. Extraction stays with the source: it knows the wire format, the sorter does not.
+ * Sort facts of an activity, extracted from it before it enters the graph (`toSortFacts()`).
  */
-const sortableMessageSchema = pipe(
+const sortFactsSchema = pipe(
   object({
-    /** The message is a part of a HowTo grouping (schema.org `isPartOf`), at the position declared by the sender. */
+    /** The activity is a part of a HowTo grouping (schema.org `isPartOf`), at the position declared by the sender. */
     howTo: optional(
       pipe(
         object({
@@ -31,7 +28,7 @@ const sortableMessageSchema = pipe(
         readonly()
       )
     ),
-    /** The message is a revision of a livestream session. */
+    /** The activity is a revision of a livestream session. */
     livestream: optional(
       union([
         pipe(
@@ -54,14 +51,11 @@ const sortableMessageSchema = pipe(
     /** Fallback sort key in milliseconds, only compared between two messages without `logicalTimestamp`. */
     localTimestamp: optional(number()),
     /** Sort key: sequence ID if the source has one, otherwise the timestamp in milliseconds. */
-    logicalTimestamp: optional(number()),
-    /** The message node. Its `hasPart`, `isPartOf` and `position` are owned by the sorter and replaced. */
-    node: nodeSchema
+    logicalTimestamp: optional(number())
   }),
   readonly()
 );
 
-type SortableMessage = InferInput<typeof sortableMessageSchema>;
-type SafeSortableMessage = InferOutput<typeof sortableMessageSchema>;
+type SortFacts = InferOutput<typeof sortFactsSchema>;
 
-export { sortableMessageSchema, type SafeSortableMessage, type SortableMessage };
+export { sortFactsSchema, type SortFacts };

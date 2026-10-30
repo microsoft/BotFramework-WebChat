@@ -1,62 +1,64 @@
-import type { Node } from '../node/Node.ts';
-import type { Identifier } from '../node/NodeIdentifier.ts';
-import getSortedMessages from '../sort/getSortedMessages.ts';
-import getOrderedParts from '../sort/private/getOrderedParts.ts';
-import type { SortableMessage } from '../sort/SortableMessage.ts';
-import upsertSortedMessage from '../sort/upsertSortedMessage.ts';
-import createTestStore, { type TestStore } from './createTestStore.ts';
+import createActivitiesGraph, { type ActivitiesGraph } from '../createActivitiesGraph';
+import getSortedMessages from '../getSortedMessages';
+import type { SortFacts } from '../SortFacts';
+import type { GraphIdentifier, GraphNode } from '../types';
+import upsertSortedMessage from '../upsertSortedMessage';
+import getOrderedParts from './getOrderedParts';
 
 const CONVERSATION_ID = '_:conversation';
 
-type MessageInit = Omit<SortableMessage, 'node'> & { readonly id: string; readonly text: string };
+type TestMessage = { readonly node: GraphNode; readonly sortFacts: SortFacts };
+type MessageInit = SortFacts & { readonly id: string; readonly text: string };
 
-/** Builds the sort input of a message node `_:<id>`, like a source would extract it from an activity. */
-function buildMessage({ id, text, ...init }: MessageInit): SortableMessage {
+/** Builds a message node `_:<id>` and its sort facts, like `toActivityNode()`/`toSortFacts()` do for an activity. */
+function buildMessage({ id, text, ...sortFacts }: MessageInit): TestMessage {
   const nodeId: `_:${string}` = `_:${id}`;
 
   return Object.freeze({
-    ...init,
-    node: { '@id': nodeId, '@type': new Set(['Message']), text: [text] }
+    node: { '@id': nodeId, '@type': new Set(['Message']), text: [text] },
+    sortFacts: Object.freeze(sortFacts)
   });
 }
 
 /** Upserts each message in its own transaction, in order, like one reducer action per activity. */
-function upsertEach(testStore: TestStore, ...messages: readonly SortableMessage[]): TestStore {
-  for (const message of messages) {
-    testStore.edit(transaction => upsertSortedMessage(transaction, CONVERSATION_ID, message));
+function upsertEach(graph: ActivitiesGraph, ...messages: readonly TestMessage[]): ActivitiesGraph {
+  for (const { node, sortFacts } of messages) {
+    graph.edit(transaction => upsertSortedMessage(transaction, CONVERSATION_ID, node, sortFacts));
   }
 
-  return testStore;
+  return graph;
 }
 
-function createSortedTestStore(...messages: readonly SortableMessage[]): TestStore {
-  return upsertEach(createTestStore(), ...messages);
+function createSortedTestStore(...messages: readonly TestMessage[]): ActivitiesGraph {
+  return upsertEach(createActivitiesGraph(), ...messages);
 }
 
-type ViewEntry = { readonly id: Identifier; readonly position: number | undefined; readonly text: unknown };
+type ViewEntry = { readonly id: GraphIdentifier; readonly position: number | undefined; readonly text: unknown };
 
 /** The derived view as `{ id, position, text }`, for readable expectations. */
-function getView({ store }: TestStore): readonly ViewEntry[] {
-  return getSortedMessages(store.getSnapshot(), CONVERSATION_ID).map(({ '@id': id, position, text }) =>
+function getView({ store }: ActivitiesGraph): readonly ViewEntry[] {
+  const snapshot = store.getSnapshot();
+
+  return getSortedMessages(id => snapshot.get(id), CONVERSATION_ID).map(({ '@id': id, position, text }) =>
     Object.freeze({ id, position, text })
   );
 }
 
 /** The parts of a node in `position` order, as IDs. */
-function getPartIds({ store }: TestStore, parentId: Identifier): readonly Identifier[] {
+function getPartIds({ store }: ActivitiesGraph, parentId: GraphIdentifier): readonly GraphIdentifier[] {
   const snapshot = store.getSnapshot();
 
   return getOrderedParts(id => snapshot.get(id), parentId).map(node => node['@id']);
 }
 
 /**
- * Checks the integrity rules listed in `Store.ts` that the sorter is responsible for. Returns the violations.
+ * Checks the integrity rules listed in William's `Store.ts` that the sorter is responsible for. Returns the violations.
  *
  * - Every `isPartOf` node is in the graph and lists the part in its `hasPart`
  * - Every `hasPart` node is in the graph and is `isPartOf` the parent
  * - Parts of the same parent have a position, and no 2 parts have the same position
  */
-function getIntegrityViolations(snapshot: ReadonlyMap<string, Node>): readonly string[] {
+function getIntegrityViolations(snapshot: ReadonlyMap<string, GraphNode>): readonly string[] {
   const violations: string[] = [];
 
   for (const node of snapshot.values()) {
@@ -102,5 +104,6 @@ export {
   getIntegrityViolations,
   getPartIds,
   getView,
-  upsertEach
+  upsertEach,
+  type TestMessage
 };

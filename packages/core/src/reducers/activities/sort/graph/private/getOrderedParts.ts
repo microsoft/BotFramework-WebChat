@@ -1,14 +1,10 @@
-import type { Node } from '../../node/Node.ts';
-import type { Identifier } from '../../node/NodeIdentifier.ts';
+import type { GetNode, GraphIdentifier, GraphNode } from '../types';
 
 /**
  * Returns the parts of a node (`hasPart`), sorted by their `position`.
  */
-export default function getOrderedParts(
-  getNode: (id: Identifier) => Node | undefined,
-  parentId: Identifier
-): readonly Node[] {
-  const parts: Node[] = [];
+export default function getOrderedParts(getNode: GetNode, parentId: GraphIdentifier): readonly GraphNode[] {
+  const parts: GraphNode[] = [];
 
   for (const { '@id': partId } of getNode(parentId)?.hasPart ?? []) {
     const part = getNode(partId);
