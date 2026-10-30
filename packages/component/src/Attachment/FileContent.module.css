@@ -1,0 +1,23 @@
+/* Style options apply through the "fileContent" style set entry, which selects the "webchat__fileContent" class names. */
+:global(.webchat) .fileContent {
+  display: flex;
+
+  .fileContent__buttonLink {
+    display: flex;
+    flex: 1;
+  }
+
+  .fileContent__badge {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .fileContent__downloadIcon:not(*),
+  .fileContent__fileName:not(*),
+  .fileContent__size:not(*) {
+    /* No styles of their own here: the rule declares the local names, so useStyles() returns them and themes can style them. */
+    /* Lightning CSS does not export local names of empty rules, and ":not(*)" never matches. */
+    display: none;
+  }
+}
