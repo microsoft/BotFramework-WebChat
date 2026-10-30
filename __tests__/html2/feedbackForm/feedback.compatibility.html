@@ -27,6 +27,9 @@
 
         await pageConditions.uiConnected();
 
+        // The user asks first: Web Chat adds the "ClientCapabilities" entity to the first outgoing activity only.
+        await (await directLine.emulateOutgoingActivity('The user prompt.')).resolveAll();
+
         const commonFeedbackMetadata = {
           aiResponseMessage: 'The generated answer.',
           mcsConversationId: 'mcs-conversation-id',
@@ -60,7 +63,7 @@
           type: 'message'
         });
 
-        await pageConditions.numActivitiesShown(1);
+        await pageConditions.numActivitiesShown(2);
 
         const [reviewButton] = pageElements.allByTestId(testIds.feedbackButton);
 
@@ -101,7 +104,7 @@
           type: 'message'
         });
 
-        await pageConditions.numActivitiesShown(2);
+        await pageConditions.numActivitiesShown(3);
 
         const nonReviewButton = Array.from(pageElements.allByTestId(testIds.feedbackButton)).find(
           button => button.getAttribute('type') === 'button'
