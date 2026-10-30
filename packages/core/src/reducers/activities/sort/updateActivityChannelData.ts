@@ -1,6 +1,8 @@
 import { check, parse, pipe, string, type GenericSchema } from 'valibot';
+import { replaceActivity } from './graph/activityNode';
+import deriveState from './graph/deriveState';
 import { getLocalIdFromActivity, type LocalId } from './property/LocalId';
-import type { Activity, ActivityMapEntry, State } from './types';
+import type { Activity, State } from './types';
 
 const channelDataNameSchema: GenericSchema<
   Exclude<string, 'state' | 'streamId' | 'streamSequence' | 'streamType' | `webchat:${string}`>
@@ -36,9 +38,14 @@ function updateActivityChannelDataInternalSkipNameCheck(
   value: unknown
 ): State {
   const activityEntry = state.activityMap.get(activityLocalId);
+  const node = state.graph?.store.getSnapshot().get(activityLocalId);
 
-  if (!activityEntry) {
+  if (!activityEntry || !state.graph || !node) {
     throw new Error(`botframework-webchat: no activity found with internal ID ${activityLocalId}`);
+  }
+
+  if (!state.sortedActivities.some(activity => getLocalIdFromActivity(activity) === activityLocalId)) {
+    throw new Error(`botframework-webchat: no activity found in sortedActivities with internal ID ${activityLocalId}`);
   }
 
   // TODO: [P0] We will freeze activity in future.
@@ -50,28 +57,10 @@ function updateActivityChannelDataInternalSkipNameCheck(
     } as any
   };
 
-  const nextActivityMap = new Map(state.activityMap).set(
-    activityLocalId,
-    Object.freeze({ ...activityEntry, activity: nextActivity } satisfies ActivityMapEntry)
-  );
+  // Replaces the activity in its node, without moving it.
+  state.graph.edit(transaction => replaceActivity(transaction, node, nextActivity));
 
-  const nextSortedActivities = Array.from(state.sortedActivities);
-
-  const existingActivityIndex = nextSortedActivities.findIndex(
-    activity => getLocalIdFromActivity(activity) === activityLocalId
-  );
-
-  if (!~existingActivityIndex) {
-    throw new Error(`botframework-webchat: no activity found in sortedActivities with internal ID ${activityLocalId}`);
-  }
-
-  nextSortedActivities[+existingActivityIndex] = nextActivity;
-
-  return Object.freeze({
-    ...state,
-    activityMap: Object.freeze(nextActivityMap),
-    sortedActivities: Object.freeze(nextSortedActivities)
-  } satisfies State);
+  return deriveState(state.graph);
 }
 
 /**

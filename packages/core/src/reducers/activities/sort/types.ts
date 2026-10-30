@@ -1,5 +1,6 @@
 import type { Tagged } from 'type-fest';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { ActivitiesGraph } from './graph/createActivitiesGraph';
 import type { LocalId } from './property/LocalId';
 
 type Activity = WebChatActivity;
@@ -53,6 +54,11 @@ type State = {
   readonly activityIdToLocalIdMap: Map<string, LocalId>;
   readonly activityMap: ActivityMap;
   readonly clientActivityIdToLocalIdMap: Map<string, LocalId>;
+  /**
+   * The source of truth: William's store holding the activities graph. The other fields are derived from it.
+   * `undefined` until the first activity.
+   */
+  readonly graph: ActivitiesGraph | undefined;
   readonly howToGroupingMap: HowToGroupingMap;
   readonly livestreamSessionMap: LivestreamSessionMap;
   readonly sortedChatHistoryList: SortedChatHistory;
