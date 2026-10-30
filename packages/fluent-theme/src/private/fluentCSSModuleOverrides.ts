@@ -116,6 +116,7 @@ const themeOverrides: readonly string[] = Object.freeze([
   'thumb-button--large',
   'thumb-button__image',
   'thumb-button__input',
+  'tooltip',
   'transcript-focus-area',
   'transcript-focus-area__content--focused',
   'transcript-focus-area__content-overlay',
