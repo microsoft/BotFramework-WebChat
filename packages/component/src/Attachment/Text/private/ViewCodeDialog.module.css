@@ -1,4 +1,5 @@
-:global(.webchat) .view-code-dialog {
+/* The modal dialog rules (Popover.module.css) can come later in the stylesheet: out-specify them instead of relying on order. */
+:global(.webchat) .view-code-dialog:global(.webchat__modal-dialog) {
   box-sizing: border-box;
   display: grid;
   height: 100%;
@@ -8,7 +9,7 @@
   place-items: center;
 }
 
-:global(.webchat) .view-code-dialog :global(.webchat__modal-dialog__box) {
+:global(.webchat) .view-code-dialog:global(.webchat__modal-dialog) :global(.webchat__modal-dialog__box) {
   display: flex;
   flex-direction: column;
   max-height: 100%;

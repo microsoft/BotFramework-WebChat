@@ -406,7 +406,7 @@
 }
 
 /* Modal */
-:global(.webchat-fluent).theme :global(.webchat__modal-dialog) {
+:global(.webchat-fluent).theme .modal-dialog {
   height: 100%;
   display: grid;
   place-items: center;
@@ -415,7 +415,7 @@
     background-color: var(--webchat-colorBackgroundOverlay);
   }
 
-  :global(.webchat__modal-dialog__box) {
+  .modal-dialog__box {
     background-color: var(--webchat-colorNeutralBackground1);
     border-radius: var(--webchat-borderRadiusXLarge);
     position: relative;
@@ -423,29 +423,29 @@
     box-shadow: var(--webchat-shadow64);
   }
 
-  :global(.webchat__modal-dialog__close-button) {
+  .modal-dialog__close-button {
     color: var(--webchat-colorNeutralForeground1);
     transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
   }
 
   /* TODO: align with original fluent modal styles in WebChat as they don't match v9 anymore */
-  :global(.webchat__modal-dialog__close-button):not(:active):hover {
+  .modal-dialog__close-button:not(:active):hover {
     background-color: var(--webchat-colorNeutralBackground3);
   }
 
-  :global(.webchat__modal-dialog__close-button):focus:active {
+  .modal-dialog__close-button:focus:active {
     background-color: var(--webchat-colorNeutralBackground4);
   }
 
-  :global(.webchat__modal-dialog__close-button):not(:focus-visible) {
+  .modal-dialog__close-button:not(:focus-visible) {
     border: none;
   }
 
-  :global(.webchat__modal-dialog__close-button):focus {
+  .modal-dialog__close-button:focus {
     border-color: var(--webchat-colorStrokeFocus2);
   }
 
-  :global(.webchat__modal-dialog__close-button-icon) {
+  .modal-dialog__close-button-icon {
     color: currentColor;
   }
 }
@@ -531,13 +531,13 @@
 }
 
 /* View Code dialog */
-:global(.webchat-fluent).theme :global(.webchat__modal-dialog).view-code-dialog {
-  :global(.webchat__modal-dialog__close-button-layout) {
+:global(.webchat-fluent).theme .modal-dialog.view-code-dialog {
+  .modal-dialog__close-button-layout {
     display: flex;
     padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
   }
 
-  :global(.webchat__modal-dialog__close-button) {
+  .modal-dialog__close-button {
     align-items: center;
     aspect-ratio: 1;
     display: flex;
@@ -557,11 +557,11 @@
     top: 0;
   }
 
-  :global(.webchat__modal-dialog__box) {
+  .modal-dialog__box {
     width: fit-content;
   }
 
-  :global(.webchat__modal-dialog__body) {
+  .modal-dialog__body {
     margin: 0;
     padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
   }
