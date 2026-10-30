@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'url';
 import lightningCssPlugin from 'unplugin-lightningcss/esbuild';
 
 // Due to a bug in unplugin, we cannot use the Lightning CSS unplugin directly.
@@ -18,7 +19,10 @@ const cssPlugin = {
           animation: false,
           grid: false,
           customIdents: false
-        }
+        },
+        // Hashed class names come from the file path relative to this folder (the repository root):
+        // the same on every machine, and different for modules at the same path in different packages.
+        projectRoot: fileURLToPath(new URL('.', import.meta.url))
       }
     }).setup({
       ...build,

@@ -1,8 +1,8 @@
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { testIds } from 'botframework-webchat';
 import cx from 'classnames';
 import React, { memo } from 'react';
 
+import { useStyles } from '../../styles';
 import SlidingDots from '../assets/SlidingDots';
 import styles from './SlidingDotsTypingIndicator.module.css';
 

@@ -1,5 +1,10 @@
-import { composeWithDevTools } from '@redux-devtools/extension';
-import { applyMiddleware, createStore as createReduxStore, type Middleware, type Store } from 'redux';
+import {
+  applyMiddleware,
+  createStore as createReduxStore,
+  type Middleware,
+  type Store,
+  type StoreEnhancer
+} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
 import sagaError from './actions/sagaError';
@@ -9,6 +14,12 @@ import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import StoreDebugAPIRegistry from './internal/StoreDebugAPIRegistry';
+
+// The Redux DevTools browser extension sets this global, Redux Toolkit reads it the same way.
+// Typed here instead of globally, so it is not part of the published typings.
+type WindowWithReduxDevTools = Window & {
+  readonly __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: ((enhancer: StoreEnhancer) => StoreEnhancer) | undefined;
+};
 
 type CreateStoreOptions = {
   /**
@@ -123,10 +134,14 @@ export function withOptions(
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
   const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
 
+  const devToolsWindow: WindowWithReduxDevTools | undefined =
+    options.devTools && typeof window !== 'undefined' ? window : undefined;
+  const composeWithDevTools = devToolsWindow?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+
   store = createReduxStore(
     createReducer(ponyfill, restrictedStoreDebugAPI),
     initialState || {},
-    options.devTools ? composeWithDevTools(enhancer) : enhancer
+    composeWithDevTools ? composeWithDevTools(enhancer) : enhancer
   );
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
