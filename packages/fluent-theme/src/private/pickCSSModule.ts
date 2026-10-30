@@ -9,11 +9,13 @@ export default function pickCSSModule(
   cssModule: CSSModuleClasses,
   localNames: readonly string[]
 ): Readonly<Record<string, string>> {
+  const classNamesMap = new Map(Object.entries(cssModule));
+
   return Object.freeze(
     Object.fromEntries(
       localNames.map(localName => [
         localName,
-        parse(string(`The CSS module does not define the local name "${localName}".`), cssModule[`${localName}`])
+        parse(string(`The CSS module does not define the local name "${localName}".`), classNamesMap.get(localName))
       ])
     )
   );

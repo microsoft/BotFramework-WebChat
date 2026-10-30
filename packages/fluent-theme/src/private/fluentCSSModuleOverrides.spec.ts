@@ -17,11 +17,15 @@ const listCSSModules = (packageName: string): readonly string[] =>
     .filter(path => path.endsWith('.module.css') && !path.includes('__tests__'))
     .map(path => join(PACKAGES_PATH, packageName, 'src', path));
 
-// Local names as Lightning CSS (the CSS module compiler of the build) exports them.
+// Local names as the build exports them (Lightning CSS with the CSS modules options of esbuildPlugins.mjs).
 const getLocalNames = (path: string): readonly string[] =>
   Object.keys(
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    transform({ code: readFileSync(path), cssModules: true, filename: path }).exports ?? {}
+    transform({
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      code: readFileSync(path),
+      cssModules: { animation: false, customIdents: false, grid: false, pattern: 'w[hash]_[local]' },
+      filename: path
+    }).exports ?? {}
   );
 
 // Class names selected through `:global(…)`, which only match readable class names.
@@ -56,6 +60,11 @@ const OVERRIDES_BY_FLUENT_CSS_MODULE: Readonly<Record<string, readonly string[]>
   'fluent-theme/src/components/sendBox/SendBox.module.css': sendBoxOverrides,
   'fluent-theme/src/components/theme/Theme.module.css': themeOverrides
 });
+
+// Fluent's own classes that happen to share a name with a Web Chat class, not overrides.
+const FLUENT_OWN_LOCAL_NAMES: ReadonlySet<string> = Object.freeze(
+  new Set(['appearance--text', 'icon--attachment', 'icon--microphone', 'icon--send'])
+);
 
 scenario(
   'Fluent overrides of Web Chat CSS modules',
@@ -96,14 +105,28 @@ scenario(
 
     bdd
       .given('every Fluent CSS module', () => listCSSModules('fluent-theme'))
-      .when('reading the class names it selects through :global()', paths =>
-        paths.map(path => ({
-          path: relative(PACKAGES_PATH, path),
-          webChatGlobalClassNames: getGlobalClassNames(path).filter(className => webChatLocalNames.has(className))
-        }))
+      .when('reading its local names and the class names it selects through :global()', paths =>
+        paths.map(path => {
+          const listedLocalNames = OVERRIDES_BY_FLUENT_CSS_MODULE[relative(PACKAGES_PATH, path)] ?? [];
+
+          return {
+            path: relative(PACKAGES_PATH, path),
+            // A Web Chat local name in a Fluent rule only matches when it is listed for that module.
+            unlistedWebChatLocalNames: getLocalNames(path).filter(
+              localName =>
+                webChatLocalNames.has(localName) &&
+                !listedLocalNames.includes(localName) &&
+                !FLUENT_OWN_LOCAL_NAMES.has(localName)
+            ),
+            webChatGlobalClassNames: getGlobalClassNames(path).filter(className => webChatLocalNames.has(className))
+          };
+        })
       )
-      .then('none should be a local name of a Web Chat CSS module', (_, results) =>
+      .then('none should select a local name of a Web Chat CSS module through :global()', (_, results) =>
         expect(results.filter(({ webChatGlobalClassNames }) => webChatGlobalClassNames.length)).toEqual([])
+      )
+      .and('every local name of a Web Chat CSS module should be listed', (_, results) =>
+        expect(results.filter(({ unlistedWebChatLocalNames }) => unlistedWebChatLocalNames.length)).toEqual([])
       );
   },
   JestGlobals
