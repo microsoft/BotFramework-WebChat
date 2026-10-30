@@ -70,23 +70,23 @@
     }
   }
 
-  .stacked-layout .bubble :global(.webchat__fileContent__badge) {
+  .stacked-layout .bubble .fileContent__badge {
     cursor: default;
     font-size: var(--webchat-fontSizeBase300);
     line-height: var(--webchat-lineHeightBase300);
 
-    :global(.webchat__fileContent__fileName) {
+    .fileContent__fileName {
       color: var(--webchat-colorBrandForegroundLink);
       font-family: inherit;
     }
 
-    :global(.webchat__fileContent__size) {
+    .fileContent__size {
       color: var(--webchat-colorNeutralForeground2);
       font-family: inherit;
     }
   }
 
-  .stacked-layout .bubble :global(.webchat__fileContent__downloadIcon) {
+  .stacked-layout .bubble .fileContent__downloadIcon {
     color: var(--webchat-colorBrandForegroundLink);
   }
   /* #endregion */
