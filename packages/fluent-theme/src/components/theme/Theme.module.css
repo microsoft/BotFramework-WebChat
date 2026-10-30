@@ -234,12 +234,12 @@
 }
 
 /* Scrollbars */
-:global(.webchat-fluent).theme :global(.code-block-content .code-block-content__code-block),
+:global(.webchat-fluent).theme .code-block-content .code-block-content__code-block,
 :global(.webchat-fluent).theme :global(.send-box-attachment-bar.send-box-attachment-bar--as-list-item),
 :global(.webchat-fluent).theme :global(.text-area.text-area--scroll),
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.render-markdown [data-math-type='block']),
-:global(.webchat-fluent).theme :global(.view-code-dialog__body),
+:global(.webchat-fluent).theme .view-code-dialog__body,
 :global(.webchat-fluent).theme :global(.view-code-dialog__code-body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
@@ -452,7 +452,7 @@
 }
 
 /* Code block */
-:global(.webchat-fluent).theme :global(.code-block) {
+:global(.webchat-fluent).theme .code-block {
   border: none;
   font-family: var(--webchat-fontFamilyMonospace);
   font-size: var(--webchat-fontSizeBase300);
@@ -460,7 +460,7 @@
   --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
   --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
 
-  :global(.code-block-copy-button) {
+  .code-block-copy-button {
     background: transparent;
     border: none;
     color: var(--webchat__code-block__copy-button--color);
@@ -475,7 +475,7 @@
       border: var(--webchat-strokeWidthThin) solid ButtonText;
     }
 
-    :global(.code-block-copy-button__icon) {
+    .code-block-copy-button__icon {
       --webchat__component-icon--color: currentColor;
 
       @media (forced-colors: active) {
@@ -499,21 +499,21 @@
     }
   }
 
-  &:global(:has(.code-block__body:focus-visible)):focus-within {
+  &:has(.code-block__body:focus-visible):focus-within {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
     outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
 
-    :global(.code-block__body) {
+    .code-block__body {
       outline: none;
     }
   }
 
-  :global(.code-block__body) {
+  .code-block__body {
     /* TODO: what is the right value? The value below matches "normal" for contents display */
     line-height: 1.435;
   }
 
-  &:global(:has(> .code-block__theme--github-dark-default)) {
+  &:has(> .code-block__theme--github-dark-default) {
     --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey8));
     --webchat__code-block__copy-button--background: var(
       --codeBlockCopyButtonBackgroundPressed,
@@ -523,7 +523,7 @@
     --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey98));
   }
 
-  &:global(:has(> .code-block__theme--github-light-default)) {
+  &:has(> .code-block__theme--github-light-default) {
     --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey98));
     --webchat__code-block__copy-button--background: var(--codeBlockBackgroundPressed, var(--webchat-colorGrey92));
     --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));
@@ -532,7 +532,7 @@
 }
 
 /* View Code dialog */
-:global(.webchat-fluent).theme :global(.webchat__modal-dialog.view-code-dialog) {
+:global(.webchat-fluent).theme :global(.webchat__modal-dialog).view-code-dialog {
   :global(.webchat__modal-dialog__close-button-layout) {
     display: flex;
     padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
@@ -548,7 +548,7 @@
     width: unset;
   }
 
-  :global(.code-block-copy-button) {
+  .code-block-copy-button {
     --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
     --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
 
@@ -567,25 +567,25 @@
     padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
   }
 
-  :global(.view-code-dialog__title) {
+  .view-code-dialog__title {
     font-size: var(--webchat-fontSizeBase300);
     font-weight: var(--webchat-fontWeightSemibold);
     line-height: var(--webchat-lineHeightBase300);
   }
 
-  :global(.view-code-dialog__body) {
+  .view-code-dialog__body {
     font-family: var(--webchat-fontFamilyMonospace);
     font-size: var(--webchat-fontSizeBase300);
     margin: 0 calc(var(--webchat-spacingHorizontalM) * -1);
     padding: 0 var(--webchat-spacingHorizontalM);
   }
 
-  :global(.code-block__body) {
+  .code-block__body {
     /* TODO: what is the right value? The value below matches "normal" for block display */
     line-height: normal;
   }
 
-  :global(.view-code-dialog__footer) {
+  .view-code-dialog__footer {
     color: var(--webchat-colorNeutralForeground4);
     font-size: var(--webchat-fontSizeBase100);
     line-height: var(--webchat-lineHeightBase100);

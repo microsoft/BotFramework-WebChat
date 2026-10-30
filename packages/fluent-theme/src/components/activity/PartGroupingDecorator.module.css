@@ -505,7 +505,7 @@
   /* #endregion */
 
   /* #region Code blocks */
-  :global(.stacked-layout .bubble .code-block-content) {
+  :global(.stacked-layout) :global(.bubble) .code-block-content {
     border-radius: var(--webchat-borderRadiusXLarge);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
     font-size: var(--webchat-fontSizeBase300);
@@ -513,16 +513,16 @@
     margin-block: var(--webchat-spacingVerticalNone);
     margin-inline: var(--webchat-part-grouping__code-block--space-inline);
 
-    :global(.code-block-content__header) {
+    .code-block-content__header {
       padding: var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalL);
     }
 
-    :global(.code-block-content__code-block) {
+    .code-block-content__code-block {
       padding-block: var(--webchat-spacingVerticalM);
       padding-inline: var(--webchat-spacingHorizontalL) var(--webchat-spacingHorizontalS);
     }
 
-    :global(.code-block-copy-button) {
+    .code-block-copy-button {
       --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
       --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
 

@@ -1,10 +1,26 @@
 // Local names of Web Chat CSS modules that each Fluent CSS module styles, kept sorted.
 // FluentThemeProvider passes Fluent's class names for them to Web Chat's useStyles() through <CSSModuleThemeComposer>,
 // so Fluent rules select them as local names (`.thumb-button`), not as readable class names (`:global(.thumb-button)`).
-// fluentCSSModuleOverrides.spec.js checks these lists against the CSS.
+// fluentCSSModuleOverrides.spec.ts checks these lists against the CSS.
 
+// PartGroupingDecorator.module.css
+const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
+  'code-block-content',
+  'code-block-content__code-block',
+  'code-block-content__header',
+  'code-block-copy-button'
+]);
+
+// Theme.module.css
 const themeOverrides: readonly string[] = Object.freeze([
-  // Feedback
+  'code-block',
+  'code-block-content',
+  'code-block-content__code-block',
+  'code-block-copy-button',
+  'code-block-copy-button__icon',
+  'code-block__body',
+  'code-block__theme--github-dark-default',
+  'code-block__theme--github-light-default',
   'feedback-form',
   'feedback-form__cancel-button',
   'feedback-form__form',
@@ -15,7 +31,11 @@ const themeOverrides: readonly string[] = Object.freeze([
   'thumb-button',
   'thumb-button--large',
   'thumb-button__image',
-  'thumb-button__input'
+  'thumb-button__input',
+  'view-code-dialog',
+  'view-code-dialog__body',
+  'view-code-dialog__footer',
+  'view-code-dialog__title'
 ]);
 
-export { themeOverrides };
+export { partGroupingDecoratorOverrides, themeOverrides };
