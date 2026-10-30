@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendShiftTab(3);
+        await host.sendKeys('ARROW_UP', 'ARROW_UP');
+        await pageConditions.scrollStabilized();
+        await pageConditions.focusedActivityInView();
+
+        const firstCardInput = () => document.querySelector('.ac-input, .ac-textInput');
+        const activeDescendant = () =>
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'));
+
+        // WHEN: Narrator invokes the active descendant's primary action.
+        activeDescendant().click();
+
+        // THEN: Focus should move to the first interactive control.
+        await pageConditions.became(
+          'focus is on the first text box in the input card after screen reader primary action',
+          () => document.activeElement === firstCardInput(),
+          1000
+        );
+
+        // WHEN: Escape is pressed from inside the activity.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Focus should return to the transcript with the same activity active.
+        await pageConditions.became(
+          'focus returned to the transcript after screen reader primary action',
+          () => document.activeElement === pageElements.transcript() && !!activeDescendant(),
+          1000
+        );
+
+        // WHEN: NVDA invokes the primary action from content inside the active descendant.
+        activeDescendant().firstElementChild.click();
+
+        // THEN: Focus should move to the first interactive control.
+        await pageConditions.became(
+          'focus is on the first text box in the input card after NVDA primary action',
+          () => document.activeElement === firstCardInput(),
+          1000
+        );
+
+        // WHEN: Escape is pressed, followed by plain Enter.
+        await host.sendKeys('ESCAPE');
+        await host.sendKeys('ENTER');
+
+        // THEN: Plain Enter should continue to move focus to the first interactive control.
+        await pageConditions.became(
+          'focus is on the first text box in the input card after plain Enter',
+          () => document.activeElement === firstCardInput(),
+          1000
+        );
+
+        // WHEN: Escape is pressed again.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Focus should return to the transcript.
+        await pageConditions.became(
+          'focus returned to the transcript after plain Enter',
+          () => document.activeElement === pageElements.transcript() && !!activeDescendant(),
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>
