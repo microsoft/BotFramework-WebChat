@@ -1,7 +1,6 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-component';
-import { ActivityButton, FixedWidthImage } from 'botframework-webchat-component/internal.js';
+import { ActivityButton, FixedWidthImage, useStyles } from 'botframework-webchat-component/internal.js';
 import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type SyntheticEvent } from 'react';
 import { boolean, object, optional, pipe, readonly, string } from 'valibot';

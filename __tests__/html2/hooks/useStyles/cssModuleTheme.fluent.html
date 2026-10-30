@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .test-theme__adaptive-card-renderer {
+        outline: dashed 2px Blue;
+        outline-offset: -8px; /* Inside the bubble outline */
+      }
+
+      .test-theme__bubble {
+        outline: dashed 2px Red;
+        outline-offset: -2px;
+      }
+
+      .test-theme__sendbox {
+        outline: dashed 2px Green;
+        outline-offset: -2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: {
+            FluentThemeProvider,
+            internal: { CSSModuleThemeComposer },
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: A theme with local names from 3 packages, provided above Fluent.
+        const theme = Object.freeze({
+          'adaptive-card-renderer': 'test-theme__adaptive-card-renderer', // AdaptiveCardRenderer.module.css, botframework-webchat
+          bubble: 'test-theme__bubble', // Bubble.module.css, botframework-webchat-component
+          sendbox: 'test-theme__sendbox' // SendBox.module.css, botframework-webchat-fluent-theme
+        });
+
+        render(
+          <CSSModuleThemeComposer theme={theme}>
+            <FluentThemeProvider>
+              <ReactWebChat directLine={directLine} store={store} />
+            </FluentThemeProvider>
+          </CSSModuleThemeComposer>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: A message with an Adaptive Card is received.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                body: [{ text: 'Adaptive Card', type: 'TextBlock' }],
+                type: 'AdaptiveCard',
+                version: '1.2'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          text: 'Message with an Adaptive Card',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Every element of these local names should have the theme class, in each of the 3 packages.
+        for (const [localName, className] of Object.entries(theme)) {
+          const elements = Array.from(document.getElementsByClassName(localName));
+
+          expect(elements.length).toBeGreaterThan(0);
+          expect(elements.every(element => element.classList.contains(className))).toBe(true);
+          expect(document.getElementsByClassName(className)).toHaveLength(elements.length);
+        }
+
+        // THEN: The bubbles (red), the Adaptive Card inside its bubble (blue) and the send box (green) should have dashed outlines.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
