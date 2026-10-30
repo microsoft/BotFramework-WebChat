@@ -11,6 +11,7 @@ import {
   buildMessage,
   createSortedTestStore,
   getIntegrityViolations,
+  getPartIds,
   getView,
   upsertEach
 } from './private/sortTestHelpers';
@@ -124,8 +125,8 @@ scenario('re-sending a revision of an ongoing livestream session', bdd => {
   bdd
     .given('an ongoing livestream session with 2 revisions', () => createSortedTestStore(message1, message2))
     .when('the second revision is re-sent with a changed text', testStore => upsertEach(testStore, message2Changed))
-    .then('should keep 2 revisions in the session', (_, { store }) =>
-      expect(store.getSnapshot().get(SESSION_NODE_ID)?.hasPart?.size).toBe(2)
+    .then('should keep 2 revisions in the session', (_, testStore) =>
+      expect(getPartIds(testStore, SESSION_NODE_ID)).toHaveLength(2)
     )
     .and('should show the changed revision once', (_, testStore) =>
       expect(getView(testStore)).toEqual([

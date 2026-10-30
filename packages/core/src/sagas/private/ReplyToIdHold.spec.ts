@@ -42,8 +42,8 @@ function createHarness(initialActivities: readonly TestActivity[] = []) {
 
   const hold = new ReplyToIdHold<TestActivity>({
     clock,
-    hasReplyTarget: replyToId => !!state.graph && hasReplyTarget(state.graph, replyToId),
-    isHoldEnabled: () => !!state.graph && hasBotActivity(state.graph),
+    hasReplyTarget: replyToId => hasReplyTarget(state, replyToId),
+    isHoldEnabled: () => hasBotActivity(state),
     release: upsertActivity
   });
 

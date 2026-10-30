@@ -1,17 +1,18 @@
 import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import { stampActivityPositions, toActivityNode, toSortFacts } from './graph/activityNode';
-import createActivitiesGraph, { CONVERSATION_ID } from './graph/createActivitiesGraph';
-import deriveState from './graph/deriveState';
+import { CONVERSATION_ID } from './graph/createActivitiesGraph';
+import editState from './graph/editState';
 import upsertSortedMessage from './graph/upsertSortedMessage';
 import { type Activity, type State } from './types';
 
 // The activities live in William's store (`packages/store`) as a JSON-LD graph:
 //
-// - Conversation → (Message | livestream session | HowTo) → … → revisions, linked by `hasPart`/`isPartOf`,
+// - Conversation → (Message | livestream session | HowTo) → … → revisions, linked by `isPartOf`,
 //   each part with a `position` relative to its parent (`./graph/upsertSortedMessage.ts` has the sorting rules);
 // - every upsert is one store transaction: the message, its groupings, every changed `position`,
-//   and the public `channelData['webchat:internal:position']` (`stampActivityPositions()`);
-// - `State` is derived from the graph after each transaction (`./graph/deriveState.ts`).
+//   and the public `channelData['webchat:internal:position']` (`stampActivityPositions()`), each node written once;
+// - `State` is derived from the graph after each transaction (`./graph/deriveState.ts`), and can rebuild its graph
+//   when it is stale (`./graph/editState.ts`).
 //
 // Honoring timestamp or not (unchanged):
 //
@@ -23,6 +24,9 @@ const INITIAL_STATE = Object.freeze({
   activityMap: Object.freeze(new Map()),
   clientActivityIdToLocalIdMap: Object.freeze(new Map()),
   graph: undefined,
+  graphJournal: undefined,
+  graphPartIndex: Object.freeze(new Map()),
+  graphVersion: 0,
   livestreamSessionMap: Object.freeze(new Map()),
   howToGroupingMap: Object.freeze(new Map()),
   sortedActivities: Object.freeze([]),
@@ -38,25 +42,21 @@ const INITIAL_STATE = Object.freeze({
 /**
  * Upserts an activity into the graph of the state, then derives the next state.
  *
- * The graph is mutable: the state passed in must be the latest one (as reducers are called). A state without a graph
- * (e.g. `INITIAL_STATE`) gets a new graph.
+ * A state without a graph (e.g. `INITIAL_STATE`), or whose graph has moved on, gets a graph rebuilt from its nodes.
  */
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
-  const graph = state.graph ?? createActivitiesGraph();
-  let changed = false;
-
-  graph.edit(transaction => {
-    changed = upsertSortedMessage(
-      transaction,
+  return editState(state, working => {
+    const changed = upsertSortedMessage(
+      working,
       CONVERSATION_ID,
       toActivityNode(activity),
       toSortFacts(activity, ponyfill)
     );
 
-    changed && stampActivityPositions(transaction, CONVERSATION_ID);
-  });
+    changed && stampActivityPositions(working, CONVERSATION_ID);
 
-  return changed ? deriveState(graph) : state;
+    return changed;
+  });
 }
 
 export default upsert;

@@ -1,32 +1,32 @@
-import { array, boolean, is, looseObject, number, string } from 'valibot';
 import type { WebChatActivity } from '../../../../../types/WebChatActivity';
 import type { GraphIdentifier, GraphNode } from '../types';
 import { DIRECT_LINE_ACTIVITY, IDENTIFIER } from '../vocabulary';
 
-const booleanValuesSchema = array(boolean());
-const numberValuesSchema = array(number());
-const stringValuesSchema = array(string());
-const activityValuesSchema = array(looseObject({ '@type': string(), '@value': looseObject({ type: string() }) }));
+// Reads trust the store: every node was validated by `upsertNode()` (William's `nodeSchema`), so property values are
+// arrays and these helpers only check the type of the first value. They run on every node of every action, so they
+// do not use valibot (profiled: valibot was 45 % of the time when they did).
 
-function getBoolean(node: GraphNode | undefined, property: string): boolean {
+function getFirstValue(node: GraphNode | undefined, property: string): unknown {
   // eslint-disable-next-line security/detect-object-injection
   const values = node?.[property];
 
-  return is(booleanValuesSchema, values) && values[0] === true;
+  return Array.isArray(values) ? values[0] : undefined;
+}
+
+function getBoolean(node: GraphNode | undefined, property: string): boolean {
+  return getFirstValue(node, property) === true;
 }
 
 function getNumber(node: GraphNode | undefined, property: string): number | undefined {
-  // eslint-disable-next-line security/detect-object-injection
-  const values = node?.[property];
+  const value = getFirstValue(node, property);
 
-  return is(numberValuesSchema, values) ? values[0] : undefined;
+  return typeof value === 'number' ? value : undefined;
 }
 
 function getString(node: GraphNode | undefined, property: string): string | undefined {
-  // eslint-disable-next-line security/detect-object-injection
-  const values = node?.[property];
+  const value = getFirstValue(node, property);
 
-  return is(stringValuesSchema, values) ? values[0] : undefined;
+  return typeof value === 'string' ? value : undefined;
 }
 
 /** The sender's ID of a HowTo grouping or a livestream session. */
@@ -34,22 +34,24 @@ function getIdentifier(node: GraphNode | undefined): string | undefined {
   return getString(node, IDENTIFIER);
 }
 
-/** The activity boxed in the node (JSON literal). */
-function getActivity(node: GraphNode | undefined): WebChatActivity | undefined {
-  // eslint-disable-next-line security/detect-object-injection
-  const values = node?.[DIRECT_LINE_ACTIVITY];
+/** The activity boxed in the node (JSON literal), as written by `toActivityNode()`. */
+function getBoxedActivity(node: GraphNode | undefined): WebChatActivity | undefined {
+  const literal = getFirstValue(node, DIRECT_LINE_ACTIVITY);
+  const value = literal && typeof literal === 'object' && '@value' in literal ? literal['@value'] : undefined;
 
-  // Core boxes the activity itself (`toActivityNode()`); the check guards against other writers.
-  return is(activityValuesSchema, values) && values[0]?.['@type'] === '@json'
-    ? (values[0]['@value'] satisfies object as WebChatActivity)
-    : undefined;
+  return value && typeof value === 'object' ? (value satisfies object as WebChatActivity) : undefined;
 }
 
 /** In the ordering tree, a node is part of at most one parent. */
 function getParentId(node: GraphNode | undefined): GraphIdentifier | undefined {
-  const [parent] = node?.isPartOf ?? [];
+  let parentId: GraphIdentifier | undefined;
 
-  return parent?.['@id'];
+  // `forEach` instead of `for...of`: this runs for many nodes per action, and transpiled `for...of` over a `Set` is slow.
+  node?.isPartOf?.forEach(reference => {
+    parentId = parentId ?? reference['@id'];
+  });
+
+  return parentId;
 }
 
 function hasType(node: GraphNode | undefined, type: string): boolean {
@@ -85,8 +87,8 @@ function withProperties(node: GraphNode, properties: Readonly<Record<string, unk
 }
 
 export {
-  getActivity,
   getBoolean,
+  getBoxedActivity,
   getIdentifier,
   getNumber,
   getParentId,

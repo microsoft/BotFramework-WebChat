@@ -1,12 +1,12 @@
 import { buffers, channel, type Channel } from 'redux-saga';
 import { fork, put, select, take } from 'redux-saga/effects';
 
-import incomingActivity from '../actions/incomingActivity';
+import incomingActivity, { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
 import activityFromBot from '../definitions/activityFromBot';
-import type { ActivitiesGraph } from '../reducers/activities/sort/graph/createActivitiesGraph';
 import { hasBotActivity, hasReplyTarget } from '../reducers/activities/sort/graph/queries';
+import type { State } from '../reducers/activities/sort/types';
 import { ofType as activitiesOfType } from '../selectors/activities';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { ReduxState } from '../types/internal/ReduxState';
@@ -14,28 +14,27 @@ import type { WebChatActivity } from '../types/WebChatActivity';
 import ReplyToIdHold from './private/ReplyToIdHold';
 import whileConnected from './effects/whileConnected';
 
-// The activities graph (William's store) is mutable: the same instance stays current, the state only replaces it if the
-// state is replaced (e.g. rehydrated).
-const graphSelector = ({ groupedActivities }: ReduxState): ActivitiesGraph | undefined => groupedActivities.graph;
+// The transcript derived from the activities graph (William's store).
+const transcriptSelector = ({ groupedActivities }: ReduxState): State => groupedActivities;
 
 function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: GlobalScopePonyfill) {
-  let graph: ActivitiesGraph | undefined = yield select(graphSelector);
+  let transcript: State = yield select(transcriptSelector);
 
   const releaseChannel: Channel<WebChatActivity> = channel(buffers.expanding());
 
   // This is for resolving an accessibility issue.
   // If the incoming activity has "replyToId" field, hold on it until the activity replied to is in the transcript, then
-  // release this one. The hold reads the transcript from the graph.
+  // release this one. The hold reads the transcript derived from the graph.
   const hold = new ReplyToIdHold<WebChatActivity>({
     clock:
       ponyfill.clearTimeout && ponyfill.setTimeout
         ? { clearTimeout: ponyfill.clearTimeout, setTimeout: ponyfill.setTimeout }
         : undefined,
-    hasReplyTarget: replyToId => !!graph && hasReplyTarget(graph, replyToId),
+    hasReplyTarget: replyToId => hasReplyTarget(transcript, replyToId),
     // To speed up the first activity render time, we do not delay the first activity from the bot.
     // Even if it is the first activity from the bot, the bot might be "replying" to the "conversationUpdate" event.
     // Thus, the "replyToId" will always be there even it is the first activity in the conversation.
-    isHoldEnabled: () => !!graph && hasBotActivity(graph),
+    isHoldEnabled: () => hasBotActivity(transcript),
     release: activity => releaseChannel.put(activity)
   });
 
@@ -46,9 +45,21 @@ function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: Global
           payload: { activity }
         } = yield take(QUEUE_INCOMING_ACTIVITY);
 
-        graph = yield select(graphSelector);
+        transcript = yield select(transcriptSelector);
 
         hold.push(activity);
+      }
+    });
+
+    // Like `waitForActivityId()` before: every activity that reaches the transcript, from this saga or not, can release
+    // replies waiting for it.
+    yield fork(function* recheckOnIncomingActivity() {
+      for (;;) {
+        yield take(INCOMING_ACTIVITY);
+
+        transcript = yield select(transcriptSelector);
+
+        hold.recheck();
       }
     });
 
@@ -75,10 +86,6 @@ function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: Global
           yield put(setSuggestedActions());
         }
       }
-
-      // The released activity is in the graph now: release replies waiting for it.
-      graph = yield select(graphSelector);
-      hold.recheck();
     }
   } finally {
     // On disconnect, held activities are dropped, as the saga holding them was cancelled before.
