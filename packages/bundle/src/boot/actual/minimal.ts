@@ -13,12 +13,6 @@ export { default as createBrowserWebSpeechPonyfillFactory } from '../../createBr
 export { ReactWebChat } from './component/minimal';
 export { default as createDirectLine } from './private/createDirectLine';
 export { default as createDirectLineAppServiceExtension } from './private/createDirectLineAppServiceExtension';
-export { createWebChatElementClass } from './element/minimal';
 export { renderWebChat } from './renderWebChat/minimal';
-export {
-  type CreateWebChatElementClassInit,
-  type WebChatElement,
-  type WebChatElementThemeProviderProps
-} from '../../element/createWebChatElementClass';
 export { type StrictStyleOptions, type StyleOptions } from './styleOptions/minimal';
 export { buildInfoObject as buildInfo, version };

@@ -82,8 +82,18 @@ const BASE_CONFIG = {
   metafile: true,
   plugins: [
     cssPlugin,
+    {
+      // The custom element finds "react-dom/client" with `require()` in the npm package: import maps need `import()`.
+      name: 'import-react-dom-client',
+      setup(build) {
+        // eslint-disable-next-line require-unicode-regexp
+        build.onResolve({ filter: /\/requireReactDOMClient$/ }, ({ path, resolveDir }) => ({
+          path: resolve(resolveDir, dirname(path), 'importReactDOMClient.mjs')
+        }));
+      }
+    },
     injectCSSPlugin({
-      ignoreCSSEntries: ['static/botframework-webchat/component.css'],
+      ignoreCSSEntries: ['static/botframework-webchat/component.css', 'static/botframework-webchat/custom-element.css'],
       stylesPlaceholder: bundleStyleContentPlaceholder
     }),
     {
@@ -171,6 +181,7 @@ const IGNORED_OWN_PACKAGES = [
   const entryPoints = {
     'botframework-webchat': './src/boot/exports/index.ts',
     'botframework-webchat/component': './src/boot/exports/component.ts',
+    'botframework-webchat/custom-element': './src/boot/exports/customElement.ts',
     'botframework-webchat/decorator': './src/boot/exports/decorator.ts',
     'botframework-webchat/hook': './src/boot/exports/hook.ts',
     'botframework-webchat/internal': './src/boot/exports/internal.ts',

@@ -33,6 +33,12 @@
         "default": "./dist/botframework-webchat.component.js"
       }
     },
+    "./custom-element.js": {
+      "import": {
+        "types": "./dist/botframework-webchat.custom-element.d.mts",
+        "default": "./dist/botframework-webchat.custom-element.mjs"
+      }
+    },
     "./decorator": {
       "import": {
         "default": "./boot/deprecated/decorator.mjs"

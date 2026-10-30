@@ -1,5 +1,6 @@
 import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import type { PluginBuild } from 'esbuild';
+import { copyFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { defineConfig } from 'tsup';
 
@@ -15,6 +16,33 @@ const resolveReact = {
     build.onResolve({ filter: /^(react|react-dom)$/ }, ({ path: pkgName }) => ({
       path: path.join(process.cwd(), '../../node_modules', `@msinternal/isomorphic-${pkgName}/dist/${pkgName}.js`)
     }));
+  }
+};
+
+// The custom element finds "react-dom/client" with a hand-written CommonJS `require()` in `try`: copy it into dist/ as-is.
+// Bundled, the `require()` would become tsup's `__require()` shim, which bundlers do not follow: React 19 would fail silently.
+const REQUIRE_REACT_DOM_CLIENT_FILENAME = 'botframework-webchat.custom-element.require-react-dom-client.js';
+
+const keepRequireReactDOMClient = {
+  name: 'keep-require-react-dom-client',
+  setup(build: PluginBuild) {
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /\/requireReactDOMClient$/ }, () => ({
+      external: true,
+      path: `./${REQUIRE_REACT_DOM_CLIENT_FILENAME}`
+    }));
+
+    build.onEnd(async () => {
+      const outdir = build.initialOptions.outdir ?? 'dist';
+
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      await mkdir(outdir, { recursive: true });
+      await copyFile(
+        './src/customElement/private/requireReactDOMClient.js',
+        path.join(outdir, REQUIRE_REACT_DOM_CLIENT_FILENAME)
+      );
+    });
   }
 };
 
@@ -53,7 +81,7 @@ const commonConfig = applyConfig(config => ({
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),
     injectCSSPlugin({
-      ignoreCSSEntries: ['dist/botframework-webchat.component.css'],
+      ignoreCSSEntries: ['dist/botframework-webchat.component.css', 'dist/botframework-webchat.custom-element.css'],
       stylesPlaceholder: bundleStyleContentPlaceholder
     })
   ]
@@ -87,6 +115,12 @@ export default defineConfig([
       ...commonConfig.define,
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
     },
+    entry: {
+      ...commonConfig.entry,
+      // ESM only.
+      'botframework-webchat.custom-element': './src/boot/exports/customElement.ts'
+    },
+    esbuildPlugins: [...(commonConfig.esbuildPlugins ?? []), keepRequireReactDOMClient],
     format: 'esm',
     onSuccess: 'touch ./package.json'
   },
