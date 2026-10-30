@@ -30,6 +30,7 @@ import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import { type RestrictedStoreDebugAPI } from '../../types/StoreDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import patchActivity from './patchActivity';
+import createActivitiesGraph from './sort/graph/createActivitiesGraph';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
 import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
@@ -54,8 +55,6 @@ type GroupedActivitiesAction =
 
 type GroupedActivitiesState = State;
 
-const DEFAULT_STATE: GroupedActivitiesState = INITIAL_STATE;
-
 function getClientActivityID(activity: WebChatActivity): string | undefined {
   return activity.channelData?.clientActivityID;
 }
@@ -64,8 +63,11 @@ function createGroupedActivitiesReducer(
   ponyfill: GlobalScopePonyfill,
   restrictedStoreDebugAPI: RestrictedStoreDebugAPI
 ): Reducer<GroupedActivitiesState, GroupedActivitiesAction> {
+  // One graph (William's store) per Redux store, created upfront so sagas can read it before the first activity.
+  const defaultState: GroupedActivitiesState = Object.freeze({ ...INITIAL_STATE, graph: createActivitiesGraph() });
+
   return function activities(
-    state: GroupedActivitiesState = DEFAULT_STATE,
+    state: GroupedActivitiesState = defaultState,
     action: GroupedActivitiesAction
   ): GroupedActivitiesState {
     switch (action.type) {
