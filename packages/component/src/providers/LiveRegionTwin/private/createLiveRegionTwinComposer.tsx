@@ -110,15 +110,16 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
 
       // When removing each element one-by-one based on an individual timeout, Narrator would narrate them twice occasionally.
       // Possibly it think some elements that is not removed during the current cycle, are new elements and queued them twice.
-      // Thus, we are removing all at once to prevent bugs in Narrator.
+      // Thus, we are removing all rendered elements at once to prevent bugs in Narrator.
       markAllAsRenderedTimeoutIdRef.current && clearTimeout(markAllAsRenderedTimeoutIdRef.current);
 
-      markAllAsRenderedTimeoutIdRef.current = setTimeout(() => {
-        // We are playing safe by using value ref to check its length here.
-        // If we are certain that `setStaticElements(emptyArray => emptyArray)` is a no-op,
-        // we could replace it with just the setter function.
-        staticElementEntriesRef.current.length && setStaticElementEntries([]);
-      }, fadeAfterRef.current);
+      // Keys are increasing: entries queued after this render have a larger key and are kept until they are rendered too.
+      const { key: lastRenderedKey } = staticElementEntriesRef.current[staticElementEntriesRef.current.length - 1];
+
+      markAllAsRenderedTimeoutIdRef.current = setTimeout(
+        () => setStaticElementEntries(entries => entries.filter(({ key }) => key > lastRenderedKey)),
+        fadeAfterRef.current
+      );
     }, [
       clearTimeout,
       fadeAfterRef,
