@@ -2,6 +2,7 @@
 /* eslint react/no-unsafe: off */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo, useRef } from 'react';
@@ -14,12 +15,9 @@ import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
-const { useStyleOptions } = hooks;
+import styles from './BasicWebChat.module.css';
 
-const ROOT_STYLE = {
-  display: 'flex',
-  flexDirection: 'column'
-};
+const { useStyleOptions } = hooks;
 
 const CONNECTIVITY_STATUS_STYLE = {
   flexShrink: 0
@@ -53,19 +51,20 @@ function BasicWebChat(props: BasicWebChatProps) {
   const { className, role } = validateProps(basicWebChatPropsSchema, props, 'strict');
 
   const rootRef = useRef<HTMLDivElement>(null);
+  // Keeps the "webchat__surface" class name.
+  const basicWebChatClassNames = useStyles(styles, webChatPrefixedClassName);
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();
 
   const connectivityStatusClassName = styleToEmotionObject(CONNECTIVITY_STATUS_STYLE) + '';
-  const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
   const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
   const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
   const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
 
   return (
     <AccessKeySinkSurface
-      className={classNames('webchat__surface', rootClassName, rootStyleSet + '', className)}
+      className={classNames(basicWebChatClassNames['surface'], rootStyleSet + '', className)}
       ref={rootRef}
       role={role}
     >
