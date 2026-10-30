@@ -244,18 +244,21 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
       const { current: feedbackText } = feedbackTextRef;
       const isLegacyAction = isOfType('VoteAction', action);
-      const voteActionEntity = getVoteActionEntity(activityFromPropsRef.current, action);
 
       // Send the bot's own `VoteAction` back unparsed, so the bot can read its custom properties (e.g. prompt ID).
-      const completedVoteActionEntity = voteActionEntity && {
-        ...voteActionEntity,
-        actionStatus: 'CompletedActionStatus'
-      };
+      // Newer activities with `LikeAction`/`DislikeAction` keep sending the action.
+      const voteActionEntity =
+        (isLegacyAction || hasFeedbackLoop(activityFromPropsRef.current)) &&
+        getVoteActionEntity(activityFromPropsRef.current, action);
+
+      const completedVoteActionEntity = voteActionEntity
+        ? Object.freeze({ ...voteActionEntity, actionStatus: 'CompletedActionStatus' })
+        : undefined;
 
       // TODO: We should update this to use W3C Hydra.1
       if (isActionRequireReview(action)) {
         postActivity({
-          entities: completedVoteActionEntity ? [completedVoteActionEntity] : [],
+          ...(completedVoteActionEntity && { entities: [completedVoteActionEntity] }),
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
           type: 'invoke',

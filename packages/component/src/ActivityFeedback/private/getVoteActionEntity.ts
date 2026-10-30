@@ -15,7 +15,7 @@ import { is, literal, object } from 'valibot';
 export default function getVoteActionEntity(
   activity: WebChatActivity,
   action: OrgSchemaAction
-): Readonly<{ type: string }> | undefined {
+): { readonly type: string } | undefined {
   const [actionOption] = isOfType('VoteAction', action)
     ? action.actionOption
     : [isOfType('DislikeAction', action) ? 'downvote' : 'upvote'];
