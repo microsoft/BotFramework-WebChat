@@ -1,3 +1,4 @@
+import { createStoreWithOptions } from 'botframework-webchat-core';
 import React, { Fragment, type ComponentType, type ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import { custom, function_, is, looseObject, object, optional, parse, pipe, readonly, string, symbol } from 'valibot';
@@ -67,6 +68,7 @@ class WebChatElement extends BaseHTMLElement {
   #createRoot: CreateWebChatElementRoot | undefined;
   #props: WebChatElementProps | undefined;
   #root: WebChatElementRoot | undefined;
+  #store: ReturnType<typeof createStoreWithOptions> | undefined;
   #themeProvider: WebChatElementThemeProvider | undefined;
 
   constructor() {
@@ -134,10 +136,16 @@ class WebChatElement extends BaseHTMLElement {
       // Custom elements are inline by default. The page can still override it, its rules win over `:host`.
       const hostStyle = <style nonce={nonce}>{':host { display: block; }'}</style>;
 
+      // Without a store from the host, Web Chat would create one each time it mounts. Mounting it again (on a change of
+      // `nonce` or `themeProvider`) would then disconnect the old store, which ends the Direct Line and loses the
+      // transcript: keep one store until Web Chat is unmounted.
+      const store = props.store ?? (this.#store ??= createStoreWithOptions({ ponyfill: props.ponyfill }));
+
       const webChat = (
         <ReactWebChat
           {...props}
           nonce={nonce}
+          store={store}
           styleOptions={Object.freeze({ ...props.styleOptions, stylesRoot: shadowRoot })}
         />
       );
@@ -173,6 +181,7 @@ class WebChatElement extends BaseHTMLElement {
   #unmount(): void {
     this.#root?.unmount();
     this.#root = undefined;
+    this.#store = undefined;
   }
 }
 

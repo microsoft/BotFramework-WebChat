@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat element: React 19, without a store, keeps the conversation when the nonce or theme changes</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* Same as "body.jest input" in index.css, which does not reach into the shadow root: caret-color is inherited. */
+      webchat-element {
+        caret-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <webchat-element nonce="a1b2c3"></webchat-element>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import runNoStoreRemountTest from './private/runNoStoreRemountTest.mjs';
+
+      runNoStoreRemountTest({ reactMajorVersion: '19' });
+    </script>
+  </body>
+</html>

@@ -211,6 +211,61 @@ scenario(
       .then('should create a new root', ({ createRoot }) => expect(createRoot).toHaveBeenCalledTimes(2));
 
     bdd
+      .given(
+        'a rendered element without a store in props',
+        async () => {
+          const preconditions = setup();
+
+          await preconditions.resolveReactDOMClient();
+
+          preconditions.element.props = {};
+          document.body.append(preconditions.element);
+
+          await settle();
+
+          return { ...preconditions, firstStore: getLastWebChatProps(preconditions.root).store };
+        },
+        cleanUp
+      )
+      .when('props is set again, still without a store', ({ element }) => {
+        element.props = { locale: 'en-US' };
+      })
+      .then('should render with the same store, created by the element', ({ firstStore, root }) => {
+        expect(firstStore).toHaveProperty('dispatch', expect.any(Function));
+        expect(getLastWebChatProps(root).store).toBe(firstStore);
+      })
+      .when('props is set to undefined and set again', ({ element }) => {
+        element.props = undefined;
+        element.props = {};
+      })
+      .then('should render with a new store: the old one went with the unmount', ({ firstStore, root }) =>
+        expect(getLastWebChatProps(root).store).not.toBe(firstStore)
+      );
+
+    bdd
+      .given(
+        'a rendered element with a store in props',
+        async () => {
+          const preconditions = setup();
+          const store = { dispatch: () => undefined };
+
+          await preconditions.resolveReactDOMClient();
+
+          preconditions.element.props = { store };
+          document.body.append(preconditions.element);
+
+          await settle();
+
+          return { ...preconditions, store };
+        },
+        cleanUp
+      )
+      .when('rendered', () => undefined)
+      .then('should render with the store of the host', ({ root, store }) =>
+        expect(getLastWebChatProps(root).store).toBe(store)
+      );
+
+    bdd
       .given('an element', () => setup())
       .when('props has a nonce that is not a string', ({ element }) => {
         try {
