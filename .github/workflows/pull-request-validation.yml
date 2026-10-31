@@ -281,6 +281,15 @@ jobs:
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
+      # The steps above use @types/react@16 (our baseline), check with the types of the latest React too.
+      # In every workspace: packages that declare @types/react@16 would otherwise keep their own copy.
+      - name: Install @types/react@19 and @types/react-dom@19
+        run: npm install --no-save --workspaces --include-workspace-root @types/react@19 @types/react-dom@19
+
+      - name: Run tsd under packages/bundle with @types/react@19
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.mts
+        working-directory: ./packages/bundle
+
   bundler-test:
     name: Bundler test (${{ matrix.bundler }}, React ${{ matrix.react }})
     needs:

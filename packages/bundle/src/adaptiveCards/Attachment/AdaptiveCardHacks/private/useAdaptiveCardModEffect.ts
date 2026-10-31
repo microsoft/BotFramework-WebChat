@@ -48,7 +48,7 @@ export default function useAdaptiveCardModEffect<TArgs extends unknown[]>(
 ): readonly [(cardElement: HTMLElement, ...args: TArgs) => void, () => void] {
   const adaptiveCardRef = useValueRef(adaptiveCard);
   const mod = useMemo(() => new Mod<TArgs>(modder), [modder]);
-  const reapplyRef = useRef<() => void>();
+  const reapplyRef = useRef<(() => void) | undefined>(undefined);
 
   const observerRef = useLazyRef<MutationObserver>(
     () =>

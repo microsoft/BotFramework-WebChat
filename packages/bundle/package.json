@@ -287,7 +287,6 @@
     "micromark-util-character": "2.1.1",
     "micromark-util-sanitize-uri": "2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.50.0",
-    "prop-types": "15.8.1",
     "punycode": "2.3.1",
     "sanitize-html": "2.18.1",
     "shiki": "2.5.0",

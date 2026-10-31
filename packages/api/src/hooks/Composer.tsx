@@ -40,7 +40,6 @@ import {
   type GlobalScopePonyfill,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import updateIn from 'simple-update-in';
 
@@ -706,47 +705,6 @@ const ComposerCore = ({
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
 
-ComposerCore.propTypes = {
-  activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  avatarMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  cardActionMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  children: PropTypes.any,
-  dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
-  // PropTypes.shape({ ... }) did not honor isRequired for its members.
-  // @ts-ignore
-  directLine: PropTypes.shape({
-    activity$: PropTypes.shape({
-      subscribe: PropTypes.func.isRequired
-    }).isRequired,
-    connectionStatus$: PropTypes.shape({
-      subscribe: PropTypes.func.isRequired
-    }).isRequired,
-    end: PropTypes.func,
-    getSessionId: PropTypes.func,
-    postActivity: PropTypes.func.isRequired,
-    referenceGrammarID: PropTypes.string,
-    token: PropTypes.string
-  }).isRequired,
-  disabled: PropTypes.bool,
-  downscaleImageToDataURL: PropTypes.func,
-  grammars: PropTypes.arrayOf(PropTypes.string),
-  groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  locale: PropTypes.string,
-  onTelemetry: PropTypes.func,
-  overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
-  renderMarkdown: PropTypes.func,
-  scrollToEndButtonMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  selectVoice: PropTypes.func,
-  sendTypingIndicator: PropTypes.bool,
-  toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  uiState: PropTypes.oneOf(['blueprint', 'disabled']),
-  userID: PropTypes.string,
-  username: PropTypes.string
-};
-
 type ComposerWithStoreProps = ComposerCoreProps &
   Readonly<{
     store?: any;
@@ -820,11 +778,6 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
       </ReduxStoreComposer>
     </WebChatReduxProvider>
   );
-};
-
-ComposerWithStore.propTypes = {
-  onTelemetry: PropTypes.func,
-  store: PropTypes.any
 };
 
 const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions, ...props }: ComposerProps) => {

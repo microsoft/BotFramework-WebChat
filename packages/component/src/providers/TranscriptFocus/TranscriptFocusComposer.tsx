@@ -1,6 +1,5 @@
 /* eslint-disable no-magic-numbers */
 import random from 'math-random';
-import PropTypes from 'prop-types';
 import React, { memo, useCallback, useMemo, type MutableRefObject, type ReactNode } from 'react';
 
 import usePrevious from '../../hooks/internal/usePrevious';
@@ -429,13 +428,5 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
 };
 
 TranscriptFocusComposer.displayName = 'TranscriptFocusComposer';
-
-TranscriptFocusComposer.propTypes = {
-  // PropTypes is not fully compatible with TypeScript.
-  // @ts-ignore
-  containerRef: PropTypes.shape({
-    current: PropTypes.instanceOf(HTMLElement)
-  }).isRequired
-};
 
 export default memo(TranscriptFocusComposer);

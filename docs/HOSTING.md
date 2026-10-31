@@ -87,12 +87,12 @@ Serving Web Chat code from your own service is recommended for these environment
 
 For React web apps, it is important to have all React components rendered with the same version and instance of the React runtime.
 
-To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
+Web Chat supports React 16.8.6 to 19. To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
-When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 (latest supported) as ESM under the `/static/` directory.
+When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 as ESM under the `/static/` directory.
 
 <details>
-<summary>For React (latest supported)</summary>
+<summary>For React 18</summary>
 
 ```html
 <script type="importmap">

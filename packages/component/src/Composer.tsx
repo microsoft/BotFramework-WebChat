@@ -24,7 +24,6 @@ import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webcha
 import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal.js';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
 
@@ -320,16 +319,8 @@ const ComposerCore = ({
   );
 };
 
-ComposerCore.propTypes = {
-  extraStyleSet: PropTypes.any,
-  nonce: PropTypes.string,
-  renderMarkdown: PropTypes.func,
-  styleSet: PropTypes.any,
-  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
-  webSpeechPonyfillFactory: PropTypes.func
-};
-
-type ComposerProps = APIComposerProps & ComposerCoreProps;
+// `ComposerCore` renders `children` as nodes, the render function of the API `<Composer>` is not supported here.
+type ComposerProps = Omit<APIComposerProps, 'children'> & ComposerCoreProps;
 
 const Composer = ({
   activityMiddleware,

@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -25,7 +24,7 @@ import type { MouseEventHandler, PropsWithChildren } from 'react';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
+type ActivityRowProps = PropsWithChildren<{ readonly activity: WebChatActivity }>;
 
 const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
@@ -172,16 +171,5 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 });
 
 ActivityRow.displayName = 'ActivityRow';
-
-ActivityRow.propTypes = {
-  // PropTypes cannot fully capture TypeScript type.
-  // @ts-ignore
-  activity: PropTypes.shape({
-    channelData: PropTypes.shape({
-      speak: PropTypes.bool,
-      'webchat:fallback-text': PropTypes.string
-    })
-  }).isRequired
-};
 
 export default memo(ActivityRow);

@@ -1,6 +1,5 @@
 /* eslint no-undefined: "off" */
 
-import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
 
 import Context from './Context';
@@ -71,16 +70,5 @@ const BaseFocusBox = (
 };
 
 const FocusBox = forwardRef(BaseFocusBox);
-
-FocusBox.propTypes = BaseFocusBox.propTypes = {
-  children: PropTypes.any,
-  disabled: PropTypes.bool,
-  onKeyDownCapture: PropTypes.func,
-  sendFocusRef: PropTypes.shape({
-    current: PropTypes.shape({
-      focus: PropTypes.func
-    })
-  }).isRequired
-};
 
 export default FocusBox;

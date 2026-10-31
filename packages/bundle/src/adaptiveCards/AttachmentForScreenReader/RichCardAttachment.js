@@ -1,5 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-import PropTypes from 'prop-types';
 import React from 'react';
 import { hooks } from 'botframework-webchat-component';
 
@@ -70,10 +69,6 @@ const RichCardAttachment = ({ content = {} }) => {
       )}
     </div>
   );
-};
-
-RichCardAttachment.propTypes = {
-  content: PropTypes.any.isRequired
 };
 
 export default RichCardAttachment;

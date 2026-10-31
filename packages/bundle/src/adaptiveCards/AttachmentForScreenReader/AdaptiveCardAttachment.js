@@ -3,7 +3,6 @@
 import { hooks } from 'botframework-webchat-component';
 import { htmlTextAlternatives } from 'botframework-webchat-component/internal.js';
 import { onErrorResumeNext } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import setMarkdownEngine from '../Attachment/private/setMarkdownEngine';
@@ -80,20 +79,6 @@ const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue, label } })
       </select>
     </div>
   );
-};
-
-AdaptiveCardChoiceSetInput.propTypes = {
-  input: PropTypes.shape({
-    choices: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string,
-        value: PropTypes.any
-      })
-    ),
-    defaultValue: PropTypes.any,
-    label: PropTypes.string,
-    value: PropTypes.any
-  }).isRequired
 };
 
 const AdaptiveCardAttachment = ({ content }) => {
@@ -240,10 +225,6 @@ const AdaptiveCardAttachment = ({ content }) => {
       )}
     </div>
   );
-};
-
-AdaptiveCardAttachment.propTypes = {
-  content: PropTypes.any.isRequired
 };
 
 export default AdaptiveCardAttachment;

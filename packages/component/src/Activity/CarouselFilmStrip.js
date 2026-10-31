@@ -4,7 +4,6 @@ import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
 import cx from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import Bubble from './Bubble';
@@ -235,29 +234,6 @@ const CarouselFilmStrip = ({
       )}
     </div>
   );
-};
-
-CarouselFilmStrip.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array,
-    channelData: PropTypes.shape({
-      messageBack: PropTypes.shape({
-        displayText: PropTypes.string
-      })
-    }),
-    from: PropTypes.shape({
-      role: PropTypes.string.isRequired
-    }).isRequired,
-    text: PropTypes.string,
-    textFormat: PropTypes.string,
-    timestamp: PropTypes.string
-  }).isRequired,
-  className: PropTypes.string,
-  hideTimestamp: PropTypes.bool,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  renderAttachment: PropTypes.func.isRequired,
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  showCallout: PropTypes.bool
 };
 
 export default CarouselFilmStrip;
