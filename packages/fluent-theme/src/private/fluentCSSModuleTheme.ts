@@ -2,8 +2,11 @@ import { combineCSSModules } from 'botframework-webchat/internal.js';
 
 import partGroupingDecoratorStyles from '../components/activity/PartGroupingDecorator.module.css';
 import themeStyles from '../components/theme/Theme.module.css';
+import textContentOverrideStyles from '../overrides/TextContent.module.css';
 import messageStatusLoaderOverrideStyles from '../overrides/MessageStatusLoader.module.css';
 import bubbleOverrideStyles from '../overrides/Bubble.module.css';
+import renderMarkdownOverrideStyles from '../overrides/RenderMarkdown.module.css';
+import linkDefinitionsOverrideStyles from '../overrides/LinkDefinitions.module.css';
 import activityButtonOverrideStyles from '../overrides/ActivityButton.module.css';
 import collapsibleGroupingOverrideStyles from '../overrides/CollapsibleGrouping.module.css';
 import partGroupingActivityOverrideStyles from '../overrides/PartGroupingActivity.module.css';
@@ -33,8 +36,11 @@ import pickCSSModule from './pickCSSModule';
 const fluentCSSModuleTheme = combineCSSModules(
   pickCSSModule(partGroupingDecoratorStyles, partGroupingDecoratorOverrides),
   pickCSSModule(themeStyles, themeOverrides),
+  textContentOverrideStyles,
   messageStatusLoaderOverrideStyles,
   bubbleOverrideStyles,
+  renderMarkdownOverrideStyles,
+  linkDefinitionsOverrideStyles,
   activityButtonOverrideStyles,
   collapsibleGroupingOverrideStyles,
   partGroupingActivityOverrideStyles,

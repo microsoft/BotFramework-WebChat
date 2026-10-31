@@ -8,29 +8,7 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'adaptive-card-renderer',
   'adaptive-card-renderer__action--selected',
   'bubble',
-  'bubble__content',
-  'collapsible-content',
-  'collapsible-content__content',
-  'link-definitions',
-  'link-definitions__badge',
-  'link-definitions__header',
-  'link-definitions__header-chevron',
-  'link-definitions__header-text',
-  'link-definitions__list',
-  'link-definitions__list-item',
-  'link-definitions__list-item-badge',
-  'link-definitions__list-item-body',
-  'link-definitions__list-item-box',
-  'link-definitions__list-item-main-text',
-  'link-definitions__list-item-text',
-  'link-definitions__message-sensitivity-label-text',
-  'link-definitions__open-in-new-window-icon',
-  'render-markdown',
-  'stacked-layout',
-  'stacked-layout__attachment-row',
-  'stacked-layout__bubble',
-  'text-content',
-  'text-content__generated-badge'
+  'bubble__content'
 ]);
 
 // SendBox.module.css

@@ -1,0 +1,97 @@
+:global(.webchat-fluent) .part-grouping-decorator {
+  .render-markdown a[href]:not(:global(.render-markdown__pure-identifier)) {
+    color: var(--webchat-colorBrandForegroundLink);
+    text-decoration-color: transparent;
+
+    &:target {
+      color: var(--webchat-colorBrandForegroundLinkSelected);
+    }
+
+    &:hover {
+      color: var(--webchat-colorBrandForegroundLinkHover);
+      text-decoration: underline 1px currentColor;
+    }
+
+    &:active {
+      color: var(--webchat-colorBrandForegroundLinkPressed);
+    }
+
+    &:focus-visible {
+      outline: none;
+      text-decoration: underline 1px double var(--webchat-colorStrokeFocus2);
+    }
+
+    :global(.render-markdown__external-link-icon) {
+      background: currentColor;
+      -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
+      mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
+    }
+  }
+
+  .render-markdown :is(:global(.render-markdown__citation), :global(.render-markdown__pure-identifier)) {
+    align-items: center;
+    background-color: var(--webchat-colorNeutralBackground3);
+    border-radius: var(--webchat-borderRadiusMedium);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke2);
+    box-sizing: border-box;
+    color: var(--webchat-colorNeutralForeground2);
+    display: inline-flex;
+    font-size: var(--webchat-fontSizeBase100);
+    font-weight: var(--webchat-fontWeightSemibold);
+    justify-content: center;
+    line-height: 12.4px;
+    margin-left: var(--webchat-spacingHorizontalXXS);
+    margin-right: var(--webchat-spacingHorizontalXXS);
+    min-height: 12.4px;
+    min-width: 14px;
+    text-decoration: none;
+    transition: all var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+    vertical-align: calc((var(--webchat-lineHeightBase100) - var(--webchat-fontSizeBase100)) / 2);
+
+    &:hover {
+      background-color: var(--webchat-colorBrandBackground2Hover);
+      border-color: var(--webchat-colorBrandStroke2Hover);
+      color: var(--webchat-colorBrandForeground2Hover);
+      cursor: pointer;
+    }
+
+    &:hover:active {
+      background-color: var(--webchat-colorBrandBackground2Pressed);
+      border-color: var(--webchat-colorBrandStroke2Pressed);
+      color: var(--webchat-colorBrandForeground2Pressed);
+    }
+
+    &::before,
+    &::after {
+      all: unset;
+    }
+
+    &:has(:global(.render-markdown__external-link-icon)) {
+      padding-inline: 3px;
+    }
+
+    :global(.render-markdown__external-link-icon) {
+      background: currentColor;
+      height: 0.7em;
+      -webkit-mask: var(--webchat__icon-url--external-link) no-repeat;
+      mask: var(--webchat__icon-url--external-link) no-repeat;
+
+      @media (forced-colors: active) {
+        background: LinkText;
+      }
+    }
+
+    @media (forced-colors: active) {
+      &,
+      &:hover,
+      &:hover:active {
+        border-color: LinkText;
+        color: LinkText;
+      }
+    }
+  }
+}
