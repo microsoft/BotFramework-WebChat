@@ -1,5 +1,6 @@
 import { is, parse } from 'valibot';
 import { nodeSchema, type Node } from './node/Node.ts';
+import { blankNodeIdentifierSchema } from './node/BlankNodeIdentifier.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
 
@@ -14,16 +15,31 @@ interface StoreController {
 interface StoreTransaction {
   /**
    * Deletes a node and removes all references pointing to the deleted node from other nodes.
-   *
-   * @returns A list of node IDs which their references to the deleted node are removed.
    */
-  delete(id: Identifier): readonly Identifier[];
+  delete(id: Identifier): void;
 
   /**
    * Inserts or updates a node. The updater will receive the current node (or `undefined` if not exists).
    * The node returned by the updater must have the same `@id` as the `id` argument.
    */
   upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
+}
+
+/**
+ * Recursively freezes an object, including items in arrays and sets.
+ *
+ * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set.
+ */
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+    Object.freeze(value);
+
+    for (const item of value instanceof Set || Array.isArray(value) ? value : Object.values(value)) {
+      deepFreeze(item);
+    }
+  }
+
+  return value;
 }
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
@@ -107,7 +123,7 @@ function removeReference(node: Node, id: Identifier): Node | undefined {
     }
   }
 
-  return changed ? parse(nodeSchema, Object.fromEntries(nextEntries)) : undefined;
+  return changed ? deepFreeze(parse(nodeSchema, Object.fromEntries(nextEntries))) : undefined;
 }
 
 class Store {
@@ -125,9 +141,8 @@ class Store {
 
         transactor(
           Object.freeze({
-            delete: (id: Identifier): readonly Identifier[] => {
+            delete: (id: Identifier): void => {
               const safeId = parse(identifierSchema, id);
-              const referencingNodeIds: Identifier[] = [];
 
               nextState.delete(safeId) && affectedNodeIds.add(safeId);
 
@@ -141,12 +156,9 @@ class Store {
                 if (nextNode) {
                   nextState.set(nodeId, nextNode);
                   setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, nodeId, getReferenceIds(nextNode));
-                  referencingNodeIds.push(nodeId);
                   affectedNodeIds.add(nodeId);
                 }
               }
-
-              return Object.freeze(referencingNodeIds);
             },
             upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
               const safeId = parse(identifierSchema, id);
@@ -155,7 +167,7 @@ class Store {
                 throw new TypeError('updater must be a function');
               }
 
-              const safeNode = parse(nodeSchema, updater(nextState.get(safeId)));
+              const safeNode = deepFreeze(parse(nodeSchema, updater(nextState.get(safeId))));
 
               if (safeNode['@id'] !== safeId) {
                 throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
@@ -170,12 +182,22 @@ class Store {
         );
 
         if (affectedNodeIds.size) {
+          // Upserting nodes which reference each other may take multiple `upsert()` calls.
+          // Verify integrity on commit: all referenced blank nodes must be in the graph.
+          // As `delete()` removes references to the deleted node, only references from affected nodes need to be checked.
+          for (const nodeId of affectedNodeIds) {
+            for (const referenceId of nextForwardReferenceIds.get(nodeId) ?? []) {
+              if (is(blankNodeIdentifierSchema, referenceId) && !nextState.has(referenceId)) {
+                throw new Error(`Node "${nodeId}" references blank node "${referenceId}" which is not in the graph`);
+              }
+            }
+          }
+
           // TODO: Auto-fix relationship for `hasPart` and `isPartOf`.
 
           // INTEGRITY:
           // - All `hasPart` node must be in the system, and is inverse of `isPartOf`
           // - All `isPartOf` node must be in the system
-          // - All node reference which has a blank node identifier (_:*) must be in the system
           // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
           // - THINK: Upsert/delete called twice with same node ID in the same transaction?
 
