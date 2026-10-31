@@ -31,7 +31,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
-    "esbuild": "^0.28.0"
+    "esbuild": "^0.28.1"
   },
   "dependencies": {
     "microsoft-cognitiveservices-speech-sdk": "1.50.0"
