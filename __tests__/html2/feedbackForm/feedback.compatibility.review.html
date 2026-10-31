@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: { testIds }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // The user asks first: Web Chat adds the "ClientCapabilities" entity to the first outgoing activity only.
+        await (await directLine.emulateOutgoingActivity('The user prompt.')).resolveAll();
+
+        // GIVEN: the bot answers with a feedback loop and a VoteAction that carries its own (non-Schema.org) properties.
+        const commonFeedbackMetadata = {
+          aiResponseMessage: 'The generated answer.',
+          mcsConversationId: 'mcs-conversation-id',
+          prompt: 'The user prompt.',
+          promptId: 'prompt-id'
+        };
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            feedbackLoop: {
+              disclaimer: 'Tell us more.',
+              type: 'default'
+            }
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'VoteAction',
+              ...commonFeedbackMetadata,
+              actionOption: 'upvote',
+              actionStatus: 'PotentialActionStatus',
+              activityId: 'review-activity',
+              type: 'https://schema.org/VoteAction'
+            }
+          ],
+          from: {
+            role: 'bot'
+          },
+          id: 'review-activity',
+          text: 'This feedback action requires review.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: the bot's answer shows the like and dislike buttons, not pressed.
+        await host.snapshot('local');
+
+        // WHEN: the user clicks like, types feedback and submits the feedback form.
+        const [reviewButton] = pageElements.allByTestId(testIds.feedbackButton);
+
+        await host.click(reviewButton);
+
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId(testIds.feedbackSendBox),
+          1000
+        );
+
+        // Move the pointer away, so the button tooltip does not show.
+        await host.moveTo(10, 10, document.getElementById('webchat'));
+
+        // THEN: the like button is pressed and the feedback form is open with the disclaimer, focus in its text box.
+        await host.snapshot('local');
+
+        await host.sendKeys('Detailed feedback.');
+
+        // THEN: the feedback form shows the typed text.
+        await host.snapshot('local');
+
+        const reviewPost = await directLine.actPostActivity(async () => {
+          await host.sendTab(1);
+          await host.sendKeys('ENTER');
+        });
+
+        reviewPost.resolvePostActivity();
+
+        await pageConditions.became(
+          'feedback form is closed',
+          () => !pageElements.byTestId(testIds.feedbackSendBox),
+          1000
+        );
+
+        // THEN: the feedback form is closed after submit, the like button stays pressed and both buttons are disabled.
+        await host.snapshot('local');
+
+        // THEN: the invoke carries the bot's VoteAction as sent, with "actionStatus" completed.
+        expect({
+          entities: reviewPost.activity.entities,
+          name: reviewPost.activity.name,
+          replyToId: reviewPost.activity.replyToId,
+          type: reviewPost.activity.type,
+          value: reviewPost.activity.value
+        }).toEqual({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'VoteAction',
+              ...commonFeedbackMetadata,
+              actionOption: 'upvote',
+              actionStatus: 'CompletedActionStatus',
+              activityId: 'review-activity',
+              type: 'https://schema.org/VoteAction'
+            }
+          ],
+          name: 'message/submitAction',
+          replyToId: 'review-activity',
+          type: 'invoke',
+          value: {
+            actionName: 'feedback',
+            actionValue: {
+              feedback: {
+                feedbackText: 'Detailed feedback.'
+              },
+              reaction: 'like'
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
