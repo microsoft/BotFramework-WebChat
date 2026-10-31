@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: { testIds }
+        } = window;
+
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // The user asks first: Web Chat adds the "ClientCapabilities" entity to the first outgoing activity only.
+        await (await directLine.emulateOutgoingActivity('The user prompt.')).resolveAll();
+
+        // GIVEN: the message entity references its like and dislike actions as blank nodes, defined as separate entities with custom properties.
+        const customProperties = {
+          customDate: new Date('2026-10-30T12:34:56.000Z'), // A Date object, not a string.
+          customId: 'custom-id',
+          customObject: { nested: { value: 1 } },
+          customText: 'Custom text.'
+        };
+
+        const likeAction = {
+          '@context': 'https://schema.org',
+          '@id': '_:b1',
+          '@type': 'LikeAction',
+          actionStatus: 'PotentialActionStatus',
+          type: 'https://schema.org/LikeAction',
+          ...customProperties
+        };
+
+        const dislikeAction = {
+          '@context': 'https://schema.org',
+          '@id': '_:b2',
+          '@type': 'DislikeAction',
+          actionStatus: 'PotentialActionStatus',
+          type: 'https://schema.org/DislikeAction',
+          ...customProperties
+        };
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AllowCopy'],
+              potentialAction: [{ '@id': '_:b1' }, { '@id': '_:b2' }],
+              type: 'https://schema.org/Message'
+            },
+            likeAction,
+            dislikeAction
+          ],
+          from: {
+            role: 'bot'
+          },
+          id: 'a-00001',
+          text: 'The generated answer.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: the bot's answer shows the like and dislike buttons, not pressed.
+        await host.snapshot('local');
+
+        const [likeButton] = pageElements.allByTestId(testIds.feedbackButton);
+
+        // WHEN: the user clicks like and the 500 ms debounce passes.
+        const { activity: likeActivity } = await directLine.actPostActivity(async () => {
+          await host.click(likeButton);
+          clock.tick(500);
+        });
+
+        // Move the pointer away, so the button tooltip does not show.
+        await host.moveTo(10, 10, document.getElementById('webchat'));
+
+        // THEN: the like button is pressed.
+        await host.snapshot('local');
+
+        // THEN: the event carries the referenced like action as sent, only "actionStatus" is completed.
+        expect({
+          entities: likeActivity.entities,
+          name: likeActivity.name,
+          type: likeActivity.type
+        }).toEqual({
+          entities: [{ ...likeAction, actionStatus: 'CompletedActionStatus' }],
+          name: 'webchat:activity-status/feedback',
+          type: 'event'
+        });
+      });
+    </script>
+  </body>
+</html>
