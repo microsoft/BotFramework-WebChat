@@ -65,18 +65,7 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
 ]);
 
 // SendBox.module.css
-const sendBoxOverrides: readonly string[] = Object.freeze([
-  'send-box-attachment-bar',
-  'send-box-attachment-bar--as-list-item',
-  'send-box-attachment-bar-item',
-  'send-box-attachment-bar-item--as-list-item',
-  'send-box-attachment-bar-item--as-thumbnail',
-  'send-box-attachment-bar-item-file-preview',
-  'send-box-attachment-bar-item-file-preview--as-list-item',
-  'send-box-attachment-bar-item__delete-button',
-  'send-box-attachment-bar-item__preview',
-  'send-box-attachment-bar__box'
-]);
+const sendBoxOverrides: readonly string[] = Object.freeze([]);
 
 // Theme.module.css
 const themeOverrides: readonly string[] = Object.freeze([
@@ -86,21 +75,12 @@ const themeOverrides: readonly string[] = Object.freeze([
   'bubble',
   'bubble__content',
   'bubble__nub-pad',
-  'code-block-content',
-  'code-block-content__code-block',
   'collapsible-grouping',
-  'render-markdown',
-  'send-box-attachment-bar',
-  'send-box-attachment-bar--as-list-item',
-  'text-area',
-  'text-area--scroll',
-  'text-area-input',
   'transcript-focus-area',
   'transcript-focus-area__content--focused',
   'transcript-focus-area__content-overlay',
   'transcript-focus-area__indicator',
-  'transcript-focus-area__transcript-indicator',
-  'view-code-dialog__body'
+  'transcript-focus-area__transcript-indicator'
 ]);
 
 export { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides };
