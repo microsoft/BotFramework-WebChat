@@ -4,7 +4,7 @@ import * as JestGlobals from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { readdirSync, readFileSync } from 'fs';
 import { transform } from 'lightningcss';
-import { join, relative } from 'path';
+import { basename, join, relative, sep } from 'path';
 
 import { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides } from './fluentCSSModuleOverrides';
 
@@ -54,6 +54,21 @@ function getGlobalClassNames(path: string): readonly string[] {
 }
 
 const webChatLocalNames = new Set([...listCSSModules('component'), ...listCSSModules('bundle')].flatMap(getLocalNames));
+
+const webChatCSSModuleNames = new Set(
+  [...listCSSModules('component'), ...listCSSModules('bundle')].map(path => basename(path))
+);
+
+const isOverrideModule = (path: string): boolean => path.includes(`${sep}overrides${sep}`);
+
+const fluentLocalNames = new Set(
+  listCSSModules('fluent-theme')
+    .filter(path => !isOverrideModule(path))
+    .flatMap(getLocalNames)
+);
+
+// eslint-disable-next-line security/detect-non-literal-fs-filename
+const FLUENT_CSS_MODULE_THEME_SOURCE = readFileSync(join(__dirname, 'fluentCSSModuleTheme.ts'), 'utf8');
 
 const OVERRIDES_BY_FLUENT_CSS_MODULE: Readonly<Record<string, readonly string[]>> = Object.freeze({
   'fluent-theme/src/components/activity/PartGroupingDecorator.module.css': partGroupingDecoratorOverrides,
@@ -111,13 +126,16 @@ scenario(
 
           return {
             path: relative(PACKAGES_PATH, path),
-            // A Web Chat local name in a Fluent rule only matches when it is listed for that module.
-            unlistedWebChatLocalNames: getLocalNames(path).filter(
-              localName =>
-                webChatLocalNames.has(localName) &&
-                !listedLocalNames.includes(localName) &&
-                !FLUENT_OWN_LOCAL_NAMES.has(localName)
-            ),
+            // A Web Chat local name in a Fluent rule only matches when it is listed for that module,
+            // or when the rule is in an override module, which is passed whole.
+            unlistedWebChatLocalNames: isOverrideModule(path)
+              ? []
+              : getLocalNames(path).filter(
+                  localName =>
+                    webChatLocalNames.has(localName) &&
+                    !listedLocalNames.includes(localName) &&
+                    !FLUENT_OWN_LOCAL_NAMES.has(localName)
+                ),
             webChatGlobalClassNames: getGlobalClassNames(path).filter(className => webChatLocalNames.has(className))
           };
         })
@@ -127,6 +145,33 @@ scenario(
       )
       .and('every local name of a Web Chat CSS module should be listed', (_, results) =>
         expect(results.filter(({ unlistedWebChatLocalNames }) => unlistedWebChatLocalNames.length)).toEqual([])
+      );
+
+    bdd
+      .given('every Fluent override module', () => listCSSModules('fluent-theme').filter(isOverrideModule))
+      .when('reading its local names', paths =>
+        paths.map(path => ({
+          // Besides Web Chat local names, only Fluent's own local names that scope the rules, e.g. ".theme".
+          // The composer adds their class names to Fluent's elements as well.
+          localNamesNotFromWebChatNorFluent: getLocalNames(path).filter(
+            localName => !webChatLocalNames.has(localName) && !fluentLocalNames.has(localName)
+          ),
+          name: basename(path),
+          path: relative(PACKAGES_PATH, path)
+        }))
+      )
+      .then('should only use local names of Web Chat and of Fluent CSS modules', (_, results) =>
+        expect(
+          results.filter(({ localNamesNotFromWebChatNorFluent }) => localNamesNotFromWebChatNorFluent.length)
+        ).toEqual([])
+      )
+      .and('should mirror a Web Chat CSS module', (_, results) =>
+        expect(results.filter(({ name }) => !webChatCSSModuleNames.has(name))).toEqual([])
+      )
+      .and('should be passed to the CSS module theme', (_, results) =>
+        expect(
+          results.filter(({ name }) => !FLUENT_CSS_MODULE_THEME_SOURCE.includes(`'../overrides/${name}'`))
+        ).toEqual([])
       );
   },
   JestGlobals
