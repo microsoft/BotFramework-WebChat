@@ -1,0 +1,7 @@
+:global(.webchat-fluent) .part-grouping-decorator {
+  &.variant-copilot {
+    .activity-status {
+      margin: 0 0 var(--webchat-spacingHorizontalXXS);
+    }
+  }
+}

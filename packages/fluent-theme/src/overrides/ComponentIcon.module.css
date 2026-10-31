@@ -1,0 +1,18 @@
+:global(.webchat-fluent) .part-grouping-decorator {
+  .collapsible-grouping {
+    .stacked-layout__message-status {
+      .component-icon {
+        height: 19px;
+        width: 19px;
+      }
+    }
+  }
+  &.variant-copilot {
+    .stacked-layout .stacked-layout__message-status {
+      .component-icon {
+        height: unset;
+        width: unset;
+      }
+    }
+  }
+}

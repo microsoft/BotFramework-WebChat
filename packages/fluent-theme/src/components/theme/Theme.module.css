@@ -240,25 +240,6 @@
 
 /* Transcript focused content */
 :global(.webchat-fluent).theme .transcript-focus-area:focus-visible .transcript-focus-area__content--focused {
-  /* Transcript activity focused directly */
-  > :global(.webchat__focus-trap) > :global(.webchat__basic-transcript__activity-body) .bubble {
-    display: grid;
-    grid-template-areas: 'focused-content';
-    position: static;
-
-    .bubble__content {
-      grid-area: focused-content;
-    }
-
-    &::after {
-      border-radius: var(--webchat-part-grouping__bubble--border-radius);
-      content: '';
-      grid-area: focused-content;
-      outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
-      pointer-events: none;
-    }
-  }
-
   .collapsible-grouping::after {
     border-radius: var(--webchat-part-grouping__bubble--border-radius);
     border: none;
@@ -268,10 +249,6 @@
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
     pointer-events: none;
     position: absolute;
-  }
-
-  :global(.activity-decorator) .bubble .bubble__nub-pad {
-    display: none;
   }
 }
 
