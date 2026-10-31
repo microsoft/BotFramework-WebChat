@@ -140,9 +140,12 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
 
         nextKeyRef.current = nextKeyRef.current + 1;
 
+        // The fade out timer would remove this element before it is rendered: it is set again after rendering.
+        markAllAsRenderedTimeoutIdRef.current && clearTimeout(markAllAsRenderedTimeoutIdRef.current);
+
         setStaticElementEntries(entries => [...entries, { element, key }]);
       },
-      [nextKeyRef, setStaticElementEntries]
+      [clearTimeout, markAllAsRenderedTimeoutIdRef, nextKeyRef, setStaticElementEntries]
     );
 
     const staticElementEntriesState = useMemo<readonly [readonly StaticElementEntry[]]>(

@@ -64,7 +64,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       type="button"
     >
       {icon && <ComponentIcon appearance="text" className={classNames['activity-button__icon']} icon={icon} />}
-      {text && <span className="activity-button__text">{text}</span>}
+      {text && <span className={classNames['activity-button__text']}>{text}</span>}
       {children}
     </button>
   );
