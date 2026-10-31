@@ -153,6 +153,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     linkDefinitions: createLinkDefinitionsStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/providers/ModalDialog/private/Popover.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     modalDialog: createModalDialogStyle(),
     /**
      * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
@@ -178,6 +183,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     thumbButton: createThumbButtonStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Tooltip/private/Tooltip.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     tooltip: createTooltipStyle()
   } as const);
 }
