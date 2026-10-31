@@ -241,10 +241,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       setActionStateWithRefresh(Object.freeze({ actionId: action['@id'], actionStatus: 'CompletedActionStatus' }));
 
-      const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
       const { current: feedbackText } = feedbackTextRef;
-      const isLegacyAction = isOfType('VoteAction', action);
-      const entity = isLegacyAction ? rest : action;
       const originalActionEntity = getOriginalActionEntity(activityFromPropsRef.current, action);
 
       // Send the action as the bot sent it, so the bot can read its custom properties (e.g. prompt ID), as Web Chat 4.18 did.
@@ -268,6 +265,9 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           }
         } as any);
       } else {
+        const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
+        const entity = isOfType('VoteAction', action) ? rest : action;
+
         postActivity({
           entities: [
             completedActionEntity ?? {
