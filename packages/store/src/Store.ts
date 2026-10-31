@@ -31,6 +31,54 @@ function isReferenceTo(id: Identifier, value: unknown): boolean {
 }
 
 /**
+ * Gets IDs of all nodes referenced by the specified node.
+ */
+function getReferenceIds(node: Node): Set<Identifier> {
+  const referenceIds = new Set<Identifier>();
+
+  for (const [key, value] of Object.entries(node)) {
+    if (key !== '@context' && key !== '@id' && key !== '@type' && (value instanceof Set || Array.isArray(value))) {
+      for (const item of value) {
+        is(nodeReferenceSchema, item) && referenceIds.add(item['@id']);
+      }
+    }
+  }
+
+  return referenceIds;
+}
+
+/**
+ * Updates forward and backward reference maps with the new set of reference IDs of a node.
+ */
+function setReferenceIds(
+  forwardReferenceIds: Map<Identifier, Set<Identifier>>,
+  backwardReferenceIds: Map<Identifier, Set<Identifier>>,
+  id: Identifier,
+  nextReferenceIds: Set<Identifier>
+): void {
+  for (const referenceId of forwardReferenceIds.get(id) ?? []) {
+    const referencingIds = backwardReferenceIds.get(referenceId);
+
+    if (referencingIds) {
+      referencingIds.delete(id);
+      referencingIds.size || backwardReferenceIds.delete(referenceId);
+    }
+  }
+
+  nextReferenceIds.size ? forwardReferenceIds.set(id, nextReferenceIds) : forwardReferenceIds.delete(id);
+
+  for (const referenceId of nextReferenceIds) {
+    const referencingIds = backwardReferenceIds.get(referenceId);
+
+    referencingIds ? referencingIds.add(id) : backwardReferenceIds.set(referenceId, new Set([id]));
+  }
+}
+
+function cloneReferenceIds(referenceIds: Map<Identifier, Set<Identifier>>): Map<Identifier, Set<Identifier>> {
+  return new Map(Array.from(referenceIds, ([id, ids]) => [id, new Set(ids)]));
+}
+
+/**
  * Removes all references to the specified node ID.
  *
  * @returns A new node if references are removed, otherwise, `undefined`.
@@ -72,6 +120,8 @@ class Store {
 
         // All edits are done on a copy. If the transactor throws, the copy is discarded and the state is not changed.
         const nextState = new Map(this.#state);
+        const nextBackwardReferenceIds = cloneReferenceIds(this.#backwardReferenceIds);
+        const nextForwardReferenceIds = cloneReferenceIds(this.#forwardReferenceIds);
 
         transactor(
           Object.freeze({
@@ -81,13 +131,16 @@ class Store {
 
               nextState.delete(safeId) && affectedNodeIds.add(safeId);
 
-              for (const node of nextState.values()) {
-                const nextNode = removeReference(node, safeId);
+              setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, new Set());
+
+              // Copy before iterating as the set will be modified while removing references.
+              for (const nodeId of Array.from(nextBackwardReferenceIds.get(safeId) ?? [])) {
+                const node = nextState.get(nodeId);
+                const nextNode = node && removeReference(node, safeId);
 
                 if (nextNode) {
-                  const nodeId = nextNode['@id'];
-
                   nextState.set(nodeId, nextNode);
+                  setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, nodeId, getReferenceIds(nextNode));
                   referencingNodeIds.push(nodeId);
                   affectedNodeIds.add(nodeId);
                 }
@@ -109,6 +162,7 @@ class Store {
               }
 
               nextState.set(safeId, safeNode);
+              setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, getReferenceIds(safeNode));
 
               affectedNodeIds.add(safeId);
             }
@@ -125,6 +179,8 @@ class Store {
           // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
           // - THINK: Upsert/delete called twice with same node ID in the same transaction?
 
+          this.#backwardReferenceIds = nextBackwardReferenceIds;
+          this.#forwardReferenceIds = nextForwardReferenceIds;
           this.#state = nextState;
 
           this.#notifyAll();
@@ -135,6 +191,10 @@ class Store {
     source.start(controller);
   }
 
+  /** Key is the node being referenced, values are IDs of nodes which reference the key node. */
+  #backwardReferenceIds: Map<Identifier, Set<Identifier>> = new Map();
+  /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
+  #forwardReferenceIds: Map<Identifier, Set<Identifier>> = new Map();
   #listeners: Set<() => void> = new Set<() => void>();
   #state: Map<string, Node> = new Map();
 
