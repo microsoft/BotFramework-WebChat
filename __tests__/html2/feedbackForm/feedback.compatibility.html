@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: { testIds }
+        } = window;
+
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const utteranceHappenTime = new Date('2024-01-15T10:00:00Z');
+        const commonFeedbackMetadata = {
+          activityId: 'activity-123',
+          aiResponseMessage: 'AI response message',
+          mcsConversationId: 'conversation-456',
+          prompt: 'User prompt',
+          promptId: 'prompt-789',
+          utteranceHappenTime
+        };
+        const likeAction = {
+          '@type': 'LikeAction',
+          ...commonFeedbackMetadata,
+          actionStatus: 'PotentialActionStatus'
+        };
+        const dislikeAction = {
+          '@type': 'DislikeAction',
+          ...commonFeedbackMetadata,
+          actionStatus: 'PotentialActionStatus'
+        };
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamType: 'final'
+          },
+          conversation: {
+            id: 'conversation-456'
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              author: {
+                '@type': 'Person',
+                description: 'Bot description',
+                image: 'https://example.com/bot.png',
+                name: 'TestBot'
+              },
+              keywords: ['AllowCopy'],
+              potentialAction: [likeAction, dislikeAction],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          from: {
+            id: 'bot-id',
+            name: 'TestBot',
+            role: 'bot'
+          },
+          id: 'activity-123',
+          text: 'AI response message',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [likeButton, dislikeButton] = pageElements.allByTestId(testIds.feedbackButton);
+
+        const likePost = await directLine.actPostActivity(async () => {
+          await host.click(likeButton);
+          clock.tick(500);
+        });
+
+        likePost.resolvePostActivity();
+
+        const { activity: dislikeActivity } = await directLine.actPostActivity(async () => {
+          await host.click(dislikeButton);
+          clock.tick(500);
+        });
+
+        expect({
+          dislikeActivity: {
+            entity: dislikeActivity.entities[0],
+            name: dislikeActivity.name,
+            type: dislikeActivity.type
+          },
+          likeActivity: {
+            entity: likePost.activity.entities[0],
+            name: likePost.activity.name,
+            type: likePost.activity.type
+          }
+        }).toEqual({
+          dislikeActivity: {
+            entity: {
+              ...dislikeAction,
+              actionStatus: 'CompletedActionStatus'
+            },
+            name: 'webchat:activity-status/feedback',
+            type: 'event'
+          },
+          likeActivity: {
+            entity: {
+              ...likeAction,
+              actionStatus: 'CompletedActionStatus'
+            },
+            name: 'webchat:activity-status/feedback',
+            type: 'event'
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
