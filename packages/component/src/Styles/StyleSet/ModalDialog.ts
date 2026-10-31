@@ -6,6 +6,11 @@ const LIGHT_THEME_SELECTOR = '@media (forced-colors: none)';
 
 import CSSTokens from '../CSSTokens';
 
+/**
+ * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+ * The live styles are in `packages/component/src/providers/ModalDialog/private/Popover.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createModalDialogStyleSet() {
   return {
     '&.webchat__modal-dialog': {
