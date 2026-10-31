@@ -1,4 +1,4 @@
-import { is, parse } from 'valibot';
+import { boolean, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 import { nodeSchema, type Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
@@ -8,8 +8,22 @@ interface StoreSource {
   start(controller: StoreController): void;
 }
 
+const storeEditInitSchema = pipe(
+  object({
+    /**
+     * When `true`, `hasPart` and `isPartOf` will be automatically updated on commit so they are inverse of each other.
+     *
+     * Regardless of this option, the commit will fail if `hasPart` and `isPartOf` are not inverse of each other.
+     */
+    autoRelationship: optional(boolean('autoRelationship must be boolean'))
+  }),
+  readonly()
+);
+
+type StoreEditInit = InferInput<typeof storeEditInitSchema>;
+
 interface StoreController {
-  edit(transactor: (transaction: StoreTransaction) => void): void;
+  edit(transactor: (transaction: StoreTransaction) => void, init?: StoreEditInit | undefined): void;
 }
 
 interface StoreTransaction {
@@ -273,12 +287,53 @@ function assertUniquePositionInParts(state: ReadonlyMap<string, Node>, affectedN
   }
 }
 
+/**
+ * RULE: `hasPart` and `isPartOf` must be inverse of each other.
+ *
+ * Only part relationships from or to the affected nodes are checked.
+ */
+function assertInversePartRelationship(
+  state: ReadonlyMap<string, Node>,
+  backwardReferenceIds: ReadonlyMap<string, ReadonlySet<Identifier>>,
+  affectedNodeIds: ReadonlySet<Identifier>
+): void {
+  for (const id of affectedNodeIds) {
+    const node = state.get(id);
+
+    if (node) {
+      // Relationships from the affected node, and relationships from other nodes to the affected node.
+      const relationships: [Identifier, Identifier][] = [
+        ...Array.from(getPartIds(node, 'hasPart'), (childId): [Identifier, Identifier] => [id, childId]),
+        ...Array.from(getPartIds(node, 'isPartOf'), (parentId): [Identifier, Identifier] => [parentId, id]),
+        ...Array.from(backwardReferenceIds.get(id) ?? []).flatMap(referencingId => {
+          const referencingNode = state.get(referencingId);
+          const partRelationships: [Identifier, Identifier][] = [];
+
+          getPartIds(referencingNode, 'hasPart').has(id) && partRelationships.push([referencingId, id]);
+          getPartIds(referencingNode, 'isPartOf').has(id) && partRelationships.push([id, referencingId]);
+
+          return partRelationships;
+        })
+      ];
+
+      for (const [parentId, childId] of relationships) {
+        if (!getPartIds(state.get(parentId), 'hasPart').has(childId)) {
+          throw new Error(`Node "${parentId}" must have "${childId}" in hasPart as it is inverse of isPartOf`);
+        } else if (!getPartIds(state.get(childId), 'isPartOf').has(parentId)) {
+          throw new Error(`Node "${childId}" must have "${parentId}" in isPartOf as it is inverse of hasPart`);
+        }
+      }
+    }
+  }
+}
+
 class Store {
   constructor(source: StoreSource) {
     const controller: StoreController = {
       // Multiple nodes can be added at once and they could cross reference each other.
       // We need to add all of the nodes at once, auto-fix relationships, and verify the graph integrity.
-      edit: transactor => {
+      edit: (transactor, init) => {
+        const { autoRelationship } = parse(optional(storeEditInitSchema, {}), init);
         const affectedNodeIds = new Set<Identifier>();
 
         // All edits are done on a copy. If the transactor throws, the copy is discarded and the state is not changed.
@@ -335,7 +390,7 @@ class Store {
         );
 
         if (affectedNodeIds.size) {
-          fixPartMembership(this.#state, nextState, affectedNodeIds, setNode);
+          autoRelationship && fixPartMembership(this.#state, nextState, affectedNodeIds, setNode);
 
           // Upserting nodes which reference each other may take multiple `upsert()` calls.
           // Verify integrity on commit: all referenced nodes must be in the graph.
@@ -348,6 +403,7 @@ class Store {
             }
           }
 
+          assertInversePartRelationship(nextState, nextBackwardReferenceIds, affectedNodeIds);
           assertUniquePositionInParts(nextState, affectedNodeIds);
 
           // THINK: Upsert/delete called twice with same node ID in the same transaction?
@@ -391,4 +447,4 @@ class Store {
 }
 
 export default Store;
-export type { StoreSource as StoreController, StoreController as StoreTransactor, StoreTransaction };
+export type { StoreEditInit, StoreSource as StoreController, StoreController as StoreTransactor, StoreTransaction };

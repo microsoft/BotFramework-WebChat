@@ -626,6 +626,13 @@ scenario(
   NodeTest
 );
 
+function editWithAutoRelationship(
+  controller: StoreTransactor,
+  transactor: Parameters<StoreTransactor['edit']>[0]
+): void {
+  controller.edit(transactor, { autoRelationship: true });
+}
+
 function getPartIdsOf(store: Store, id: string, property: 'hasPart' | 'isPartOf'): string[] {
   const node = store.getSnapshot().get(id);
 
@@ -649,14 +656,14 @@ scenario(
       .given('a store with a conversation', () => {
         const { controller, store } = createStore();
 
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }))
         );
 
         return { controller, store };
       })
       .when('a child node with isPartOf is upserted', ({ controller }) =>
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:m-1', () => ({
             '@id': '_:m-1',
             '@type': new Set(['Message']),
@@ -678,14 +685,14 @@ scenario(
       .given('a store with a message', () => {
         const { controller, store } = createStore();
 
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': new Set(['Message']) }))
         );
 
         return { controller, store };
       })
       .when('a parent node with hasPart is upserted', ({ controller }) =>
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:conversation', () => ({
             '@id': '_:conversation',
             '@type': new Set(['Conversation']),
@@ -700,7 +707,7 @@ scenario(
     bdd
       .given('an empty store', () => createStore())
       .when('parent and children are upserted in the same transaction with one side declared', ({ controller }) =>
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:m-1', () => ({
             '@id': '_:m-1',
             '@type': new Set(['Message']),
@@ -727,7 +734,7 @@ scenario(
     bdd
       .given('an empty store', () => createStore())
       .when('nested parts are upserted', ({ controller }) =>
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
 
           transaction.upsert('_:thread', () => ({
@@ -753,7 +760,7 @@ scenario(
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('a child removes isPartOf', ({ controller }) =>
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:m-1', node => {
             const { isPartOf: _, ...rest } = node!;
 
@@ -768,7 +775,7 @@ scenario(
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('a parent removes all hasPart', ({ controller }) =>
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:conversation', node => {
             const { hasPart: _, ...rest } = node!;
 
@@ -784,7 +791,7 @@ scenario(
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('parent removes a child while the child re-declares the parent in the same transaction', ({ controller }) =>
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-2' }]) }));
 
           transaction.upsert('_:m-1', node => ({
@@ -803,7 +810,7 @@ scenario(
       .given('a store with a conversation and an orphan message', () => {
         const { controller, store } = createStore();
 
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
           transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': new Set(['Message']) }));
         });
@@ -811,7 +818,7 @@ scenario(
         return { controller, store };
       })
       .when('the child adds isPartOf while the parent removes hasPart in the same transaction', ({ controller }) =>
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:conversation', () => ({
             '@id': '_:conversation',
             '@type': new Set(['Conversation']),
@@ -835,7 +842,7 @@ scenario(
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('the parent is deleted', ({ controller }) =>
-        controller.edit(transaction => transaction.delete('_:conversation'))
+        editWithAutoRelationship(controller, transaction => transaction.delete('_:conversation'))
       )
       .then('should remove isPartOf from all children', ({ store }) => {
         expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
@@ -844,7 +851,9 @@ scenario(
 
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
-      .when('a child is deleted', ({ controller }) => controller.edit(transaction => transaction.delete('_:m-1')))
+      .when('a child is deleted', ({ controller }) =>
+        editWithAutoRelationship(controller, transaction => transaction.delete('_:m-1'))
+      )
       .then('should remove the child from hasPart of the parent', ({ store }) =>
         expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
       );
@@ -853,7 +862,7 @@ scenario(
       .given('a store with nested parts', () => {
         const { controller, store } = createStore();
 
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
           transaction.upsert('_:thread', () => ({
             '@id': '_:thread',
@@ -870,7 +879,7 @@ scenario(
         return { controller, store };
       })
       .when('the middle node is deleted', ({ controller }) =>
-        controller.edit(transaction => transaction.delete('_:thread'))
+        editWithAutoRelationship(controller, transaction => transaction.delete('_:thread'))
       )
       .then('should remove hasPart from the parent', ({ store }) =>
         expect(store.getSnapshot().get('_:conversation')).not.toHaveProperty('hasPart')
@@ -926,7 +935,7 @@ scenario(
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('members of the same part have different positions', ({ controller }) =>
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }));
           transaction.upsert('_:m-2', node => ({ ...node!, position: 2 }));
         })
@@ -940,13 +949,17 @@ scenario(
       .given('a store with cross-referencing nodes', () => {
         const { controller, store } = createStoreWithNodes();
 
-        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
+        editWithAutoRelationship(controller, transaction =>
+          transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }))
+        );
 
         return { controller, snapshot: store.getSnapshot(), store };
       })
       .when('another member of the same part is upserted with the same position', ({ controller }) =>
         catchError(() =>
-          controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, position: 1 })))
+          editWithAutoRelationship(controller, transaction =>
+            transaction.upsert('_:m-2', node => ({ ...node!, position: 1 }))
+          )
         )
       )
       .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
@@ -956,13 +969,15 @@ scenario(
       .given('a store with a conversation with a positioned member', () => {
         const { controller, store } = createStoreWithNodes();
 
-        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
+        editWithAutoRelationship(controller, transaction =>
+          transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }))
+        );
 
         return { controller, snapshot: store.getSnapshot(), store };
       })
       .when('a new member with the same position joins the part via hasPart of the parent', ({ controller }) =>
         catchError(() =>
-          controller.edit(transaction => {
+          editWithAutoRelationship(controller, transaction => {
             transaction.upsert('_:m-3', () => ({ '@id': '_:m-3', '@type': new Set(['Message']), position: 1 }));
             transaction.upsert('_:conversation', node => ({
               ...node!,
@@ -977,7 +992,7 @@ scenario(
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('members without position and a member with position are in the same part', ({ controller }) =>
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:m-3', () => ({
             '@id': '_:m-3',
             '@type': new Set(['Message']),
@@ -994,7 +1009,7 @@ scenario(
       .given('two conversations each with a positioned member', () => {
         const { controller, store } = createStore();
 
-        controller.edit(transaction => {
+        editWithAutoRelationship(controller, transaction => {
           transaction.upsert('_:c-1', () => ({ '@id': '_:c-1', '@type': new Set(['Conversation']) }));
           transaction.upsert('_:c-2', () => ({ '@id': '_:c-2', '@type': new Set(['Conversation']) }));
           transaction.upsert('_:m-1', () => ({
@@ -1008,7 +1023,7 @@ scenario(
         return { controller, store };
       })
       .when('a member of another part has the same position', ({ controller }) =>
-        controller.edit(transaction =>
+        editWithAutoRelationship(controller, transaction =>
           transaction.upsert('_:m-2', () => ({
             '@id': '_:m-2',
             '@type': new Set(['Message']),
@@ -1020,6 +1035,159 @@ scenario(
       .then('should allow same position in different parts', ({ store }) =>
         expect(store.getSnapshot().get('_:m-2')).toHaveProperty('position', 1)
       );
+  },
+  NodeTest
+);
+
+scenario(
+  'without autoRelationship',
+  bdd => {
+    bdd
+      .given('a store with a conversation', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction =>
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }))
+        );
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('a child node with isPartOf only is upserted', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              isPartOf: new Set([{ '@id': '_:conversation' }])
+            }))
+          )
+        )
+      )
+      .then('should throw for inverse relationship', (_, error) =>
+        expect(error).toHaveProperty('message', expect.stringContaining('inverse'))
+      )
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('a store with a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': new Set(['Message']) }))
+        );
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('a parent node with hasPart only is upserted with autoRelationship of false', ({ controller }) =>
+        catchError(() =>
+          controller.edit(
+            transaction =>
+              transaction.upsert('_:conversation', () => ({
+                '@id': '_:conversation',
+                '@type': new Set(['Conversation']),
+                hasPart: new Set([{ '@id': '_:m-1' }])
+              })),
+            { autoRelationship: false }
+          )
+        )
+      )
+      .then('should throw for inverse relationship', (_, error) =>
+        expect(error).toHaveProperty('message', expect.stringContaining('inverse'))
+      )
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('parent and child are upserted with both sides declared', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({
+            '@id': '_:conversation',
+            '@type': new Set(['Conversation']),
+            hasPart: new Set([{ '@id': '_:m-1' }])
+          }));
+
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }));
+        })
+      )
+      .then('should add both nodes', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1']);
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:conversation']);
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => {
+        const { controller, store } = createStoreWithNodes();
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('a parent removes a child from hasPart without updating the child', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-2' }]) }))
+          )
+        )
+      )
+      .then('should throw for inverse relationship', (_, error) =>
+        expect(error).toHaveProperty('message', expect.stringContaining('inverse'))
+      )
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a parent removes a child and the child removes the parent', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-2' }]) }));
+          transaction.upsert('_:m-1', node => {
+            const { isPartOf: _, ...rest } = node!;
+
+            return rest;
+          });
+        })
+      )
+      .then('should remove the relationship', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2']);
+        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a node is deleted', ({ controller }) => controller.edit(transaction => transaction.delete('_:m-1')))
+      .then('should keep part membership consistent', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
+      );
+
+    bdd
+      .given('a store with cross-referencing nodes', () => {
+        const { controller, store } = createStoreWithNodes();
+
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('another member is upserted with the same position', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, position: 1 })))
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('edit is called with an invalid init', ({ controller }) =>
+        catchError(() =>
+          controller.edit(
+            transaction => transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': new Set(['Message']) })),
+            { autoRelationship: 'yes' } as unknown as { autoRelationship: boolean }
+          )
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not add the node', ({ store }) => expect(store.getSnapshot().size).toBe(0));
   },
   NodeTest
 );
