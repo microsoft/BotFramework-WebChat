@@ -69,7 +69,7 @@
     --webchat__component-icon--color: var(--webchat-colorNeutralForeground2);
 
     @media (forced-colors: active) {
-      --webchat__component-icon--color: buttonText;
+      --webchat__component-icon--color: ButtonText;
     }
   }
 }
