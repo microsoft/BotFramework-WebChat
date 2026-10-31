@@ -1,14 +1,28 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { isOfType, jsonLinkedDataSchema } from 'botframework-webchat-core/json-ld.js';
 import { type OrgSchemaAction } from 'botframework-webchat-core/org-schema.js';
-import { is, literal, looseObject, pipe, startsWith, string } from 'valibot';
+import {
+  fallback,
+  is,
+  literal,
+  looseObject,
+  parse,
+  picklist,
+  pipe,
+  startsWith,
+  string,
+  type InferInput
+} from 'valibot';
 
-import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes.js';
-
-const messageEntitySchema = looseObject({
+const selfMessageEntitySchema = looseObject({
   '@id': literal(''),
   type: pipe(string(), startsWith('https://schema.org/'))
 });
+
+const isSelfMessageEntity: (entity: unknown) => entity is InferInput<typeof selfMessageEntitySchema> = is.bind(
+  undefined,
+  selfMessageEntitySchema
+);
 
 /**
  * Finds the action as the bot sent it, unparsed, so custom properties (e.g. prompt ID) are kept, as in Web Chat 4.18:
@@ -23,35 +37,55 @@ export default function getOriginalActionEntity(
   activity: WebChatActivity,
   action: OrgSchemaAction
 ): { readonly [key: string]: unknown } | undefined {
-  const reactionType = isOfType('LikeAction', action)
-    ? 'LikeAction'
-    : isOfType('DislikeAction', action)
-      ? 'DislikeAction'
-      : undefined;
+  const isLikeAction = isOfType('LikeAction', action);
+  const isDislikeAction = !isLikeAction && isOfType('DislikeAction', action);
 
-  const messageEntity =
-    reactionType && dereferenceBlankNodes(activity.entities || []).find(entity => is(messageEntitySchema, entity));
+  if (isLikeAction || isDislikeAction) {
+    // We cannot use getOrgSchemaMessage() because it is not using looseObject().
+    // Message thing must be a root-level object in graph.
+    const messageEntity = activity.entities?.find(isSelfMessageEntity);
+    const targetActionType = isDislikeAction ? 'DislikeAction' : 'LikeAction';
 
-  const reactionActionEntity = [messageEntity?.potentialAction]
-    .flat()
-    .find(
-      (entity): entity is { readonly [key: string]: unknown } =>
-        is(jsonLinkedDataSchema, entity) && [entity['@type']].flat().includes(reactionType)
+    const reactionActionEntity = [messageEntity?.potentialAction]
+      .flat()
+      .find(
+        (entity): entity is { readonly [key: string]: unknown } =>
+          entity && is(jsonLinkedDataSchema, entity) && [entity['@type']].flat().includes(targetActionType)
+      );
+
+    if (reactionActionEntity) {
+      return reactionActionEntity;
+    }
+
+    // While we receive `LikeAction`/`DislikeAction`, we found not equivalent in the activity.
+    // Fallback to `VoteAction[actionOption="upvote/downvote"]` instead.
+  }
+
+  let legacyActionOption: 'downvote' | 'upvote' | undefined;
+
+  if (isLikeAction) {
+    // Convert modern `LikeAction` into legacy `VoteAction[actionOption="upvote"]`.
+    legacyActionOption = 'upvote';
+  } else if (isDislikeAction) {
+    // Convert modern `DislikeAction` into legacy `VoteAction[actionOption="downvote"]`.
+    legacyActionOption = 'downvote';
+  } else if (isOfType('VoteAction', action)) {
+    // We only support `actionOption satisfies 'upvote' | 'downvote'` and don't support `Thing`.
+    legacyActionOption = parse(fallback(picklist(['downvote', 'upvote']), undefined), action.actionOption);
+  }
+
+  if (legacyActionOption) {
+    const isTargetVoteAction = is.bind(
+      undefined,
+      looseObject({
+        actionOption: literal(legacyActionOption),
+        type: literal('https://schema.org/VoteAction')
+      })
     );
 
-  const [actionOption] = isOfType('VoteAction', action)
-    ? action.actionOption
-    : [reactionType === 'DislikeAction' ? 'downvote' : 'upvote'];
+    return activity.entities?.find(isTargetVoteAction);
+  }
 
-  return (
-    reactionActionEntity ??
-    (typeof actionOption === 'string'
-      ? activity.entities?.find(entity =>
-          is(
-            looseObject({ actionOption: literal(actionOption), type: literal('https://schema.org/VoteAction') }),
-            entity
-          )
-        )
-      : undefined)
-  );
+  // Either received UnknownAction or VoteAction.actionOption is not "upvote"/"downvote".
+  return undefined;
 }
