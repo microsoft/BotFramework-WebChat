@@ -71,7 +71,7 @@ export default function getOriginalActionEntity(
     legacyActionOption = 'downvote';
   } else if (isOfType('VoteAction', action)) {
     // We only support `actionOption satisfies 'upvote' | 'downvote'` and don't support `Thing`.
-    legacyActionOption = parse(fallback(picklist(['downvote', 'upvote']), undefined), action.actionOption);
+    legacyActionOption = parse(fallback(picklist(['downvote', 'upvote']), undefined), action.actionOption[0]);
   }
 
   if (legacyActionOption) {
