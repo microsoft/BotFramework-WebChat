@@ -42,7 +42,10 @@ const cssPlugin = {
         build.onLoad({ filter: /(\.module_built\.css|\?css_module)$/ }, async args => {
           const result = await fn(args);
 
-          return typeof result?.contents === 'string' && result.contents.includes(PRESERVE_REASON_PROPERTY)
+          // Only the CSS of a CSS module, not its JavaScript class map, and only if it has the declaration.
+          return args.path.endsWith('.module_built.css') &&
+            typeof result?.contents === 'string' &&
+            result.contents.includes(PRESERVE_REASON_PROPERTY)
             ? {
                 ...result,
                 contents: transform({
