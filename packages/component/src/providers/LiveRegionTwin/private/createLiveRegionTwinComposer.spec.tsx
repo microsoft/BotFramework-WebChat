@@ -80,13 +80,15 @@ scenario(
         expect(container.textContent).toBe('Hello');
         expect(mockTimers.size).toBe(1);
       })
-      .when('"World" is queued and the timer fires before "World" is rendered', ({ queueStaticElementRef }) => {
+      .when('"World" is queued and the timer is due before "World" is rendered', ({ queueStaticElementRef }) => {
         act(() => {
           queueStaticElementRef.current('World');
           fireAllTimers();
         });
       })
-      .then('the live region should have "World" only', ({ container }) => expect(container.textContent).toBe('World'))
+      .then('the live region should have "Hello" and "World"', ({ container }) =>
+        expect(container.textContent).toBe('HelloWorld')
+      )
       .when('the timer fires again', () => {
         act(() => fireAllTimers());
       })
