@@ -3,6 +3,10 @@ import { combineCSSModules } from 'botframework-webchat/internal.js';
 import partGroupingDecoratorStyles from '../components/activity/PartGroupingDecorator.module.css';
 import sendBoxStyles from '../components/sendBox/SendBox.module.css';
 import themeStyles from '../components/theme/Theme.module.css';
+import codeBlockContentOverrideStyles from '../overrides/CodeBlockContent.module.css';
+import codeBlockCopyButtonOverrideStyles from '../overrides/CodeBlockCopyButton.module.css';
+import codeBlockOverrideStyles from '../overrides/CodeBlock.module.css';
+import viewCodeDialogOverrideStyles from '../overrides/ViewCodeDialog.module.css';
 import thumbButtonOverrideStyles from '../overrides/ThumbButton.module.css';
 import feedbackFormOverrideStyles from '../overrides/FeedbackForm.module.css';
 import { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides } from './fluentCSSModuleOverrides';
@@ -15,6 +19,10 @@ const fluentCSSModuleTheme = combineCSSModules(
   pickCSSModule(partGroupingDecoratorStyles, partGroupingDecoratorOverrides),
   pickCSSModule(sendBoxStyles, sendBoxOverrides),
   pickCSSModule(themeStyles, themeOverrides),
+  codeBlockContentOverrideStyles,
+  codeBlockCopyButtonOverrideStyles,
+  codeBlockOverrideStyles,
+  viewCodeDialogOverrideStyles,
   thumbButtonOverrideStyles,
   feedbackFormOverrideStyles
 );

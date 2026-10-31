@@ -507,34 +507,6 @@
   /* #endregion */
 
   /* #region Code blocks */
-  .stacked-layout .bubble .code-block-content {
-    border-radius: var(--webchat-borderRadiusXLarge);
-    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
-    font-size: var(--webchat-fontSizeBase300);
-    font-weight: var(--webchat-fontWeightRegular);
-    margin-block: var(--webchat-spacingVerticalNone);
-    margin-inline: var(--webchat-part-grouping__code-block--space-inline);
-
-    .code-block-content__header {
-      padding: var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalL);
-    }
-
-    .code-block-content__code-block {
-      padding-block: var(--webchat-spacingVerticalM);
-      padding-inline: var(--webchat-spacingHorizontalL) var(--webchat-spacingHorizontalS);
-    }
-
-    .code-block-copy-button {
-      --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
-      --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
-
-      margin-block-start: var(--webchat-spacingVerticalM);
-      margin-inline-end: var(--webchat-spacingHorizontalL);
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-  }
   /* #endregion */
 
   /* #region Collapsible content */

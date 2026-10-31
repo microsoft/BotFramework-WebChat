@@ -17,10 +17,6 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'carousel-filmstrip__alignment-pad',
   'carousel-filmstrip__avatar-gutter',
   'carousel-layout',
-  'code-block-content',
-  'code-block-content__code-block',
-  'code-block-content__header',
-  'code-block-copy-button',
   'collapsible-content',
   'collapsible-content__chevron',
   'collapsible-content__content',
@@ -90,14 +86,8 @@ const themeOverrides: readonly string[] = Object.freeze([
   'bubble',
   'bubble__content',
   'bubble__nub-pad',
-  'code-block',
   'code-block-content',
   'code-block-content__code-block',
-  'code-block-copy-button',
-  'code-block-copy-button__icon',
-  'code-block__body',
-  'code-block__theme--github-dark-default',
-  'code-block__theme--github-light-default',
   'collapsible-grouping',
   'render-markdown',
   'send-box-attachment-bar',
@@ -110,10 +100,7 @@ const themeOverrides: readonly string[] = Object.freeze([
   'transcript-focus-area__content-overlay',
   'transcript-focus-area__indicator',
   'transcript-focus-area__transcript-indicator',
-  'view-code-dialog',
-  'view-code-dialog__body',
-  'view-code-dialog__footer',
-  'view-code-dialog__title'
+  'view-code-dialog__body'
 ]);
 
 export { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides };

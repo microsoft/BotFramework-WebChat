@@ -1,0 +1,64 @@
+:global(.webchat-fluent).theme :global(.webchat__modal-dialog).view-code-dialog {
+  :global(.webchat__modal-dialog__close-button-layout) {
+    display: flex;
+    padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
+  }
+
+  :global(.webchat__modal-dialog__close-button) {
+    align-items: center;
+    aspect-ratio: 1;
+    display: flex;
+    height: var(--webchat-lineHeightBase300);
+    justify-content: center;
+    padding: 0;
+    width: unset;
+  }
+
+  :global(.webchat__modal-dialog__box) {
+    width: fit-content;
+  }
+
+  :global(.webchat__modal-dialog__body) {
+    margin: 0;
+    padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
+  }
+
+  .view-code-dialog__title {
+    font-size: var(--webchat-fontSizeBase300);
+    font-weight: var(--webchat-fontWeightSemibold);
+    line-height: var(--webchat-lineHeightBase300);
+  }
+
+  .view-code-dialog__body {
+    font-family: var(--webchat-fontFamilyMonospace);
+    font-size: var(--webchat-fontSizeBase300);
+    margin: 0 calc(var(--webchat-spacingHorizontalM) * -1);
+    padding: 0 var(--webchat-spacingHorizontalM);
+  }
+
+  .view-code-dialog__footer {
+    color: var(--webchat-colorNeutralForeground4);
+    font-size: var(--webchat-fontSizeBase100);
+    line-height: var(--webchat-lineHeightBase100);
+  }
+
+  :global(.view-code-dialog__link) {
+    color: var(--webchat-colorBrandForegroundLink);
+    text-decoration-color: transparent;
+
+    &:target {
+      color: var(--webchat-colorBrandForegroundLinkSelected);
+    }
+    &:hover {
+      color: var(--webchat-colorBrandForegroundLinkHover);
+      text-decoration: underline 1px currentColor;
+    }
+    &:active {
+      color: var(--webchat-colorBrandForegroundLinkPressed);
+    }
+    &:focus-visible {
+      outline: none;
+      text-decoration: underline 1px double var(--webchat-colorStrokeFocus2);
+    }
+  }
+}
