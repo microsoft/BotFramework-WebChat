@@ -45,7 +45,7 @@ export default function renderWebChat(
 
     // React 16 listens to events on the document, unless the container is a document or a shadow root.
     // In a shadow root, the document gets events retargeted to the shadow host, React 16 would ignore every click and keystroke.
-    // React 17 listens on the container: remove with React 16.
+    // React 17 listens on the container: remove when React 16 is dropped.
     if (is(react16DOMSchema, ReactDOM) && rootNode !== elementOrRoot && is(shadowRootSchema, rootNode)) {
       throw new Error(
         'botframework-webchat: renderWebChat() on React 16 does not support an element inside a shadow root, React 16 would ignore clicks and typing. Pass the shadow root itself instead of the element, or use React 17 or later (with webchat.js, set window.React and window.ReactDOM before loading it).'

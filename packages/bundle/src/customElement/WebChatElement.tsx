@@ -145,7 +145,7 @@ class WebChatElement extends BaseHTMLElement {
 
         // Web Chat inserts styles into the shadow root while it renders, before React adds its nodes. React 16 and 17 then
         // warn on unmount, "rendered by another copy of React", unless their first render already put a node first.
-        // Remove with React 17.
+        // Remove when React 16 and 17 are dropped.
         this.#root.render(<Fragment>{hostStyle}</Fragment>);
       }
 
