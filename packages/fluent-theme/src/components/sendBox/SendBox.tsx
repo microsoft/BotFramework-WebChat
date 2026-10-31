@@ -32,6 +32,7 @@ import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 import MicrophoneToolbarButton from './MicrophoneToolbarButton';
 
 const {
+  useDirection,
   useFocus,
   useLocalizer,
   useMakeThumbnail,
@@ -56,6 +57,7 @@ type Props = Readonly<{
 function SendBox(props: Props) {
   const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength }] = useStyleOptions();
   const [attachments, setAttachments] = useSendBoxAttachments();
+  const [direction] = useDirection();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
@@ -222,6 +224,7 @@ function SendBox(props: Props) {
       {...aria}
       className={cx(classNames['sendbox'], variantClassName, props.className)}
       data-testid={testIds.sendBoxContainer}
+      dir={direction}
       onPaste={handlePaste}
       onSubmit={handleFormSubmit}
     >
