@@ -1,8 +1,8 @@
 import { is, parse } from 'valibot';
 import { nodeSchema, type Node } from './node/Node.ts';
-import { blankNodeIdentifierSchema } from './node/BlankNodeIdentifier.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
+import createReadonlySet, { isReadonlySet } from './private/createReadonlySet.ts';
 
 interface StoreSource {
   start(controller: StoreController): void;
@@ -26,20 +26,22 @@ interface StoreTransaction {
 }
 
 /**
- * Recursively freezes an object, including items in arrays and sets.
+ * Returns a deeply immutable copy of the value. Arrays and objects are frozen, and `Set` is replaced by a readonly `Set`.
  *
  * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set.
  */
 function deepFreeze<T>(value: T): T {
-  if (value && typeof value === 'object' && !Object.isFrozen(value)) {
-    Object.freeze(value);
-
-    for (const item of value instanceof Set || Array.isArray(value) ? value : Object.values(value)) {
-      deepFreeze(item);
-    }
+  if (!value || typeof value !== 'object' || isReadonlySet(value)) {
+    return value;
+  } else if (value instanceof Set) {
+    return createReadonlySet(Array.from(value, deepFreeze)) satisfies ReadonlySet<unknown> as T;
+  } else if (Array.isArray(value)) {
+    return Object.freeze(value.map(deepFreeze)) satisfies readonly unknown[] as T;
   }
 
-  return value;
+  return Object.freeze(
+    Object.fromEntries(Object.entries(value).map(([key, value]) => [key, deepFreeze(value)]))
+  ) satisfies object as T;
 }
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
@@ -183,12 +185,12 @@ class Store {
 
         if (affectedNodeIds.size) {
           // Upserting nodes which reference each other may take multiple `upsert()` calls.
-          // Verify integrity on commit: all referenced blank nodes must be in the graph.
+          // Verify integrity on commit: all referenced nodes must be in the graph.
           // As `delete()` removes references to the deleted node, only references from affected nodes need to be checked.
           for (const nodeId of affectedNodeIds) {
             for (const referenceId of nextForwardReferenceIds.get(nodeId) ?? []) {
-              if (is(blankNodeIdentifierSchema, referenceId) && !nextState.has(referenceId)) {
-                throw new Error(`Node "${nodeId}" references blank node "${referenceId}" which is not in the graph`);
+              if (!nextState.has(referenceId)) {
+                throw new Error(`Node "${nodeId}" references node "${referenceId}" which is not in the graph`);
               }
             }
           }
@@ -196,8 +198,7 @@ class Store {
           // TODO: Auto-fix relationship for `hasPart` and `isPartOf`.
 
           // INTEGRITY:
-          // - All `hasPart` node must be in the system, and is inverse of `isPartOf`
-          // - All `isPartOf` node must be in the system
+          // - All `hasPart` node is inverse of `isPartOf`
           // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
           // - THINK: Upsert/delete called twice with same node ID in the same transaction?
 

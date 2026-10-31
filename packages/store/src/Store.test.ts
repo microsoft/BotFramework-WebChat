@@ -313,13 +313,18 @@ scenario(
     bdd
       .given('an empty store', () => createStore())
       .when('a node with a node reference is upserted', ({ controller }) =>
-        controller.edit(transaction =>
+        controller.edit(transaction => {
+          transaction.upsert('https://example.com/p-1', () => ({
+            '@id': 'https://example.com/p-1',
+            '@type': new Set(['Person'])
+          }));
+
           transaction.upsert('_:m-1', () => ({
             '@id': '_:m-1',
             '@type': new Set(['Message']),
             mentions: [{ '@id': 'https://example.com/p-1' }]
-          }))
-        )
+          }));
+        })
       )
       .then('should add the node', ({ store }) =>
         expect(store.getSnapshot().get('_:m-1')).toHaveProperty('mentions', [{ '@id': 'https://example.com/p-1' }])
@@ -431,6 +436,41 @@ scenario(
   bdd => {
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a Set in a node is modified', ({ store }) => {
+        const types = store.getSnapshot().get('_:m-2')?.['@type'];
+
+        return [
+          () => (types as Set<string>).add('Thing'),
+          () => Set.prototype.add.call(types, 'Thing'),
+          () => Set.prototype.clear.call(types)
+        ];
+      })
+      .then('should throw', (_, modifiers) => {
+        for (const modify of modifiers) {
+          expect(modify).toThrow(TypeError);
+        }
+      })
+      .and('should not be modified', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-2')?.['@type']).toEqual(new Set(['Message']))
+      );
+
+    bdd
+      .given('a mutable Set', () => new Set(['Message']))
+      .when('a node with the Set is upserted and the Set is modified afterward', types => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': types })));
+
+        types.add('Thing');
+
+        return store;
+      })
+      .then('should not affect the node', (_, store) =>
+        expect(store.getSnapshot().get('_:m-1')?.['@type']).toEqual(new Set(['Message']))
+      );
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('a node is retrieved', ({ store }) => store.getSnapshot().get('_:m-2'))
       .then('should freeze the node', (_, node) => expect(Object.isFrozen(node)).toBe(true))
       .and('should freeze property values', (_, node) => {
@@ -479,7 +519,7 @@ scenario(
 );
 
 scenario(
-  'blank node integrity',
+  'reference integrity',
   bdd => {
     bdd
       .given('a store with cross-referencing nodes', () => {
@@ -528,16 +568,43 @@ scenario(
 
     bdd
       .given('an empty store', () => createStore())
-      .when('a node referencing a non-existing IRI node is upserted', ({ controller }) =>
-        controller.edit(transaction =>
+      .when('a node referencing a non-existing IRI node is upserted', ({ controller }) => {
+        try {
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              mentions: [{ '@id': 'https://example.com/p-1' }]
+            }))
+          );
+        } catch (error) {
+          return error;
+        }
+
+        return undefined;
+      })
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not add the node', ({ store }) => expect(store.getSnapshot().has('_:m-1')).toBe(false));
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('a referenced IRI node is upserted in the same transaction', ({ controller }) =>
+        controller.edit(transaction => {
           transaction.upsert('_:m-1', () => ({
             '@id': '_:m-1',
             '@type': new Set(['Message']),
             mentions: [{ '@id': 'https://example.com/p-1' }]
-          }))
-        )
+          }));
+
+          transaction.upsert('https://example.com/p-1', () => ({
+            '@id': 'https://example.com/p-1',
+            '@type': new Set(['Person'])
+          }));
+        })
       )
-      .then('should add the node', ({ store }) => expect(store.getSnapshot().has('_:m-1')).toBe(true));
+      .then('should add both nodes', ({ store }) =>
+        expect(Array.from(store.getSnapshot().keys()).sort()).toEqual(['_:m-1', 'https://example.com/p-1'])
+      );
 
     bdd
       .given('an empty store', () => createStore())
