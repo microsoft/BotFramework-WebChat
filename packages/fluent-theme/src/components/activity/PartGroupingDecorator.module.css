@@ -286,59 +286,6 @@
   /* #endregion */
 
   /* #region Header & collapsible grouping */
-  .stacked-layout .collapsible-grouping__header {
-    justify-content: flex-start;
-    min-width: 0;
-    padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
-    place-self: start;
-    position: relative;
-
-    .activity-button {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      font-size: var(--webchat-fontSizeBase300);
-      padding: var(--webchat-spacingVerticalXXS) var(--webchat-spacingHorizontalXS);
-
-      &::after {
-        content: '';
-        cursor: pointer;
-        display: block;
-        inset: 0;
-        position: absolute;
-      }
-    }
-
-    .activity-button__text {
-      font-size: 0;
-      height: 0;
-      overflow: clip;
-      position: absolute;
-      width: 0;
-    }
-  }
-
-  .stacked-layout .collapsible-grouping__content .part-grouping-activity__activities {
-    --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalS);
-    padding: var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalL);
-  }
-
-  .stacked-layout .collapsible-grouping {
-    display: grid;
-
-    &.collapsible-grouping--open {
-      gap: var(--webchat-spacingVerticalM);
-    }
-  }
-
-  .collapsible-grouping,
-  .collapsible-grouping__header {
-    border: none;
-  }
-
-  .collapsible-grouping {
-    max-width: 100%;
-  }
 
   .stacked-layout .bubble .text-content {
     font-size: var(--webchat__font-size--medium);
@@ -361,17 +308,7 @@
 
   /* #region Collapsible content */
   .stacked-layout .bubble .collapsible-content {
-    .collapsible-content__summary {
-      &:focus-visible {
-        border-radius: var(--webchat-borderRadiusSmall);
-        outline-offset: 4px;
-        outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
-      }
-    }
-
     .collapsible-content__content {
-      margin-block: var(--webchat-part-grouping__collapsible-content--space-block-start-end);
-
       .stacked-layout__attachment-row {
         .text-content {
           padding-block: 0;
@@ -401,24 +338,6 @@
 
     &.part-grouping-decorator--group {
       --webchat-part-grouping__bubble--min-height: 20px;
-
-      .collapsible-grouping {
-        anchor-name: --webchat-flair;
-        border-radius: var(--webchat-part-grouping__bubble--border-radius);
-        max-width: min(var(--webchat-part-grouping__bubble--max-width), 100%);
-        padding: var(--webchat-part-grouping__bubble--space-block) var(--webchat-part-grouping__bubble--space-inline);
-        position: relative;
-        transition:
-          background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid),
-          box-shadow var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
-      }
-
-      &:has(.collapsible-grouping--open) {
-        .collapsible-grouping {
-          background-color: var(--webchat-part-grouping__bubble--background-color);
-          box-shadow: var(--webchat-part-grouping__bubble--box-shadow);
-        }
-      }
     }
   }
   /* #endregion */
@@ -511,34 +430,12 @@
           }
         }
       }
-
-      .bubble .collapsible-content .collapsible-content__content {
-        margin-block: var(--webchat-spacingVerticalNone);
-      }
     }
 
     &.part-grouping-decorator--group {
       --webchat-part-grouping__message-status--space-block: var(--webchat-spacingVerticalNone);
       --webchat-part-grouping__text-content--space-block-inline: var(--webchat-spacingVerticalNone)
         var(--webchat-spacingHorizontalNone);
-
-      .collapsible-grouping__content {
-        border: var(--webchat-strokeWidthThin) solid transparent;
-        border-radius: var(--webchat-part-grouping__bubble--border-radius);
-        position: relative;
-
-        @supports (anchor-name: --webchat-flair) {
-          anchor-name: --webchat-flair;
-          position: static;
-        }
-      }
-
-      &:has(.collapsible-grouping--open) {
-        .collapsible-grouping__content {
-          background-color: var(--webchat-part-grouping__bubble--background-color);
-          border-color: var(--webchat-part-grouping__bubble--border-color);
-        }
-      }
 
       .bubble .bubble__content {
         .stacked-layout__bubble .text-content {
@@ -549,72 +446,6 @@
 
     .bubble .text-content .text-content__generated-badge {
       display: none;
-    }
-
-    .stacked-layout:has(.collapsible-grouping) {
-      margin-inline: var(--webchat-spacingHorizontalNone);
-    }
-
-    .collapsible-grouping {
-      margin-inline: var(--webchat-spacingHorizontalXS);
-    }
-
-    .collapsible-grouping .collapsible-grouping__chevron,
-    .collapsible-content .collapsible-content__chevron {
-      transform: rotate(270deg);
-    }
-
-    .collapsible-grouping--open .collapsible-grouping__chevron,
-    .collapsible-content[open] .collapsible-content__chevron {
-      transform: rotate(360deg);
-    }
-
-    .collapsible-grouping__header {
-      margin-inline: calc(var(--webchat-spacingHorizontalXS) * -1);
-    }
-
-    .collapsible-grouping__title {
-      color: var(--webchat-colorNeutralForeground2);
-      font-size: var(--webchat-fontSizeBase200);
-      font-weight: var(--webchat-fontWeightSemibold);
-      line-height: var(--webchat-lineHeightBase200);
-    }
-
-    .collapsible-grouping__content {
-      anchor-name: --webchat-flair;
-      background: var(--webchat-colorNeutralBackground1);
-      background-clip: padding-box;
-      border-radius: var(--webchat-borderRadius2XLarge);
-      height: unset;
-      opacity: unset;
-      visibility: unset;
-    }
-
-    .collapsible-grouping__list > * {
-      interpolate-size: allow-keywords;
-      transition:
-        margin calc(var(--webchat__transition-duration) / 2) var(--webchat__transition-easing),
-        height calc(var(--webchat__transition-duration) / 2) var(--webchat__transition-easing);
-    }
-
-    .collapsible-grouping__content--open .collapsible-grouping__list > * {
-      /* We use animation so we can reset needed properties immediately upon switching classes */
-      animation: collapsible-grouping__fade-in var(--webchat__transition-duration)
-        calc(var(--webchat__transition-duration) / 4) var(--webchat__transition-easing) both;
-      height: auto;
-      transition:
-        margin var(--webchat__transition-duration) var(--webchat__transition-easing),
-        height var(--webchat__transition-duration) var(--webchat__transition-easing);
-    }
-
-    .collapsible-grouping__content:not(.collapsible-grouping__content--open) {
-      /* We use animation so we can reset needed properties immediately upon switching classes */
-      animation: collapsible-grouping__fade-in var(--webchat__transition-duration) var(--webchat__transition-duration)
-        var(--webchat__transition-easing) both;
-    }
-
-    .collapsible-grouping__content:not(.collapsible-grouping__content--open) .collapsible-grouping__list {
-      padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
     }
   }
   /* #endregion */

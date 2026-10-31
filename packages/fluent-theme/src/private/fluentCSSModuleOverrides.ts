@@ -5,24 +5,12 @@
 
 // PartGroupingDecorator.module.css
 const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
-  'activity-button',
-  'activity-button__text',
   'adaptive-card-renderer',
   'adaptive-card-renderer__action--selected',
   'bubble',
   'bubble__content',
   'collapsible-content',
-  'collapsible-content__chevron',
   'collapsible-content__content',
-  'collapsible-content__summary',
-  'collapsible-grouping',
-  'collapsible-grouping--open',
-  'collapsible-grouping__chevron',
-  'collapsible-grouping__content',
-  'collapsible-grouping__content--open',
-  'collapsible-grouping__header',
-  'collapsible-grouping__list',
-  'collapsible-grouping__title',
   'link-definitions',
   'link-definitions__badge',
   'link-definitions__header',
@@ -37,7 +25,6 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'link-definitions__list-item-text',
   'link-definitions__message-sensitivity-label-text',
   'link-definitions__open-in-new-window-icon',
-  'part-grouping-activity__activities',
   'render-markdown',
   'stacked-layout',
   'stacked-layout__attachment-row',
@@ -50,13 +37,6 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
 const sendBoxOverrides: readonly string[] = Object.freeze([]);
 
 // Theme.module.css
-const themeOverrides: readonly string[] = Object.freeze([
-  'activity-button',
-  'activity-button__icon',
-  'animated-image-content__button',
-  'collapsible-grouping',
-  'transcript-focus-area',
-  'transcript-focus-area__content--focused'
-]);
+const themeOverrides: readonly string[] = Object.freeze(['activity-button', 'animated-image-content__button']);
 
 export { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides };

@@ -4,11 +4,15 @@ import partGroupingDecoratorStyles from '../components/activity/PartGroupingDeco
 import themeStyles from '../components/theme/Theme.module.css';
 import messageStatusLoaderOverrideStyles from '../overrides/MessageStatusLoader.module.css';
 import bubbleOverrideStyles from '../overrides/Bubble.module.css';
+import activityButtonOverrideStyles from '../overrides/ActivityButton.module.css';
+import collapsibleGroupingOverrideStyles from '../overrides/CollapsibleGrouping.module.css';
+import partGroupingActivityOverrideStyles from '../overrides/PartGroupingActivity.module.css';
 import stackedLayoutOverrideStyles from '../overrides/StackedLayout.module.css';
 import componentIconOverrideStyles from '../overrides/ComponentIcon.module.css';
 import carouselFilmStripOverrideStyles from '../overrides/CarouselFilmStrip.module.css';
 import codeBlockContentOverrideStyles from '../overrides/CodeBlockContent.module.css';
 import codeBlockCopyButtonOverrideStyles from '../overrides/CodeBlockCopyButton.module.css';
+import collapsibleContentOverrideStyles from '../overrides/CollapsibleContent.module.css';
 import transcriptFocusOverrideStyles from '../overrides/TranscriptFocus.module.css';
 import borderFlairOverrideStyles from '../overrides/BorderFlair.module.css';
 import activityStatusOverrideStyles from '../overrides/ActivityStatus.module.css';
@@ -31,11 +35,15 @@ const fluentCSSModuleTheme = combineCSSModules(
   pickCSSModule(themeStyles, themeOverrides),
   messageStatusLoaderOverrideStyles,
   bubbleOverrideStyles,
+  activityButtonOverrideStyles,
+  collapsibleGroupingOverrideStyles,
+  partGroupingActivityOverrideStyles,
   stackedLayoutOverrideStyles,
   componentIconOverrideStyles,
   carouselFilmStripOverrideStyles,
   codeBlockContentOverrideStyles,
   codeBlockCopyButtonOverrideStyles,
+  collapsibleContentOverrideStyles,
   transcriptFocusOverrideStyles,
   borderFlairOverrideStyles,
   activityStatusOverrideStyles,
