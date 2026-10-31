@@ -54,11 +54,12 @@ function setup() {
   };
 }
 
-// Props of <ReactWebChat> in the last render: <Fragment><style /><ReactWebChat /></Fragment>.
+// Props of <ReactWebChat> in the last render: <Fragment><style /><Fragment key={nonce}><ReactWebChat /></Fragment></Fragment>.
 function getLastWebChatProps(root: { render: jest.Mock }) {
-  const [fragment]: [ReactElement<{ children: readonly ReactElement[] }>] = root.render.mock.calls.at(-1);
+  const [fragment]: [ReactElement<{ children: readonly ReactElement<{ children: ReactElement }>[] }>] =
+    root.render.mock.calls.at(-1);
 
-  return fragment.props.children[1].props;
+  return fragment.props.children[1].props.children.props;
 }
 
 const cleanUp = () => document.body.replaceChildren();

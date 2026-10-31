@@ -56,6 +56,8 @@ function upgradeProperty(target: HTMLElement, name: 'props' | 'themeProvider'): 
  *
  * React DOM is found when the module loads: `createRoot()` of "react-dom/client" (React 18 and later), else
  * `ReactDOM.render()` (React 16 and 17). When neither is found, `connectedCallback()` rejects (an unhandled rejection).
+ *
+ * The `nonce` attribute goes to every style, unless `props.nonce` is set. Changing it mounts Web Chat again.
  */
 class WebChatElement extends BaseHTMLElement {
   static get observedAttributes(): readonly string[] {
@@ -152,13 +154,17 @@ class WebChatElement extends BaseHTMLElement {
       this.#root.render(
         <Fragment>
           {hostStyle}
-          {ThemeProvider ? (
-            <ThemeProvider nonce={nonce} stylesRoot={shadowRoot}>
-              {webChat}
-            </ThemeProvider>
-          ) : (
-            webChat
-          )}
+          {/* Web Chat drops its styles when its nonce changes and does not add them all again: mount it again. */}
+          {/* Remove the key when Web Chat handles a change of `nonce`. */}
+          <Fragment key={nonce ?? ''}>
+            {ThemeProvider ? (
+              <ThemeProvider nonce={nonce} stylesRoot={shadowRoot}>
+                {webChat}
+              </ThemeProvider>
+            ) : (
+              webChat
+            )}
+          </Fragment>
         </Fragment>
       );
     }
