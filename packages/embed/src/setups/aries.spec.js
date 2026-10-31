@@ -1,5 +1,8 @@
 /**
+ * happy-dom@21 fires "error" on every <iframe> unless page loading is enabled; the tests fire "load" themselves.
+ *
  * @jest-environment @happy-dom/jest-environment
+ * @jest-environment-options {"settings": {"enableIframePageLoading": true}}
  */
 
 import setupAries from './aries';

@@ -26,7 +26,10 @@ const Orientation = memo(
     const classNames = useStyles(styles);
 
     return isHorizontal ? null : ( // <HorizontalDialPadController>{children}</HorizontalDialPadController>
-      <div className={classNames['telephone-keypad__box']}>{children}</div>
+      // Telephone keypads are laid out left-to-right (1 2 3) in all languages.
+      <div className={classNames['telephone-keypad__box']} dir="ltr">
+        {children}
+      </div>
     );
   }
 );
