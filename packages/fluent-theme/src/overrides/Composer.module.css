@@ -1,0 +1,28 @@
+/* Style Options override */
+:global(.webchat-fluent).theme .css-custom-properties {
+  --webchat__color--accent: var(--webchat-colorBrandForeground1);
+  --webchat__color--subtle: var(--webchat-colorNeutralForeground2);
+  --webchat__color--timestamp: var(--webchat-colorNeutralForeground3);
+  --webchat__font--primary: var(--webchat-fontFamilyBase);
+  --webchat__font-size--small: var(--webchat-fontSizeBase200);
+  --webchat__font-size--medium: var(--webchat-fontSizeBase300);
+  --webchat__line-height--small: var(--webchat-lineHeightBase200);
+  --webchat__line-height--medium: var(--webchat-lineHeightBase300);
+  --webchat__max-width--bubble: var(--webchat-bubble-maxWidth);
+  --webchat__max-width--attachment-bubble: var(--webchat-bubble-maxWidth);
+  --webchat__min-height--bubble: var(--webchat-bubble-minHeight);
+  --webchat__padding--regular: var(--webchat-spacingVerticalS);
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
+    var(--webchat-spacingHorizontalMNudge);
+  --webchat__transition-duration: var(--webchat-durationNormal);
+  --webchat__transition-easing: var(--webchat-curveDecelerateMid);
+  --webchat__border-animation--color-1: #464feb;
+  --webchat__border-animation--color-2: #47cffa;
+  --webchat__border-animation--color-3: #b47cf8;
+}
+
+:global(.webchat-fluent).theme.variant-copilot .css-custom-properties {
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalL)
+    var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalSNudge);
+  --webchat__max-height--image-bubble: max(480px, 90cqb);
+}

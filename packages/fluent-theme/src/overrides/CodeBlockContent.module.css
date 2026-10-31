@@ -1,0 +1,70 @@
+:global(.webchat-fluent) .part-grouping-decorator {
+  .stacked-layout .bubble .code-block-content {
+    border-radius: var(--webchat-borderRadiusXLarge);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+    font-size: var(--webchat-fontSizeBase300);
+    font-weight: var(--webchat-fontWeightRegular);
+    margin-block: var(--webchat-spacingVerticalNone);
+    margin-inline: var(--webchat-part-grouping__code-block--space-inline);
+
+    .code-block-content__header {
+      padding: var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalL);
+    }
+
+    .code-block-content__code-block {
+      padding-block: var(--webchat-spacingVerticalM);
+      padding-inline: var(--webchat-spacingHorizontalL) var(--webchat-spacingHorizontalS);
+    }
+  }
+}
+/* Scrollbars */
+:global(.webchat-fluent).theme .code-block-content .code-block-content__code-block,
+:global(.webchat-fluent).theme .send-box-attachment-bar.send-box-attachment-bar--as-list-item,
+:global(.webchat-fluent).theme .text-area.text-area--scroll,
+:global(.webchat-fluent).theme .basic-transcript .basic-transcript__scrollable,
+:global(.webchat-fluent).theme .render-markdown [data-math-type='block'],
+:global(.webchat-fluent).theme .view-code-dialog__body,
+:global(.webchat-fluent).theme :global(.view-code-dialog__code-body) {
+  /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
+  scrollbar-color: unset;
+  scrollbar-width: unset;
+  /* Firefox */
+  -moz-scrollbar-color: var(--webchat-colorNeutralForeground5) transparent;
+  -moz-scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    height: var(--webchat-spacingVerticalMNudge);
+    width: var(--webchat-spacingVerticalMNudge);
+    visibility: hidden;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  &:hover::-webkit-scrollbar {
+    height: var(--webchat-spacingVerticalMNudge);
+    width: var(--webchat-spacingVerticalMNudge);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  &:hover::-webkit-scrollbar-thumb,
+  &:has(> .text-area-input:focus)::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: var(--webchat-colorNeutralForeground5);
+    border-radius: 10px;
+    border-right: 4px solid transparent;
+    border: 3px solid transparent;
+  }
+
+  &:hover::-webkit-scrollbar-thumb:hover {
+    background-clip: padding-box;
+    background-color: var(--webchat-colorNeutralForeground5);
+    border-radius: 10px;
+    border-right: 2px solid transparent;
+    border: 1px solid transparent;
+  }
+}

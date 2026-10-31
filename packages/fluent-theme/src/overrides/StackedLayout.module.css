@@ -1,0 +1,176 @@
+:global(.webchat-fluent) .part-grouping-decorator {
+  .collapsible-grouping__content .stacked-layout .stacked-layout__title,
+  .collapsible-grouping__title {
+    color: var(--webchat-colorNeutralForeground2);
+    font-size: var(--webchat-fontSizeBase300);
+    font-weight: var(--webchat-fontWeightSemibold);
+    line-height: var(--webchat-lineHeightBase300);
+  }
+
+  .stacked-layout .stacked-layout__message-status {
+    --webchat__component-icon--size: 14px;
+
+    color: var(--webchat-colorNeutralForeground2);
+    font-size: var(--webchat-fontSizeBase400);
+  }
+
+  .collapsible-grouping {
+    .stacked-layout__message-status {
+      height: unset;
+      width: unset;
+    }
+
+    .stacked-layout :global(.activity-loader) {
+      display: none;
+    }
+  }
+  .stacked-layout {
+    display: flex;
+    flex-flow: column nowrap;
+    margin-inline: var(--webchat-spacingHorizontalMNudge);
+
+    .stacked-layout {
+      margin-inline: var(--webchat-spacingHorizontalNone);
+      position: static;
+    }
+
+    .stacked-layout__main .stacked-layout__title {
+      color: var(--webchat-colorNeutralForeground4);
+      font-size: var(--webchat-fontSizeBase400);
+      line-height: var(--webchat-lineHeightBase400);
+      margin: var(--webchat-part-grouping__bubble--space-block) var(--webchat-part-grouping__bubble--space-inline);
+    }
+
+    &.stacked-layout--no-message .stacked-layout__attachment-row:first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  .stacked-layout .stacked-layout__main .stacked-layout__message-status {
+    margin-block-start: var(--webchat-part-grouping__message-status--space-block);
+  }
+
+  .stacked-layout .stacked-layout__status {
+    font-size: var(--webchat__font-size--small);
+    line-height: var(--webchat__line-height--small);
+  }
+  .stacked-layout .bubble .collapsible-content {
+    .collapsible-content__content {
+      .stacked-layout__attachment-list {
+        gap: var(--webchat-spacingVerticalS);
+      }
+
+      .stacked-layout__attachment-row {
+        margin: 0;
+      }
+    }
+  }
+  &.part-grouping-decorator--group {
+    .stacked-layout .stacked-layout__main .stacked-layout__title,
+    .stacked-layout .stacked-layout__main .collapsible-content__summary {
+      margin: var(--webchat-spacingVerticalXS) var(--webchat-part-grouping__bubble--space-inline);
+    }
+  }
+  &.variant-fluent {
+    .stacked-layout .stacked-layout__attachment-row {
+      margin-block-start: var(--webchat-spacingVerticalMNudge);
+    }
+
+    &.part-grouping-decorator--group {
+      .collapsible-grouping {
+        .collapsible-grouping__header .stacked-layout__message-status {
+          margin-block-start: var(--webchat-spacingVerticalNone);
+          margin-inline-start: var(--webchat-spacingHorizontalNone);
+        }
+
+        .stacked-layout .stacked-layout__message-status {
+          margin-inline-end: calc(var(--webchat-spacingHorizontalS) * -1);
+        }
+      }
+    }
+  }
+  &.variant-copilot {
+    &.part-grouping-decorator--from-bot {
+      .stacked-layout {
+        margin: 0;
+        position: static;
+      }
+
+      .bubble .collapsible-content .collapsible-content__content {
+        .stacked-layout__attachment-list {
+          margin-block-start: var(--webchat-spacingVerticalS);
+        }
+
+        .stacked-layout__attachment {
+          max-width: var(--webchat-part-grouping__bubble--max-width);
+        }
+      }
+
+      .stacked-layout__status {
+        display: none;
+      }
+    }
+
+    &.part-grouping-decorator--group {
+      .bubble .bubble__content {
+        .stacked-layout__bubble .stacked-layout__title,
+        .stacked-layout__bubble .collapsible-content__summary {
+          color: var(--webchat-colorNeutralForeground2);
+          margin-block: var(--webchat-spacingVerticalXXS);
+        }
+
+        :global(.stacked-loyout__bubble) .stacked-layout__message-status,
+        .stacked-layout__bubble .stacked-layout__title,
+        .stacked-layout__bubble .collapsible-content__summary,
+        .stacked-layout__bubble .text-content {
+          font-size: var(--webchat-fontSizeBase200);
+          line-height: var(--webchat-lineHeightBase200);
+        }
+      }
+    }
+
+    .stacked-layout__status {
+      order: -1;
+    }
+
+    .stacked-layout {
+      margin-inline: var(--webchat-spacingHorizontalSNudge);
+    }
+
+    .collapsible-grouping__content:not(.collapsible-grouping__content--open) .collapsible-grouping__list {
+      > *:not(:has(.stacked-layout__message-status--incomplete)) {
+        height: 0;
+        margin: 0;
+        visibility: hidden;
+        overflow: clip;
+      }
+
+      > *:has(.stacked-layout__message-status--incomplete) {
+        /* We use animation so we can reset needed properties immediately upon switching classes */
+        animation: collapsible-grouping__fade-in var(--webchat__transition-duration) var(--webchat__transition-duration)
+          var(--webchat__transition-easing) both;
+        pointer-events: none;
+
+        .stacked-layout__message-status--incomplete,
+        .collapsible-content__chevron {
+          visibility: hidden;
+        }
+      }
+
+      &:has(.stacked-layout__message-status--incomplete) {
+        padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
+        transform: translate(-4px, -20px);
+        margin-block-end: calc(-20px - var(--webchat--collapsible-grouping__list--gap));
+      }
+    }
+
+    .stacked-layout .stacked-layout__message-status {
+      --webchat__component-icon--size: 14px;
+
+      color: var(--webchat-colorNeutralForeground2);
+      height: 20px;
+      margin-inline: var(--webchat-spacingHorizontalNone) var(--webchat-spacingHorizontalS);
+      width: 20px;
+    }
+  }
+}

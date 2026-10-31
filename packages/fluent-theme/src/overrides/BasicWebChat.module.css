@@ -1,0 +1,9 @@
+/* Transcript surface */
+:global(.webchat-fluent).theme .surface {
+  background-color: var(--webchat__color--surface);
+}
+
+:global(.webchat-fluent).theme.variant-copilot .surface {
+  box-sizing: border-box;
+  padding-inline-start: var(--webchat-spacingHorizontalMNudge);
+}

@@ -1,0 +1,19 @@
+:global(.webchat-fluent) .part-grouping-decorator {
+  .carousel-layout {
+    .carousel-filmstrip__avatar-gutter,
+    .carousel-filmstrip__alignment-pad {
+      margin: 0;
+      width: var(--webchat-spacingHorizontalMNudge);
+    }
+  }
+  &.variant-copilot {
+    &.part-grouping-decorator--from-bot {
+      .carousel-layout {
+        .carousel-filmstrip__avatar-gutter,
+        .carousel-filmstrip__alignment-pad {
+          width: 0;
+        }
+      }
+    }
+  }
+}

@@ -1,17 +1,72 @@
 import { combineCSSModules } from 'botframework-webchat/internal.js';
 
-import partGroupingDecoratorStyles from '../components/activity/PartGroupingDecorator.module.css';
-import sendBoxStyles from '../components/sendBox/SendBox.module.css';
-import themeStyles from '../components/theme/Theme.module.css';
-import { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides } from './fluentCSSModuleOverrides';
-import pickCSSModule from './pickCSSModule';
+import textContentOverrideStyles from '../overrides/TextContent.module.css';
+import messageStatusLoaderOverrideStyles from '../overrides/MessageStatusLoader.module.css';
+import bubbleOverrideStyles from '../overrides/Bubble.module.css';
+import renderMarkdownOverrideStyles from '../overrides/RenderMarkdown.module.css';
+import linkDefinitionsOverrideStyles from '../overrides/LinkDefinitions.module.css';
+import activityButtonOverrideStyles from '../overrides/ActivityButton.module.css';
+import collapsibleGroupingOverrideStyles from '../overrides/CollapsibleGrouping.module.css';
+import partGroupingActivityOverrideStyles from '../overrides/PartGroupingActivity.module.css';
+import stackedLayoutOverrideStyles from '../overrides/StackedLayout.module.css';
+import componentIconOverrideStyles from '../overrides/ComponentIcon.module.css';
+import carouselFilmStripOverrideStyles from '../overrides/CarouselFilmStrip.module.css';
+import codeBlockContentOverrideStyles from '../overrides/CodeBlockContent.module.css';
+import codeBlockCopyButtonOverrideStyles from '../overrides/CodeBlockCopyButton.module.css';
+import collapsibleContentOverrideStyles from '../overrides/CollapsibleContent.module.css';
+import transcriptFocusOverrideStyles from '../overrides/TranscriptFocus.module.css';
+import borderFlairOverrideStyles from '../overrides/BorderFlair.module.css';
+import adaptiveCardRendererOverrideStyles from '../overrides/AdaptiveCardRenderer.module.css';
+import activityStatusOverrideStyles from '../overrides/ActivityStatus.module.css';
+import attachmentBarOverrideStyles from '../overrides/AttachmentBar.module.css';
+import attachmentBarItemOverrideStyles from '../overrides/AttachmentBarItem.module.css';
+import filePreviewOverrideStyles from '../overrides/FilePreview.module.css';
+import codeBlockOverrideStyles from '../overrides/CodeBlock.module.css';
+import viewCodeDialogOverrideStyles from '../overrides/ViewCodeDialog.module.css';
+import animatedImageContentOverrideStyles from '../overrides/AnimatedImageContent.module.css';
+import thumbButtonOverrideStyles from '../overrides/ThumbButton.module.css';
+import feedbackFormOverrideStyles from '../overrides/FeedbackForm.module.css';
+import composerOverrideStyles from '../overrides/Composer.module.css';
+import basicWebChatOverrideStyles from '../overrides/BasicWebChat.module.css';
+import basicTranscriptOverrideStyles from '../overrides/BasicTranscript.module.css';
+import popoverOverrideStyles from '../overrides/Popover.module.css';
+import tooltipOverrideStyles from '../overrides/Tooltip.module.css';
 
 // Fluent's class names for the Web Chat elements it styles, for <CSSModuleThemeComposer> in FluentThemeProvider.
-// Built once, so every useStyles() below the composer gets a stable theme.
+// Each override module mirrors one Web Chat CSS module and is passed whole, in the order its rules had in
+// Fluent's CSS, to keep the cascade. Built once, so every useStyles() below the composer gets a stable theme.
 const fluentCSSModuleTheme = combineCSSModules(
-  pickCSSModule(partGroupingDecoratorStyles, partGroupingDecoratorOverrides),
-  pickCSSModule(sendBoxStyles, sendBoxOverrides),
-  pickCSSModule(themeStyles, themeOverrides)
+  textContentOverrideStyles,
+  messageStatusLoaderOverrideStyles,
+  bubbleOverrideStyles,
+  renderMarkdownOverrideStyles,
+  linkDefinitionsOverrideStyles,
+  activityButtonOverrideStyles,
+  collapsibleGroupingOverrideStyles,
+  partGroupingActivityOverrideStyles,
+  stackedLayoutOverrideStyles,
+  componentIconOverrideStyles,
+  carouselFilmStripOverrideStyles,
+  codeBlockContentOverrideStyles,
+  codeBlockCopyButtonOverrideStyles,
+  collapsibleContentOverrideStyles,
+  transcriptFocusOverrideStyles,
+  borderFlairOverrideStyles,
+  adaptiveCardRendererOverrideStyles,
+  activityStatusOverrideStyles,
+  attachmentBarOverrideStyles,
+  attachmentBarItemOverrideStyles,
+  filePreviewOverrideStyles,
+  codeBlockOverrideStyles,
+  viewCodeDialogOverrideStyles,
+  animatedImageContentOverrideStyles,
+  thumbButtonOverrideStyles,
+  feedbackFormOverrideStyles,
+  composerOverrideStyles,
+  basicWebChatOverrideStyles,
+  basicTranscriptOverrideStyles,
+  popoverOverrideStyles,
+  tooltipOverrideStyles
 );
 
 export default fluentCSSModuleTheme;
