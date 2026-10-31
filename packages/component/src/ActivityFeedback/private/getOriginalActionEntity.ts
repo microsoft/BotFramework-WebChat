@@ -14,6 +14,8 @@ import {
   type InferInput
 } from 'valibot';
 
+import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes.js';
+
 const selfMessageEntitySchema = looseObject({
   '@id': literal(''),
   type: pipe(string(), startsWith('https://schema.org/'))
@@ -42,8 +44,8 @@ export default function getOriginalActionEntity(
 
   if (isLikeAction || isDislikeAction) {
     // We cannot use getOrgSchemaMessage() because it is not using looseObject().
-    // Message thing must be a root-level object in graph.
-    const messageEntity = activity.entities?.find(isSelfMessageEntity);
+    // Message thing must be a root-level object in graph, its actions can be blank node references (`{ "@id": "_:b1" }`).
+    const messageEntity = dereferenceBlankNodes(activity.entities || []).find(isSelfMessageEntity);
     const targetActionType = isDislikeAction ? 'DislikeAction' : 'LikeAction';
 
     const reactionActionEntity = [messageEntity?.potentialAction]
