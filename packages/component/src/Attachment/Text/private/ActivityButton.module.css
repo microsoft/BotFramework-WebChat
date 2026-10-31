@@ -46,4 +46,8 @@
       --webchat__component-icon--color: buttonText;
     }
   }
+
+  .activity-button__text {
+    --webchat-preserve-reason: target-class;
+  }
 }
