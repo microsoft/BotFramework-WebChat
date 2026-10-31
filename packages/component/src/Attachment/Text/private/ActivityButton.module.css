@@ -47,9 +47,7 @@
     }
   }
 
-  .activity-button__text:not(*) {
-    /* No styles of its own: the rule declares the local name, so useStyles() returns it and themes can style it. */
-    /* Lightning CSS does not export local names of empty rules, and ":not(*)" never matches. */
-    display: none;
+  .activity-button__text {
+    --webchat-preserve-reason: target-class;
   }
 }
