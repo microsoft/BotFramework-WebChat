@@ -59,11 +59,38 @@ const webChatCSSModuleNames = new Set(
 
 const isOverrideModule = (path: string): boolean => path.includes(`${sep}overrides${sep}`);
 
-const fluentLocalNames = new Set(
-  listCSSModules('fluent-theme')
-    .filter(path => !isOverrideModule(path))
-    .flatMap(getLocalNames)
-);
+const fluentCSSModuleLocalNames: readonly ReadonlySet<string>[] = listCSSModules('fluent-theme')
+  .filter(path => !isOverrideModule(path))
+  .map(path => new Set(getLocalNames(path)));
+
+const fluentLocalNames = new Set(fluentCSSModuleLocalNames.flatMap(localNames => [...localNames]));
+
+// Fluent's own local names of each compound selector (e.g. ".theme.variant-copilot:hover"), with nesting resolved.
+function getFluentCompounds(path: string): readonly (readonly string[])[] {
+  let css = transform({
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    code: readFileSync(path),
+    // Marks local names, so readable class names from :global() are left out.
+    cssModules: { animation: false, customIdents: false, grid: false, pattern: 'local--[local]' },
+    filename: path,
+    // Old enough to resolve nesting.
+    targets: { chrome: 90 << 16 }
+  }).code.toString();
+
+  // Drops arguments of :has(), :not() and others, whose compounds are not on the same element.
+  for (let previous; previous !== css; ) {
+    previous = css;
+    css = css.replace(/\([^()]*\)/gu, '');
+  }
+
+  return Object.freeze(
+    Array.from(css.matchAll(/(?:[.:][-\w]+)+/gu), ([compound]) =>
+      Array.from(compound.matchAll(/\.local--([-\w]+)/gu), ([, localName]) => localName).filter(
+        localName => !webChatLocalNames.has(localName)
+      )
+    ).filter(compound => compound.length)
+  );
+}
 
 // eslint-disable-next-line security/detect-non-literal-fs-filename
 const FLUENT_CSS_MODULE_THEME_SOURCE = readFileSync(join(__dirname, 'fluentCSSModuleTheme.ts'), 'utf8');
@@ -109,13 +136,22 @@ scenario(
             localName => !webChatLocalNames.has(localName) && !fluentLocalNames.has(localName)
           ),
           name: basename(path),
-          path: relative(PACKAGES_PATH, path)
+          path: relative(PACKAGES_PATH, path),
+          // A Fluent element only gets an override module's class names for the local names of its own CSS module,
+          // e.g. ".theme.variant-copilot" needs a Fluent CSS module that declares both "theme" and "variant-copilot".
+          undeclaredFluentCompounds: getFluentCompounds(path).filter(
+            compound =>
+              !fluentCSSModuleLocalNames.some(localNames => compound.every(localName => localNames.has(localName)))
+          )
         }))
       )
       .then('should only use local names of Web Chat and of Fluent CSS modules', (_, results) =>
         expect(
           results.filter(({ localNamesNotFromWebChatNorFluent }) => localNamesNotFromWebChatNorFluent.length)
         ).toEqual([])
+      )
+      .and("should only combine Fluent's local names that one Fluent CSS module declares", (_, results) =>
+        expect(results.filter(({ undeclaredFluentCompounds }) => undeclaredFluentCompounds.length)).toEqual([])
       )
       .and('should mirror a Web Chat CSS module', (_, results) =>
         expect(results.filter(({ name }) => !webChatCSSModuleNames.has(name))).toEqual([])
