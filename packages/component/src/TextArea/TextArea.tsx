@@ -101,10 +101,11 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((rawProps, ref) 
             aria-placeholder={props.placeholder}
             className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
             data-testid={props['data-testid']}
+            // React 16 warns about `value` without `onChange`; for a text area, `onChange` fires on the same `input` event.
+            onChange={props.onInput}
             onClick={props.onClick}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}
-            onInput={props.onInput}
             onKeyDown={handleKeyDown}
             placeholder={props.placeholder}
             readOnly={disabled}
