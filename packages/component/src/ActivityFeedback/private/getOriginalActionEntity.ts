@@ -1,11 +1,9 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { isOfType, jsonLinkedDataSchema, type JSONLinkedDataInput } from 'botframework-webchat-core/json-ld.js';
+import { isOfType, jsonLinkedDataSchema } from 'botframework-webchat-core/json-ld.js';
 import { type OrgSchemaAction } from 'botframework-webchat-core/org-schema.js';
 import { is, literal, looseObject, pipe, startsWith, string } from 'valibot';
 
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes.js';
-
-type OriginalActionEntity = JSONLinkedDataInput & { readonly [key: string]: unknown };
 
 const messageEntitySchema = looseObject({
   '@id': literal(''),
@@ -24,7 +22,7 @@ const messageEntitySchema = looseObject({
 export default function getOriginalActionEntity(
   activity: WebChatActivity,
   action: OrgSchemaAction
-): OriginalActionEntity | undefined {
+): { readonly [key: string]: unknown } | undefined {
   const reactionType = isOfType('LikeAction', action)
     ? 'LikeAction'
     : isOfType('DislikeAction', action)
@@ -37,7 +35,7 @@ export default function getOriginalActionEntity(
   const reactionActionEntity = [messageEntity?.potentialAction]
     .flat()
     .find(
-      (entity): entity is OriginalActionEntity =>
+      (entity): entity is { readonly [key: string]: unknown } =>
         is(jsonLinkedDataSchema, entity) && [entity['@type']].flat().includes(reactionType)
     );
 
