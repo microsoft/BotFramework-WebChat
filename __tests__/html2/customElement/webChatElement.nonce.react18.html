@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>
+      Web Chat element: React 18, changing the nonce attribute after connect moves every style to the new nonce
+    </title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main>
+      <webchat-element nonce="a1b2c3"></webchat-element>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import runNonceChangeTest from './private/runNonceChangeTest.mjs';
+
+      runNonceChangeTest({ reactMajorVersion: '18' });
+    </script>
+  </body>
+</html>
