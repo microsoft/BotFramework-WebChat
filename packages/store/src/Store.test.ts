@@ -625,3 +625,401 @@ scenario(
   },
   NodeTest
 );
+
+function getPartIdsOf(store: Store, id: string, property: 'hasPart' | 'isPartOf'): string[] {
+  const node = store.getSnapshot().get(id);
+
+  return Array.from((property === 'hasPart' ? node?.hasPart : node?.isPartOf) ?? [], ({ '@id': id }) => id).sort();
+}
+
+function catchError(fn: () => void): unknown {
+  try {
+    fn();
+  } catch (error) {
+    return error;
+  }
+
+  return undefined;
+}
+
+scenario(
+  'part membership',
+  bdd => {
+    bdd
+      .given('a store with a conversation', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction =>
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }))
+        );
+
+        return { controller, store };
+      })
+      .when('a child node with isPartOf is upserted', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }))
+        )
+      )
+      .then('should add the child to hasPart of the parent', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1'])
+      )
+      .and('should keep hasPart as an immutable Set', ({ store }) => {
+        const hasPart = store.getSnapshot().get('_:conversation')?.hasPart;
+
+        expect(hasPart).toBeInstanceOf(Set);
+        expect(() => Set.prototype.clear.call(hasPart)).toThrow(TypeError);
+      });
+
+    bdd
+      .given('a store with a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': new Set(['Message']) }))
+        );
+
+        return { controller, store };
+      })
+      .when('a parent node with hasPart is upserted', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:conversation', () => ({
+            '@id': '_:conversation',
+            '@type': new Set(['Conversation']),
+            hasPart: new Set([{ '@id': '_:m-1' }])
+          }))
+        )
+      )
+      .then('should add the parent to isPartOf of the child', ({ store }) =>
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:conversation'])
+      );
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('parent and children are upserted in the same transaction with one side declared', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }));
+
+          transaction.upsert('_:conversation', () => ({
+            '@id': '_:conversation',
+            '@type': new Set(['Conversation']),
+            hasPart: new Set([{ '@id': '_:m-2' }])
+          }));
+
+          transaction.upsert('_:m-2', () => ({ '@id': '_:m-2', '@type': new Set(['Message']) }));
+        })
+      )
+      .then('should merge hasPart of the parent', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1', '_:m-2'])
+      )
+      .and('should add isPartOf to children', ({ store }) => {
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:conversation']);
+        expect(getPartIdsOf(store, '_:m-2', 'isPartOf')).toEqual(['_:conversation']);
+      });
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('nested parts are upserted', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+
+          transaction.upsert('_:thread', () => ({
+            '@id': '_:thread',
+            '@type': new Set(['Conversation']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }));
+
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:thread' }])
+          }));
+        })
+      )
+      .then('should allow a node to be both parent and child', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:thread']);
+        expect(getPartIdsOf(store, '_:thread', 'isPartOf')).toEqual(['_:conversation']);
+        expect(getPartIdsOf(store, '_:thread', 'hasPart')).toEqual(['_:m-1']);
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:thread']);
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a child removes isPartOf', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', node => {
+            const { isPartOf: _, ...rest } = node!;
+
+            return rest;
+          })
+        )
+      )
+      .then('should remove the child from hasPart of the parent', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
+      );
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a parent removes all hasPart', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:conversation', node => {
+            const { hasPart: _, ...rest } = node!;
+
+            return rest;
+          })
+        )
+      )
+      .then('should remove isPartOf from all children', ({ store }) => {
+        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
+        expect(store.getSnapshot().get('_:m-2')).not.toHaveProperty('isPartOf');
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('parent removes a child while the child re-declares the parent in the same transaction', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-2' }]) }));
+
+          transaction.upsert('_:m-1', node => ({
+            ...node!,
+            isPartOf: new Set([{ '@id': '_:conversation' }]),
+            text: ['Updated']
+          }));
+        })
+      )
+      .then('should remove the child as the child did not change its isPartOf', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2']);
+        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
+      });
+
+    bdd
+      .given('a store with a conversation and an orphan message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+          transaction.upsert('_:m-1', () => ({ '@id': '_:m-1', '@type': new Set(['Message']) }));
+        });
+
+        return { controller, store };
+      })
+      .when('the child adds isPartOf while the parent removes hasPart in the same transaction', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({
+            '@id': '_:conversation',
+            '@type': new Set(['Conversation']),
+            hasPart: new Set([{ '@id': '_:m-1' }])
+          }));
+
+          transaction.upsert('_:conversation', node => {
+            const { hasPart: _, ...rest } = node!;
+
+            return rest;
+          });
+
+          transaction.upsert('_:m-1', node => ({ ...node!, isPartOf: new Set([{ '@id': '_:conversation' }]) }));
+        })
+      )
+      .then('addition should win', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1']);
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:conversation']);
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('the parent is deleted', ({ controller }) =>
+        controller.edit(transaction => transaction.delete('_:conversation'))
+      )
+      .then('should remove isPartOf from all children', ({ store }) => {
+        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
+        expect(store.getSnapshot().get('_:m-2')).not.toHaveProperty('isPartOf');
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a child is deleted', ({ controller }) => controller.edit(transaction => transaction.delete('_:m-1')))
+      .then('should remove the child from hasPart of the parent', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
+      );
+
+    bdd
+      .given('a store with nested parts', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+          transaction.upsert('_:thread', () => ({
+            '@id': '_:thread',
+            '@type': new Set(['Conversation']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }));
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:thread' }])
+          }));
+        });
+
+        return { controller, store };
+      })
+      .when('the middle node is deleted', ({ controller }) =>
+        controller.edit(transaction => transaction.delete('_:thread'))
+      )
+      .then('should remove hasPart from the parent', ({ store }) =>
+        expect(store.getSnapshot().get('_:conversation')).not.toHaveProperty('hasPart')
+      )
+      .and('should remove isPartOf from the child', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf')
+      );
+  },
+  NodeTest
+);
+
+scenario(
+  'self part',
+  bdd => {
+    bdd
+      .given('an empty store', () => createStore())
+      .when('a node with itself in isPartOf is upserted', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              isPartOf: new Set([{ '@id': '_:m-1' }])
+            }))
+          )
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not add the node', ({ store }) => expect(store.getSnapshot().size).toBe(0));
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('a node with itself in hasPart is upserted', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              hasPart: new Set([{ '@id': '_:m-1' }])
+            }))
+          )
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not add the node', ({ store }) => expect(store.getSnapshot().size).toBe(0));
+  },
+  NodeTest
+);
+
+scenario(
+  'position',
+  bdd => {
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('members of the same part have different positions', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }));
+          transaction.upsert('_:m-2', node => ({ ...node!, position: 2 }));
+        })
+      )
+      .then('should update the nodes', ({ store }) => {
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('position', 1);
+        expect(store.getSnapshot().get('_:m-2')).toHaveProperty('position', 2);
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => {
+        const { controller, store } = createStoreWithNodes();
+
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('another member of the same part is upserted with the same position', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, position: 1 })))
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('a store with a conversation with a positioned member', () => {
+        const { controller, store } = createStoreWithNodes();
+
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('a new member with the same position joins the part via hasPart of the parent', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction => {
+            transaction.upsert('_:m-3', () => ({ '@id': '_:m-3', '@type': new Set(['Message']), position: 1 }));
+            transaction.upsert('_:conversation', node => ({
+              ...node!,
+              hasPart: new Set([...node!.hasPart!, { '@id': '_:m-3' }])
+            }));
+          })
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('members without position and a member with position are in the same part', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:m-3', () => ({
+            '@id': '_:m-3',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:conversation' }]),
+            position: 1
+          }));
+        })
+      )
+      .then('should allow members without position', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1', '_:m-2', '_:m-3'])
+      );
+
+    bdd
+      .given('two conversations each with a positioned member', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:c-1', () => ({ '@id': '_:c-1', '@type': new Set(['Conversation']) }));
+          transaction.upsert('_:c-2', () => ({ '@id': '_:c-2', '@type': new Set(['Conversation']) }));
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:c-1' }]),
+            position: 1
+          }));
+        });
+
+        return { controller, store };
+      })
+      .when('a member of another part has the same position', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:m-2', () => ({
+            '@id': '_:m-2',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:c-2' }]),
+            position: 1
+          }))
+        )
+      )
+      .then('should allow same position in different parts', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-2')).toHaveProperty('position', 1)
+      );
+  },
+  NodeTest
+);

@@ -128,6 +128,151 @@ function removeReference(node: Node, id: Identifier): Node | undefined {
   return changed ? deepFreeze(parse(nodeSchema, Object.fromEntries(nextEntries))) : undefined;
 }
 
+type PartProperty = 'hasPart' | 'isPartOf';
+
+/**
+ * Gets IDs of nodes in the `hasPart` or `isPartOf` property.
+ */
+function getPartIds(node: Node | undefined, property: PartProperty): Set<Identifier> {
+  return new Set(Array.from((property === 'hasPart' ? node?.hasPart : node?.isPartOf) ?? [], ({ '@id': id }) => id));
+}
+
+/**
+ * Adds or removes a node reference in the `hasPart` or `isPartOf` property.
+ *
+ * @returns A new node if the property is changed, otherwise, `undefined`.
+ */
+function setPartReference(node: Node, property: PartProperty, id: Identifier, included: boolean): Node | undefined {
+  const partIds = getPartIds(node, property);
+
+  if (partIds.has(id) === included) {
+    return undefined;
+  }
+
+  included ? partIds.add(id) : partIds.delete(id);
+
+  const nodeWithoutProperty = Object.fromEntries(Object.entries(node).filter(([key]) => key !== property));
+
+  return deepFreeze(
+    parse(
+      nodeSchema,
+      // OPINION: Empty property value is same as if the property is removed.
+      partIds.size
+        ? { ...nodeWithoutProperty, [property]: new Set(Array.from(partIds, id => ({ '@id': id }))) }
+        : nodeWithoutProperty
+    )
+  );
+}
+
+type PartChange = {
+  readonly id: Identifier;
+  readonly included: boolean;
+  readonly property: PartProperty;
+  readonly targetId: Identifier;
+};
+
+/**
+ * Gets part relationships added or removed by comparing the previous node and the next node.
+ */
+function getPartChanges(prevNode: Node | undefined, node: Node): PartChange[] {
+  const id = node['@id'];
+  const partChanges: PartChange[] = [];
+
+  for (const property of ['hasPart', 'isPartOf'] as const) {
+    const partIds = getPartIds(node, property);
+    const prevPartIds = getPartIds(prevNode, property);
+
+    for (const targetId of prevPartIds) {
+      partIds.has(targetId) || partChanges.push({ id, included: false, property, targetId });
+    }
+
+    for (const targetId of partIds) {
+      prevPartIds.has(targetId) || partChanges.push({ id, included: true, property, targetId });
+    }
+  }
+
+  return partChanges;
+}
+
+/**
+ * Auto-fixes part membership: `hasPart` and `isPartOf` are inverse of each other.
+ *
+ * Compares the committed node with the node in this transaction to find out which part relationships are added or
+ * removed, then applies them to the other side. On conflict, addition wins over removal.
+ *
+ * Deleted nodes are skipped as `delete()` already removed all references to them.
+ */
+function fixPartMembership(
+  prevState: ReadonlyMap<string, Node>,
+  nextState: ReadonlyMap<string, Node>,
+  affectedNodeIds: ReadonlySet<Identifier>,
+  setNode: (node: Node) => void
+): void {
+  const partChanges = Array.from(affectedNodeIds).flatMap(id => {
+    const node = nextState.get(id);
+
+    return node ? getPartChanges(prevState.get(id), node) : [];
+  });
+
+  // Apply removals before additions, so addition wins on conflict.
+  for (const { id, included, property, targetId } of partChanges.sort(
+    (x, y) => Number(x.included) - Number(y.included)
+  )) {
+    const node = nextState.get(id);
+    const targetNode = nextState.get(targetId);
+
+    // Apply to both sides as conflicting changes on the other side may have been applied.
+    // Target node could be missing, it will be caught by the reference check.
+    const nextNode = node && setPartReference(node, property, targetId, included);
+    const nextTargetNode =
+      targetNode && setPartReference(targetNode, property === 'hasPart' ? 'isPartOf' : 'hasPart', id, included);
+
+    nextNode && setNode(nextNode);
+    nextTargetNode && setNode(nextTargetNode);
+  }
+}
+
+/**
+ * RULE: All members of the same part must have different `position` values, if specified.
+ *
+ * Only parts which the affected nodes participated in are checked.
+ */
+function assertUniquePositionInParts(state: ReadonlyMap<string, Node>, affectedNodeIds: ReadonlySet<Identifier>): void {
+  const parentIds = new Set<Identifier>();
+
+  for (const id of affectedNodeIds) {
+    const node = state.get(id);
+
+    if (node) {
+      node.hasPart?.size && parentIds.add(id);
+
+      for (const parentId of getPartIds(node, 'isPartOf')) {
+        parentIds.add(parentId);
+      }
+    }
+  }
+
+  for (const parentId of parentIds) {
+    const memberIdsByPosition = new Map<number, Identifier>();
+
+    for (const memberId of getPartIds(state.get(parentId), 'hasPart')) {
+      const position = state.get(memberId)?.position;
+
+      if (typeof position === 'number') {
+        const conflictMemberId = memberIdsByPosition.get(position);
+
+        if (conflictMemberId) {
+          throw new Error(
+            `Nodes "${conflictMemberId}" and "${memberId}" in part "${parentId}" must not have the same position of ${position}`
+          );
+        }
+
+        memberIdsByPosition.set(position, memberId);
+      }
+    }
+  }
+}
+
 class Store {
   constructor(source: StoreSource) {
     const controller: StoreController = {
@@ -140,6 +285,14 @@ class Store {
         const nextState = new Map(this.#state);
         const nextBackwardReferenceIds = cloneReferenceIds(this.#backwardReferenceIds);
         const nextForwardReferenceIds = cloneReferenceIds(this.#forwardReferenceIds);
+
+        const setNode = (node: Node): void => {
+          const id = node['@id'];
+
+          nextState.set(id, node);
+          setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getReferenceIds(node));
+          affectedNodeIds.add(id);
+        };
 
         transactor(
           Object.freeze({
@@ -155,11 +308,7 @@ class Store {
                 const node = nextState.get(nodeId);
                 const nextNode = node && removeReference(node, safeId);
 
-                if (nextNode) {
-                  nextState.set(nodeId, nextNode);
-                  setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, nodeId, getReferenceIds(nextNode));
-                  affectedNodeIds.add(nodeId);
-                }
+                nextNode && setNode(nextNode);
               }
             },
             upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
@@ -175,15 +324,19 @@ class Store {
                 throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
               }
 
-              nextState.set(safeId, safeNode);
-              setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, getReferenceIds(safeNode));
+              // RULE: A node must not be part of itself.
+              if (getPartIds(safeNode, 'hasPart').has(safeId) || getPartIds(safeNode, 'isPartOf').has(safeId)) {
+                throw new Error(`Node "${safeId}" must not be part of itself`);
+              }
 
-              affectedNodeIds.add(safeId);
+              setNode(safeNode);
             }
           })
         );
 
         if (affectedNodeIds.size) {
+          fixPartMembership(this.#state, nextState, affectedNodeIds, setNode);
+
           // Upserting nodes which reference each other may take multiple `upsert()` calls.
           // Verify integrity on commit: all referenced nodes must be in the graph.
           // As `delete()` removes references to the deleted node, only references from affected nodes need to be checked.
@@ -195,12 +348,9 @@ class Store {
             }
           }
 
-          // TODO: Auto-fix relationship for `hasPart` and `isPartOf`.
+          assertUniquePositionInParts(nextState, affectedNodeIds);
 
-          // INTEGRITY:
-          // - All `hasPart` node is inverse of `isPartOf`
-          // - All nodes participated in the same `isPartOf` grouping must not have conflicting `position` value
-          // - THINK: Upsert/delete called twice with same node ID in the same transaction?
+          // THINK: Upsert/delete called twice with same node ID in the same transaction?
 
           this.#backwardReferenceIds = nextBackwardReferenceIds;
           this.#forwardReferenceIds = nextForwardReferenceIds;
