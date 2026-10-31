@@ -4,6 +4,7 @@ import partGroupingDecoratorStyles from '../components/activity/PartGroupingDeco
 import themeStyles from '../components/theme/Theme.module.css';
 import codeBlockContentOverrideStyles from '../overrides/CodeBlockContent.module.css';
 import codeBlockCopyButtonOverrideStyles from '../overrides/CodeBlockCopyButton.module.css';
+import transcriptFocusOverrideStyles from '../overrides/TranscriptFocus.module.css';
 import attachmentBarOverrideStyles from '../overrides/AttachmentBar.module.css';
 import attachmentBarItemOverrideStyles from '../overrides/AttachmentBarItem.module.css';
 import filePreviewOverrideStyles from '../overrides/FilePreview.module.css';
@@ -23,6 +24,7 @@ const fluentCSSModuleTheme = combineCSSModules(
   pickCSSModule(themeStyles, themeOverrides),
   codeBlockContentOverrideStyles,
   codeBlockCopyButtonOverrideStyles,
+  transcriptFocusOverrideStyles,
   attachmentBarOverrideStyles,
   attachmentBarItemOverrideStyles,
   filePreviewOverrideStyles,

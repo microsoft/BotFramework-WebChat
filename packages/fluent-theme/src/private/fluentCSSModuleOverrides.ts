@@ -60,8 +60,7 @@ const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
   'stacked-layout__status',
   'stacked-layout__title',
   'text-content',
-  'text-content__generated-badge',
-  'transcript-focus-area__activity-list'
+  'text-content__generated-badge'
 ]);
 
 // SendBox.module.css
@@ -77,10 +76,7 @@ const themeOverrides: readonly string[] = Object.freeze([
   'bubble__nub-pad',
   'collapsible-grouping',
   'transcript-focus-area',
-  'transcript-focus-area__content--focused',
-  'transcript-focus-area__content-overlay',
-  'transcript-focus-area__indicator',
-  'transcript-focus-area__transcript-indicator'
+  'transcript-focus-area__content--focused'
 ]);
 
 export { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides };

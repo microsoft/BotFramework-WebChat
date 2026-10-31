@@ -233,41 +233,13 @@
   padding-inline-start: var(--webchat-spacingHorizontalMNudge);
 }
 
-:global(.webchat-fluent).theme.variant-copilot .transcript-focus-area {
-  --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
-}
-
 :global(.webchat-fluent).theme.variant-copilot
   :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
   scrollbar-gutter: stable;
 }
 
-/* Transcript focus indicator color */
-:global(.webchat-fluent).theme .transcript-focus-area__transcript-indicator {
-  --webchat__color--transcript-visual-keyboard-indicator: var(--webchat-colorStrokeFocus2);
-}
-
-/* Transcript Content indicator without focus-visible state */
-:global(.webchat-fluent).theme .transcript-focus-area:not(:focus-visible) .transcript-focus-area__indicator {
-  /* Hide activity focus when no focus-visible state */
-  display: none;
-}
-
-/* Transcript Focus indicator when content focused */
-:global(.webchat-fluent).theme .transcript-focus-area:focus-visible:has(.transcript-focus-area__content--focused) {
-  .transcript-focus-area__transcript-indicator {
-    /* Hide transcript focus when an activity is focused */
-    display: none;
-  }
-}
-
 /* Transcript focused content */
 :global(.webchat-fluent).theme .transcript-focus-area:focus-visible .transcript-focus-area__content--focused {
-  .transcript-focus-area__indicator {
-    /* Hide transcript activity focus when the content is focused */
-    display: none;
-  }
-
   /* Transcript activity focused directly */
   > :global(.webchat__focus-trap) > :global(.webchat__basic-transcript__activity-body) .bubble {
     display: grid;
@@ -287,10 +259,6 @@
     }
   }
 
-  &:has(.collapsible-grouping) > .transcript-focus-area__content-overlay .transcript-focus-area__indicator {
-    display: none;
-  }
-
   .collapsible-grouping::after {
     border-radius: var(--webchat-part-grouping__bubble--border-radius);
     border: none;
@@ -304,27 +272,6 @@
 
   :global(.activity-decorator) .bubble .bubble__nub-pad {
     display: none;
-  }
-
-  :global(.pre-chat-message-activity)::after {
-    border-radius: var(--webchat-part-grouping__bubble--border-radius);
-    content: '';
-    inset: 0;
-    outline-offset: 0;
-    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
-    pointer-events: none;
-    position: absolute;
-  }
-
-  :global(.pre-chat-message-activity)::after {
-    border-radius: var(--webchat-borderRadiusMedium);
-    outline-offset: -3px;
-  }
-
-  :global(.liner-message-activity__text) {
-    border-radius: 20px;
-    outline-offset: 4px;
-    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 }
 
