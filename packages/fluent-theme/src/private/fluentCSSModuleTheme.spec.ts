@@ -84,11 +84,15 @@ function getFluentCompounds(path: string): readonly (readonly string[])[] {
   }
 
   return Object.freeze(
-    Array.from(css.matchAll(/(?:[.:][-\w]+)+/gu), ([compound]) =>
-      Array.from(compound.matchAll(/\.local--([-\w]+)/gu), ([, localName]) => localName).filter(
-        localName => !webChatLocalNames.has(localName)
+    // Compounds are runs of class names and pseudo-classes, so anything else separates them.
+    css
+      .split(/[^-\w.:]/u)
+      .map(compound =>
+        Array.from(compound.matchAll(/\.local--([-\w]+)/gu)).flatMap(([, localName]) =>
+          localName && !webChatLocalNames.has(localName) ? [localName] : []
+        )
       )
-    ).filter(compound => compound.length)
+      .filter(compound => compound.length)
   );
 }
 
