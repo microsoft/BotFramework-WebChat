@@ -4,17 +4,12 @@
 // fluentCSSModuleOverrides.spec.ts checks these lists against the CSS.
 
 // PartGroupingDecorator.module.css
-const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([
-  'adaptive-card-renderer',
-  'adaptive-card-renderer__action--selected',
-  'bubble',
-  'bubble__content'
-]);
+const partGroupingDecoratorOverrides: readonly string[] = Object.freeze([]);
 
 // SendBox.module.css
 const sendBoxOverrides: readonly string[] = Object.freeze([]);
 
 // Theme.module.css
-const themeOverrides: readonly string[] = Object.freeze(['activity-button', 'animated-image-content__button']);
+const themeOverrides: readonly string[] = Object.freeze([]);
 
 export { partGroupingDecoratorOverrides, sendBoxOverrides, themeOverrides };
