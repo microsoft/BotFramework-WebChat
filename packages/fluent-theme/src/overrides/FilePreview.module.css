@@ -1,5 +1,0 @@
-:global(.webchat-fluent) .sendbox__attachment-bar.send-box-attachment-bar {
-  .send-box-attachment-bar-item-file-preview.send-box-attachment-bar-item-file-preview--as-list-item {
-    gap: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
-  }
-}

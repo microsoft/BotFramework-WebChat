@@ -1,6 +1,0 @@
-:global(.webchat-fluent) .part-grouping-decorator {
-  .stacked-layout .collapsible-grouping__content .part-grouping-activity__activities {
-    --webchat--collapsible-grouping__list--gap: var(--webchat-spacingVerticalS);
-    padding: var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalL);
-  }
-}
