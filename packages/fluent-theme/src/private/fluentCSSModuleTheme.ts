@@ -21,7 +21,6 @@ import activityStatusOverrideStyles from '../overrides/ActivityStatus.module.css
 import attachmentBarOverrideStyles from '../overrides/AttachmentBar.module.css';
 import attachmentBarItemOverrideStyles from '../overrides/AttachmentBarItem.module.css';
 import filePreviewOverrideStyles from '../overrides/FilePreview.module.css';
-import textAreaOverrideStyles from '../overrides/TextArea.module.css';
 import codeBlockOverrideStyles from '../overrides/CodeBlock.module.css';
 import viewCodeDialogOverrideStyles from '../overrides/ViewCodeDialog.module.css';
 import animatedImageContentOverrideStyles from '../overrides/AnimatedImageContent.module.css';
@@ -53,7 +52,6 @@ const fluentCSSModuleTheme = combineCSSModules(
   attachmentBarOverrideStyles,
   attachmentBarItemOverrideStyles,
   filePreviewOverrideStyles,
-  textAreaOverrideStyles,
   codeBlockOverrideStyles,
   viewCodeDialogOverrideStyles,
   animatedImageContentOverrideStyles,
