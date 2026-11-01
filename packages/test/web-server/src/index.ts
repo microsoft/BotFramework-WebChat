@@ -13,7 +13,7 @@ const {
 (async () => {
   const attrs = [{ name: 'commonName', value: 'webchat2' }];
   const pems = await selfsigned.generate(attrs, { days: 365 });
-  const handler = createStaticHandler({ mounts: TEST_MOUNTS, root: process.cwd() });
+  const handler = createStaticHandler({ listDirectories: true, mounts: TEST_MOUNTS, root: process.cwd() });
 
   createSecureServer(
     {
