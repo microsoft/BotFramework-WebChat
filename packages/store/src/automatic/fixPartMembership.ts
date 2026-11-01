@@ -1,7 +1,6 @@
-import { parse } from 'valibot';
-import { nodeSchema, type Node } from '../node/Node.ts';
+import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import deepFreeze from '../private/deepFreeze.ts';
+import createNode from '../private/createNode.ts';
 import getPartIds, { type PartProperty } from '../private/getPartIds.ts';
 
 type PartChange = {
@@ -17,24 +16,22 @@ type PartChange = {
  * @returns A new node if the property is changed, otherwise, `undefined`.
  */
 function setPartReference(node: Node, property: PartProperty, id: Identifier, included: boolean): Node | undefined {
-  const partIds = getPartIds(node, property);
-
-  if (partIds.has(id) === included) {
+  if (getPartIds(node, property).has(id) === included) {
     return undefined;
   }
+
+  // `getPartIds()` returns a read-only cached `Set`, copy before modifying.
+  const partIds = new Set(getPartIds(node, property));
 
   included ? partIds.add(id) : partIds.delete(id);
 
   const nodeWithoutProperty = Object.fromEntries(Object.entries(node).filter(([key]) => key !== property));
 
-  return deepFreeze(
-    parse(
-      nodeSchema,
-      // OPINION: Empty property value is same as if the property is removed.
-      partIds.size
-        ? { ...nodeWithoutProperty, [property]: new Set(Array.from(partIds, id => ({ '@id': id }))) }
-        : nodeWithoutProperty
-    )
+  return createNode(
+    // OPINION: Empty property value is same as if the property is removed.
+    partIds.size
+      ? { ...nodeWithoutProperty, [property]: new Set(Array.from(partIds, id => ({ '@id': id }))) }
+      : nodeWithoutProperty
   );
 }
 

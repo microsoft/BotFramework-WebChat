@@ -4,11 +4,11 @@ import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import assertUniquePositionInParts from './assertion/assertUniquePositionInParts.ts';
 import fixPartMembership from './automatic/fixPartMembership.ts';
-import { nodeSchema, type Node } from './node/Node.ts';
+import type { Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
 import createReadonlySet from './private/createReadonlySet.ts';
-import deepFreeze from './private/deepFreeze.ts';
+import createNode from './private/createNode.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
@@ -128,7 +128,7 @@ function removeReference(node: Node, id: Identifier): Node | undefined {
     }
   }
 
-  return changed ? deepFreeze(parse(nodeSchema, Object.fromEntries(nextEntries))) : undefined;
+  return changed ? createNode(Object.fromEntries(nextEntries)) : undefined;
 }
 
 class Store {
@@ -177,7 +177,7 @@ class Store {
                 throw new TypeError('updater must be a function');
               }
 
-              const safeNode = deepFreeze(parse(nodeSchema, updater(nextState.get(safeId))));
+              const safeNode = createNode(updater(nextState.get(safeId)));
 
               if (safeNode['@id'] !== safeId) {
                 throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
