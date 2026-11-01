@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { createServer as createSecureServer } from 'node:https';
 import selfsigned from 'selfsigned';
-import handleServe from 'serve-handler';
+
+import { createStaticHandler, TEST_MOUNTS } from './createStaticHandler.js';
 
 const {
   // eslint-disable-next-line no-magic-numbers
@@ -11,11 +11,9 @@ const {
 } = process;
 
 (async () => {
-  const config = JSON.parse(await readFile('./serve.json', 'utf8'));
   const attrs = [{ name: 'commonName', value: 'webchat2' }];
   const pems = await selfsigned.generate(attrs, { days: 365 });
-
-  const handler = (req, res) => handleServe(req, res, config);
+  const handler = createStaticHandler({ mounts: TEST_MOUNTS, root: process.cwd() });
 
   createSecureServer(
     {
