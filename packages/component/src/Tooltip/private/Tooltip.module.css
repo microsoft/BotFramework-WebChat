@@ -1,5 +1,5 @@
-/* The tooltip positions itself against its parent, which can be any element. The hashed class name scopes this rule. */
-:has(> .tooltip) {
+/* The tooltip positions itself against its parent, which can be any element. */
+:global(.webchat) :has(> .tooltip) {
   position: relative;
 
   /* For <button>, the tooltip will be placed inside <button>. */
