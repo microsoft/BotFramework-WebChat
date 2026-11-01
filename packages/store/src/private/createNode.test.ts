@@ -6,6 +6,12 @@ import { nodeSchema } from '../node/Node.ts';
 import createNode from './createNode.ts';
 import getPartIds from './getPartIds.ts';
 
+function getCacheOf(node: object): unknown {
+  const [symbol] = Object.getOwnPropertySymbols(node);
+
+  return symbol && Object.getOwnPropertyDescriptor(node, symbol)?.value;
+}
+
 scenario(
   'createNode',
   bdd => {
@@ -74,6 +80,25 @@ scenario(
       )
       .when('getPartIds() is called', node => getPartIds(node, 'hasPart'))
       .then('should build the IDs', (_, partIds) => expect(Array.from(partIds)).toEqual(['_:m-1']));
+
+    bdd
+      .given('a node created by createNode()', () =>
+        createNode({
+          '@id': '_:thread',
+          '@type': new Set(['Thread']),
+          hasPart: new Set([{ '@id': '_:m-1' }]),
+          isPartOf: new Set([{ '@id': '_:conversation' }])
+        })
+      )
+      .when('getPartIds() is not called yet', node => getCacheOf(node))
+      .then('should not build the cache up front', (_, cache) =>
+        expect(cache).toEqual({ hasPart: undefined, isPartOf: undefined })
+      )
+      .and('should build the cache for hasPart only after getPartIds() is called with hasPart', node => {
+        const partIds = getPartIds(node, 'hasPart');
+
+        expect(getCacheOf(node)).toEqual({ hasPart: { ids: partIds, source: node.hasPart }, isPartOf: undefined });
+      });
 
     bdd
       .given('a node without hasPart', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
