@@ -1,0 +1,4 @@
+:global(.webchat) .surface {
+  display: flex;
+  flex-direction: column;
+}

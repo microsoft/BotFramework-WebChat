@@ -1,0 +1,32 @@
+:global(.webchat) .basic-transcript {
+  /* The element is also the transcript focus area, which TranscriptFocus.module.css lays out as a grid. */
+  overflow: hidden;
+  /* Make sure to set "position: relative" here to form another stacking context for the scroll-to-end button. */
+  /* Stacking context help isolating elements that use "z-index" from global pollution. */
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+  position: relative;
+
+  .basic-transcript__filler {
+    flex: 1;
+  }
+
+  /* ActivityRow: no styles of its own, themes style it. */
+  .basic-transcript__activity-body {
+    --webchat-preserve-reason: target-class;
+  }
+
+  .basic-transcript__scrollable {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :global(.webchat__basic-transcript__transcript) {
+    list-style-type: none;
+  }
+
+  :global(.webchat__basic-transcript__activity-focus-target) {
+    pointer-events: none;
+  }
+}

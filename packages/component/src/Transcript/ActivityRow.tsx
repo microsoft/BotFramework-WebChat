@@ -1,3 +1,4 @@
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -20,6 +21,8 @@ import {
 } from './TranscriptFocus';
 import useActivityAccessibleName from './useActivityAccessibleName';
 
+import styles from '../BasicTranscript.module.css';
+
 import type { WebChatActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
 
@@ -32,6 +35,8 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
   const [readActivityKeys] = useActivityKeysByRead();
   const activityRef = useRefFrom(activity);
   const bodyRef = useRef<HTMLDivElement>();
+  // Keeps the "webchat__basic-transcript__activity-body" class name.
+  const basicTranscriptClassNames = useStyles(styles, webChatPrefixedClassName);
   const focusByActivityKey = useFocusByActivityKey();
   const getKeyByActivity = useGetKeyByActivity();
   // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
@@ -66,11 +71,11 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const focusTrapChildren = useMemo(
     () => (
-      <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
+      <div className={basicTranscriptClassNames['basic-transcript__activity-body']} ref={bodyRef}>
         {children}
       </div>
     ),
-    [bodyRef, children]
+    [basicTranscriptClassNames, bodyRef, children]
   );
 
   const activityIdRef = useRefFrom(activity.id);
