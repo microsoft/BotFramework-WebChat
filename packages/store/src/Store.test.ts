@@ -1191,3 +1191,125 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'subscribe',
+  bdd => {
+    bdd
+      .given('a store with cross-referencing nodes and a listener', () => {
+        const { controller, store } = createStoreWithNodes();
+        const calls: ReadonlySet<string>[] = [];
+
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds));
+
+        return { calls, controller, store };
+      })
+      .when('a node is upserted', ({ controller }) =>
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, text: ['Aloha'] })))
+      )
+      .then('should notify once with the upserted node ID', ({ calls }) =>
+        expect(calls.map(ids => Array.from(ids))).toEqual([['_:m-1']])
+      );
+
+    bdd
+      .given('a store with cross-referencing nodes and a listener', () => {
+        const { controller, store } = createStoreWithNodes();
+        const calls: ReadonlySet<string>[] = [];
+
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds));
+
+        return { calls, controller, store };
+      })
+      .when('a referenced node is deleted', ({ controller }) =>
+        controller.edit(transaction => transaction.delete('_:m-1'))
+      )
+      .then('should notify with the deleted node and nodes which references are removed', ({ calls }) =>
+        expect(calls.map(ids => Array.from(ids).sort())).toEqual([['_:conversation', '_:m-1', '_:m-2']])
+      );
+
+    bdd
+      .given('a store with a conversation and a listener', () => {
+        const { controller, store } = createStore();
+        const calls: ReadonlySet<string>[] = [];
+
+        controller.edit(transaction =>
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }))
+        );
+
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds));
+
+        return { calls, controller, store };
+      })
+      .when('a child is upserted with autoRelationship', ({ controller }) =>
+        editWithAutoRelationship(controller, transaction =>
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }))
+        )
+      )
+      .then('should include the auto-fixed parent', ({ calls }) =>
+        expect(calls.map(ids => Array.from(ids).sort())).toEqual([['_:conversation', '_:m-1']])
+      );
+
+    bdd
+      .given('a store with cross-referencing nodes and a listener', () => {
+        const { controller, store } = createStoreWithNodes();
+        const calls: ReadonlySet<string>[] = [];
+
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds));
+
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, text: ['Aloha'] })));
+
+        return calls[0];
+      })
+      .when('the affected node IDs are modified', affectedNodeIds => [
+        () => (affectedNodeIds as Set<string>).add('_:m-2'),
+        () => Set.prototype.clear.call(affectedNodeIds)
+      ])
+      .then('should throw', (_, modifiers) => {
+        for (const modify of modifiers) {
+          expect(modify).toThrow(TypeError);
+        }
+      })
+      .and('should not be modified', affectedNodeIds => expect(Array.from(affectedNodeIds ?? [])).toEqual(['_:m-1']));
+
+    bdd
+      .given('a store with cross-referencing nodes and two listeners', () => {
+        const { controller, store } = createStoreWithNodes();
+        const calls: ReadonlySet<string>[] = [];
+
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds));
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds));
+
+        return { calls, controller, store };
+      })
+      .when('a node is upserted', ({ controller }) =>
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, text: ['Aloha'] })))
+      )
+      .then('should notify both listeners', ({ calls }) => expect(calls).toHaveLength(2));
+
+    bdd
+      .given('a store with cross-referencing nodes and an unsubscribed listener', () => {
+        const { controller, store } = createStoreWithNodes();
+        const calls: ReadonlySet<string>[] = [];
+
+        store.subscribe(affectedNodeIds => calls.push(affectedNodeIds))();
+
+        return { calls, controller, store };
+      })
+      .when('a node is upserted', ({ controller }) =>
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, text: ['Aloha'] })))
+      )
+      .then('should not notify', ({ calls }) => expect(calls).toHaveLength(0));
+
+    bdd
+      .given('an empty store', () => createStore())
+      .when('subscribe is called with a non-function', ({ store }) =>
+        catchError(() => store.subscribe('not a function' as unknown as () => void))
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(TypeError)));
+  },
+  NodeTest
+);

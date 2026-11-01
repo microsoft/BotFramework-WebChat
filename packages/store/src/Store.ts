@@ -1,8 +1,16 @@
 import { boolean, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
+import assertInversePartRelationship from './assertion/assertInversePartRelationship.ts';
+import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
+import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
+import assertUniquePositionInParts from './assertion/assertUniquePositionInParts.ts';
+import fixPartMembership from './automatic/fixPartMembership.ts';
 import { nodeSchema, type Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
-import createReadonlySet, { isReadonlySet } from './private/createReadonlySet.ts';
+import createReadonlySet from './private/createReadonlySet.ts';
+import deepFreeze from './private/deepFreeze.ts';
+
+type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
 interface StoreSource {
   start(controller: StoreController): void;
@@ -37,25 +45,6 @@ interface StoreTransaction {
    * The node returned by the updater must have the same `@id` as the `id` argument.
    */
   upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
-}
-
-/**
- * Returns a deeply immutable copy of the value. Arrays and objects are frozen, and `Set` is replaced by a readonly `Set`.
- *
- * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set.
- */
-function deepFreeze<T>(value: T): T {
-  if (!value || typeof value !== 'object' || isReadonlySet(value)) {
-    return value;
-  } else if (value instanceof Set) {
-    return createReadonlySet(Array.from(value, deepFreeze)) satisfies ReadonlySet<unknown> as T;
-  } else if (Array.isArray(value)) {
-    return Object.freeze(value.map(deepFreeze)) satisfies readonly unknown[] as T;
-  }
-
-  return Object.freeze(
-    Object.fromEntries(Object.entries(value).map(([key, value]) => [key, deepFreeze(value)]))
-  ) satisfies object as T;
 }
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
@@ -142,191 +131,6 @@ function removeReference(node: Node, id: Identifier): Node | undefined {
   return changed ? deepFreeze(parse(nodeSchema, Object.fromEntries(nextEntries))) : undefined;
 }
 
-type PartProperty = 'hasPart' | 'isPartOf';
-
-/**
- * Gets IDs of nodes in the `hasPart` or `isPartOf` property.
- */
-function getPartIds(node: Node | undefined, property: PartProperty): Set<Identifier> {
-  return new Set(Array.from((property === 'hasPart' ? node?.hasPart : node?.isPartOf) ?? [], ({ '@id': id }) => id));
-}
-
-/**
- * Adds or removes a node reference in the `hasPart` or `isPartOf` property.
- *
- * @returns A new node if the property is changed, otherwise, `undefined`.
- */
-function setPartReference(node: Node, property: PartProperty, id: Identifier, included: boolean): Node | undefined {
-  const partIds = getPartIds(node, property);
-
-  if (partIds.has(id) === included) {
-    return undefined;
-  }
-
-  included ? partIds.add(id) : partIds.delete(id);
-
-  const nodeWithoutProperty = Object.fromEntries(Object.entries(node).filter(([key]) => key !== property));
-
-  return deepFreeze(
-    parse(
-      nodeSchema,
-      // OPINION: Empty property value is same as if the property is removed.
-      partIds.size
-        ? { ...nodeWithoutProperty, [property]: new Set(Array.from(partIds, id => ({ '@id': id }))) }
-        : nodeWithoutProperty
-    )
-  );
-}
-
-type PartChange = {
-  readonly id: Identifier;
-  readonly included: boolean;
-  readonly property: PartProperty;
-  readonly targetId: Identifier;
-};
-
-/**
- * Gets part relationships added or removed by comparing the previous node and the next node.
- */
-function getPartChanges(prevNode: Node | undefined, node: Node): PartChange[] {
-  const id = node['@id'];
-  const partChanges: PartChange[] = [];
-
-  for (const property of ['hasPart', 'isPartOf'] as const) {
-    const partIds = getPartIds(node, property);
-    const prevPartIds = getPartIds(prevNode, property);
-
-    for (const targetId of prevPartIds) {
-      partIds.has(targetId) || partChanges.push({ id, included: false, property, targetId });
-    }
-
-    for (const targetId of partIds) {
-      prevPartIds.has(targetId) || partChanges.push({ id, included: true, property, targetId });
-    }
-  }
-
-  return partChanges;
-}
-
-/**
- * Auto-fixes part membership: `hasPart` and `isPartOf` are inverse of each other.
- *
- * Compares the committed node with the node in this transaction to find out which part relationships are added or
- * removed, then applies them to the other side. On conflict, addition wins over removal.
- *
- * Deleted nodes are skipped as `delete()` already removed all references to them.
- */
-function fixPartMembership(
-  prevState: ReadonlyMap<string, Node>,
-  nextState: ReadonlyMap<string, Node>,
-  affectedNodeIds: ReadonlySet<Identifier>,
-  setNode: (node: Node) => void
-): void {
-  const partChanges = Array.from(affectedNodeIds).flatMap(id => {
-    const node = nextState.get(id);
-
-    return node ? getPartChanges(prevState.get(id), node) : [];
-  });
-
-  // Apply removals before additions, so addition wins on conflict.
-  for (const { id, included, property, targetId } of partChanges.sort(
-    (x, y) => Number(x.included) - Number(y.included)
-  )) {
-    const node = nextState.get(id);
-    const targetNode = nextState.get(targetId);
-
-    // Apply to both sides as conflicting changes on the other side may have been applied.
-    // Target node could be missing, it will be caught by the reference check.
-    const nextNode = node && setPartReference(node, property, targetId, included);
-    const nextTargetNode =
-      targetNode && setPartReference(targetNode, property === 'hasPart' ? 'isPartOf' : 'hasPart', id, included);
-
-    nextNode && setNode(nextNode);
-    nextTargetNode && setNode(nextTargetNode);
-  }
-}
-
-/**
- * RULE: All members of the same part must have different `position` values, if specified.
- *
- * Only parts which the affected nodes participated in are checked.
- */
-function assertUniquePositionInParts(state: ReadonlyMap<string, Node>, affectedNodeIds: ReadonlySet<Identifier>): void {
-  const parentIds = new Set<Identifier>();
-
-  for (const id of affectedNodeIds) {
-    const node = state.get(id);
-
-    if (node) {
-      node.hasPart?.size && parentIds.add(id);
-
-      for (const parentId of getPartIds(node, 'isPartOf')) {
-        parentIds.add(parentId);
-      }
-    }
-  }
-
-  for (const parentId of parentIds) {
-    const memberIdsByPosition = new Map<number, Identifier>();
-
-    for (const memberId of getPartIds(state.get(parentId), 'hasPart')) {
-      const position = state.get(memberId)?.position;
-
-      if (typeof position === 'number') {
-        const conflictMemberId = memberIdsByPosition.get(position);
-
-        if (conflictMemberId) {
-          throw new Error(
-            `Nodes "${conflictMemberId}" and "${memberId}" in part "${parentId}" must not have the same position of ${position}`
-          );
-        }
-
-        memberIdsByPosition.set(position, memberId);
-      }
-    }
-  }
-}
-
-/**
- * RULE: `hasPart` and `isPartOf` must be inverse of each other.
- *
- * Only part relationships from or to the affected nodes are checked.
- */
-function assertInversePartRelationship(
-  state: ReadonlyMap<string, Node>,
-  backwardReferenceIds: ReadonlyMap<string, ReadonlySet<Identifier>>,
-  affectedNodeIds: ReadonlySet<Identifier>
-): void {
-  for (const id of affectedNodeIds) {
-    const node = state.get(id);
-
-    if (node) {
-      // Relationships from the affected node, and relationships from other nodes to the affected node.
-      const relationships: [Identifier, Identifier][] = [
-        ...Array.from(getPartIds(node, 'hasPart'), (childId): [Identifier, Identifier] => [id, childId]),
-        ...Array.from(getPartIds(node, 'isPartOf'), (parentId): [Identifier, Identifier] => [parentId, id]),
-        ...Array.from(backwardReferenceIds.get(id) ?? []).flatMap(referencingId => {
-          const referencingNode = state.get(referencingId);
-          const partRelationships: [Identifier, Identifier][] = [];
-
-          getPartIds(referencingNode, 'hasPart').has(id) && partRelationships.push([referencingId, id]);
-          getPartIds(referencingNode, 'isPartOf').has(id) && partRelationships.push([id, referencingId]);
-
-          return partRelationships;
-        })
-      ];
-
-      for (const [parentId, childId] of relationships) {
-        if (!getPartIds(state.get(parentId), 'hasPart').has(childId)) {
-          throw new Error(`Node "${parentId}" must have "${childId}" in hasPart as it is inverse of isPartOf`);
-        } else if (!getPartIds(state.get(childId), 'isPartOf').has(parentId)) {
-          throw new Error(`Node "${childId}" must have "${parentId}" in isPartOf as it is inverse of hasPart`);
-        }
-      }
-    }
-  }
-}
-
 class Store {
   constructor(source: StoreSource) {
     const controller: StoreController = {
@@ -379,10 +183,7 @@ class Store {
                 throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
               }
 
-              // RULE: A node must not be part of itself.
-              if (getPartIds(safeNode, 'hasPart').has(safeId) || getPartIds(safeNode, 'isPartOf').has(safeId)) {
-                throw new Error(`Node "${safeId}" must not be part of itself`);
-              }
+              assertNotSelfPart(safeNode);
 
               setNode(safeNode);
             }
@@ -392,17 +193,7 @@ class Store {
         if (affectedNodeIds.size) {
           autoRelationship && fixPartMembership(this.#state, nextState, affectedNodeIds, setNode);
 
-          // Upserting nodes which reference each other may take multiple `upsert()` calls.
-          // Verify integrity on commit: all referenced nodes must be in the graph.
-          // As `delete()` removes references to the deleted node, only references from affected nodes need to be checked.
-          for (const nodeId of affectedNodeIds) {
-            for (const referenceId of nextForwardReferenceIds.get(nodeId) ?? []) {
-              if (!nextState.has(referenceId)) {
-                throw new Error(`Node "${nodeId}" references node "${referenceId}" which is not in the graph`);
-              }
-            }
-          }
-
+          assertReferencedNodesInGraph(nextState, nextForwardReferenceIds, affectedNodeIds);
           assertInversePartRelationship(nextState, nextBackwardReferenceIds, affectedNodeIds);
           assertUniquePositionInParts(nextState, affectedNodeIds);
 
@@ -412,7 +203,7 @@ class Store {
           this.#forwardReferenceIds = nextForwardReferenceIds;
           this.#state = nextState;
 
-          this.#notifyAll();
+          this.#notifyAll(createReadonlySet(affectedNodeIds));
         }
       }
     };
@@ -424,12 +215,12 @@ class Store {
   #backwardReferenceIds: Map<Identifier, Set<Identifier>> = new Map();
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
   #forwardReferenceIds: Map<Identifier, Set<Identifier>> = new Map();
-  #listeners: Set<() => void> = new Set<() => void>();
+  #listeners: Set<StoreListener> = new Set<StoreListener>();
   #state: Map<string, Node> = new Map();
 
-  #notifyAll() {
+  #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
     for (const listener of this.#listeners) {
-      listener();
+      listener(affectedNodeIds);
     }
   }
 
@@ -437,7 +228,15 @@ class Store {
     return this.#state;
   }
 
-  subscribe(listener: () => void): () => void {
+  /**
+   * Subscribes to changes. On every successful commit, the listener will be called with a read-only `Set` of IDs of
+   * nodes which are added, updated, or deleted.
+   */
+  subscribe(listener: StoreListener): () => void {
+    if (typeof listener !== 'function') {
+      throw new TypeError('listener must be a function');
+    }
+
     this.#listeners.add(listener);
 
     return () => {
@@ -447,4 +246,10 @@ class Store {
 }
 
 export default Store;
-export type { StoreEditInit, StoreSource as StoreController, StoreController as StoreTransactor, StoreTransaction };
+export type {
+  StoreEditInit,
+  StoreListener,
+  StoreSource as StoreController,
+  StoreController as StoreTransactor,
+  StoreTransaction
+};
