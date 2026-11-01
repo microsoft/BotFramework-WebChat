@@ -69,8 +69,7 @@ scenario(
       .given('a readonly set', () => createReadonlySet([1, 2, 3]))
       .when('properties or prototype are modified', set => [
         () => Object.defineProperty(set, 'add', { value: () => undefined }),
-        () => Object.setPrototypeOf(set, null),
-        () => Reflect.set(set, 'add', () => undefined)
+        () => Object.setPrototypeOf(set, null)
       ])
       .then('should throw', (_, modifiers) => {
         for (const modify of modifiers) {
@@ -78,6 +77,34 @@ scenario(
         }
       })
       .and('should still be a Set', set => expect(set).toBeInstanceOf(Set));
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('a property is set via Reflect.set()', set => Reflect.set(set, 'add', () => undefined))
+      .then('should fail', (_, result) => expect(result).toBe(false))
+      .and('add() should still throw', set => expect(() => (set as Set<number>).add(4)).toThrow(TypeError));
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('Set.prototype methods are called', set => set)
+      .then('should not have own properties', (_, set) => expect(Reflect.ownKeys(set)).toEqual([]))
+      .and('should have a "Set" string tag', (_, set) =>
+        expect(Object.prototype.toString.call(set)).toBe('[object Set]')
+      )
+      .and('should be copied by new Set()', (_, set) => expect(new Set(set)).toEqual(new Set([1, 2, 3])))
+      .and('should support union()', (_, set) => expect(set.union(new Set([4]))).toEqual(new Set([1, 2, 3, 4])))
+      .and('should be accepted by Set.prototype.union()', (_, set) =>
+        expect(new Set([4]).union(set)).toEqual(new Set([4, 1, 2, 3]))
+      )
+      .and('should support isSubsetOf()', (_, set) => expect(set.isSubsetOf(new Set([1, 2, 3, 4]))).toBe(true))
+      .and('should pass itself to forEach() callback', (_, set) =>
+        set.forEach((_value, _value2, target) => expect(target).toBe(set))
+      );
+
+    bdd
+      .given('a frozen subclass of Set', () => Object.freeze(new (class extends Set<number> {})([1, 2, 3])))
+      .when('checked', set => isReadonlySet(set))
+      .then('should not be detected as readonly set', (_, result) => expect(result).toBe(false));
 
     bdd
       .given('a mutable set', () => new Set([1, 2, 3]))
