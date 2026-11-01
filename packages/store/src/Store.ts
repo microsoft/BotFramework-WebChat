@@ -246,10 +246,4 @@ class Store {
 }
 
 export default Store;
-export type {
-  StoreEditInit,
-  StoreListener,
-  StoreSource as StoreController,
-  StoreController as StoreTransactor,
-  StoreTransaction
-};
+export type { StoreEditInit, StoreListener, StoreSource, StoreController, StoreTransaction };

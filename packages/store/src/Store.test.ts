@@ -1,10 +1,10 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import Store, { type StoreTransactor } from './Store.ts';
+import Store, { type StoreController } from './Store.ts';
 
 function createStore() {
-  let controller: StoreTransactor | undefined;
+  let controller: StoreController | undefined;
 
   const store = new Store({
     start(nextController) {
@@ -627,8 +627,8 @@ scenario(
 );
 
 function editWithAutoRelationship(
-  controller: StoreTransactor,
-  transactor: Parameters<StoreTransactor['edit']>[0]
+  controller: StoreController,
+  transactor: Parameters<StoreController['edit']>[0]
 ): void {
   controller.edit(transactor, { autoRelationship: true });
 }
