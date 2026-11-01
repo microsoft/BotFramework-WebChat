@@ -10,6 +10,11 @@
     flex: 1;
   }
 
+  /* ActivityRow: no styles of its own, themes style it. */
+  .basic-transcript__activity-body {
+    --webchat-preserve-reason: target-class;
+  }
+
   .basic-transcript__scrollable {
     display: flex;
     flex-direction: column;
