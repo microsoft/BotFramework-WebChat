@@ -1,8 +1,9 @@
 import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import { createTrustedNode } from '../private/createNode.ts';
+import type { NodeReference } from '../node/NodeReference.ts';
+import editNode from '../private/editNode.ts';
 import getPartChanges from '../private/getPartChanges.ts';
-import getPartIds, { type PartProperty } from '../private/getPartIds.ts';
+import type { PartProperty } from '../private/getPartIds.ts';
 
 type PartDelta = {
   /** Key is the ID of the target node, value is `true` to include, `false` to exclude. */
@@ -11,34 +12,41 @@ type PartDelta = {
 };
 
 /**
+ * Applies part changes to the references of a part property.
+ *
+ * @returns New references if changed, otherwise, `undefined`.
+ */
+function applyPartChanges(
+  references: ReadonlySet<NodeReference> | undefined,
+  changes: ReadonlyMap<Identifier, boolean>
+): Set<NodeReference> | undefined {
+  // Reuses existing references, so `editNode()` can skip validating them.
+  const nextReferences = new Map(Array.from(references ?? [], reference => [reference['@id'], reference]));
+  let changed = false;
+
+  for (const [targetId, included] of changes) {
+    if (nextReferences.has(targetId) !== included) {
+      changed = true;
+
+      included ? nextReferences.set(targetId, { '@id': targetId }) : nextReferences.delete(targetId);
+    }
+  }
+
+  return changed ? new Set(nextReferences.values()) : undefined;
+}
+
+/**
  * Applies all part changes of a node at once.
  *
  * @returns A new node if any part property is changed, otherwise, `undefined`.
  */
 function applyPartDelta(node: Node, partDelta: PartDelta): Node | undefined {
-  const nextPartIds: { [K in PartProperty]?: ReadonlySet<Identifier> } = {};
+  const hasPart = applyPartChanges(node.hasPart, partDelta.hasPart);
+  const isPartOf = applyPartChanges(node.isPartOf, partDelta.isPartOf);
 
-  for (const property of ['hasPart', 'isPartOf'] as const) {
-    const partIds = getPartIds(node, property);
-    const effectiveDelta = Array.from(
-      property === 'hasPart' ? partDelta.hasPart : partDelta.isPartOf,
-      ([targetId, included]) => [targetId, included] as const
-    ).filter(([targetId, included]) => partIds.has(targetId) !== included);
-
-    if (effectiveDelta.length) {
-      // `getPartIds()` returns a read-only cached `Set`, copy before modifying.
-      const partIdsOfProperty = new Set(partIds);
-
-      for (const [targetId, included] of effectiveDelta) {
-        included ? partIdsOfProperty.add(targetId) : partIdsOfProperty.delete(targetId);
-      }
-
-      // eslint-disable-next-line security/detect-object-injection
-      nextPartIds[property] = partIdsOfProperty;
-    }
-  }
-
-  return nextPartIds.hasPart || nextPartIds.isPartOf ? createTrustedNode(node, nextPartIds) : undefined;
+  return hasPart || isPartOf
+    ? editNode(node, { ...node, hasPart: hasPart ?? node.hasPart, isPartOf: isPartOf ?? node.isPartOf })
+    : undefined;
 }
 
 /**

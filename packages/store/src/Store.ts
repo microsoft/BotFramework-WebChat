@@ -8,7 +8,7 @@ import type { Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
 import createReadonlySet from './private/createReadonlySet.ts';
-import createNode from './private/createNode.ts';
+import editNode from './private/editNode.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
@@ -129,7 +129,7 @@ function removeReference(node: Node, id: Identifier): Node | undefined {
     }
   }
 
-  return changed ? createNode(Object.fromEntries(nextEntries)) : undefined;
+  return changed ? editNode(node, Object.fromEntries(nextEntries)) : undefined;
 }
 
 class Store {
@@ -214,7 +214,8 @@ class Store {
                   throw new TypeError('updater must be a function');
                 }
 
-                const safeNode = createNode(updater(nextState.get(safeId)));
+                const prevNode = nextState.get(safeId);
+                const safeNode = editNode(prevNode, updater(prevNode));
 
                 if (safeNode['@id'] !== safeId) {
                   throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
