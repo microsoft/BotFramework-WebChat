@@ -4,7 +4,8 @@
 // install with a minimum release age, such as npm's `min-release-age` or `before` settings, cannot install them yet.
 // Once the versions are old enough, running the check again passes.
 //
-// Compares the "packages" of every package-lock.json changed between the merge base of "--base" and "--head". Every
+// Compares the "packages" of the lockfiles that the build installs (`LOCKFILE_PATHSPECS`) between the merge base of
+// "--base" and "--head". Every
 // version that the base does not have is looked up in its registry. Only registry.npmjs.org is supported, versions
 // resolved elsewhere (other registries, Git, files) are skipped with a note.
 //
@@ -20,6 +21,8 @@ import { parseArgs } from 'util';
 
 const DEFAULT_MIN_DAYS = 7;
 const FETCH_TIMEOUT = 30_000;
+// The lockfiles that the build installs. Samples are installed separately, so their lockfiles are not checked.
+const LOCKFILE_PATHSPECS = Object.freeze(['package-lock.json', ':(glob)packages/**/package-lock.json']);
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const NPM_REGISTRY_ORIGIN = 'https://registry.npmjs.org';
 const NUM_ATTEMPTS = 3;
@@ -27,7 +30,7 @@ const NUM_CONCURRENT_FETCHES = 8;
 const RETRY_DELAY = 1_000;
 
 /**
- * @typedef {Readonly<{ name: string, resolved: string, version: string }>} LockedPackage
+ * @typedef {Readonly<{ filenames?: readonly string[], name: string, resolved: string, version: string }>} LockedPackage
  * @typedef {LockedPackage & Readonly<{ publishedAt: Date }>} PublishedPackage
  * @typedef {Readonly<{ checked: readonly PublishedPackage[], skipped: readonly LockedPackage[] }>} CheckResult
  */
@@ -188,7 +191,10 @@ function formatReport({ checked, filenames, minDays, now, skipped }) {
   const lines = ['## Package age', ''];
 
   if (!filenames.length) {
-    return Object.freeze({ ok: true, report: [...lines, 'Skipped, no package-lock.json changed.', ''].join('\n') });
+    return Object.freeze({
+      ok: true,
+      report: [...lines, `Skipped, no lockfile changed (${LOCKFILE_PATHSPECS.join(', ')}).`, ''].join('\n')
+    });
   }
 
   lines.push(
@@ -220,14 +226,16 @@ function formatReport({ checked, filenames, minDays, now, skipped }) {
         `- \`${name}@${version}\`, published ${publishedAt.toISOString()}, ${((now.getTime() - publishedAt.getTime()) / MILLISECONDS_PER_DAY).toFixed(1)} days ago`
     ),
     '',
-    `Run this check again after ${new Date(young[0].publishedAt.getTime() + minAge).toISOString()}, or redo the change with versions published ${minDays} or more days ago. Versions already in package-lock.json are kept, so start from the package-lock.json of the base:`,
+    `Run this check again after ${new Date(young[0].publishedAt.getTime() + minAge).toISOString()}, or redo the change with versions published ${minDays} or more days ago. Versions already in a package-lock.json are kept, so start from the base:`,
     '',
     '```sh',
-    'git checkout origin/main -- package-lock.json',
-    `npm install --before="$(date -u -d '${minDays} days ago' +%F)"`,
+    `git checkout origin/main -- ${Array.from(new Set(young.flatMap(({ filenames }) => filenames)))
+      .sort()
+      .join(' ')}`,
+    `npm install --before=${new Date(now.getTime() - minAge).toISOString().slice(0, 10)}`,
     '```',
     '',
-    `npm 11.10 or later can use \`--min-release-age=${minDays}\` instead of \`--before\`.`,
+    `With \`min-release-age=${minDays}\` in \`.npmrc\`, npm 11.10 or later does not need \`--before\`.`,
     ''
   );
 
@@ -249,19 +257,29 @@ async function checkRepository(cwd, { base, head, minDays, now, ...fetchOptions 
     mergeBase,
     head,
     '--',
-    ':(glob)**/package-lock.json'
+    ...LOCKFILE_PATHSPECS
   ])
     .split('\n')
     .filter(Boolean)
     .map(line => line.split('\t'));
   const readPackages = (commit, filename) => JSON.parse(git(cwd, ['show', `${commit}:${filename}`])).packages ?? {};
-  const newPackages = changes.flatMap(([status, filename]) =>
-    findNewPackages(status === 'A' ? {} : readPackages(mergeBase, filename), readPackages(head, filename))
-  );
-  const { checked, skipped } = await lookUpPublishTimes(
-    Array.from(new Map(newPackages.map(item => [`${item.name}@${item.version}`, item])).values()),
-    fetchOptions
-  );
+  const newPackages = new Map();
+
+  for (const [status, filename] of changes) {
+    for (const lockedPackage of findNewPackages(
+      status === 'A' ? {} : readPackages(mergeBase, filename),
+      readPackages(head, filename)
+    )) {
+      const key = `${lockedPackage.name}@${lockedPackage.version}`;
+
+      newPackages.set(
+        key,
+        Object.freeze({ ...lockedPackage, filenames: [...(newPackages.get(key)?.filenames ?? []), filename] })
+      );
+    }
+  }
+
+  const { checked, skipped } = await lookUpPublishTimes(Array.from(newPackages.values()), fetchOptions);
 
   return formatReport({ checked, filenames: changes.map(([, filename]) => filename), minDays, now, skipped });
 }

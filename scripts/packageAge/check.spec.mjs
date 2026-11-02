@@ -121,7 +121,9 @@ scenario(
       .when('checked', check())
       .then('should pass', (_, { ok }) => expect(ok).toBe(true))
       .and('should say it is skipped', (_, { report }) =>
-        expect(report).toBe('## Package age\n\nSkipped, no package-lock.json changed.\n')
+        expect(report).toBe(
+          '## Package age\n\nSkipped, no lockfile changed (package-lock.json, :(glob)packages/**/package-lock.json).\n'
+        )
       )
       .and('should not call the registry', (_, { requests }) => expect(requests).toEqual([]));
 
@@ -170,14 +172,14 @@ scenario(
 - \`own-prerelease@4.0.1-main.202610300000.abcdef0\`, published 2026-10-30T00:00:00.000Z, 1.5 days ago
 - \`young@1.1.0\`, published 2026-10-29T12:00:00.000Z, 2.0 days ago
 
-Run this check again after 2026-11-06T12:00:00.000Z, or redo the change with versions published 7 or more days ago. Versions already in package-lock.json are kept, so start from the package-lock.json of the base:
+Run this check again after 2026-11-06T12:00:00.000Z, or redo the change with versions published 7 or more days ago. Versions already in a package-lock.json are kept, so start from the base:
 
 \`\`\`sh
 git checkout origin/main -- package-lock.json
-npm install --before="$(date -u -d '7 days ago' +%F)"
+npm install --before=2026-10-24
 \`\`\`
 
-npm 11.10 or later can use \`--min-release-age=7\` instead of \`--before\`.
+With \`min-release-age=7\` in \`.npmrc\`, npm 11.10 or later does not need \`--before\`.
 `
         )
       )
@@ -230,14 +232,31 @@ npm 11.10 or later can use \`--min-release-age=7\` instead of \`--before\`.
 
     bdd
       .given(
-        'a pull request that adds a package-lock.json with a young version',
+        'a pull request that adds a young version to the lockfile of a sample',
         () => setUp({ 'samples/package-lock.json': lock({ 'node_modules/young': '1.1.0' }) }),
+        ({ remove }) => remove()
+      )
+      .when('checked', check())
+      .then('should pass', (_, { ok }) => expect(ok).toBe(true))
+      .and('should not call the registry', (_, { requests }) => expect(requests).toEqual([]));
+
+    bdd
+      .given(
+        'a pull request that adds young versions to the lockfile of a package and to the root one',
+        () =>
+          setUp({
+            'package-lock.json': lock({ 'node_modules/old': '1.1.0', 'node_modules/young': '1.0.0' }),
+            'packages/package/package-lock.json': lock({ 'node_modules/young': '1.1.0' })
+          }),
         ({ remove }) => remove()
       )
       .when('checked', check())
       .then('should fail', (_, { ok }) => expect(ok).toBe(false))
       .and('should list the young version', (_, { report }) =>
         expect(report).toContain('- `young@1.1.0`, published 2026-10-29T12:00:00.000Z, 2.0 days ago')
+      )
+      .and('should restore only the lockfile with the young version', (_, { report }) =>
+        expect(report).toContain('\ngit checkout origin/main -- packages/package/package-lock.json\n')
       );
 
     bdd
