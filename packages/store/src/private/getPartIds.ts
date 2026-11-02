@@ -28,7 +28,7 @@ function buildPartIds(node: Pick<Node, PartProperty>, property: PartProperty): R
 /**
  * Gets IDs of nodes in the `hasPart` or `isPartOf` property.
  *
- * Returns the cached IDs in O(1) if the node is created by `editNode()`, otherwise, builds it in O(k).
+ * Returns the cached IDs in O(1) if the node is created by `createNode()`, otherwise, builds it in O(k).
  */
 function getPartIds(node: NodeWithPartIds | undefined, property: PartProperty): ReadonlySet<Identifier> {
   if (!node) {
