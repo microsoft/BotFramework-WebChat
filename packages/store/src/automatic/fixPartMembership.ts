@@ -78,23 +78,25 @@ function getPartChanges(prevNode: Node | undefined, node: Node): PartChange[] {
 /**
  * Auto-fixes part membership: `hasPart` and `isPartOf` are inverse of each other.
  *
- * Runs once right before commit. Compares the committed node with the node in this transaction to find out which part
- * relationships are added or removed, then applies them to the other side. On conflict, addition wins over removal.
+ * Compares the node at the last fix point with the node now to find out which part relationships are added or removed,
+ * then applies them to the other side. On conflict, addition wins over removal.
  *
  * Changes are batched: all changes to the same node are applied at once, so every node is rebuilt at most once.
  *
  * Deleted nodes are skipped as `delete()` already removed all references to them.
+ *
+ * @param prevNodes Nodes changed since the last fix point, with their values at the last fix point (`undefined` if the
+ *                  node did not exist).
  */
 function fixPartMembership(
-  prevState: ReadonlyMap<string, Node>,
+  prevNodes: ReadonlyMap<Identifier, Node | undefined>,
   nextState: ReadonlyMap<string, Node>,
-  affectedNodeIds: ReadonlySet<Identifier>,
   setNode: (node: Node) => void
 ): void {
-  const partChanges = Array.from(affectedNodeIds).flatMap(id => {
+  const partChanges = Array.from(prevNodes).flatMap(([id, prevNode]) => {
     const node = nextState.get(id);
 
-    return node ? getPartChanges(prevState.get(id), node) : [];
+    return node ? getPartChanges(prevNode, node) : [];
   });
 
   const partDeltas = new Map<Identifier, PartDelta>();

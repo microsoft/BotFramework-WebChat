@@ -1,4 +1,4 @@
-import { boolean, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
+import { is, parse } from 'valibot';
 import assertInversePartRelationship from './assertion/assertInversePartRelationship.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
@@ -16,30 +16,26 @@ interface StoreSource {
   start(controller: StoreController): void;
 }
 
-const storeEditInitSchema = pipe(
-  object({
-    /**
-     * When `true`, `hasPart` and `isPartOf` will be automatically updated so they are inverse of each other.
-     *
-     * The auto-fix only runs once, right before commit, after the transactor returns. It does not run on every
-     * `upsert()` or `delete()`: inside the transactor, nodes passed to the updater may not be fixed yet. All changes to
-     * the same node are batched and the node is rebuilt once.
-     *
-     * When `false` or not set, the commit will fail if `hasPart` and `isPartOf` are not inverse of each other: every
-     * child with `isPartOf` pointing to a parent must be in the `hasPart` of the parent, and vice versa.
-     */
-    autoRelationship: optional(boolean('autoRelationship must be boolean'))
-  }),
-  readonly()
-);
-
-type StoreEditInit = InferInput<typeof storeEditInitSchema>;
-
 interface StoreController {
-  edit(transactor: (transaction: StoreTransaction) => void, init?: StoreEditInit | undefined): void;
+  edit(transactor: (transaction: StoreTransaction) => void): void;
 }
 
 interface StoreTransaction {
+  /**
+   * Auto-fixes part membership of nodes changed since the start of the transaction or the last call to this function,
+   * so `hasPart` and `isPartOf` are inverse of each other. On conflict, addition wins over removal.
+   *
+   * - Can be called at any time inside the transactor; when nothing has changed since the last fix, it is a no-op
+   * - After it returns, nodes passed to updaters are fixed and all changes so far are marked as fixed
+   * - Changes made after the call are not fixed until it is called again
+   * - All changes to the same node are batched and the node is rebuilt once
+   *
+   * On commit, regardless of whether this function is called, the commit will fail if `hasPart` and `isPartOf` are not
+   * inverse of each other: every child with `isPartOf` pointing to a parent must be in the `hasPart` of the parent, and
+   * vice versa.
+   */
+  autoFixRelationship(): void;
+
   /**
    * Deletes a node and removes all references pointing to the deleted node from other nodes.
    */
@@ -141,68 +137,104 @@ class Store {
     const controller: StoreController = {
       // Multiple nodes can be added at once and they could cross reference each other.
       // We need to add all of the nodes at once, auto-fix relationships, and verify the graph integrity.
-      edit: (transactor, init) => {
-        const { autoRelationship } = parse(optional(storeEditInitSchema, {}), init);
+      edit: transactor => {
+        if (typeof transactor !== 'function') {
+          throw new TypeError('transactor must be a function');
+        }
+
         const affectedNodeIds = new Set<Identifier>();
+        let ended = false;
+
+        // Key is the ID of nodes changed since the last auto-fix, value is the node right before its first change.
+        const unfixedPrevNodes = new Map<Identifier, Node | undefined>();
 
         // All edits are done on a copy. If the transactor throws, the copy is discarded and the state is not changed.
         const nextState = new Map(this.#state);
         const nextBackwardReferenceIds = cloneReferenceIds(this.#backwardReferenceIds);
         const nextForwardReferenceIds = cloneReferenceIds(this.#forwardReferenceIds);
 
+        const markUnfixed = (id: Identifier): void => {
+          unfixedPrevNodes.has(id) || unfixedPrevNodes.set(id, nextState.get(id));
+        };
+
+        const assertNotEnded = (): void => {
+          if (ended) {
+            throw new Error('Transaction has ended, it cannot be used after the transactor returns');
+          }
+        };
+
         const setNode = (node: Node): void => {
           const id = node['@id'];
 
+          markUnfixed(id);
           nextState.set(id, node);
           setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getReferenceIds(node));
           affectedNodeIds.add(id);
         };
 
-        transactor(
-          Object.freeze({
-            delete: (id: Identifier): void => {
-              const safeId = parse(identifierSchema, id);
+        try {
+          transactor(
+            Object.freeze({
+              autoFixRelationship: (): void => {
+                assertNotEnded();
 
-              nextState.delete(safeId) && affectedNodeIds.add(safeId);
+                if (unfixedPrevNodes.size) {
+                  // Copy as `setNode()` will mark nodes changed by the auto-fix as unfixed, they are already fixed by this call.
+                  const prevNodes = new Map(unfixedPrevNodes);
 
-              setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, new Set());
+                  fixPartMembership(prevNodes, nextState, setNode);
 
-              // Copy before iterating as the set will be modified while removing references.
-              for (const nodeId of Array.from(nextBackwardReferenceIds.get(safeId) ?? [])) {
-                const node = nextState.get(nodeId);
-                const nextNode = node && removeReference(node, safeId);
+                  unfixedPrevNodes.clear();
+                }
+              },
+              delete: (id: Identifier): void => {
+                assertNotEnded();
 
-                nextNode && setNode(nextNode);
+                const safeId = parse(identifierSchema, id);
+
+                markUnfixed(safeId);
+                nextState.delete(safeId) && affectedNodeIds.add(safeId);
+
+                setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, new Set());
+
+                // Copy before iterating as the set will be modified while removing references.
+                for (const nodeId of Array.from(nextBackwardReferenceIds.get(safeId) ?? [])) {
+                  const node = nextState.get(nodeId);
+                  const nextNode = node && removeReference(node, safeId);
+
+                  nextNode && setNode(nextNode);
+                }
+              },
+              upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
+                assertNotEnded();
+
+                const safeId = parse(identifierSchema, id);
+
+                if (typeof updater !== 'function') {
+                  throw new TypeError('updater must be a function');
+                }
+
+                const safeNode = createNode(updater(nextState.get(safeId)));
+
+                if (safeNode['@id'] !== safeId) {
+                  throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
+                }
+
+                assertNotSelfPart(safeNode);
+
+                setNode(safeNode);
               }
-            },
-            upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
-              const safeId = parse(identifierSchema, id);
-
-              if (typeof updater !== 'function') {
-                throw new TypeError('updater must be a function');
-              }
-
-              const safeNode = createNode(updater(nextState.get(safeId)));
-
-              if (safeNode['@id'] !== safeId) {
-                throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
-              }
-
-              assertNotSelfPart(safeNode);
-
-              setNode(safeNode);
-            }
-          })
-        );
+            })
+          );
+        } finally {
+          ended = true;
+        }
 
         if (affectedNodeIds.size) {
-          // Auto-fix runs once right before commit, all changes to the same node are batched.
-          autoRelationship && fixPartMembership(this.#state, nextState, affectedNodeIds, setNode);
-
           assertReferencedNodesInGraph(nextState, nextForwardReferenceIds, affectedNodeIds);
 
-          // Without auto-fix, this asserts the transactor kept `hasPart` and `isPartOf` inverse of each other.
-          // With auto-fix, this is still checked as a safety net.
+          // Asserts the transactor kept `hasPart` and `isPartOf` inverse of each other, either manually or by calling
+          // `autoFixRelationship()` after the last change.
           assertInversePartRelationship(nextState, nextBackwardReferenceIds, affectedNodeIds);
           assertUniquePositionInParts(nextState, affectedNodeIds);
 
@@ -255,4 +287,4 @@ class Store {
 }
 
 export default Store;
-export type { StoreEditInit, StoreListener, StoreSource, StoreController, StoreTransaction };
+export type { StoreListener, StoreSource, StoreController, StoreTransaction };
