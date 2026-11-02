@@ -11,10 +11,11 @@ const UNLISTED = /^\.|^__image_snapshots__$|\.(css|ico|js|json|map|png|ts|tsx)$/
 
 const escapeHTML = (value: string): string => value.replace(/[&<>"']/gu, char => `&#${char.charCodeAt(0)};`);
 
-// The headers serve-test.json sent. The value is space-separated as it was: `compression` only honors a
-// comma-separated "no-transform", so the dev server keeps compressing.
+// Test pages are always revalidated, so they are never stale after a rebuild: unchanged files cost a 304 (ETag and
+// Last-Modified from express.static). No "no-store", which would download the bundles again on every page, and no
+// "no-transform", which would stop `compression`.
 function setTestHeaders(res: Response, path: string): void {
-  res.setHeader('Cache-Control', 'no-cache no-store no-transform');
+  res.setHeader('Cache-Control', 'no-cache');
 
   /\.coop-noopener-allow-popups\./u.test(path) && res.setHeader('Cross-Origin-Opener-Policy', 'noopener-allow-popups');
 }

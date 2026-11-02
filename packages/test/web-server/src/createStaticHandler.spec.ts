@@ -51,10 +51,11 @@ async function startServer() {
   return Object.freeze({
     fetchPath: (path: string, init?: RequestInit) =>
       fetch(`http://127.0.0.1:${port}${path}`, { redirect: 'manual', ...init }),
-    // Sends the path as is: fetch() would resolve "%2e%2e" before sending.
-    getRawPath: (path: string) =>
+    // Sends the path and headers as is: fetch() would resolve "%2e%2e", and adds "Cache-Control: no-cache" to
+    // conditional requests.
+    getRawPath: (path: string, headers?: Readonly<Record<string, string>>) =>
       new Promise<string>((resolve, reject) =>
-        request({ host: '127.0.0.1', path, port }, res => {
+        request({ headers, host: '127.0.0.1', path, port }, res => {
           let body = `${res.statusCode} `;
 
           res.on('data', chunk => (body += chunk)).on('end', () => resolve(body));
@@ -84,7 +85,7 @@ scenario(
             '/assets/%2e%2e/%2e%2e/secret.txt',
             '/assets/..%5C..%5Csecret.txt',
             '/assets/%00/'
-          ].map(getRawPath)
+          ].map(path => getRawPath(path))
         )
       )
       .then('should never list or serve anything outside the mounts', (_, responses) => {
@@ -147,8 +148,14 @@ scenario(
         fetchPath('/large.js', { headers: { 'accept-encoding': 'gzip' } })
       )
       .then('should send the test headers and compress', (_, res) => {
-        expect(res.headers.get('cache-control')).toBe('no-cache no-store no-transform');
+        expect(res.headers.get('cache-control')).toBe('no-cache'); // Always revalidate.
         expect(res.headers.get('content-encoding')).toBe('gzip');
+      })
+      .and('revalidating should answer 304 Not Modified', async ({ getRawPath }, res) => {
+        await expect(getRawPath('/large.js', { 'if-none-match': res.headers.get('etag') ?? '' })).resolves.toBe('304 ');
+        await expect(
+          getRawPath('/large.js', { 'if-modified-since': res.headers.get('last-modified') ?? '' })
+        ).resolves.toBe('304 ');
       });
   },
   JestGlobals
