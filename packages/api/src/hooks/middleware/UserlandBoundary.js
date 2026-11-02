@@ -1,9 +1,20 @@
 import { ErrorBoxPolymiddlewareProxy } from '@msinternal/botframework-webchat-api-middleware';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { useCallback, useState } from 'react';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import ErrorBoundary from '../utils/ErrorBoundary';
 
-const UserlandBoundary = ({ children, type }) => {
+const userlandBoundaryPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    type: optional(string())
+  }),
+  readonly()
+);
+
+const UserlandBoundary = props => {
+  const { children, type } = validateProps(userlandBoundaryPropsSchema, props);
   const [error, setError] = useState();
 
   const handleError = useCallback(error => setError(error), []);

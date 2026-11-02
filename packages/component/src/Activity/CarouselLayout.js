@@ -1,4 +1,5 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import {
   Composer as FilmComposer,
@@ -11,6 +12,7 @@ import {
 
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
+import { any, array, boolean, function_, literal, object, optional, pipe, readonly, union } from 'valibot';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
@@ -19,14 +21,27 @@ import styles from './CarouselLayout.module.css';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
-const CarouselLayoutCore = ({
-  activity,
-  hideTimestamp = false,
-  renderActivityStatus = false,
-  renderAttachment,
-  renderAvatar = false,
-  showCallout = true
-}) => {
+const carouselLayoutPropsSchema = pipe(
+  object({
+    activity: pipe(object({ attachments: optional(array(any())) }), readonly()),
+    hideTimestamp: optional(boolean()),
+    renderActivityStatus: optional(union([literal(false), function_()])),
+    renderAttachment: function_(),
+    renderAvatar: optional(union([literal(false), function_()])),
+    showCallout: optional(boolean())
+  }),
+  readonly()
+);
+
+const CarouselLayoutCore = props => {
+  const {
+    activity,
+    hideTimestamp = false,
+    renderActivityStatus = false,
+    renderAttachment,
+    renderAvatar = false,
+    showCallout = true
+  } = validateProps(carouselLayoutPropsSchema, props);
   const [{ root: filmRootClassName }] = useReactFilmStyleSetClassNames();
   const [direction] = useDirection();
   const [scrollBarWidth] = useScrollBarWidth();
@@ -69,7 +84,7 @@ const CarouselLayoutCore = ({
 };
 
 const CarouselLayout = props => {
-  const { activity: { attachments = [] } = {} } = props;
+  const { activity: { attachments = [] } = {} } = validateProps(carouselLayoutPropsSchema, props);
   const [direction] = useDirection();
   const [nonce] = useNonce();
   const filmStyleSet = useMemo(() => createBasicStyleSetForReactFilm({ cursor: null }), []);

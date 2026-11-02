@@ -2,9 +2,11 @@
 
 import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
 import cx from 'classnames';
 import React, { useCallback } from 'react';
+import { any, array, boolean, function_, literal, object, optional, pipe, readonly, string, union } from 'valibot';
 
 import Bubble from './Bubble';
 import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
@@ -23,15 +25,47 @@ const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleO
 const CONTROLS_WITHOUT_ARROW_KEYS_SELECTOR =
   'a[href], button, input[type="button"], input[type="checkbox"], input[type="reset"], input[type="submit"], [role="button"], [role="link"]';
 
-const CarouselFilmStrip = ({
-  activity,
-  className = '',
-  hideTimestamp = false,
-  renderActivityStatus = false,
-  renderAttachment,
-  renderAvatar = false,
-  showCallout = false
-}) => {
+const carouselFilmStripPropsSchema = pipe(
+  object({
+    activity: pipe(
+      object({
+        attachments: optional(array(any())),
+        channelData: optional(
+          pipe(
+            object({
+              messageBack: optional(pipe(object({ displayText: optional(string()) }), readonly()))
+            }),
+            readonly()
+          )
+        ),
+        from: pipe(object({ role: string() }), readonly()),
+        text: optional(string()),
+        textFormat: optional(string()),
+        timestamp: optional(string())
+      }),
+      readonly()
+    ),
+    className: optional(string()),
+    hideTimestamp: optional(boolean()),
+    renderActivityStatus: optional(union([literal(false), function_()])),
+    renderAttachment: function_(),
+    renderAvatar: optional(union([literal(false), function_()])),
+    showCallout: optional(boolean())
+  }),
+  readonly()
+);
+
+const CarouselFilmStrip = props => {
+  const {
+    activity,
+    className = '',
+    hideTimestamp = false,
+    renderActivityStatus = false,
+    renderAttachment,
+    renderAvatar = false,
+    showCallout = false
+  } = validateProps(carouselFilmStripPropsSchema, props);
+
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();

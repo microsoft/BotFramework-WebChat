@@ -1,14 +1,23 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import type { GlobalScopePonyfill } from 'botframework-webchat-core';
-import React, { useMemo, useRef, type PropsWithChildren } from 'react';
+import React, { useMemo, useRef } from 'react';
+import { custom, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import type { ContextOf } from '../../types/ContextOf';
 import PonyfillContext from './private/PonyfillContext';
 
-type Props = PropsWithChildren<{
-  readonly ponyfill?: Partial<GlobalScopePonyfill> | undefined;
-}>;
+const ponyfillComposerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    ponyfill: optional(custom<Partial<GlobalScopePonyfill>>(() => true))
+  }),
+  readonly()
+);
 
-const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
+type Props = InferInput<typeof ponyfillComposerPropsSchema>;
+
+const PonyfillComposer = (props: Props) => {
+  const { children, ponyfill: partialPonyfill } = validateProps(ponyfillComposerPropsSchema, props);
   // Note: `useRef(value)` always return the initial value that was called with.
   if (useRef(partialPonyfill).current !== partialPonyfill) {
     // We does not support changing ponyfill.

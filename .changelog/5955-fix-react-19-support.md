@@ -5,7 +5,7 @@
 
 ### Removed
 
-- Components: removed the remaining `propTypes` and the `prop-types` dependency, React 19 ignores them, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- Components: replaced the remaining `propTypes` with Valibot schemas and removed the `prop-types` dependency, React 19 ignores `propTypes`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 

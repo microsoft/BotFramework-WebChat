@@ -6,6 +6,7 @@ import {
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
@@ -42,6 +43,7 @@ import {
 } from 'botframework-webchat-core';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import updateIn from 'simple-update-in';
+import { any, array, boolean, function_, nullish, object, picklist, pipe, readonly, string, union } from 'valibot';
 
 import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
@@ -226,6 +228,50 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
+const legacyMiddlewareSchema = union([array(function_()), function_()]);
+
+// Like `propTypes`, optional props also accept `null`, for example, `dir={searchParams.get('dir')}`.
+const composerCorePropsSchema = pipe(
+  object({
+    activityStatusMiddleware: nullish(legacyMiddlewareSchema),
+    attachmentForScreenReaderMiddleware: nullish(legacyMiddlewareSchema),
+    attachmentMiddleware: nullish(legacyMiddlewareSchema),
+    avatarMiddleware: nullish(legacyMiddlewareSchema),
+    cardActionMiddleware: nullish(legacyMiddlewareSchema),
+    children: nullish(reactNode()),
+    dir: nullish(picklist(['auto', 'ltr', 'rtl'])),
+    directLine: pipe(
+      object({
+        activity$: pipe(object({ subscribe: function_() }), readonly()),
+        connectionStatus$: pipe(object({ subscribe: function_() }), readonly()),
+        end: nullish(function_()),
+        getSessionId: nullish(function_()),
+        postActivity: function_(),
+        referenceGrammarID: nullish(string()),
+        token: nullish(string())
+      }),
+      readonly()
+    ),
+    disabled: nullish(boolean()),
+    downscaleImageToDataURL: nullish(function_()),
+    grammars: nullish(array(string())),
+    groupActivitiesMiddleware: nullish(legacyMiddlewareSchema),
+    locale: nullish(string()),
+    onTelemetry: nullish(function_()),
+    overrideLocalizedStrings: nullish(any()),
+    renderMarkdown: nullish(function_()),
+    scrollToEndButtonMiddleware: nullish(legacyMiddlewareSchema),
+    selectVoice: nullish(function_()),
+    sendTypingIndicator: nullish(boolean()),
+    toastMiddleware: nullish(legacyMiddlewareSchema),
+    typingIndicatorMiddleware: nullish(legacyMiddlewareSchema),
+    uiState: nullish(picklist(['blueprint', 'disabled'])),
+    userID: nullish(string()),
+    username: nullish(string())
+  }),
+  readonly()
+);
+
 type ComposerCoreProps = Readonly<{
   /**
    * @deprecated Use `polymiddleware` instead. The `activityMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2027-08-21.
@@ -285,36 +331,41 @@ type ComposerCoreProps = Readonly<{
   username?: string;
 }>;
 
-const ComposerCore = ({
-  activityMiddleware: activityMiddlewareFromProps,
-  activityStatusMiddleware,
-  attachmentForScreenReaderMiddleware,
-  attachmentMiddleware,
-  avatarMiddleware: avatarMiddlewareFromProps,
-  cardActionMiddleware,
-  children,
-  dir = 'auto',
-  directLine,
-  disabled = false,
-  downscaleImageToDataURL,
-  grammars = EMPTY_ARRAY,
-  groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
-  locale = window.navigator.language || 'en-US',
-  onTelemetry,
-  overrideLocalizedStrings,
-  polymiddleware: polymiddlewareFromProps,
-  renderMarkdown,
-  scrollToEndButtonMiddleware,
-  selectVoice,
-  sendBoxMiddleware,
-  sendBoxToolbarMiddleware,
-  sendTypingIndicator = false,
-  toastMiddleware,
-  typingIndicatorMiddleware,
-  uiState: rawUIState,
-  userID = '',
-  username = ''
-}: ComposerCoreProps) => {
+const ComposerCore = (props: ComposerCoreProps) => {
+  // The TypeScript type is richer than the schema, the schema validates what the `propTypes` did.
+  validateProps(composerCorePropsSchema, props);
+
+  const {
+    activityMiddleware: activityMiddlewareFromProps,
+    activityStatusMiddleware,
+    attachmentForScreenReaderMiddleware,
+    attachmentMiddleware,
+    avatarMiddleware: avatarMiddlewareFromProps,
+    cardActionMiddleware,
+    children,
+    dir = 'auto',
+    directLine,
+    disabled = false,
+    downscaleImageToDataURL,
+    grammars = EMPTY_ARRAY,
+    groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
+    locale = window.navigator.language || 'en-US',
+    onTelemetry,
+    overrideLocalizedStrings,
+    polymiddleware: polymiddlewareFromProps,
+    renderMarkdown,
+    scrollToEndButtonMiddleware,
+    selectVoice,
+    sendBoxMiddleware,
+    sendBoxToolbarMiddleware,
+    sendTypingIndicator = false,
+    toastMiddleware,
+    typingIndicatorMiddleware,
+    uiState: rawUIState,
+    userID = '',
+    username = ''
+  } = props;
+
   const [ponyfill] = usePonyfill();
   const [styleOptions] = useStyleOptions();
   const dispatch = useDispatch();
@@ -713,6 +764,14 @@ type ComposerWithStoreProps = ComposerCoreProps &
     store?: any;
   }>;
 
+const composerWithStorePropsSchema = pipe(
+  object({
+    onTelemetry: nullish(function_()),
+    store: nullish(any())
+  }),
+  readonly()
+);
+
 type ComposerProps = ComposerWithStoreProps & {
   readonly internalRenderErrorBox?: any;
 
@@ -730,7 +789,11 @@ type ComposerProps = ComposerWithStoreProps & {
 };
 
 // We will create a Redux store if it was not passed in
-const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStoreProps) => {
+const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
+  validateProps(composerWithStorePropsSchema, propsWithStore);
+
+  const { onTelemetry, store, ...props } = propsWithStore;
+
   const [ponyfill] = usePonyfill();
 
   const memoizedStore = useMemo(() => {

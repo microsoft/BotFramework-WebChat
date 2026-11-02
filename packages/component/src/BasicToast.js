@@ -1,9 +1,11 @@
 /* eslint react/forbid-dom-props: "off" */
 /* eslint react/no-danger: "off" */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import ScreenReaderText from './ScreenReaderText';
 import DismissIcon from './Toast/DismissIcon';
@@ -23,7 +25,27 @@ const ROOT_STYLE = {
   }
 };
 
-const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
+const basicToastPropsSchema = pipe(
+  object({
+    notification: pipe(
+      object({
+        alt: optional(string()),
+        id: string(),
+        level: string(),
+        // `setNotification()` does not require `message`, it renders as empty.
+        message: optional(string())
+      }),
+      readonly()
+    )
+  }),
+  readonly()
+);
+
+const BasicToast = props => {
+  const {
+    notification: { alt, id, level, message = '' }
+  } = validateProps(basicToastPropsSchema, props);
+
   const [{ toast: toastStyleSet }] = useStyleSet();
   const contentId = useMemo(() => `webchat__toast__${randomId()}`, []);
   const localize = useLocalizer();

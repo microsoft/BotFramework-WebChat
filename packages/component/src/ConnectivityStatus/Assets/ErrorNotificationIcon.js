@@ -1,12 +1,24 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
+import { number, object, optional, pipe, readonly, string } from 'valibot';
 
 const { useDirection } = hooks;
 
 const ICON_SIZE_FACTOR = 16;
 
-const ErrorNotificationIcon = ({ className = '', size = 1 }) => {
+const errorNotificationIconPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    size: optional(number())
+  }),
+  readonly()
+);
+
+const ErrorNotificationIcon = props => {
+  const { className = '', size = 1 } = validateProps(errorNotificationIconPropsSchema, props);
+
   const [direction] = useDirection();
 
   return (

@@ -2,6 +2,7 @@
 
 import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import {
   Composer as APIComposer,
   AttachmentForScreenReaderMiddleware,
@@ -26,6 +27,7 @@ import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
+import { any, function_, literal, nullish, object, pipe, readonly, string, union } from 'valibot';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
@@ -176,16 +178,34 @@ type ComposerCoreProps = Readonly<{
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
 
-const ComposerCore = ({
-  children,
-  extraStyleSet,
-  nonce,
-  renderMarkdown,
-  storeDebugAPI,
-  styleSet,
-  suggestedActionsAccessKey = 'A a Å å',
-  webSpeechPonyfillFactory
-}: ComposerCoreProps) => {
+const composerCorePropsSchema = pipe(
+  object({
+    // Like `propTypes`, optional props also accept `null`.
+    extraStyleSet: nullish(any()),
+    nonce: nullish(string()),
+    renderMarkdown: nullish(function_()),
+    styleSet: nullish(any()),
+    suggestedActionsAccessKey: nullish(union([literal(false), string()])),
+    webSpeechPonyfillFactory: nullish(function_())
+  }),
+  readonly()
+);
+
+const ComposerCore = (props: ComposerCoreProps) => {
+  // The TypeScript type is richer than the schema, the schema validates what the `propTypes` did.
+  validateProps(composerCorePropsSchema, props);
+
+  const {
+    children,
+    extraStyleSet,
+    nonce,
+    renderMarkdown,
+    storeDebugAPI,
+    styleSet,
+    suggestedActionsAccessKey = 'A a Å å',
+    webSpeechPonyfillFactory
+  } = props;
+
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();

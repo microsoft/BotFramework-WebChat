@@ -1,7 +1,9 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { boolean, custom, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import SpeakActivity from '../Activity/Speak';
 import { RestrictedActivityDebugAPI } from '../ActivityDebug';
@@ -20,13 +22,34 @@ import {
 import useActivityAccessibleName from './useActivityAccessibleName';
 
 import type { WebChatActivity } from 'botframework-webchat-core';
-import type { MouseEventHandler, PropsWithChildren } from 'react';
+import type { MouseEventHandler } from 'react';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{ readonly activity: WebChatActivity }>;
+const activityRowPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(value =>
+      is(
+        object({
+          channelData: optional(
+            object({
+              speak: optional(boolean()),
+              'webchat:fallback-text': optional(string())
+            })
+          )
+        }),
+        value
+      )
+    ),
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
+type ActivityRowProps = InferInput<typeof activityRowPropsSchema>;
+
+const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
+  const { activity, children } = validateProps(activityRowPropsSchema, props);
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
   const activityRef = useRefFrom(activity);

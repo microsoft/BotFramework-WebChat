@@ -1,9 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/forbid-dom-props */
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
 import { htmlTextAlternatives } from 'botframework-webchat-component/internal.js';
 import { onErrorResumeNext } from 'botframework-webchat-core';
 import React, { useMemo } from 'react';
+import { any, array, nonNullish, object, optional, pipe, readonly, string } from 'valibot';
 
 import setMarkdownEngine from '../Attachment/private/setMarkdownEngine';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -59,7 +61,36 @@ function walkAllItems(node, fn) {
   }
 }
 
-const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue, label } }) => {
+const adaptiveCardChoiceSetInputPropsSchema = pipe(
+  object({
+    input: pipe(
+      object({
+        choices: optional(
+          array(
+            pipe(
+              object({
+                title: optional(string()),
+                value: optional(any())
+              }),
+              readonly()
+            )
+          )
+        ),
+        defaultValue: optional(any()),
+        label: optional(string()),
+        value: optional(any())
+      }),
+      readonly()
+    )
+  }),
+  readonly()
+);
+
+const AdaptiveCardChoiceSetInput = props => {
+  const {
+    input: { choices, defaultValue, label }
+  } = validateProps(adaptiveCardChoiceSetInputPropsSchema, props);
+
   const labelId = useUniqueId('webchat__id');
   const defaultChoice = choices.find(({ value }) => defaultValue === value || (!defaultValue && !value));
 
@@ -81,7 +112,15 @@ const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue, label } })
   );
 };
 
-const AdaptiveCardAttachment = ({ content }) => {
+const adaptiveCardAttachmentPropsSchema = pipe(
+  object({
+    content: nonNullish(any())
+  }),
+  readonly()
+);
+
+const AdaptiveCardAttachment = props => {
+  const { content } = validateProps(adaptiveCardAttachmentPropsSchema, props);
   const localize = useLocalizer();
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
