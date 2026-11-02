@@ -15,13 +15,14 @@
     "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
     "postversion": "../../../scripts/npm/postversion.sh",
     "preversion": "../../../scripts/npm/preversion.sh",
-    "start": "node ."
+    "start": "node .",
+    "start:samples": "node ./src/samples.js"
   },
   "pinDependencies": {},
-  "localDependencies": {},
+  "localDependencies": {
+    "@msinternal/test-web-server": "development"
+  },
   "devDependencies": {
-    "compression": "^1.8.2",
-    "express": "^5.2.1",
-    "serve-handler": "^6.1.7"
+    "@msinternal/test-web-server": "0.0.0-0"
   }
 }
