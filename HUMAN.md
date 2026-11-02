@@ -7,6 +7,7 @@
 - When adding dependencies, use `npm install`
   - Do not add it to workspace root
   - If it is an existing package, must use consistent version: either use existing version for the package or consider bumping every dependents to latest
+- Only add versions published 7 or more days ago, because consumers that install with a minimum release age of 7 days cannot install newer ones, and the "Package age" check fails until then. Install or bump as if it were 7 days ago, with `npm install --before="$(date -u -d '7 days ago' +%F)"` or, on npm 11.10 or later, with [`--min-release-age=7`](https://docs.npmjs.com/cli/v11/using-npm/config#min-release-age). Versions already in `package-lock.json` are kept, so redo a bump from the `package-lock.json` of `main`
 - Unless stated otherwise, avoid Node.js packages or polyfills
   - Use `ReadableStream`, `WritableStream`, `TransformStream`, instead of Node.js `buffer`
   - Use Web Cryptography instead of Node.js `crypto`

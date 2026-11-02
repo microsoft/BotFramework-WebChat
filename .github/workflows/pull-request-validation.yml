@@ -142,6 +142,39 @@ jobs:
       - run: npm run build --if-present
         working-directory: samples
 
+  package-age:
+    name: Package age
+    # Fails if package-lock.json adds versions published less than 7 days ago, which consumers that install with a minimum
+    # release age cannot install yet. Re-run the job once they are old enough.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 2 # HEAD is the pull request merged into the base, its first parent is the base.
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.node-version }}
+
+      # Only installs the dependencies of the unit tests when they could have changed.
+      - id: changes
+        name: Check whether scripts/packageAge changed
+        run: git diff --quiet HEAD^1 HEAD -- scripts/packageAge || echo 'scripts=true' >> "$GITHUB_OUTPUT"
+
+      - if: steps.changes.outputs.scripts
+        run: npm clean-install --ignore-scripts --strict-peer-deps
+
+      - if: steps.changes.outputs.scripts
+        name: Run unit tests of scripts/packageAge
+        run: node --test 'scripts/packageAge/*.spec.mjs'
+
+      # Skips quickly if no package-lock.json changed.
+      - name: Check the age of new package versions
+        run: node ./scripts/packageAge/check.mjs --base HEAD^1 | tee --append "$GITHUB_STEP_SUMMARY"
+
   static-code-analysis:
     name: Static code analysis
     needs:
