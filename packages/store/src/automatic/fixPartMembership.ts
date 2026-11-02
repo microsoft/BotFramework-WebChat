@@ -10,29 +10,46 @@ type PartChange = {
   readonly targetId: Identifier;
 };
 
+type PartDelta = {
+  /** Key is the ID of the target node, value is `true` to include, `false` to exclude. */
+  readonly hasPart: Map<Identifier, boolean>;
+  readonly isPartOf: Map<Identifier, boolean>;
+};
+
 /**
- * Adds or removes a node reference in the `hasPart` or `isPartOf` property.
+ * Applies all part changes of a node at once.
  *
- * @returns A new node if the property is changed, otherwise, `undefined`.
+ * @returns A new node if any part property is changed, otherwise, `undefined`.
  */
-function setPartReference(node: Node, property: PartProperty, id: Identifier, included: boolean): Node | undefined {
-  if (getPartIds(node, property).has(id) === included) {
-    return undefined;
+function applyPartDelta(node: Node, partDelta: PartDelta): Node | undefined {
+  const nextEntries = new Map<string, unknown>(Object.entries(node));
+  let changed = false;
+
+  for (const property of ['hasPart', 'isPartOf'] as const) {
+    const partIds = getPartIds(node, property);
+    const effectiveDelta = Array.from(
+      property === 'hasPart' ? partDelta.hasPart : partDelta.isPartOf,
+      ([targetId, included]) => [targetId, included] as const
+    ).filter(([targetId, included]) => partIds.has(targetId) !== included);
+
+    if (effectiveDelta.length) {
+      // `getPartIds()` returns a read-only cached `Set`, copy before modifying.
+      const nextPartIds = new Set(partIds);
+
+      for (const [targetId, included] of effectiveDelta) {
+        included ? nextPartIds.add(targetId) : nextPartIds.delete(targetId);
+      }
+
+      changed = true;
+
+      // OPINION: Empty property value is same as if the property is removed.
+      nextPartIds.size
+        ? nextEntries.set(property, new Set(Array.from(nextPartIds, id => ({ '@id': id }))))
+        : nextEntries.delete(property);
+    }
   }
 
-  // `getPartIds()` returns a read-only cached `Set`, copy before modifying.
-  const partIds = new Set(getPartIds(node, property));
-
-  included ? partIds.add(id) : partIds.delete(id);
-
-  const nodeWithoutProperty = Object.fromEntries(Object.entries(node).filter(([key]) => key !== property));
-
-  return createNode(
-    // OPINION: Empty property value is same as if the property is removed.
-    partIds.size
-      ? { ...nodeWithoutProperty, [property]: new Set(Array.from(partIds, id => ({ '@id': id }))) }
-      : nodeWithoutProperty
-  );
+  return changed ? createNode(Object.fromEntries(nextEntries)) : undefined;
 }
 
 /**
@@ -61,8 +78,10 @@ function getPartChanges(prevNode: Node | undefined, node: Node): PartChange[] {
 /**
  * Auto-fixes part membership: `hasPart` and `isPartOf` are inverse of each other.
  *
- * Compares the committed node with the node in this transaction to find out which part relationships are added or
- * removed, then applies them to the other side. On conflict, addition wins over removal.
+ * Runs once right before commit. Compares the committed node with the node in this transaction to find out which part
+ * relationships are added or removed, then applies them to the other side. On conflict, addition wins over removal.
+ *
+ * Changes are batched: all changes to the same node are applied at once, so every node is rebuilt at most once.
  *
  * Deleted nodes are skipped as `delete()` already removed all references to them.
  */
@@ -78,21 +97,31 @@ function fixPartMembership(
     return node ? getPartChanges(prevState.get(id), node) : [];
   });
 
-  // Apply removals before additions, so addition wins on conflict.
+  const partDeltas = new Map<Identifier, PartDelta>();
+
+  const recordPartChange = (id: Identifier, property: PartProperty, targetId: Identifier, included: boolean): void => {
+    let partDelta = partDeltas.get(id);
+
+    partDelta || partDeltas.set(id, (partDelta = { hasPart: new Map(), isPartOf: new Map() }));
+
+    (property === 'hasPart' ? partDelta.hasPart : partDelta.isPartOf).set(targetId, included);
+  };
+
+  // Record removals before additions, so addition wins on conflict.
+  // Record on both sides as conflicting changes may be made on the other side.
   for (const { id, included, property, targetId } of partChanges.sort(
     (x, y) => Number(x.included) - Number(y.included)
   )) {
-    const node = nextState.get(id);
-    const targetNode = nextState.get(targetId);
+    recordPartChange(id, property, targetId, included);
+    recordPartChange(targetId, property === 'hasPart' ? 'isPartOf' : 'hasPart', id, included);
+  }
 
-    // Apply to both sides as conflicting changes on the other side may have been applied.
+  for (const [id, partDelta] of partDeltas) {
     // Target node could be missing, it will be caught by the reference check.
-    const nextNode = node && setPartReference(node, property, targetId, included);
-    const nextTargetNode =
-      targetNode && setPartReference(targetNode, property === 'hasPart' ? 'isPartOf' : 'hasPart', id, included);
+    const node = nextState.get(id);
+    const nextNode = node && applyPartDelta(node, partDelta);
 
     nextNode && setNode(nextNode);
-    nextTargetNode && setNode(nextTargetNode);
   }
 }
 

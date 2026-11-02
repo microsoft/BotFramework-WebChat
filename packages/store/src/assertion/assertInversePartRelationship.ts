@@ -5,6 +5,9 @@ import getPartIds from '../private/getPartIds.ts';
 /**
  * RULE: `hasPart` and `isPartOf` must be inverse of each other.
  *
+ * - If a child has `isPartOf` pointing to a parent, the parent must have `hasPart` pointing to the child
+ * - If a parent has `hasPart` pointing to a child, the child must have `isPartOf` pointing to the parent
+ *
  * Only part relationships from or to the affected nodes are checked.
  */
 function assertInversePartRelationship(

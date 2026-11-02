@@ -19,9 +19,14 @@ interface StoreSource {
 const storeEditInitSchema = pipe(
   object({
     /**
-     * When `true`, `hasPart` and `isPartOf` will be automatically updated on commit so they are inverse of each other.
+     * When `true`, `hasPart` and `isPartOf` will be automatically updated so they are inverse of each other.
      *
-     * Regardless of this option, the commit will fail if `hasPart` and `isPartOf` are not inverse of each other.
+     * The auto-fix only runs once, right before commit, after the transactor returns. It does not run on every
+     * `upsert()` or `delete()`: inside the transactor, nodes passed to the updater may not be fixed yet. All changes to
+     * the same node are batched and the node is rebuilt once.
+     *
+     * When `false` or not set, the commit will fail if `hasPart` and `isPartOf` are not inverse of each other: every
+     * child with `isPartOf` pointing to a parent must be in the `hasPart` of the parent, and vice versa.
      */
     autoRelationship: optional(boolean('autoRelationship must be boolean'))
   }),
@@ -191,9 +196,13 @@ class Store {
         );
 
         if (affectedNodeIds.size) {
+          // Auto-fix runs once right before commit, all changes to the same node are batched.
           autoRelationship && fixPartMembership(this.#state, nextState, affectedNodeIds, setNode);
 
           assertReferencedNodesInGraph(nextState, nextForwardReferenceIds, affectedNodeIds);
+
+          // Without auto-fix, this asserts the transactor kept `hasPart` and `isPartOf` inverse of each other.
+          // With auto-fix, this is still checked as a safety net.
           assertInversePartRelationship(nextState, nextBackwardReferenceIds, affectedNodeIds);
           assertUniquePositionInParts(nextState, affectedNodeIds);
 
