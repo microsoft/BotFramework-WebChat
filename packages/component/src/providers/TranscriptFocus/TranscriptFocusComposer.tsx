@@ -24,6 +24,7 @@ const transcriptFocusComposerPropsSchema = pipe(
   readonly()
 );
 
+// Not `InferReactProps`: making `HTMLElement` deeply read-only is too deep for TypeScript (TS2589).
 type TranscriptFocusComposerProps = InferInput<typeof transcriptFocusComposerPropsSchema>;
 
 function uniqueId(count = Infinity) {

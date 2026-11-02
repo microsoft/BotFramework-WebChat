@@ -1,9 +1,9 @@
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { boolean, custom, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, custom, is, object, optional, pipe, readonly, string } from 'valibot';
 
 import SpeakActivity from '../Activity/Speak';
 import { RestrictedActivityDebugAPI } from '../ActivityDebug';
@@ -46,7 +46,7 @@ const activityRowPropsSchema = pipe(
   readonly()
 );
 
-type ActivityRowProps = InferInput<typeof activityRowPropsSchema>;
+type ActivityRowProps = InferReactProps<typeof activityRowPropsSchema>;
 
 const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
   const { activity, children } = validateProps(activityRowPropsSchema, props);

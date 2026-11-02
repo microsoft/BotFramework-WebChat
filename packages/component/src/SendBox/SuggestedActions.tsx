@@ -1,11 +1,11 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { createBasicStyleSet as createBasicStyleSetForReactFilm, ReactFilm } from 'react-film';
-import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
@@ -41,7 +41,7 @@ const suggestedActionContainerPropsSchema = pipe(
   readonly()
 );
 
-type SuggestedActionContainerProps = InferInput<typeof suggestedActionContainerPropsSchema>;
+type SuggestedActionContainerProps = InferReactProps<typeof suggestedActionContainerPropsSchema>;
 
 const SuggestedActionCarouselContainer = (props: SuggestedActionContainerProps) => {
   const { children, className, label } = validateProps(suggestedActionContainerPropsSchema, props);
