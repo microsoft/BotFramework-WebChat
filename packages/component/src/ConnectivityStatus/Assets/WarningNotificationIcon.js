@@ -2,7 +2,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
-import { number, object, optional, pipe, readonly, string } from 'valibot';
+import { nullish, number, object, pipe, readonly, string } from 'valibot';
 
 const { useDirection } = hooks;
 
@@ -10,8 +10,8 @@ const ICON_SIZE_FACTOR = 16;
 
 const warningNotificationIconPropsSchema = pipe(
   object({
-    className: optional(string()),
-    size: optional(number())
+    className: nullish(string()),
+    size: nullish(number())
   }),
   readonly()
 );

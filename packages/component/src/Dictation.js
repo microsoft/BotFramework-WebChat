@@ -5,7 +5,7 @@ import { useSetDictateState } from 'botframework-webchat-api/internal.js';
 import { Constants } from 'botframework-webchat-core';
 import React, { useCallback, useEffect } from 'react';
 import { Composer as DictateComposer } from 'react-dictate-button';
-import { function_, object, optional, pipe, readonly } from 'valibot';
+import { function_, nullish, object, pipe, readonly } from 'valibot';
 
 import useResumeAudioContext from './hooks/internal/useResumeAudioContext';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
@@ -31,7 +31,7 @@ const {
 
 const dictationPropsSchema = pipe(
   object({
-    onError: optional(function_())
+    onError: nullish(function_())
   }),
   readonly()
 );

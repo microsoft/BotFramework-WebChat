@@ -2,7 +2,7 @@
 
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
-import { boolean, function_, nullish, object, optional, pipe, readonly } from 'valibot';
+import { boolean, function_, nullish, object, pipe, readonly } from 'valibot';
 
 import Context from './Context';
 import getTabIndex from './getTabIndex';
@@ -12,13 +12,12 @@ const DEFAULT_STYLE = { outline: 0 };
 
 const focusBoxPropsSchema = pipe(
   object({
-    children: optional(reactNode()),
-    disabled: optional(boolean()),
-    onKeyDownCapture: optional(function_()),
+    children: nullish(reactNode()),
+    disabled: nullish(boolean()),
+    onKeyDownCapture: nullish(function_()),
     sendFocusRef: pipe(
       object({
-        // A ref is `null` until it is attached.
-        current: nullish(pipe(object({ focus: optional(function_()) }), readonly()))
+        current: nullish(pipe(object({ focus: nullish(function_()) }), readonly()))
       }),
       readonly()
     )

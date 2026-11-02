@@ -1,6 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
-import { object, optional, pipe, readonly, string } from 'valibot';
+import { nullish, object, pipe, readonly, string } from 'valibot';
 
 import AudioContent from './AudioContent';
 import useStyleSet from '../hooks/useStyleSet';
@@ -10,7 +10,7 @@ const audioAttachmentPropsSchema = pipe(
     attachment: pipe(
       object({
         contentUrl: string(),
-        name: optional(string())
+        name: nullish(string())
       }),
       readonly()
     )

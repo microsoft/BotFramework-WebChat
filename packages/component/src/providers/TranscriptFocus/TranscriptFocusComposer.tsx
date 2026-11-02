@@ -2,7 +2,7 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import random from 'math-random';
 import React, { memo, useCallback, useMemo, type MutableRefObject } from 'react';
-import { custom, instance, is, nullish, object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { custom, instance, is, nullish, object, pipe, readonly, type InferInput } from 'valibot';
 
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
@@ -15,8 +15,7 @@ import getDescendantId from './private/getDescendantId';
 
 const transcriptFocusComposerPropsSchema = pipe(
   object({
-    children: optional(reactNode()),
-    // A ref is `null` until it is attached.
+    children: nullish(reactNode()),
     containerRef: custom<MutableRefObject<HTMLElement>>(value =>
       is(object({ current: nullish(instance(HTMLElement)) }), value)
     )

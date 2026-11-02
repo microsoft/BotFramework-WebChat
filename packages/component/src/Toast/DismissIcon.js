@@ -1,10 +1,10 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
-import { object, optional, pipe, readonly, string } from 'valibot';
+import { nullish, object, pipe, readonly, string } from 'valibot';
 
 const dismissIconPropsSchema = pipe(
   object({
-    className: optional(string())
+    className: nullish(string())
   }),
   readonly()
 );

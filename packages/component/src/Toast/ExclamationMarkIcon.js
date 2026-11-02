@@ -1,11 +1,11 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
-import { object, optional, pipe, readonly, string } from 'valibot';
+import { nullish, object, pipe, readonly, string } from 'valibot';
 
 const exclamationMarkIconPropsSchema = pipe(
   object({
-    'aria-label': optional(string()),
-    className: optional(string())
+    'aria-label': nullish(string()),
+    className: nullish(string())
   }),
   readonly()
 );

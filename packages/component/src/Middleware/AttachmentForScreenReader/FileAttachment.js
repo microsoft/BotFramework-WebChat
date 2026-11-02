@@ -1,13 +1,14 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import React from 'react';
-import { object, pipe, readonly, string } from 'valibot';
+import { nullish, object, pipe, readonly, string } from 'valibot';
 
 const { useLocalizer } = hooks;
 
 const fileAttachmentPropsSchema = pipe(
   object({
-    attachment: pipe(object({ name: string() }), readonly())
+    // Required, but has default values.
+    attachment: nullish(pipe(object({ name: nullish(string()) }), readonly()))
   }),
   readonly()
 );

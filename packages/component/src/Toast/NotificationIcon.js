@@ -2,7 +2,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import React from 'react';
-import { object, optional, picklist, pipe, readonly, string } from 'valibot';
+import { nullish, object, picklist, pipe, readonly, string } from 'valibot';
 
 import CheckMarkIcon from './CheckMarkIcon';
 import ExclamationMarkIcon from './ExclamationMarkIcon';
@@ -11,7 +11,7 @@ const { useLocalizer } = hooks;
 
 const notificationIconPropsSchema = pipe(
   object({
-    className: optional(string()),
+    className: nullish(string()),
     level: picklist(['error', 'info', 'success', 'warn'])
   }),
   readonly()
