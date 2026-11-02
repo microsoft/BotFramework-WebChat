@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>Carousel: renders an activity with a null text</title>
+    <title>Transcript: renders an activity with a null fallback text in its channel data</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
@@ -35,23 +35,19 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: A carousel activity with a `null` text is received, `propTypes` accepted `null` for optional props.
+        // WHEN: An activity with a `null` fallback text is received, `propTypes` accepted `null` for optional props.
+        //       Top-level `null` fields like `text` become `undefined` when received, nested ones stay.
         await directLine.emulateIncomingActivity({
-          attachmentLayout: 'carousel',
-          attachments: [
-            { content: { title: 'Card 1' }, contentType: 'application/vnd.microsoft.card.hero' },
-            { content: { title: 'Card 2' }, contentType: 'application/vnd.microsoft.card.hero' }
-          ],
+          channelData: { 'webchat:fallback-text': null },
           from: { role: 'bot' },
-          text: null,
+          text: 'Hello, World!',
           type: 'message'
         });
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: The carousel should render both attachments.
-        expect(pageElements.activityAttachments()[0]).toHaveLength(2);
-        expect(pageElements.activities()[0].textContent).toEqual(expect.stringContaining('Card 2'));
+        // THEN: The activity should render its text.
+        expect(pageElements.activities()[0].textContent).toEqual(expect.stringContaining('Hello, World!'));
       });
     </script>
   </body>
