@@ -12,4 +12,3 @@
 !/packages/test/page-object/dist
 !/packages/test/test-assets/out
 !/packages/test/web-server/dist
-!/serve-test.json

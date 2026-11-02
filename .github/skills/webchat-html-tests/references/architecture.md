@@ -13,7 +13,7 @@ Jest picks them up through the `html2` project declared in `jest.config.js`, the
 
 ## What `webchat2` Serves
 
-Jest opens each test at `https://webchat2/__tests__/html2/<path>`. `webchat2` serves the test pages and built output of the checkout where `docker compose` was started, through the bind mounts in `docker-compose-wsl2.yml` and the rewrites in `serve-test.json`. It does not serve `src` folders, `node_modules`, or other worktrees.
+Jest opens each test at `https://webchat2/__tests__/html2/<path>`. `webchat2` serves the test pages and built output of the checkout where `docker compose` was started, through the bind mounts in `docker-compose-wsl2.yml` and the mounts in `packages/test/web-server/src/createStaticHandler.ts`. It does not serve `src` folders, `node_modules`, or other worktrees.
 
 | URL in a test page                                                                        | Served from                             |
 | ----------------------------------------------------------------------------------------- | --------------------------------------- |
