@@ -3,9 +3,9 @@
 - Added [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552) and [#5850](https://github.com/microsoft/BotFramework-WebChat/issues/5850), support for React 19, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Pull request validation: added type definitions tests with `@types/react@19`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
 
-### Removed
+### Changed
 
-- Components: replaced the remaining `propTypes` with Valibot schemas and removed the `prop-types` dependency, React 19 ignores `propTypes`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- Components: replaced the remaining `propTypes` with Valibot schemas and dropped the `prop-types` dependency, React 19 ignores `propTypes`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
