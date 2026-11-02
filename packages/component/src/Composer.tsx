@@ -183,7 +183,8 @@ const composerCorePropsSchema = pipe(
     // Like `propTypes`, optional props also accept `null`.
     extraStyleSet: nullish(any()),
     nonce: nullish(string()),
-    renderMarkdown: nullish(function_()),
+    // `false` disables Markdown.
+    renderMarkdown: nullish(union([literal(false), function_()])),
     styleSet: nullish(any()),
     suggestedActionsAccessKey: nullish(union([literal(false), string()])),
     webSpeechPonyfillFactory: nullish(function_())

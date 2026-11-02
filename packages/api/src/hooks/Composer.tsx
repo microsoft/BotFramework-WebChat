@@ -43,7 +43,20 @@ import {
 } from 'botframework-webchat-core';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import updateIn from 'simple-update-in';
-import { any, array, boolean, function_, nullish, object, picklist, pipe, readonly, string, union } from 'valibot';
+import {
+  any,
+  array,
+  boolean,
+  function_,
+  literal,
+  nullish,
+  object,
+  picklist,
+  pipe,
+  readonly,
+  string,
+  union
+} from 'valibot';
 
 import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
@@ -246,7 +259,8 @@ const composerCorePropsSchema = pipe(
         connectionStatus$: pipe(object({ subscribe: function_() }), readonly()),
         end: nullish(function_()),
         getSessionId: nullish(function_()),
-        postActivity: function_(),
+        // Some adapters, such as one that only receives, do not have `postActivity`.
+        postActivity: nullish(function_()),
         referenceGrammarID: nullish(string()),
         token: nullish(string())
       }),
@@ -259,7 +273,8 @@ const composerCorePropsSchema = pipe(
     locale: nullish(string()),
     onTelemetry: nullish(function_()),
     overrideLocalizedStrings: nullish(any()),
-    renderMarkdown: nullish(function_()),
+    // `false` disables Markdown.
+    renderMarkdown: nullish(union([literal(false), function_()])),
     scrollToEndButtonMiddleware: nullish(legacyMiddlewareSchema),
     selectVoice: nullish(function_()),
     sendTypingIndicator: nullish(boolean()),
