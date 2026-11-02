@@ -8,5 +8,6 @@ createStaticHandler({
   compress: true,
   listDirectories: true,
   mounts: TEST_MOUNTS,
-  root: fileURLToPath(new URL('../../../../', import.meta.url))
+  root: fileURLToPath(new URL('../../../../', import.meta.url)),
+  testHeaders: true
 }).listen(PORT, () => console.log(`Web Chat development server listening on port ${PORT}`));
