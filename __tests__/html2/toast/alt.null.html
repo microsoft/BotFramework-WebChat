@@ -45,6 +45,8 @@
 
         // THEN: The toast should render the message.
         expect(pageElements.toasts()[0].textContent).toEqual(expect.stringContaining('Hello, World!'));
+
+        await host.snapshot('local');
       });
     </script>
   </body>
