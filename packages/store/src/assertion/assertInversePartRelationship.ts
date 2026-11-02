@@ -1,5 +1,6 @@
 import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
+import getPartChanges from '../private/getPartChanges.ts';
 import getPartIds from '../private/getPartIds.ts';
 
 /**
@@ -8,38 +9,30 @@ import getPartIds from '../private/getPartIds.ts';
  * - If a child has `isPartOf` pointing to a parent, the parent must have `hasPart` pointing to the child
  * - If a parent has `hasPart` pointing to a child, the child must have `isPartOf` pointing to the parent
  *
- * Only part relationships from or to the affected nodes are checked.
+ * The previous state is assumed to satisfy this rule. Only part relationships added or removed by the affected nodes
+ * are checked, as any broken pair must have at least one side changed. This is O(number of changed part relationships)
+ * instead of O(number of parts of the affected nodes).
  */
 function assertInversePartRelationship(
-  state: ReadonlyMap<string, Node>,
-  backwardReferenceIds: ReadonlyMap<string, ReadonlySet<Identifier>>,
+  prevState: ReadonlyMap<string, Node>,
+  nextState: ReadonlyMap<string, Node>,
   affectedNodeIds: ReadonlySet<Identifier>
 ): void {
   for (const id of affectedNodeIds) {
-    const node = state.get(id);
+    for (const { included, property, targetId } of getPartChanges(id, prevState.get(id), nextState.get(id))) {
+      const [parentId, childId] = property === 'hasPart' ? [id, targetId] : [targetId, id];
+      const targetNode = nextState.get(targetId);
+      const inverseProperty = property === 'hasPart' ? 'isPartOf' : 'hasPart';
 
-    if (node) {
-      // Relationships from the affected node, and relationships from other nodes to the affected node.
-      const relationships: [Identifier, Identifier][] = [
-        ...Array.from(getPartIds(node, 'hasPart'), (childId): [Identifier, Identifier] => [id, childId]),
-        ...Array.from(getPartIds(node, 'isPartOf'), (parentId): [Identifier, Identifier] => [parentId, id]),
-        ...Array.from(backwardReferenceIds.get(id) ?? []).flatMap(referencingId => {
-          const referencingNode = state.get(referencingId);
-          const partRelationships: [Identifier, Identifier][] = [];
-
-          getPartIds(referencingNode, 'hasPart').has(id) && partRelationships.push([referencingId, id]);
-          getPartIds(referencingNode, 'isPartOf').has(id) && partRelationships.push([id, referencingId]);
-
-          return partRelationships;
-        })
-      ];
-
-      for (const [parentId, childId] of relationships) {
-        if (!getPartIds(state.get(parentId), 'hasPart').has(childId)) {
-          throw new Error(`Node "${parentId}" must have "${childId}" in hasPart as it is inverse of isPartOf`);
-        } else if (!getPartIds(state.get(childId), 'isPartOf').has(parentId)) {
-          throw new Error(`Node "${childId}" must have "${parentId}" in isPartOf as it is inverse of hasPart`);
-        }
+      // When a relationship is removed, the other side must also remove it, unless the other side is deleted.
+      if (
+        included ? !getPartIds(targetNode, inverseProperty).has(id) : getPartIds(targetNode, inverseProperty).has(id)
+      ) {
+        throw new Error(
+          inverseProperty === 'hasPart'
+            ? `Node "${parentId}" must ${included ? 'have' : 'not have'} "${childId}" in hasPart as it is inverse of isPartOf`
+            : `Node "${childId}" must ${included ? 'have' : 'not have'} "${parentId}" in isPartOf as it is inverse of hasPart`
+        );
       }
     }
   }

@@ -1,14 +1,8 @@
 import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import createNode from '../private/createNode.ts';
+import { createTrustedNode } from '../private/createNode.ts';
+import getPartChanges from '../private/getPartChanges.ts';
 import getPartIds, { type PartProperty } from '../private/getPartIds.ts';
-
-type PartChange = {
-  readonly id: Identifier;
-  readonly included: boolean;
-  readonly property: PartProperty;
-  readonly targetId: Identifier;
-};
 
 type PartDelta = {
   /** Key is the ID of the target node, value is `true` to include, `false` to exclude. */
@@ -22,8 +16,7 @@ type PartDelta = {
  * @returns A new node if any part property is changed, otherwise, `undefined`.
  */
 function applyPartDelta(node: Node, partDelta: PartDelta): Node | undefined {
-  const nextEntries = new Map<string, unknown>(Object.entries(node));
-  let changed = false;
+  const nextPartIds: { [K in PartProperty]?: ReadonlySet<Identifier> } = {};
 
   for (const property of ['hasPart', 'isPartOf'] as const) {
     const partIds = getPartIds(node, property);
@@ -34,45 +27,18 @@ function applyPartDelta(node: Node, partDelta: PartDelta): Node | undefined {
 
     if (effectiveDelta.length) {
       // `getPartIds()` returns a read-only cached `Set`, copy before modifying.
-      const nextPartIds = new Set(partIds);
+      const partIdsOfProperty = new Set(partIds);
 
       for (const [targetId, included] of effectiveDelta) {
-        included ? nextPartIds.add(targetId) : nextPartIds.delete(targetId);
+        included ? partIdsOfProperty.add(targetId) : partIdsOfProperty.delete(targetId);
       }
 
-      changed = true;
-
-      // OPINION: Empty property value is same as if the property is removed.
-      nextPartIds.size
-        ? nextEntries.set(property, new Set(Array.from(nextPartIds, id => ({ '@id': id }))))
-        : nextEntries.delete(property);
+      // eslint-disable-next-line security/detect-object-injection
+      nextPartIds[property] = partIdsOfProperty;
     }
   }
 
-  return changed ? createNode(Object.fromEntries(nextEntries)) : undefined;
-}
-
-/**
- * Gets part relationships added or removed by comparing the previous node and the next node.
- */
-function getPartChanges(prevNode: Node | undefined, node: Node): PartChange[] {
-  const id = node['@id'];
-  const partChanges: PartChange[] = [];
-
-  for (const property of ['hasPart', 'isPartOf'] as const) {
-    const partIds = getPartIds(node, property);
-    const prevPartIds = getPartIds(prevNode, property);
-
-    for (const targetId of prevPartIds) {
-      partIds.has(targetId) || partChanges.push({ id, included: false, property, targetId });
-    }
-
-    for (const targetId of partIds) {
-      prevPartIds.has(targetId) || partChanges.push({ id, included: true, property, targetId });
-    }
-  }
-
-  return partChanges;
+  return nextPartIds.hasPart || nextPartIds.isPartOf ? createTrustedNode(node, nextPartIds) : undefined;
 }
 
 /**
@@ -96,7 +62,7 @@ function fixPartMembership(
   const partChanges = Array.from(prevNodes).flatMap(([id, prevNode]) => {
     const node = nextState.get(id);
 
-    return node ? getPartChanges(prevNode, node) : [];
+    return node ? getPartChanges(id, prevNode, node) : [];
   });
 
   const partDeltas = new Map<Identifier, PartDelta>();

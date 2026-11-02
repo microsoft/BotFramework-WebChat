@@ -235,7 +235,7 @@ class Store {
 
           // Asserts the transactor kept `hasPart` and `isPartOf` inverse of each other, either manually or by calling
           // `autoFixRelationship()` after the last change.
-          assertInversePartRelationship(nextState, nextBackwardReferenceIds, affectedNodeIds);
+          assertInversePartRelationship(this.#state, nextState, affectedNodeIds);
           assertUniquePositionInParts(nextState, affectedNodeIds);
 
           // THINK: Upsert/delete called twice with same node ID in the same transaction?

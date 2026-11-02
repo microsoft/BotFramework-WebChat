@@ -1278,6 +1278,48 @@ scenario(
 
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a child is moved to another parent with all sides updated', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:thread', () => ({
+            '@id': '_:thread',
+            '@type': new Set(['Thread']),
+            hasPart: new Set([{ '@id': '_:m-1' }])
+          }));
+          transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-2' }]) }));
+          transaction.upsert('_:m-1', node => ({ ...node!, isPartOf: new Set([{ '@id': '_:thread' }]) }));
+        })
+      )
+      .then('should move the child', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2']);
+        expect(getPartIdsOf(store, '_:thread', 'hasPart')).toEqual(['_:m-1']);
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:thread']);
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('a child with existing isPartOf is updated without touching part relationships', ({ controller }) =>
+        controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, text: ['Updated'] })))
+      )
+      .then('should update the child', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-2')).toHaveProperty('text', ['Updated'])
+      )
+      .and('should keep part membership', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1', '_:m-2']);
+        expect(getPartIdsOf(store, '_:m-2', 'isPartOf')).toEqual(['_:conversation']);
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when('the parent is deleted', ({ controller }) =>
+        controller.edit(transaction => transaction.delete('_:conversation'))
+      )
+      .then('should remove isPartOf from all children', ({ store }) => {
+        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
+        expect(store.getSnapshot().get('_:m-2')).not.toHaveProperty('isPartOf');
+      });
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
       .when('a node is deleted', ({ controller }) => controller.edit(transaction => transaction.delete('_:m-1')))
       .then('should keep part membership consistent', ({ store }) =>
         expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
