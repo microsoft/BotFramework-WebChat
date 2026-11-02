@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>File attachment: renders a file without name</title>
+    <title>Toast: renders a notification with a null alt</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
@@ -35,18 +35,16 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: A file attachment without `name` is received.
-        await directLine.emulateIncomingActivity({
-          attachments: [{ contentType: 'application/pdf', contentUrl: 'https://example.com/file.pdf' }],
-          from: { role: 'bot' },
-          type: 'message'
+        // WHEN: A notification with a `null` alt is set, `propTypes` accepted `null` for optional props.
+        store.dispatch({
+          payload: { alt: null, id: 'notification-1', level: 'info', message: 'Hello, World!' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
         });
 
-        await pageConditions.numActivitiesShown(1);
+        await pageConditions.toastShown(1);
 
-        // THEN: The file attachment should render.
-        expect(pageElements.activityAttachments()[0]).toHaveLength(1);
-        expect(pageElements.activityAttachments()[0][0].querySelector('.webchat__fileContent')).toBeTruthy();
+        // THEN: The toast should render the message.
+        expect(pageElements.toasts()[0].textContent).toEqual(expect.stringContaining('Hello, World!'));
       });
     </script>
   </body>
