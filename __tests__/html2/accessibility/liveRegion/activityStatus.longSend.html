@@ -1,60 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshots show what is announced. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
-      run(
-        async function () {
-          const { directLine, store } = testHelpers.createDirectLineEmulator();
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
 
-          WebChat.renderWebChat(
-            {
-              directLine,
-              store,
-              styleOptions: {
-                sendTimeout: 20000
-              }
-            },
-            document.getElementById('webchat')
-          );
+      run(async function () {
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-          await pageConditions.uiConnected();
+        // GIVEN: Web Chat keeps what it announced in the live region, so it can be checked and seen in the snapshots.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: {
+              hideSendBox: true,
+              internalLiveRegionFadeAfter: 60_000
+            }
+          },
+          document.getElementById('webchat')
+        );
 
-          const { disconnect, flush } = pageObjects.observeLiveRegion();
+        await pageConditions.webChatRendered();
 
-          try {
-            // Emulate outgoing activity but do not acknowledge it, keeping it in "sending" state.
-            await directLine.emulateOutgoingActivity('Hello, World!');
+        clock.tick(600); // Dismisses "Connecting…".
 
-            const liveRegionText = [];
+        await pageConditions.uiConnected();
 
-            await pageConditions.became(
-              'live region narrated sending message',
-              () => {
-                try {
-                  liveRegionText.push(...flush());
+        const getLiveRegionTexts = () =>
+          Array.from(pageElements.liveRegion().children, child => testHelpers.getAllTextContents(child).join('\n'));
 
-                  expect(liveRegionText).toContain('Sending message.');
+        // WHEN: The user sends a message, which the server does not acknowledge for a while.
+        const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
 
-                  return true;
-                } catch (err) {
-                  return false;
-                }
-              },
-              4000
-            );
-          } finally {
-            disconnect();
-          }
-        },
-        { ignoreErrors: true }
-      );
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: 2.999 seconds later.
+        clock.tick(2_999);
+
+        // THEN: Only the message is announced.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            'connecting', // Announced by the toaster, which announces the first notification of every ID.
+            'You said\nHello, World!'
+          ])
+        );
+        expect(pageElements.activityStatuses()[0].innerText).toContain('Sending');
+
+        // THEN: The live region shows "You said Hello, World!", the message shows "Sending".
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: 3 seconds after sending.
+        clock.tick(1);
+
+        // THEN: "Sending message." is announced.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.'])
+        );
+
+        // THEN: The live region shows "Sending message." under the message.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: 19.999 seconds after sending, the message is still sending (`sendTimeout` defaults to 20 seconds).
+        clock.tick(16_999);
+
+        // THEN: "Sending message." is not announced again.
+        // No wait needed: the fake clock runs timers inside `tick()` and React 16 (`webchat-es5.js`) renders synchronously.
+        expect(pageElements.activityStatuses()[0].innerText).toContain('Sending');
+        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+
+        // ---
+
+        // WHEN: The server acknowledges the message.
+        await sendMessage.resolveAll();
+
+        await waitFor(() => expect(pageElements.activityStatuses()[0].innerText).toContain('Just now'));
+
+        // WHEN: 10 seconds later.
+        clock.tick(10_000);
+
+        // THEN: Nothing else is announced.
+        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+
+        // THEN: The message shows "Just now", the live region still shows "Sending message." once.
+        await host.snapshot('local');
+      });
     </script>
   </body>
 </html>
