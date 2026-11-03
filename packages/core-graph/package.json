@@ -60,9 +60,9 @@
   "peerDependencies": {
     "core-js-pure": "^3.49.0",
     "iter-fest": "^0.3.1",
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.1"
   },
   "dependencies": {
-    "valibot": "1.4.1"
+    "valibot": "1.4.2"
   }
 }
