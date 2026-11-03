@@ -1,5 +1,6 @@
 import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
 import { isPresentational } from 'botframework-webchat-core/internal.js';
+import { iteratorSome } from 'iter-fest';
 import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 
 import { useActivities, useGetActivityByKey, usePonyfill } from '../../hooks/index';
@@ -100,7 +101,7 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
   const isSendingState = useMemo<readonly [boolean]>(
     () =>
       Object.freeze([
-        sendStatusByActivityKey.entries().some(([activityKey, status]) => {
+        iteratorSome(sendStatusByActivityKey.entries(), ([activityKey, status]) => {
           if (status === 'sending') {
             const activity = getActivityByKey(activityKey);
 
