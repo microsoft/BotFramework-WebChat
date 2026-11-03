@@ -1,11 +1,11 @@
-import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
+import { singleToArray, warnOnce, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
+import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
   type AttachmentForScreenReaderMiddleware,
   type AttachmentMiddleware,
   type StyleOptions
 } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
-import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import React, { memo, type ReactNode } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
@@ -46,8 +46,8 @@ function AddFullBundle({
   adaptiveCardHostConfig,
   adaptiveCardsHostConfig,
   adaptiveCardsPackage,
-  attachmentForScreenReaderMiddleware,
-  attachmentMiddleware,
+  attachmentForScreenReaderMiddleware: attachmentForScreenReaderMiddlewareFromProps,
+  attachmentMiddleware: attachmentMiddlewareFromProps,
   children,
   htmlContentTransformMiddleware,
   nonce,
@@ -57,9 +57,19 @@ function AddFullBundle({
 }: AddFullBundleProps) {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
+  const attachmentForScreenReaderMiddleware = useMemoIterable<readonly AttachmentForScreenReaderMiddleware[]>(
+    () => singleToArray(attachmentForScreenReaderMiddlewareFromProps),
+    [attachmentForScreenReaderMiddlewareFromProps]
+  );
+
+  const attachmentMiddleware = useMemoIterable<readonly AttachmentMiddleware[]>(
+    () => singleToArray(attachmentMiddlewareFromProps),
+    [attachmentMiddlewareFromProps]
+  );
+
   const patchedProps = useComposerProps({
-    attachmentForScreenReaderMiddleware: singleToArray(attachmentForScreenReaderMiddleware),
-    attachmentMiddleware: singleToArray(attachmentMiddleware),
+    attachmentForScreenReaderMiddleware,
+    attachmentMiddleware,
     htmlContentTransformMiddleware,
     renderMarkdown,
     styleOptions,

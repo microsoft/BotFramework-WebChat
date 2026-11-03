@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Code block copy button: ESCAPE key leaves the activity</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: { renderWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: 'Here is the code:\n\n```\nconsole.log("Hello, World!");\n```',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const copyButton = document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`);
+
+        // WHEN: Focus on the activity via keyboard and press ENTER to focus inside the activity.
+        await host.click(pageElements.sendBoxTextBox());
+        await host.sendShiftTab(3);
+        await host.sendKeys('ENTER');
+
+        // THEN: Should focus on the "Copy" button, the first focusable element in the activity.
+        expect(document.activeElement).toBe(copyButton);
+        await host.snapshot('local');
+
+        // WHEN: Press ESCAPE on the "Copy" button.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Should leave the activity and focus on the transcript, with the activity focused.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

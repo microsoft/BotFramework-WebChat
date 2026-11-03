@@ -14,11 +14,6 @@ const ExclamationMarkIcon = ({ 'aria-label': ariaLabel, className }) => (
   </svg>
 );
 
-ExclamationMarkIcon.defaultProps = {
-  'aria-label': undefined,
-  className: undefined
-};
-
 ExclamationMarkIcon.propTypes = {
   'aria-label': PropTypes.string,
   className: PropTypes.string

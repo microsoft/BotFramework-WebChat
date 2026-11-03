@@ -1,4 +1,4 @@
-import { array, custom, literal, object, optional, pipe, readonly, safeParse, type InferOutput } from 'valibot';
+import { array, custom, is, literal, object, optional, pipe, readonly, type InferOutput } from 'valibot';
 import { type DirectLineCardAction } from '../types/external/DirectLineCardAction';
 import { type WebChatActivity } from '../types/WebChatActivity';
 
@@ -10,11 +10,8 @@ const setSuggestedActionsActionSchema = pipe(
   object({
     payload: pipe(
       object({
-        originActivity: optional(custom<WebChatActivity>(value => safeParse(object({}), value).success)),
-        suggestedActions: pipe(
-          array(custom<DirectLineCardAction>(value => safeParse(object({}), value).success)),
-          readonly()
-        )
+        originActivity: optional(custom<WebChatActivity>(value => is(object({}), value))),
+        suggestedActions: pipe(array(custom<DirectLineCardAction>(value => is(object({}), value))), readonly())
       }),
       readonly()
     ),

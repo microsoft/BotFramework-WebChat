@@ -1,6 +1,9 @@
 // This is a declaration file for a single ES feature. Could contains multiple classes definitions.
 /* eslint-disable max-classes-per-file */
 
+// TODO: Align with final proposal at https://wicg.github.io/observable/.
+// For example, this signature missed `addTeardown`.
+
 // Adopted from https://github.com/tc39/proposal-observable.
 
 /** Receives a completion notification */
@@ -39,7 +42,7 @@ declare class Subscription {
  */
 declare class Observer<T> {
   /** Receives the subscription object when `subscribe` is called */
-  start(subscription: Subscription);
+  start(subscription: Subscription): void;
 
   /** Receives the next value in the sequence */
   next: NextFunction<T>;

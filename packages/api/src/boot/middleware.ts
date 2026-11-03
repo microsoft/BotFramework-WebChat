@@ -17,10 +17,30 @@ export {
 } from '@msinternal/botframework-webchat-api-middleware';
 
 export {
+  avatarComponent,
+  createAvatarPolymiddleware,
+  type AvatarPolymiddleware,
+  type AvatarPolymiddlewareHandler,
+  type AvatarPolymiddlewareHandlerResult,
+  type AvatarPolymiddlewareProps,
+  type AvatarPolymiddlewareRenderer,
+  type AvatarPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
+export {
+  default as AvatarPolymiddlewareProxy,
+  AvatarPolymiddlewareProxyProps
+} from '../middleware/AvatarPolymiddlewareProxy';
+
+export { default as useBuildRenderAvatarCallback } from '../middleware/useBuildRenderAvatarCallback';
+
+export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,
   useBuildRenderErrorBoxCallback,
+  // For type portability only.
+  type __INTERNAL_DO_NOT_USE__avatarPolymiddlewareRequestStyleOptionsSymbol,
   type ErrorBoxPolymiddleware,
   type ErrorBoxPolymiddlewareHandler,
   type ErrorBoxPolymiddlewareHandlerResult,
@@ -30,4 +50,11 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
 
+export {
+  type LegacyActivityMiddleware,
+  type LegacyAvatarMiddleware
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
+
 export { default as createActivityPolymiddlewareFromLegacy } from '../legacy/createActivityPolymiddlewareFromLegacy';
+
+export { default as createAvatarPolymiddlewareFromLegacy } from '../legacy/createAvatarPolymiddlewareFromLegacy';

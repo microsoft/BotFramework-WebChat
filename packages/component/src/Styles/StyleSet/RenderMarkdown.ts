@@ -4,6 +4,11 @@ import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants'
 // This style is for accompanying result of `renderMarkdown()`.
 // Mostly, it should only styles elements that are generated/modified during `renderMarkdown()`.
 // For example, "open in new window" icon, which is done by `betterLink`.
+/**
+ * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
+ * The live styles are in `packages/component/src/hooks/RenderMarkdown.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createMarkdownStyle() {
   return {
     '&.webchat__render-markdown': {

@@ -39,13 +39,18 @@
   &:focus-visible .transcript-focus-area__transcript-indicator,
   .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
     + .transcript-focus-area__transcript-indicator {
-    border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
+    border-color: var(--webchat__color--transcript-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
   }
 
   .transcript-focus-area__activity-list {
     display: grid;
+    /*
+      The `<section>` rendered by `TranscriptActivityList`, a flex item of the scrollable panel. `flex: none` keeps its
+      content height when a host rule such as `section { min-height: 0 }` matches it, otherwise its rows overlap.
+    */
+    flex: none;
     gap: var(--webchat__transcript--spacing);
     padding-block: var(--webchat__transcript--spacing);
   }
@@ -82,9 +87,19 @@
   }
 
   /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
+  /* Its summary is for arrow key navigation: screen readers in browse or scan mode should not read it after the content. */
   .transcript-focus-area__content-active-descendant {
     inset: calc(var(--webchat__transcript--spacing) / -1) 0 calc(var(--webchat__transcript--spacing) / -1) 0;
     position: absolute;
+    visibility: hidden;
+  }
+
+  /* Only the active descendant of the focused transcript is exposed to assistive technologies. */
+  &:focus
+    .transcript-focus-area__content--focused
+    > .transcript-focus-area__content-overlay
+    .transcript-focus-area__content-active-descendant {
+    visibility: visible;
   }
 
   .transcript-focus-area__terminator {

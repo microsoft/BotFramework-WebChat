@@ -1,1 +1,1 @@
-export { default as useActivityAuthor } from './private/useActivityAuthor';
+export { default as useFirstActivityAuthor } from './private/useFirstActivityAuthor';

@@ -24,7 +24,7 @@ jobs:
             curl --fail --output localization-files/$locale.json --user ${{ secrets.ADO_USERNAME }}:${{ secrets.ADO_TOKEN }} https://dev.azure.com/bagie/Production/_apis/git/repositories/D365_CE/items?api-version=7.0\&download=true\&path=/Feature/CustomerCare_Apps/UI/$locale/BotFramework-WebChat/packages/api/src/Localization/$locale.json
           done
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: localization-files
           path: localization-files/
@@ -39,9 +39,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: localization-files
           path: packages/api/src/localization

@@ -1,8 +1,9 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
-import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react';
 
 import reduceIterable from '../../hooks/private/reduceIterable';
 import useActivities from '../../hooks/useActivities';
+import usePonyfill from '../Ponyfill/usePonyfill';
 import type { ActivityKeyerContextType } from './private/Context';
 import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
@@ -16,6 +17,12 @@ type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<WebChatActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
 type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
+
+/** After this many ms of no activity changes, verify that the frozen portion was not modified. */
+const FROZEN_CHECK_TIMEOUT = 10_000;
+
+/** Only the last N activities are compared reference-by-reference on each render. */
+const MUTABLE_ACTIVITY_WINDOW = 1_000;
 
 /**
  * React context composer component to assign a perma-key to every activity.
@@ -32,6 +39,7 @@ type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
 const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
+  const [{ cancelIdleCallback, clearTimeout, requestIdleCallback, setTimeout }] = usePonyfill();
   const existingContext = useActivityKeyerContext(false);
 
   if (existingContext) {
@@ -39,13 +47,118 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
   }
 
   const [activities] = useActivities();
-  const activityIdToKeyMapRef = useRef<Readonly<ActivityIdToKeyMap>>(Object.freeze(new Map()));
-  const activityToKeyMapRef = useRef<Readonly<ActivityToKeyMap>>(Object.freeze(new Map()));
-  const clientActivityIdToKeyMapRef = useRef<Readonly<ClientActivityIdToKeyMap>>(Object.freeze(new Map()));
-  const keyToActivitiesMapRef = useRef<Readonly<KeyToActivitiesMap>>(Object.freeze(new Map()));
 
-  // TODO: [P1] `useMemoWithPrevious` to check and cache the resulting array if it hasn't changed.
+  // TODO: [P0]  We should remove the mapping in favor of `localId`,
+  // the id should represent the latest available activity in the stream
+  //
+  // Maps are intentionally mutable so the incremental fast path can append to them in-place.
+  const activityIdToKeyMapRef = useRef<ActivityIdToKeyMap>(new Map());
+  const activityToKeyMapRef = useRef<ActivityToKeyMap>(new Map());
+  const clientActivityIdToKeyMapRef = useRef<ClientActivityIdToKeyMap>(new Map());
+  const keyToActivitiesMapRef = useRef<KeyToActivitiesMap>(new Map());
+  const prevActivitiesRef = useRef<readonly WebChatActivity[]>(Object.freeze([]));
+  const prevActivityKeysStateRef = useRef<readonly [readonly string[]]>(
+    Object.freeze([Object.freeze([])]) as readonly [readonly string[]]
+  );
+  const pendingFrozenCheckRef = useRef<
+    | {
+        readonly current: readonly WebChatActivity[];
+        readonly frozenBoundary: number;
+        readonly prev: readonly WebChatActivity[];
+      }
+    | undefined
+  >();
+  const warnedPositionsRef = useRef<Set<number>>(new Set());
+
+  // Incremental keying: the fast path only processes newly-appended activities (O(delta) per render)
+  // instead of re-iterating all activities (O(n) per render, O(n²) total for n streaming pushes).
   const activityKeysState = useMemo<readonly [readonly string[]]>(() => {
+    const prevActivities = prevActivitiesRef.current;
+
+    // Only the last MUTABLE_ACTIVITY_WINDOW activities are compared each render.
+    // Activities before the frozen boundary are assumed unchanged — O(1) instead of O(n).
+    const frozenBoundary = Math.max(0, Math.min(prevActivities.length, activities.length) - MUTABLE_ACTIVITY_WINDOW);
+    let commonPrefixLength = frozenBoundary;
+    const maxPrefix = Math.min(prevActivities.length, activities.length);
+
+    // eslint-disable-next-line security/detect-object-injection
+    while (commonPrefixLength < maxPrefix && prevActivities[commonPrefixLength] === activities[commonPrefixLength]) {
+      commonPrefixLength++;
+    }
+
+    const isAppendOnly = commonPrefixLength === prevActivities.length;
+
+    if (isAppendOnly) {
+      // Fast path: only new activities were appended — process them incrementally.
+      if (commonPrefixLength === activities.length) {
+        // Array reference changed but content is identical.
+        prevActivitiesRef.current = activities;
+
+        return prevActivityKeysStateRef.current;
+      }
+
+      // Schedule deferred verification of the frozen portion only now that we know:
+      // (1) the update is append-only and (2) there are actual content changes.
+      if (frozenBoundary) {
+        pendingFrozenCheckRef.current = Object.freeze({ current: activities, frozenBoundary, prev: prevActivities });
+      }
+
+      const { current: activityIdToKeyMap } = activityIdToKeyMapRef;
+      const { current: activityToKeyMap } = activityToKeyMapRef;
+      const { current: clientActivityIdToKeyMap } = clientActivityIdToKeyMapRef;
+      const { current: keyToActivitiesMap } = keyToActivitiesMapRef;
+
+      const newKeys: string[] = [];
+
+      for (let i = commonPrefixLength; i < activities.length; i++) {
+        // eslint-disable-next-line security/detect-object-injection
+        const activity = activities[i];
+        const activityId = getActivityId(activity);
+        const clientActivityId = getClientActivityId(activity);
+        const typingActivityId = getActivityLivestreamingMetadata(activity)?.sessionId;
+
+        // Since we mutate maps in-place, a single lookup covers both "previous" and
+        // "current-iteration" entries — equivalent to the slow path's dual-map check.
+        const key =
+          (clientActivityId && clientActivityIdToKeyMap.get(clientActivityId)) ||
+          (typingActivityId && activityIdToKeyMap.get(typingActivityId)) ||
+          (activityId && activityIdToKeyMap.get(activityId)) ||
+          activityToKeyMap.get(activity) ||
+          uniqueId();
+
+        activityId && activityIdToKeyMap.set(activityId, key);
+        typingActivityId && activityIdToKeyMap.set(typingActivityId, key);
+        clientActivityId && clientActivityIdToKeyMap.set(clientActivityId, key);
+        activityToKeyMap.set(activity, key);
+
+        const activitiesForKey = keyToActivitiesMap.get(key);
+
+        keyToActivitiesMap.set(
+          key,
+          activitiesForKey ? Object.freeze([...activitiesForKey, activity]) : Object.freeze([activity])
+        );
+
+        !activitiesForKey && newKeys.push(key);
+      }
+
+      prevActivitiesRef.current = activities;
+
+      if (!newKeys.length) {
+        // New activities might be added to existing keys — no new keys, but the keyToActivitiesMap
+        // was mutated. Return a new tuple reference so context consumers re-render and see the
+        // updated activities-per-key via getActivitiesByKey.
+        return Object.freeze([prevActivityKeysStateRef.current[0]]) as readonly [readonly string[]];
+      }
+
+      const nextKeys = Object.freeze([...prevActivityKeysStateRef.current[0], ...newKeys]);
+      const result = Object.freeze([nextKeys]) as readonly [readonly string[]];
+
+      prevActivityKeysStateRef.current = result;
+
+      return result;
+    }
+
+    // Slow path: activities were removed or reordered — full recalculation.
     const { current: activityIdToKeyMap } = activityIdToKeyMapRef;
     const { current: activityToKeyMap } = activityToKeyMapRef;
     const { current: clientActivityIdToKeyMap } = clientActivityIdToKeyMapRef;
@@ -76,20 +189,80 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
       nextActivityToKeyMap.set(activity, key);
       nextActivityKeys.add(key);
 
-      const activities = nextKeyToActivitiesMap.has(key) ? [...nextKeyToActivitiesMap.get(key)] : [];
+      const activitiesForKey = nextKeyToActivitiesMap.has(key) ? [...nextKeyToActivitiesMap.get(key)] : [];
 
-      activities.push(activity);
-      nextKeyToActivitiesMap.set(key, Object.freeze(activities));
+      activitiesForKey.push(activity);
+      nextKeyToActivitiesMap.set(key, Object.freeze(activitiesForKey));
     });
 
-    activityIdToKeyMapRef.current = Object.freeze(nextActivityIdToKeyMap);
-    activityToKeyMapRef.current = Object.freeze(nextActivityToKeyMap);
-    clientActivityIdToKeyMapRef.current = Object.freeze(nextClientActivityIdToKeyMap);
-    keyToActivitiesMapRef.current = Object.freeze(nextKeyToActivitiesMap);
+    activityIdToKeyMapRef.current = nextActivityIdToKeyMap;
+    activityToKeyMapRef.current = nextActivityToKeyMap;
+    clientActivityIdToKeyMapRef.current = nextClientActivityIdToKeyMap;
+    keyToActivitiesMapRef.current = nextKeyToActivitiesMap;
+    prevActivitiesRef.current = activities;
 
-    // `nextActivityKeys` could potentially same as `prevActivityKeys` despite reference differences, we should memoize it.
-    return Object.freeze([Object.freeze([...nextActivityKeys.values()])]) as readonly [readonly string[]];
-  }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivitiesMapRef]);
+    // Slow path did a full recalculation — no frozen check needed, reset warnings.
+    pendingFrozenCheckRef.current = undefined;
+    warnedPositionsRef.current.clear();
+
+    const nextKeys = Object.freeze([...nextActivityKeys.values()]);
+    const result = Object.freeze([nextKeys]) as readonly [readonly string[]];
+
+    prevActivityKeysStateRef.current = result;
+
+    return result;
+  }, [
+    activities,
+    activityIdToKeyMapRef,
+    activityToKeyMapRef,
+    clientActivityIdToKeyMapRef,
+    keyToActivitiesMapRef,
+    pendingFrozenCheckRef,
+    prevActivitiesRef,
+    prevActivityKeysStateRef,
+    warnedPositionsRef
+  ]);
+
+  // Deferred verification: after FROZEN_CHECK_TIMEOUT of quiet, validate that activities
+  // inside the frozen portion have not actually changed. Warn once per position if they did.
+  // Uses requestIdleCallback inside the timeout to avoid contending with the first post-stream repaint.
+  useEffect(() => {
+    const pending = pendingFrozenCheckRef.current;
+
+    if (!pending) {
+      return;
+    }
+
+    let idleHandle: ReturnType<NonNullable<typeof requestIdleCallback>> | undefined;
+
+    const runCheck = () => {
+      const { current: currentActivities, frozenBoundary, prev: prevFrozenActivities } = pending;
+
+      for (let i = 0; i < frozenBoundary; i++) {
+        // eslint-disable-next-line security/detect-object-injection
+        if (prevFrozenActivities[i] !== currentActivities[i] && !warnedPositionsRef.current.has(i)) {
+          warnedPositionsRef.current.add(i);
+
+          console.warn(
+            `botframework-webchat internal: change in activity at position ${i} was not applied because it is outside the mutable window of ${MUTABLE_ACTIVITY_WINDOW}.`
+          );
+        }
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (requestIdleCallback) {
+        idleHandle = requestIdleCallback(runCheck);
+      } else {
+        runCheck();
+      }
+    }, FROZEN_CHECK_TIMEOUT);
+
+    return () => {
+      clearTimeout(timer);
+      idleHandle !== undefined && cancelIdleCallback?.(idleHandle);
+    };
+  }, [activities, cancelIdleCallback, clearTimeout, requestIdleCallback, setTimeout]);
 
   const getActivitiesByKey: (key?: string | undefined) => readonly WebChatActivity[] | undefined = useCallback(
     (key?: string | undefined): readonly WebChatActivity[] | undefined => key && keyToActivitiesMapRef.current.get(key),

@@ -1,8 +1,9 @@
 import { SlantGraph, SlantNodeSchema } from '@msinternal/botframework-webchat-core-graph';
 import { parse } from 'valibot';
 import type createStore from '../createStore';
+import { getLocalIdFromActivity } from '../reducers/activities/sort/property/LocalId';
+import { getPositionFromActivity } from '../reducers/activities/sort/property/Position';
 import type { Activity } from '../reducers/activities/sort/types';
-import { getLocalIdFromActivity, getPositionFromActivity } from '../activity';
 
 function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph {
   const graph = new SlantGraph();
@@ -32,7 +33,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
 
   graph.act(graph => graph.upsert(othersAudience, channelAudience, selfAudience));
 
-  store.subscribe(() => {
+  const handleStoreChange = () => {
     const { activities }: { activities: readonly Activity[] } = store.getState();
 
     if (Object.is(activities, prevActivities)) {
@@ -112,7 +113,12 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
     });
 
     prevActivities = activities;
-  });
+  };
+
+  store.subscribe(handleStoreChange);
+
+  // Activities already in the store (e.g. rehydrated) are added now, not on the next dispatch.
+  handleStoreChange();
 
   return graph;
 }

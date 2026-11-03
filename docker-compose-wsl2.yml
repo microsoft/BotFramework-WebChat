@@ -28,6 +28,10 @@ services:
     build:
       context: ./
       dockerfile: testharness2.dockerfile
+    networks:
+      default:
+        aliases:
+          - webchat2-cross-origin
     stop_grace_period: 0s
     volumes:
       - ./__tests__/assets/:/var/web/__tests__/assets/

@@ -17,6 +17,14 @@
     },
     "./component": {
       "import": {
+        "default": "./boot/deprecated/component.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/component.js"
+      }
+    },
+    "./component.js": {
+      "import": {
         "types": "./dist/botframework-webchat-component.component.d.mts",
         "default": "./dist/botframework-webchat-component.component.mjs"
       },
@@ -26,6 +34,14 @@
       }
     },
     "./decorator": {
+      "import": {
+        "default": "./boot/deprecated/decorator.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/decorator.js"
+      }
+    },
+    "./decorator.js": {
       "import": {
         "types": "./dist/botframework-webchat-component.decorator.d.mts",
         "default": "./dist/botframework-webchat-component.decorator.mjs"
@@ -37,6 +53,14 @@
     },
     "./hook": {
       "import": {
+        "default": "./boot/deprecated/hook.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/hook.js"
+      }
+    },
+    "./hook.js": {
+      "import": {
         "types": "./dist/botframework-webchat-component.hook.d.mts",
         "default": "./dist/botframework-webchat-component.hook.mjs"
       },
@@ -46,6 +70,14 @@
       }
     },
     "./internal": {
+      "import": {
+        "default": "./boot/deprecated/internal.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/internal.js"
+      }
+    },
+    "./internal.js": {
       "import": {
         "types": "./dist/botframework-webchat-component.internal.d.mts",
         "default": "./dist/botframework-webchat-component.internal.mjs"
@@ -70,6 +102,7 @@
   },
   "files": [
     "./*.js",
+    "./boot/**/*",
     "./dist/**/*",
     "./src/**/*"
   ],
@@ -77,7 +110,7 @@
   "scripts": {
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:post": "npm run build:post:dtsroll && npm run build:post:validate",
-    "build:post:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:post:dtsroll": "dtsroll ./dist/*.d.* && sed -E -i 's/^([[:space:]]*export[[:space:]]+)type[[:space:]]+(\\{[[:space:]]+type[[:space:]]+)/\\1\\2/' ./dist/*.d.* && sed -i -E -e 's/\\{[[:space:]]*DropZoneState\\b/{ type DropZoneState/g' -e 's/\\btypeof[[:space:]]+DropZoneState\\b/DropZoneState/g' ./dist/*.d.*",
     "build:post:validate": "npm run build:post:validate:css && npm run build:post:validate:inject-css && npm run build:post:validate:dts",
     "build:post:validate:css": "vg ast-check lightning-css ./dist/*.css",
     "build:post:validate:dts": "vg ast-check dist-types ./dist/*.d.*",
@@ -93,7 +126,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../styles/package.json\" \"../api/package.json\""
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../component-better-link/package.json\" \"../styles/package.json\" \"../api/package.json\""
   },
   "pinDependencies": {
     "@types/jest": [
@@ -108,12 +141,17 @@
       "1",
       "@>=2 does not support IE Mode"
     ],
-    "markdown-it": [
-      "13",
-      "markdown-it@14.1.0 has module field and it is breaking Webpack 4 because cross loading CJS and ESM"
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
     ],
-    "react-redux": [
-      "7"
+    "react-dom": [
+      "16.8.6",
+      "using react-dom@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-film": [
+      "main",
+      "4.0.0 imports render() from react-dom, which React 19 removed"
     ],
     "react-scroll-to-bottom": [
       "main"
@@ -125,6 +163,7 @@
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-component-better-link": "development",
     "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-styles": "development",
@@ -133,26 +172,27 @@
     "botframework-webchat-core": "production"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.0",
-    "@babel/preset-react": "^7.28.5",
-    "@babel/preset-typescript": "^7.28.5",
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-component-better-link": "0.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
-    "@types/dom-speech-recognition": "^0.0.7",
+    "@types/dom-speech-recognition": "^0.0.11",
     "@types/jest": "^29.5.14",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^25.3.3",
-    "@types/react": "^16.14.69",
-    "babel-plugin-istanbul": "^7.0.1",
+    "@types/node": "^25.9.1",
+    "@types/react": "^16.14.70",
+    "babel-plugin-istanbul": "^8.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "core-js": "^3.48.0",
+    "core-js": "^3.49.0",
     "cross-env": "^10.1.0",
-    "type-fest": "^5.4.4",
-    "typescript": "^5.9.3"
+    "type-fest": "^5.6.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@emotion/css": "11.13.5",
@@ -162,17 +202,16 @@
     "classnames": "2.5.1",
     "compute-scroll-into-view": "1.0.20",
     "deep-freeze-strict": "1.1.1",
-    "markdown-it": "13.0.2",
     "math-random": "2.0.1",
     "mdast-util-from-markdown": "2.0.3",
     "memoize-one": "6.0.0",
     "merge-refs": "2.0.0",
+    "micromark": "4.0.2",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
     "react-chain-of-responsibility": "0.4.2",
     "react-dictate-button": "4.0.1",
-    "react-film": "4.0.0",
-    "react-redux": "7.2.9",
+    "react-film": "4.0.1-main.202610290630.8324311",
     "react-say": "2.2.1",
     "react-scroll-to-bottom": "4.2.1-main.53844f5",
     "react-wrap-with": "0.1.0",
@@ -182,7 +221,7 @@
     "use-reduce-memo": "0.1.0",
     "use-ref-from": "0.2.1",
     "use-state-with-ref": "0.2.1",
-    "valibot": "1.2.0"
+    "valibot": "1.4.2"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

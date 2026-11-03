@@ -37,10 +37,13 @@ const LiveRegionAttachments = ({ activity }: LiveRegionAttachmentsProps) => {
     <Fragment>
       {attachmentForScreenReaderRenderers.map((render, index) => (
         // Direct Line does not have key for attachment other than index.
+        // Like the lines of the message, `role="none"` keeps "group" from being read, see `LiveRegionActivity`.
         // eslint-disable-next-line react/no-array-index-key
-        <div key={index}>{typeof render === 'function' && render()}</div>
+        <div key={index} role="none">
+          {typeof render === 'function' && render()}
+        </div>
       ))}
-      {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
+      {numAttachmentsAlt && <p role="none">{numAttachmentsAlt}</p>}
     </Fragment>
   );
 };

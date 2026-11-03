@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      /*
+        Emulates a host page with a type selector, which also matches the activity list of Web Chat:
+        `<section class="transcript-focus-area__activity-list">`, rendered by `TranscriptActivityList`.
+        `min-height: 0` would let the activity list shrink below its content.
+      */
+      section {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        const webChatElement = createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The bot sends audio cards, each followed by a message with an audio attachment, taller than the transcript together.
+        const audioCardActivity = {
+          attachments: [
+            {
+              content: {
+                media: [{ profile: 'audiocard', url: '/assets/hello-world.wav' }],
+                subtitle: 'audio test',
+                text: 'No buttons, No Image, Autoloop, Sharable',
+                title: 'BotFramework Test'
+              },
+              contentType: 'application/vnd.microsoft.card.audio'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        };
+
+        const audioAttachmentActivity = {
+          attachments: [{ contentType: 'audio/wav', contentUrl: '/assets/hello-world.wav', name: 'Hello, World!' }],
+          from: { role: 'bot' },
+          text: 'Audio attachment:',
+          type: 'message'
+        };
+
+        for (const activity of [
+          audioCardActivity,
+          audioAttachmentActivity,
+          audioCardActivity,
+          audioAttachmentActivity,
+          audioCardActivity
+        ]) {
+          await directLine.emulateIncomingActivity(activity);
+        }
+
+        await pageConditions.numActivitiesShown(5);
+
+        for (const audioElement of document.querySelectorAll('audio')) {
+          await pageConditions.mediaBufferStabilized(audioElement);
+        }
+
+        const activities = pageElements.activities();
+
+        // THEN: The content of each activity should fit in its row.
+        // The first child of the activity is its content, the activity is the row of the activity list.
+        for (const activity of activities) {
+          expect(activity.firstElementChild.getBoundingClientRect().height).toBeLessThanOrEqual(
+            activity.getBoundingClientRect().height
+          );
+        }
+
+        // THEN: Each activity should end before the next one starts.
+        for (const [index, activity] of activities.slice(1).entries()) {
+          expect(activities[index].getBoundingClientRect().bottom).toBeLessThanOrEqual(
+            activity.getBoundingClientRect().top
+          );
+        }
+
+        // WHEN: Scrolled to the top.
+        await pageObjects.scrollToTop();
+
+        // THEN: The whole audio card should show, with its title, subtitle, and text, above the "Audio attachment:" message.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

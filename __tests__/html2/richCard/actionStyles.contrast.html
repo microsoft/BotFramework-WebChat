@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      .standalone-card {
+        border-top: solid 1px #e0e0e0;
+      }
+
+      .transcript {
+        height: 440px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions } from 'botframework-webchat';
+      import { AdaptiveCardContent, BasicWebChat, Composer } from 'botframework-webchat/component.js';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+
+        // Similar to the "card actionstyles" command of the mock bot.
+        const content = {
+          $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+          actions: [
+            { style: 'positive', title: 'Positive', type: 'Action.Submit' },
+            { style: 'default', title: 'Default', type: 'Action.Submit' },
+            { style: 'destructive', title: 'Destructive', type: 'Action.Submit' }
+          ],
+          type: 'AdaptiveCard',
+          version: '1.2'
+        };
+
+        // SETUP: The host also renders the card outside of the transcript.
+        //        The accessibility check cannot measure color contrast inside the transcript, as the transcript focus overlays cover it.
+        const composerElement = createElement(
+          Composer,
+          { directLine, store },
+          createElement('div', { className: 'transcript' }, createElement(BasicWebChat)),
+          createElement('div', { className: 'standalone-card' }, createElement(AdaptiveCardContent, { content }))
+        );
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, composerElement) : composerElement
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [{ content, contentType: 'application/vnd.microsoft.card.adaptive' }],
+          from: { role: 'bot' },
+          text: 'Showing actionstyles',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Both cards should show the "Positive", "Default", and "Destructive" buttons.
+        for (const card of [
+          document.querySelector('.transcript .adaptive-card-renderer'),
+          document.querySelector('.standalone-card .adaptive-card-renderer')
+        ]) {
+          expect(Array.from(card.querySelectorAll('.ac-pushButton'), ({ textContent }) => textContent)).toEqual([
+            'Positive',
+            'Default',
+            'Destructive'
+          ]);
+        }
+
+        // THEN: The accessibility check of the snapshot should pass, including the color contrast of the "Positive" button.
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

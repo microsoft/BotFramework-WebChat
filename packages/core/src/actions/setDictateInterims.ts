@@ -1,6 +1,6 @@
 const SET_DICTATE_INTERIMS = 'WEB_CHAT/SET_DICTATE_INTERIMS';
 
-export default function setDictateInterims(dictateInterims) {
+export default function setDictateInterims(dictateInterims: readonly string[]) {
   return {
     type: SET_DICTATE_INTERIMS,
     payload: { dictateInterims }

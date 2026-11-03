@@ -41,7 +41,6 @@ function CollapsibleContent(props: CollapsibleContentProps) {
     if (summary && details && details instanceof HTMLDetailsElement) {
       const isDetailsOpen = details.open.toString();
       summary.setAttribute('aria-expanded', isDetailsOpen);
-      summary.setAttribute('aria-pressed', isDetailsOpen);
     }
   }, []);
 
@@ -51,7 +50,6 @@ function CollapsibleContent(props: CollapsibleContentProps) {
       <summary
         aria-controls={id}
         aria-expanded="false"
-        aria-pressed="false"
         className={cx(classNames['collapsible-content__summary'], summaryClassName)}
         ref={summaryRef}
         role="button"

@@ -9,7 +9,7 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
           "react": "https://esm.sh/react@18",
           "react-dom": "https://esm.sh/react-dom@18"
         }
@@ -20,7 +20,7 @@
       import '/test-page-object.mjs';
 
       import { createDirectLine, createStoreWithOptions, hooks, renderWebChat } from 'botframework-webchat';
-      import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
+      import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware.js';
       import { createElement } from 'react';
 
       const { useStyleOptions } = hooks;

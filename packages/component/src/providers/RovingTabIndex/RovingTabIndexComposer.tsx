@@ -2,18 +2,7 @@
 
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
-import {
-  custom,
-  function_,
-  literal,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  union,
-  type InferInput
-} from 'valibot';
+import { custom, function_, is, literal, object, optional, pipe, readonly, union, type InferInput } from 'valibot';
 
 import RovingTabIndexContext, { type RovingTabIndexContextType } from './private/Context';
 
@@ -22,7 +11,7 @@ type ItemRef = MutableRefObject<HTMLElement | undefined>;
 const rovingTabIndexContextProps = pipe(
   object({
     children: optional(reactNode()),
-    onEscapeKey: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    onEscapeKey: optional(custom<() => void>(value => is(function_(), value))),
     orientation: optional(union([literal('horizontal'), literal('vertical')]), 'horizontal')
   }),
   readonly()

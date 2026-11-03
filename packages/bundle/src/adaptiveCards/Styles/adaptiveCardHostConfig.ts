@@ -1,12 +1,12 @@
 import { normalizeStyleOptions } from 'botframework-webchat-api';
 
-import FullBundleStyleOptions from '../../types/FullBundleStyleOptions';
+import type { FullBundleStyleOptions } from '../../types/FullBundleStyleOptions';
 import normalizeAdaptiveCardsStyleOptions from '../normalizeStyleOptions';
 
 // https://docs.microsoft.com/en-us/adaptive-cards/rendering-cards/host-config
 
 export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleStyleOptions) {
-  const { accent, bubbleTextColor, cardEmphasisBackgroundColor, primaryFont, subtle } = {
+  const { accent, bubbleTextColor, cardEmphasisBackgroundColor, markdownHeadingLevelStartAt, primaryFont, subtle } = {
     ...normalizeStyleOptions(styleOptions),
     ...normalizeAdaptiveCardsStyleOptions(styleOptions)
   };
@@ -135,7 +135,7 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
       spacing: 8
     },
     textBlock: {
-      headingLevel: 2
+      headingLevel: markdownHeadingLevelStartAt
     }
   };
 }

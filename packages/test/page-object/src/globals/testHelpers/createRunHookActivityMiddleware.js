@@ -1,5 +1,7 @@
 const RunHook = ({ fn, resolve }) => {
-  resolve(fn(window.WebChat.hooks));
+  const numCalledRef = window.React.useRef(0);
+
+  resolve(fn(window.WebChat.hooks, numCalledRef.current++));
 
   return false;
 };

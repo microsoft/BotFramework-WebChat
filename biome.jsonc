@@ -1,0 +1,58 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/dist",
+      // Biome 2.4.16 cannot parse a curried arrow function in the consequent of a conditional (valid TypeScript); remove when Biome parses it.
+      "!packages/api/src/providers/GroupActivities/private/createDefaultGroupActivitiesMiddleware.ts"
+    ]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "assist": { "actions": { "source": { "organizeImports": "off" } } },
+  "javascript": {
+    "formatter": {
+      "enabled": false
+    },
+    "linter": {
+      "enabled": false
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    },
+    "linter": {
+      "enabled": false
+    }
+  },
+  "css": {
+    "parser": {
+      "cssModules": true
+    },
+    "formatter": {
+      "enabled": true,
+      "quoteStyle": "single",
+      "lineWidth": 120
+    },
+    "linter": {
+      "enabled": true
+    }
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "noDescendingSpecificity": "off"
+      }
+    }
+  }
+}

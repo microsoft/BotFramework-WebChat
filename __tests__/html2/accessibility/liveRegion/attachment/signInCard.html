@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -14,41 +14,44 @@
     <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
-        React: { useEffect },
         ReactDOM: { render },
+        testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { BasicWebChat, Composer },
-          hooks: { useConnectivityStatus, useSendMessage }
+          Components: { BasicWebChat, Composer }
         }
       } = window;
 
-      // TODO: We should use pageObject.sendMessageViaSendBox() instead of useSendMessage() hook.
       run(async function () {
-        const SendOnConnect = () => {
-          const [connectivityStatus] = useConnectivityStatus();
-          const sendMessage = useSendMessage();
-
-          useEffect(() => {
-            connectivityStatus === 'connected' && sendMessage('signin');
-          }, [connectivityStatus, sendMessage]);
-
-          return false;
-        };
+        const { directLine, store } = createDirectLineEmulator();
 
         render(
-          <Composer
-            directLine={WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() })}
-            store={testHelpers.createStore()}
-            styleOptions={{ internalLiveRegionFadeAfter: 60000 }}
-          >
+          <Composer directLine={directLine} store={store} styleOptions={{ internalLiveRegionFadeAfter: 60000 }}>
             <BasicWebChat />
-            <SendOnConnect />
           </Composer>,
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.minNumActivitiesShown(2);
+
+        await (
+          await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox('signin', { waitForSend: false }))
+        ).resolveAll();
+
+        // Emulated, same as the mock bot's "signin" command.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                buttons: [{ title: 'Signin', type: 'signin', value: 'https://login.live.com/' }],
+                text: 'Login to signin sample'
+              },
+              contentType: 'application/vnd.microsoft.card.signin'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
         await pageConditions.allImagesLoaded();
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.scrollToBottomCompleted();
@@ -59,6 +62,7 @@
 
         await host.sendShiftTab(3);
 
+        // THEN: The live region announces the sign-in card with its button, and the transcript shows the card.
         await host.snapshot('local');
       });
     </script>

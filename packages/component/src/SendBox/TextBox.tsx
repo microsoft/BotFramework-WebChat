@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { usePonyfill } from 'botframework-webchat-api/hook';
+import { usePonyfill } from 'botframework-webchat-api/hook.js';
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useRef } from 'react';
 
@@ -219,7 +219,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
 
   return (
     <form
-      aria-disabled={disabled}
+      aria-disabled={disabled || undefined}
       className={classNames(
         'webchat__send-box-text-box',
         rootClassName,

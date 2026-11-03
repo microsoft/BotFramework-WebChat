@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
 
+import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import type { LocalId } from '../property/LocalId';
@@ -83,9 +84,8 @@ scenario('getPartGroupingMetadataMap with multiple part grouping', bdd => {
     .then('should return part grouping metadata', (_, actual) => {
       expect(actual).toEqual(
         new Map<string, PartGroupingMetadataMapEntry>([
-          ['Conversation', { groupingId: '_:conv:00001', position: 1 }]
-          // TODO: [P0] Currently, it only return the first part grouping.
-          // ['HowTo', { groupingId: '_:how-to:00001', position: 1 }]
+          ['Conversation', { groupingId: '_:conv:00001', position: 1 }],
+          ['HowTo', { groupingId: '_:how-to:00001', position: 1 }]
         ]) satisfies ReturnType<typeof getPartGroupingMetadataMap>
       );
     });

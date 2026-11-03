@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { useSendMessage } from 'botframework-webchat/hook.js';
+      import { fn, spyOn } from 'jest-mock';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const renderHook = createRenderHook(
+          document.getElementById('webchat'),
+          {
+            directLine,
+            store
+          },
+          { renderWebChat: true }
+        );
+
+        await renderHook();
+        await pageConditions.uiConnected();
+
+        const sendMessage = await renderHook(() => useSendMessage());
+
+        // SETUP: An empty file blob.
+        const fileBlob = new File([new ArrayBuffer(1024)], 'empty.zip', { type: 'image/jpeg' });
+
+        spyOn(console, 'warn');
+
+        // WHEN: Call useSendMessage hook to send a file a custom thumbnail.
+        const { activity, resolveAll } = await directLine.actPostActivity(() =>
+          sendMessage(undefined, undefined, {
+            attachments: [
+              {
+                blob: fileBlob,
+                thumbnailURL:
+                  'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+              }
+              // NOTE: Test against Iterable<T> instead of [] for coverage.
+            ].values()
+          })
+        );
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            attachments: [
+              expect.objectContaining({
+                contentType: 'image/jpeg',
+                name: 'empty.zip',
+                thumbnailUrl: undefined
+              })
+            ]
+          })
+        );
+
+        // THEN: Should warn about invalid `thumbnailURL`.
+        expect(console.warn).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenNthCalledWith(
+          1,
+          'botframework-webchat: `SendBoxAttachment.thumbnailURL` must be a data URI, ignoring the value.'
+        );
+
+        await resolveAll();
+
+        // THEN: It should send the file without thumbnail.
+        await pageConditions.allOutgoingActivitiesSent();
+        await pageConditions.numActivitiesShown(1);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

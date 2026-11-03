@@ -9,12 +9,12 @@ import {
   custom,
   function_,
   instance,
+  is,
   object,
   optional,
   picklist,
   pipe,
   readonly,
-  safeParse,
   union,
   type InferInput
 } from 'valibot';
@@ -38,9 +38,7 @@ const sendBoxAttachmentBarItemPropsSchema = pipe(
     ),
     mode: picklist(['list item', 'thumbnail']),
     onDelete: optional(
-      custom<(event: Readonly<{ attachment: SendBoxAttachment }>) => void>(
-        value => safeParse(function_(), value).success
-      )
+      custom<(event: Readonly<{ attachment: SendBoxAttachment }>) => void>(value => is(function_(), value))
     )
   }),
   readonly()

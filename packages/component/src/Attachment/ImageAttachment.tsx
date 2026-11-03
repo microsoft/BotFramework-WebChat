@@ -1,6 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, string, union, type InferInput } from 'valibot';
+import { custom, is, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import readDataURIToBlob from '../Utils/readDataURIToBlob';
 import ImageContent from './ImageContent';
@@ -8,23 +8,22 @@ import { type WebChatAttachment } from './private/types/WebChatAttachment';
 
 const imageAttachmentPropsSchema = pipe(
   object({
-    attachment: custom<WebChatAttachment>(
-      value =>
-        safeParse(
-          union([
-            object({
-              contentUrl: string(),
-              name: optional(string()),
-              thumbnailUrl: optional(string())
-            }),
-            object({
-              contentUrl: optional(string()),
-              name: optional(string()),
-              thumbnailUrl: string()
-            })
-          ]),
-          value
-        ).success
+    attachment: custom<WebChatAttachment>(value =>
+      is(
+        union([
+          object({
+            contentUrl: string(),
+            name: optional(string()),
+            thumbnailUrl: optional(string())
+          }),
+          object({
+            contentUrl: optional(string()),
+            name: optional(string()),
+            thumbnailUrl: string()
+          })
+        ]),
+        value
+      )
     )
   }),
   readonly()

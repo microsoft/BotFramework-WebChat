@@ -10,6 +10,7 @@ import ActivityButton from './ActivityButton';
 import CodeContent from './CodeContent';
 
 import styles from './ViewCodeDialog.module.css';
+import themeStyles from './ViewCodeDialogTheme.module.css';
 
 const { useLocalizer } = hooks;
 
@@ -19,7 +20,7 @@ const activityViewCodeButtonPropsSchema = pipe(
     code: string(),
     language: optional(string()),
     isAIGenerated: boolean(),
-    title: string()
+    title: optional(string())
   }),
   readonly()
 );
@@ -45,8 +46,9 @@ const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
         </CodeContent>
       ),
       {
+        'aria-label': localize('ACTIVITY_CODE_ALT', title ?? ''),
         className: classNames['view-code-dialog'],
-        'aria-label': localize('ACTIVITY_CODE_ALT', title ?? '')
+        cssModuleTheme: themeStyles
       }
     );
   }, [code, isAIGenerated, language, localize, showModal, title, classNames]);

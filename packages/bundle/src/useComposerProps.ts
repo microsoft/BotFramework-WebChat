@@ -16,8 +16,8 @@ export default function useComposerProps({
   styleOptions,
   styleSet
 }: Readonly<{
-  attachmentForScreenReaderMiddleware: AttachmentForScreenReaderMiddleware[];
-  attachmentMiddleware: AttachmentMiddleware[];
+  attachmentForScreenReaderMiddleware: readonly AttachmentForScreenReaderMiddleware[] | undefined;
+  attachmentMiddleware: readonly AttachmentMiddleware[] | undefined;
   htmlContentTransformMiddleware: readonly HTMLContentTransformMiddleware[];
   renderMarkdown?: (
     markdown: string,
@@ -38,12 +38,12 @@ export default function useComposerProps({
   ) => string;
 }> {
   const patchedAttachmentMiddleware = useMemo(
-    () => [...attachmentMiddleware, createAdaptiveCardsAttachmentMiddleware()],
+    () => [...(attachmentMiddleware ?? []), createAdaptiveCardsAttachmentMiddleware()],
     [attachmentMiddleware]
   );
 
   const patchedAttachmentForScreenReaderMiddleware = useMemo(
-    () => [...attachmentForScreenReaderMiddleware, createAdaptiveCardsAttachmentForScreenReaderMiddleware()],
+    () => [...(attachmentForScreenReaderMiddleware ?? []), createAdaptiveCardsAttachmentForScreenReaderMiddleware()],
     [attachmentForScreenReaderMiddleware]
   );
 

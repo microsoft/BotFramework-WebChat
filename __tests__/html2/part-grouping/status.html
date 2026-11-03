@@ -104,10 +104,6 @@
         codeBlockTheme = 'github-light-default';
       }
 
-      if (variant) {
-        window.checkAccessibility = async () => { }
-      }
-
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(
@@ -243,11 +239,15 @@
       await host.snapshot('local');
 
       // Become 5-2-3-4-1.
+      // TODO: [P1] Moving the first activity remounts the part grouping: it loses its open state and the transcript keeps `aria-activedescendant` pointing to the removed group.
+      //       It happens when the group was focused, i.e. opened in the "copilot" variant, until the group is focused again. Remove `skipCheckAccessibility` when fixed.
+      const skipCheckAccessibility = variant === 'copilot';
+
       directLine.emulateIncomingActivity(withModifiers(activities.at(0), { position: 3, status: 'Incomplete', abstract: 'one (was done) moved to three and in progress' }));
 
       // Then: show the new item inserted with a loading indicator, and the other items shifted
       await pageConditions.numActivitiesShown(6);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // Test Case 7: Complete all remaining work
       // When: marking all incomplete activities as 'Published'
@@ -257,7 +257,7 @@
 
       // Then: all activities should show the 'Published' status indicator
       await pageConditions.numActivitiesShown(6);
-      await host.snapshot('local');
+      await host.snapshot('local', { skipCheckAccessibility });
 
       // When: folding the list:
       await host.click(document.querySelector('.collapsible-grouping__toggle'));

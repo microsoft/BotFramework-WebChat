@@ -7,7 +7,7 @@ const { useDirection } = hooks;
 
 const ICON_SIZE_FACTOR = 16;
 
-const ErrorNotificationIcon = ({ className, size }) => {
+const ErrorNotificationIcon = ({ className = '', size = 1 }) => {
   const [direction] = useDirection();
 
   return (
@@ -24,11 +24,6 @@ const ErrorNotificationIcon = ({ className, size }) => {
       />
     </svg>
   );
-};
-
-ErrorNotificationIcon.defaultProps = {
-  className: '',
-  size: 1
 };
 
 ErrorNotificationIcon.propTypes = {

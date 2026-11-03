@@ -83,9 +83,5 @@
       .thumb-button__tooltip {
       display: none;
     }
-
-    &.thumb-button--has-submitted .thumb-button__tooltip {
-      --webchat__tooltip-anchor-inline-start: 20%;
-    }
   }
 }

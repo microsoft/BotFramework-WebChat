@@ -6,13 +6,13 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 
+import ScreenReaderText from './ScreenReaderText';
 import DismissIcon from './Toast/DismissIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
-import ScreenReaderText from './ScreenReaderText';
-import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
-import useStyleSet from './hooks/useStyleSet';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
+import useStyleSet from './hooks/useStyleSet';
+import renderMarkdownInline from './private/renderMarkdownInline';
 
 const { useDismissNotification, useLocalizer } = hooks;
 
@@ -29,11 +29,10 @@ const BasicToast = ({ notification: { alt, id, level, message = '' } }) => {
   const contentId = useMemo(() => `webchat__toast__${randomId()}`, []);
   const localize = useLocalizer();
   const dismissNotification = useDismissNotification();
-  const renderMarkdownInline = useInternalRenderMarkdownInline();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
-  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [message, renderMarkdownInline]);
+  const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [message]);
 
   return (
     <div

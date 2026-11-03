@@ -1,20 +1,10 @@
-import { useMemoWithPrevious } from '@msinternal/botframework-webchat-react-hooks';
+import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
-import {
-  array,
-  custom,
-  function_,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  transform,
-  type InferInput
-} from 'valibot';
+import { array, custom, function_, is, object, optional, pipe, readonly, transform, type InferInput } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
+import { AvatarPolymiddlewareProvider, extractAvatarEnhancer } from './avatarPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
@@ -22,7 +12,7 @@ const polymiddlewareComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     polymiddleware: pipe(
-      custom<readonly Polymiddleware[]>(value => safeParse(array(function_()), value).success),
+      custom<readonly Polymiddleware[]>(value => is(array(function_()), value)),
       transform<readonly Polymiddleware[], readonly Polymiddleware[]>(value => Object.freeze(Array.from(value)))
     )
   }),
@@ -34,31 +24,22 @@ type PolymiddlewareComposerProps = Readonly<InferInput<typeof polymiddlewareComp
 function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   const { children, polymiddleware } = validateProps(polymiddlewareComposerPropsSchema, props);
 
-  const activityEnhancers = useMemoWithPrevious<ReturnType<typeof extractActivityEnhancer>>(
-    (prevActivityEnhancers = []) => {
-      const activityEnhancers = extractActivityEnhancer(polymiddleware);
-
-      // Checks for array equality, return previous version if nothing has changed.
-      return prevActivityEnhancers.length === activityEnhancers.length &&
-        activityEnhancers.every((middleware, index) => Object.is(middleware, prevActivityEnhancers.at(index)))
-        ? prevActivityEnhancers
-        : activityEnhancers;
-    },
+  const activityEnhancers = useMemoIterable<ReturnType<typeof extractActivityEnhancer>>(
+    () => extractActivityEnhancer(polymiddleware),
     [polymiddleware]
   );
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
-  const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
-    (prevErrorBoxEnhancers = []) => {
-      const errorBoxEnhancers = extractErrorBoxEnhancer(polymiddleware);
+  const avatarEnhancers = useMemoIterable<ReturnType<typeof extractAvatarEnhancer>>(
+    () => extractAvatarEnhancer(polymiddleware),
+    [polymiddleware]
+  );
 
-      // Checks for array equality, return previous version if nothing has changed.
-      return prevErrorBoxEnhancers.length === errorBoxEnhancers.length &&
-        errorBoxEnhancers.every((middleware, index) => Object.is(middleware, prevErrorBoxEnhancers.at(index)))
-        ? prevErrorBoxEnhancers
-        : errorBoxEnhancers;
-    },
+  const avatarPolymiddleware = useMemo(() => avatarEnhancers.map(enhancer => () => enhancer), [avatarEnhancers]);
+
+  const errorBoxEnhancers = useMemoIterable<ReturnType<typeof extractErrorBoxEnhancer>>(
+    () => extractErrorBoxEnhancer(polymiddleware),
     [polymiddleware]
   );
 
@@ -75,10 +56,14 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      <AvatarPolymiddlewareProvider middleware={avatarPolymiddleware}>
+        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      </AvatarPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );
 }
+
+PolymiddlewareComposer.displayName = 'PolymiddlewareComposer';
 
 export default memo(PolymiddlewareComposer);
 export { polymiddlewareComposerPropsSchema, type PolymiddlewareComposerProps };

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/activityGrouping.css" rel="stylesheet" type="text/css" />
@@ -44,7 +44,7 @@
         }
       } = window;
 
-      const BotActivityDecorator = ({ activityID, children }) => (
+      const BotActivityDecorator = ({ activityId, children }) => (
         <div className="bot-activity-decorator">
           <ul className="bot-activity-decorator__button-bar">
             <li>
@@ -58,28 +58,33 @@
         </div>
       );
 
-      const activityMiddleware = () => next => (...args) => {
-        const [
-          {
-            activity,
-            activity: {
-              from: { role }
+      const activityMiddleware =
+        () =>
+        next =>
+        (...args) => {
+          const [
+            {
+              activity,
+              activity: {
+                from: { role }
+              }
             }
+          ] = args;
+
+          const handler = next(...args);
+
+          if (role === 'bot') {
+            const { id } = activity;
+
+            return (...renderArgs) => (
+              <BotActivityDecorator activityId={id} key={id}>
+                {handler(...renderArgs)}
+              </BotActivityDecorator>
+            );
           }
-        ] = args;
 
-        if (role === 'bot') {
-          const { id } = activity;
-
-          return (...renderArgs) => (
-            <BotActivityDecorator key={id} activityID={id}>
-              {next(...args)(...renderArgs)}
-            </BotActivityDecorator>
-          );
-        }
-
-        return next(...args);
-      };
+          return handler;
+        };
 
       run(async function () {
         const now = Date.now();

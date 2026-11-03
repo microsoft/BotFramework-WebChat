@@ -1,6 +1,8 @@
-import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
+import { getOrgSchemaMessage, WebChatActivity } from 'botframework-webchat-core';
+import { OrgSchemaAction, orgSchemaActionSchema } from 'botframework-webchat-core/org-schema.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { parse } from 'valibot';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 
 export default function useFeedbackActions(initialActivity: WebChatActivity): {
@@ -24,8 +26,8 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
       const messageThing = getOrgSchemaMessage(graph);
 
       const reactActions = Object.freeze(
-        (messageThing?.potentialAction || []).filter(
-          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
+        messageThing?.potentialAction.filter(
+          ({ '@type': type }) => type.includes('LikeAction') || type.includes('DislikeAction')
         )
       );
 
@@ -34,7 +36,9 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
       }
 
       const voteActions = Object.freeze(
-        graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction)
+        graph
+          .filter(({ type }) => type === 'https://schema.org/VoteAction')
+          .map(action => parse(orgSchemaActionSchema, action))
       );
 
       if (voteActions.length) {
@@ -48,7 +52,7 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
   });
 
   const isCompleted = useMemo<boolean>(
-    () => actions.some(action => action.actionStatus === 'CompletedActionStatus'),
+    () => actions.some(action => action.actionStatus[0] === 'CompletedActionStatus'),
     [actions]
   );
 
@@ -66,9 +70,9 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
         Object.freeze(
           actions.map(action =>
             action === target
-              ? Object.freeze({ ...action, actionStatus: 'ActiveActionStatus' })
-              : action.actionStatus === 'ActiveActionStatus'
-                ? Object.freeze({ ...action, actionStatus: 'PotentialActionStatus' })
+              ? Object.freeze({ ...action, actionStatus: ['ActiveActionStatus'] } satisfies OrgSchemaAction)
+              : action.actionStatus[0] === 'ActiveActionStatus'
+                ? Object.freeze({ ...action, actionStatus: ['PotentialActionStatus'] } satisfies OrgSchemaAction)
                 : action
           )
         )
@@ -88,7 +92,9 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
       setActions(actions =>
         Object.freeze(
           actions.map(action =>
-            action === target ? Object.freeze({ ...action, actionStatus: 'CompletedActionStatus' }) : action
+            action === target
+              ? Object.freeze({ ...action, actionStatus: ['CompletedActionStatus'] } satisfies OrgSchemaAction)
+              : action
           )
         )
       );
@@ -99,7 +105,7 @@ export default function useFeedbackActions(initialActivity: WebChatActivity): {
   const selectedAction = useMemo(
     () =>
       actions.find(
-        ({ actionStatus }) => actionStatus === 'ActiveActionStatus' || actionStatus === 'CompletedActionStatus'
+        ({ actionStatus }) => actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus'
       ),
     [actions]
   );

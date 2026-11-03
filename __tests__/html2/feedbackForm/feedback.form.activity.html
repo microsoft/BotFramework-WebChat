@@ -92,8 +92,9 @@
         // WHEN: The cancel button is clicked.
         await host.sendTab(2);
         await host.sendKeys('ENTER');
+        await testHelpers.sleep(400); // Wait for tooltip.
 
-        // WHEN: Should focus on the Like button as it was the action that just cancelled.
+        // THEN: Should focus on the Like button as it was the action that just cancelled.
         expect(document.activeElement).toEqual(
           document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)[0]
         );

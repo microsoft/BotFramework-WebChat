@@ -1,4 +1,4 @@
-import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity';
+import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
 import { isPresentational } from 'botframework-webchat-core/internal';
 import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 

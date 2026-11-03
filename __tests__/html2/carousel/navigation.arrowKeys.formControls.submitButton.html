@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        // Hide the send box, it is not under test. The Fluent theme does not honor the `hideSendBox` style option.
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          sendBoxMiddleware: [() => () => () => false],
+          store
+        });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        const createAdaptiveCard = index => ({
+          content: {
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            actions: [{ title: `Add item ${index}`, type: 'Action.Submit' }],
+            body: [
+              { size: 'large', text: `Item ${index}`, type: 'TextBlock', wrap: true },
+              { id: `note-${index}`, label: `Note for item ${index}`, type: 'Input.Text', value: 'Hello' }
+            ],
+            type: 'AdaptiveCard',
+            version: '1.5'
+          },
+          contentType: 'application/vnd.microsoft.card.adaptive'
+        });
+
+        // GIVEN: A carousel with Adaptive Card forms (text input and submit button) and a hero card with a button.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [
+            createAdaptiveCard(1),
+            {
+              content: {
+                buttons: [{ title: 'Buy item 2', type: 'imBack', value: 'Buy item 2' }],
+                text: 'Price: $XXX.XX USD',
+                title: 'Details about item 2'
+              },
+              contentType: 'application/vnd.microsoft.card.hero'
+            },
+            createAdaptiveCard(3)
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // Wait for the live region to clear (1 s): its copy of the cards has text inputs without labels, which would fail the
+        // accessibility checks that run with every snapshot.
+        await waitFor(() => expect(pageElements.liveRegion().children).toHaveLength(0), { timeout: 5000 });
+
+        const carouselLayout = document.querySelector('.carousel-layout');
+        const carouselFilmstrip = carouselLayout.querySelector('.carousel-filmstrip');
+        const cards = Array.from(carouselFilmstrip.querySelectorAll('[aria-roledescription="attachment"]'));
+        const input = cards[0].querySelector('input');
+        const submitButton = cards[0].querySelector('button');
+
+        const expectCarouselAtStart = async () => {
+          await pageConditions.carouselSettled(carouselLayout);
+
+          expect(carouselFilmstrip.scrollLeft).toBe(0);
+          expect(testHelpers.isCardInView(cards[0])).toBe(true);
+        };
+
+        // Focus should be on the card itself, not on the form controls inside it.
+        const expectFocusOnCard = async index => {
+          expect(document.activeElement).toBe(cards[index]);
+          expect(document.activeElement.matches(':focus-visible')).toBe(true);
+
+          await waitFor(() => expect(testHelpers.isCardInView(cards[index])).toBe(true));
+          await pageConditions.carouselSettled(carouselLayout);
+
+          expect(testHelpers.isCardInView(cards[index])).toBe(true);
+        };
+
+        expect(submitButton).toHaveProperty('textContent', 'Add item 1');
+        expect(carouselFilmstrip.scrollLeft).toBe(0);
+
+        // WHEN: Focus on the first card via keyboard.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ENTER');
+
+        // THEN: The first card has focus, the carousel is at the start.
+        await expectFocusOnCard(0);
+        await expectCarouselAtStart();
+        await host.snapshot('local');
+
+        // WHEN: Press TAB to focus on the text input inside the first card.
+        await host.sendTab();
+
+        // THEN: The text input has focus with its text selected, the carousel is at the start.
+        expect(document.activeElement).toBe(input);
+        expect(input).toHaveProperty('selectionStart', 0);
+        expect(input).toHaveProperty('selectionEnd', 5);
+        await expectCarouselAtStart();
+        await host.snapshot('local');
+
+        // WHEN: Press TAB to focus on the submit button inside the first card.
+        await host.sendTab();
+
+        // THEN: The submit button has focus, the carousel is at the start.
+        expect(document.activeElement).toBe(submitButton);
+        await expectCarouselAtStart();
+        await host.snapshot('local');
+
+        // WHEN: Press LEFT on the submit button.
+        await host.sendKeys('ARROW_LEFT');
+
+        // THEN: The submit button keeps focus, the carousel is at the start (nothing to scroll to the left).
+        expect(document.activeElement).toBe(submitButton);
+        await expectCarouselAtStart();
+        await host.snapshot('local');
+
+        // WHEN: Press RIGHT on the submit button.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: The submit button keeps focus, the carousel does not scroll: it stays at the start.
+        expect(document.activeElement).toBe(submitButton);
+        await expectCarouselAtStart();
+        await host.snapshot('local');
+
+        // WHEN: Press TAB to focus on the hero card.
+        await host.sendTab();
+
+        // THEN: The hero card has focus, TAB into the partly hidden hero card scrolled it to the center.
+        await expectFocusOnCard(1);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

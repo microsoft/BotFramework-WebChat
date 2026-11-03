@@ -1,7 +1,7 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import { InjectStyleElements } from '@msinternal/botframework-webchat-styles/react';
-import { useStyleOptions } from 'botframework-webchat-api/hook';
+import { useStyleOptions } from 'botframework-webchat-api/hook.js';
 import classNames from 'classnames';
 import random from 'math-random';
 import React, { forwardRef, memo, useMemo, type Ref } from 'react';

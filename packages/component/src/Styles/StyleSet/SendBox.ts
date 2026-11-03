@@ -11,6 +11,7 @@ function stringifyNumericPixel(value: number | string): string {
 
 export default function createSendBoxStyle({
   paddingRegular,
+  primaryFont,
   sendBoxBackground,
   sendBoxBorderBottom,
   sendBoxBorderLeft,
@@ -20,6 +21,8 @@ export default function createSendBoxStyle({
 }: StrictStyleOptions) {
   return {
     '&.webchat__send-box': {
+      fontFamily: primaryFont,
+
       '& .webchat__send-box__button--align-bottom': { alignSelf: 'flex-end' },
       '& .webchat__send-box__button--align-stretch': { alignSelf: 'stretch' },
       '& .webchat__send-box__button--align-top': { alignSelf: 'flex-start' },

@@ -3,7 +3,7 @@ import DebugAPI from './private/DebugAPI';
 import type { BaseContext, BreakpointObject, RestrictedDebugAPIType } from './types';
 
 // 🔒 This function must be left empty.
-// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const BREAKPOINT_FUNCTION = <T>(__DEBUG_CONTEXT__: T) => {};
 
 type AsGetters<T> = {

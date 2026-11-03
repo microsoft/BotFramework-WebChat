@@ -15,10 +15,6 @@ const ExpandIcon = ({ className }) => (
   </svg>
 );
 
-ExpandIcon.defaultProps = {
-  className: undefined
-};
-
 ExpandIcon.propTypes = {
   className: PropTypes.string
 };

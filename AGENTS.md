@@ -23,6 +23,7 @@
 - Prefer uppercase for acronyms instead of Pascal case, e.g. `getURL()` over `getUrl()`
    - The only exception is `id`, e.g. `getId()` over `getID()`
 - Use fewer shorthands, only allow `min`, `max`, `num`
+- Prefer ternary operator over one-liner `if` statement
 
 ### Design
 
@@ -35,6 +36,7 @@
 ### Typing
 
 - TypeScript is best-effort checking, use `valibot` for strict type checking
+- Use TypeScript CLI instead of `tsc`
 - Use `valibot` for runtime type checker, never use `zod`
    - Assume all externally exported functions will receive unsafe/invalid input, always check with `valibot`
 - Avoid `any`
@@ -44,7 +46,7 @@
 - All optional properties must be `undefined`-able, i.e. use `value?: number | undefined` over `value?: number`
 - For functions exported outside of current file, make sure all arguments and return value are typed
 - If need to look inside the object to check for types, use `valibot`
-   - E.g. `if (obj && typeof obj === 'object' && 'value' in obj && typeof obj.value === 'string')` should be replaced with `safeParse(object({ value: string }), obj).success`
+   - E.g. `if (obj && typeof obj === 'object' && 'value' in obj && typeof obj.value === 'string')` should be replaced with `is(object({ value: string }), obj)`
 - Use `{ readonly value: string }` instead of `Readonly<{ value: string }>`
 - Use as much `readonly` as possible
 
@@ -52,7 +54,7 @@
 
 ```tsx
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { number, object, pipe, readonly } from 'valibot';
 
 // Use valibot to validate props.
@@ -70,9 +72,9 @@ function MyComponent(props: MyComponentProps) {
   // Call `validateProps` to get a validated props.
   const { children } = validateProps(MyComponentPropsSchema, props);
 
-  // Use `<>` instead of `<Fragment>`.
-  // Never export `children` by itself, always wrap with `<>`.
-  return <>{children}</>;
+  // Use `<Fragment>` instead of `<>` (enforced by `react/jsx-fragments`).
+  // Never export `children` by itself, always wrap with `<Fragment>`.
+  return <Fragment>{children}</Fragment>;
 }
 
 // Set `displayName`.
@@ -97,12 +99,20 @@ export { MyComponentPropsSchema, type MyComponentProps };
 - Follow other HTML files under the same folder on how to write tests
 - Page conditions, page elements, and page objects can be found at `/packages/test/page-object/src/globals`
 - Use `expect` instead of `assert`
+- For visual changes, let snapshots (VRT) do the work instead of asserting computed CSS, assert state such as focus, role, name, and attributes
+- Wait for effects of asynchronous work (e.g. after `host.click()`) with `waitFor()` from `@testduet/wait-for` and `expect`, not with sleeps
 - Use `@testduet/given-when-then` package instead of xUnit style `describe`/`before`/`test`/`after`
 - Prefer integration/end-to-end testing than unit testing
 - Use as realistic setup as possible, such as using `msw` than mocking calls
+- Use `emulateIncomingActivity` and `emulateOutgoingActivity` to emulate conversation
 
 ## PR instructions
 
 - Run new test and all of them must be green
 - Run `npm run precommit` to make sure it pass all linting process
-- Add changelog entry to `CHANGELOG.md`, follow our existing format
+- Add changelog entries to `.changelog/<PR#>-<slug>.md` with `node ./scripts/changelog/new.mjs` after creating the PR, do not edit `CHANGELOG.md` (only maintainers do, with the `changelog-edit` label), see `.changelog/README.md`
+
+## Code review
+
+- Code should use as much immutable (via `Object.freeze()`) as possible, DO NOT trust `readonly`
+- All inputs SHOULD be validated

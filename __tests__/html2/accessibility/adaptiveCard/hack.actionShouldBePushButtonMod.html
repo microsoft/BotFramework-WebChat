@@ -9,6 +9,10 @@
   <body>
     <main id="webchat"></main>
     <script>
+      async function getDescription(element) {
+        return (await testHelpers.getAccessibilityNode(element)).description?.value;
+      }
+
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -50,40 +54,50 @@
         const [firstPushButton, secondPushButton] = Array.from(document.querySelectorAll('.ac-pushButton'));
 
         expect(firstPushButton).toHaveProperty('textContent', 'Button 1');
-        expect(firstPushButton.getAttribute('aria-pressed')).toBe('false');
+        expect(firstPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(await getDescription(firstPushButton)).toBeUndefined();
         expect(firstPushButton.hasAttribute('aria-posinset')).toBe(false);
         expect(firstPushButton.hasAttribute('aria-setsize')).toBe(false);
         expect(firstPushButton.hasAttribute('role')).toBe(false);
 
         expect(secondPushButton).toHaveProperty('textContent', 'Show card');
         expect(secondPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(await getDescription(secondPushButton)).toBeUndefined();
         expect(secondPushButton.hasAttribute('aria-posinset')).toBe(false);
         expect(secondPushButton.hasAttribute('aria-setsize')).toBe(false);
         expect(secondPushButton.hasAttribute('role')).toBe(false);
 
         await (await directLine.actPostActivity(() => host.click(firstPushButton))).resolveAll();
 
-        expect(firstPushButton.getAttribute('aria-pressed')).toBe('true');
+        expect(firstPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(await getDescription(firstPushButton)).toBe('Selected');
 
         await host.click(secondPushButton);
+
+        // `Action.ShowCard` is never selected, its state is indicated by `aria-expanded`.
+        expect(secondPushButton.getAttribute('aria-expanded')).toBe('true');
+        expect(await getDescription(secondPushButton)).toBeUndefined();
 
         const [, , thirdPushButton, fourthPushButton] = Array.from(document.querySelectorAll('.ac-pushButton'));
 
         expect(thirdPushButton).toHaveProperty('textContent', 'Button 2');
-        expect(thirdPushButton.getAttribute('aria-pressed')).toBe('false');
+        expect(thirdPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(await getDescription(thirdPushButton)).toBeUndefined();
         expect(thirdPushButton.hasAttribute('aria-posinset')).toBe(false);
         expect(thirdPushButton.hasAttribute('aria-setsize')).toBe(false);
         expect(thirdPushButton.hasAttribute('role')).toBe(false);
 
         await (await directLine.actPostActivity(() => host.click(thirdPushButton))).resolveAll();
 
-        expect(thirdPushButton.getAttribute('aria-pressed')).toBe('true');
+        expect(thirdPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(await getDescription(thirdPushButton)).toBe('Selected');
 
         await WebChat.renderWebChat({ directLine, disabled: true, store }, document.getElementById('webchat'));
 
         await host.click(fourthPushButton);
 
-        expect(fourthPushButton.getAttribute('aria-pressed')).toBe('false');
+        expect(fourthPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(await getDescription(fourthPushButton)).toBeUndefined();
       });
     </script>
   </body>

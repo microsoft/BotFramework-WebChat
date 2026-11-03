@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+    <script
+      crossorigin="anonymous"
+      src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { expect } from 'https://esm.sh/expect?standalone';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      const {
+        React: { createElement },
+        ReactDOM: { createRoot },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { createDirectLine, createStoreWithOptions, hooks, ReactWebChat }
+      } = window;
+
+      // This test only fail in 4.18.0.
+      // After we moved to graph backend in 4.19.0, this test no longer fail.
+      // This is because the graph backend do not rehydrate activities immediately until after first render.
+      // Thus, we are not hitting the JavaScript error related to `(undefined).has()`.
+
+      run(
+        async function () {
+          const { directLine: directLine1, store: store1 } = createDirectLineEmulator();
+
+          const root1 = createRoot(document.getElementById('webchat'));
+
+          root1.render(createElement(ReactWebChat, { directLine: directLine1, store: store1 }));
+
+          await pageConditions.uiConnected();
+
+          const sendMessage = await directLine1.emulateOutgoingActivity('Hello, World!');
+
+          sendMessage.rejectPostActivity(new Error('artificial error'));
+
+          // Initially, the send-status is "sending", we need to wait until it turns into "send failed".
+          await waitFor(() =>
+            expect(store1.getState().activities[0].channelData['webchat:send-status']).toBe('send failed')
+          );
+
+          await host.snapshot('local');
+
+          const state = store1.getState();
+
+          root1.unmount();
+
+          const root2 = createRoot(document.getElementById('webchat'));
+
+          const { directLine: directLine2, store: store2 } = testHelpers.createDirectLineEmulator({
+            initialState: state
+          });
+
+          root2.render(
+            createElement(ReactWebChat, {
+              directLine: directLine2,
+              store: store2
+            })
+          );
+
+          await Promise.race([
+            pageConditions.uiConnected(),
+            new Promise((_, reject) =>
+              setTimeout(
+                () => reject(new Error('Timed out waiting for chat history to show, possibly JavaScript error')),
+                500
+              )
+            )
+          ]);
+
+          await host.snapshot('local');
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

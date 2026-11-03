@@ -1,4 +1,4 @@
 export {
   type StrictFullBundleStyleOptions as StrictStyleOptions,
-  type default as StyleOptions
+  type FullBundleStyleOptions as StyleOptions
 } from '../../../types/FullBundleStyleOptions';

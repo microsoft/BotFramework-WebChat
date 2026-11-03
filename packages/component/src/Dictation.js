@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 // TODO: [P1] #3350 No import from internal, we need to move setDictateState from bf-wc-core (Redux) to React Context.
-import { useSetDictateState } from 'botframework-webchat-api/internal';
+import { useSetDictateState } from 'botframework-webchat-api/internal.js';
 import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
@@ -108,10 +108,6 @@ const Dictation = ({ onError }) => {
       started={uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING)}
     />
   );
-};
-
-Dictation.defaultProps = {
-  onError: undefined
 };
 
 Dictation.propTypes = {

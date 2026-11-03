@@ -1,7 +1,8 @@
+import htmlInlineTagNames from './htmlInlineTagNames';
 import textFormatToContentType from './textFormatToContentType';
 
-function walk<T extends Node>(document: Document, walker: (node: T) => string[]): string[] {
-  const nodes: T[] = [].slice.call(document.childNodes);
+function walk<T extends Node>(root: Node, walker: (node: T) => string[]): string[] {
+  const nodes: T[] = [].slice.call(root.childNodes);
   const results: string[] = [];
 
   while (nodes.length) {
@@ -15,82 +16,23 @@ function walk<T extends Node>(document: Document, walker: (node: T) => string[])
   return results;
 }
 
-// From https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements
-const HTML_INLINE_TAGS = [
-  'A',
-  'ABBR',
-  'ACRONYM',
-  'AUDIO',
-  'B',
-  'BDI',
-  'BDO',
-  'BIG',
-  'BR',
-  'BUTTON',
-  'CANVAS',
-  'CITE',
-  'CODE',
-  'DATA',
-  'DATALIST',
-  'DEL',
-  'DFN',
-  'EM',
-  'EMBED',
-  'I',
-  'IFRAME',
-  'IMG',
-  'INPUT',
-  'INS',
-  'KBD',
-  'LABEL',
-  'MAP',
-  'MARK',
-  'METER',
-  'NOSCRIPT',
-  'OBJECT',
-  'OUTPUT',
-  'PICTURE',
-  'PROGRESS',
-  'Q',
-  'RUBY',
-  'S',
-  'SAMP',
-  'SCRIPT',
-  'SELECT',
-  'SLOT',
-  'SMALL',
-  'SPAN',
-  'STRONG',
-  'SUB',
-  'SUP',
-  'SVG',
-  'TEMPLATE',
-  'TEXTAREA',
-  'TIME',
-  'U',
-  'TT',
-  'VAR',
-  'VIDEO',
-  'WBR'
-];
-
 /**
- * Computes all text from a given HTML document as flattened array. This is best-effort.
+ * Computes all text from the descendants of a given HTML node, such as a document, as flattened array. This is best-effort.
  *
- * @param {Document} document - HTML document to computes texts from.
+ * @param {Node} root - HTML node to compute texts from.
  */
-function htmlTextAlternatives(document: Document): string[] {
+function htmlTextAlternatives(root: Node): string[] {
   // TODO: [P2] #3923 Revisit this logic with W3C standard, we could do a better text alternatives computation.
   //       For example, <abbr title="..."> is not computed.
   //       https://www.w3.org/TR/accname-1.1/#mapping_additional_nd_name
-  return walk<HTMLElement>(document, node => {
+  return walk<HTMLElement>(root, node => {
     const { nodeType, tagName, textContent } = node;
 
     if (nodeType === Node.TEXT_NODE) {
       return [textContent];
     } else if (tagName === 'IMG') {
       return [node.getAttribute('alt')];
-    } else if (!HTML_INLINE_TAGS.includes(tagName)) {
+    } else if (!htmlInlineTagNames.includes(tagName)) {
       return ['\n'];
     }
   });
@@ -133,3 +75,5 @@ export default function activityAltText(
 
   return text;
 }
+
+export { htmlTextAlternatives };

@@ -85,10 +85,6 @@ const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
   return <PonyfillContext.Provider value={contextValue}>{children}</PonyfillContext.Provider>;
 };
 
-PonyfillComposer.defaultProps = {
-  ponyfill: undefined
-};
-
 PonyfillComposer.propTypes = {
   ponyfill: PropTypes.any
 };

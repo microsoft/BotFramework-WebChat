@@ -1,28 +1,6 @@
-import {
-  any,
-  array,
-  boolean,
-  literal,
-  looseObject,
-  number,
-  object,
-  optional,
-  pipe,
-  readonly,
-  string,
-  union
-} from 'valibot';
+import { any, array, boolean, literal, number, object, optional, pipe, readonly, string, union } from 'valibot';
 
-// TODO: Should build a better `directLineCardActionSchema`.
-const directLineCardActionSchema = pipe(
-  looseObject({
-    image: optional(string()),
-    title: optional(string()),
-    type: string(),
-    value: optional(any())
-  }),
-  readonly()
-);
+import directLineCardActionSchema, { directLineHeadlessCardActionSchema } from './directLineCardActionSchema';
 
 // https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#media-cards
 const directLineMediaCardSchema = pipe(
@@ -61,7 +39,7 @@ const directLineBasicCardSchema = pipe(
           pipe(
             object({
               alt: optional(string()),
-              tap: optional(directLineCardActionSchema),
+              tap: optional(directLineHeadlessCardActionSchema),
               url: optional(string())
             }),
             readonly()
@@ -71,7 +49,7 @@ const directLineBasicCardSchema = pipe(
       )
     ),
     subtitle: optional(string()),
-    tap: optional(directLineCardActionSchema),
+    tap: optional(directLineHeadlessCardActionSchema),
     text: optional(string()),
     title: optional(string())
   }),
@@ -105,7 +83,7 @@ const directLineReceiptCardSchema = pipe(
                 pipe(
                   object({
                     alt: string(),
-                    tap: optional(directLineCardActionSchema),
+                    tap: optional(directLineHeadlessCardActionSchema),
                     url: string()
                   }),
                   readonly()
@@ -114,7 +92,7 @@ const directLineReceiptCardSchema = pipe(
               price: string(),
               quantity: optional(union([number(), string()])), // TODO: Should be string only.
               subtitle: optional(string()),
-              tap: optional(directLineCardActionSchema),
+              tap: optional(directLineHeadlessCardActionSchema),
               text: optional(string()),
               title: string()
             }),
@@ -124,7 +102,7 @@ const directLineReceiptCardSchema = pipe(
         readonly()
       )
     ),
-    tap: optional(directLineCardActionSchema),
+    tap: optional(directLineHeadlessCardActionSchema),
     tax: optional(string()),
     title: optional(string()),
     total: optional(string()),
@@ -144,7 +122,6 @@ const directLineSignInCardSchema = pipe(
 
 export {
   directLineBasicCardSchema,
-  directLineCardActionSchema,
   directLineMediaCardSchema,
   directLineReceiptCardSchema,
   directLineSignInCardSchema

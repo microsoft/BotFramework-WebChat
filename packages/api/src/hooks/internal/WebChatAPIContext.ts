@@ -2,6 +2,7 @@ import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-ap
 import {
   type DirectLineJSBotConnection,
   type Observable,
+  type SendPostBackInit,
   type WebChatActivity,
   type sendFiles,
   type sendMessage,
@@ -11,7 +12,6 @@ import { createContext } from 'react';
 
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
 import { PerformCardAction } from '../../types/CardActionMiddleware';
 import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../../types/LocalizedStrings';
@@ -21,11 +21,12 @@ import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButton
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 import { RenderToast } from '../../types/ToastMiddleware';
 
+export type { SendPostBackInit };
+
 export type WebChatAPIContextType = {
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: LegacyRenderAttachment;
-  avatarRenderer: AvatarComponentFactory;
   clearSuggestedActions?: () => void;
   dir?: string;
   directLine?: DirectLineJSBotConnection;
@@ -61,7 +62,7 @@ export type WebChatAPIContextType = {
   sendFiles?: (...args: Parameters<typeof sendFiles>) => void;
   sendMessage?: (...args: Parameters<typeof sendMessage>) => void;
   sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
-  sendPostBack?: (value?: any) => void;
+  sendPostBack?: (value?: any, init?: SendPostBackInit | undefined) => void;
   sendTypingIndicator?: boolean;
   setDictateInterims?: (interims: string[]) => void;
   setDictateState?: (dictateState: number) => void;

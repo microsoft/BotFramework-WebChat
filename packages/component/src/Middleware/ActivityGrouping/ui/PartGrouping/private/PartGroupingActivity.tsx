@@ -4,18 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
 import cx from 'classnames';
-import {
-  array,
-  custom,
-  minLength,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  type InferOutput
-} from 'valibot';
+import { array, custom, is, minLength, object, optional, pipe, readonly, string, type InferOutput } from 'valibot';
 
 import StackedLayoutMain from '../../../../../Activity/StackedLayoutMain';
 import StackedLayoutMessageStatus from '../../../../../Activity/StackedLayoutMessageStatus';
@@ -24,7 +13,7 @@ import StackedLayoutStatus from '../../../../../Activity/StackedLayoutStatus';
 import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
 import useActiveDescendantId from '../../../../../providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
-import useGetGroupDescendantIdByActivityKey from '../../../../../providers/TranscriptFocus/useGetGroupDescendantIdByActivityKey';
+import useGroupDescendantIdByGroupKey from '../../../../../providers/TranscriptFocus/useGroupDescendantIdByGroupKey';
 import FocusTrap from '../../../../../Transcript/FocusTrap';
 import useRenderActivityProps from '../../../../../Transcript/hooks/useRenderActivityProps';
 import {
@@ -48,7 +37,7 @@ const { useAvatarForBot, useGetKeyByActivity, useLocalizer, useStyleOptions } = 
 const partGroupingActivityPropsSchema = pipe(
   object({
     activities: pipe(
-      array(pipe(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success))),
+      array(pipe(custom<Readonly<WebChatActivity>>(value => is(object({}), value)))),
       minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
       readonly()
     ),
@@ -61,7 +50,6 @@ type PartGroupingActivityProps = InferOutput<typeof partGroupingActivityPropsSch
 
 const partGroupingFocusableActivityPropsSchema = pipe(
   object({
-    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success),
     children: optional(reactNode()),
     className: optional(string()),
     groupKey: string()
@@ -75,15 +63,12 @@ type FocusablePartGroupingActivityProps = InferOutput<typeof partGroupingFocusab
 const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivity(
   props: FocusablePartGroupingActivityProps
 ) {
-  const { activity, children, className, groupKey } = validateProps(partGroupingFocusableActivityPropsSchema, props);
+  const { children, className, groupKey } = validateProps(partGroupingFocusableActivityPropsSchema, props);
 
   const [activeDescendantId] = useActiveDescendantId();
 
-  const getGroupDescendantIdByActivityKey = useGetGroupDescendantIdByActivityKey();
   const focusByGroupKey = useFocusByGroupKey();
-
-  const getKeyByActivity = useGetKeyByActivity();
-  const groupingActivityDescendantId = getGroupDescendantIdByActivityKey(getKeyByActivity(activity));
+  const [groupingActivityDescendantId] = useGroupDescendantIdByGroupKey(groupKey);
 
   const focusSelf = useCallback<(withFocus?: boolean) => void>(
     (withFocus?: boolean) => focusByGroupKey(groupKey, withFocus),
@@ -147,7 +132,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [isGroupOpen, setIsGroupOpen] = useState(partGroupDefaultOpen);
 
   const messages = useMemo(
-    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(message => !!message),
+    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(Boolean),
     [activities]
   );
   // eslint-disable-next-line no-magic-numbers
@@ -168,7 +153,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const lastActivity = activities.at(-1);
 
   const currentMessage = useMemo(
-    () => messages.find(message => message.creativeWorkStatus === 'Incomplete') || lastMessage,
+    () => messages.find(message => message.creativeWorkStatus[0] === 'Incomplete') || lastMessage,
     [messages, lastMessage]
   );
 
@@ -184,15 +169,14 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   // The HowTo entity (the group root) may carry an explicit `creativeWorkStatus` and `abstract`.
   // When present, it takes precedence over status derived from individual messages.
-  const [howToAbstract, howToStatus] = useMemo(() => {
-    const howToMessage = messages.find(message => message.isPartOf?.creativeWorkStatus);
-    const howTo = howToMessage?.isPartOf;
+  const [howToAbstract, howToStatus] = useMemo<[string | undefined, string | undefined]>(() => {
+    const howTo = messages.find(message => message.isPartOf[0]?.creativeWorkStatus[0])?.isPartOf[0];
 
-    return [howTo?.abstract, howTo?.creativeWorkStatus];
+    return [howTo?.abstract[0], howTo?.creativeWorkStatus[0]];
   }, [messages]);
 
-  const defaultWorkStatus = useMemo(
-    () => (messages.some(message => 'creativeWorkStatus' in message) ? 'Incomplete' : undefined),
+  const defaultWorkStatus = useMemo<'Incomplete' | undefined>(
+    () => (messages.some(message => message.creativeWorkStatus[0]) ? 'Incomplete' : undefined),
     [messages]
   );
 
@@ -200,7 +184,8 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   // 1. If the HowTo entity has an explicit `creativeWorkStatus`, use it.
   // 2. Otherwise, derive from the active message: find the first 'Incomplete' message's status.
   // 3. Fall back to `defaultWorkStatus` which is 'Incomplete' if any message has a `creativeWorkStatus` property.
-  const currentGroupStatus = howToStatus || currentMessage?.creativeWorkStatus || defaultWorkStatus;
+  const currentGroupStatus: string | undefined =
+    howToStatus || currentMessage?.creativeWorkStatus[0] || defaultWorkStatus;
 
   /**
    * The idea behind group header is that it displays the state of the entire group:
@@ -222,7 +207,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         )}
         <CollapsibleGroupingTitle>
           {currentGroupStatus === 'Incomplete' || howToAbstract
-            ? howToAbstract || currentMessage?.abstract || localize('COLLAPSIBLE_GROUPING_TITLE')
+            ? howToAbstract || currentMessage?.abstract[0] || localize('COLLAPSIBLE_GROUPING_TITLE')
             : localize('COLLAPSIBLE_GROUPING_TITLE')}
         </CollapsibleGroupingTitle>
       </Fragment>
@@ -231,11 +216,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   );
 
   return (
-    <FocusablePartGroupingActivity
-      activity={firstActivity}
-      className={classNames['part-grouping-activity']}
-      groupKey={groupKey}
-    >
+    <FocusablePartGroupingActivity className={classNames['part-grouping-activity']} groupKey={groupKey}>
       <StackedLayoutRoot
         hideAvatar={hasAvatar && !showAvatar}
         isGroup={true}

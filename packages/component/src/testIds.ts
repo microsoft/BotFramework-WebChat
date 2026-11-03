@@ -4,6 +4,7 @@ const testIds = {
   feedbackButton: 'feedback button',
   feedbackSendBox: 'feedback sendbox',
   sendBoxAttachmentBar: 'send box attachment bar',
+  sendBoxDropZone: 'send box drop zone',
   sendBoxAttachmentBarItem: 'send box attachment bar item',
   sendBoxAttachmentBarItemDeleteButton: 'send box attachment bar item delete button',
   sendBoxMicrophoneButton: 'send box microphone button',

@@ -29,6 +29,9 @@ import type { AdaptiveCard } from 'adaptivecards';
  * This violates WAI-ARIA because "aria-label" must not be set on an element without a "role".
  *
  * We need to set "role" attribute to "form" if the card has any input fields and is valid as a "form" role, otherwise, "figure".
+ *
+ * Without a label, the card gets no "role": "figure" and "form" take their names from the author only,
+ * so a nameless "figure" or "form" would be announced without its content.
  */
 export default function useRoleModEffect(
   adaptiveCard: AdaptiveCard
@@ -43,7 +46,9 @@ export default function useRoleModEffect(
           cardElement.getAttribute('aria-labelledby') ||
           cardElement.getAttribute('title')
           ? 'form'
-          : 'figure'
+          : cardElement.getAttribute('aria-label')
+            ? 'figure'
+            : false
       ),
     []
   );

@@ -15,10 +15,6 @@ const CollapseIcon = ({ className }) => (
   </svg>
 );
 
-CollapseIcon.defaultProps = {
-  className: undefined
-};
-
 CollapseIcon.propTypes = {
   className: PropTypes.string
 };

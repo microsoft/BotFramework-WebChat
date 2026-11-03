@@ -1,5 +1,5 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
-import { queryReceivedAtFromActivity } from 'botframework-webchat-core/activity';
+import { queryReceivedAtFromActivity } from 'botframework-webchat-core/activity.js';
 import { iteratorFind } from 'iter-fest';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 

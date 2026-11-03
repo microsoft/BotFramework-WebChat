@@ -1,5 +1,5 @@
 type PrecompiledGlobalize = {
-  dateFormatter: ({ skeleton }: { skeleton: 'MMMMdhm' }) => string;
+  dateFormatter: ({ skeleton }: { skeleton: 'MMMMdjm' }) => string;
   relativeTimeFormatter: (format: 'hour' | 'minute') => string;
   unitFormatter:
     | ((unit: 'byte', options: { form: 'long' }) => string)

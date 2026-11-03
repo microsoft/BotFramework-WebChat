@@ -8,7 +8,13 @@ module.exports = webDriver =>
   async function snapshot(_, options) {
     await allImagesCompleted(webDriver);
 
-    const base64 = await takeStabilizedScreenshot(webDriver);
+    let base64;
+
+    if (options?.stable === false) {
+      base64 = await webDriver.takeScreenshot();
+    } else {
+      base64 = await takeStabilizedScreenshot(webDriver);
+    }
 
     /* istanbul ignore next */
     await webDriver.executeAsyncScript(

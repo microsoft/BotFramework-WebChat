@@ -25,10 +25,6 @@
 
 :global(.webchat) .code-block-content__title {
   font-weight: 600;
-
-  &::first-letter {
-    text-transform: uppercase;
-  }
 }
 
 :global(.webchat) .code-block-content .code-block-content__code-block {

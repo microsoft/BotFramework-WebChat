@@ -21,7 +21,7 @@ const umdResolvePlugin = {
 
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^botframework-webchat-api\/middleware$/ }, () => ({
+    build.onResolve({ filter: /^botframework-webchat-api\/middleware\.js$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/middleware.ts')
     }));
 
@@ -33,7 +33,7 @@ const umdResolvePlugin = {
 
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^botframework-webchat-component\/internal$/ }, () => ({
+    build.onResolve({ filter: /^botframework-webchat-component\/internal\.js$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
     }));
   }

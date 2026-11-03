@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: [1, 2, 3, 4, 5, 6].map(index => ({
+              title: `Action ${index}`,
+              type: 'imBack',
+              value: `Action ${index}`
+            })),
+            to: []
+          },
+          text: 'Please select one of the actions below',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // The suggested actions overflow, react-film shows the flippers after measuring the filmstrip.
+        await waitFor(() =>
+          expect(document.querySelectorAll('.webchat__suggested-actions .react-film__flipper')).toHaveLength(2)
+        );
+
+        const nextFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Next"]');
+        const previousFlipper = document.querySelector('.webchat__suggested-actions button[aria-label="Previous"]');
+
+        // WHEN: Focus on the send box.
+        pageObjects.focusSendBoxTextBox();
+
+        // THEN: The send box should have the focus.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // THEN: Both flippers show without focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the upload button.
+        await host.sendShiftTab();
+
+        // THEN: The upload button should have the focus.
+        expect(document.activeElement).toHaveProperty('title', 'Upload file');
+
+        // THEN: The upload button shows the focus indicator, both flippers show without focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the "Next" flipper.
+        await host.sendShiftTab();
+
+        // THEN: The "Next" flipper should have the focus.
+        expect(document.activeElement).toBe(nextFlipper);
+
+        // The flipper background color transitions in 100ms, host.snapshot() waits for 5 identical screenshots in a row.
+        // THEN: The "Next" flipper shows a two-tone focus indicator, the suggested actions show a black border.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the first suggested action.
+        await host.sendShiftTab();
+
+        // THEN: The first suggested action should have the focus.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[0]);
+
+        // THEN: The "Action 1" button shows a dashed focus indicator, both flippers show without focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Press SHIFT-TAB to move focus to the "Previous" flipper.
+        await host.sendShiftTab();
+
+        // THEN: The "Previous" flipper should have the focus.
+        expect(document.activeElement).toBe(previousFlipper);
+
+        // THEN: The "Previous" flipper shows a two-tone focus indicator, the "Next" flipper does not.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

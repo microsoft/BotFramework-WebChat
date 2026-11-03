@@ -11,6 +11,7 @@ const OpenInNewWindowIcon = ({ className }: Props) => {
 
   return (
     <svg
+      aria-hidden="true"
       className={cx(classNames['text-content__open-in-new-window-icon'], className)}
       viewBox="3 3 18 18"
       xmlns="http://www.w3.org/2000/svg"

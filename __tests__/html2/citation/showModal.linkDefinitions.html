@@ -46,10 +46,6 @@
         const searchParams = new URLSearchParams(location.search);
         const variant = searchParams.get('variant');
 
-        if (variant) {
-          window.checkAccessibility = async () => {};
-        }
-
         const root = createRoot(document.getElementById('webchat'));
         const webChatProps = { directLine, store };
 

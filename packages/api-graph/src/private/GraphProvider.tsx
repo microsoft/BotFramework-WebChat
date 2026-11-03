@@ -1,9 +1,14 @@
 import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
-import { createGraphFromStore, isOfType, type GraphSubscriber, type Identifier } from 'botframework-webchat-core/graph';
-import React, { memo, useEffect, useMemo, useState } from 'react';
-import { custom, function_, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import {
+  createGraphFromStore,
+  isOfType,
+  type GraphSubscriber,
+  type Identifier
+} from 'botframework-webchat-core/graph.js';
+import React, { memo, useLayoutEffect, useMemo, useState } from 'react';
+import { custom, function_, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
 
@@ -12,8 +17,8 @@ const EMPTY_ARRAY = Object.freeze([]);
 const graphProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    store: custom<ReturnType<typeof createStore>>(
-      value => safeParse(object({ getState: function_(), subscribe: function_() }), value).success
+    store: custom<ReturnType<typeof createStore>>(value =>
+      is(object({ getState: function_(), subscribe: function_() }), value)
     )
   }),
   readonly()
@@ -28,7 +33,9 @@ function GraphProvider(props: GraphProviderProps) {
 
   const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(EMPTY_ARRAY);
 
-  useEffect(() => {
+  // Layout effect: activities already in the store (e.g. rehydrated) must be in this state before the re-render of any other layout effect.
+  // Otherwise, that re-render would see activities in Redux which are not in the graph yet.
+  useLayoutEffect(() => {
     // Sync between graph and `orderedActivities`.
     const handleChange: GraphSubscriber = record => {
       const state = graph.getState();
@@ -76,17 +83,21 @@ function GraphProvider(props: GraphProviderProps) {
     };
   }, [graph, setOrderedActivityNodes]);
 
-  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
-    () =>
-      Object.freeze([
-        Object.freeze(
-          orderedActivityNodes.map(
-            node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
-          )
-        )
-      ] as const),
-    [orderedActivityNodes]
-  );
+  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(() => {
+    // Filter out stale graph nodes for activities no longer in Redux (e.g. pruned livestream revisions).
+    // The graph does not support deletion, so stale nodes linger after computeSortedActivities prunes them.
+    const { activities: storeActivities } = store.getState();
+    const validActivitySet = new Set<WebChatActivity>(storeActivities);
+    const activities: WebChatActivity[] = [];
+
+    for (const node of orderedActivityNodes) {
+      const activity = node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity;
+
+      validActivitySet.has(activity) && activities.push(activity);
+    }
+
+    return Object.freeze([Object.freeze(activities)] as const);
+  }, [orderedActivityNodes, store]);
 
   const context = useMemo<GraphContextType>(
     () =>

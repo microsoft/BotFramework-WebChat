@@ -27,6 +27,14 @@
     color: var(--webchat-colorNeutralForegroundDisabled);
     cursor: not-allowed;
   }
+
+  /* Forced colors keep a transparent background transparent, so the host page would show through the button. */
+  @media (forced-colors: active) {
+    &,
+    &:not([aria-disabled='true']):is(:active, :hover) {
+      background-color: ButtonFace;
+    }
+  }
 }
 
 :global(.webchat-fluent) .suggested-action__image {

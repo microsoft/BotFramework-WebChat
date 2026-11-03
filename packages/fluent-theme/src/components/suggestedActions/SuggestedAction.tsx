@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat';
-import { type DirectLineCardAction } from 'botframework-webchat/internal';
+import { type DirectLineCardAction } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { MouseEventHandler, memo, useCallback } from 'react';
 
@@ -29,7 +29,8 @@ type SuggestedActionProps = Readonly<{
     | 'playVideo'
     | 'postBack'
     | 'showImage'
-    | 'signin';
+    | 'signin'
+    | 'webchat:callURL';
   value?: any;
 }>;
 

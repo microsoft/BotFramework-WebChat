@@ -31,8 +31,5 @@ export {
   UploadButton,
   VideoContent,
   VimeoContent,
-  YouTubeContent,
-  type BasicWebChatProps,
-  type ComposerProps,
-  type ReactWebChatProps
-} from 'botframework-webchat-component/component';
+  YouTubeContent
+} from 'botframework-webchat-component/component.js';

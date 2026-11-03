@@ -6,13 +6,13 @@ import {
   boolean,
   custom,
   function_,
+  is,
   literal,
   number,
   object,
   optional,
   pipe,
   readonly,
-  safeParse,
   string,
   type InferInput
 } from 'valibot';
@@ -23,11 +23,12 @@ const accessibleButtonPropsSchema = pipe(
   object({
     'aria-hidden': optional(boolean()),
     'aria-keyshortcuts': optional(string()),
+    'aria-label': optional(string()),
     children: optional(reactNode()),
     className: optional(string()),
     'data-testid': optional(string()),
     disabled: optional(boolean()),
-    onClick: custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success),
+    onClick: custom<MouseEventHandler<HTMLButtonElement>>(value => is(function_(), value)),
     tabIndex: optional(number()),
     title: optional(string()),
     type: literal('button')
@@ -60,6 +61,7 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
     {
       'aria-hidden': ariaHidden,
       'aria-keyshortcuts': ariaKeyShortcuts,
+      'aria-label': ariaLabel,
       children,
       className,
       'data-testid': dataTestId,
@@ -74,6 +76,7 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
       aria-disabled={disabled || undefined}
       aria-hidden={ariaHidden}
       aria-keyshortcuts={ariaKeyShortcuts}
+      aria-label={ariaLabel}
       className={className}
       data-testid={dataTestId}
       onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}

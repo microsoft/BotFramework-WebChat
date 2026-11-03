@@ -1,6 +1,6 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
-import { any, array, object, pipe, readonly, type InferInput } from 'valibot';
+import { any, array, object, pipe, readonly } from 'valibot';
 
 import computeSuggestedActionText from '../../Utils/computeSuggestedActionText';
 
@@ -17,14 +17,14 @@ const liveRegionSuggestedActionsPropSchema = pipe(
   readonly()
 );
 
-type LiveRegionSuggestedActionsProps = InferInput<typeof liveRegionSuggestedActionsPropSchema>;
+type LiveRegionSuggestedActionsProps = InferReactProps<typeof liveRegionSuggestedActionsPropSchema>;
 
 function LiveRegionSuggestedActions(props: LiveRegionSuggestedActionsProps) {
   const { suggestedActions } = validateProps(liveRegionSuggestedActionsPropSchema, props);
 
   return (
     suggestedActions.actions?.length && (
-      <p className="webchat__live-region-activity__suggested-actions">
+      <p className="webchat__live-region-activity__suggested-actions" role="none">
         {suggestedActions.actions.map((action, index) => (
           // Direct Line schema does not have key other than index.
           // eslint-disable-next-line react/no-array-index-key

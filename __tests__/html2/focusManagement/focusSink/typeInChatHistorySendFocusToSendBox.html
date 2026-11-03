@@ -40,6 +40,11 @@
         await host.sendKeys('echo 123\n');
 
         await pageConditions.numActivitiesShown(3);
+
+        // The bot echo can arrive before the outgoing message is acknowledged, wait for "Just now" instead of "Sending".
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: Should show "echo 123" sent ("Just now") and the 2 echo replies.
         await host.snapshot('local');
       });
     </script>

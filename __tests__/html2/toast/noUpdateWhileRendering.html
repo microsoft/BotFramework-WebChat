@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* Shows the live region below the toast. */
+      .webchat__live-region {
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: The development build of React, which logs "Cannot update a component while rendering a different component" to console.error.
+        const consoleErrorSpy = spyOn(console, 'error');
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps the live region copy, so it can be checked and seen in the snapshot.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: A notification is shown.
+        store.dispatch({
+          payload: { id: '1', level: 'info', message: 'Notification 1.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toastShown(1);
+
+        // THEN: The notification should be announced in the live region.
+        await waitFor(() =>
+          expect(
+            Array.from(
+              pageElements.liveRegion().querySelectorAll('.webchat__toaster__notifications'),
+              ({ textContent }) => textContent
+            )
+          ).toContain('Notification 1.')
+        );
+
+        // THEN: The toaster should not update the live region while rendering.
+        expect(
+          consoleErrorSpy.mock.calls
+            .filter(([message]) => `${message}`.includes('Cannot update a component'))
+            // [component being updated, component being rendered]
+            .map(([, updatedComponent, renderingComponent]) => [updatedComponent, renderingComponent])
+        ).toEqual([]);
+
+        // THEN: The toast and its copy in the live region are shown.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -11,7 +11,14 @@ export default function createBrowserWebSpeechPonyfillFactory(): () => WebSpeech
 
   return () => ({
     SpeechGrammarList: window.SpeechGrammarList || window.webkitSpeechGrammarList,
-    SpeechRecognition: window.SpeechRecognition || window.webkitSpeechRecognition,
+    SpeechRecognition:
+      window.SpeechRecognition ||
+      (window.webkitSpeechRecognition
+        ? Object.assign(window.webkitSpeechRecognition, {
+            available: (): Promise<AvailabilityStatus> => Promise.resolve('unavailable'),
+            install: (): Promise<boolean> => Promise.resolve(false)
+          })
+        : undefined),
     speechSynthesis: window.speechSynthesis,
     SpeechSynthesisUtterance: window.SpeechSynthesisUtterance
   });

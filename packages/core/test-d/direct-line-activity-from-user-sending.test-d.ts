@@ -1,6 +1,6 @@
 import { expectAssignable } from 'tsd';
 
-import type { LocalId } from '../src/activity';
+import type { LocalId } from '../src/boot/activity';
 import { type WebChatActivity } from '../src/index';
 
 // All activities that are sending, are activities that did not reach the server yet (a.k.a. activity-in-transit).

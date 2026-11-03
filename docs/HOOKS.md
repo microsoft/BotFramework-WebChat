@@ -958,15 +958,16 @@ To stop observing scroll positions, pass a falsy value to the `observer` argumen
 ## `usePerformCardAction`
 
 <!-- prettier-ignore-start -->
-```js
-usePerformCardAction(): ({
-  displayText: string,
-  text: string,
-  type: string,
-  value: string
-}) => void
+```ts
+usePerformCardAction(): (
+  cardAction: DirectLineCardAction,
+  event?: { readonly target: EventTarget } | undefined,
+  init?: { readonly replyToId?: string | undefined } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.19.2: `init.replyToId` is added.
 
 When called, this function will perform the card action based on its `type`. The card action will be performed by `cardActionMiddleware`.
 
@@ -1274,18 +1275,24 @@ If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a
 ```js
 type SendBoxAttachment = {
   blob: Blob | File;
-  thumbnailURL?: URL | undefined;
+  thumbnailURL?: URL | undefined; // Must be data URI
 };
 
 useSendMessage(): (
   text?: string,
-  method: string | undefined,
-  {
+  method?: string | undefined,
+  init?: {
     attachments?: Iterable<SendBoxAttachment> | undefined
-  }
+    channelData?: any;
+    replyToId?: string | undefined;
+  } | undefined
 ) => void
 ```
 <!-- prettier-ignore-end -->
+
+> Breaking change in 4.19.3: `init.attachments[].thumbnailURL` must be data URI, otherwise will be ignored.
+
+> New in 4.19.3: Added `init.replyToId`.
 
 > New in 4.17.0: `attachments` are added to support attaching files.
 
@@ -1301,9 +1308,18 @@ Image attachments (`Blob.type` returning `image/*`) will have their thumbnail au
 
 <!-- prettier-ignore-start -->
 ```js
-useSendMessageBack(): (value: any, text: string, displayText: string) => void
+useSendMessageBack(): (
+  value: any,
+  text?: string | undefined,
+  displayText?: string | undefined,
+  init?: {
+    replyToId?: string | undefined
+  } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.19.3: Added `init.replyToId`.
 
 When called, this function will send a `messageBack` activity to the bot.
 
@@ -1311,11 +1327,18 @@ When called, this function will send a `messageBack` activity to the bot.
 
 <!-- prettier-ignore-start -->
 ```js
-useSendPostBack(): (value: any) => void
+useSendPostBack(): (
+  value: any,
+  init?: {
+    replyToId?: string | undefined
+  } | undefined
+) => void
 ```
 <!-- prettier-ignore-end -->
 
-When called, this function will send a `postBack` activity to the bot.
+> New in 4.19.3: Added `init.replyToId`.
+
+When called, this function will send a `postBack` activity to the bot with optionally `replyToId`.
 
 ## `useSendTimeoutForActivity`
 

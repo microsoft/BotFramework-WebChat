@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { usePerformCardAction } from 'botframework-webchat/hook.js';
+      import createRenderHook from '/assets/esm/createRenderHook.js';
+
+      const { createDirectLineEmulator } = window.testHelpers;
+
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const renderHook = createRenderHook(
+          document.getElementById('webchat'),
+          {
+            directLine,
+            store
+          },
+          { renderWebChat: true }
+        );
+
+        await renderHook();
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.animation',
+              content: {
+                buttons: [{ title: 'Submit', type: 'postBack', value: { hello: 'World!' } }],
+                text: 'Hello, World!',
+                media: [
+                  {
+                    profile: 'animation',
+                    // `VideoContent` parses the URL with `new URL()`, so it must be absolute.
+                    url: new URL('/assets/dark-gray-video.webm', location.href).href
+                  }
+                ],
+                autoloop: true,
+                autostart: false
+              }
+            }
+          ],
+          id: 'a-00001',
+          type: 'message'
+        });
+
+        // Hide the controls because the timeline contains buffer size which will never converge.
+        // We poll every 500ms until got 5 stable numbers.
+        // However, the buffer size range from 3.035s to 3.238s, which produce different snapshot.
+        const videoElement = document.querySelector('video');
+
+        videoElement.controls = false;
+
+        // The snapshot shows the first frame, wait until it is loaded.
+        await waitFor(() => expect(videoElement.readyState).toBe(HTMLMediaElement.HAVE_ENOUGH_DATA));
+        await pageConditions.mediaBufferStabilized(videoElement);
+
+        const submitButton = pageElements.activities()[0].querySelector('.ac-pushButton');
+
+        const { activity, resolveAll } = await directLine.actPostActivity(() => host.click(submitButton));
+
+        await resolveAll();
+
+        directLine.emulateIncomingActivity(
+          `\`\`\`\n${JSON.stringify(
+            {
+              ...activity,
+              channelData: { ...activity.channelData, clientActivityID: '...' },
+              entities: activity.entities ? '{ ... }' : undefined,
+              from: '...',
+              localTimestamp: '...',
+              localTimezone: '...'
+            },
+            null,
+            2
+          )}\n\`\`\``
+        );
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            channelData: expect.objectContaining({ postBack: true }),
+            replyToId: 'a-00001',
+            type: 'message',
+            value: { hello: 'World!' }
+          })
+        );
+
+        await pageConditions.scrollStabilized();
+        // THEN: The card shows the first video frame, and the reply shows the post back activity with its `replyToId`.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

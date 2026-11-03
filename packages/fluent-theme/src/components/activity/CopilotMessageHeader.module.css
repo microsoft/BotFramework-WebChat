@@ -5,7 +5,7 @@
   display: flex;
   flex-wrap: nowrap;
   gap: var(--webchat-spacingHorizontalS);
-  max-width: var(--webchat__bubble--max-width);
+  max-width: var(--webchat-part-grouping__bubble--max-width);
 }
 
 :global(.webchat-fluent) .copilot-message-header__avatar {

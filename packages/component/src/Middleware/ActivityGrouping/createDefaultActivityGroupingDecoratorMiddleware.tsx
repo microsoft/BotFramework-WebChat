@@ -1,4 +1,4 @@
-import { createActivityGroupingMiddleware, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import { createActivityGroupingMiddleware, type DecoratorMiddleware } from 'botframework-webchat-api/decorator.js';
 import PartGrouping from './ui/PartGrouping/PartGrouping';
 import RenderActivityGrouping from './ui/RenderActivityGrouping';
 import SenderGrouping from './ui/SenderGrouping/SenderGrouping';

@@ -33,7 +33,10 @@
     var(--webchat__border-animation--color-3)
   );
   --webchat-decorator-borderLoader-color1Fade: var(--webchat-borderLoader-color1Fade, transparent);
-  --webchat-decorator-borderLoader-color3Fade: var(--webchat-borderLoader-color1Fade, transparent);
+  --webchat-decorator-borderLoader-color3Fade: var(
+    --webchat-borderLoader-color3Fade,
+    var(--webchat-borderLoader-color1Fade, transparent)
+  );
 
   animation: borderAnimation-position 3s linear infinite;
   background: linear-gradient(

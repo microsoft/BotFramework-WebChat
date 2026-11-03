@@ -1,32 +1,42 @@
 /**
  * Adaptive Cards styling
  */
-type AdaptiveCardsStyleOptions = {
+type StrictAdaptiveCardsStyleOptions = {
   /** Adaptive Cards: Specify the maximum schema version supported by the Adaptive Card serializer. */
-  adaptiveCardsParserMaxVersion?: string;
+  adaptiveCardsParserMaxVersion: string | undefined;
 
   /**
    * Adaptive Cards styling for 'emphasis' container style
    */
-  cardEmphasisBackgroundColor?: string;
+  cardEmphasisBackgroundColor: string | undefined;
 
   /**
-   * Adaptive Cards: background color of Adaptive Cards button with status of 'aria-pressed'
+   * Adaptive Cards: background color of the selected Adaptive Cards button, i.e. the action the user has performed
    */
-  cardPushButtonBackgroundColor?: string;
+  cardPushButtonBackgroundColor: string | undefined;
 
   /**
-   * Adaptive Cards: text color of Adaptive Cards button with status of 'aria-pressed'
+   * Adaptive Cards: text color of the selected Adaptive Cards button, i.e. the action the user has performed, and the inner band of the keyboard focus indicator of Adaptive Cards buttons
    */
-  cardPushButtonTextColor?: string;
+  cardPushButtonTextColor: string | undefined;
 
   /**
    * Cards: Rich Cards
    * Enable title (and subtitle) wrapping
+   *
+   * Line items, facts, and amounts in receipt cards always wrap so they are not truncated, regardless of this option.
    */
-  richCardWrapTitle?: boolean;
+  richCardWrapTitle: boolean | undefined;
+
+  /**
+   * Cards: Rich Cards
+   * When `true`, omits `style: 'heading'` from the title so the rendered TextBlock has no
+   * `role="heading"` / `aria-level`. Defaults to `false` (existing behavior keeps the heading
+   * style; see issue #4327).
+   */
+  richCardTitleOmitHeadingRole: boolean | undefined;
 };
 
-type StrictAdaptiveCardsStyleOptions = Required<AdaptiveCardsStyleOptions>;
+type AdaptiveCardsStyleOptions = Partial<StrictAdaptiveCardsStyleOptions>;
 
 export type { AdaptiveCardsStyleOptions, StrictAdaptiveCardsStyleOptions };

@@ -23,6 +23,7 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
+  useFileDropZone,
   useFocus,
   useGetActivitiesByKey,
   useGetActivityByKey,
@@ -99,6 +100,5 @@ export {
   useVoiceRecordingMuted,
   useVoiceSelector,
   useVoiceState,
-  useWebSpeechPonyfill,
-  type SendBoxFocusOptions
-} from 'botframework-webchat-component/hook';
+  useWebSpeechPonyfill
+} from 'botframework-webchat-component/hook.js';

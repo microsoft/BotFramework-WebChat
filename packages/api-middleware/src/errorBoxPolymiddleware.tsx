@@ -1,5 +1,5 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { object, pipe, readonly, string, unknown, type InferInput } from 'valibot';
 
 import templatePolymiddleware, {
@@ -18,7 +18,7 @@ const {
   Provider: ErrorBoxPolymiddlewareProvider,
   Proxy,
   reactComponent: errorBoxComponent,
-  useBuildRenderCallback: useBuildRenderErrorBoxCallback
+  useBuildRenderCallback
 } = templatePolymiddleware<{ readonly error: unknown; readonly where: string }, { readonly children?: never }>(
   'ErrorBox'
 );
@@ -41,14 +41,26 @@ const ErrorBoxPolymiddlewareProxyPropsSchema = pipe(
 
 type ErrorBoxPolymiddlewareProxyProps = Readonly<InferInput<typeof ErrorBoxPolymiddlewareProxyPropsSchema>>;
 
+// If no error box is defined, do not fallthrough into RCoR and it would error out. Render nothing instead.
+const NullComponent = () => null;
+
 // A friendlier version than the organic <Proxy>.
 const ErrorBoxPolymiddlewareProxy = memo(function ErrorBoxPolymiddlewareProxy(props: ErrorBoxPolymiddlewareProxyProps) {
   const { error, where } = validateProps(ErrorBoxPolymiddlewareProxyPropsSchema, props);
 
   const request = useMemo(() => ({ error, where }), [error, where]);
 
-  return <Proxy request={request} />;
+  return <Proxy fallbackComponent={NullComponent} request={request} />;
 });
+
+const useBuildRenderErrorBoxCallback: typeof useBuildRenderCallback = () => {
+  const buildRenderCallback = useBuildRenderCallback();
+
+  return useCallback(
+    (request, options) => buildRenderCallback(request, Object.freeze({ fallbackComponent: NullComponent, ...options })),
+    [buildRenderCallback]
+  );
+};
 
 export {
   createErrorBoxPolymiddleware,

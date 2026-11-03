@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -27,6 +27,9 @@
 
         await pageObjects.sendMessageViaSendBox('herocard');
         await pageConditions.minNumActivitiesShown(2);
+
+        // The card overflows the transcript only after its image is loaded, scrolling before that would scroll nowhere.
+        await pageConditions.allImagesLoaded();
         await pageConditions.scrollToBottomCompleted();
 
         // SETUP: Focus on the last button of the activity just above the "New messages" button.
@@ -36,11 +39,14 @@
 
         // SETUP: Scroll to bottom minus 10px.
         await pageObjects.scrollToTop(-10);
+
+        // THEN: The transcript is scrolled 10 px above the bottom with the last button of the card focused.
         await host.snapshot('local');
 
         // SETUP: Receive a new card, so the "New messages" button is shown.
         await pageObjects.sendMessageViaCode('herocard qna 1');
         await pageConditions.minNumActivitiesShown(4);
+        await pageConditions.allImagesLoaded();
 
         // WHEN: Focusing inside the activity, ESCAPE key is pressed followed by SHIFT TAB key.
         await host.sendKeys('ESCAPE');

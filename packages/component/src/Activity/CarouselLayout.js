@@ -22,11 +22,11 @@ const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const CarouselLayoutCore = ({
   activity,
-  hideTimestamp,
-  renderActivityStatus,
+  hideTimestamp = false,
+  renderActivityStatus = false,
   renderAttachment,
-  renderAvatar,
-  showCallout
+  renderAvatar = false,
+  showCallout = true
 }) => {
   const [{ root: filmRootClassName }] = useReactFilmStyleSetClassNames();
   const [direction] = useDirection();
@@ -69,13 +69,6 @@ const CarouselLayoutCore = ({
   );
 };
 
-CarouselLayoutCore.defaultProps = {
-  hideTimestamp: false,
-  renderActivityStatus: false,
-  renderAvatar: false,
-  showCallout: true
-};
-
 CarouselLayoutCore.propTypes = {
   activity: PropTypes.shape({
     attachments: PropTypes.array
@@ -106,10 +99,6 @@ const CarouselLayout = props => {
       <CarouselLayoutCore {...props} />
     </FilmComposer>
   );
-};
-
-CarouselLayout.defaultProps = {
-  ...CarouselLayoutCore.defaultProps
 };
 
 CarouselLayout.propTypes = {

@@ -7,7 +7,7 @@ const { useDirection } = hooks;
 
 const ICON_SIZE_FACTOR = 16;
 
-const WarningNotificationIcon = ({ className, size }) => {
+const WarningNotificationIcon = ({ className = '', size = 1 }) => {
   const [direction] = useDirection();
 
   return (
@@ -21,11 +21,6 @@ const WarningNotificationIcon = ({ className, size }) => {
       <path d="M13.1,13.1H0L6.6,0L13.1,13.1z M7,10.5H6.1v0.9H7V10.5z M7,9.7V5.2H6.1v4.4L7,9.7z" fillRule="evenodd" />
     </svg>
   );
-};
-
-WarningNotificationIcon.defaultProps = {
-  className: '',
-  size: 1
 };
 
 WarningNotificationIcon.propTypes = {

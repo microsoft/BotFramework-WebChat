@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -60,7 +60,8 @@
           {
             directLine,
             store,
-            styleOptions: { subtle: 'Black' }
+            // The upload button is not under test, its anti-aliased icon flips pixels between runs.
+            styleOptions: { disableFileUpload: true, subtle: 'Black' }
           },
           webChatElement
         );
@@ -94,6 +95,7 @@
           'scrollable should be at bottom'
         );
 
+        // THEN: The transcript is scrolled to the bottom.
         await host.snapshot('local');
       });
     </script>

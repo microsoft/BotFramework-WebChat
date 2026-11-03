@@ -10,7 +10,13 @@ module.exports = webDriver =>
   async function snapshot(mode, options) {
     await allImagesCompleted(webDriver);
 
-    const screenshot = await takeStabilizedScreenshot(webDriver);
+    let screenshot;
+
+    if (options?.stable === false) {
+      screenshot = await webDriver.takeScreenshot();
+    } else {
+      screenshot = await takeStabilizedScreenshot(webDriver);
+    }
 
     try {
       expect(screenshot).toMatchImageSnapshot(

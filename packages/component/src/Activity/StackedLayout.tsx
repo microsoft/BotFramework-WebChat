@@ -1,8 +1,9 @@
 /* eslint complexity: ["error", 50] */
 
-import { hooks } from 'botframework-webchat-api';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import type { RenderAttachment } from 'botframework-webchat-api';
-import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
+import { hooks } from 'botframework-webchat-api';
+import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator.js';
 import {
   getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
@@ -11,15 +12,16 @@ import {
   isVoiceActivity,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
-import isBasedOnSoftwareSourceCode from '../Attachment/Text/private/isBasedOnSoftwareSourceCode';
 import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
+import getFirstBaseOfSoftwareSourceCode from '../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useUniqueId from '../hooks/internal/useUniqueId';
+import useLocalizeActivityGreetingAlt from '../hooks/internal/useLocalizeActivityGreetingAlt.js';
+import useLocalizeProgrammingLanguage from '../hooks/internal/useLocalizeProgrammingLanguage';
+import { useLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
 import CodeBlockContent from './CodeBlockContent';
@@ -28,7 +30,6 @@ import StackedLayoutMain from './StackedLayoutMain';
 import StackedLayoutMessageStatus from './StackedLayoutMessageStatus';
 import StackedLayoutRoot from './StackedLayoutRoot';
 import StackedLayoutStatus from './StackedLayoutStatus';
-import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 
 import styles from './StackedLayout.module.css';
 
@@ -41,7 +42,6 @@ type StackedLayoutInnerProps = Readonly<{
   hasAvatar: boolean;
   hasDisplayText: boolean;
   hasNub: boolean;
-  id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
   renderBubbleContent: (title?: string | undefined, showStatus?: boolean) => ReactNode;
   showAvatar?: boolean | undefined;
@@ -56,30 +56,23 @@ const StackedLayoutInner = memo(
     hasAvatar,
     hasDisplayText,
     hasNub,
-    id,
     renderAvatar,
     renderBubbleContent,
     showAvatar,
     showNub
   }: StackedLayoutInnerProps) => {
-    const [{ initials: botInitials }] = useAvatarForBot();
     const localize = useLocalizer();
     const classNames = useStyles(styles);
+    const [greetingAlt] = useLocalizeActivityGreetingAlt()(activity);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
-    const greetingAlt = (
-      fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-    ).replace(/\s{2,}/gu, ' ');
 
     return (
       <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
-        {!!(hasDisplayText || messageThing?.abstract) && (
+        {!!(hasDisplayText || messageThing?.abstract[0]) && (
           <div
-            aria-roledescription="message"
+            aria-roledescription={localize('ACTIVITY_MESSAGE_ARIA_ROLE_ALT')}
             className={cx(classNames['stacked-layout__message-row'])}
-            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-            /* eslint-disable-next-line react/forbid-dom-props */
-            id={id}
             role="group"
           >
             <ScreenReaderText text={greetingAlt} />
@@ -89,7 +82,7 @@ const StackedLayoutInner = memo(
               nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
             >
               <ActivityBorderDecorator activity={activity}>
-                {renderBubbleContent(messageThing?.abstract)}
+                {renderBubbleContent(messageThing?.abstract[0])}
               </ActivityBorderDecorator>
             </Bubble>
           </div>
@@ -122,8 +115,8 @@ const StackedLayout = ({
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
+  const localizeProgrammingLanguage = useLocalizeProgrammingLanguage();
   const classNames = useStyles(styles);
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
@@ -136,6 +129,7 @@ const StackedLayout = ({
   const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
   const isCollapsible = useMemo(() => messageThing?.keywords?.includes('Collapsible'), [messageThing]);
 
+  const creativeWorkStatus = messageThing?.creativeWorkStatus[0];
   const isLivestreaming = !!getActivityLivestreamingMetadata(activity);
   const activityDisplayText = isMessageOrTyping
     ? messageBackDisplayText || activity.text
@@ -150,8 +144,8 @@ const StackedLayout = ({
   const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const otherInitials = fromUser ? botInitials : userInitials;
   const otherNubSize = fromUser ? bubbleNubSize : bubbleFromUserNubSize;
-  const activityKey = useGetKeyByActivity()(activity);
-  const isInGroup = !!useGetLogicalGroupKey()(activityKey);
+  const [logicalGroupKey] = useLogicalGroupKey(useGetKeyByActivity()(activity));
+  const isInGroup = !!logicalGroupKey;
 
   const hasAvatar = (initials || typeof initials === 'string') && !isInGroup;
   const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';
@@ -164,14 +158,12 @@ const StackedLayout = ({
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = !isInGroup && showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
-  const showStatus = !!messageThing?.creativeWorkStatus || isInGroup;
+  const showStatus = !!creativeWorkStatus || isInGroup;
 
   const renderMainBubbleContent = useCallback(
     (title = '', withStatus = true) => (
       <div className={classNames['stacked-layout__bubble']}>
-        {withStatus && showStatus && (
-          <StackedLayoutMessageStatus creativeWorkStatus={messageThing?.creativeWorkStatus} />
-        )}
+        {withStatus && showStatus && <StackedLayoutMessageStatus creativeWorkStatus={creativeWorkStatus} />}
         {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
         {activityDisplayText &&
           renderAttachment({
@@ -183,7 +175,7 @@ const StackedLayout = ({
           })}
       </div>
     ),
-    [activity, activityDisplayText, classNames, messageThing?.creativeWorkStatus, renderAttachment, showStatus]
+    [activity, activityDisplayText, classNames, creativeWorkStatus, renderAttachment, showStatus]
   );
 
   const attachmentChildren = useMemo(() => {
@@ -209,24 +201,28 @@ const StackedLayout = ({
       );
     }
 
-    if (isCollapsible && isBasedOnSoftwareSourceCode(messageThing)) {
-      syntheticAttachments.push(
-        <AttachmentRow
-          attachedAlt={attachmentAlt}
-          fromUser={fromUser}
-          hasAvatar={!!hasAvatar}
-          hasNub={!!hasNub}
-          key={syntheticAttachments.length}
-          showBubble={false}
-        >
-          <CodeBlockContent
-            code={messageThing.isBasedOn.text}
+    if (isCollapsible) {
+      const firstSoftwareSourceCode = getFirstBaseOfSoftwareSourceCode(messageThing);
+
+      if (firstSoftwareSourceCode) {
+        syntheticAttachments.push(
+          <AttachmentRow
+            attachedAlt={attachmentAlt}
+            fromUser={fromUser}
+            hasAvatar={!!hasAvatar}
+            hasNub={!!hasNub}
             key={syntheticAttachments.length}
-            language={messageThing.isBasedOn.programmingLanguage}
-            title={messageThing.isBasedOn.programmingLanguage}
-          />
-        </AttachmentRow>
-      );
+            showBubble={false}
+          >
+            <CodeBlockContent
+              code={firstSoftwareSourceCode.text[0]}
+              key={syntheticAttachments.length}
+              language={firstSoftwareSourceCode.programmingLanguage[0]}
+              title={localizeProgrammingLanguage(firstSoftwareSourceCode.programmingLanguage[0])}
+            />
+          </AttachmentRow>
+        );
+      }
     }
 
     return syntheticAttachments.concat(
@@ -252,6 +248,7 @@ const StackedLayout = ({
     hasNub,
     isCollapsible,
     localize,
+    localizeProgrammingLanguage,
     messageThing,
     otherInitials,
     renderAttachment,
@@ -261,7 +258,7 @@ const StackedLayout = ({
   const renderCollapsibleBubbleContent = useCallback(
     (title = '') => (
       <div className={classNames['stacked-layout__bubble']}>
-        {showStatus && <StackedLayoutMessageStatus creativeWorkStatus={messageThing?.creativeWorkStatus} />}
+        {showStatus && <StackedLayoutMessageStatus creativeWorkStatus={creativeWorkStatus} />}
         <CollapsibleContent
           summary={title}
           summaryClassName={cx(classNames['stacked-layout__title'], classNames['stacked-layout__title--collapsible'])}
@@ -270,14 +267,13 @@ const StackedLayout = ({
         </CollapsibleContent>
       </div>
     ),
-    [attachmentChildren, classNames, messageThing?.creativeWorkStatus, showStatus]
+    [attachmentChildren, classNames, creativeWorkStatus, showStatus]
   );
 
   const renderBubbleContent = isCollapsible ? renderCollapsibleBubbleContent : renderMainBubbleContent;
 
   return (
     <StackedLayoutRoot
-      ariaLabelId={activityDisplayText ? ariaLabelId : undefined}
       extraTrailing={extraTrailing}
       fromUser={fromUser}
       hideAvatar={hasAvatar && !showAvatar}
@@ -294,7 +290,6 @@ const StackedLayout = ({
         hasAvatar={hasAvatar}
         hasDisplayText={!!activityDisplayText?.length || isCollapsible}
         hasNub={hasNub}
-        id={ariaLabelId}
         renderAvatar={renderAvatar}
         renderBubbleContent={renderBubbleContent}
         showAvatar={showAvatar}

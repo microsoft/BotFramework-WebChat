@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "downlevelIteration": true,
-    "resolveJsonModule": true, // Required for localization files
+    "resolveJsonModule": true, // Required for localization files.
+    "strict": false, // We should flip this occasionally and fix all typing issues.
     "types": ["dom-speech-recognition"]
   },
   "extends": "@msinternal/botframework-webchat-tsconfig/legacy"

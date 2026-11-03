@@ -7,7 +7,7 @@ import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
 import tabbableElements from '../Utils/tabbableElements';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
-import { useQueueStaticElement } from '../providers/LiveRegionTwin';
+import { useLiveRegion, useQueueStaticElement } from '../providers/LiveRegionTwin';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
 import LiveRegionLongSend from './LiveRegion/LongSend';
 import isPresentational from './LiveRegion/isPresentational';
@@ -81,7 +81,10 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
       }
 
       appendedActivities.unshift({ activity, key });
+    }
 
+    // Queue in transcript order, so activities arriving together are read oldest first.
+    for (const { activity } of appendedActivities) {
       isPresentational(activity) || queueStaticElement(<LiveRegionActivity activity={activity} />);
     }
 
@@ -129,7 +132,7 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
     keyedActivities
   ]);
 
-  useMemo(() => typingIndicator && queueStaticElement(typingIndicator), [queueStaticElement, typingIndicator]);
+  useLiveRegion(() => typingIndicator, [typingIndicator]);
 
   return (
     <React.Fragment>

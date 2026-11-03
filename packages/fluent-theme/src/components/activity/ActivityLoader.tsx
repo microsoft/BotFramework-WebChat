@@ -1,10 +1,9 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { Fragment, memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useVariantClassName } from '../../styles';
+import { useStyles, useVariantClassName } from '../../styles';
 import SlidingDots from '../assets/SlidingDots';
 import styles from './ActivityLoader.module.css';
 

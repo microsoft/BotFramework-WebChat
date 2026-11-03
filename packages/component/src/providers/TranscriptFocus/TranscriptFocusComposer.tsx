@@ -7,10 +7,10 @@ import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
-import { useGetGroupState, useGetLogicalGroupKey } from '../ActivityLogicalGrouping';
-import useGetLogicalGroupBoundaries from '../ActivityLogicalGrouping/useGetLogicalGroupBoundaries';
+import useLogicalGroupingStores from '../ActivityLogicalGrouping/private/useLogicalGroupingStores';
 import useRenderingActivityKeys from '../RenderingActivities/useRenderingActivityKeys';
 import TranscriptFocusContext, { type TranscriptFocusContextType } from './private/Context';
+import getDescendantId from './private/getDescendantId';
 
 type TranscriptFocusComposerProps = Readonly<{
   children?: ReactNode | undefined;
@@ -29,27 +29,32 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
   >();
   const [renderingActivityKeys] = useRenderingActivityKeys();
   const [, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
-  const getGroupBoundaries = useGetLogicalGroupBoundaries();
-  const getGroupKeyByActivityKey = useGetLogicalGroupKey();
-  const getGroupState = useGetGroupState();
+  // Keyboard navigation reads arbitrary activities and groups at event time and renders nothing from them: it does not subscribe.
+  const { logicalGroupKeyStore, logicalGroupingStore } = useLogicalGroupingStores();
+  const getGroupKeyByActivityKey = logicalGroupKeyStore.get;
+  const getLogicalGrouping = logicalGroupingStore.get;
+
+  const getGroupBoundaries = useCallback(
+    (groupKey: string): readonly [string | undefined, string | undefined] => {
+      const activityKeys = getLogicalGrouping(groupKey)?.activityKeys ?? [];
+
+      return Object.freeze([activityKeys.at(0), activityKeys.at(-1)] as const);
+    },
+    [getLogicalGrouping]
+  );
 
   // As we need to use IDREF for `aria-activedescendant`,
   // this prefix will differentiate multiple instances of transcript on the same page.
   const prefix = useMemo<string>(() => uniqueId(3), []);
 
   const getDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
-    (activityKey?: string) => activityKey && `webchat__transcript-focus-${prefix}__activity-${activityKey}`,
+    (activityKey?: string) => getDescendantId(prefix, 'activity', activityKey),
     [prefix]
   );
 
   const getGroupDescendantIdByGroupKey: (groupKey?: string) => string | undefined = useCallback(
-    (groupKey?: string) => groupKey && `webchat__transcript-focus-${prefix}__group-${groupKey}`,
+    (groupKey?: string) => getDescendantId(prefix, 'group', groupKey),
     [prefix]
-  );
-
-  const getGroupDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
-    (activityKey?: string) => activityKey && getGroupDescendantIdByGroupKey(getGroupKeyByActivityKey(activityKey)),
-    [getGroupDescendantIdByGroupKey, getGroupKeyByActivityKey]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
@@ -132,7 +137,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       }
 
       const groupKey = typeof activityKey === 'string' && getGroupKeyByActivityKey(activityKey);
-      const groupState = groupKey && getGroupState(groupKey);
+      const groupState = groupKey && getLogicalGrouping(groupKey);
 
       // shortcut for collapsed group
       // when collapsed, we do not want to focus on the group or scroll it into view
@@ -159,7 +164,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedActivityKeyRef,
       getDescendantIdByActivityKey,
       getGroupKeyByActivityKey,
-      getGroupState,
+      getLogicalGrouping,
       handleFocus,
       rawFocusedActivityKeyRef,
       renderingActivityKeysRef,
@@ -194,7 +199,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
     (direction: 'up' | 'down') => {
       const { current: currentGroupKey } = rawFocusedActivityGroupKeyRef;
       const { current: orderedActivityKeys } = renderingActivityKeysRef;
-      const currentGroupState = getGroupState(currentGroupKey);
+      const currentGroupState = getLogicalGrouping(currentGroupKey);
       const [firstActivityKey, lastActivityKey] = getGroupBoundaries(currentGroupKey);
 
       if (direction === 'down') {
@@ -227,7 +232,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
           const prevActivityKey = orderedActivityKeys[currentIndex - 1];
           const prevGroupKey = getGroupKeyByActivityKey(prevActivityKey);
           const prevGroupState =
-            prevGroupKey && prevGroupKey !== currentGroupKey ? getGroupState(prevGroupKey) : undefined;
+            prevGroupKey && prevGroupKey !== currentGroupKey ? getLogicalGrouping(prevGroupKey) : undefined;
 
           // Previous activity is in a different collapsed group
           if (prevGroupState?.isCollapsed) {
@@ -244,7 +249,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusByGroupKey,
       getGroupBoundaries,
       getGroupKeyByActivityKey,
-      getGroupState,
+      getLogicalGrouping,
       rawFocusedActivityGroupKeyRef,
       renderingActivityKeysRef
     ]
@@ -264,7 +269,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
 
       // Moving to a different group
       const [firstActivityKey, lastActivityKey] = getGroupBoundaries(nextGroupKey);
-      const nextGroupState = getGroupState(nextGroupKey);
+      const nextGroupState = getLogicalGrouping(nextGroupKey);
 
       if (direction === 'down' && firstActivityKey === nextActivityKey) {
         // Going down into a new group - always focus header first
@@ -278,7 +283,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
         focusByActivityKey(nextActivityKey, true);
       }
     },
-    [focusByActivityKey, focusByGroupKey, getGroupBoundaries, getGroupKeyByActivityKey, getGroupState]
+    [focusByActivityKey, focusByGroupKey, getGroupBoundaries, getGroupKeyByActivityKey, getLogicalGrouping]
   );
 
   // Helper function to handle delta > 1 navigation
@@ -347,7 +352,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       // Handle navigation from a focused activity
       const groupKey = getGroupKeyByActivityKey(focusedActivityKey);
       const [firstActivityKey, lastActivityKey] = getGroupBoundaries(groupKey);
-      const groupState = groupKey ? getGroupState(groupKey) : undefined;
+      const groupState = groupKey ? getLogicalGrouping(groupKey) : undefined;
 
       // In group special cases
       if (groupKey) {
@@ -383,7 +388,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedActivityKeyRef,
       getGroupBoundaries,
       getGroupKeyByActivityKey,
-      getGroupState,
+      getLogicalGrouping,
       getNextActivityLinear,
       handleDeltaNavigation,
       handleGroupTransition,
@@ -404,7 +409,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedGroupKeyState: Object.freeze([rawFocusedActivityGroupKey]) as readonly [string],
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey
+      prefix
     }),
     [
       activeDescendantId,
@@ -414,7 +419,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       focusedActivityKey,
       focusRelativeActivity,
       getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey,
+      prefix,
       rawFocusedActivityGroupKey,
       rawFocusedActivityKey
     ]

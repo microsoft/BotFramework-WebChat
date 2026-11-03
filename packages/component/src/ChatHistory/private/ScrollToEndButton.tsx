@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { Fragment, memo, MutableRefObject, useCallback, useMemo } from 'react';
+import React, { Fragment, memo, MutableRefObject, useCallback, useLayoutEffect, useMemo } from 'react';
 import { useAnimatingToEnd, useAtEnd, useScrollToEnd, useSticky } from 'react-scroll-to-bottom';
 import { useRefFrom } from 'use-ref-from';
 
@@ -46,17 +46,17 @@ const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivEleme
 
   // To prevent flashy button, we are not waiting for another render loop to update the `[readActivityKeys, unreadActivityKeys]` state.
   // Instead, we are building the next one in this `useMemo` call.
-  const nextUnreadActivityKeys = useMemo(() => {
-    // This code need to be careful reviewed as it will cause another render. The code should be converging.
-    // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
-    // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
-    if (sticky && unreadActivityKeys.length) {
-      markActivityKeyAsRead(unreadActivityKeys[unreadActivityKeys.length - 1]);
+  const nextUnreadActivityKeys = useMemo(
+    () => (sticky && unreadActivityKeys.length ? [] : unreadActivityKeys),
+    [sticky, unreadActivityKeys]
+  );
 
-      return [];
-    }
-
-    return unreadActivityKeys;
+  // This code need to be careful reviewed as it will cause another render. The code should be converging.
+  // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
+  // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
+  // Layout effect: updating <ActivityAcknowledgementComposer> while rendering this component is not allowed.
+  useLayoutEffect(() => {
+    sticky && unreadActivityKeys.length && markActivityKeyAsRead(unreadActivityKeys[unreadActivityKeys.length - 1]);
   }, [markActivityKeyAsRead, sticky, unreadActivityKeys]);
 
   const nextUnreadActivityKeysRef = useRefFrom(nextUnreadActivityKeys);

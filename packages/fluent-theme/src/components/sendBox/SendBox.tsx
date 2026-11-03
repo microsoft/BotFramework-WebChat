@@ -1,5 +1,5 @@
 import { Components, hooks } from 'botframework-webchat';
-import { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat/internal';
+import { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, {
   memo,
@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  type ClipboardEventHandler,
   type FormEventHandler,
   type MouseEventHandler
 } from 'react';
@@ -31,6 +32,7 @@ import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 import MicrophoneToolbarButton from './MicrophoneToolbarButton';
 
 const {
+  useDirection,
   useFocus,
   useLocalizer,
   useMakeThumbnail,
@@ -55,6 +57,7 @@ type Props = Readonly<{
 function SendBox(props: Props) {
   const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength }] = useStyleOptions();
   const [attachments, setAttachments] = useSendBoxAttachments();
+  const [direction] = useDirection();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
@@ -125,7 +128,7 @@ function SendBox(props: Props) {
   );
 
   const handleAddFiles = useCallback(
-    async (inputFiles: File[]) => {
+    async (inputFiles: readonly File[]) => {
       const newAttachments = Object.freeze(
         await Promise.all(
           inputFiles.map(file =>
@@ -145,6 +148,22 @@ function SendBox(props: Props) {
   );
 
   const handleClick = useCallback(({ currentTarget }) => currentTarget.removeAttribute('inputmode'), []);
+
+  const handlePaste = useCallback<ClipboardEventHandler>(
+    event => {
+      if (disableFileUpload || uiState === 'disabled') {
+        return;
+      }
+
+      const { files } = event.clipboardData;
+
+      if (files.length) {
+        event.preventDefault();
+        handleAddFiles(Object.freeze(Array.from(files)));
+      }
+    },
+    [disableFileUpload, handleAddFiles, uiState]
+  );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
@@ -193,7 +212,6 @@ function SendBox(props: Props) {
   const handleTranscriptNavigation = useTranscriptNavigation();
 
   const aria = {
-    'aria-invalid': 'false' as const,
     ...(errorMessage && {
       'aria-describedby': errorMessageId,
       'aria-errormessage': errorMessageId,
@@ -206,6 +224,8 @@ function SendBox(props: Props) {
       {...aria}
       className={cx(classNames['sendbox'], variantClassName, props.className)}
       data-testid={testIds.sendBoxContainer}
+      dir={direction}
+      onPaste={handlePaste}
       onSubmit={handleFormSubmit}
     >
       <SuggestedActions />
@@ -279,10 +299,16 @@ function SendBox(props: Props) {
   );
 }
 
-const PrimarySendBox = memo((props: Exclude<Props, 'primary'>) => <SendBox {...props} isPrimary={true} />);
+function PrimarySendBox(props: Exclude<Props, 'primary'>) {
+  const [{ hideSendBox }] = useStyleOptions();
+
+  return hideSendBox ? null : <SendBox {...props} isPrimary={true} />;
+}
 
 PrimarySendBox.displayName = 'PrimarySendBox';
 
+const MemoizedPrimarySendBox = memo(PrimarySendBox);
+
 export default memo(SendBox);
 
-export { PrimarySendBox };
+export { MemoizedPrimarySendBox as PrimarySendBox };

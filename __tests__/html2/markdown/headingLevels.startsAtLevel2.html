@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a message with its top heading at "##", as many LLM answers do.
+        await directLine.emulateIncomingActivity({
+          text: '## Shared setup\n\nInstall the packages.\n\n### Python\n\nRun `pip install`.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const headingElements = pageElements
+          .activities()[0]
+          .querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
+        const headingNodes = await Promise.all(Array.from(headingElements, testHelpers.getAccessibilityNode));
+
+        // THEN: The top heading is level 2 and "###" is level 3, as written, with no level skipped after the page's level 1.
+        expect(
+          headingNodes.map(({ name, properties, role }) => [
+            role.value,
+            name.value,
+            properties.find(({ name }) => name === 'level')?.value.value
+          ])
+        ).toEqual([
+          ['heading', 'Shared setup', 2],
+          ['heading', 'Python', 3]
+        ]);
+
+        // THEN: The headings look as written.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

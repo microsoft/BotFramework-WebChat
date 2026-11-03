@@ -43,21 +43,8 @@
   grid-row: 1;
   --webchat__component-icon--color: #707070;
   --webchat__component-icon--size: 16px;
-}
 
-:global(.webchat) .code-block-copy-button__icon--copied {
-  opacity: 0;
-}
-
-:global(.webchat) .code-block-copy-button--copied .code-block-copy-button__icon {
-  animation: code-block-copy-button__copied-animation 0.5s linear;
-}
-
-@keyframes code-block-copy-button__copied-animation {
-  0% {
-    opacity: 100%;
-  }
-  100% {
-    opacity: unset;
+  @media (forced-colors: active) {
+    --webchat__component-icon--color: ButtonText;
   }
 }

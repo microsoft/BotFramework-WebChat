@@ -1,4 +1,4 @@
-import { BasicWebChat, Composer } from 'botframework-webchat/component';
+import { BasicWebChat, Composer } from 'botframework-webchat/component.js';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 

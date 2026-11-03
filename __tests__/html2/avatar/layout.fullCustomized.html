@@ -11,21 +11,17 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
-      import { createFullCustomizedProps } from './setup.js';
+      import { createFullCustomizedProps, sendUnknownCommand } from './setup.js';
       run(
         async function () {
           const {
             React: { createElement },
             ReactDOM: { render },
-            testHelpers: {
-              createStore,
-              token: { fetchDirectLineToken }
-            },
-            WebChat: { createDirectLine, ReactWebChat }
+            testHelpers: { createDirectLineEmulator },
+            WebChat: { ReactWebChat }
           } = window; // Imports in UMD fashion.
 
-          const directLine = createDirectLine({ token: await fetchDirectLineToken() });
-          const store = createStore();
+          const { directLine, store } = createDirectLineEmulator();
 
           await host.windowSize(undefined, 768, document.getElementById('webchat'));
 
@@ -46,14 +42,16 @@
 
           await pageConditions.uiConnected();
 
-          await pageObjects.sendMessageViaSendBox('normal');
+          await sendUnknownCommand(directLine, 'normal');
           await pageConditions.numActivitiesShown(2);
 
-          await pageObjects.sendMessageViaSendBox('override avatar');
+          await sendUnknownCommand(directLine, 'override avatar');
           await pageConditions.numActivitiesShown(4);
 
-          await pageObjects.sendMessageViaSendBox('no avatar');
+          await sendUnknownCommand(directLine, 'no avatar');
           await pageConditions.numActivitiesShown(6);
+
+          // THEN: Both sides show initials next to customized bubbles, "override avatar" shows red boxes, "no avatar" shows none.
 
           await host.snapshot('local', { skipCheckAccessibility: true });
 
@@ -65,6 +63,8 @@
               userAvatarInitials: undefined
             }
           });
+
+          // THEN: Without initials, no avatars are shown.
 
           await host.snapshot('local', { skipCheckAccessibility: true });
         },

@@ -1,7 +1,7 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
 import React, { memo, useMemo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -15,15 +15,16 @@ const oauthCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
     content: directLineSignInCardSchema,
-    disabled: optional(boolean())
+    disabled: optional(boolean()),
+    replyToId: optional(string())
   }),
   readonly()
 );
 
-type OAuthCardContentProps = InferInput<typeof oauthCardContentPropsSchema>;
+type OAuthCardContentProps = InferReactProps<typeof oauthCardContentPropsSchema>;
 
 function OAuthCardContent(props: OAuthCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = validateProps(oauthCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled, replyToId } = validateProps(oauthCardContentPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
@@ -45,6 +46,7 @@ function OAuthCardContent(props: OAuthCardContentProps) {
       actionPerformedClassName={actionPerformedClassName}
       adaptiveCard={builtCard}
       disabled={disabled}
+      replyToId={replyToId}
     />
   );
 }

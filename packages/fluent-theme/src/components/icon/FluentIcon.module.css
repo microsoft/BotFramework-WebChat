@@ -26,6 +26,10 @@
 /* #region: Appearance */
 :global(.webchat) .appearance--text {
   --webchat__fluent-icon--color: currentColor;
+
+  @media (forced-colors: active) {
+    --webchat__fluent-icon--color: CanvasText;
+  }
 }
 /* #endregion */
 
@@ -44,6 +48,11 @@
 
 :global(.webchat) .icon--send {
   --webchat__fluent-icon--mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.18 2.11a.5.5 0 0 1 .54-.06l15 7.5a.5.5 0 0 1 0 .9l-15 7.5a.5.5 0 0 1-.7-.58L3.98 10 2.02 2.63a.5.5 0 0 1 .16-.52Zm2.7 8.39-1.61 6.06L16.38 10 3.27 3.44 4.88 9.5h6.62a.5.5 0 1 1 0 1H4.88Z"/></svg>');
+}
+
+/* In right-to-left, the send icon points to the left, as in the default theme. */
+:global(.webchat) .icon--send:dir(rtl) {
+  transform: scale(-1, 1);
 }
 
 :global(.webchat) .icon--keypad {

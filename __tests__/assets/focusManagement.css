@@ -1,16 +1,17 @@
-:focus {
+/* Card action buttons draw their own keyboard focus indicator, so this file does not override it. */
+:focus:not(.ac-pushButton:focus-visible) {
   outline-color: rgba(0, 0, 0, 0.4) !important;
   outline-offset: -4px !important;
   outline-style: dotted !important;
   outline-width: 2px !important;
 }
 
-:focus:not(.webchat__scroll-to-end-button) {
+:focus:not(.ac-pushButton:focus-visible, .webchat__scroll-to-end-button) {
   background-color: Yellow !important;
 }
 
-:disabled:focus,
-[aria-disabled='true']:focus {
+:disabled:focus:not(.ac-pushButton:focus-visible),
+[aria-disabled='true']:focus:not(.ac-pushButton:focus-visible) {
   outline-color: rgba(0, 0, 0, 0.2) !important;
 }
 
@@ -20,7 +21,7 @@
   color: White !important;
 }
 
-#webchat .card__action--performed:focus {
+#webchat .card__action--performed:focus:not(:focus-visible) {
   outline-color: rgba(255, 255, 255, 0.6) !important;
 }
 

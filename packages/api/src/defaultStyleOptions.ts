@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: "off" */
-import StyleOptions from './StyleOptions';
+import { type StrictStyleOptions } from './StyleOptions';
 
-function fontFamily(fonts) {
+function fontFamily(fonts: readonly string[]): string {
   return fonts.map(font => `'${font}'`).join(', ');
 }
 
@@ -9,7 +9,7 @@ const DEFAULT_ACCENT = '#0063B1';
 const DEFAULT_SUBTLE = '#767676'; // With contrast 4.5:1 to white
 const PADDING_REGULAR = 10;
 
-const DEFAULT_OPTIONS: Required<StyleOptions> = {
+const DEFAULT_OPTIONS: StrictStyleOptions = {
   // Basic styling
   accent: DEFAULT_ACCENT,
   backgroundColor: 'White',
@@ -54,11 +54,8 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   bubbleFromUserNubOffset: 0,
   bubbleFromUserNubSize: undefined,
   bubbleFromUserTextColor: 'Black',
-  bubbleImageHeight: undefined,
   bubbleImageMaxHeight: 240, // Based on previously default `bubbleImageHeight` of 240px.
   bubbleImageMinHeight: 240, // TODO: Should change to 180px. Based on 320px bubble width showing a 16:9 image, or `320 / (16 / 9)`. 320px bubble width is based on 360px wide of the chat canvas.
-  bubbleMaxWidth: undefined, // Deprecated.
-  bubbleMinWidth: undefined, // Deprecated.
   bubbleAttachmentMaxWidth: 480, // Based off screen width = 600px
   bubbleAttachmentMinWidth: 250, // min screen width = 300px; Microsoft Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)
   bubbleMessageMaxWidth: 480, // Based off screen width = 600px
@@ -80,19 +77,20 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   slowConnectionAfter: 15000,
 
   // Emoji
-  emojiSet: true,
+  emojiSet: undefined,
 
   // Live region - Accessibility
+  assistiveTechnologyAnnouncementTransport: 'live-region',
   internalLiveRegionFadeAfter: 1000,
 
   // Markdown
   markdownExternalLinkIconImage:
     'url(data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIzIDMgMTggMTgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTcuMjUwMSA0LjUwMDE3SDEwLjc0OTVDMTEuMTYzNyA0LjUwMDE3IDExLjQ5OTUgNC44MzU5NiAxMS40OTk1IDUuMjUwMTdDMTEuNDk5NSA1LjYyOTg2IDExLjIxNzMgNS45NDM2NiAxMC44NTEzIDUuOTkzMzJMMTAuNzQ5NSA2LjAwMDE3SDcuMjQ5NzRDNi4wNzA3OSA1Ljk5OTYxIDUuMTAzNDkgNi45MDY1NiA1LjAwNzg2IDguMDYxMTJMNS4wMDAyOCA4LjIyMDAzTDUuMDAzMTIgMTYuNzUwN0M1LjAwMzQzIDE3Ljk0MTUgNS45Mjg4NSAxOC45MTYxIDcuMDk5NjYgMTguOTk0OUw3LjI1MzcxIDE5LjAwMDFMMTUuNzUxOCAxOC45ODg0QzE2Ljk0MTUgMTguOTg2OCAxNy45MTQ1IDE4LjA2MiAxNy45OTM1IDE2Ljg5MjNMMTcuOTk4NyAxNi43Mzg0VjEzLjIzMjFDMTcuOTk4NyAxMi44MTc5IDE4LjMzNDUgMTIuNDgyMSAxOC43NDg3IDEyLjQ4MjFDMTkuMTI4NCAxMi40ODIxIDE5LjQ0MjIgMTIuNzY0MyAxOS40OTE4IDEzLjEzMDNMMTkuNDk4NyAxMy4yMzIxVjE2LjczODRDMTkuNDk4NyAxOC43NDA3IDE3LjkyOTMgMjAuMzc2OSAxNS45NTI4IDIwLjQ4MjlMMTUuNzUzOCAyMC40ODg0TDcuMjU4MjcgMjAuNTAwMUw3LjA1NDk1IDIwLjQ5NDlDNS4xNDIzOSAyMC4zOTU0IDMuNjA4OTUgMTguODYyNyAzLjUwODM3IDE2Ljk1MDJMMy41MDMxMiAxNi43NTExTDMuNTAwODkgOC4yNTI3TDMuNTA1MjkgOC4wNTAyQzMuNjA1MzkgNi4xMzc0OSA1LjEzODY3IDQuNjA0NDkgNy4wNTA5NiA0LjUwNTI3TDcuMjUwMSA0LjUwMDE3SDEwLjc0OTVINy4yNTAxWk0xMy43NDgxIDMuMDAxNDZMMjAuMzAxOCAzLjAwMTk3TDIwLjQwMTQgMy4wMTU3NUwyMC41MDIyIDMuMDQzOTNMMjAuNTU5IDMuMDY4MDNDMjAuNjEyMiAzLjA5MTIyIDIwLjY2MzQgMy4xMjE2MyAyMC43MTExIDMuMTU4ODVMMjAuNzgwNCAzLjIyMTU2TDIwLjg2NDEgMy4zMjAxNEwyMC45MTgzIDMuNDEwMjVMMjAuOTU3IDMuNTAwNTdMMjAuOTc2MiAzLjU2NDc2TDIwLjk4OTggMy42Mjg2MkwyMC45OTkyIDMuNzIyODJMMjAuOTk5NyAxMC4yNTU0QzIwLjk5OTcgMTAuNjY5NiAyMC42NjM5IDExLjAwNTQgMjAuMjQ5NyAxMS4wMDU0QzE5Ljg3IDExLjAwNTQgMTkuNTU2MiAxMC43MjMyIDE5LjUwNjUgMTAuMzU3MUwxOS40OTk3IDEwLjI1NTRMMTkuNDk4OSA1LjU2MTQ3TDEyLjI3OTcgMTIuNzg0N0MxMi4wMTM0IDEzLjA1MSAxMS41OTY4IDEzLjA3NTMgMTEuMzAzMSAxMi44NTc1TDExLjIxOSAxMi43ODQ5QzEwLjk1MjcgMTIuNTE4NyAxMC45Mjg0IDEyLjEwMjEgMTEuMTQ2MiAxMS44MDg0TDExLjIxODggMTEuNzI0M0wxOC40MzY5IDQuNTAxNDZIMTMuNzQ4MUMxMy4zNjg0IDQuNTAxNDYgMTMuMDU0NiA0LjIxOTMxIDEzLjAwNSAzLjg1MzI0TDEyLjk5ODEgMy43NTE0NkMxMi45OTgxIDMuMzcxNzcgMTMuMjgwMyAzLjA1Nzk3IDEzLjY0NjQgMy4wMDgzMUwxMy43NDgxIDMuMDAxNDZaIiBmaWxsPSIjMjEyMTIxIiAvPjwvc3ZnPg==)',
+  markdownHeadingLevelStartAt: 2,
   markdownRespectCRLF: true,
   markdownRenderHTML: true,
 
   // Scroll behavior
-  hideScrollToEndButton: undefined, // Deprecated as of 4.14.0. Use "scrollToEndButtonBehavior" instead. Remove on or after 2023-06-02.
   autoScrollSnapOnActivity: false,
   autoScrollSnapOnActivityOffset: 0,
   autoScrollSnapOnPage: false,
@@ -102,7 +100,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   disableFileUpload: false,
   hideSendBox: false,
   hideTelephoneKeypadButton: true,
-  hideUploadButton: undefined, // Deprecated as of 4.19.0.
   microphoneButtonColorOnDictate: '#F33',
   sendAttachmentOn: 'send',
   sendBoxBackground: 'White',
@@ -197,16 +194,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   suggestedActionKeyboardFocusIndicatorBorderWidth: 1,
   suggestedActionKeyboardFocusIndicatorInset: 2,
 
-  suggestedActionActiveBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBorderColor: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBorderStyle: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledBorderWidth: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionDisabledTextColor: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionFocusBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-  suggestedActionHoverBackground: undefined, // Deprecated as of 4.15.0. Remove on or after 2023-09-16.
-
   // Suggested actions carousel layout
   suggestedActionsCarouselFlipperCursor: undefined,
   suggestedActionsCarouselFlipperBoxWidth: 40,
@@ -235,7 +222,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Transcript overlay buttons
   scrollToEndButtonBehavior: 'unread',
   scrollToEndButtonFontSize: '85%',
-  newMessagesButtonFontSize: undefined, // Deprecated as of 4.14.0, renamed to "scrollToEndButtonFontSize". Remove on or after 2023-06-02.
   transcriptOverlayButtonBackground: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnDisabled: 'rgba(0, 0, 0, .6)',
   transcriptOverlayButtonBackgroundOnFocus: 'rgba(0, 0, 0, .8)',
@@ -323,7 +309,11 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   sendBoxAttachmentBarMaxThumbnail: 3,
 
   // Speech-to-speech options
-  showMicrophoneButton: 'auto'
+  showMicrophoneButton: 'auto',
+
+  callURLActionPopupWindowHeight: 640,
+  callURLActionPopupWindowWidth: 480,
+  callURLActionTrustedOrigin: undefined
 };
 
 export default DEFAULT_OPTIONS;

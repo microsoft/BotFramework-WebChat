@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be seen in the snapshot.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { botAvatarInitials: 'WC', hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The user sends a message and the bot replies.
+        await (
+          await directLine.emulateOutgoingActivity('Hello, World!')
+        ).resolveAll(activity => ({ ...activity, timestamp: '2026-10-17T11:50:00Z' }));
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          text: 'Aloha!',
+          timestamp: '2026-10-17T11:51:00Z',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: In scan mode, the greeting before each message should not end with a colon, JAWS would read "colon".
+        expect(
+          pageElements
+            .activities()
+            .map(
+              activity => testHelpers.getAllTextContents(activity.querySelector('[aria-roledescription="message"]'))[0]
+            )
+        ).toEqual(['You said', 'Bot WC said']);
+
+        // THEN: When navigating with arrow keys, the summary should read the greeting and the message without a colon.
+        //       Summaries are hidden from scan mode until selected with arrow keys, so read their text.
+        await waitFor(() =>
+          expect(pageElements.activityActiveDescendantLabels().map(({ textContent }) => textContent)).toEqual([
+            'You said Hello, World! Sent at October 17 at 11:50 AM',
+            'Bot WC said Aloha! Sent at October 17 at 11:51 AM'
+          ])
+        );
+
+        // THEN: The live region should announce the greeting without a colon.
+        await waitFor(() =>
+          expect(
+            [].map.call(pageElements.liveRegion().querySelectorAll('.webchat__live-region-activity'), activity =>
+              testHelpers.getAllTextContents(activity).join('\n')
+            )
+          ).toEqual(['You said\nHello, World!', 'Bot WC said\nAloha!'])
+        );
+
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: The live region (top) shows "You said", "Hello, World!", "Bot WC said" and "Aloha!", without colons.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

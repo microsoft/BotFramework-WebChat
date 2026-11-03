@@ -17,6 +17,14 @@
     },
     "./component": {
       "import": {
+        "default": "./boot/deprecated/component.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/component.js"
+      }
+    },
+    "./component.js": {
+      "import": {
         "types": "./dist/botframework-webchat.component.d.mts",
         "default": "./dist/botframework-webchat.component.mjs"
       },
@@ -26,6 +34,14 @@
       }
     },
     "./decorator": {
+      "import": {
+        "default": "./boot/deprecated/decorator.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/decorator.js"
+      }
+    },
+    "./decorator.js": {
       "import": {
         "types": "./dist/botframework-webchat.decorator.d.mts",
         "default": "./dist/botframework-webchat.decorator.mjs"
@@ -37,6 +53,14 @@
     },
     "./hook": {
       "import": {
+        "default": "./boot/deprecated/hook.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/hook.js"
+      }
+    },
+    "./hook.js": {
+      "import": {
         "types": "./dist/botframework-webchat.hook.d.mts",
         "default": "./dist/botframework-webchat.hook.mjs"
       },
@@ -46,6 +70,14 @@
       }
     },
     "./internal": {
+      "import": {
+        "default": "./boot/deprecated/internal.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/internal.js"
+      }
+    },
+    "./internal.js": {
       "import": {
         "types": "./dist/botframework-webchat.internal.d.mts",
         "default": "./dist/botframework-webchat.internal.mjs"
@@ -57,12 +89,30 @@
     },
     "./middleware": {
       "import": {
+        "default": "./boot/deprecated/middleware.mjs"
+      },
+      "require": {
+        "default": "./boot/deprecated/middleware.js"
+      }
+    },
+    "./middleware.js": {
+      "import": {
         "types": "./dist/botframework-webchat.middleware.d.mts",
         "default": "./dist/botframework-webchat.middleware.mjs"
       },
       "require": {
         "types": "./dist/botframework-webchat.middleware.d.ts",
         "default": "./dist/botframework-webchat.middleware.js"
+      }
+    },
+    "./schema.js": {
+      "import": {
+        "types": "./dist/botframework-webchat.schema.d.mts",
+        "default": "./dist/botframework-webchat.schema.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.schema.d.ts",
+        "default": "./dist/botframework-webchat.schema.js"
       }
     },
     "./static/*": "./static/*"
@@ -82,6 +132,10 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./*.js",
+    "./CHANGELOG.md",
+    "./LICENSE",
+    "./README.md",
+    "./boot/**/*",
     "./dist/**/*",
     "./src/**/*",
     "./static/**/*"
@@ -101,7 +155,7 @@
   "scripts": {
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:post": "npm run build:post:dtsroll && npm run build:post:validate",
-    "build:post:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:post:dtsroll": "dtsroll ./dist/*.d.* && sed -E -i 's/^([[:space:]]*export[[:space:]]+)type[[:space:]]+(\\{[[:space:]]+type[[:space:]]+)/\\1\\2/' ./dist/*.d.ts",
     "build:post:validate": "npm run build:post:validate:css && npm run build:post:validate:inject-css && npm run build:post:validate:dts",
     "build:post:validate:css": "vg ast-check lightning-css ./dist/*.css",
     "build:post:validate:dts": "vg ast-check dist-types ./dist/*.d.*",
@@ -131,21 +185,21 @@
       "16",
       "react-dom@16.8.6 is our baseline"
     ],
-    "@types/uuid": [
-      "8",
-      "uuid@9 emit non-ES5 build because of default parameters"
-    ],
     "adaptivecards": [
-      "3.0.5",
+      "3.0.6",
       "we should bump manually"
+    ],
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-dom": [
+      "16.8.6",
+      "using react-dom@16.8.6 to make sure this is the minimum supported version"
     ],
     "shiki": [
       "2",
       "tsd is complaining about shiki@3 lack of typing for named exports, https://arethetypeswrong.github.io/?p=shiki%403.9.1 says the same thing"
-    ],
-    "uuid": [
-      "8",
-      "uuid@9 emit non-ES5 build because of default parameters"
     ]
   },
   "localDependencies": {
@@ -153,6 +207,7 @@
     "@msinternal/base64-js": "development",
     "@msinternal/botframework-directlinejs": "development",
     "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-styles": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
@@ -173,15 +228,16 @@
     "botframework-webchat-core": "production"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/plugin-transform-runtime": "^7.29.0",
-    "@babel/preset-env": "^7.29.0",
-    "@babel/preset-react": "^7.28.5",
-    "@babel/preset-typescript": "^7.28.5",
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-runtime": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
     "@msinternal/adaptivecards": "0.0.0-0",
     "@msinternal/base64-js": "0.0.0-0",
     "@msinternal/botframework-directlinejs": "0.0.0-0",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-react-hooks": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
@@ -197,33 +253,32 @@
     "@msinternal/react-is": "0.0.0-0",
     "@msinternal/react-umd": "0.0.0-0",
     "@testduet/given-when-then": "^0.1.0",
-    "@types/dom-speech-recognition": "^0.0.7",
+    "@types/dom-speech-recognition": "^0.0.11",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^25.3.3",
-    "@types/react": "^16.14.69",
+    "@types/node": "^25.9.1",
+    "@types/react": "^16.14.70",
     "@types/react-dom": "^16.9.25",
-    "@types/uuid": "^8.3.4",
-    "babel-plugin-istanbul": "^7.0.1",
+    "babel-plugin-istanbul": "^8.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "cross-env": "^10.1.0",
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.28.1",
     "micromark-util-types": "^2.0.2",
     "read-pkg": "^10.1.0",
     "tsd": "^0.33.0",
-    "type-fest": "^5.4.4",
-    "typescript": "^5.9.3"
+    "type-fest": "^5.6.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@babel/runtime": "7.28.6",
-    "adaptivecards": "3.0.5",
+    "@babel/runtime": "7.29.7",
+    "adaptivecards": "3.0.6",
     "botframework-directlinejs": "0.15.8",
     "botframework-directlinespeech-sdk": "0.0.0-0",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.5.1",
-    "core-js": "3.48.0",
-    "katex": "0.16.33",
+    "core-js": "3.49.0",
+    "katex": "0.19.1",
     "math-random": "2.0.1",
     "mdast-util-from-markdown": "2.0.3",
     "memoize-one": "6.0.0",
@@ -231,15 +286,15 @@
     "micromark-extension-gfm": "3.0.0",
     "micromark-util-character": "2.1.1",
     "micromark-util-sanitize-uri": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.48.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.50.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
-    "sanitize-html": "2.17.1",
+    "sanitize-html": "2.18.1",
     "shiki": "2.5.0",
     "url-search-params-polyfill": "8.2.5",
     "use-ref-from": "0.2.1",
-    "uuid": "8.3.2",
-    "valibot": "1.2.0",
+    "uuid": "14.0.1",
+    "valibot": "1.4.2",
     "web-speech-cognitive-services": "8.1.4",
     "whatwg-fetch": "3.6.20"
   },

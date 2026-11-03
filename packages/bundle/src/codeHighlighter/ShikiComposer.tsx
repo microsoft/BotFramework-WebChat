@@ -1,4 +1,4 @@
-import { CodeHighlighterComposer, type HighlightCodeFn } from 'botframework-webchat-component/internal';
+import { CodeHighlighterComposer, type HighlightCodeFn } from 'botframework-webchat-component/internal.js';
 import React, { memo, ReactNode, useEffect, useState } from 'react';
 import { type HighlighterCore } from 'shiki';
 
@@ -8,7 +8,8 @@ const createHighligtCodeWithShiki =
   (shikiHiglighter: HighlighterCore): HighlightCodeFn =>
   (code, language, options) =>
     shikiHiglighter.codeToHtml(code, {
-      lang: language,
+      // Shiki resolves languages and aliases in lowercase only, e.g. "ts", while bots may send "TS".
+      lang: language?.toLowerCase(),
       theme: options.theme
     });
 

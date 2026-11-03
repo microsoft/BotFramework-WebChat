@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -14,41 +14,37 @@
     <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
-        React: { useEffect },
         ReactDOM: { render },
+        testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { BasicWebChat, Composer },
-          hooks: { useConnectivityStatus, useSendMessage }
+          Components: { BasicWebChat, Composer }
         }
       } = window;
 
-      // TODO: We should use pageObject.sendMessageViaSendBox() instead of useSendMessage() hook.
       run(async function () {
-        const SendOnConnect = () => {
-          const [connectivityStatus] = useConnectivityStatus();
-          const sendMessage = useSendMessage();
-
-          useEffect(() => {
-            connectivityStatus === 'connected' && sendMessage('audio');
-          }, [connectivityStatus, sendMessage]);
-
-          return false;
-        };
+        const { directLine, store } = createDirectLineEmulator();
 
         render(
-          <Composer
-            directLine={WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() })}
-            store={testHelpers.createStore()}
-            styleOptions={{ internalLiveRegionFadeAfter: 60000 }}
-          >
+          <Composer directLine={directLine} store={store} styleOptions={{ internalLiveRegionFadeAfter: 60000 }}>
             <BasicWebChat />
-            <SendOnConnect />
           </Composer>,
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
-        await pageConditions.minNumActivitiesShown(2);
+
+        await (
+          await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox('audio', { waitForSend: false }))
+        ).resolveAll();
+
+        // Emulated, similar to the mock bot's "audio" command.
+        await directLine.emulateIncomingActivity({
+          attachments: [{ contentType: 'audio/wav', contentUrl: '/assets/hello-world.wav', name: 'BotFramework Test' }],
+          text: '',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
         await pageConditions.allImagesLoaded();
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.scrollToBottomCompleted();
@@ -65,6 +61,7 @@
 
         await host.sendShiftTab(3);
 
+        // THEN: The live region announces the audio clip and the transcript shows the audio player without controls.
         await host.snapshot('local');
       });
     </script>

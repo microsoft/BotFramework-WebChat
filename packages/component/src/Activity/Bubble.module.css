@@ -7,7 +7,6 @@
   --webchat__bubble--border-radius: var(--webchat__border-radius--bubble);
   --webchat__bubble--border-style: var(--webchat__border-style--bubble);
   --webchat__bubble--border-width: var(--webchat__border-width--bubble);
-  --webchat__bubble--border-width: var(--webchat__border-width--bubble);
   --webchat__bubble--color: var(--webchat__color--bubble);
   --webchat__bubble--nub-size: var(--webchat__size--bubble-nub);
   --webchat__bubble--nub-space: var(--webchat__space--bubble-nub);
@@ -33,7 +32,6 @@
     --webchat__bubble--border-color: var(--webchat__border-color--bubble-user);
     --webchat__bubble--border-radius: var(--webchat__border-radius--bubble-user);
     --webchat__bubble--border-style: var(--webchat__border-style--bubble-user);
-    --webchat__bubble--border-width: var(--webchat__border-width--bubble-user);
     --webchat__bubble--border-width: var(--webchat__border-width--bubble-user);
     --webchat__bubble--color: var(--webchat__color--bubble-user);
     --webchat__bubble--nub-size: var(--webchat__size--bubble-nub-user);

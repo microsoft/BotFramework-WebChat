@@ -12,7 +12,7 @@ import type {
   ToastMiddleware,
   TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
-import { type Polymiddleware } from 'botframework-webchat-api/middleware';
+import { type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import { createContext } from 'react';
 
 const EMPTY_ARRAY = Object.freeze([] as const);

@@ -3,18 +3,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { forwardRef, memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import {
-  boolean,
-  custom,
-  function_,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  type InferInput
-} from 'valibot';
+import { boolean, custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
 
@@ -24,13 +13,14 @@ const activityButtonPropsSchema = pipe(
   object({
     'aria-controls': optional(string()),
     'aria-expanded': optional(boolean()),
+    'aria-label': optional(string()),
     'aria-pressed': optional(boolean()),
     children: optional(reactNode()),
     className: optional(string()),
     'data-testid': optional(string()),
     disabled: optional(boolean()),
     icon: componentIconPropsSchema.entries.icon,
-    onClick: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    onClick: optional(custom<() => void>(value => is(function_(), value))),
     text: optional(string())
   }),
   readonly()
@@ -42,6 +32,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
   const {
     'aria-controls': ariaControls,
     'aria-expanded': ariaExpanded,
+    'aria-label': ariaLabel,
     'aria-pressed': ariaPressed,
     children,
     className,
@@ -62,6 +53,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       aria-controls={ariaControls}
       aria-disabled={disabled ? 'true' : undefined}
       aria-expanded={ariaExpanded}
+      aria-label={ariaLabel}
       aria-pressed={ariaPressed}
       className={cx(classNames['activity-button'], className)}
       data-testid={dataTestId}
@@ -72,7 +64,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       type="button"
     >
       {icon && <ComponentIcon appearance="text" className={classNames['activity-button__icon']} icon={icon} />}
-      {text && <span className="activity-button__text">{text}</span>}
+      {text && <span className={classNames['activity-button__text']}>{text}</span>}
       {children}
     </button>
   );

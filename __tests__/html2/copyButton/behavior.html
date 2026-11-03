@@ -19,11 +19,12 @@
           WebChat: { ReactWebChat }
         } = window; // Imports in UMD fashion.
 
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         const App = () => (
           <React.Fragment>
-            <ReactWebChat directLine={directLine} store={store} />
+            <ReactWebChat directLine={directLine} ponyfill={clock} store={store} />
             <div className="webchat" style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
               <label>
                 <div>Plain text box</div>
@@ -48,6 +49,10 @@
         );
 
         render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
 
         await pageConditions.uiConnected();
 
@@ -84,22 +89,30 @@
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
 
-
-        // axe-core is crazy about empty button name while swapping name
-        const { checkAccessibility } = window
-        window.checkAccessibility = async () => { };
-
         // THEN: Should focus on the "Copy" button
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
 
+        const isCopiedShown = () => getComputedStyle(copyButton.lastElementChild).visibility === 'visible';
+
         expect(document.activeElement).toBe(copyButton);
+        await expect(testHelpers.getAccessibleName(copyButton)).resolves.toBe('Copy');
         await host.snapshot('local');
 
         // WHEN: Press ENTER on the "Copy" button.
         await host.sendKeys('ENTER');
 
-        // THEN: The copy button should change to "Copied".
+        // THEN: The copy button should change to "Copied", including its accessible name.
+        await pageConditions.became('"Copied" is shown', isCopiedShown, 1000);
+        await expect(testHelpers.getAccessibleName(copyButton)).resolves.toBe('Copied');
         await host.snapshot('local');
+
+        // WHEN: Press ENTER again 3 seconds later.
+        clock.tick(3000);
+        await host.sendKeys('ENTER');
+
+        // THEN: The confirmation should restart, it should still be shown 6 seconds after the first press.
+        clock.tick(3000);
+        expect(isCopiedShown()).toBe(true);
 
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="plain-text-box"]'));
@@ -110,10 +123,12 @@
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
 
-        // Sleep for 1 second for the "Copied" text to go away.
-        await testHelpers.sleep(500);
+        // WHEN: 5 seconds after the second press.
+        clock.tick(2000);
 
-        window.checkAccessibility = checkAccessibility;
+        // THEN: The "Copied" text should go away and the accessible name should be back to "Copy".
+        await pageConditions.became('"Copied" is hidden', () => !isCopiedShown(), 1000);
+        await expect(testHelpers.getAccessibleName(copyButton)).resolves.toBe('Copy');
 
         // THEN: Plain text box should contains plain text, while rich text box should contains rich text.
         await host.snapshot('local');

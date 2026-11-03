@@ -1,12 +1,18 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
+import { FORCED_COLORS_SELECTOR } from './Constants';
+
 export default function createMicrophoneButtonStyle({ microphoneButtonColorOnDictate }: StrictStyleOptions) {
   return {
     '&.webchat__microphone-button': {
       '&.webchat__microphone-button--dictating .webchat__microphone-button__button': {
         '&, &:focus, &:hover': {
           '& .webchat__microphone-button__icon': {
-            '--webchat__component-icon--color': microphoneButtonColorOnDictate
+            '--webchat__component-icon--color': microphoneButtonColorOnDictate,
+
+            [FORCED_COLORS_SELECTOR]: {
+              '--webchat__component-icon--color': 'Highlight'
+            }
           }
         }
       }

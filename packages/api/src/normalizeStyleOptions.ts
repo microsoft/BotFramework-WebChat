@@ -1,7 +1,16 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
+import { fallback, function_, is, object, optional, parse, picklist } from 'valibot';
 
 import defaultStyleOptions from './defaultStyleOptions';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import type { StrictStyleOptions, StyleOptions } from './StyleOptions';
+
+const assistiveTechnologyAnnouncementTransportInvalidValue = warnOnce(
+  '"assistiveTechnologyAnnouncementTransport" must be "aria-notify" or "live-region", will set to "live-region".'
+);
+
+const assistiveTechnologyAnnouncementTransportUnsupported = warnOnce(
+  '"assistiveTechnologyAnnouncementTransport" is "aria-notify" but this browser does not support ariaNotify(), will set to "live-region".'
+);
 
 const bubbleImageHeightDeprecation = warnOnce(
   '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'
@@ -15,37 +24,62 @@ const bubbleMinWidthDeprecation = warnOnce(
   '"styleOptions.bubbleMinWidth" has been deprecated. Use "styleOptions.bubbleAttachmentMinWidth" and "styleOptions.bubbleMessageMinWidth" instead. This deprecation migration will be removed on or after 2026-07-05.'
 );
 
-const hideScrollToEndButtonDeprecation = warnOnce(
-  '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2023-06-02.'
+const hideUploadButtonDeprecation = warnOnce(
+  '`styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.'
 );
 
-const newMessagesButtonFontSizeDeprecation = warnOnce(
-  '"styleOptions.newMessagesButtonFontSize" has been renamed to "styleOptions.scrollToEndButtonFontSize". This deprecation migration will be removed on or after 2023-06-02.'
+const markdownHeadingLevelStartAtInvalidValue = warnOnce(
+  '"markdownHeadingLevelStartAt" must be an integer from 1 to 6, will set to 2.'
 );
 
-const suggestedActionBackgroundDeprecation = warnOnce(
-  '"styleOptions.suggestedActionBackground" has been deprecated. Please use "styleOptions.suggestedActionBackgroundColor" instead. This deprecation migration will be removed on or after 2021-09-16.'
-);
+const slowConnectionAfterInvalidValue = warnOnce('"slowConnectionAfter" cannot be negative, will set to 0.');
 
-const suggestedActionXXXBackgroundDeprecation = warnOnce(
-  '"styleOptions.suggestedActionXXXBackground" has been deprecated. Please use "styleOptions.suggestedActionBackgroundColorOnXXX" instead. This deprecation migration will be removed on or after 2021-09-16.'
-);
+function normalizeAssistiveTechnologyAnnouncementTransport(
+  assistiveTechnologyAnnouncementTransport: unknown
+): StrictStyleOptions['assistiveTechnologyAnnouncementTransport'] {
+  const transport = parse(
+    fallback(optional(picklist(['aria-notify', 'live-region']), 'live-region'), () => {
+      assistiveTechnologyAnnouncementTransportInvalidValue();
 
-const suggestedActionDisabledDeprecation = warnOnce(
-  '"styleOptions.suggestedActionDisabledXXX" has been renamed to "styleOptions.suggestedActionXXXOnDisabled". This deprecation migration will be removed on or after 2021-09-16.'
-);
+      return 'live-region';
+    }),
+    assistiveTechnologyAnnouncementTransport
+  );
+
+  // `ariaNotify()` is not in the DOM typings of TypeScript yet. Without DOM (no `Element`), it is not supported either.
+  if (
+    transport === 'aria-notify' &&
+    !(typeof globalThis.Element === 'function' && is(object({ ariaNotify: function_() }), globalThis.Element.prototype))
+  ) {
+    assistiveTechnologyAnnouncementTransportUnsupported();
+
+    return 'live-region';
+  }
+
+  return transport;
+}
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
 //       DOM tree may change from time to time, thus, maintaining "styleSet" becomes a constant effort.
 
-// eslint-disable-next-line complexity
 export default function normalizeStyleOptions({
-  hideScrollToEndButton,
-  newMessagesButtonFontSize,
+  bubbleImageHeight,
+  bubbleMaxWidth,
+  bubbleMinWidth,
+  disableFileUpload,
+  hideUploadButton,
+  slowConnectionAfter,
   ...options
 }: StyleOptions = {}): StrictStyleOptions {
-  const filledOptions: Required<StyleOptions> = { ...defaultStyleOptions, ...options };
+  const filledOptions: Required<StyleOptions> = {
+    ...defaultStyleOptions,
+    bubbleImageHeight: undefined,
+    bubbleMaxWidth: undefined,
+    bubbleMinWidth: undefined,
+    hideUploadButton: undefined,
+    ...options
+  };
 
   // Keep this list flat (no nested style) and serializable (no functions)
   const { bubbleFromUserNubOffset, bubbleNubOffset, emojiSet } = filledOptions;
@@ -70,7 +104,7 @@ export default function normalizeStyleOptions({
     normalizedBubbleNubOffset = bubbleNubOffset;
   }
 
-  if (emojiSet === true) {
+  if (emojiSet === true || typeof emojiSet === 'undefined') {
     normalizedEmojiSet = {
       ':)': '😊',
       ':-)': '😊',
@@ -98,18 +132,13 @@ export default function normalizeStyleOptions({
       '</3': '💔',
       '<\\3': '💔'
     };
+  } else if (emojiSet === false) {
+    normalizedEmojiSet = false;
   } else if (Object.prototype.toString.call(emojiSet) !== '[object Object]') {
     console.warn('botframework-webchat: emojiSet must be a boolean or an object with emoticon: emojiValues');
     normalizedEmojiSet = false;
   } else {
     normalizedEmojiSet = emojiSet;
-  }
-
-  if (hideScrollToEndButton) {
-    hideScrollToEndButtonDeprecation();
-
-    filledOptions.scrollToEndButtonBehavior = false;
-    filledOptions.hideScrollToEndButton = undefined;
   }
 
   let patchedScrollToEndButtonBehavior = filledOptions.scrollToEndButtonBehavior;
@@ -123,114 +152,61 @@ export default function normalizeStyleOptions({
     patchedScrollToEndButtonBehavior = 'unread';
   }
 
-  if (newMessagesButtonFontSize) {
-    newMessagesButtonFontSizeDeprecation();
-
-    // Only set if the "scrollToEndButtonFontSize" is not set.
-    filledOptions.scrollToEndButtonFontSize = newMessagesButtonFontSize;
-    filledOptions.newMessagesButtonFontSize = undefined;
-  }
-
-  options.suggestedActionBackground && suggestedActionBackgroundDeprecation();
-
-  if (options.suggestedActionActiveBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnActive = options.suggestedActionActiveBackground;
-    filledOptions.suggestedActionActiveBackground = undefined;
-  }
-
-  if (options.suggestedActionFocusBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnFocus = options.suggestedActionFocusBackground;
-    filledOptions.suggestedActionFocusBackground = undefined;
-  }
-
-  if (options.suggestedActionHoverBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnHover = options.suggestedActionHoverBackground;
-    filledOptions.suggestedActionHoverBackground = undefined;
-  }
-
-  if (options.suggestedActionDisabledBackground) {
-    suggestedActionXXXBackgroundDeprecation();
-
-    filledOptions.suggestedActionBackgroundColorOnDisabled = options.suggestedActionDisabledBackground;
-    filledOptions.suggestedActionDisabledBackground = undefined;
-  }
-
-  if (options.suggestedActionDisabledBorderColor) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionBorderColorOnDisabled = options.suggestedActionDisabledBorderColor;
-    filledOptions.suggestedActionDisabledBorderColor = undefined;
-  }
-
-  if (options.suggestedActionDisabledBorderStyle) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionBorderStyleOnDisabled = options.suggestedActionDisabledBorderStyle;
-    filledOptions.suggestedActionDisabledBorderStyle = undefined;
-  }
-
-  if (options.suggestedActionDisabledBorderWidth) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionBorderWidthOnDisabled = options.suggestedActionDisabledBorderWidth;
-    filledOptions.suggestedActionDisabledBorderWidth = undefined;
-  }
-
-  if (options.suggestedActionDisabledTextColor) {
-    suggestedActionDisabledDeprecation();
-
-    filledOptions.suggestedActionTextColorOnDisabled = options.suggestedActionDisabledTextColor;
-    filledOptions.suggestedActionDisabledTextColor = undefined;
-  }
-
-  if (options.bubbleImageHeight) {
+  if (bubbleImageHeight) {
     bubbleImageHeightDeprecation();
 
-    filledOptions.bubbleImageMaxHeight = options.bubbleImageHeight;
-    filledOptions.bubbleImageMinHeight = options.bubbleImageHeight;
+    filledOptions.bubbleImageMaxHeight = bubbleImageHeight;
+    filledOptions.bubbleImageMinHeight = bubbleImageHeight;
 
     filledOptions.bubbleImageHeight = undefined;
   }
 
-  if (options.bubbleMaxWidth) {
+  if (bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
 
-    filledOptions.bubbleAttachmentMaxWidth = options.bubbleMaxWidth;
-    filledOptions.bubbleMaxWidth = undefined;
+    filledOptions.bubbleAttachmentMaxWidth = bubbleMaxWidth;
+    filledOptions.bubbleMessageMaxWidth = bubbleMaxWidth;
   }
 
-  if (options.bubbleMinWidth) {
+  if (bubbleMinWidth) {
     bubbleMinWidthDeprecation();
 
-    filledOptions.bubbleAttachmentMinWidth = options.bubbleMinWidth;
-    filledOptions.bubbleMinWidth = undefined;
+    filledOptions.bubbleAttachmentMinWidth = bubbleMinWidth;
+    filledOptions.bubbleMessageMinWidth = bubbleMinWidth;
   }
 
-  if (options.bubbleMaxWidth) {
-    bubbleMaxWidthDeprecation();
+  filledOptions.assistiveTechnologyAnnouncementTransport = normalizeAssistiveTechnologyAnnouncementTransport(
+    filledOptions.assistiveTechnologyAnnouncementTransport
+  );
 
-    filledOptions.bubbleMessageMaxWidth = options.bubbleMaxWidth;
-    filledOptions.bubbleMaxWidth = undefined;
+  // Same as the type of `markdownHeadingLevelStartAt`.
+  // eslint-disable-next-line no-magic-numbers
+  if (!is(picklist([1, 2, 3, 4, 5, 6]), filledOptions.markdownHeadingLevelStartAt)) {
+    typeof filledOptions.markdownHeadingLevelStartAt === 'undefined' || markdownHeadingLevelStartAtInvalidValue();
+
+    filledOptions.markdownHeadingLevelStartAt = defaultStyleOptions.markdownHeadingLevelStartAt;
   }
 
-  if (options.bubbleMinWidth) {
-    bubbleMinWidthDeprecation();
+  if (slowConnectionAfter < 0) {
+    slowConnectionAfterInvalidValue();
 
-    filledOptions.bubbleMessageMinWidth = options.bubbleMinWidth;
-    filledOptions.bubbleMinWidth = undefined;
+    slowConnectionAfter = 0;
+  }
+
+  // Rectify deprecated "hideUploadButton" into "disableFileUpload"
+  if (typeof hideUploadButton !== 'undefined') {
+    hideUploadButtonDeprecation();
+
+    disableFileUpload = !!hideUploadButton;
   }
 
   return {
     ...filledOptions,
     bubbleFromUserNubOffset: normalizedBubbleFromUserNubOffset,
     bubbleNubOffset: normalizedBubbleNubOffset,
+    disableFileUpload,
     emojiSet: normalizedEmojiSet,
-    scrollToEndButtonBehavior: patchedScrollToEndButtonBehavior
+    scrollToEndButtonBehavior: patchedScrollToEndButtonBehavior,
+    slowConnectionAfter
   };
 }

@@ -13,7 +13,7 @@ import isGroupingValid from './private/isGroupingValid';
 
 type GroupActivitiesComposerProps = Readonly<{
   children?: ReactNode | undefined;
-  groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
+  groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[] | undefined;
 }>;
 
 function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupActivitiesComposerProps) {
@@ -24,7 +24,7 @@ function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupA
     () =>
       applyMiddleware(
         'group activities',
-        ...groupActivitiesMiddleware,
+        ...(groupActivitiesMiddleware ?? []),
         ...createDefaultGroupActivitiesMiddleware({ groupTimestamp, ponyfill }),
         () => () => () => ({})
       ),

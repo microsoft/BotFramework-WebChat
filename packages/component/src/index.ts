@@ -3,7 +3,7 @@ export { type WebChatActivity } from 'botframework-webchat-core';
 
 export { default as createCoreAttachmentMiddleware } from './Attachment/createMiddleware';
 export { default as Context } from './hooks/internal/WebChatUIContext';
-export { default as createCoreActivityMiddleware } from './Middleware/Activity/createCoreMiddleware';
+export { createCoreActivityMiddleware } from './Middleware/Activity/defaultActivityPolymiddleware';
 export { default as createCoreActivityStatusMiddleware } from './Middleware/ActivityStatus/createCoreMiddleware';
 export {
   type HTMLContentTransformEnhancer,

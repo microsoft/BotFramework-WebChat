@@ -16,11 +16,6 @@ const UserlandBoundary = ({ children, type }) => {
   );
 };
 
-UserlandBoundary.defaultProps = {
-  children: undefined,
-  type: undefined
-};
-
 UserlandBoundary.propTypes = {
   children: PropTypes.any,
   type: PropTypes.string

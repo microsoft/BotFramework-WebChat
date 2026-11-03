@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends an Adaptive Card with a heading text block, which also has a Markdown heading.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [
+                  {
+                    style: 'heading',
+                    text: '# Order summary',
+                    type: 'TextBlock'
+                  },
+                  {
+                    text: 'Two items, ready to ship.',
+                    type: 'TextBlock'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const headingElements = pageElements
+          .activities()[0]
+          .querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
+        const headingNodes = await Promise.all(Array.from(headingElements, testHelpers.getAccessibilityNode));
+
+        // THEN: There is only the heading of the text block, at level 2, without a heading inside it.
+        expect(
+          headingNodes.map(({ name, properties, role }) => [
+            role.value,
+            name.value,
+            properties.find(({ name }) => name === 'level')?.value.value
+          ])
+        ).toEqual([['heading', 'Order summary', 2]]);
+
+        // THEN: The heading shows "Order summary" in the heading style of the card, without "#".
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

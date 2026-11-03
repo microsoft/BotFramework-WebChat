@@ -1,9 +1,7 @@
-import type {
-  AdaptiveCard,
-  GlobalSettings as GlobalSettingsType,
-  HostConfig as HostConfigType,
-  IMarkdownProcessingResult
-} from 'adaptivecards';
+import type { AdaptiveCard, GlobalSettings as GlobalSettingsType, HostConfig as HostConfigType } from 'adaptivecards';
+
+import flattenNestedHeadings from './flattenNestedHeadings';
+import setMarkdownEngine from './setMarkdownEngine';
 
 /**
  * Returns `true`, if the object is a plain object and not a class, otherwise, `false`.
@@ -29,19 +27,7 @@ export default function renderAdaptiveCard(
     setTabIndexAtCardRoot: boolean;
   }
 ): { element: HTMLElement } | { errors: Error[] } {
-  // Currently, the only way to set the Markdown engine is to set it thru static member of AdaptiveCard class
-
-  // TODO: [P3] Checks if we could make the "renderMarkdownAsHTML" per card
-  //       This could be limitations from Adaptive Cards package (not supported as of 1.2.5)
-  //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
-
-  // "onProcessMarkdown" is a static function but we are trying to scope it to the current object instead.
-  adaptiveCard.constructor['onProcessMarkdown'] = (text: string, result: IMarkdownProcessingResult) => {
-    if (renderMarkdownAsHTML) {
-      result.outputHtml = renderMarkdownAsHTML(text);
-      result.didProcess = true;
-    }
-  };
+  setMarkdownEngine(adaptiveCard, renderMarkdownAsHTML);
 
   if (adaptiveCardsHostConfig) {
     adaptiveCard.hostConfig = isPlainObject(adaptiveCardsHostConfig)
@@ -69,6 +55,9 @@ export default function renderAdaptiveCard(
   if (!element) {
     return { errors: [new Error('Adaptive Card rendered as empty element')] };
   }
+
+  // The Markdown engine does not know whether the `TextBlock` is a heading.
+  flattenNestedHeadings(element);
 
   return { element };
 }

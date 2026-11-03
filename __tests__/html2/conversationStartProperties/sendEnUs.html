@@ -5,12 +5,25 @@
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock"
+        }
+      }
+    </script>
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
-      // TODO: We should update this test with new MockBot.
+    <script type="module">
+      import { spyOn } from 'jest-mock';
+
       run(async function () {
+        // Direct Line starts the conversation with an XHR `POST /conversations`, its body carries the locale.
+        const openSpy = spyOn(XMLHttpRequest.prototype, 'open');
+        const sendSpy = spyOn(XMLHttpRequest.prototype, 'send');
+
+        // WHEN: Web Chat connects with the locale in `conversationStartProperties`.
         WebChat.renderWebChat(
           {
             directLine: WebChat.createDirectLine({
@@ -26,10 +39,17 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.sendMessageViaSendBox('conversationstart');
-        await pageConditions.minNumActivitiesShown(2);
+        const startConversationRequest =
+          openSpy.mock.contexts[
+            openSpy.mock.calls.findIndex(
+              ([method, url]) => method === 'POST' && new URL(url).pathname.endsWith('/conversations')
+            )
+          ];
 
-        await host.snapshot('local');
+        // THEN: The request to start the conversation should send the locale.
+        expect(
+          JSON.parse(sendSpy.mock.calls[sendSpy.mock.contexts.indexOf(startConversationRequest)][0])
+        ).toHaveProperty('locale', 'en-US');
       });
     </script>
   </body>

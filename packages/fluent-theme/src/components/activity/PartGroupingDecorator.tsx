@@ -4,10 +4,10 @@ import {
   getVoiceActivityRole,
   PartGrouping,
   type WebChatActivity
-} from 'botframework-webchat/internal';
+} from 'botframework-webchat/internal.js';
 import cx from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';
-import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';
+import { array, custom, is, object, optional, pipe, readonly } from 'valibot';
 
 import { useStyles, useVariantClassName } from '../../styles';
 
@@ -15,7 +15,7 @@ import styles from './PartGroupingDecorator.module.css';
 
 const partGroupingDecoratorPropsSchema = pipe(
   object({
-    activities: pipe(array(custom<WebChatActivity>(value => safeParse(object({}), value).success)), readonly()),
+    activities: pipe(array(custom<WebChatActivity>(value => is(object({}), value))), readonly()),
     children: optional(reactNode()),
     header: optional(reactNode())
   }),
@@ -39,7 +39,8 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
 
   const isInGroup = useMemo(
     () =>
-      restActivities.length > 0 || !!(activity?.entities && getOrgSchemaMessage(activity.entities)?.isPartOf?.['@id']),
+      restActivities.length > 0 ||
+      !!(activity?.entities && getOrgSchemaMessage(activity.entities)?.isPartOf[0]?.['@id']),
     [activity, restActivities.length]
   );
 

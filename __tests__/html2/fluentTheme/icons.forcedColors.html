@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      .fui-FluentProvider {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webDarkTheme } from '@fluentui/tokens';
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider, testIds } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const colorScheme = new URLSearchParams(location.search).get('fluent-theme') === 'dark' ? 'dark' : 'light';
+
+        // GIVEN: A light or dark high contrast theme (such as "Desert" or "Aquatic" on Windows) is active before Web Chat renders.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'forced-colors', value: 'active' },
+            { name: 'prefers-color-scheme', value: colorScheme },
+            { name: 'prefers-reduced-motion', value: 'reduce' }
+          ]
+        });
+
+        expect(window.matchMedia(`(forced-colors: active) and (prefers-color-scheme: ${colorScheme})`).matches).toBe(
+          true
+        );
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const webChatElement = createElement(
+          FluentThemeProvider,
+          { variant: 'fluent' },
+          createElement(ReactWebChat, { directLine, store, styleOptions: { hideTelephoneKeypadButton: false } })
+        );
+
+        // GIVEN: With a dark color scheme, the page uses the dark Fluent UI theme.
+        createRoot(document.getElementById('webchat')).render(
+          colorScheme === 'dark'
+            ? createElement(FluentProvider, { theme: webDarkTheme }, webChatElement)
+            : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a pre-chat message with a starter prompt with an image.
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              author: {
+                '@context': 'https://schema.org',
+                '@type': 'Person',
+                description: 'Select one of the suggestions below to get started.',
+                image: '/assets/bot-avatar.jpg',
+                name: 'Onboarding Buddy',
+                type: 'https://schema.org/Person'
+              },
+              keywords: ['PreChatMessage'],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          suggestedActions: {
+            actions: [
+              {
+                image: `data:image/svg+xml;utf8,${encodeURIComponent('<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 4.5C2 4.22 2.22 4 2.5 4h11c.28 0 .5.22.5.5s-.22.5-.5.5h-11a.5.5 0 0 1-.5-.5Zm0 5c0-.28.22-.5.5-.5h15c.28 0 .5.22.5.5s-.22.5-.5.5h-15a.5.5 0 0 1-.5-.5Zm.5 4.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9Z" fill="#707070"/></svg>')}`,
+                text: 'Track new hire tasks.',
+                title: 'Checklist',
+                type: 'messageBack'
+              }
+            ],
+            to: []
+          },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The send box should show the "Telephone keypad", "Upload file", and "Send" buttons.
+        await expect(
+          Promise.all(
+            [testIds.sendBoxTelephoneKeypadToolbarButton, testIds.sendBoxUploadButton, testIds.sendBoxSendButton].map(
+              testId => testHelpers.getAccessibleName(document.querySelector(`[data-testid="${testId}"]`))
+            )
+          )
+        ).resolves.toEqual(['Telephone keypad', 'Upload file', 'Send']);
+
+        // THEN: The icons of the starter prompt and of the send box buttons should be visible.
+        await host.snapshot('local');
+
+        // WHEN: A file is dragged into the page.
+        const dataTransfer = new DataTransfer();
+
+        dataTransfer.items.add(new File(['Hello, World!'], 'hello.txt', { type: 'text/plain' }));
+        document.dispatchEvent(new DragEvent('dragenter', { bubbles: true, dataTransfer }));
+
+        // THEN: The drop zone should be shown.
+        await waitFor(() =>
+          expect(document.querySelector(`[data-testid="${testIds.sendBoxDropZone}"]`)).toHaveProperty(
+            'textContent',
+            'Drop files'
+          )
+        );
+
+        // THEN: The icon of the drop zone should be visible.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

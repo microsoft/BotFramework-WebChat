@@ -1,4 +1,21 @@
-import type { Activity, State } from '../types';
+import type { Activity, LivestreamSessionMap, State } from '../types';
+
+function* yieldSessionActivities(
+  session: NonNullable<ReturnType<LivestreamSessionMap['get']>>,
+  activityMap: State['activityMap']
+): Generator<Activity> {
+  if (session.finalized) {
+    // After finalization, only yield the final revision — intermediate revisions are pruned.
+    // eslint-disable-next-line no-magic-numbers
+    const lastEntry = session.activities.at(-1);
+
+    lastEntry && (yield activityMap.get(lastEntry.activityLocalId)!.activity);
+  } else {
+    for (const activityEntry of session.activities) {
+      yield activityMap.get(activityEntry.activityLocalId)!.activity;
+    }
+  }
+}
 
 export default function computeSortedActivities(
   temporalState: Pick<State, 'activityMap' | 'howToGroupingMap' | 'livestreamSessionMap' | 'sortedChatHistoryList'>
@@ -20,17 +37,13 @@ export default function computeSortedActivities(
             } else {
               howToPartEntry.type satisfies 'livestream session';
 
-              for (const activityEntry of livestreamSessionMap.get(howToPartEntry.livestreamSessionId)!.activities) {
-                yield activityMap.get(activityEntry.activityLocalId)!.activity;
-              }
+              yield* yieldSessionActivities(livestreamSessionMap.get(howToPartEntry.livestreamSessionId)!, activityMap);
             }
           }
         } else {
           sortedEntry.type satisfies 'livestream session';
 
-          for (const activityEntry of livestreamSessionMap.get(sortedEntry.livestreamSessionId)!.activities) {
-            yield activityMap.get(activityEntry.activityLocalId)!.activity;
-          }
+          yield* yieldSessionActivities(livestreamSessionMap.get(sortedEntry.livestreamSessionId)!, activityMap);
         }
       }
     })()

@@ -3,6 +3,7 @@ import {
   GlobalSettings,
   HorizontalAlignment,
   HostConfig,
+  OpenUrlAction,
   SerializationContext,
   TextSize,
   TextWeight,
@@ -14,6 +15,7 @@ type AdaptiveCardsPackage = {
   GlobalSettings: typeof GlobalSettings;
   HorizontalAlignment: typeof HorizontalAlignment;
   HostConfig: typeof HostConfig;
+  OpenUrlAction: typeof OpenUrlAction;
   TextSize: typeof TextSize;
   TextWeight: typeof TextWeight;
   SerializationContext: typeof SerializationContext;

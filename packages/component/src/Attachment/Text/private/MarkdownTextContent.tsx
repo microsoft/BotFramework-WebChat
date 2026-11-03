@@ -1,37 +1,37 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
+import { getOrgSchemaMessage, onErrorResumeNext, type WebChatActivity } from 'botframework-webchat-core';
 import {
-  getOrgSchemaMessage,
-  onErrorResumeNext,
-  parseClaim,
+  orgSchemaClaimSchema,
   type OrgSchemaClaim,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+  type OrgSchemaCreativeWork,
+  type OrgSchemaSoftwareSourceCode
+} from 'botframework-webchat-core/org-schema.js';
 import cx from 'classnames';
-import type { Definition } from 'mdast';
-import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { custom, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
+import getFirstBaseOfSoftwareSourceCode from '../../../Utils/orgSchema/getFirstBaseOfSoftwareSourceCode';
+import useLocalizeProgrammingLanguage from '../../../hooks/internal/useLocalizeProgrammingLanguage';
 import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
-import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
+import useStreamingMarkdownWithDefinitions, {
+  type MarkdownLinkDefinition
+} from '../../../hooks/useStreamingMarkdownWithDefinitions';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
-import { type PropsOf } from '../../../types/PropsOf';
 import ActivityCopyButton from './ActivityCopyButton';
 import ActivityViewCodeButton from './ActivityViewCodeButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isAIGeneratedActivity from './isAIGeneratedActivity';
-import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
-import citationModalStyles from './CitationModal.module.css';
 import textContentStyles from '../TextContent.module.css';
+import citationModalStyles from './CitationModal.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -39,7 +39,7 @@ type Entry = {
   claim?: OrgSchemaClaim | undefined;
   /** Do not use the key as URL, it is not sanitized. */
   key: string;
-  markdownDefinition: Definition;
+  markdownDefinition: MarkdownLinkDefinition;
 } & (
   | {
       // Inline citation.
@@ -69,11 +69,9 @@ function isCitationURL(url: string): boolean {
 }
 
 function isCitingInline(claim: OrgSchemaClaim): claim is OrgSchemaClaim & {
-  appearance: {
-    url?: undefined;
-  };
+  appearance: [OrgSchemaCreativeWork & { readonly url: never[] }];
 } {
-  return !!claim.appearance && !claim.appearance.url;
+  return !!claim.appearance.length && !claim.appearance[0].url.length;
 }
 
 function MarkdownTextContent(props: MarkdownTextContentProps) {
@@ -85,30 +83,22 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
+  const localizeProgrammingLanguage = useLocalizeProgrammingLanguage();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
   const showModal = useShowModal();
+
+  const { definitions: markdownDefinitions } = useStreamingMarkdownWithDefinitions(
+    contentRef,
+    markdown,
+    activity.type === 'message'
+  );
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 
   const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
 
-  if (!renderMarkdownAsHTML) {
-    throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
-  }
-
-  const dangerouslySetInnerHTML = useMemo(
-    () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
-    [renderMarkdownAsHTML, markdown]
-  );
-
-  const markdownDefinitions = useMemo(
-    () => fromMarkdown(markdown).children.filter((node): node is Definition => node.type === 'definition'),
-    [markdown]
-  );
-
   const showClaimModal = useCallback(
-    (title, text, altText) => {
+    (title: string | undefined, text: string, altText: string | undefined) => {
       showModal(() => <CitationModalContext headerText={title} markdown={text} />, {
         'aria-label': altText || title || citationModalDialogLabel,
         className: citationModalClassNames['citation-modal-dialog']
@@ -125,36 +115,38 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
         markdownDefinitions
           .map<Entry | undefined>(markdownDefinition => {
             let messageCitation: OrgSchemaClaim | undefined = messageThing?.citation
-              ?.map(parseClaim)
-              .find(({ position }) => '' + position === markdownDefinition.identifier);
+              .map(claim => parse(orgSchemaClaimSchema, claim))
+              .find(({ position }) => '' + position[0] === markdownDefinition.identifier);
 
             if (!messageCitation) {
               const rootLevelClaim = graph
                 .filter(({ type }) => type === 'https://schema.org/Claim')
-                .map(parseClaim)
-                .find(({ '@id': id }) => id === markdownDefinition.url);
+                .map(claim => parse(orgSchemaClaimSchema, claim))
+                .find(claim => claim['@id'] === markdownDefinition.url);
 
               if (rootLevelClaim) {
                 console.warn(
                   'botframework-webchat: Root-level `Claim` thing is deprecated, please use `Message[@id=""].citation[@type="Claim"]` instead. It will be removed on or after 2027-08-29.'
                 );
 
-                messageCitation = {
+                messageCitation = parse(orgSchemaClaimSchema, {
                   '@context': 'https://schema.org',
                   '@id': markdownDefinition.url,
                   '@type': 'Claim',
                   alternateName: rootLevelClaim.alternateName,
-                  appearance: isCitationURL(rootLevelClaim['@id'])
-                    ? {
-                        '@type': 'DigitalDocument',
-                        name: rootLevelClaim.name,
-                        text: rootLevelClaim.text
-                      }
-                    : {
-                        '@type': 'DigitalDocument',
-                        url: markdownDefinition.url
-                      }
-                };
+                  appearance: [
+                    isCitationURL(rootLevelClaim['@id'])
+                      ? {
+                          '@type': 'DigitalDocument',
+                          name: rootLevelClaim.name,
+                          text: rootLevelClaim.text
+                        }
+                      : {
+                          '@type': 'DigitalDocument',
+                          url: markdownDefinition.url
+                        }
+                  ]
+                } satisfies InferInput<typeof orgSchemaClaimSchema>);
               }
             }
 
@@ -174,9 +166,9 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                   key: url,
                   handleClick: () =>
                     showClaimModal(
-                      appearance.name ?? markdownDefinition.title,
-                      appearance.text,
-                      messageCitation.alternateName
+                      appearance[0]?.name[0] ?? markdownDefinition.title,
+                      appearance[0]?.text[0],
+                      messageCitation.alternateName[0]
                     ),
                   markdownDefinition
                 };
@@ -184,14 +176,14 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
               // Not inline citation, we care about the URL.
               // Warn if it break single source of truth principle, we still use the URL from Markdown.
-              if (messageCitation.appearance?.url && messageCitation.appearance.url !== url) {
+              if (messageCitation.appearance[0]?.url[0] && messageCitation.appearance[0]?.url[0] !== url) {
                 console.warn(
                   'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
                   {
                     citation: messageCitation,
                     markdownDefinition,
                     url: {
-                      citation: messageCitation.appearance.url,
+                      citation: messageCitation.appearance[0]?.url[0],
                       markdown: url
                     }
                   }
@@ -251,45 +243,48 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     [entriesRef]
   );
 
-  const messageSensitivityLabelProps = useMemo<PropsOf<typeof MessageSensitivityLabel> | undefined>(() => {
-    const usageInfo = messageThing?.usageInfo;
+  const messageSensitivityLabelProps = useMemo<MessageSensitivityLabelProps | undefined>(() => {
+    const usageInfo = messageThing?.usageInfo[0];
 
     if (usageInfo) {
-      const { pattern } = usageInfo;
-      const encryptionStatus = !!usageInfo.keywords?.find(keyword => keyword === 'encrypted-content');
+      const [firstPattern] = usageInfo.pattern;
+      const encryptionStatus = !!usageInfo.keywords.find(keyword => keyword === 'encrypted-content');
 
       return {
         color:
-          pattern &&
-          pattern.inDefinedTermSet === 'https://www.w3.org/TR/css-color-4/' &&
-          pattern.name === 'color' &&
-          pattern.termCode,
+          firstPattern &&
+          firstPattern.inDefinedTermSet[0] === 'https://www.w3.org/TR/css-color-4/' &&
+          firstPattern.name[0] === 'color' &&
+          firstPattern.termCode[0],
         isEncrypted: encryptionStatus,
-        name: usageInfo.name,
-        title: usageInfo.description
-      };
+        name: usageInfo.name[0],
+        title: usageInfo.description[0]
+      } satisfies MessageSensitivityLabelProps;
     }
   }, [messageThing]);
 
   // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
-  const getEntryMainText = (entry: Entry) =>
-    entry.claim?.name ?? entry.claim?.appearance?.name ?? (entry.markdownDefinition.title || undefined);
+  const getEntryMainText = (entry: Entry): string | undefined =>
+    entry.claim?.name[0] ?? entry.claim?.appearance[0]?.name[0] ?? (entry.markdownDefinition.title || undefined);
 
   // Optional alternate name for the entry, used as a subtitle beneath the link
-  const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.usageInfo?.name;
+  const getEntryBadgeName = (entry: Entry): string | undefined => entry.claim?.appearance[0]?.usageInfo[0]?.name[0];
 
   // Secondary text describing the citation, used in the a11y description (i.e. the div's title attribute)
-  const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.usageInfo?.description;
+  const getEntryDescription = (entry: Entry): string | undefined =>
+    entry.claim?.appearance[0]?.usageInfo[0]?.description[0];
+
+  const firstSoftwareSourceCodeBase = useMemo<OrgSchemaSoftwareSourceCode | undefined>(() => {
+    const firstSoftwareSourceCodeBase = getFirstBaseOfSoftwareSourceCode(messageThing);
+
+    if (firstSoftwareSourceCodeBase?.programmingLanguage[0]) {
+      return firstSoftwareSourceCodeBase;
+    }
+  }, [messageThing]);
 
   return (
     <div className={cx(textContentClassNames['text-content'], textContentClassNames['text-content--is-markdown'])}>
-      <div
-        className={cx(textContentClassNames['text-content__markdown'])}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-        onClick={handleClick}
-        ref={contentRef}
-      />
+      <div className={cx(textContentClassNames['text-content__markdown'])} onClick={handleClick} ref={contentRef} />
       {children}
       {!!entries.length && (
         <LinkDefinitions<MessageSensitivityLabelProps>
@@ -311,18 +306,17 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
       )}
       <div className={textContentClassNames['text-content__activity-actions']}>
         {activity.type === 'message' &&
-        isBasedOnSoftwareSourceCode(messageThing) &&
-        messageThing.isBasedOn.text &&
-        !messageThing.keywords?.includes?.('Collapsible') ? (
+        firstSoftwareSourceCodeBase?.text &&
+        !messageThing?.keywords.includes('Collapsible') ? (
           <ActivityViewCodeButton
             className="text-content__activity-view-code-button"
-            code={messageThing.isBasedOn.text}
+            code={firstSoftwareSourceCodeBase.text[0]}
             isAIGenerated={isAIGeneratedActivity(activity)}
-            language={messageThing.isBasedOn.programmingLanguage}
-            title={messageThing.isBasedOn.programmingLanguage}
+            language={firstSoftwareSourceCodeBase.programmingLanguage[0]}
+            title={localizeProgrammingLanguage(firstSoftwareSourceCodeBase.programmingLanguage[0])}
           />
         ) : null}
-        {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
+        {activity.type === 'message' && activity.text && messageThing?.keywords.includes('AllowCopy') ? (
           <ActivityCopyButton className="text-content__activity-copy-button" targetRef={contentRef} />
         ) : null}
         {activity.type === 'message' && feedbackActionsPlacement === 'activity-actions' && (

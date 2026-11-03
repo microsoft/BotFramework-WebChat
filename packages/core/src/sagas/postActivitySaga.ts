@@ -58,7 +58,7 @@ function* postActivity(
     channelData: {
       // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
       // Please refer to #4362 for details. Remove on or after 2024-07-31.
-      ...deleteKey(activity.channelData, 'state'),
+      ...deleteKey(activity.channelData, 'state', 'webchat:internal:local-id', 'webchat:internal:position'),
       clientActivityID
     },
     channelId: 'webchat',

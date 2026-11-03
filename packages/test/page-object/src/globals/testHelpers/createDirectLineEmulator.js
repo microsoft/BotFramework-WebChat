@@ -16,9 +16,9 @@ function uniqueId() {
   return random().toString(36).substring(2, 7);
 }
 
-export default function createDirectLineEmulator({ autoConnect = true, ponyfill = {} } = {}) {
+export default function createDirectLineEmulator({ autoConnect = true, initialState, ponyfill = {} } = {}) {
   const { Date = window.Date } = ponyfill;
-  const store = createStoreWithOptions({ ponyfill });
+  const store = createStoreWithOptions({ ponyfill }, initialState);
 
   if (!isNativeClock()) {
     throw new Error('Fake timer is detected at global-level. You must pass it via the "ponyfill" option.');
@@ -31,11 +31,11 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });
-  const activityDeferredObservable = createDeferredObservable(async () => {
+  // Not async: the returned value is called on unsubscribe, e.g. when Web Chat is unmounted, and a promise is not a function.
+  const activityDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(1);
 
-    await connectedWithResolvers.promise;
-    connectionStatusDeferredObservable.next(2);
+    connectedWithResolvers.promise.then(() => connectionStatusDeferredObservable.next(2));
   });
 
   const postActivityCallDeferreds = [];

@@ -6,7 +6,7 @@ import UploadButton from './UploadButton';
 const { useStyleOptions } = hooks;
 
 // NOTE: "hideUploadButton" is deprecated. Use "disableFileUpload" instead.
-//       Rectification logic is handled in patchStyleOptionsFromDeprecatedProps.js
+//       Rectification logic is handled in normalizeStyleOptions.ts
 function BasicSendBoxToolbar({ className }: SendBoxToolbarMiddlewareProps) {
   const [{ disableFileUpload }] = useStyleOptions();
 

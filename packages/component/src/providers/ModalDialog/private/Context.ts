@@ -1,9 +1,12 @@
+import { type CSSModuleTheme } from '@msinternal/botframework-webchat-styles/react';
 import { createContext, type ReactNode } from 'react';
 
 type DialogInit = {
   'aria-label'?: string;
   'aria-labelledby'?: string;
   className?: string;
+  /** Class names for the local names of the dialog's parts (e.g. "modal-dialog__box"), so the caller can style them. */
+  cssModuleTheme?: CSSModuleTheme | undefined;
 };
 
 type RenderFunction = () => ReactNode;

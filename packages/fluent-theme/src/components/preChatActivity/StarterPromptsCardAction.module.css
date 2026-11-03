@@ -48,6 +48,11 @@
     outline-offset: -2px;
   }
 
+  /* Forced colors remove the card shadow and fill, so draw a border as a native button does. */
+  @media (forced-colors: active) {
+    border: var(--webchat-strokeWidthThin) solid ButtonText;
+  }
+
   &:empty::after,
   &:empty::before {
     animation: blueprintAnimation 3s linear infinite;

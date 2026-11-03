@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      .visually-hidden {
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        width: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!-- The host page has a level-two heading for Web Chat, below the level-one heading added by the test harness. -->
+      <h2 class="visually-hidden">Chat with us</h2>
+      <div id="webchat"></div>
+    </main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Markdown headings start at level 3, below the host's level-two heading.
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true, markdownHeadingLevelStartAt: 3 } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a message with Markdown headings of every level.
+        await directLine.emulateIncomingActivity({
+          text: '# Heading 1\n\n## Heading 2\n\n### Heading 3\n\n#### Heading 4\n\n##### Heading 5\n\n###### Heading 6',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const headingElements = pageElements
+          .activities()[0]
+          .querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
+        const headingNodes = await Promise.all(Array.from(headingElements, testHelpers.getAccessibilityNode));
+
+        // THEN: The top heading is level 3, the others keep their depth, "#####" and "######" are levels 7 and 8.
+        expect(
+          headingNodes.map(({ name, properties, role }) => [
+            role.value,
+            name.value,
+            properties.find(({ name }) => name === 'level')?.value.value
+          ])
+        ).toEqual([
+          ['heading', 'Heading 1', 3],
+          ['heading', 'Heading 2', 4],
+          ['heading', 'Heading 3', 5],
+          ['heading', 'Heading 4', 6],
+          ['heading', 'Heading 5', 7],
+          ['heading', 'Heading 6', 8]
+        ]);
+
+        // THEN: Each heading looks the same as with the default start, sized by the level written in Markdown.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

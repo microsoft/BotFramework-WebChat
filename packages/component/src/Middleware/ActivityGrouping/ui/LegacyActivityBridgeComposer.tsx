@@ -1,9 +1,9 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { LegacyActivityContextProvider, type LegacyActivityContextType } from 'botframework-webchat-api/internal';
+import { LegacyActivityContextProvider, type LegacyActivityContextType } from 'botframework-webchat-api/internal.js';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import isZeroOrPositive from '../../../Utils/isZeroOrPositive';
 import useFirstActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useFirstActivity';
@@ -13,7 +13,7 @@ import useLastActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGroupi
 
 const { useStyleOptions } = hooks;
 
-const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
+const webChatActivitySchema = custom<WebChatActivity>(value => is(object({}), value));
 
 const legacyActivityComposerPropsSchema = pipe(
   object({

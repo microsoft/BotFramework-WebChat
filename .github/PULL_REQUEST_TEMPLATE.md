@@ -4,7 +4,7 @@
 
 ## Changelog Entry
 
-<!-- Please paste your new entry from CHANGELOG.MD here. Entry is not required for work only related to development purposes. -->
+<!-- Please paste the entries of your `.changelog/<PR#>-<slug>.md` here, see `.changelog/README.md`. Entry is not required for work only related to development purposes, label the pull request `no-changelog` instead. Do not edit `CHANGELOG.md`, maintainers label hand edits `changelog-edit`. -->
 
 ## Description
 
@@ -23,7 +23,7 @@
 <!-- For bugs, add the bug repro as a test. Otherwise, add tests to futureproof your work. -->
 
 - [ ] I have added tests and executed them locally
-- [ ] I have updated `CHANGELOG.md`
+- [ ] I have added `.changelog/<PR#>-<slug>.md`
 - [ ] I have updated documentation
 
 ## Review Checklist

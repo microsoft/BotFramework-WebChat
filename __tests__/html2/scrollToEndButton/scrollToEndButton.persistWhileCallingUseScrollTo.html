@@ -1,22 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "#test-harness": "/test-harness.mjs",
+          "#test-page-object": "/test-page-object.mjs",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
   </head>
   <body>
     <main id="webchat"></main>
-    <script type="text/babel" data-presets="env,stage-3,react">
+    <script type="module">
+      import '#test-harness';
+      import '#test-page-object';
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         const {
-          Components: { BasicWebChat, Composer },
-          hooks: { useScrollTo }
-        } = WebChat;
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            hooks: { useScrollTo }
+          }
+        } = window;
 
         const paragraphs = [
           'Aliqua non sint est tempor nisi voluptate amet ipsum. Mollit do velit do eu laboris proident minim dolore non est excepteur. Enim reprehenderit aliqua nostrud adipisicing veniam consequat sit veniam id. Nisi dolore laboris dolore duis Lorem officia proident nostrud. Esse dolor nisi ad nisi est sit magna minim duis laborum.',
@@ -38,19 +54,24 @@
 
         let recordings;
 
-        const scrollToEndButtonMiddleware = () => next => (...args) => {
-          recordings && recordings.push(args[0]);
+        const scrollToEndButtonMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            recordings && recordings.push(args[0]);
 
-          return next(...args);
-        };
+            return next(...args);
+          };
 
         const renderWithFunction = fn =>
           new Promise(resolve =>
-            ReactDOM.render(
-              <Composer directLine={directLine} scrollToEndButtonMiddleware={scrollToEndButtonMiddleware} store={store}>
-                <BasicWebChat />
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
+            render(
+              createElement(
+                Composer,
+                { directLine, scrollToEndButtonMiddleware, store },
+                createElement(BasicWebChat),
+                createElement(RunFunction, { fn: () => resolve(fn && fn()), key: Date.now() + '' })
+              ),
               document.getElementById('webchat')
             )
           );
@@ -73,7 +94,7 @@
         await renderWithFunction(() => useScrollTo()({ scrollTop: 300 }));
 
         // EXPECT: Make sure the button is always appear on the screen while running useScrollTo hook.
-        expect(recordings.length).toBeGreaterThan(0);
+        await waitFor(() => expect(recordings.length).toBeGreaterThan(0));
         expect(recordings.every(({ atEnd, unread }) => !atEnd && unread)).toBeTruthy();
       });
     </script>

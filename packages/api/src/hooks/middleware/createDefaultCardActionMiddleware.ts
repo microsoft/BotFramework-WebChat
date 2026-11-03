@@ -9,7 +9,8 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
       const [
         {
           cardAction,
-          cardAction: { value }
+          cardAction: { value },
+          replyToId
         }
       ] = args;
 
@@ -18,7 +19,7 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
         case 'imBack':
           if (typeof value === 'string') {
             // TODO: [P4] Instead of calling dispatch, we should move to dispatchers instead for completeness
-            dispatch(sendMessage(value, 'imBack'));
+            dispatch(sendMessage(value, 'imBack', { replyToId }));
           } else {
             throw new Error('cannot send "imBack" with a non-string value');
           }
@@ -26,12 +27,12 @@ export default function createDefaultCardActionMiddleware(): CardActionMiddlewar
           break;
 
         case 'messageBack':
-          dispatch(sendMessageBack(value, cardAction.text, cardAction.displayText));
+          dispatch(sendMessageBack(value, cardAction.text, cardAction.displayText, { replyToId }));
 
           break;
 
         case 'postBack':
-          dispatch(sendPostBack(value));
+          dispatch(sendPostBack(value, { replyToId }));
 
           break;
 

@@ -3,7 +3,7 @@ type Enhancer<T> = (next: Work<T>) => Work<T>;
 type Middleware<Setup, Result> = (setup: Setup) => Enhancer<Result>;
 
 export default function concatMiddleware<Setup, Result>(
-  ...middleware: Middleware<Setup, Result>[]
+  ...middleware: readonly Middleware<Setup, Result>[]
 ): Middleware<Setup, Result> {
   return setupArgs => {
     const setup = middleware.reduce((setup, middleware) => {

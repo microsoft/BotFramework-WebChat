@@ -1,7 +1,7 @@
+import { isPlainObject } from '@msinternal/botframework-webchat-base/utils';
 import { useCallback, useMemo } from 'react';
 
 import createCustomEvent from '../utils/createCustomEvent';
-import isObject from '../utils/isObject';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
@@ -28,10 +28,10 @@ export default function useTrackEvent(): TrackEventFunction {
       }
 
       if (typeof data !== 'undefined') {
-        if (isObject(data)) {
+        if (isPlainObject(data)) {
           if (!Object.values(data).every(value => isNonNegativeFiniteNumberOrString(value))) {
             return console.warn(
-              'botframework-webchat: Every value in "data" map passed to "useTrackEvent" hook must be a non-negative finite number or string.'
+              'botframework-webchat: Every value in "data" plain object passed to "useTrackEvent" hook must be a non-negative finite number or string.'
             );
           }
         } else if (!isNonNegativeFiniteNumberOrString(data)) {

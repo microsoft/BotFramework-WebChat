@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -8,7 +8,16 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         const workingDirectLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         let firstBotActivityId;
@@ -56,14 +65,28 @@
         //       Thus, only the second message will be shown. And there are 2 messages in total only.
         await pageConditions.numActivitiesShown(2);
 
+        // The second reply arrives after the first one, wait until it replaced the first one.
+        await waitFor(
+          () =>
+            expect(pageElements.activityContents()[1]).toHaveProperty(
+              'textContent',
+              'This message will be replaced by a carousel'
+            ),
+          { timeout: 15_000 }
+        );
+
         // THEN: It should show 1 outgoing message, and 1 incoming message.
         await host.snapshot('local');
 
         // WHEN: A "carousel" message is being sent.
         await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
 
-        // THEN: It should show 2 messages only because all messages from bot is being collapsed into a single message.
+        // THEN: It should show 3 messages only because all messages from bot is being collapsed into a single message.
         await pageConditions.numActivitiesShown(3);
+
+        // WHEN: The carousel replaced the earlier reply from the bot.
+        //       The outgoing message alone satisfies the count above, so wait for the 4 cards of the carousel.
+        await waitFor(() => expect(pageElements.activityAttachments()[1]).toHaveLength(4), { timeout: 15_000 });
 
         // WHEN: All images (in the carousel) are loaded.
         await pageConditions.allImagesLoaded();

@@ -2,6 +2,7 @@ import actionDispatched from './actionDispatched';
 import allImagesLoaded from './allImagesLoaded';
 import allOutgoingActivitiesSent from './allOutgoingActivitiesSent';
 import became from './became';
+import carouselSettled from './carouselSettled';
 import connectivityStatusShown from './connectivityStatusShown';
 import errorMessageLogged from './errorMessageLogged';
 import focusedActivityInView from './focusedActivityInView';
@@ -30,6 +31,7 @@ export {
   allImagesLoaded,
   allOutgoingActivitiesSent,
   became,
+  carouselSettled,
   connectivityStatusShown,
   errorMessageLogged,
   focusedActivityInView,

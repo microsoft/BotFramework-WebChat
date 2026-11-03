@@ -1,4 +1,4 @@
-import { useLiveRegion } from 'botframework-webchat/internal';
+import { useLiveRegion } from 'botframework-webchat/internal.js';
 import React, { memo } from 'react';
 
 import { useStyles } from '../../styles';

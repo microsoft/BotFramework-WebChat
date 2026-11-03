@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="heading-indicator.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const styleOptions = { richCardTitleOmitHeadingRole: true };
+        const baseProps = { directLine, store, styleOptions };
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(baseProps, webChatElement);
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('herocard', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+        await pageConditions.scrollToBottomCompleted();
+
+        const heroCardActivity = Array.from(webChatElement.querySelectorAll('.webchat__basic-transcript__activity')).find(
+          (activity) => !!activity.querySelector('.ac-textBlock')
+        );
+        expect(heroCardActivity).toBeTruthy();
+
+        const titleTextBlock = Array.from(heroCardActivity.querySelectorAll('.ac-textBlock')).find(
+          (block) => block.innerText === '\u200BDetails about image 1\u200B'
+        );
+        expect(titleTextBlock).toBeTruthy();
+
+        expect(titleTextBlock.getAttribute('role')).toBe(null);
+        expect(heroCardActivity.querySelector('.ac-textBlock[role="heading"]')).toBe(null);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

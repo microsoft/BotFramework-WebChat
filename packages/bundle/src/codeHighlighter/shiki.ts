@@ -30,7 +30,16 @@ function createHighlighter() {
   return createHighlighterCore({
     engine: createJavaScriptRegexEngine(),
     langs: [languageJavaScript, languagePython, languageTypeScript],
-    themes: [adjustTheme(themeGitHubDark), adjustTheme(themeGitHubLight)]
+    themes: [
+      adjustTheme(themeGitHubDark),
+      adjustTheme({
+        ...themeGitHubLight,
+        // Comments (#6e7781) are 4.36:1 on the Fluent theme code block background (#fafafa), below 4.5:1 (WCAG 1.4.3).
+        // Use the muted text color of the theme instead (#656d76): 5.03:1 on #fafafa, 5.25:1 on #ffffff.
+        // Other token colors of JavaScript, Python, and TypeScript are at least 4.83:1 (light) and 5.99:1 (dark).
+        colorReplacements: { '#6e7781': '#656d76' }
+      })
+    ]
   });
 }
 

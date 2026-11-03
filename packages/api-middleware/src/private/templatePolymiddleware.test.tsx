@@ -12,7 +12,7 @@ type LinkProps = Readonly<{ children?: ReactNode | undefined; href: string }>;
 const ButtonImpl = ({ children }: ButtonProps) => <button type="button">{children}</button>;
 
 const ExternalLinkImpl = ({ children, href }: LinkProps) => (
-  <a href={href} rel="noopener noreferer">
+  <a href={href} rel="noopener noreferrer">
     {children}
   </a>
 );
@@ -94,7 +94,7 @@ test('an uber middleware', () => {
   </a>
   <a
     href="https://example.com"
-    rel="noopener noreferer"
+    rel="noopener noreferrer"
   >
     External link
   </a>

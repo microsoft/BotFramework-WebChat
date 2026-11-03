@@ -1,26 +1,29 @@
 import { cx } from '@emotion/css';
+import {
+  parseDocumentFragmentFromString,
+  serializeDocumentFragmentIntoString
+} from '@msinternal/botframework-webchat-component-better-link';
 import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
-import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
-import parseDocumentFragmentFromString from '../Utils/parseDocumentFragmentFromString';
-import serializeDocumentFragmentIntoString from '../Utils/serializeDocumentFragmentIntoString';
-import useWebChatUIContext from './internal/useWebChatUIContext';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
+import useWebChatUIContext from './internal/useWebChatUIContext';
+import headingLevelDocumentMod from './private/headingLevelDocumentMod';
 
 import styles from './RenderMarkdown.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
+type RenderMarkdownAsHTMLFn = (
+  markdown: string,
+  styleOptions?: Readonly<StrictStyleOptions>,
+  options?: Readonly<{ externalLinkAlt: string }>
+) => string;
+
 export default function useRenderMarkdownAsHTML(
   mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'message activity' = 'message activity'
-):
-  | ((
-      markdown: string,
-      styleOptions?: Readonly<StrictStyleOptions>,
-      options?: Readonly<{ externalLinkAlt: string }>
-    ) => string)
-  | undefined {
+): RenderMarkdownAsHTMLFn | undefined {
   const { renderMarkdown } = useWebChatUIContext();
   const [styleOptions] = useStyleOptions();
   const localize = useLocalizer();
@@ -41,13 +44,19 @@ export default function useRenderMarkdownAsHTML(
     [classNames, mode]
   );
 
+  // For 'message activity' mode, streaming rendering is available via useStreamingMarkdownWithDefinitions hook.
+  // This hook still returns a full-render function for backward compatibility and other consumers.
   return useMemo(
     () =>
       renderMarkdown &&
       (markdown => {
         const html = renderMarkdown(markdown, styleOptions, { externalLinkAlt });
 
-        const documentFragment = transformHTMLContent(parseDocumentFragmentFromString(html));
+        // After the HTML content transform, which would remove `aria-level`, `class` and `role` of headings.
+        const documentFragment = headingLevelDocumentMod(
+          transformHTMLContent(parseDocumentFragmentFromString(html)),
+          styleOptions.markdownHeadingLevelStartAt
+        );
 
         const rootElement = document.createElement('div');
 

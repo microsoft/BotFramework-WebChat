@@ -62,7 +62,7 @@ export default function useMemoized<TFinal, TArgs>(fn: Fn<TArgs, TFinal>, deps: 
       return memoizedFn;
     },
     // Concat our deps with passed deps, so the memo callback runs when anything changes
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    /* eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo */
     [fnRef, cacheRef, nextCacheRef, ...deps]
   );
 

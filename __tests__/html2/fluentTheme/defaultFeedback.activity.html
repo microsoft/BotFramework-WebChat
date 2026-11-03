@@ -153,6 +153,8 @@
       await host.sendTab(2);
       await host.sendKeys('ENTER');
 
+      // Wait until tooltip show up
+      await testHelpers.sleep(400);
       await host.snapshot('local');
 
       // Send dislike

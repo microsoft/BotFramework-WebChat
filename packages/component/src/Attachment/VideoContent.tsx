@@ -1,6 +1,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { onErrorResumeNext } from 'botframework-webchat-core';
 import React, { memo } from 'react';
-import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, url, type InferInput } from 'valibot';
 
 import HTMLVideoContent from './HTMLVideoContent';
 import VimeoContent from './VimeoContent';
@@ -13,31 +14,14 @@ const YOUTUBE_WWW_SHORT_DOMAIN = 'www.youtu.be';
 const VIMEO_DOMAIN = 'vimeo.com';
 const VIMEO_WWW_DOMAIN = 'www.vimeo.com';
 
-// This is a workaround
-// - Today, there is no good URL polyfill for older browser
-// - Instead of writing a URL parser, for older browser, we will use this <a href> trick to parse the URL
-function parseURL(url) {
-  let urlLike;
-
-  if (typeof URL === 'function') {
-    urlLike = new URL(url);
-  } else {
-    urlLike = document.createElement('a');
-    urlLike.setAttribute('href', url);
-  }
-
-  const { hostname, pathname, search } = urlLike;
-
-  return { hostname, pathname, search };
-}
-
 const videoContentPropsSchema = pipe(
   object({
     alt: optional(string()),
     autoPlay: optional(boolean()),
     loop: optional(boolean()),
     poster: optional(string()),
-    src: string()
+    // Relative URLs are not supported, they would point to a different server in each chat client.
+    src: pipe(string(), url())
   }),
   readonly()
 );
@@ -47,26 +31,26 @@ type VideoContentProps = InferInput<typeof videoContentPropsSchema>;
 function VideoContent(props: VideoContentProps) {
   const { alt, autoPlay = false, loop = false, poster, src } = validateProps(videoContentPropsSchema, props);
 
-  const { hostname, pathname, search } = parseURL(src);
-  const lastSegment = pathname.split('/').pop();
-  const searchParams = new URLSearchParams(search);
+  const parsedURL = onErrorResumeNext(() => new URL(src));
+  const hostname = parsedURL?.hostname;
+  const lastSegment = parsedURL?.pathname.split('/').pop();
 
-  switch (hostname) {
-    case VIMEO_DOMAIN:
-    case VIMEO_WWW_DOMAIN:
-      return <VimeoContent alt={alt} autoPlay={autoPlay} embedID={lastSegment} loop={loop} />;
+  // Embed YouTube and Vimeo videos only when the URL has a video ID, otherwise, play the URL in <video>.
+  const vimeoEmbedID = (hostname === VIMEO_DOMAIN || hostname === VIMEO_WWW_DOMAIN) && lastSegment;
+  const youTubeEmbedID =
+    hostname === YOUTUBE_DOMAIN || hostname === YOUTUBE_WWW_DOMAIN
+      ? parsedURL?.searchParams.get('v')
+      : (hostname === YOUTUBE_SHORT_DOMAIN || hostname === YOUTUBE_WWW_SHORT_DOMAIN) && lastSegment;
 
-    case YOUTUBE_DOMAIN:
-    case YOUTUBE_WWW_DOMAIN:
-      return <YouTubeContent alt={alt} autoPlay={autoPlay} embedID={searchParams.get('v')} loop={loop} />;
-
-    case YOUTUBE_SHORT_DOMAIN:
-    case YOUTUBE_WWW_SHORT_DOMAIN:
-      return <YouTubeContent alt={alt} autoPlay={autoPlay} embedID={lastSegment} loop={loop} />;
-
-    default:
-      return <HTMLVideoContent alt={alt} autoPlay={autoPlay} loop={loop} poster={poster} src={src} />;
-  }
+  // Production builds do not validate props, leave out the video if the URL is relative or cannot be parsed.
+  // When `validateProps()` is enabled for production, remove this branch as it will be unreachable.
+  return !parsedURL ? null : vimeoEmbedID ? (
+    <VimeoContent alt={alt} autoPlay={autoPlay} embedID={vimeoEmbedID} loop={loop} />
+  ) : youTubeEmbedID ? (
+    <YouTubeContent alt={alt} autoPlay={autoPlay} embedID={youTubeEmbedID} loop={loop} />
+  ) : (
+    <HTMLVideoContent alt={alt} autoPlay={autoPlay} loop={loop} poster={poster} src={src} />
+  );
 }
 
 export default memo(VideoContent);

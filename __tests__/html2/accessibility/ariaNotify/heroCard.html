@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy the announcements are computed from. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: The browser supports `ariaNotify()`, recorded instead of announced.
+        const ariaNotify = spyOn(Element.prototype, 'ariaNotify').mockImplementation(() => {});
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: {
+              assistiveTechnologyAnnouncementTransport: 'aria-notify',
+              hideSendBox: true,
+              internalLiveRegionFadeAfter: 60000 // Would keep live region entries for 60 seconds, does not apply to `ariaNotify()`.
+            }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // The connectivity notification is announced first, see `message.html`.
+        await waitFor(() => expect(ariaNotify).toHaveBeenCalledTimes(1));
+        ariaNotify.mockClear();
+
+        // WHEN: The bot sends a hero card with an image and two buttons.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                buttons: [
+                  { title: 'Tomorrow', type: 'imBack', value: 'Tomorrow' },
+                  { title: 'Next week', type: 'imBack', value: 'Next week' }
+                ],
+                images: [{ alt: 'Bot avatar', url: '/assets/bot-avatar.jpg' }],
+                subtitle: 'Seattle',
+                text: 'Sunny, no umbrella needed.',
+                title: 'Weather today'
+              },
+              contentType: 'application/vnd.microsoft.card.hero'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.allImagesLoaded();
+
+        // THEN: The card is announced once, with the alt text of the image and the buttons as separate words ("Tomorrow Next week", not "TomorrowNext week"), then its note.
+        await waitFor(() =>
+          expect(ariaNotify.mock.calls).toEqual([
+            [
+              'Bot said A card Weather today Seattle Sunny, no umbrella needed. Bot avatar Tomorrow Next week',
+              { priority: 'normal' }
+            ],
+            // The buttons make the message interactive.
+            [
+              'Message is interactive. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact.',
+              { priority: 'normal' }
+            ]
+          ])
+        );
+
+        // THEN: The live region is emptied right after announcing, without waiting 60 seconds: its copy of the card is only rendered to compute the text.
+        await waitFor(() => expect(pageElements.liveRegion().childElementCount).toBe(0));
+
+        // THEN: The live region (top) is empty, there is nothing for screen readers to read from it; the transcript shows the hero card.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

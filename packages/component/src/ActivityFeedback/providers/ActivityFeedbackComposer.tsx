@@ -1,21 +1,19 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import {
-  getOrgSchemaMessage,
-  parseAction,
-  type OrgSchemaAction,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+import { orgSchemaActionSchema, type OrgSchemaAction } from 'botframework-webchat-core/org-schema.js';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { isOfType } from 'botframework-webchat-core/json-ld.js';
 import random from 'math-random';
 import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
-import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import { custom, is, object, optional, parse, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import canActionResubmit from '../private/canActionResubmit';
 import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackLoop';
+import getOriginalActionEntity from '../private/getOriginalActionEntity.js';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import isActionRequireReview from '../private/isActionRequireReview';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
@@ -25,7 +23,7 @@ const { usePonyfill, usePostActivity } = hooks;
 
 const activityFeedbackComposerPropsSchema = pipe(
   object({
-    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success),
+    activity: custom<WebChatActivity>(value => is(object({}), value)),
     children: optional(reactNode())
   }),
   readonly()
@@ -39,6 +37,46 @@ type ActionState = Readonly<{
 }>;
 
 const DEBOUNCE_TIMEOUT = 500;
+
+/**
+ * Patch `OrgSchemaAction` for simpler logic down the road:
+ *
+ * 1. If no `@id`, generate a random `@id`
+ * 2. If `channelData.feedbackLoop.disclaimer` presents (a deprecated property), move it to `action.result.description`
+ *
+ * @param activity Activity to read `channelData`
+ * @param actions Actions to patch
+ * @returns New instances of patched actions
+ */
+function patchActions(activity: WebChatActivity, actions: readonly OrgSchemaAction[]): readonly OrgSchemaAction[] {
+  actions = actions.map(action =>
+    // eslint-disable-next-line no-magic-numbers
+    action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
+  );
+
+  const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
+
+  if (deprecatedFeedbackLoopChannelData) {
+    // TODO: Find the date we deprecated the channelData.
+    console.warn(
+      'botframework-webchat: `channelData.feedbackLoop` is deprecated, use `entities[@type="Message"][@id=""].potentialAction[@type="Action"].result[@type="UserReview"].description instead. It will be removed on or after YYYY-MM-DD.'
+    );
+
+    actions = actions.map(action =>
+      action.result
+        ? action
+        : parse(orgSchemaActionSchema, {
+            ...action,
+            result: {
+              '@type': 'UserReview',
+              reviewAspect: deprecatedFeedbackLoopChannelData.disclaimer
+            }
+          })
+    );
+  }
+
+  return Object.freeze(actions);
+}
 
 function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const { children, activity: activityFromProps } = validateProps(activityFeedbackComposerPropsSchema, props);
@@ -87,6 +125,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
     [activityFromProps]
   );
 
+  const activityFromPropsRef = useRefFrom(activityFromProps);
   const activityRef = useRefFrom(activity);
 
   const actionStateRef = useRef<ActionState | undefined>(undefined);
@@ -101,47 +140,32 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   );
 
   const rawActions = useMemo<readonly OrgSchemaAction[]>(() => {
-    function patchActions(actions: readonly OrgSchemaAction[]) {
-      actions = actions.map(action =>
-        // eslint-disable-next-line no-magic-numbers
-        action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
-      );
-
-      const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
-
-      if (deprecatedFeedbackLoopChannelData) {
-        actions = actions.map(action =>
-          action.result
-            ? action
-            : {
-                ...action,
-                result: {
-                  '@type': 'UserReview',
-                  description: deprecatedFeedbackLoopChannelData?.disclaimer
-                }
-              }
-        );
-      }
-
-      return actions;
-    }
-
     try {
       const graph = dereferenceBlankNodes(activity.entities || []);
       const messageThing = getOrgSchemaMessage(graph);
 
-      const reactActions = Object.freeze(
-        (messageThing?.potentialAction || []).filter(
-          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-        )
+      const reactActions: readonly OrgSchemaAction[] = Object.freeze(
+        messageThing?.potentialAction.filter(
+          action => isOfType('LikeAction', action) || isOfType('DislikeAction', action)
+        ) ?? []
       );
 
       if (reactActions.length) {
-        return patchActions(reactActions);
+        return patchActions(activity, reactActions);
       }
 
       const voteActions = Object.freeze(
-        graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction)
+        graph.reduce<OrgSchemaAction[]>((result, item) => {
+          const parseResult = safeParse(orgSchemaActionSchema, item);
+
+          if (parseResult.success) {
+            const { output } = parseResult;
+
+            output.actionOption[0] && result.push(output);
+          }
+
+          return result;
+        }, [])
         // TODO: Instead of processing VoteAction, convert it to LikeAction/DislikeAction.
         // .map(action => ({
         //   ...action,
@@ -151,10 +175,11 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       if (voteActions.length) {
         // VoteAction is deprecated and was never published publicly.
-        return patchActions(voteActions);
+        return patchActions(activity, voteActions);
       }
-    } catch {
+    } catch (error) {
       // Intentionally left blank.
+      console.warn('botframework-webchat: Internal error in <ActivityFeedbackComposer>', error);
     }
 
     return Object.freeze([]);
@@ -162,14 +187,14 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   useMemo(() => {
     const activeOrCompletedAction = rawActions.find(
-      (action): action is OrgSchemaAction & { actionStatus: 'ActiveActionStatus' | 'CompletedActionStatus' } =>
-        action.actionStatus === 'ActiveActionStatus' || action.actionStatus === 'CompletedActionStatus'
+      (action): action is OrgSchemaAction & { actionStatus: ['ActiveActionStatus' | 'CompletedActionStatus'] } =>
+        action.actionStatus[0] === 'ActiveActionStatus' || action.actionStatus[0] === 'CompletedActionStatus'
     );
 
     actionStateRef.current = activeOrCompletedAction
       ? {
           actionId: activeOrCompletedAction['@id'],
-          actionStatus: activeOrCompletedAction.actionStatus
+          actionStatus: activeOrCompletedAction.actionStatus[0]
         }
       : undefined;
   }, [rawActions]);
@@ -177,15 +202,15 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   // Workaround ESLint on saying actionStateRef.current is redundant when using it directly.
   const actionStateForActions = actionStateRef.current;
 
-  const actions = useMemo(
+  const actions = useMemo<readonly OrgSchemaAction[]>(
     () =>
       Object.freeze(
         rawActions.map(action =>
           actionStateForActions && actionStateForActions.actionId === action['@id']
-            ? Object.freeze({ ...action, actionStatus: actionStateForActions.actionStatus })
-            : action.actionStatus === 'PotentialActionStatus'
+            ? Object.freeze({ ...action, actionStatus: [actionStateForActions.actionStatus] } satisfies OrgSchemaAction)
+            : action.actionStatus[0] === 'PotentialActionStatus'
               ? action
-              : Object.freeze({ ...action, actionStatus: 'PotentialActionStatus' })
+              : Object.freeze({ ...action, actionStatus: ['PotentialActionStatus'] } satisfies OrgSchemaAction)
         )
       ),
     [actionStateForActions, rawActions]
@@ -196,7 +221,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const postActivity = usePostActivity();
 
   const hasSubmitted = useMemo<boolean>(
-    () => actions.some(action => action.actionStatus === 'CompletedActionStatus'),
+    () => actions.some(action => action.actionStatus[0] === 'CompletedActionStatus'),
     [actions]
   );
 
@@ -216,13 +241,18 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
       setActionStateWithRefresh(Object.freeze({ actionId: action['@id'], actionStatus: 'CompletedActionStatus' }));
 
-      const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
       const { current: feedbackText } = feedbackTextRef;
-      const isLegacyAction = action['@type'] === 'VoteAction';
+      const originalActionEntity = getOriginalActionEntity(activityFromPropsRef.current, action);
+
+      // Send the action as the bot sent it, so the bot can read its custom properties (e.g. prompt ID), as Web Chat 4.18 did.
+      const completedActionEntity = originalActionEntity
+        ? Object.freeze({ ...originalActionEntity, actionStatus: 'CompletedActionStatus' })
+        : undefined;
 
       // TODO: We should update this to use W3C Hydra.1
       if (isActionRequireReview(action)) {
         postActivity({
+          ...(completedActionEntity && { entities: [completedActionEntity] }),
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
           type: 'invoke',
@@ -230,25 +260,42 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
             actionName: 'feedback',
             actionValue: {
               feedback: { feedbackText: feedbackText || '' },
-              reaction: action['@type'] === 'LikeAction' ? 'like' : 'dislike'
+              reaction: isOfType('LikeAction', action) ? 'like' : 'dislike'
             }
           }
         } as any);
       } else {
+        const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
+        const entity = isOfType('VoteAction', action) ? rest : action;
+
         postActivity({
-          entities: [isLegacyAction ? rest : action],
+          entities: [
+            completedActionEntity ?? {
+              ...entity,
+              actionOption: entity.actionOption[0], // TODO: Service should accept plural.
+              type: new URL(entity['@type'][0] ?? '', entity['@context'] ?? 'https://schema.org').href
+            }
+          ],
           name: 'webchat:activity-status/feedback',
           type: 'event'
         } as any);
       }
     },
-    [actionsRef, actionStateRef, activityRef, feedbackTextRef, postActivity, setActionStateWithRefresh]
+    [
+      actionsRef,
+      actionStateRef,
+      activityFromPropsRef,
+      activityRef,
+      feedbackTextRef,
+      postActivity,
+      setActionStateWithRefresh
+    ]
   );
 
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
     () =>
       actions.find(
-        ({ actionStatus }) => actionStatus === 'ActiveActionStatus' || actionStatus === 'CompletedActionStatus'
+        ({ actionStatus }) => actionStatus[0] === 'ActiveActionStatus' || actionStatus[0] === 'CompletedActionStatus'
       ),
     [actions]
   );

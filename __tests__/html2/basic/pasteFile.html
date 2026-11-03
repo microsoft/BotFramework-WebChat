@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Paste file into send box</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Pasting a file into the send box text area.
+        const textBox = document.querySelector(`[data-testid="${WebChat.testIds['sendBoxTextBox']}"]`);
+        const dataTransfer = new DataTransfer();
+
+        dataTransfer.items.add(new File([new ArrayBuffer(100)], 'test-document.txt', { type: 'text/plain' }));
+
+        const pasteEvent = new ClipboardEvent('paste', {
+          bubbles: true,
+          cancelable: true,
+          clipboardData: dataTransfer
+        });
+
+        textBox.dispatchEvent(pasteEvent);
+
+        // THEN: The paste event should be prevented (file handled by webchat).
+        expect(pasteEvent.defaultPrevented).toBeTruthy();
+
+        // THEN: An attachment should appear in the attachment bar.
+        await pageConditions.became(
+          'Attachment bar item should appear',
+          () => !!pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem),
+          1000
+        );
+
+        await host.snapshot('local');
+
+        // WHEN: Pasting a second file.
+        const dataTransfer2 = new DataTransfer();
+
+        dataTransfer2.items.add(new File([new ArrayBuffer(200)], 'test-spreadsheet.csv', { type: 'text/csv' }));
+
+        const pasteEvent2 = new ClipboardEvent('paste', {
+          bubbles: true,
+          cancelable: true,
+          clipboardData: dataTransfer2
+        });
+
+        textBox.dispatchEvent(pasteEvent2);
+
+        // THEN: Both attachments should appear (accumulated, not replaced).
+        await pageConditions.became(
+          'Two attachment bar items should appear',
+          () => document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxAttachmentBarItem}"]`).length === 2,
+          1000
+        );
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

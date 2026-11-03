@@ -77,7 +77,9 @@ export {
   useVoiceRecordingMuted,
   useVoiceSelector,
   useVoiceState
-} from 'botframework-webchat-api/hook';
+} from 'botframework-webchat-api/hook.js';
+
+export { useFileDropZone, type DropZoneState } from '@msinternal/botframework-webchat-react-hooks';
 
 // #region Overrides
 export {

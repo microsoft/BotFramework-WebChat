@@ -10,7 +10,8 @@ type TranscriptFocusContextType = {
   focusedGroupKeyState: readonly [string];
   focusRelativeActivity: (delta: number) => void;
   getDescendantIdByActivityKey: (activityKey?: string) => string | undefined;
-  getGroupDescendantIdByActivityKey: (activityKey?: string) => string | undefined;
+  /** Differentiates the descendant IDs of multiple transcripts on the same page. */
+  prefix: string;
 };
 
 const TranscriptFocusContext = createContext<TranscriptFocusContextType>(undefined);

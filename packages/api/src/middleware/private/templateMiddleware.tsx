@@ -1,7 +1,7 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import React, { memo, type ReactNode } from 'react';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
-import { array, function_, safeParse, type InferOutput } from 'valibot';
+import { array, function_, is, type InferOutput } from 'valibot';
 
 type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
 
@@ -11,7 +11,7 @@ const arrayOfFunctionSchema = array(function_());
 const middlewareFactoryMarker = Symbol();
 
 const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
-  safeParse(arrayOfFunctionSchema, middleware).success;
+  is(arrayOfFunctionSchema, middleware);
 
 const EMPTY_ARRAY = Object.freeze([]);
 

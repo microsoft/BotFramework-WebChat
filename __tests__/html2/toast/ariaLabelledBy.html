@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Two notifications are shown and the toaster is expanded.
+        store.dispatch({
+          payload: { id: '1', level: 'info', message: 'Notification 1.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+        store.dispatch({
+          payload: { id: '2', level: 'error', message: 'Notification 2.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toasterExpandable();
+        await pageObjects.clickToasterHeader();
+        await pageConditions.toasterExpanded();
+        await pageConditions.toastShown(2);
+
+        // THEN: The list of notifications is a generic `<div>` and should not have `aria-labelledby`.
+        expect(document.querySelector('.webchat__toaster__list').hasAttribute('aria-labelledby')).toBe(false);
+      });
+    </script>
+  </body>
+</html>

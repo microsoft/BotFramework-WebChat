@@ -1,0 +1,20 @@
+{
+  "name": "@msinternal/botframework-webchat-bundlers-vite",
+  "version": "0.0.0-0",
+  "description": "A Web Chat app bundled with Vite, see ../README.md",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
+    "dev": "vite",
+    "preview": "vite preview",
+    "react16": "npm install --no-save react@16.8.6 react-dom@16.8.6",
+    "react18": "npm install --no-save react@18.3.1 react-dom@18.3.1",
+    "react19": "npm install --no-save react@19.3.1 react-dom@19.3.1"
+  },
+  "devDependencies": {
+    "vite": "8.3.5"
+  }
+}

@@ -10,7 +10,7 @@ import { act } from 'react-dom/test-utils';
 
 import TranscriptFocusComposer from './TranscriptFocusComposer';
 import TranscriptFocusContext, { TranscriptFocusContextType } from './private/Context';
-import { ActivityLogicalGroupingComposer, useAddLogicalGrouping } from '../ActivityLogicalGrouping';
+import { ActivityLogicalGroupingComposer, useSetLogicalGrouping } from '../ActivityLogicalGrouping';
 
 // Mock dependencies
 jest.mock('../../Utils/scrollIntoViewWithBlockNearest', () => jest.fn());
@@ -55,7 +55,7 @@ describe('TranscriptFocusComposer - focusRelativeActivity', () => {
 
     const TestComponent = () => {
       const context = useContext(TranscriptFocusContext);
-      const addLogicalGrouping = useAddLogicalGrouping();
+      const setLogicalGrouping = useSetLogicalGrouping();
 
       useMemo(() => {
         Object.assign(result.context, context);
@@ -70,19 +70,18 @@ describe('TranscriptFocusComposer - focusRelativeActivity', () => {
         const groups = new Map();
         for (const [activityKey, groupKey] of Object.entries(config.groupKeyMappings)) {
           const group = groups.get(groupKey) ?? {
-            key: groupKey,
             activityKeys: [],
-            getGroupState: () => config.groupStates[groupKey]
+            isCollapsed: !!config.groupStates[groupKey]?.isCollapsed
           };
 
           group.activityKeys.push(activityKey);
           groups.set(groupKey, group);
         }
 
-        for (const [, group] of groups.entries()) {
-          addLogicalGrouping(group);
+        for (const [groupKey, group] of groups.entries()) {
+          setLogicalGrouping(groupKey, group);
         }
-      }, [addLogicalGrouping]);
+      }, [setLogicalGrouping]);
 
       return null;
     };

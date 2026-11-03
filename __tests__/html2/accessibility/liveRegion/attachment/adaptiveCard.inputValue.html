@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be checked and seen in the snapshot.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends an Adaptive Card form with pre-filled inputs.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                body: [
+                  { id: 'name', label: 'Your name', type: 'Input.Text', value: 'Ada' },
+                  { id: 'quantity', label: 'Quantity', type: 'Input.Number', value: 3 },
+                  { id: 'date', label: 'Delivery date', type: 'Input.Date', value: '2026-10-20' },
+                  { id: 'time', label: 'Delivery time', type: 'Input.Time', value: '14:30' },
+                  { id: 'gift', title: 'Gift wrap', type: 'Input.Toggle', value: 'true' } // Equals the default "valueOn": checked.
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.liveRegionStabilized();
+
+        const nodes = await Promise.all(
+          Array.from(pageElements.liveRegion().querySelectorAll('.webchat__live-region-activity input')).map(input =>
+            testHelpers.getAccessibilityNode(input)
+          )
+        );
+
+        // THEN: The live region copy exposes the pre-filled values as the card in the transcript does.
+        expect(nodes.map(({ name, value }) => [name?.value, value?.value])).toEqual([
+          ['Your name', 'Ada'],
+          ['Quantity', 3], // Spin buttons expose a number.
+          ['Delivery date', '2026-10-20'],
+          ['Delivery time', '14:30'],
+          ['Gift wrap', undefined] // Checkboxes expose their state as "checked", not as a value.
+        ]);
+
+        // THEN: The toggle in the copy is checked.
+        expect(nodes[4].properties.find(({ name }) => name === 'checked')?.value.value).toBe('true');
+
+        // THEN: The live region shows the inputs with their pre-filled values.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -1,16 +1,15 @@
 import { type Store } from 'redux';
-import { custom, function_, object, safeParse } from 'valibot';
+import { custom, function_, is, object } from 'valibot';
 
-const reduxStoreSchema = custom<Store>(
-  value =>
-    safeParse(
-      object({
-        dispatch: custom<Store['dispatch']>(value => safeParse(function_(), value).success),
-        getState: custom<Store['getState']>(value => safeParse(function_(), value).success),
-        subscribe: custom<Store['subscribe']>(value => safeParse(function_(), value).success)
-      }),
-      value
-    ).success
+const reduxStoreSchema = custom<Store>(value =>
+  is(
+    object({
+      dispatch: custom<Store['dispatch']>(value => is(function_(), value)),
+      getState: custom<Store['getState']>(value => is(function_(), value)),
+      subscribe: custom<Store['subscribe']>(value => is(function_(), value))
+    }),
+    value
+  )
 );
 
 export default reduxStoreSchema;

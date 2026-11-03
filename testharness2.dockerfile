@@ -11,6 +11,5 @@ EXPOSE 443
 WORKDIR /var/web/
 ENTRYPOINT ["node", "./index.js"]
 
-ADD serve-test.json /var/web/serve.json
 ADD packages/test/web-server/dist/index.js /var/web/
 RUN echo {}>/var/web/package.json

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Code block: highlights code after Web Chat is rendered again with the same store</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render, unmountComponentAtNode },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const code = 'import numpy as np\n\nprint(np.pi)  # 3.14\n';
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(createElement(ReactWebChat, { directLine, store }), document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a Python code block.
+        await directLine.emulateIncomingActivity({
+          text: `Here is a sample in Python.\n\n\`\`\`python\n${code}\`\`\``,
+          type: 'message'
+        });
+
+        // THEN: The code block should be highlighted.
+        await waitFor(() => expect(document.querySelector('pre.shiki')?.textContent).toBe(code));
+
+        // WHEN: Web Chat is unmounted and rendered again with the same store, e.g. a minimizable Web Chat that keeps its store.
+        unmountComponentAtNode(document.getElementById('webchat'));
+        render(createElement(ReactWebChat, { directLine, store }), document.getElementById('webchat'));
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The code block should be highlighted again.
+        await waitFor(() => expect(document.querySelector('pre.shiki')?.textContent).toBe(code));
+
+        await pageConditions.scrollStabilized();
+
+        // THEN: The message shows the Python code block highlighted, as before the remount.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

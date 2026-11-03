@@ -5,6 +5,7 @@ import React from 'react';
 import ErrorNotificationIcon from './Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
 import useStyleSet from '../hooks/useStyleSet';
+import { useLiveRegion } from '../providers/LiveRegionTwin';
 
 const { useDirection, useLocalizer } = hooks;
 
@@ -15,9 +16,13 @@ const ConnectivityStatusFailedToConnect = () => {
 
   const failedConnectionText = localize('CONNECTIVITY_STATUS_ALT_FATAL');
 
+  const alt = localize('CONNECTIVITY_STATUS_ALT', failedConnectionText);
+
+  useLiveRegion(() => alt, [alt]);
+
   return (
     <React.Fragment>
-      <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', failedConnectionText)} />
+      <ScreenReaderText text={alt} />
       <div
         aria-hidden={true}
         className={classNames('webchat__connectivityStatus', errorNotificationStyleSet + '')}

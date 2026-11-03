@@ -1,24 +1,26 @@
+import { type TypeOfGlobal } from '@msinternal/botframework-webchat-base/utils';
+
 export type GlobalScopeClock = {
   // eslint-disable-next-line no-restricted-globals
-  cancelAnimationFrame?: typeof cancelAnimationFrame;
+  cancelAnimationFrame?: typeof cancelAnimationFrame | undefined;
   // eslint-disable-next-line no-restricted-globals
-  cancelIdleCallback?: typeof cancelIdleCallback;
+  cancelIdleCallback?: typeof cancelIdleCallback | undefined;
+  // `setImmediate` and `clearImmediate` are Node.js globals, not in TypeScript's DOM library.
+  // Fallbacks are the same types as in `env.d.ts`.
+  clearImmediate?: TypeOfGlobal<'clearImmediate', (timeout: number) => void> | undefined;
   // eslint-disable-next-line no-restricted-globals
-  clearImmediate?: typeof clearImmediate;
+  clearInterval?: typeof clearInterval | undefined;
   // eslint-disable-next-line no-restricted-globals
-  clearInterval: typeof clearInterval;
-  // eslint-disable-next-line no-restricted-globals
-  clearTimeout: typeof clearTimeout;
+  clearTimeout?: typeof clearTimeout | undefined;
   // eslint-disable-next-line no-restricted-globals
   Date: typeof Date;
   // eslint-disable-next-line no-restricted-globals
-  requestAnimationFrame?: typeof requestAnimationFrame;
+  requestAnimationFrame?: typeof requestAnimationFrame | undefined;
   // eslint-disable-next-line no-restricted-globals
-  requestIdleCallback?: typeof requestIdleCallback;
+  requestIdleCallback?: typeof requestIdleCallback | undefined;
+  setImmediate?: TypeOfGlobal<'setImmediate', (fn: () => void) => number> | undefined;
   // eslint-disable-next-line no-restricted-globals
-  setImmediate?: typeof setImmediate;
+  setInterval?: typeof setInterval | undefined;
   // eslint-disable-next-line no-restricted-globals
-  setInterval: typeof setInterval;
-  // eslint-disable-next-line no-restricted-globals
-  setTimeout: typeof setTimeout;
+  setTimeout?: typeof setTimeout | undefined;
 };

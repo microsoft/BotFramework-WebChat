@@ -1,4 +1,4 @@
-import { type WebChatActivity } from 'botframework-webchat/internal';
+import { type WebChatActivity } from 'botframework-webchat/internal.js';
 import React, { memo } from 'react';
 
 import { useStyles } from '../../../styles/index.js';

@@ -79,5 +79,6 @@ export {
   useUsername,
   useVoiceRecordingMuted,
   useVoiceSelector,
-  useVoiceState
+  useVoiceState,
+  type UseSendMessageInit
 } from '../hooks/index';

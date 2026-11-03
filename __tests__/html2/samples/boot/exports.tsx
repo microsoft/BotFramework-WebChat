@@ -14,7 +14,7 @@ import ReactWebChat, {
   createBrowserWebSpeechPonyfillFactory,
   decorator
 } from 'botframework-webchat';
-import { activityComponent } from 'botframework-webchat/middleware';
+import { activityComponent } from 'botframework-webchat/middleware.js';
 
 run(() => {
   // THEN: It should have "ReactWebChat".

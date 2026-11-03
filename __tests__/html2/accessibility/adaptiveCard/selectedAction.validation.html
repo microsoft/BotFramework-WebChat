@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { AdaptiveCardContent } from 'botframework-webchat/component.js';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      async function getButtonState(button) {
+        const { description, properties, role } = await testHelpers.getAccessibilityNode(button);
+
+        return {
+          description: description?.value,
+          performed: button.classList.contains('card__action--performed'),
+          pressed: properties?.find(({ name }) => name === 'pressed')?.value.value,
+          role: role.value
+        };
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // SETUP: The host applies a class to the pressed actions.
+        const attachmentMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [{ attachment }] = args;
+
+            return attachment.contentType === 'application/vnd.microsoft.card.adaptive'
+              ? createElement(AdaptiveCardContent, {
+                  actionPerformedClassName: 'card__action--performed',
+                  content: attachment.content
+                })
+              : next(...args);
+          };
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            attachmentMiddleware: [attachmentMiddleware],
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A card with a required input and a Submit button.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    errorMessage: 'Name is required',
+                    id: 'firstName',
+                    isRequired: true,
+                    label: 'First name',
+                    type: 'Input.Text'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const input = document.querySelector('.ac-textInput input, input.ac-textInput');
+        const submitButton = document.querySelector('.ac-pushButton');
+
+        expect(submitButton).toHaveProperty('textContent', 'Submit');
+
+        // WHEN: The "Submit" button is clicked while the required input is empty.
+        await host.click(submitButton);
+
+        // THEN: The card should show the validation error.
+        await waitFor(() => expect(input.classList.contains('ac-input-validation-failed')).toBe(true));
+
+        // THEN: The "Submit" button should not be selected, as the action was not performed.
+        expect(await getButtonState(submitButton)).toEqual({
+          description: undefined,
+          performed: false,
+          pressed: undefined,
+          role: 'button'
+        });
+
+        expect(store.getState().activities.filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
+
+        // THEN: The card should show the error and the "Submit" button should not look selected.
+        await host.snapshot('local');
+
+        // WHEN: The required input is filled and the "Submit" button is clicked.
+        //       As the action has no `data`, it sends a post back activity, which is not shown in the transcript.
+        await host.click(input);
+        await host.sendKeys('John');
+
+        (await directLine.actPostActivity(() => host.click(submitButton))).resolveAll();
+
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: The "Submit" button should be described as "Selected".
+        await waitFor(async () =>
+          expect(await getButtonState(submitButton)).toEqual({
+            description: 'Selected',
+            performed: true,
+            pressed: undefined,
+            role: 'button'
+          })
+        );
+
+        // THEN: The error should be gone and the "Submit" button should look selected.
+        await waitFor(() => expect(input.classList.contains('ac-input-validation-failed')).toBe(false));
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

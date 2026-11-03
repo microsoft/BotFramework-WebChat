@@ -124,6 +124,9 @@
         // THEN: Should focus on the dislike button.
         await waitFor(() => expect(document.activeElement).toBe(pageElements.allByTestId(testIds.feedbackButton)[1]));
 
+        // NOTE: Wait for tooltip to show.
+        await testHelpers.sleep(400);
+
         // THEN: Should match the snapshot.
         await host.snapshot('local');
 

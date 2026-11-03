@@ -2,10 +2,13 @@ import { put, takeEvery } from 'redux-saga/effects';
 
 import postActivity from '../actions/postActivity';
 import sendMessage, { SEND_MESSAGE } from '../actions/sendMessage';
+import type { SendBoxAttachment } from '../types/SendBoxAttachment';
 import whileConnected from './effects/whileConnected';
 
+const EMPTY_ATTACHMENTS: readonly SendBoxAttachment[] = Object.freeze([]);
+
 function* postActivityWithMessage({
-  payload: { attachments = [], channelData, method, text }
+  payload: { attachments = EMPTY_ATTACHMENTS, channelData, method, replyToId, text }
 }: ReturnType<typeof sendMessage>) {
   yield put(
     postActivity(
@@ -23,6 +26,7 @@ function* postActivityWithMessage({
           ...channelData,
           attachmentSizes: attachments.map(({ blob: { size } }) => size)
         },
+        replyToId: replyToId || undefined,
         text: text || undefined,
         textFormat: 'plain',
         type: 'message'

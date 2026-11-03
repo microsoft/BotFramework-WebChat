@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: The user does not prefer reduced motion.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }]
+        });
+
+        expect(matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(false);
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Images are 120 pixels high, so both cards fit in the snapshot.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { bubbleImageMaxHeight: 120, bubbleImageMinHeight: 120, hideSendBox: true }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The bot sends an animation card with a GIF URL that has a query and a fragment, such as a signed URL.
+        // GIVEN: The bot sends another animation card with an animated WebP image as a data: URL, which has no file extension.
+        // The image shows red with the ball on the left for 2 seconds, then stays on green with the ball on the right.
+        const lastFrameColor = '#107c10'; // Green.
+
+        const gifURL = new URL('/assets/red-green-animation.gif?sig=abc123#t=0', location.href).href;
+        const webPDataURL = `data:image/webp;base64,${testHelpers.arrayBufferToBase64(
+          await (await fetch('/assets/red-green-animation.webp')).arrayBuffer()
+        )}`;
+
+        for (const [title, url] of [
+          ['GIF with a query', gifURL],
+          ['WebP as a data: URL', webPDataURL]
+        ]) {
+          await directLine.emulateIncomingActivity({
+            attachments: [
+              {
+                content: { media: [{ profile: 'Ball moving from left to right', url }], title },
+                contentType: 'application/vnd.microsoft.card.animation'
+              }
+            ],
+            from: { role: 'bot' },
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+
+        for (const [attachmentElement] of pageElements.activityAttachments()) {
+          const buttonElement = attachmentElement.querySelector('button');
+          const imageElement = attachmentElement.querySelector('img[alt="Ball moving from left to right"]');
+
+          // THEN: Both should be shown as images, not as videos.
+          expect(attachmentElement.querySelector('video')).toBeNull();
+          expect(imageElement).toBeTruthy();
+
+          // THEN: Both animations should play and offer a "Pause animation" button.
+          expect(buttonElement).toBeTruthy();
+          await expect(testHelpers.getAccessibleName(buttonElement)).resolves.toBe('Pause animation');
+
+          await waitFor(() => expect(testHelpers.getRenderedColor(imageElement)).resolves.toBe(lastFrameColor), {
+            timeout: 5_000
+          });
+        }
+
+        // THEN: Both animations should show their last frame (green) with the "Pause animation" button over it.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

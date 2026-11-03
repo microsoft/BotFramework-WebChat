@@ -25,9 +25,9 @@
     }
   },
   "dependencies": {
-    "botbuilder": "^4.23.3",
-    "dotenv": "^17.2.3",
-    "restify": "^11.1.0"
+    "botbuilder": "4.23.3",
+    "dotenv": "17.4.2",
+    "restify": "11.1.0"
   },
   "devDependencies": {
     "node-dev": "^8.0.0"

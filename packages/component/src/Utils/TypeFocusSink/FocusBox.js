@@ -1,4 +1,3 @@
-// This is for defaultProps: { children: undefined }
 /* eslint no-undefined: "off" */
 
 import PropTypes from 'prop-types';
@@ -10,7 +9,10 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const BaseFocusBox = ({ children, disabled, onKeyDownCapture, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
+const BaseFocusBox = (
+  { children, disabled = false, onKeyDownCapture, sendFocusRef: sendFocusRefProp, ...otherProps },
+  ref
+) => {
   const sendFocusRefPersist = useRef(null);
   const patchedSendFocusRef = useMemo(
     () => sendFocusRefProp || sendFocusRefPersist,
@@ -69,12 +71,6 @@ const BaseFocusBox = ({ children, disabled, onKeyDownCapture, sendFocusRef: send
 };
 
 const FocusBox = forwardRef(BaseFocusBox);
-
-FocusBox.defaultProps = BaseFocusBox.defaultProps = {
-  children: undefined,
-  disabled: false,
-  onKeyDownCapture: undefined
-};
 
 FocusBox.propTypes = BaseFocusBox.propTypes = {
   children: PropTypes.any,
