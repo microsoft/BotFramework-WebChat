@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      .fui-FluentProvider {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider, testIds } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat with the Fluent theme in Arabic, a right-to-left language, with the telephone keypad button.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            FluentThemeProvider,
+            { variant: 'fluent' },
+            createElement(ReactWebChat, {
+              directLine,
+              locale: 'ar-EG',
+              store,
+              styleOptions: { hideTelephoneKeypadButton: false }
+            })
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The telephone keypad button is clicked.
+        await host.click(pageElements.byTestId(testIds.sendBoxTelephoneKeypadToolbarButton));
+
+        // THEN: The telephone keypad is shown with button "1" focused.
+        expect(document.activeElement).toBe(pageElements.byTestId(testIds.sendBoxTelephoneKeypadButton1));
+
+        // THEN: The keypad is left-to-right inside the right-to-left send box.
+        expect(document.activeElement.parentElement.closest('[dir]').getAttribute('dir')).toBe('ltr');
+        expect(pageElements.byTestId(testIds.sendBoxContainer).getAttribute('dir')).toBe('rtl');
+
+        // THEN: The keypad reads 1 2 3, 4 5 6, 7 8 9, * 0 # from left to right, like a phone.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

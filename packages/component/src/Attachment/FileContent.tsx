@@ -1,29 +1,16 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
-import React, { memo } from 'react';
+import cx from 'classnames';
+import React, { Fragment, memo } from 'react';
 import { boolean, number, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import { ComponentIcon } from '../Icon';
 
+import styles from './FileContent.module.css';
+
 const { useByteFormatter, useDirection, useLocalizer } = hooks;
-
-const ROOT_STYLE = {
-  display: 'flex',
-
-  '& .webchat__fileContent__buttonLink': {
-    display: 'flex',
-    flex: 1
-  },
-
-  '& .webchat__fileContent__badge': {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column'
-  }
-};
 
 // TODO: Consider using `useSanitizeHrefCallback`, which underlying use `sanitize-html` or whatever in HTML content transformer.
 const ALLOWED_PROTOCOLS = ['blob:', 'data:', 'http:', 'https:'];
@@ -50,28 +37,31 @@ type FileContentBadgeProps = InferInput<typeof fileContentBadgePropsSchema>;
 const FileContentBadge = (props: FileContentBadgeProps) => {
   const { downloadIcon = false, fileName, size } = validateProps(fileContentBadgePropsSchema, props);
 
+  // Keeps the "webchat__fileContent" class names.
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
 
   const localizedSize = typeof size === 'number' && formatByte(size);
 
   return (
-    <React.Fragment>
-      <div aria-hidden={true} className="webchat__fileContent__badge">
-        <div className="webchat__fileContent__fileName">{fileName}</div>
-        {!!localizedSize && <div className="webchat__fileContent__size">{localizedSize}</div>}
+    <Fragment>
+      <div aria-hidden={true} className={classNames['fileContent__badge']}>
+        <div className={classNames['fileContent__fileName']}>{fileName}</div>
+        {!!localizedSize && <div className={classNames['fileContent__size']}>{localizedSize}</div>}
       </div>
       {downloadIcon && (
         <ComponentIcon
           appearance="text"
-          className={classNames(
-            'webchat__fileContent__downloadIcon',
+          className={cx(
+            classNames['fileContent__downloadIcon'],
+            // The "fileContent" style set entry, which applies the style options, selects this modifier.
             direction === 'rtl' && 'webchat__fileContent__downloadIcon--rtl'
           )}
           icon="download"
         />
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 
@@ -90,10 +80,11 @@ const fileContentPropsSchema = pipe(
 function FileContent(props: FileContentProps) {
   const { className, href, fileName, size } = validateProps(fileContentPropsSchema, props);
 
+  // Keeps the "webchat__fileContent" class names.
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const localizeBytes = useByteFormatter();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const localizedSize = typeof size === 'number' && localizeBytes(size);
 
@@ -112,13 +103,13 @@ function FileContent(props: FileContentProps) {
   );
 
   return (
-    <div className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', className)}>
+    <div className={cx(classNames['fileContent'], fileContentStyleSet + '', className)}>
       {sanitizedHref ? (
         // URL is sanitized.
         // eslint-disable-next-line react/forbid-elements
         <a
           aria-label={alt}
-          className="webchat__fileContent__buttonLink"
+          className={classNames['fileContent__buttonLink']}
           download={fileName}
           href={sanitizedHref}
           rel="noopener noreferrer"

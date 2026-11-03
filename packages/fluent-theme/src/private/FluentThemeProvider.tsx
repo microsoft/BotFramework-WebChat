@@ -9,6 +9,7 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator.js';
 import {
+  CSSModuleThemeComposer,
   isVoiceTranscriptActivity,
   type ActivityMiddleware,
   type ActivityStatusMiddleware,
@@ -28,6 +29,7 @@ import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import FluentThemeStylesheet from '../stylesheet/FluentThemeStylesheet';
+import fluentCSSModuleTheme from './fluentCSSModuleTheme';
 import VariantComposer, { variantNameSchema } from './VariantComposer';
 
 const fluentThemeProviderPropsSchema = pipe(
@@ -112,30 +114,32 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
   );
 
   return (
-    <VariantComposer variant={variant}>
-      <WebChatTheme>
-        <TelephoneKeypadProvider>
-          <ThemeProvider
-            activityMiddleware={activityMiddleware}
-            activityStatusMiddleware={activityStatusMiddleware}
-            sendBoxMiddleware={sendBoxMiddleware}
-            styleOptions={fluentStyleOptions}
-            typingIndicatorMiddleware={typingIndicatorMiddleware}
-          >
-            <FluentThemeStylesheet nonce={nonce} />
-            <AssetComposer>
-              {/*
-                <Composer> is not set up yet, we have no place to send nonce.
-                This is temporal, until we decided to fold <WebChatDecorator> back into <Composer>.
-              */}
-              <WebChatDecorator nonce={nonce}>
-                <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
-              </WebChatDecorator>
-            </AssetComposer>
-          </ThemeProvider>
-        </TelephoneKeypadProvider>
-      </WebChatTheme>
-    </VariantComposer>
+    <CSSModuleThemeComposer theme={fluentCSSModuleTheme}>
+      <VariantComposer variant={variant}>
+        <WebChatTheme>
+          <TelephoneKeypadProvider>
+            <ThemeProvider
+              activityMiddleware={activityMiddleware}
+              activityStatusMiddleware={activityStatusMiddleware}
+              sendBoxMiddleware={sendBoxMiddleware}
+              styleOptions={fluentStyleOptions}
+              typingIndicatorMiddleware={typingIndicatorMiddleware}
+            >
+              <FluentThemeStylesheet nonce={nonce} />
+              <AssetComposer>
+                {/*
+                  <Composer> is not set up yet, we have no place to send nonce.
+                  This is temporal, until we decided to fold <WebChatDecorator> back into <Composer>.
+                */}
+                <WebChatDecorator nonce={nonce}>
+                  <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+                </WebChatDecorator>
+              </AssetComposer>
+            </ThemeProvider>
+          </TelephoneKeypadProvider>
+        </WebChatTheme>
+      </VariantComposer>
+    </CSSModuleThemeComposer>
   );
 }
 

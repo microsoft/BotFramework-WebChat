@@ -114,6 +114,41 @@ describe('Element in a shadow root', () => {
   });
 });
 
+describe('Shadow root nested in another shadow root', () => {
+  let innerShadowRoot: ShadowRoot;
+
+  beforeEach(() => {
+    const innerHost = document.createElement('div');
+    const outerHost = document.createElement('div');
+
+    outerHost.attachShadow({ mode: 'open' }).append(innerHost);
+    document.body.append(outerHost);
+
+    innerShadowRoot = innerHost.attachShadow({ mode: 'open' });
+  });
+
+  afterEach(() => document.body.replaceChildren());
+
+  test('passed as the inner shadow root itself on React 16 should be rendered by ReactDOM.render()', () => {
+    // `ShadowRoot.getRootNode()` returns the shadow root itself, however deep its host is nested.
+    expect(innerShadowRoot.getRootNode()).toBe(innerShadowRoot);
+
+    renderWebChat(ReactWebChat, {}, innerShadowRoot);
+
+    expect(render).toHaveBeenCalledTimes(1);
+    expect(render.mock.calls[0][1]).toBe(innerShadowRoot);
+  });
+
+  test('with an element inside the inner shadow root on React 16 should throw', () => {
+    const element = document.createElement('div');
+
+    innerShadowRoot.append(element);
+
+    expect(() => renderWebChat(ReactWebChat, {}, element)).toThrow('on React 16 does not support');
+    expect(render).not.toHaveBeenCalled();
+  });
+});
+
 test('Element outside of a shadow root on React 16 should be rendered by ReactDOM.render()', () => {
   const element = document.createElement('div');
 

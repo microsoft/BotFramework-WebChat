@@ -33,8 +33,8 @@
   },
   "localDependencies": {},
   "devDependencies": {
-    "concurrently": "^10.0.0",
-    "esbuild": "^0.28.0"
+    "concurrently": "^10.0.6",
+    "esbuild": "^0.28.1"
   },
   "dependencies": {
     "base64-arraybuffer": "1.0.2",

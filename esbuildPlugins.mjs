@@ -1,5 +1,16 @@
+import { Buffer } from 'buffer';
+import { transform } from 'lightningcss';
 import { fileURLToPath } from 'url';
 import lightningCssPlugin from 'unplugin-lightningcss/esbuild';
+
+// A CSS module rule without styles of its own keeps its class name (e.g. for themes) with this declaration:
+// Lightning CSS drops empty rules, and their class names with them.
+// Once the class map is built, the declaration, and the rule if it becomes empty, are removed from the CSS.
+const PRESERVE_REASON_PROPERTY = '--webchat-preserve-reason';
+
+const removePreserveReasonVisitor = Object.freeze({
+  Declaration: Object.freeze({ custom: Object.freeze({ [PRESERVE_REASON_PROPERTY]: () => [] }) })
+});
 
 // Due to a bug in unplugin, we cannot use the Lightning CSS unplugin directly.
 // https://github.com/unjs/unplugin/issues/546
@@ -26,8 +37,25 @@ const cssPlugin = {
       }
     }).setup({
       ...build,
-      // eslint-disable-next-line require-unicode-regexp
-      onLoad: (_filter, fn) => build.onLoad({ filter: /(\.module_built\.css|\?css_module)$/ }, fn)
+      onLoad: (_filter, fn) =>
+        // eslint-disable-next-line require-unicode-regexp
+        build.onLoad({ filter: /(\.module_built\.css|\?css_module)$/ }, async args => {
+          const result = await fn(args);
+
+          // Only the CSS of a CSS module, not its JavaScript class map, and only if it has the declaration.
+          return args.path.endsWith('.module_built.css') &&
+            typeof result?.contents === 'string' &&
+            result.contents.includes(PRESERVE_REASON_PROPERTY)
+            ? {
+                ...result,
+                contents: transform({
+                  code: Buffer.from(result.contents),
+                  filename: args.path,
+                  visitor: removePreserveReasonVisitor
+                }).code.toString()
+              }
+            : result;
+        })
     });
   }
 };

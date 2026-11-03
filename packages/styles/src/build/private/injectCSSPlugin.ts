@@ -7,14 +7,14 @@ export interface InjectCSSPluginOptions {
   stylesPlaceholder: string;
 }
 
-function updateMappings(encoded: string, startIndex: number, offset: number) {
+// Shifts the generated columns after the placeholder on its line, by how much longer the embedded string is.
+// Other lines do not move: JSON.stringify() escapes line breaks.
+function updateMappings(encoded: string, line: number, column: number, offset: number) {
   const mappings = decode(encoded);
 
-  for (const mapping of mappings) {
-    for (const line of mapping) {
-      if (line[0] > startIndex) {
-        line[0] += offset;
-      }
+  for (const segment of mappings[+line] || []) {
+    if (segment[0] > column) {
+      segment[0] += offset;
     }
   }
 
@@ -198,10 +198,11 @@ export default function injectCSSPlugin({ ignoreCSSEntries, stylesPlaceholder }:
 
             const index = jsText.indexOf(stylesPlaceholderQuoted);
             const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === file.path);
+            const cssTextQuoted = JSON.stringify(cssText);
 
             const updatedJsText = [
               jsText.slice(0, index),
-              JSON.stringify(cssText),
+              cssTextQuoted,
               jsText.slice(index + stylesPlaceholderQuoted.length)
             ].join('');
 
@@ -214,8 +215,14 @@ export default function injectCSSPlugin({ ignoreCSSEntries, stylesPlaceholder }:
 
             if (map) {
               const parsed = JSON.parse(map.text);
+              const textBefore = jsText.slice(0, index);
 
-              parsed.mappings = updateMappings(parsed.mappings, index, cssText.length - stylesPlaceholderQuoted.length);
+              parsed.mappings = updateMappings(
+                parsed.mappings,
+                textBefore.split('\n').length - 1,
+                index - textBefore.lastIndexOf('\n') - 1,
+                cssTextQuoted.length - stylesPlaceholderQuoted.length
+              );
 
               map.contents = Buffer.from(JSON.stringify(parsed));
             }

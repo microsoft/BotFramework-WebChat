@@ -6,6 +6,10 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./createStaticHandler": "./dist/createStaticHandler.js"
+  },
   "scripts": {
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
@@ -27,7 +31,8 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "selfsigned": "5.5.0",
-    "serve-handler": "6.1.7"
+    "compression": "1.8.2",
+    "express": "5.2.1",
+    "selfsigned": "5.5.0"
   }
 }

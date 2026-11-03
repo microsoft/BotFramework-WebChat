@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Development build: React 16 checks form fields for a `value` without `onChange` only in development. -->
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { spyOn } from 'jest-mock';
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        // GIVEN: Console errors are recorded, React development builds report warnings as errors.
+        const consoleError = spyOn(console, 'error');
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat with the Fluent theme on React 16.
+        render(
+          createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine, store })),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // THEN: React does not warn about the send box having a `value` without an `onChange` handler.
+        expect(consoleError.mock.calls.map(([message]) => message).join('\n')).not.toContain(
+          'You provided a `value` prop to a form field without an `onChange` handler.'
+        );
+
+        // WHEN: The user types a message and presses ENTER.
+        pageElements.byTestId(testIds.sendBoxTextBox).focus();
+
+        await (await directLine.actPostActivity(() => host.sendKeys('Hello, World!\n'))).resolveAll();
+
+        // THEN: The message is sent and the send box is emptied.
+        await pageConditions.numActivitiesShown(1);
+        await waitFor(() => expect(pageElements.byTestId(testIds.sendBoxTextBox).value).toBe(''));
+
+        // THEN: The transcript shows "Hello, World!" and the send box is empty.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
