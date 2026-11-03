@@ -161,6 +161,8 @@ jobs:
 
       - name: Check the age of new package versions
         env:
+          # Exact name@version entries to skip, e.g. to ship a security fix right away, separated by spaces or newlines.
+          BYPASS: ''
           MIN_DAYS: 7
           NOW: now # To check as of another time, e.g. 2026-10-31T12:00:00Z.
         run: |
@@ -178,6 +180,8 @@ jobs:
           failed=0
 
           for spec in $(comm -13 <(versions HEAD^1) <(versions HEAD)); do
+            grep -qxF "$spec" <(printf '%s\n' $BYPASS) && echo "::warning::$spec is in BYPASS, its age is not checked" && continue
+
             time=$(timeout 60 npm view "$spec" time --json || timeout 60 npm view "$spec" time --json)
             published=$(jq -r --arg version "${spec##*@}" '.[$version]' <<< "$time")
             age=$(( (now - $(date -u -d "$published" +%s)) / 86400 ))
@@ -185,7 +189,7 @@ jobs:
             (( age < MIN_DAYS )) && echo "::error::$spec was published $published, $age days ago" && failed=1
           done
 
-          (( failed )) && echo "Consumers that install with a minimum release age of $MIN_DAYS days cannot install them yet. Re-run this job once they are older, or redo the change from the package-lock.json of main with: npm install --before=$(date -u -d "@$(( now - MIN_DAYS * 86400 ))" +%F)"
+          (( failed )) && echo "Consumers that install with a minimum release age of $MIN_DAYS days cannot install them yet. Re-run this job once they are older, list them in BYPASS to ship them now, or redo the change from the package-lock.json of main with: npm install --before=$(date -u -d "@$(( now - MIN_DAYS * 86400 ))" +%F)"
 
           exit $failed
 
