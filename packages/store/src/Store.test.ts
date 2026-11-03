@@ -634,8 +634,12 @@ function editWithAutoFix(controller: StoreController, transactor: Parameters<Sto
   });
 }
 
-function getPartIdsOf(store: Store, id: string, property: 'hasPart' | 'isPartOf'): string[] {
-  const node = store.getSnapshot().get(id);
+function getPartIdsOf(
+  storeOrSnapshot: Store | ReadonlyMap<string, Node>,
+  id: string,
+  property: 'hasPart' | 'isPartOf'
+): string[] {
+  const node = (storeOrSnapshot instanceof Store ? storeOrSnapshot.getSnapshot() : storeOrSnapshot).get(id);
 
   return Array.from((property === 'hasPart' ? node?.hasPart : node?.isPartOf) ?? [], ({ '@id': id }) => id).sort();
 }
@@ -1651,6 +1655,90 @@ scenario(
         catchError(() => store.subscribe('not a function' as unknown as () => void))
       )
       .then('should throw', (_, error) => expect(error).toEqual(expect.any(TypeError)));
+  },
+  NodeTest
+);
+
+scenario(
+  'snapshot',
+  bdd => {
+    bdd
+      .given('a store with cross-referencing nodes', () => {
+        const { controller, store } = createStoreWithNodes();
+
+        return { controller, snapshots: [store.getSnapshot()], store };
+      })
+      .when('multiple transactions succeed', ({ controller, snapshots, store }) => {
+        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, text: ['Aloha'] })));
+        snapshots.push(store.getSnapshot());
+
+        controller.edit(transaction => transaction.delete('_:m-2'));
+        snapshots.push(store.getSnapshot());
+
+        controller.edit(transaction => {
+          transaction.upsert('_:m-3', () => ({
+            '@id': '_:m-3',
+            '@type': new Set(['Message']),
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }));
+          transaction.autoFixRelationship();
+        });
+        snapshots.push(store.getSnapshot());
+
+        return snapshots;
+      })
+      .then('every snapshot should keep its own nodes', (_, snapshots) =>
+        expect(snapshots.map(snapshot => Array.from(snapshot.keys()).sort())).toEqual([
+          ['_:conversation', '_:m-1', '_:m-2'],
+          ['_:conversation', '_:m-1', '_:m-2'],
+          ['_:conversation', '_:m-1'],
+          ['_:conversation', '_:m-1', '_:m-3']
+        ])
+      )
+      .and('every snapshot should keep its own node values', (_, snapshots) => {
+        expect(snapshots.map(snapshot => snapshot.get('_:m-1'))).toEqual([
+          expect.objectContaining({ text: ['Hello'] }),
+          expect.objectContaining({ text: ['Aloha'] }),
+          expect.objectContaining({ text: ['Aloha'] }),
+          expect.objectContaining({ text: ['Aloha'] })
+        ]);
+        expect(snapshots.map(snapshot => getPartIdsOf(snapshot, '_:conversation', 'hasPart'))).toEqual([
+          ['_:m-1', '_:m-2'],
+          ['_:m-1', '_:m-2'],
+          ['_:m-1'],
+          ['_:m-1', '_:m-3']
+        ]);
+      })
+      .and('every snapshot should have the size of its own', (_, snapshots) =>
+        expect(snapshots.map(snapshot => snapshot.size)).toEqual([3, 3, 2, 3])
+      )
+      .and('snapshot should be read-only', (_, snapshots) =>
+        expect(() => (snapshots[0] as Map<string, unknown>).set('_:m-9', {})).toThrow(TypeError)
+      );
+
+    bdd
+      .given('a store with cross-referencing nodes', () => createStoreWithNodes())
+      .when(
+        'a node referenced by another node is deleted in a failed transaction, then in a successful one',
+        ({ controller, store }) => {
+          catchError(() =>
+            controller.edit(transaction => {
+              transaction.delete('_:m-1');
+
+              throw new Error('Artificial');
+            })
+          );
+
+          controller.edit(transaction => transaction.delete('_:m-1'));
+
+          return store.getSnapshot();
+        }
+      )
+      .then('should remove references to the deleted node', (_, snapshot) => {
+        expect(getPartIdsOf(snapshot, '_:conversation', 'hasPart')).toEqual(['_:m-2']);
+        expect(snapshot.get('_:m-2')).not.toHaveProperty('citation', expect.arrayContaining([{ '@id': '_:m-1' }]));
+        expect(snapshot.get('_:m-2')).not.toHaveProperty('mentions');
+      });
   },
   NodeTest
 );

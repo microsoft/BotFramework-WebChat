@@ -7,7 +7,8 @@ import fixPartMembership from './automatic/fixPartMembership.ts';
 import type { Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
-import createReadonlySet from './private/createReadonlySet.ts';
+import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './private/createReadonlyMap.ts';
+import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './private/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
@@ -48,6 +49,8 @@ interface StoreTransaction {
   upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
 }
 
+const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
+
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
 }
@@ -69,35 +72,74 @@ function getReferenceIds(node: Node): Set<Identifier> {
   return referenceIds;
 }
 
+type ReferenceIds = VersionedReadonlyMap<Identifier, VersionedReadonlySet<Identifier>>;
+
+/**
+ * Backward reference IDs being modified in a transaction.
+ *
+ * A node could be referenced by many nodes (e.g. a conversation referenced by all messages). Instead of copying, sets
+ * being modified are mutated via an overlay and kept in `sets` until commit.
+ */
+type MutableBackwardReferenceIds = {
+  readonly map: ReadWriteMap<Identifier, VersionedReadonlySet<Identifier>>;
+  readonly sets: Map<Identifier, ReadWriteSet<Identifier>>;
+};
+
+function getReferencingIds(backwardReferenceIds: MutableBackwardReferenceIds, id: Identifier): ReadonlySet<Identifier> {
+  return backwardReferenceIds.sets.get(id) ?? backwardReferenceIds.map.get(id) ?? EMPTY_IDS;
+}
+
+function mutateReferencingIds(
+  backwardReferenceIds: MutableBackwardReferenceIds,
+  id: Identifier
+): ReadWriteSet<Identifier> {
+  let referencingIds = backwardReferenceIds.sets.get(id);
+
+  // A new empty set is created every time, mutating a shared empty set would make other mutations of it O(size).
+  referencingIds ||
+    backwardReferenceIds.sets.set(
+      id,
+      (referencingIds = (backwardReferenceIds.map.get(id) ?? createReadonlySet<Identifier>([])).mutate())
+    );
+
+  return referencingIds;
+}
+
+function commitBackwardReferenceIds(backwardReferenceIds: MutableBackwardReferenceIds): ReferenceIds {
+  for (const [id, referencingIds] of backwardReferenceIds.sets) {
+    const nextReferencingIds = referencingIds.commit();
+
+    nextReferencingIds.size
+      ? backwardReferenceIds.map.set(id, nextReferencingIds)
+      : backwardReferenceIds.map.delete(id);
+  }
+
+  return backwardReferenceIds.map.commit();
+}
+
 /**
  * Updates forward and backward reference maps with the new set of reference IDs of a node.
  */
 function setReferenceIds(
-  forwardReferenceIds: Map<Identifier, Set<Identifier>>,
-  backwardReferenceIds: Map<Identifier, Set<Identifier>>,
+  forwardReferenceIds: ReadWriteMap<Identifier, VersionedReadonlySet<Identifier>>,
+  backwardReferenceIds: MutableBackwardReferenceIds,
   id: Identifier,
-  nextReferenceIds: Set<Identifier>
+  nextReferenceIds: ReadonlySet<Identifier>
 ): void {
-  for (const referenceId of forwardReferenceIds.get(id) ?? []) {
-    const referencingIds = backwardReferenceIds.get(referenceId);
+  const prevReferenceIds = forwardReferenceIds.get(id) ?? EMPTY_IDS;
 
-    if (referencingIds) {
-      referencingIds.delete(id);
-      referencingIds.size || backwardReferenceIds.delete(referenceId);
-    }
+  // Only touch backward references which are changed, a node could reference many nodes (e.g. `hasPart`).
+  for (const referenceId of prevReferenceIds) {
+    nextReferenceIds.has(referenceId) || mutateReferencingIds(backwardReferenceIds, referenceId).delete(id);
   }
-
-  nextReferenceIds.size ? forwardReferenceIds.set(id, nextReferenceIds) : forwardReferenceIds.delete(id);
 
   for (const referenceId of nextReferenceIds) {
-    const referencingIds = backwardReferenceIds.get(referenceId);
-
-    referencingIds ? referencingIds.add(id) : backwardReferenceIds.set(referenceId, new Set([id]));
+    prevReferenceIds.has(referenceId) || mutateReferencingIds(backwardReferenceIds, referenceId).add(id);
   }
-}
 
-function cloneReferenceIds(referenceIds: Map<Identifier, Set<Identifier>>): Map<Identifier, Set<Identifier>> {
-  return new Map(Array.from(referenceIds, ([id, ids]) => [id, new Set(ids)]));
+  nextReferenceIds.size
+    ? forwardReferenceIds.set(id, createReadonlySet(nextReferenceIds))
+    : forwardReferenceIds.delete(id);
 }
 
 /**
@@ -148,10 +190,14 @@ class Store {
         // Key is the ID of nodes changed since the last auto-fix, value is the node right before its first change.
         const unfixedPrevNodes = new Map<Identifier, Node | undefined>();
 
-        // All edits are done on a copy. If the transactor throws, the copy is discarded and the state is not changed.
-        const nextState = new Map(this.#state);
-        const nextBackwardReferenceIds = cloneReferenceIds(this.#backwardReferenceIds);
-        const nextForwardReferenceIds = cloneReferenceIds(this.#forwardReferenceIds);
+        // All edits are done on overlays without copying. If the transactor throws, overlays are discarded and the state
+        // is not changed.
+        const nextState = this.#state.mutate();
+        const nextBackwardReferenceIds: MutableBackwardReferenceIds = Object.freeze({
+          map: this.#backwardReferenceIds.mutate(),
+          sets: new Map()
+        });
+        const nextForwardReferenceIds = this.#forwardReferenceIds.mutate();
 
         const markUnfixed = (id: Identifier): void => {
           unfixedPrevNodes.has(id) || unfixedPrevNodes.set(id, nextState.get(id));
@@ -195,10 +241,10 @@ class Store {
                 markUnfixed(safeId);
                 nextState.delete(safeId) && affectedNodeIds.add(safeId);
 
-                setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, new Set());
+                setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, EMPTY_IDS);
 
                 // Copy before iterating as the set will be modified while removing references.
-                for (const nodeId of Array.from(nextBackwardReferenceIds.get(safeId) ?? [])) {
+                for (const nodeId of Array.from(getReferencingIds(nextBackwardReferenceIds, safeId))) {
                   const node = nextState.get(nodeId);
                   const nextNode = node && removeReference(node, safeId);
 
@@ -240,9 +286,10 @@ class Store {
 
           // THINK: Upsert/delete called twice with same node ID in the same transaction?
 
-          this.#backwardReferenceIds = nextBackwardReferenceIds;
-          this.#forwardReferenceIds = nextForwardReferenceIds;
-          this.#state = nextState;
+          // Commits are O(number of changes), previous snapshots are kept intact.
+          this.#backwardReferenceIds = commitBackwardReferenceIds(nextBackwardReferenceIds);
+          this.#forwardReferenceIds = nextForwardReferenceIds.commit();
+          this.#state = nextState.commit();
 
           this.#notifyAll(createReadonlySet(affectedNodeIds));
         }
@@ -253,11 +300,11 @@ class Store {
   }
 
   /** Key is the node being referenced, values are IDs of nodes which reference the key node. */
-  #backwardReferenceIds: Map<Identifier, Set<Identifier>> = new Map();
+  #backwardReferenceIds: ReferenceIds = createReadonlyMap([]);
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
-  #forwardReferenceIds: Map<Identifier, Set<Identifier>> = new Map();
+  #forwardReferenceIds: ReferenceIds = createReadonlyMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
-  #state: Map<string, Node> = new Map();
+  #state: VersionedReadonlyMap<string, Node> = createReadonlyMap([]);
 
   #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
     for (const listener of this.#listeners) {
@@ -265,7 +312,10 @@ class Store {
     }
   }
 
-  getSnapshot(): Map<string, Node> {
+  /**
+   * Gets an immutable snapshot of all nodes. Snapshots are not affected by subsequent commits.
+   */
+  getSnapshot(): ReadonlyMap<string, Node> {
     return this.#state;
   }
 

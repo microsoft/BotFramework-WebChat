@@ -82,7 +82,7 @@ scenario(
       .given('a readonly set', () => createReadonlySet([1, 2, 3]))
       .when('a property is set via Reflect.set()', set => Reflect.set(set, 'add', () => undefined))
       .then('should fail', (_, result) => expect(result).toBe(false))
-      .and('add() should still throw', set => expect(() => (set as Set<number>).add(4)).toThrow(TypeError));
+      .and('add() should still throw', set => expect(() => (set as unknown as Set<number>).add(4)).toThrow(TypeError));
 
     bdd
       .given('a readonly set', () => createReadonlySet([1, 2, 3]))
@@ -121,6 +121,136 @@ scenario(
       .given('a mutable set', () => new Set([1, 2, 3]))
       .when('checked', set => isReadonlySet(set))
       .then('should not be detected as readonly set', (_, result) => expect(result).toBe(false));
+  },
+  NodeTest
+);
+
+scenario(
+  'ReadonlySet.mutate()',
+  bdd => {
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('mutated without commit', set => set.mutate().add(4).add(2))
+      .then('overlay should read changes', (_, readWriteSet) => {
+        expect(readWriteSet.size).toBe(4);
+        expect(readWriteSet.has(4)).toBe(true);
+        expect(Array.from(readWriteSet)).toEqual([1, 2, 3, 4]);
+      })
+      .and('original set should not be modified', set => {
+        expect(set.size).toBe(3);
+        expect(set.has(4)).toBe(false);
+        expect(Array.from(set)).toEqual([1, 2, 3]);
+      });
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('mutated and committed', set => {
+        const readWriteSet = set.mutate();
+
+        readWriteSet.add(4);
+        readWriteSet.delete(1);
+        readWriteSet.delete(5);
+
+        return { nextSet: readWriteSet.commit(), readWriteSet };
+      })
+      .then('should return a new readonly set with changes', (_, { nextSet }) => {
+        expect(nextSet).not.toBe(_);
+        expect(isReadonlySet(nextSet)).toBe(true);
+        expect(Object.isFrozen(nextSet)).toBe(true);
+        expect(nextSet.size).toBe(3);
+        expect(nextSet).toEqual(new Set([2, 3, 4]));
+      })
+      .and('original set should not be modified', set => {
+        expect(set.size).toBe(3);
+        expect(set.has(1)).toBe(true);
+        expect(set.has(4)).toBe(false);
+        expect(set).toEqual(new Set([1, 2, 3]));
+      })
+      .and('overlay should not be modifiable after commit', (_, { readWriteSet }) => {
+        expect(() => readWriteSet.add(5)).toThrow('already committed');
+        expect(() => readWriteSet.delete(2)).toThrow('already committed');
+        expect(() => readWriteSet.commit()).toThrow('already committed');
+      })
+      .and('overlay should still be readable after commit', (_, { readWriteSet }) =>
+        expect(readWriteSet).toEqual(new Set([2, 3, 4]))
+      );
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('mutated and committed multiple times', set => {
+        const set2 = set.mutate().add(4).commit();
+        const readWriteSet3 = set2.mutate();
+
+        readWriteSet3.delete(2);
+
+        const set3 = readWriteSet3.commit();
+
+        return [set, set2, set3, set3.mutate().add(2).commit()];
+      })
+      .then('every version should keep its own values', (_, sets) => {
+        expect(sets.map(set => Array.from(set).sort())).toEqual([
+          [1, 2, 3],
+          [1, 2, 3, 4],
+          [1, 3, 4],
+          [1, 2, 3, 4]
+        ]);
+        expect(sets.map(set => set.size)).toEqual([3, 4, 3, 4]);
+        expect(sets.map(set => set.has(2))).toEqual([true, true, false, true]);
+        expect(sets.map(set => set.has(4))).toEqual([false, true, true, true]);
+      })
+      .and('reading older versions again should return the same values', (_, sets) =>
+        expect(sets.map(set => Array.from(set).sort())).toEqual([
+          [1, 2, 3],
+          [1, 2, 3, 4],
+          [1, 3, 4],
+          [1, 2, 3, 4]
+        ])
+      );
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('mutated twice from the same set and both committed', set => [
+        set.mutate().add(4).commit(),
+        set.mutate().add(5).commit()
+      ])
+      .then('both versions should have their own changes', (_, [set4, set5]) => {
+        expect(set4).toEqual(new Set([1, 2, 3, 4]));
+        expect(set5).toEqual(new Set([1, 2, 3, 5]));
+      })
+      .and('original set should not be modified', set => expect(set).toEqual(new Set([1, 2, 3])))
+      .and('should be able to mutate the branched version', (_, [, set5]) =>
+        expect(set5!.mutate().add(6).commit()).toEqual(new Set([1, 2, 3, 5, 6]))
+      );
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('cleared and committed', set => {
+        const readWriteSet = set.mutate();
+
+        readWriteSet.clear();
+        readWriteSet.add(4);
+
+        return readWriteSet.commit();
+      })
+      .then('should only have new values', (_, nextSet) => expect(nextSet).toEqual(new Set([4])))
+      .and('original set should not be modified', set => expect(set).toEqual(new Set([1, 2, 3])));
+
+    bdd
+      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .when('a value is added then deleted in the overlay', set => {
+        const readWriteSet = set.mutate().add(4);
+
+        readWriteSet.delete(4);
+
+        return readWriteSet;
+      })
+      .then('should not have the value', (_, readWriteSet) => {
+        expect(readWriteSet.has(4)).toBe(false);
+        expect(readWriteSet.size).toBe(3);
+      })
+      .and('should commit without the value', (_, readWriteSet) =>
+        expect(readWriteSet.commit()).toEqual(new Set([1, 2, 3]))
+      );
   },
   NodeTest
 );
