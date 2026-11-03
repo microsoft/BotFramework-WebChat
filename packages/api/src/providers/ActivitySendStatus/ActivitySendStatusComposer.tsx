@@ -98,19 +98,20 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
     [sendStatusByActivityKey]
   );
 
-  const isSendingState = useMemo<readonly [boolean]>(
+  const isSending = useMemo<boolean>(
     () =>
-      Object.freeze([
-        iteratorSome(sendStatusByActivityKey.entries(), ([activityKey, status]) => {
-          if (status === 'sending') {
-            const activity = getActivityByKey(activityKey);
+      iteratorSome(sendStatusByActivityKey.entries(), ([activityKey, status]) => {
+        if (status === 'sending') {
+          const activity = getActivityByKey(activityKey);
 
-            return activity && !isPresentational(activity);
-          }
-        })
-      ]),
+          return activity && !isPresentational(activity);
+        }
+      }),
     [getActivityByKey, sendStatusByActivityKey]
   );
+
+  // Memoized on the boolean, so `useIsSending()` only re-renders when it flips.
+  const isSendingState = useMemo<readonly [boolean]>(() => freezeArray([isSending]), [isSending]);
 
   const context = useMemo<ActivitySendStatusContextType>(
     () => Object.freeze({ sendStatusByActivityKeyState }),
