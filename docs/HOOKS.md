@@ -87,6 +87,7 @@ Following is the list of hooks supported by Web Chat API.
 - [`useGroupActivities`](#usegroupactivities) (Deprecated)
 - [`useGroupActivitiesByName`](#usegroupactivitiesbyname)
 - [`useGroupTimestamp`](#usegrouptimestamp)
+- [`useIsSending`](#useissending)
 - [`useLanguage`](#uselanguage)
 - [`useLastAcknowledgedActivityKey`](#uselastacknowledgedactivitykey)
 - [`useLastReadActivityKey`](#uselastreadactivitykey)
@@ -727,6 +728,18 @@ This hook will return the interval for grouping similar activities with a single
 For example, if this value is `5000`, successive activities within 5 seconds will share the timestamp of the first message.
 
 To control the `groupTimestamp` state, change the props passed to Web Chat via style options.
+
+## `useIsSending`
+
+<!-- prettier-ignore-start -->
+```ts
+useIsSending(): readonly [boolean]
+```
+<!-- prettier-ignore-end -->
+
+This hook will return `true` if at least one outgoing activity is being sent (send status `"sending"`), otherwise, `false`. Presentational activities, such as event activities or message activities without visible content, are excluded.
+
+Unlike [`useSendStatusByActivityKey`](#usesendstatusbyactivitykey), this hook only re-renders when the value changes.
 
 ## `useLanguage`
 
