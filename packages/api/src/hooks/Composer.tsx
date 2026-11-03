@@ -51,6 +51,7 @@ import {
   literal,
   nullish,
   object,
+  optional,
   picklist,
   pipe,
   readonly,
@@ -243,46 +244,46 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 
 const legacyMiddlewareSchema = union([array(function_()), function_()]);
 
-// Like `propTypes`, optional props also accept `null`, for example, `dir={searchParams.get('dir')}`.
 const composerCorePropsSchema = pipe(
   object({
-    activityStatusMiddleware: nullish(legacyMiddlewareSchema),
-    attachmentForScreenReaderMiddleware: nullish(legacyMiddlewareSchema),
-    attachmentMiddleware: nullish(legacyMiddlewareSchema),
-    avatarMiddleware: nullish(legacyMiddlewareSchema),
-    cardActionMiddleware: nullish(legacyMiddlewareSchema),
-    children: nullish(reactNode()),
+    activityStatusMiddleware: optional(legacyMiddlewareSchema),
+    attachmentForScreenReaderMiddleware: optional(legacyMiddlewareSchema),
+    attachmentMiddleware: optional(legacyMiddlewareSchema),
+    avatarMiddleware: optional(legacyMiddlewareSchema),
+    cardActionMiddleware: optional(legacyMiddlewareSchema),
+    children: optional(reactNode()),
+    // `null` from `dir: searchParams.get('dir')`, e.g. __tests__/html2/fluentTheme/uiState.html.
     dir: nullish(picklist(['auto', 'ltr', 'rtl'])),
     directLine: pipe(
       object({
         activity$: pipe(object({ subscribe: function_() }), readonly()),
         connectionStatus$: pipe(object({ subscribe: function_() }), readonly()),
-        end: nullish(function_()),
-        getSessionId: nullish(function_()),
+        end: optional(function_()),
+        getSessionId: optional(function_()),
         // Some adapters, such as one that only receives, do not have `postActivity`.
-        postActivity: nullish(function_()),
-        referenceGrammarID: nullish(string()),
-        token: nullish(string())
+        postActivity: optional(function_()),
+        referenceGrammarID: optional(string()),
+        token: optional(string())
       }),
       readonly()
     ),
-    disabled: nullish(boolean()),
-    downscaleImageToDataURL: nullish(function_()),
-    grammars: nullish(array(string())),
-    groupActivitiesMiddleware: nullish(legacyMiddlewareSchema),
-    locale: nullish(string()),
-    onTelemetry: nullish(function_()),
-    overrideLocalizedStrings: nullish(any()),
-    // `false` disables Markdown.
+    disabled: optional(boolean()),
+    downscaleImageToDataURL: optional(function_()),
+    grammars: optional(array(string())),
+    groupActivitiesMiddleware: optional(legacyMiddlewareSchema),
+    locale: optional(string()),
+    onTelemetry: optional(function_()),
+    overrideLocalizedStrings: optional(any()),
+    // `false` disables Markdown, `null` in __tests__/html2/markdown/renderMarkdown.null.html.
     renderMarkdown: nullish(union([literal(false), function_()])),
-    scrollToEndButtonMiddleware: nullish(legacyMiddlewareSchema),
-    selectVoice: nullish(function_()),
-    sendTypingIndicator: nullish(boolean()),
-    toastMiddleware: nullish(legacyMiddlewareSchema),
-    typingIndicatorMiddleware: nullish(legacyMiddlewareSchema),
-    uiState: nullish(picklist(['blueprint', 'disabled'])),
-    userID: nullish(string()),
-    username: nullish(string())
+    scrollToEndButtonMiddleware: optional(legacyMiddlewareSchema),
+    selectVoice: optional(function_()),
+    sendTypingIndicator: optional(boolean()),
+    toastMiddleware: optional(legacyMiddlewareSchema),
+    typingIndicatorMiddleware: optional(legacyMiddlewareSchema),
+    uiState: optional(picklist(['blueprint', 'disabled'])),
+    userID: optional(string()),
+    username: optional(string())
   }),
   readonly()
 );
@@ -781,8 +782,8 @@ type ComposerWithStoreProps = ComposerCoreProps &
 
 const composerWithStorePropsSchema = pipe(
   object({
-    onTelemetry: nullish(function_()),
-    store: nullish(any())
+    onTelemetry: optional(function_()),
+    store: optional(any())
   }),
   readonly()
 );

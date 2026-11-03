@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, is, nullish, object, pipe, readonly, unknown } from 'valibot';
+import { custom, is, nullish, object, optional, pipe, readonly, unknown } from 'valibot';
 
 import SpeakActivity from '../Activity/Speak';
 import { RestrictedActivityDebugAPI } from '../ActivityDebug';
@@ -31,9 +31,9 @@ const activityRowPropsSchema = pipe(
     activity: custom<WebChatActivity>(value =>
       is(
         object({
-          channelData: nullish(
+          channelData: optional(
             object({
-              // Sent by the bot, any value: `speak` is checked for truthiness, an invalid fallback text is ignored.
+              // Sent by the bot, any value including `null`, e.g. __tests__/html2/transcript/channelData.fallbackText.null.html.
               speak: nullish(unknown()),
               'webchat:fallback-text': nullish(unknown())
             })
@@ -42,7 +42,7 @@ const activityRowPropsSchema = pipe(
         value
       )
     ),
-    children: nullish(reactNode())
+    children: optional(reactNode())
   }),
   readonly()
 );

@@ -1,11 +1,11 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
-import { nullish, object, pipe, readonly, string } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 const checkMarkIconPropsSchema = pipe(
   object({
-    'aria-label': nullish(string()),
-    className: nullish(string())
+    'aria-label': optional(string()),
+    className: optional(string())
   }),
   readonly()
 );

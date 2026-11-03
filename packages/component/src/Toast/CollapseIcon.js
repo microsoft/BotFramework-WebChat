@@ -1,10 +1,10 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
-import { nullish, object, pipe, readonly, string } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 const collapseIconPropsSchema = pipe(
   object({
-    className: nullish(string())
+    className: optional(string())
   }),
   readonly()
 );

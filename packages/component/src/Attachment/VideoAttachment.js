@@ -1,7 +1,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React from 'react';
-import { nullish, object, pipe, readonly, string } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
@@ -17,7 +17,7 @@ const videoAttachmentPropsSchema = pipe(
     attachment: pipe(
       object({
         contentUrl: string(),
-        name: nullish(string())
+        name: optional(string())
       }),
       readonly()
     )

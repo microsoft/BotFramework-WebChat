@@ -12,7 +12,7 @@ import {
 
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
-import { any, array, boolean, function_, literal, nullish, object, pipe, readonly, union } from 'valibot';
+import { any, array, boolean, function_, literal, object, optional, pipe, readonly, union } from 'valibot';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
@@ -24,12 +24,12 @@ const { useDirection, useLocalizer, useStyleOptions } = hooks;
 const carouselLayoutPropsSchema = pipe(
   object({
     // `activity` is required, but `CarouselLayout` has a default value for it.
-    activity: nullish(pipe(object({ attachments: nullish(array(any())) }), readonly())),
-    hideTimestamp: nullish(boolean()),
-    renderActivityStatus: nullish(union([literal(false), function_()])),
+    activity: optional(pipe(object({ attachments: optional(array(any())) }), readonly())),
+    hideTimestamp: optional(boolean()),
+    renderActivityStatus: optional(union([literal(false), function_()])),
     renderAttachment: function_(),
-    renderAvatar: nullish(union([literal(false), function_()])),
-    showCallout: nullish(boolean())
+    renderAvatar: optional(union([literal(false), function_()])),
+    showCallout: optional(boolean())
   }),
   readonly()
 );

@@ -2,14 +2,14 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
 import { hooks } from 'botframework-webchat-component';
-import { any, nullish, object, pipe, readonly } from 'valibot';
+import { any, object, optional, pipe, readonly } from 'valibot';
 
 const { useLocalizer } = hooks;
 
 const richCardAttachmentPropsSchema = pipe(
   object({
     // Required, but has a default value.
-    content: nullish(any())
+    content: optional(any())
   }),
   readonly()
 );

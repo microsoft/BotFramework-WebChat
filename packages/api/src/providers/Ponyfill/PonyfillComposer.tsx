@@ -1,15 +1,15 @@
 import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import type { GlobalScopePonyfill } from 'botframework-webchat-core';
 import React, { useMemo, useRef } from 'react';
-import { custom, nullish, object, pipe, readonly } from 'valibot';
+import { custom, object, optional, pipe, readonly } from 'valibot';
 
 import type { ContextOf } from '../../types/ContextOf';
 import PonyfillContext from './private/PonyfillContext';
 
 const ponyfillComposerPropsSchema = pipe(
   object({
-    children: nullish(reactNode()),
-    ponyfill: nullish(custom<Partial<GlobalScopePonyfill>>(() => true))
+    children: optional(reactNode()),
+    ponyfill: optional(custom<Partial<GlobalScopePonyfill>>(() => true))
   }),
   readonly()
 );

@@ -5,7 +5,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
-import { nullish, object, pipe, readonly, string } from 'valibot';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import ScreenReaderText from './ScreenReaderText';
 import DismissIcon from './Toast/DismissIcon';
@@ -29,11 +29,11 @@ const basicToastPropsSchema = pipe(
   object({
     notification: pipe(
       object({
-        alt: nullish(string()),
+        alt: optional(string()),
         id: string(),
         level: string(),
         // Has a default value.
-        message: nullish(string())
+        message: optional(string())
       }),
       readonly()
     )

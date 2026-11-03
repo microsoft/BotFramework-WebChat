@@ -6,7 +6,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useItemContainerCallbackRef, useScrollableCallbackRef, useScrollTo } from 'react-film';
 import cx from 'classnames';
 import React, { useCallback } from 'react';
-import { any, array, boolean, function_, literal, nullish, object, pipe, readonly, string, union } from 'valibot';
+import { any, array, boolean, function_, literal, object, optional, pipe, readonly, string, union } from 'valibot';
 
 import Bubble from './Bubble';
 import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
@@ -29,28 +29,28 @@ const carouselFilmStripPropsSchema = pipe(
   object({
     activity: pipe(
       object({
-        attachments: nullish(array(any())),
-        channelData: nullish(
+        attachments: optional(array(any())),
+        channelData: optional(
           pipe(
             object({
-              messageBack: nullish(pipe(object({ displayText: nullish(string()) }), readonly()))
+              messageBack: optional(pipe(object({ displayText: optional(string()) }), readonly()))
             }),
             readonly()
           )
         ),
         from: pipe(object({ role: string() }), readonly()),
-        text: nullish(string()),
-        textFormat: nullish(string()),
-        timestamp: nullish(string())
+        text: optional(string()),
+        textFormat: optional(string()),
+        timestamp: optional(string())
       }),
       readonly()
     ),
-    className: nullish(string()),
-    hideTimestamp: nullish(boolean()),
-    renderActivityStatus: nullish(union([literal(false), function_()])),
+    className: optional(string()),
+    hideTimestamp: optional(boolean()),
+    renderActivityStatus: optional(union([literal(false), function_()])),
     renderAttachment: function_(),
-    renderAvatar: nullish(union([literal(false), function_()])),
-    showCallout: nullish(boolean())
+    renderAvatar: optional(union([literal(false), function_()])),
+    showCallout: optional(boolean())
   }),
   readonly()
 );

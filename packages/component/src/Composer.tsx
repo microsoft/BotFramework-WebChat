@@ -27,7 +27,7 @@ import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
-import { any, function_, literal, nullish, object, pipe, readonly, string, union } from 'valibot';
+import { any, function_, literal, nullish, object, optional, pipe, readonly, string, union } from 'valibot';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
@@ -180,14 +180,13 @@ type ComposerCoreProps = Readonly<{
 
 const composerCorePropsSchema = pipe(
   object({
-    // Like `propTypes`, optional props also accept `null`.
-    extraStyleSet: nullish(any()),
-    nonce: nullish(string()),
-    // `false` disables Markdown.
+    extraStyleSet: optional(any()),
+    nonce: optional(string()),
+    // `false` disables Markdown, `null` in __tests__/html2/markdown/renderMarkdown.null.html.
     renderMarkdown: nullish(union([literal(false), function_()])),
-    styleSet: nullish(any()),
-    suggestedActionsAccessKey: nullish(union([literal(false), string()])),
-    webSpeechPonyfillFactory: nullish(function_())
+    styleSet: optional(any()),
+    suggestedActionsAccessKey: optional(union([literal(false), string()])),
+    webSpeechPonyfillFactory: optional(function_())
   }),
   readonly()
 );

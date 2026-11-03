@@ -3,7 +3,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import cx from 'classnames';
 import React from 'react';
-import { any, array, boolean, function_, nonNullish, nullish, number, object, pipe, readonly, string } from 'valibot';
+import { any, array, boolean, function_, nonNullish, number, object, optional, pipe, readonly, string } from 'valibot';
 
 import Bubble from './Bubble';
 import ScreenReaderText from '../ScreenReaderText';
@@ -16,16 +16,16 @@ const carouselFilmStripAttachmentPropsSchema = pipe(
   object({
     activity: pipe(
       object({
-        attachments: nullish(array(any())),
+        attachments: optional(array(any())),
         from: pipe(object({ role: string() }), readonly()),
-        text: nullish(string()),
-        textFormat: nullish(string()),
-        timestamp: nullish(string())
+        text: optional(string()),
+        textFormat: optional(string()),
+        timestamp: optional(string())
       }),
       readonly()
     ),
-    attachment: pipe(object({ content: nullish(any()) }), readonly()),
-    className: nullish(string()),
+    attachment: pipe(object({ content: optional(any()) }), readonly()),
+    className: optional(string()),
     fromUser: nonNullish(any()),
     hasAvatar: nonNullish(any()),
     hideNub: boolean(),

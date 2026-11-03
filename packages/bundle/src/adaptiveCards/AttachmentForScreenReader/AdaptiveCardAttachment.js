@@ -5,7 +5,7 @@ import { hooks } from 'botframework-webchat-component';
 import { htmlTextAlternatives } from 'botframework-webchat-component/internal.js';
 import { onErrorResumeNext } from 'botframework-webchat-core';
 import React, { useMemo } from 'react';
-import { any, array, nonNullish, nullish, object, pipe, readonly, string } from 'valibot';
+import { any, array, nonNullish, object, optional, pipe, readonly, string } from 'valibot';
 
 import setMarkdownEngine from '../Attachment/private/setMarkdownEngine';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -65,20 +65,20 @@ const adaptiveCardChoiceSetInputPropsSchema = pipe(
   object({
     input: pipe(
       object({
-        choices: nullish(
+        choices: optional(
           array(
             pipe(
               object({
-                title: nullish(string()),
-                value: nullish(any())
+                title: optional(string()),
+                value: optional(any())
               }),
               readonly()
             )
           )
         ),
-        defaultValue: nullish(any()),
-        label: nullish(string()),
-        value: nullish(any())
+        defaultValue: optional(any()),
+        label: optional(string()),
+        value: optional(any())
       }),
       readonly()
     )
