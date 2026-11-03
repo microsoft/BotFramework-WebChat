@@ -2,6 +2,7 @@
 
 import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import {
   Composer as APIComposer,
   AttachmentForScreenReaderMiddleware,
@@ -67,6 +68,8 @@ import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
+import styles from './Composer.module.css';
+
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
 
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
@@ -79,23 +82,10 @@ type ComposerCoreUIProps = {
   readonly storeDebugAPI?: StoreDebugAPI | undefined;
 };
 
-const ROOT_STYLE = {
-  '&.webchat__css-custom-properties': {
-    '& .webchat__live-region': {
-      color: 'transparent',
-      height: 1,
-      overflow: 'hidden',
-      position: 'absolute',
-      top: 0,
-      whiteSpace: 'nowrap',
-      width: 1
-    }
-  }
-};
-
 const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIProps) => {
   const [{ assistiveTechnologyAnnouncementTransport, internalLiveRegionFadeAfter }] = useStyleOptions();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  // Keeps the "webchat__css-custom-properties" class name.
+  const composerClassNames = useStyles(styles, webChatPrefixedClassName);
   const rootRef = useRef<HTMLDivElement>(null);
   const trackException = useTrackException();
 
@@ -130,7 +120,7 @@ const ComposerCoreUI = memo(({ children, nonce, storeDebugAPI }: ComposerCoreUIP
 
   return (
     <CSSCustomPropertiesContainer
-      className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}
+      className={classNames('webchat', composerClassNames['css-custom-properties'])}
       nonce={nonce}
       ref={rootRef}
     >

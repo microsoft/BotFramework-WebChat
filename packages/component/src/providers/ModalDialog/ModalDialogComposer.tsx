@@ -1,3 +1,4 @@
+import { CSSModuleThemeComposer } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import Context from './private/Context';
@@ -12,6 +13,8 @@ type DialogInit = Exclude<Parameters<ContextType['showModal']>[1], undefined>;
 type RenderFunctionAndDialogInit = Readonly<[RenderFunction, DialogInit | undefined]>;
 
 type Props = Readonly<{ children?: ReactNode }>;
+
+const EMPTY_THEME = Object.freeze({});
 
 const ModalDialogComposer = memo(({ children }: Props) => {
   const [renderFunctionAndDialogInit, setRenderFunctionAndDialogInit] = useState<
@@ -30,14 +33,16 @@ const ModalDialogComposer = memo(({ children }: Props) => {
     <Context.Provider value={context}>
       {children}
       {renderFunctionAndDialogInit && (
-        <ModalDialog
-          aria-label={renderFunctionAndDialogInit[1]?.['aria-label']}
-          aria-labelledby={renderFunctionAndDialogInit[1]?.['aria-labelledby']}
-          className={renderFunctionAndDialogInit[1]?.className}
-          onDismiss={close}
-        >
-          {renderFunctionAndDialogInit[0]()}
-        </ModalDialog>
+        <CSSModuleThemeComposer theme={renderFunctionAndDialogInit[1]?.cssModuleTheme ?? EMPTY_THEME}>
+          <ModalDialog
+            aria-label={renderFunctionAndDialogInit[1]?.['aria-label']}
+            aria-labelledby={renderFunctionAndDialogInit[1]?.['aria-labelledby']}
+            className={renderFunctionAndDialogInit[1]?.className}
+            onDismiss={close}
+          >
+            {renderFunctionAndDialogInit[0]()}
+          </ModalDialog>
+        </CSSModuleThemeComposer>
       )}
     </Context.Provider>
   );
