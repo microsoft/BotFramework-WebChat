@@ -159,21 +159,33 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
 
-      # Only installs the dependencies of the unit tests when they could have changed.
-      - id: changes
-        name: Check whether scripts/packageAge changed
-        run: git diff --quiet HEAD^1 HEAD -- scripts/packageAge || echo 'scripts=true' >> "$GITHUB_OUTPUT"
-
-      - if: steps.changes.outputs.scripts
-        run: npm clean-install --ignore-scripts --strict-peer-deps
-
-      - if: steps.changes.outputs.scripts
-        name: Run unit tests of scripts/packageAge
-        run: node --test 'scripts/packageAge/*.spec.mjs'
-
-      # Skips quickly if no package-lock.json changed.
       - name: Check the age of new package versions
-        run: node ./scripts/packageAge/check.mjs --base HEAD^1 | tee --append "$GITHUB_STEP_SUMMARY"
+        env:
+          MIN_DAYS: 7
+          NOW: now # To check as of another time, e.g. 2026-10-31T12:00:00Z.
+        run: |
+          git diff --quiet HEAD^1 HEAD -- package-lock.json && echo 'Skipped, package-lock.json did not change.' && exit
+
+          # Every name@version from registry.npmjs.org in package-lock.json of a commit.
+          versions() {
+            git show "$1:package-lock.json" | jq -r '.packages | to_entries[] | select(.value.resolved // "" | startswith("https://registry.npmjs.org/"))
+              | "\(.value.name // (.key | sub(".*node_modules/"; "")))@\(.value.version)"' | sort -u
+          }
+
+          now=$(date -u -d "$NOW" +%s)
+          failed=0
+
+          for spec in $(comm -13 <(versions HEAD^1) <(versions HEAD)); do
+            time=$(timeout 60 npm view "$spec" time --json || timeout 60 npm view "$spec" time --json)
+            published=$(jq -r --arg version "${spec##*@}" '.[$version]' <<< "$time")
+            age=$(( (now - $(date -u -d "$published" +%s)) / 86400 ))
+
+            (( age < MIN_DAYS )) && echo "::error::$spec was published $published, $age days ago" && failed=1
+          done
+
+          (( failed )) && echo "Consumers that install with a minimum release age of $MIN_DAYS days cannot install them yet. Re-run this job once they are older, or redo the change from the package-lock.json of main with: npm install --before=$(date -u -d "@$(( now - MIN_DAYS * 86400 ))" +%F)"
+
+          exit $failed
 
   static-code-analysis:
     name: Static code analysis
