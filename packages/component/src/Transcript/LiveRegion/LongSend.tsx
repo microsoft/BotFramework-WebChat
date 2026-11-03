@@ -1,9 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
+import { useIsSending } from 'botframework-webchat-api/internal.js';
 import { memo, useEffect, useState } from 'react';
 
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
 
-const { useIsSending, useLocalizer, usePonyfill } = hooks;
+const { useLocalizer, usePonyfill } = hooks;
 
 const SENDING_ANNOUNCEMENT_INTERVAL = 3_000;
 
