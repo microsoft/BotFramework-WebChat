@@ -1,5 +1,6 @@
-/* The modal dialog rules (Popover.module.css) can come later in the stylesheet: out-specify them instead of relying on order. */
-:global(.webchat) .view-code-dialog:global(.webchat__modal-dialog) {
+/* The modal dialog renders with this module as its CSS module theme (see ActivityViewCodeButton), so its parts get the
+   local names below. The modal dialog rules (Popover.module.css) can come later in the stylesheet: out-specify them. */
+:global(.webchat) .view-code-dialog.modal-dialog {
   box-sizing: border-box;
   display: grid;
   height: 100%;
@@ -9,7 +10,7 @@
   place-items: center;
 }
 
-:global(.webchat) .view-code-dialog:global(.webchat__modal-dialog) :global(.webchat__modal-dialog__box) {
+:global(.webchat) .view-code-dialog.modal-dialog .modal-dialog__box {
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -17,12 +18,12 @@
   position: relative;
 }
 
-:global(.webchat) .view-code-dialog :global(.webchat__modal-dialog__close-button-layout) {
+:global(.webchat) .view-code-dialog .modal-dialog__close-button-layout {
   position: absolute;
   right: 0;
 }
 
-:global(.webchat) .view-code-dialog :global(.webchat__modal-dialog__body) {
+:global(.webchat) .view-code-dialog .modal-dialog__body {
   display: flex;
   flex-direction: column;
   gap: var(--webchat__padding--regular);
