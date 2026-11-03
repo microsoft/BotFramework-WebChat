@@ -1205,7 +1205,9 @@
   }
 
   /* TODO: align with original fluent modal styles in WebChat as they don't match v9 anymore */
-  .modal-dialog__close-button:not(:active):hover {
+  /* Popover.module.css can come later in the stylesheet: the ":focus" selector out-specifies its focused hover rule. */
+  .modal-dialog__close-button:not(:active):hover,
+  .modal-dialog__close-button:focus:not(:active):hover {
     background-color: var(--webchat-colorNeutralBackground3);
   }
 
