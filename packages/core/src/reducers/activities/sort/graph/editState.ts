@@ -7,10 +7,10 @@ import WorkingGraph, { type FlushResult } from './private/WorkingGraph';
 /**
  * Runs one store transaction for a `State`, then derives the next `State`.
  *
- * - **Stale state** (an older state reduced again, e.g. replay or time travel, or the last edit threw): the graph has
- *   moved on, so a new graph is built from this state's journal, then edited.
- * - **Failure**: William's store has no rollback. `ActivitiesGraph.edit()` bumps the version also when the editor
- *   throws, so the state from before the failed action becomes stale and the next action rebuilds the graph from it.
+ * - **Stale state** (an older state reduced again, e.g. replay or time travel): the graph has moved on, so a new graph
+ *   is built from this state's journal, then edited.
+ * - **Failure**: the store commits all writes of a transaction or none, so a failed action leaves the graph and the
+ *   state from before it as they were.
  *
  * @param editor Edits the graph. Returns `false` if nothing changed.
  */

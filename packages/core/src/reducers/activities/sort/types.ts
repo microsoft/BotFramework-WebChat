@@ -61,12 +61,12 @@ type State = {
    * `undefined` until the first activity.
    */
   readonly graph: ActivitiesGraph | undefined;
-  /** `graph.version` this state was derived at. If the graph moved on (replay, failed edit), the graph is rebuilt. */
+  /** `graph.version` this state was derived at. If the graph moved on (replay), the graph is rebuilt. */
   readonly graphVersion: number;
   /**
    * The changes of every transaction since the graph was created, newest first, shared between states (each state adds
-   * one link). Needed while William's store has mutable snapshots and no rollback: it lets core rebuild the graph as
-   * this state saw it (replay, or after a failed edit).
+   * one link). It lets core rebuild the graph as this state saw it (replay); the store cannot be reset to an older
+   * snapshot.
    */
   readonly graphJournal: GraphJournal | undefined;
   /** Parts of each grouping, conversation and livestream session, in `position` order. */

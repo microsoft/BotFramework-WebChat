@@ -9,7 +9,8 @@ import { FINALIZED, HOW_TO_TYPE, LIVESTREAM_SESSION_TYPE, LOGICAL_TIMESTAMP, STR
 /**
  * Removes a message from the transcript.
  *
- * QUESTION(William): the store has no delete, so the message node stays in the graph, outside of the tree.
+ * The message node stays in the graph, outside of the tree: the journal (replay) has no tombstones for the store's
+ * `delete()`.
  */
 export default function deleteSortedMessage(working: WorkingGraph, messageId: GraphIdentifier): void {
   const parentId = getParentId(getRequiredNode(working, messageId));

@@ -22,8 +22,8 @@ type FlushResult = {
  */
 class WorkingGraph {
   /**
-   * @param snapshot The store's live node map (`store.getSnapshot()`). Reads hit it directly: nothing is upserted
-   *                 before `flush()`, so it holds the nodes as of the last transaction.
+   * @param snapshot The store's snapshot of the last commit (`store.getSnapshot()`). Reads hit it directly: nothing
+   *                 is upserted before `flush()`.
    */
   constructor(transaction: GraphTransaction, snapshot: ReadonlyMap<string, GraphNode>, partIndex: PartIndex) {
     this.#partIndex = partIndex;
@@ -71,16 +71,22 @@ class WorkingGraph {
     this.#sortedMessageIds = Object.freeze(sortedMessageIds);
   }
 
-  /** Upserts the changed nodes into the store. Returns them as stored, with what `deriveState()` needs. */
+  /**
+   * Upserts the changed nodes into the store, then lets the store add the `hasPart` inverse of the `isPartOf` links
+   * (it rejects the commit otherwise). Returns the changed nodes as stored, with what `deriveState()` needs.
+   */
   flush(): FlushResult {
-    const changedNodes: GraphNode[] = [];
-
     for (const node of this.#pendingNodes.values()) {
-      this.#transaction.upsertNode(node);
-
-      // The store keeps its own (validated) copy.
-      changedNodes.push(this.#transaction.getNode(node['@id']) ?? node);
+      this.#transaction.upsert(node['@id'], () => node);
     }
+
+    this.#transaction.autoFixRelationship();
+
+    // The store keeps its own (validated, frozen) copy.
+    const changedNodes = Array.from(
+      this.#pendingNodes.values(),
+      node => this.#transaction.getNode(node['@id']) ?? node
+    );
 
     const partIndex = new Map(this.#partIndex);
 

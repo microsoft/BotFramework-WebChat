@@ -2,7 +2,7 @@ import type { WebChatActivity } from '../../../../../types/WebChatActivity';
 import type { GraphIdentifier, GraphNode } from '../types';
 import { DIRECT_LINE_ACTIVITY, IDENTIFIER } from '../vocabulary';
 
-// Reads trust the store: every node was validated by `upsertNode()` (William's `nodeSchema`), so property values are
+// Reads trust the store: every node was validated by `upsert()` (William's `nodeSchema`), so property values are
 // arrays and these helpers only check the type of the first value. They run on every node of every action, so they
 // do not use valibot (profiled: valibot was 45 % of the time when they did).
 
@@ -64,7 +64,7 @@ function toNumberValues(value: number | undefined): readonly number[] | undefine
 
 /**
  * Returns a copy of the node with the properties set. `undefined` and empty values remove the property, as the store
- * treats them as removed. The store validates the node on `upsertNode()`.
+ * treats them as removed. The store validates the node on `upsert()`.
  */
 function withProperties(node: GraphNode, properties: Readonly<Record<string, unknown>>): GraphNode {
   const nextNode: Record<string, unknown> = { ...node };

@@ -1,13 +1,13 @@
-import type { Store, StoreTransactor } from 'botframework-webchat-store';
+import type { Store, StoreController } from 'botframework-webchat-store';
 
 // Types of William's store (`packages/store`), derived from its public exports.
 
 type GraphStore = Store;
 
 /** The transaction passed to `controller.edit()`. */
-type GraphTransaction = Parameters<Parameters<StoreTransactor['edit']>[0]>[0];
+type GraphTransaction = Parameters<Parameters<StoreController['edit']>[0]>[0];
 
-type GraphNode = ReturnType<Store['getSnapshot']> extends Map<string, infer T> ? T : never;
+type GraphNode = ReturnType<Store['getSnapshot']> extends ReadonlyMap<string, infer T> ? T : never;
 
 type GraphIdentifier = GraphNode['@id'];
 

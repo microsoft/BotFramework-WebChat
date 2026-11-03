@@ -219,7 +219,7 @@ export default function deriveState(
   previousState: State,
   { changedNodes, changedParentIds, graphJournal, partIndex, previousNodes, sortedMessageIds }: GraphChanges
 ): State {
-  // The store's live map: right after the transaction, it is this state's graph.
+  // The store's snapshot of the commit that just happened: this state's graph.
   const snapshot = graph.store.getSnapshot();
   const getNode: GetNode = id => snapshot.get(id);
   const getParts: GetParts = parentId => partIndex.get(parentId) ?? [];

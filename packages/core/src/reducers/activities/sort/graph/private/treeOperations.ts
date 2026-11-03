@@ -8,8 +8,8 @@ import type WorkingGraph from './WorkingGraph';
 // HowTo → (Message | livestream session), livestream session → Message revisions.
 // Every part has a `position` relative to its parent, strictly increasing in display order.
 //
-// Core writes `isPartOf` only. `OPINIONS.md` says the store auto-inverses `hasPart`/`isPartOf` (a TODO in `Store.ts`);
-// writing `hasPart` ourselves meant re-validating a set that grows with the transcript on every action.
+// Core writes `isPartOf` only; `WorkingGraph.flush()` lets the store add the `hasPart` inverse
+// (`transaction.autoFixRelationship()`).
 //
 // Like `upsert.ts` before, every level is an insertion sort: arrival order decides ties and parts without sort keys.
 // A stateless sort over a snapshot cannot reproduce this, so positions are written at upsert time.
@@ -213,7 +213,7 @@ function afterPartLeft(working: WorkingGraph, formerParentId: GraphIdentifier | 
   if (working.getParts(formerParentId).length) {
     refreshHowToTimestamp(working, formerParentId);
   } else {
-    // QUESTION(William): the store has no delete, so the empty HowTo stays in the graph, outside of the tree.
+    // Detached, not deleted: the journal (replay) has no tombstones for the store's `delete()`.
     detachPart(working, formerParentId);
   }
 }
