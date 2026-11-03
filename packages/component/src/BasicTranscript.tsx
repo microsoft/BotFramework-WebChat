@@ -484,7 +484,7 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
         {hasAnyChild && (
           <TranscriptActivityList
             aria-roledescription={transcriptRoleDescription}
-            className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+            className={classNames(activitiesStyleSet + '', transcriptClassNames['basic-transcript__transcript'])}
             role="feed"
           >
             {children}

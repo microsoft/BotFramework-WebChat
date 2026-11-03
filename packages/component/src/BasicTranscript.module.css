@@ -22,11 +22,11 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  :global(.webchat__basic-transcript__transcript) {
+  .basic-transcript__transcript {
     list-style-type: none;
   }
 
-  :global(.webchat__basic-transcript__activity-focus-target) {
+  .basic-transcript__activity-focus-target {
     pointer-events: none;
   }
 }

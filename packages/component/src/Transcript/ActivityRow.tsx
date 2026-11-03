@@ -150,7 +150,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
       <FocusTrap
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
-        targetClassName="webchat__basic-transcript__activity-focus-target"
+        targetClassName={basicTranscriptClassNames['basic-transcript__activity-focus-target']}
       >
         {focusTrapChildren}
       </FocusTrap>
