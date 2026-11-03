@@ -1,1 +1,3 @@
-export { default as useIsSending } from '../providers/ActivitySendStatus/useIsSending';
+import useIsSending from '../providers/ActivitySendStatus/useIsSending';
+
+export default useIsSending;

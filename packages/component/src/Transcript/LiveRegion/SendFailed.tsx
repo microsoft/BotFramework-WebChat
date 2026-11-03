@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { isPresentational } from 'botframework-webchat-core/internal';
+import { isPresentational } from 'botframework-webchat-core/internal.js';
 import { memo, useMemo } from 'react';
 
 import usePrevious from '../../hooks/internal/usePrevious';

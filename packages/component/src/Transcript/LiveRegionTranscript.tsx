@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import { isPresentational } from 'botframework-webchat-core/internal.js';
 import type { RefObject } from 'react';
-import React, { memo, useEffect, useMemo, useRef } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, useRef } from 'react';
 
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
 import tabbableElements from '../Utils/tabbableElements';
@@ -10,7 +11,6 @@ import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsA
 import { useLiveRegion, useQueueStaticElement } from '../providers/LiveRegionTwin';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
 import LiveRegionLongSend from './LiveRegion/LongSend';
-import isPresentational from './LiveRegion/isPresentational';
 import useTypistNames from './useTypistNames';
 
 import type { ActivityElementMap } from './types';
@@ -135,10 +135,10 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
   useLiveRegion(() => typingIndicator, [typingIndicator]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <LiveRegionSendFailed />
       <LiveRegionLongSend />
-    </React.Fragment>
+    </Fragment>
   );
 };
 
