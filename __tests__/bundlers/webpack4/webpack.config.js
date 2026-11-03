@@ -20,6 +20,7 @@ const transpilePackages = [
   'react-dictate-button',
   'react-film',
   'swiper',
+  'uuid',
   'valibot',
   'web-speech-cognitive-services'
 ];
