@@ -166,9 +166,11 @@ jobs:
         run: |
           git diff --quiet HEAD^1 HEAD -- package-lock.json && echo 'Skipped, package-lock.json did not change.' && exit
 
-          # Every name@version from registry.npmjs.org in package-lock.json of a commit.
+          # Every name@version from registry.npmjs.org in package-lock.json of a commit. Entries without "resolved" come from
+          # the registry too; workspaces are outside node_modules and links resolve to a local path.
           versions() {
-            git show "$1:package-lock.json" | jq -r '.packages | to_entries[] | select(.value.resolved // "" | startswith("https://registry.npmjs.org/"))
+            git show "$1:package-lock.json" | jq -r '.packages | to_entries[] | select(.key | contains("node_modules/"))
+              | select(.value.resolved // "https://registry.npmjs.org/" | startswith("https://registry.npmjs.org/"))
               | "\(.value.name // (.key | sub(".*node_modules/"; "")))@\(.value.version)"' | sort -u
           }
 
