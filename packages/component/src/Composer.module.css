@@ -1,0 +1,11 @@
+:global(.webchat).css-custom-properties {
+  :global(.webchat__live-region) {
+    color: transparent;
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    width: 1px;
+  }
+}

@@ -1,0 +1,21 @@
+/* Style options apply through the "fileContent" style set entry, which selects the "webchat__fileContent" class names. */
+:global(.webchat) .fileContent {
+  display: flex;
+
+  .fileContent__buttonLink {
+    display: flex;
+    flex: 1;
+  }
+
+  .fileContent__badge {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .fileContent__downloadIcon,
+  .fileContent__fileName,
+  .fileContent__size {
+    --webchat-preserve-reason: target-class;
+  }
+}

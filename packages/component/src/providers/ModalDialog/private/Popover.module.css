@@ -1,0 +1,104 @@
+/* TODO: Add a dark theme once we defined the link color and stuff for Markdown. */
+:global(.webchat) .modal-dialog {
+  font-family: var(--webchat__font--primary);
+  max-height: calc(100% - 32px);
+  max-width: calc(100% - 32px);
+  width: 100%;
+
+  @media (forced-colors: none) {
+    background-color: transparent;
+    border: 0;
+  }
+
+  /* Assume the content is being prepared, so we hide the whole dialog until content appears in the DOM. */
+  /* Use opacity to still be able to set focus on the first available control (close button). */
+  &:has(.modal-dialog__body:empty) {
+    opacity: 0;
+  }
+
+  .modal-dialog__box {
+    border-radius: 2px;
+    overflow: hidden;
+    margin: auto;
+
+    @media screen and (max-width: 639px) {
+      max-width: unset;
+    }
+
+    @media screen and (min-width: 640px) {
+      max-width: 60%;
+      min-width: calc(640px - 2em - 6px); /* Browser natively do "100% - 2em - 6px". */
+      width: 60%;
+    }
+
+    @media (forced-colors: none) {
+      /* From Power BI: */
+      /* box-shadow: 0 6.4px 14.4px rgb(0 0 0 / 13%), 0 1.2px 3.6px rgb(0 0 0 / 11%); */
+      /* From Fluent (depth-16 for teaching callouts): */
+      /* box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12); */
+      background-color: White;
+      box-shadow:
+        0px 8px 16px rgba(0, 0, 0, 0.14),
+        0px 0px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    @media (forced-colors: active) {
+      /* In high-contrast mode, we use "outline" instead of "box-shadow". */
+      outline-color: ButtonBorder;
+      outline-style: solid;
+      outline-width: 4px;
+    }
+  }
+
+  .modal-dialog__close-button-layout {
+    float: right;
+    padding: var(--webchat__padding--regular);
+  }
+
+  .modal-dialog__close-button {
+    height: 30px;
+    width: 30px;
+    padding: 0;
+
+    --webchat__component-icon--size: 16px;
+
+    @media (forced-colors: none) {
+      appearance: none;
+      background-color: transparent;
+      border-color: transparent;
+      border-radius: 4px;
+      border-style: solid;
+      border-width: 2px;
+      color: #999;
+      outline: 0;
+    }
+  }
+
+  .modal-dialog__close-button:focus {
+    @media (forced-colors: none) {
+      border-color: black;
+
+      &:active {
+        background-color: #edebe9; /* neutralLight (gray30) */
+      }
+
+      &:not(:active):hover {
+        background-color: #f3f2f1; /* neutralLighter (gray20) */
+      }
+    }
+  }
+
+  .modal-dialog__close-button-icon {
+    @media (forced-colors: none) {
+      color: #323130; /* neutralPrimary (gray160) */
+    }
+
+    @media (forced-colors: active) {
+      color: currentcolor;
+    }
+  }
+
+  .modal-dialog__body {
+    margin: calc(var(--webchat__padding--regular) * 2);
+  }
+}

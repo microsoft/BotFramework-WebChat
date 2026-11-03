@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      // React 19 has no UMD build: the IIFE builds of Web Chat and the Fluent theme use `window.React` and `window.ReactDOM`.
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { spyOn } from 'jest-mock';
+      import { createElement, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        // GIVEN: Console errors are recorded, React development builds report warnings as errors.
+        const consoleError = spyOn(console, 'error');
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat with the Fluent theme on React 19.
+        expect(version).toBe('19.3.1');
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine, store }))
+        );
+
+        await pageConditions.uiConnected();
+
+        // THEN: React does not warn about the send box having a `value` without an `onChange` handler.
+        expect(consoleError.mock.calls.map(([message]) => message).join('\n')).not.toContain(
+          'You provided a `value` prop to a form field without an `onChange` handler.'
+        );
+
+        // WHEN: The user types a message.
+        pageElements.byTestId(testIds.sendBoxTextBox).focus();
+
+        await host.sendKeys('Hello, World!');
+
+        // THEN: The send box has the message.
+        await waitFor(() => expect(pageElements.byTestId(testIds.sendBoxTextBox).value).toBe('Hello, World!'));
+
+        // WHEN: ENTER is pressed.
+        await (await directLine.actPostActivity(() => host.sendKeys('\n'))).resolveAll();
+
+        // THEN: The message is sent and the send box is emptied.
+        await pageConditions.numActivitiesShown(1);
+        await waitFor(() => expect(pageElements.byTestId(testIds.sendBoxTextBox).value).toBe(''));
+
+        // THEN: The transcript shows "Hello, World!" and the send box is empty.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

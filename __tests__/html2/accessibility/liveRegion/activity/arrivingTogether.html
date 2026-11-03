@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy sent to screen readers. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat keeps the live region copy of new messages, so it can be checked and seen in the snapshot.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: { hideSendBox: true, internalLiveRegionFadeAfter: 60000 }
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends 3 messages together, so they are rendered at once.
+        directLine.emulateIncomingActivity('First, preheat the oven.', { skipWait: true });
+        directLine.emulateIncomingActivity('Then, mix the batter.', { skipWait: true });
+        directLine.emulateIncomingActivity('Finally, bake for 20 minutes.', { skipWait: true });
+
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.liveRegionStabilized();
+
+        // THEN: The live region reads the messages in the order they appear in the transcript.
+        await waitFor(() =>
+          expect(
+            [].map.call(pageElements.liveRegion().children, child => testHelpers.getAllTextContents(child).join('\n'))
+          ).toEqual([
+            'connected', // The connectivity notification, queued before the messages.
+            'Bot said\nFirst, preheat the oven.',
+            'Bot said\nThen, mix the batter.',
+            'Bot said\nFinally, bake for 20 minutes.'
+          ])
+        );
+
+        // THEN: The live region (top) lists "First", "Then" and "Finally" in the same order as the transcript.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

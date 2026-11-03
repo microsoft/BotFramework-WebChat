@@ -80,7 +80,10 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
       }
 
       appendedActivities.unshift({ activity, key });
+    }
 
+    // Queue in transcript order, so activities arriving together are read oldest first.
+    for (const { activity } of appendedActivities) {
       isPresentational(activity) || queueStaticElement(<LiveRegionActivity activity={activity} />);
     }
 
