@@ -10,16 +10,9 @@ import ActivityButton from './ActivityButton';
 import CodeContent from './CodeContent';
 
 import styles from './ViewCodeDialog.module.css';
+import themeStyles from './ViewCodeDialogTheme.module.css';
 
 const { useLocalizer } = hooks;
-
-// Class names of this module for the modal dialog's parts, which ViewCodeDialog.module.css styles.
-const modalDialogTheme = Object.freeze({
-  'modal-dialog': styles['modal-dialog'],
-  'modal-dialog__body': styles['modal-dialog__body'],
-  'modal-dialog__box': styles['modal-dialog__box'],
-  'modal-dialog__close-button-layout': styles['modal-dialog__close-button-layout']
-});
 
 const activityViewCodeButtonPropsSchema = pipe(
   object({
@@ -55,7 +48,7 @@ const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
       {
         'aria-label': localize('ACTIVITY_CODE_ALT', title ?? ''),
         className: classNames['view-code-dialog'],
-        cssModuleTheme: modalDialogTheme
+        cssModuleTheme: themeStyles
       }
     );
   }, [code, isAIGenerated, language, localize, showModal, title, classNames]);
