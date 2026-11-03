@@ -1,10 +1,26 @@
-import PropTypes from 'prop-types';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import AudioContent from './AudioContent';
 import useStyleSet from '../hooks/useStyleSet';
 
-const AudioAttachment = ({ attachment }) => {
+const audioAttachmentPropsSchema = pipe(
+  object({
+    attachment: pipe(
+      object({
+        contentUrl: string(),
+        name: optional(string())
+      }),
+      readonly()
+    )
+  }),
+  readonly()
+);
+
+const AudioAttachment = props => {
+  const { attachment } = validateProps(audioAttachmentPropsSchema, props);
+
   const [{ audioAttachment: audioAttachmentStyleSet }] = useStyleSet();
 
   return (
@@ -12,13 +28,6 @@ const AudioAttachment = ({ attachment }) => {
       <AudioContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );
-};
-
-AudioAttachment.propTypes = {
-  attachment: PropTypes.shape({
-    contentUrl: PropTypes.string.isRequired,
-    name: PropTypes.string
-  }).isRequired
 };
 
 export default AudioAttachment;

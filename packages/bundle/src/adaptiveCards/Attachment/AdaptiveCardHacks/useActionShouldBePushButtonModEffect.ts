@@ -35,7 +35,7 @@ export default function useActionShouldBePushButtonModEffect(
   () => void,
   (action: CardObject) => boolean
 ] {
-  const markActionAsSelectedRef = useRef<((action: CardObject) => boolean) | undefined>();
+  const markActionAsSelectedRef = useRef<((action: CardObject) => boolean) | undefined>(undefined);
   const prevAdaptiveCard = usePrevious(adaptiveCard);
   const pushedCardObjectsRef = useRef<Set<CardObject>>(new Set());
 

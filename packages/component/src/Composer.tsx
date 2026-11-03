@@ -2,6 +2,7 @@
 
 import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import {
   Composer as APIComposer,
@@ -25,9 +26,9 @@ import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webcha
 import { type LegacyActivityMiddleware, type Polymiddleware } from 'botframework-webchat-api/middleware.js';
 import { StoreDebugAPIRegistry, type StoreDebugAPI } from 'botframework-webchat-core/internal.js';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
+import { any, function_, literal, nullish, object, optional, pipe, readonly, string, union } from 'valibot';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
@@ -167,16 +168,34 @@ type ComposerCoreProps = Readonly<{
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
 
-const ComposerCore = ({
-  children,
-  extraStyleSet,
-  nonce,
-  renderMarkdown,
-  storeDebugAPI,
-  styleSet,
-  suggestedActionsAccessKey = 'A a Å å',
-  webSpeechPonyfillFactory
-}: ComposerCoreProps) => {
+const composerCorePropsSchema = pipe(
+  object({
+    extraStyleSet: optional(any()),
+    nonce: optional(string()),
+    // `false` disables Markdown, `null` in __tests__/html2/markdown/renderMarkdown.null.html.
+    renderMarkdown: nullish(union([literal(false), function_()])),
+    styleSet: optional(any()),
+    suggestedActionsAccessKey: optional(union([literal(false), string()])),
+    webSpeechPonyfillFactory: optional(function_())
+  }),
+  readonly()
+);
+
+const ComposerCore = (props: ComposerCoreProps) => {
+  // The TypeScript type is richer than the schema, the schema validates what the `propTypes` did.
+  validateProps(composerCorePropsSchema, props);
+
+  const {
+    children,
+    extraStyleSet,
+    nonce,
+    renderMarkdown,
+    storeDebugAPI,
+    styleSet,
+    suggestedActionsAccessKey = 'A a Å å',
+    webSpeechPonyfillFactory
+  } = props;
+
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
@@ -310,16 +329,8 @@ const ComposerCore = ({
   );
 };
 
-ComposerCore.propTypes = {
-  extraStyleSet: PropTypes.any,
-  nonce: PropTypes.string,
-  renderMarkdown: PropTypes.func,
-  styleSet: PropTypes.any,
-  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
-  webSpeechPonyfillFactory: PropTypes.func
-};
-
-type ComposerProps = APIComposerProps & ComposerCoreProps;
+// `ComposerCore` renders `children` as nodes, the render function of the API `<Composer>` is not supported here.
+type ComposerProps = Omit<APIComposerProps, 'children'> & ComposerCoreProps;
 
 const Composer = ({
   activityMiddleware,

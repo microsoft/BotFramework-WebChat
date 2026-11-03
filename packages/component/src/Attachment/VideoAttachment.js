@@ -1,6 +1,7 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
@@ -11,7 +12,21 @@ const ROOT_STYLE = {
   flexDirection: 'column'
 };
 
-const VideoAttachment = ({ attachment }) => {
+const videoAttachmentPropsSchema = pipe(
+  object({
+    attachment: pipe(
+      object({
+        contentUrl: string(),
+        name: optional(string())
+      }),
+      readonly()
+    )
+  }),
+  readonly()
+);
+
+const VideoAttachment = props => {
+  const { attachment } = validateProps(videoAttachmentPropsSchema, props);
   const [{ videoAttachment: videoAttachmentStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -20,13 +35,6 @@ const VideoAttachment = ({ attachment }) => {
       <VideoContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );
-};
-
-VideoAttachment.propTypes = {
-  attachment: PropTypes.shape({
-    contentUrl: PropTypes.string.isRequired,
-    name: PropTypes.string
-  }).isRequired
 };
 
 export default VideoAttachment;

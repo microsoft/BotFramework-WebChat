@@ -1,14 +1,26 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React from 'react';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import CheckMarkIcon from './CheckMarkIcon';
 import ExclamationMarkIcon from './ExclamationMarkIcon';
 
 const { useLocalizer } = hooks;
 
-const NotificationIcon = ({ className, level }) => {
+const notificationIconPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    // `setNotification()` takes any string, unknown levels show the exclamation mark without a prefix.
+    level: string()
+  }),
+  readonly()
+);
+
+const NotificationIcon = props => {
+  const { className, level } = validateProps(notificationIconPropsSchema, props);
+
   const localize = useLocalizer();
 
   const prefixes = {
@@ -31,11 +43,6 @@ const NotificationIcon = ({ className, level }) => {
       )}
     </React.Fragment>
   );
-};
-
-NotificationIcon.propTypes = {
-  className: PropTypes.string,
-  level: PropTypes.oneOf(['error', 'info', 'success', 'warn']).isRequired
 };
 
 export default NotificationIcon;

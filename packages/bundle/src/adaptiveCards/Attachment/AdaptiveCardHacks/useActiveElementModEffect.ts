@@ -10,7 +10,7 @@ import type { AdaptiveCard, CardObject } from 'adaptivecards';
  * Re-rendering: Last focused element must be persisted during render cycle.
  */
 export default function useActiveElementModEffect(adaptiveCard: AdaptiveCard) {
-  const activeCardObjectRef = useRef<CardObject | undefined>();
+  const activeCardObjectRef = useRef<CardObject | undefined>(undefined);
   const prevAdaptiveCard = usePrevious(adaptiveCard);
 
   if (prevAdaptiveCard !== adaptiveCard) {
