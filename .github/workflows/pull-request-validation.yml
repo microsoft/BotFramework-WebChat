@@ -180,7 +180,7 @@ jobs:
           failed=0
 
           for spec in $(comm -13 <(versions HEAD^1) <(versions HEAD)); do
-            grep -qxF "$spec" <(printf '%s\n' $BYPASS) && echo "::warning::$spec is in BYPASS, its age is not checked" && continue
+            grep -qxF "$spec" <(tr ' ' '\n' <<< "$BYPASS") && echo "::warning::$spec is in BYPASS, its age is not checked" && continue
 
             time=$(timeout 60 npm view "$spec" time --json || timeout 60 npm view "$spec" time --json)
             published=$(jq -r --arg version "${spec##*@}" '.[$version]' <<< "$time")
