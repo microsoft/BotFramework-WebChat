@@ -145,6 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "संदेश में सुझाई गई क्रियाएँ हैं. उन्हें चुनने के लिए shift टैब को 2 से 3 बार दबाएँ.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "संदेश में सुझाई गई क्रियाएँ हैं. उन्हें चुनने के लिए $1 दबाएँ.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "संदेश भेजा नहीं जा सका.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "नए संदेश उपलब्ध हैं. \"$2\" बटन पर ध्यान केंद्रित करने के लिए $1 दबाएँ.",
   "TRANSCRIPT_MORE_MESSAGES": "अधिक संदेश",
   "TRANSCRIPT_NEW_MESSAGES": "नए संदेश",

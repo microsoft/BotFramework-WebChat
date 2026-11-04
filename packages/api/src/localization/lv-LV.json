@@ -145,6 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "Ziņojumam ir ieteicamās darbības. Lai tās atlasītu, 2–3 reizes nospiediet taustiņu kombināciju Shift Tab.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "Ziņojumam ir ieteicamās darbības. Lai tās atlasītu, nospiediet $1.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Neizdevās nosūtīt ziņojumu.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Pieejami jauni ziņojumi. Nospiediet $1, lai fokusētu pogu “$2”.",
   "TRANSCRIPT_MORE_MESSAGES": "Vairāk ziņojumu",
   "TRANSCRIPT_NEW_MESSAGES": "Jauni ziņojumi",

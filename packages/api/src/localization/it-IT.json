@@ -145,6 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "Azioni suggerite per il messaggio. Premi TAB MAIUSC da 2 a 3 volte per selezionarle.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "Azioni suggerite per il messaggio. Premi $1 per selezionarle.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Impossibile inviare il messaggio.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Nuovi messaggi disponibili. Premi $1 per mettere in evidenza il pulsante \"$2\".",
   "TRANSCRIPT_MORE_MESSAGES": "Altri messaggi",
   "TRANSCRIPT_NEW_MESSAGES": "Nuovi messaggi",

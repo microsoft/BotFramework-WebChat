@@ -145,6 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "A mensagem tem ações sugeridas. Pressione shift tab de 2 a 3 vezes para selecioná-las.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "A mensagem tem ações sugeridas. Pressione $1 para selecioná-las.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Falha ao enviar a mensagem.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Novas mensagens disponíveis. Pressione $1 para focalizar o botão \"$2\".",
   "TRANSCRIPT_MORE_MESSAGES": "Mais mensagens",
   "TRANSCRIPT_NEW_MESSAGES": "Novas mensagens",

@@ -145,6 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "メッセージに推奨されるアクションがあります。Shift + Tab を 2 ～ 3 回押して選択します。",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "メッセージに推奨されるアクションがあります。$1 を押して選択します。",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "メッセージを送信できませんでした。",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "新しいメッセージを利用できます。$1 を押して \"$2\" ボタンにフォーカスします。",
   "TRANSCRIPT_MORE_MESSAGES": "その他のメッセージ",
   "TRANSCRIPT_NEW_MESSAGES": "新しいメッセージ",
