@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows what is announced. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        // "Sending message." is not translated yet, so the language change is emulated by changing the string.
+        const render = overrideLocalizedStrings =>
+          WebChat.renderWebChat(
+            {
+              directLine,
+              overrideLocalizedStrings,
+              ponyfill: clock,
+              store,
+              styleOptions: {
+                hideSendBox: true,
+                internalLiveRegionFadeAfter: 60_000
+              }
+            },
+            document.getElementById('webchat')
+          );
+
+        // GIVEN: Web Chat keeps what it announced in the live region, so it can be checked and seen in the snapshot.
+        render();
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600); // Dismisses "Connecting…".
+
+        await pageConditions.uiConnected();
+
+        const getLiveRegionTexts = () =>
+          Array.from(pageElements.liveRegion().children, child => testHelpers.getAllTextContents(child).join('\n'));
+
+        // GIVEN: The user sent a message 3 seconds ago, it is still sending and "Sending message." was announced.
+        const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        clock.tick(3_000);
+
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            'connecting', // Announced by the toaster, which announces the first notification of every ID.
+            'You said\nHello, World!',
+            'Sending message.'
+          ])
+        );
+
+        // WHEN: The language changes to French while the message is still sending.
+        render({ TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT: 'Envoi du message.' });
+
+        // THEN: It is not announced again in French.
+        // No wait needed: `renderWebChat()` re-renders synchronously with React 16 (`webchat-es5.js`).
+        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+
+        // WHEN: The server acknowledges the message, then the language changes to German.
+        await sendMessage.resolveAll();
+
+        await waitFor(() => expect(pageElements.activityStatuses()[0].innerText).toContain('Just now'));
+
+        render({ TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT: 'Nachricht wird gesendet.' });
+
+        // THEN: It is not announced again in German.
+        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+
+        // WHEN: The user sends another message, which is still sending 3 seconds later.
+        await directLine.emulateOutgoingActivity('Aloha!');
+
+        await pageConditions.numActivitiesShown(2);
+
+        clock.tick(3_000);
+
+        // THEN: "Sending message." is announced once for the new message, in German.
+        await waitFor(() =>
+          expect(getLiveRegionTexts()).toEqual([
+            'connecting',
+            'You said\nHello, World!',
+            'Sending message.',
+            'You said\nAloha!',
+            'Nachricht wird gesendet.'
+          ])
+        );
+
+        // THEN: The live region shows "Sending message." for the first message and "Nachricht wird gesendet." for the second message, nothing in French.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

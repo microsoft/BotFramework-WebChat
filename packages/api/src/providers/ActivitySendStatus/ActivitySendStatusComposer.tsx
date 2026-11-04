@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
+import { isPresentational } from 'botframework-webchat-core/internal.js';
+import { iteratorSome } from 'iter-fest';
+import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 
-import { useActivities, usePonyfill } from '../../hooks/index';
+import { useActivities, useGetActivityByKey, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
 import type { SendStatus } from '../../types/SendStatus';
@@ -10,15 +12,18 @@ import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import type { ActivitySendStatusContextType } from './private/Context';
 import ActivitySendStatusContext from './private/Context';
 import isMapEqual from './private/isMapEqual';
+import type { ActivitySendStatusSubContextType } from './private/SubContext';
+import ActivitySendStatusSubContext from './private/SubContext';
 
 // Magic numbers for `expiryByActivityKey`.
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
 const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
-  const [activities] = useActivities();
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
+  const [activities] = useActivities();
   const forceRender = useForceRender();
+  const getActivityByKey = useGetActivityByKey();
   const getKeyByActivity = useGetKeyByActivity();
   const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
   const sendStatusByActivityKeyRef = useRef<ReadonlyMap<string, SendStatus>>(Object.freeze(new Map()));
@@ -93,9 +98,29 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
     [sendStatusByActivityKey]
   );
 
+  const isSending = useMemo<boolean>(
+    () =>
+      iteratorSome(sendStatusByActivityKey.entries(), ([activityKey, status]) => {
+        if (status === 'sending') {
+          const activity = getActivityByKey(activityKey);
+
+          return activity && !isPresentational(activity);
+        }
+      }),
+    [getActivityByKey, sendStatusByActivityKey]
+  );
+
+  // Memoized on the boolean, so `useIsSending()` only re-renders when it flips.
+  const isSendingState = useMemo<readonly [boolean]>(() => freezeArray([isSending]), [isSending]);
+
   const context = useMemo<ActivitySendStatusContextType>(
-    () => ({ sendStatusByActivityKeyState }),
+    () => Object.freeze({ sendStatusByActivityKeyState }),
     [sendStatusByActivityKeyState]
+  );
+
+  const subContext = useMemo<ActivitySendStatusSubContextType>(
+    () => Object.freeze({ isSendingState }),
+    [isSendingState]
   );
 
   // Finds the closest expiry. This is the time we should recompute `sendStatusByActivityKey`.
@@ -120,7 +145,11 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
     }
   }, [clearTimeout, Date, forceRender, nextExpiry, setTimeout]);
 
-  return <ActivitySendStatusContext.Provider value={context}>{children}</ActivitySendStatusContext.Provider>;
+  return (
+    <ActivitySendStatusContext.Provider value={context}>
+      <ActivitySendStatusSubContext.Provider value={subContext}>{children}</ActivitySendStatusSubContext.Provider>
+    </ActivitySendStatusContext.Provider>
+  );
 };
 
 export default ActivitySendStatusComposer;
