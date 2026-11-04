@@ -1,10 +1,11 @@
 import '../setup';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { type ReactElement } from 'react';
+import { expectAssignable } from 'tsd';
 
 import ReactWebChat, { createDirectLine } from '../../src/boot/exports/index';
 
 const directLine = createDirectLine({ token: '...' });
 
-ReactDOM.render(<ReactWebChat directLine={directLine} />, document.getElementById('app'));
+// Not `ReactDOM.render()`: React 19 removed it, CI also checks these with @types/react@19.
+expectAssignable<ReactElement>(<ReactWebChat directLine={directLine} />);

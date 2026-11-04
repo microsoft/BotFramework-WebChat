@@ -1,15 +1,23 @@
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import type { GlobalScopePonyfill } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
-import React, { useMemo, useRef, type PropsWithChildren } from 'react';
+import React, { useMemo, useRef } from 'react';
+import { custom, object, optional, pipe, readonly } from 'valibot';
 
 import type { ContextOf } from '../../types/ContextOf';
 import PonyfillContext from './private/PonyfillContext';
 
-type Props = PropsWithChildren<{
-  ponyfill?: Partial<GlobalScopePonyfill>;
-}>;
+const ponyfillComposerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    ponyfill: optional(custom<Partial<GlobalScopePonyfill>>(() => true))
+  }),
+  readonly()
+);
 
-const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
+type Props = InferReactProps<typeof ponyfillComposerPropsSchema>;
+
+const PonyfillComposer = (props: Props) => {
+  const { children, ponyfill: partialPonyfill } = validateProps(ponyfillComposerPropsSchema, props);
   // Note: `useRef(value)` always return the initial value that was called with.
   if (useRef(partialPonyfill).current !== partialPonyfill) {
     // We does not support changing ponyfill.
@@ -83,10 +91,6 @@ const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
   );
 
   return <PonyfillContext.Provider value={contextValue}>{children}</PonyfillContext.Provider>;
-};
-
-PonyfillComposer.propTypes = {
-  ponyfill: PropTypes.any
 };
 
 export default PonyfillComposer;

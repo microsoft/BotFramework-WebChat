@@ -1,7 +1,8 @@
 /* eslint no-undefined: "off" */
 
-import PropTypes from 'prop-types';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { forwardRef, useCallback, useMemo, useRef } from 'react';
+import { boolean, function_, nullish, object, optional, pipe, readonly } from 'valibot';
 
 import Context from './Context';
 import getTabIndex from './getTabIndex';
@@ -9,10 +10,31 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const BaseFocusBox = (
-  { children, disabled = false, onKeyDownCapture, sendFocusRef: sendFocusRefProp, ...otherProps },
-  ref
-) => {
+const focusBoxPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    disabled: optional(boolean()),
+    onKeyDownCapture: optional(function_()),
+    sendFocusRef: pipe(
+      object({
+        // A React ref is `null` until it is attached.
+        current: nullish(pipe(object({ focus: optional(function_()) }), readonly()))
+      }),
+      readonly()
+    )
+  }),
+  readonly()
+);
+
+const BaseFocusBox = (props, ref) => {
+  const {
+    children,
+    disabled = false,
+    onKeyDownCapture,
+    sendFocusRef: sendFocusRefProp,
+    ...otherProps
+  } = validateProps(focusBoxPropsSchema, props);
+
   const sendFocusRefPersist = useRef(null);
   const patchedSendFocusRef = useMemo(
     () => sendFocusRefProp || sendFocusRefPersist,
@@ -71,16 +93,5 @@ const BaseFocusBox = (
 };
 
 const FocusBox = forwardRef(BaseFocusBox);
-
-FocusBox.propTypes = BaseFocusBox.propTypes = {
-  children: PropTypes.any,
-  disabled: PropTypes.bool,
-  onKeyDownCapture: PropTypes.func,
-  sendFocusRef: PropTypes.shape({
-    current: PropTypes.shape({
-      focus: PropTypes.func
-    })
-  }).isRequired
-};
 
 export default FocusBox;

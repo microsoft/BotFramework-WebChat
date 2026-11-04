@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Transcript: renders an activity with a null fallback text in its channel data</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: The development build, which validates props.
+        createRoot(document.getElementById('webchat')).render(createElement(ReactWebChat, { directLine, store }));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: An activity with a `null` fallback text is received, `propTypes` accepted `null` for optional props.
+        //       Top-level `null` fields like `text` become `undefined` when received, nested ones stay.
+        await directLine.emulateIncomingActivity({
+          channelData: { 'webchat:fallback-text': null },
+          from: { role: 'bot' },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The activity should render its text.
+        expect(pageElements.activities()[0].textContent).toEqual(expect.stringContaining('Hello, World!'));
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

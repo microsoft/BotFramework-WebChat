@@ -1,9 +1,10 @@
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { custom, is, nullish, object, optional, pipe, readonly, unknown } from 'valibot';
 
 import SpeakActivity from '../Activity/Speak';
 import { RestrictedActivityDebugAPI } from '../ActivityDebug';
@@ -24,13 +25,35 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import styles from '../BasicTranscript.module.css';
 
 import type { WebChatActivity } from 'botframework-webchat-core';
-import type { MouseEventHandler, PropsWithChildren } from 'react';
+import type { MouseEventHandler } from 'react';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
+const activityRowPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(value =>
+      is(
+        object({
+          channelData: optional(
+            object({
+              // Sent by the bot, any value including `null`, e.g. __tests__/html2/transcript/channelData.fallbackText.null.html.
+              speak: nullish(unknown()),
+              'webchat:fallback-text': nullish(unknown())
+            })
+          )
+        }),
+        value
+      )
+    ),
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
+type ActivityRowProps = InferReactProps<typeof activityRowPropsSchema>;
+
+const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
+  const { activity, children } = validateProps(activityRowPropsSchema, props);
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
   const activityRef = useRefFrom(activity);
@@ -177,16 +200,5 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 });
 
 ActivityRow.displayName = 'ActivityRow';
-
-ActivityRow.propTypes = {
-  // PropTypes cannot fully capture TypeScript type.
-  // @ts-ignore
-  activity: PropTypes.shape({
-    channelData: PropTypes.shape({
-      speak: PropTypes.bool,
-      'webchat:fallback-text': PropTypes.string
-    })
-  }).isRequired
-};
 
 export default memo(ActivityRow);
