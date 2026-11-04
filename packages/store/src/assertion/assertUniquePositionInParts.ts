@@ -5,7 +5,8 @@ import getPartIds from '../private/getPartIds.ts';
 /**
  * RULE: All members of the same part must have different `position` values, if specified.
  *
- * Only parts which the affected nodes participated in are checked.
+ * Only parts which the affected nodes participated in are checked. As `hasPart` is generated from `isPartOf`, a change
+ * of membership or position always affects the child, thus, parents of affected nodes are checked.
  */
 function assertUniquePositionInParts(state: ReadonlyMap<string, Node>, affectedNodeIds: ReadonlySet<Identifier>): void {
   const parentIds = new Set<Identifier>();
@@ -14,8 +15,6 @@ function assertUniquePositionInParts(state: ReadonlyMap<string, Node>, affectedN
     const node = state.get(id);
 
     if (node) {
-      node.hasPart?.size && parentIds.add(id);
-
       for (const parentId of getPartIds(node, 'isPartOf')) {
         parentIds.add(parentId);
       }
