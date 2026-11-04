@@ -71,7 +71,7 @@
         await directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Second message', type: 'message' });
         await pageConditions.numActivitiesShown(2);
 
-        // THEN: Only the second message is announced: "connected" and the first message, already in the live region, are not repeated.
+        // THEN: Only the second message is announced: the first message, already in the live region, is not repeated.
         await waitFor(() =>
           expect(ariaNotify.mock.calls).toEqual([['Bot said Second message', { priority: 'normal' }]])
         );

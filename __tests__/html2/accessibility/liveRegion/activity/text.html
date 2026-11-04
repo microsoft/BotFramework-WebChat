@@ -97,7 +97,6 @@
 
         // THEN: One of the activity contains a fallback text of empty string. It become presentational and not rendered.
         expect(screenReaderTexts).toEqual([
-          'connecting',
           // THEN: Without `webchat:fallback-text` field set, we will be narrating the "text" with best-effort on removing Markdown syntax.
           //       Timestamp should not be narrated.
           'Bot said\nHello, World without webchat:fallback-text field.',

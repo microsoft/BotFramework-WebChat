@@ -56,12 +56,7 @@
         await directLine.emulateIncomingActivity('Aloha!');
 
         // THEN: Only the bot message is announced, "Sending message." is not.
-        await waitFor(() =>
-          expect(getLiveRegionTexts()).toEqual([
-            'connecting', // Announced by the toaster, which announces the first notification of every ID.
-            'Bot said\nAloha!'
-          ])
-        );
+        await waitFor(() => expect(getLiveRegionTexts()).toEqual(['Bot said\nAloha!']));
 
         // THEN: The live region shows "Bot said Aloha!" only, the transcript shows the bot message only.
         await host.snapshot('local');

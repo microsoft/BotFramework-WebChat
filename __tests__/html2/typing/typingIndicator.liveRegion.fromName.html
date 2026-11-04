@@ -41,7 +41,7 @@
         // THEN: It should read "John is typing."
         await pageConditions.became(
           'typing indicator to appear in live region',
-          async () => liveRegionElement.innerText === 'connecting\nJohn is typing.',
+          async () => liveRegionElement.innerText === 'John is typing.',
           5000
         );
       });

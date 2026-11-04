@@ -70,7 +70,6 @@
         // THEN: "Sending message." is announced via `ariaNotify()`.
         await waitFor(() =>
           expect(ariaNotify.mock.calls).toEqual([
-            ['connected', { priority: 'normal' }], // The connectivity notification, also queued to the live region today.
             ['You said Hello, World!', { priority: 'normal' }],
             ['Sending message.', { priority: 'normal' }]
           ])
@@ -84,7 +83,6 @@
         // THEN: "Sending message." is not announced again, the bot message is announced after it.
         await waitFor(() =>
           expect(ariaNotify.mock.calls).toEqual([
-            ['connected', { priority: 'normal' }],
             ['You said Hello, World!', { priority: 'normal' }],
             ['Sending message.', { priority: 'normal' }],
             ['Bot said Aloha!', { priority: 'normal' }]
