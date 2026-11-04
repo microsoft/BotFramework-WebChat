@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows the copy the announcements are computed from. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: The browser supports `ariaNotify()`, recorded instead of announced.
+        const ariaNotify = spyOn(Element.prototype, 'ariaNotify').mockImplementation(() => {});
+
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        // GIVEN: Web Chat sends announcements via `ariaNotify()`.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(ReactWebChat, {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: {
+              assistiveTechnologyAnnouncementTransport: 'aria-notify',
+              hideSendBox: true
+            }
+          })
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600); // Dismisses "Connecting…".
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The user sends a message, which the server does not acknowledge for a while.
+        await directLine.emulateOutgoingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: 3 seconds later.
+        clock.tick(3_000);
+
+        // THEN: "Sending message." is announced via `ariaNotify()`.
+        await waitFor(() =>
+          expect(ariaNotify.mock.calls).toEqual([
+            ['connected', { priority: 'normal' }], // The connectivity notification, also queued to the live region today.
+            ['You said Hello, World!', { priority: 'normal' }],
+            ['Sending message.', { priority: 'normal' }]
+          ])
+        );
+
+        // WHEN: 19.999 seconds after sending, the message is still sending, and the bot sends a message.
+        clock.tick(16_999);
+
+        await directLine.emulateIncomingActivity('Aloha!');
+
+        // THEN: "Sending message." is not announced again, the bot message is announced after it.
+        await waitFor(() =>
+          expect(ariaNotify.mock.calls).toEqual([
+            ['connected', { priority: 'normal' }],
+            ['You said Hello, World!', { priority: 'normal' }],
+            ['Sending message.', { priority: 'normal' }],
+            ['Bot said Aloha!', { priority: 'normal' }]
+          ])
+        );
+
+        // THEN: The live region is emptied right after announcing.
+        clock.tick(0); // Runs the timer that empties the live region, it is on the fake clock.
+
+        await waitFor(() => expect(pageElements.liveRegion().childElementCount).toBe(0));
+
+        // THEN: The live region (top) is empty, the transcript shows "Hello, World!" still sending and the bot message.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

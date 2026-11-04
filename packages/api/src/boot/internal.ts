@@ -4,4 +4,5 @@ export { default as usePostVoiceActivity } from '../hooks/internal/usePostVoiceA
 export { default as useSetDictateState } from '../hooks/internal/useSetDictateState';
 export { default as useShouldShowMicrophoneButton } from '../hooks/internal/useShouldShowMicrophoneButton';
 export { LegacyActivityContextProvider, type LegacyActivityContextType } from '../legacy/LegacyActivityBridgeContext';
+export { default as useIsSending } from '../providers/ActivitySendStatus/useIsSending';
 export { default as StyleOptionsComposer } from '../providers/StyleOptions/StyleOptionsComposer';
