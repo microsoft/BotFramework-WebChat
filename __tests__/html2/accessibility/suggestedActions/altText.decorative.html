@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { FluentThemeProvider, testIds as fluentTestIds } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const variant = new URLSearchParams(location.search).get('variant');
+        const webChatElement = createElement(ReactWebChat, {
+          directLine,
+          store,
+          styleOptions: { suggestedActionLayout: 'stacked' } // Shows all suggested actions, as the Fluent theme does.
+        });
+
+        createRoot(document.getElementById('webchat')).render(
+          variant ? createElement(FluentThemeProvider, { variant }, webChatElement) : webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends suggested actions with an image and a title, with and without `imageAltText`.
+        await directLine.emulateIncomingActivity({
+          suggestedActions: {
+            actions: [
+              {
+                image: '/assets/bot-avatar.jpg',
+                title: 'Checklist', // No `imageAltText` or `text`.
+                type: 'openUrl',
+                value: 'https://example.com/checklist'
+              },
+              {
+                displayText: 'Benefits overview',
+                image: '/assets/bot-avatar.jpg',
+                imageAltText: '', // Decorative; `text` is the payload, not alternate text.
+                text: 'benefits',
+                title: 'Benefits overview',
+                type: 'messageBack'
+              },
+              {
+                image: '/assets/bot-avatar.jpg',
+                imageAltText: 'Bot avatar',
+                title: 'Talk to the bot',
+                type: 'imBack',
+                value: 'Talk to the bot'
+              }
+            ],
+            to: []
+          },
+          text: 'What would you like to do next?',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const buttonSelector = `[data-testid="${variant ? fluentTestIds.sendBoxSuggestedAction : testIds.suggestedActionButton}"]`;
+
+        await waitFor(() => expect(document.querySelectorAll(buttonSelector)).toHaveLength(3));
+
+        const buttons = Array.from(document.querySelectorAll(buttonSelector));
+        const images = buttons.map(button => button.querySelector('img'));
+
+        // THEN: The buttons should be named by their content: the image alternate text, if any, and the title.
+        //       An image without `alt` adds nothing to the name either, so the names are the same as without `alt=""`.
+        await expect(Promise.all(buttons.map(button => testHelpers.getAccessibleName(button)))).resolves.toEqual([
+          'Checklist',
+          'Benefits overview',
+          'Bot avatar Talk to the bot' // `imageAltText` and `title`.
+        ]);
+
+        // THEN: Images without `imageAltText` or with `imageAltText: ""` should have `alt=""`.
+        //       Without `alt`, axe would report `image-alt` in the accessibility check after the test.
+        expect(images.map(image => image.getAttribute('alt'))).toEqual(['', '', 'Bot avatar']);
+
+        // THEN: Images with `alt=""` should be decorative, hidden from assistive technologies.
+        await expect(
+          Promise.all(
+            images.map(async image => {
+              const { ignored, name, role } = await testHelpers.getAccessibilityNode(image);
+
+              return ignored ? { ignored } : { ignored, name: name?.value, role: role?.value };
+            })
+          )
+        ).resolves.toEqual([
+          { ignored: true },
+          { ignored: true },
+          { ignored: false, name: 'Bot avatar', role: 'image' }
+        ]);
+
+        // THEN: The 3 suggested actions should be shown with their images.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
