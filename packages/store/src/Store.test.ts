@@ -948,15 +948,15 @@ scenario(
 
         controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
 
-        return { controller, snapshot: store.getSnapshot(), store };
+        return { controller, store };
       })
       .when('another member of the same part is upserted with the same position', ({ controller }) =>
-        catchError(() =>
-          controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, position: 1 })))
-        )
+        controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, position: 1 })))
       )
-      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
-      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+      .then('should allow duplicate position', ({ store }) => {
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('position', 1);
+        expect(store.getSnapshot().get('_:m-2')).toHaveProperty('position', 1);
+      });
 
     bdd
       .given('a store with a conversation with a positioned member', () => {
@@ -964,21 +964,21 @@ scenario(
 
         controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
 
-        return { controller, snapshot: store.getSnapshot(), store };
+        return { controller, store };
       })
       .when('a new member with the same position joins the part via hasPart of the parent', ({ controller }) =>
-        catchError(() =>
-          controller.edit(transaction => {
-            transaction.upsert('_:m-3', () => ({ '@id': '_:m-3', '@type': new Set(['Message']), position: 1 }));
-            transaction.upsert('_:conversation', node => ({
-              ...node!,
-              hasPart: new Set([...node!.hasPart!, { '@id': '_:m-3' }])
-            }));
-          })
-        )
+        controller.edit(transaction => {
+          transaction.upsert('_:m-3', () => ({ '@id': '_:m-3', '@type': new Set(['Message']), position: 1 }));
+          transaction.upsert('_:conversation', node => ({
+            ...node!,
+            hasPart: new Set([...node!.hasPart!, { '@id': '_:m-3' }])
+          }));
+        })
       )
-      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
-      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+      .then('should allow duplicate position', ({ store }) => {
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1', '_:m-2', '_:m-3']);
+        expect(store.getSnapshot().get('_:m-3')).toHaveProperty('position', 1);
+      });
 
     bdd
       .given('a store with cross-referencing nodes', () => createStoreWithNodes())
@@ -1353,22 +1353,6 @@ scenario(
       .then('should remove the child from hasPart of the parent', ({ store }) =>
         expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
       );
-
-    bdd
-      .given('a store with cross-referencing nodes', () => {
-        const { controller, store } = createStoreWithNodes();
-
-        controller.edit(transaction => transaction.upsert('_:m-1', node => ({ ...node!, position: 1 })));
-
-        return { controller, snapshot: store.getSnapshot(), store };
-      })
-      .when('another member is upserted with the same position', ({ controller }) =>
-        catchError(() =>
-          controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, position: 1 })))
-        )
-      )
-      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
-      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
 
     bdd
       .given('an empty store', () => createStore())

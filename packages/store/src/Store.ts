@@ -1,7 +1,6 @@
 import { is, literal, object, parse, pipe, readonly, type InferInput } from 'valibot';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
-import assertUniquePositionInParts from './assertion/assertUniquePositionInParts.ts';
 import type { Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
@@ -454,8 +453,6 @@ class Store {
               throw new Error(`Node "${parentId}" has part "${childId}" which is not in the graph`);
             }
           }
-
-          assertUniquePositionInParts(nextState, affectedNodeIds);
 
           // THINK: Upsert/delete called twice with same node ID in the same transaction?
 
