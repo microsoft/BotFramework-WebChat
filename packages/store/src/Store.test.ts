@@ -1662,7 +1662,7 @@ function createStoreWithConversations() {
 }
 
 function getSortedChildIdsOf(store: Store, parentId: `_:${string}`): string[] {
-  return store.getSortedChildren(store.getSnapshot().get(parentId)!).map(child => child['@id']);
+  return Array.from(store.getSortedChildren(store.getSnapshot().get(parentId)!), child => child['@id']);
 }
 
 scenario(
@@ -1683,7 +1683,7 @@ scenario(
       .and('should return the children nodes', ({ store }) => {
         const snapshot = store.getSnapshot();
 
-        expect(store.getSortedChildren(snapshot.get('_:c-1')!)).toEqual([
+        expect(Array.from(store.getSortedChildren(snapshot.get('_:c-1')!))).toEqual([
           snapshot.get('_:m-1'),
           snapshot.get('_:m-2'),
           snapshot.get('_:m-3')
@@ -1747,7 +1747,7 @@ scenario(
         expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-2', '_:m-3', '_:m-1'])
       )
       .and('should keep the parent in previous snapshot unchanged', ({ parent, store }) =>
-        expect(store.getSortedChildren(parent).map(child => child['@id'])).toEqual(['_:m-2', '_:m-3', '_:m-1'])
+        expect(Array.from(store.getSortedChildren(parent), child => child['@id'])).toEqual(['_:m-2', '_:m-3', '_:m-1'])
       );
 
     bdd
@@ -1775,7 +1775,7 @@ scenario(
         expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-0', '_:m-3'])
       )
       .and('should keep the earlier result unchanged', ({ children, snapshot }) =>
-        expect(children).toEqual([snapshot.get('_:m-1'), snapshot.get('_:m-2'), snapshot.get('_:m-3')])
+        expect(Array.from(children)).toEqual([snapshot.get('_:m-1'), snapshot.get('_:m-2'), snapshot.get('_:m-3')])
       );
 
     bdd
@@ -1827,7 +1827,9 @@ scenario(
         expect(store.getSnapshot().get('_:c-1')).toBe(parent)
       )
       .and('should return the updated child', ({ store }) =>
-        expect(store.getSortedChildren(store.getSnapshot().get('_:c-1')!)[0]).toBe(store.getSnapshot().get('_:m-1'))
+        expect(Array.from(store.getSortedChildren(store.getSnapshot().get('_:c-1')!))[0]).toBe(
+          store.getSnapshot().get('_:m-1')
+        )
       );
 
     bdd
@@ -1896,10 +1898,36 @@ scenario(
         return store;
       })
       .when('getSortedChildren() is called', store => store.getSortedChildren(store.getSnapshot().get('_:c-1')!))
-      .then('should be an array', (_, children) => expect(Array.isArray(children)).toBe(true))
-      .and('should be read-only', (_, children) => {
-        expect(() => (children as Node[]).push(children[0]!)).toThrow(TypeError);
-        expect(children).toHaveLength(1);
+      .then('should be iterable multiple times', (_, children) => {
+        expect(Array.from(children, child => child['@id'])).toEqual(['_:m-1']);
+        expect(Array.from(children, child => child['@id'])).toEqual(['_:m-1']);
+      })
+      .and('should be frozen', (_, children) => expect(Object.isFrozen(children)).toBe(true));
+
+    bdd
+      .given('a store with 3 sorted children and a started iteration', () => {
+        const { controller, store } = createStoreWithConversations();
+
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-1', ['_:c-1'], 1);
+          upsertDatedMessage(transaction, '_:m-2', ['_:c-1'], 2);
+          upsertDatedMessage(transaction, '_:m-3', ['_:c-1'], 3);
+        });
+
+        const iterator = store.getSortedChildren(store.getSnapshot().get('_:c-1')!)[Symbol.iterator]();
+
+        return { controller, firstChild: iterator.next().value, iterator };
+      })
+      .when('children are changed while iterating', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.delete('_:m-2');
+          upsertDatedMessage(transaction, '_:m-1.5', ['_:c-1'], 1.5);
+          upsertDatedMessage(transaction, '_:m-4', ['_:c-1'], 4);
+        })
+      )
+      .then('should continue the iteration without the changes', ({ firstChild, iterator }) => {
+        expect(firstChild?.['@id']).toBe('_:m-1');
+        expect(Array.from({ [Symbol.iterator]: () => iterator }, child => child['@id'])).toEqual(['_:m-2', '_:m-3']);
       });
 
     bdd
@@ -1907,14 +1935,14 @@ scenario(
       .when('getSortedChildren() is called on a node without children', ({ store }) =>
         store.getSortedChildren(store.getSnapshot().get('_:c-1')!)
       )
-      .then('should return an empty array', (_, children) => expect(children).toEqual([]));
+      .then('should return an empty iterable', (_, children) => expect(Array.from(children)).toEqual([]));
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
       .when('getSortedChildren() is called on a node not in the store', ({ store }) =>
         store.getSortedChildren({ '@id': '_:unknown', '@type': new Set(['Thing']) })
       )
-      .then('should return an empty array', (_, children) => expect(children).toEqual([]));
+      .then('should return an empty iterable', (_, children) => expect(Array.from(children)).toEqual([]));
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())

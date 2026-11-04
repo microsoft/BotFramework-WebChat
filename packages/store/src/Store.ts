@@ -9,10 +9,9 @@ import attachHasPart from './private/attachHasPart.ts';
 import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './private/createReadonlyMap.ts';
 import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './private/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
-import createReadonlyArrayView from './private/createReadonlyArrayView.ts';
 import getPartIds from './private/getPartIds.ts';
 import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
-import VersionedArray from './private/VersionedArray.ts';
+import VersionedSkipList from './private/VersionedSkipList.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
@@ -46,7 +45,6 @@ interface StoreTransaction {
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
-const EMPTY_NODES: readonly Node[] = Object.freeze([]);
 
 const nodeIdOnlySchema = object({ '@id': identifierSchema });
 
@@ -206,7 +204,7 @@ function setPartOf(node: Node, parentId: Identifier, included: boolean): Node {
 /**
  * Updates sorted children of parents which children are added, removed, or changed `dateCreated`.
  *
- * Cost per change is O(1) when appending to the end, see `insertSortedChild()` for details.
+ * Removal is expected O(1), insertion is O(1) when appending to the end, otherwise, expected O(log n), see `insertSortedChild()` for details.
  *
  * @returns Key is the ID of the parent, value is the new sorted child IDs.
  */
@@ -214,10 +212,10 @@ function updateSortedChildIds(
   prevState: ReadonlyMap<string, Node>,
   nextState: ReadonlyMap<string, Node>,
   affectedNodeIds: ReadonlySet<Identifier>
-): Map<Identifier, VersionedArray<Identifier>> {
+): Map<Identifier, VersionedSkipList<Identifier>> {
   const insertions: [Identifier, Identifier][] = [];
   const removals: [Identifier, Identifier][] = [];
-  const sortedChildIds = new Map<Identifier, VersionedArray<Identifier>>();
+  const sortedChildIds = new Map<Identifier, VersionedSkipList<Identifier>>();
 
   for (const id of affectedNodeIds) {
     const prevNode = prevState.get(id);
@@ -235,20 +233,12 @@ function updateSortedChildIds(
     }
   }
 
-  const getBase = (parentId: Identifier): VersionedArray<Identifier> =>
-    sortedChildIds.get(parentId) ?? getSortedChildIds(prevState.get(parentId)) ?? new VersionedArray();
+  const getBase = (parentId: Identifier): VersionedSkipList<Identifier> =>
+    sortedChildIds.get(parentId) ?? getSortedChildIds(prevState.get(parentId)) ?? new VersionedSkipList();
 
   // Removes first, children remaining are either unchanged or new, so they can be compared using the next state.
   for (const [parentId, id] of removals) {
-    sortedChildIds.set(
-      parentId,
-      removeSortedChild(
-        getBase(parentId),
-        id,
-        prevState.get(id)?.dateCreated,
-        childId => prevState.get(childId)?.dateCreated
-      )
-    );
+    sortedChildIds.set(parentId, removeSortedChild(getBase(parentId), id));
   }
 
   for (const [parentId, id] of insertions) {
@@ -500,20 +490,24 @@ class Store {
    * Gets children of the node, sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
    * same `dateCreated` are sorted by `@id`.
    *
-   * Children are from the latest snapshot. This is O(1) regardless of the number of children, children are resolved on
-   * access. The returned array is read-only and is not affected by subsequent commits.
+   * Children are from the latest snapshot. This is O(1) regardless of the number of children, children are resolved
+   * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
+   * subsequent commits.
    */
-  getSortedChildren(node: Node): readonly Node[] {
+  getSortedChildren(node: Node): Iterable<Node> {
     const { '@id': id } = parse(nodeIdOnlySchema, node);
     const state = this.#state;
     const sortedChildIds = getSortedChildIds(state.get(id));
 
-    return sortedChildIds
-      ? createReadonlyArrayView(
-          sortedChildIds.length,
-          index => state.get(sortedChildIds.at(index) as Identifier) as Node
-        )
-      : EMPTY_NODES;
+    return Object.freeze({
+      *[Symbol.iterator](): Iterator<Node> {
+        if (sortedChildIds) {
+          for (const childId of sortedChildIds) {
+            yield state.get(childId) as Node;
+          }
+        }
+      }
+    });
   }
 
   /**
