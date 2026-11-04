@@ -1,4 +1,4 @@
-import { is, object, parse } from 'valibot';
+import { is, parse } from 'valibot';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import assertUniquePositionInParts from './assertion/assertUniquePositionInParts.ts';
@@ -45,8 +45,6 @@ interface StoreTransaction {
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
-
-const nodeIdOnlySchema = object({ '@id': identifierSchema });
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
@@ -487,17 +485,16 @@ class Store {
   }
 
   /**
-   * Gets children of the node, sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
+   * Gets children of the node with the specified ID from the latest snapshot, sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
    * same `dateCreated` are sorted by `@id`.
    *
-   * Children are from the latest snapshot. This is O(1) regardless of the number of children, children are resolved
+   * Returns an empty iterable if the node does not exist or has no children. This is O(1) regardless of the number of children, children are resolved
    * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
    * subsequent commits.
    */
-  getSortedChildren(node: Node): Iterable<Node> {
-    const { '@id': id } = parse(nodeIdOnlySchema, node);
+  getSortedChildren(id: Identifier): Iterable<Node> {
     const state = this.#state;
-    const sortedChildIds = getSortedChildIds(state.get(id));
+    const sortedChildIds = getSortedChildIds(state.get(parse(identifierSchema, id)));
 
     return Object.freeze({
       *[Symbol.iterator](): Iterator<Node> {
