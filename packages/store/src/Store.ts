@@ -1,4 +1,4 @@
-import { is, parse } from 'valibot';
+import { is, literal, object, parse, pipe, readonly, type InferInput } from 'valibot';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import assertUniquePositionInParts from './assertion/assertUniquePositionInParts.ts';
@@ -45,6 +45,16 @@ interface StoreTransaction {
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
+
+const getSortedChildrenInitSchema = pipe(
+  object({
+    // Only `dateCreated` is supported for now.
+    sortBy: literal('dateCreated', '"sortBy" must be "dateCreated"')
+  }),
+  readonly()
+);
+
+type GetSortedChildrenInit = InferInput<typeof getSortedChildrenInitSchema>;
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
@@ -485,16 +495,22 @@ class Store {
   }
 
   /**
-   * Gets children of the node with the specified ID from the latest snapshot, sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
+   * Gets children of the node with the specified ID from the latest snapshot, sorted by `init.sortBy`.
+   *
+   * Only `sortBy: 'dateCreated'` is supported: sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
    * same `dateCreated` are sorted by `@id`.
    *
    * Returns an empty iterable if the node does not exist or has no children. This is O(1) regardless of the number of children, children are resolved
    * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
    * subsequent commits.
    */
-  getSortedChildren(id: Identifier): Iterable<Node> {
+  getSortedChildren(id: Identifier, init: GetSortedChildrenInit): Iterable<Node> {
+    const safeId = parse(identifierSchema, id);
+
+    parse(getSortedChildrenInitSchema, init);
+
     const state = this.#state;
-    const sortedChildIds = getSortedChildIds(state.get(parse(identifierSchema, id)));
+    const sortedChildIds = getSortedChildIds(state.get(safeId));
 
     return Object.freeze({
       *[Symbol.iterator](): Iterator<Node> {
@@ -525,4 +541,4 @@ class Store {
 }
 
 export default Store;
-export type { StoreListener, StoreSource, StoreController, StoreTransaction };
+export type { GetSortedChildrenInit, StoreListener, StoreSource, StoreController, StoreTransaction };

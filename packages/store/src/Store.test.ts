@@ -3,7 +3,7 @@ import { expect } from 'expect';
 import NodeTest from 'node:test';
 import type { Node } from './node/Node.ts';
 import type { Identifier } from './node/NodeIdentifier.ts';
-import Store, { type StoreController, type StoreTransaction } from './Store.ts';
+import Store, { type GetSortedChildrenInit, type StoreController, type StoreTransaction } from './Store.ts';
 
 function createStore() {
   let controller: StoreController | undefined;
@@ -1663,7 +1663,7 @@ function createStoreWithConversations() {
 }
 
 function getSortedChildIdsOf(store: Store, parentId: `_:${string}`): string[] {
-  return Array.from(store.getSortedChildren(parentId), child => child['@id']);
+  return Array.from(store.getSortedChildren(parentId, { sortBy: 'dateCreated' }), child => child['@id']);
 }
 
 scenario(
@@ -1684,7 +1684,7 @@ scenario(
       .and('should return the children nodes', ({ store }) => {
         const snapshot = store.getSnapshot();
 
-        expect(Array.from(store.getSortedChildren('_:c-1'))).toEqual([
+        expect(Array.from(store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }))).toEqual([
           snapshot.get('_:m-1'),
           snapshot.get('_:m-2'),
           snapshot.get('_:m-3')
@@ -1760,7 +1760,7 @@ scenario(
 
         const snapshot = store.getSnapshot();
 
-        return { children: store.getSortedChildren('_:c-1'), controller, snapshot, store };
+        return { children: store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }), controller, snapshot, store };
       })
       .when('a child is removed, a child is deleted, and a child is added', ({ controller }) =>
         controller.edit(transaction => {
@@ -1825,7 +1825,9 @@ scenario(
         expect(store.getSnapshot().get('_:c-1')).toBe(parent)
       )
       .and('should return the updated child', ({ store }) =>
-        expect(Array.from(store.getSortedChildren('_:c-1'))[0]).toBe(store.getSnapshot().get('_:m-1'))
+        expect(Array.from(store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }))[0]).toBe(
+          store.getSnapshot().get('_:m-1')
+        )
       );
 
     bdd
@@ -1893,7 +1895,7 @@ scenario(
 
         return store;
       })
-      .when('getSortedChildren() is called', store => store.getSortedChildren('_:c-1'))
+      .when('getSortedChildren() is called', store => store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }))
       .then('should be iterable multiple times', (_, children) => {
         expect(Array.from(children, child => child['@id'])).toEqual(['_:m-1']);
         expect(Array.from(children, child => child['@id'])).toEqual(['_:m-1']);
@@ -1910,7 +1912,7 @@ scenario(
           upsertDatedMessage(transaction, '_:m-3', ['_:c-1'], 3);
         });
 
-        const iterator = store.getSortedChildren('_:c-1')[Symbol.iterator]();
+        const iterator = store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' })[Symbol.iterator]();
 
         return { controller, firstChild: iterator.next().value, iterator };
       })
@@ -1928,13 +1930,15 @@ scenario(
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
-      .when('getSortedChildren() is called on a node without children', ({ store }) => store.getSortedChildren('_:c-1'))
+      .when('getSortedChildren() is called on a node without children', ({ store }) =>
+        store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' })
+      )
       .then('should return an empty iterable', (_, children) => expect(Array.from(children)).toEqual([]));
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
       .when('getSortedChildren() is called on a node not in the store', ({ store }) =>
-        store.getSortedChildren('_:unknown')
+        store.getSortedChildren('_:unknown', { sortBy: 'dateCreated' })
       )
       .then('should return an empty iterable', (_, children) => expect(Array.from(children)).toEqual([]));
 
@@ -1943,11 +1947,23 @@ scenario(
       .when.oneOf<unknown>([
         [
           'getSortedChildren() is called with a non-string',
-          ({ store }) => catchError(() => store.getSortedChildren({} as Identifier))
+          ({ store }) => catchError(() => store.getSortedChildren({} as Identifier, { sortBy: 'dateCreated' }))
         ],
         [
           'getSortedChildren() is called with an invalid ID',
-          ({ store }) => catchError(() => store.getSortedChildren('m-1' as Identifier))
+          ({ store }) => catchError(() => store.getSortedChildren('m-1' as Identifier, { sortBy: 'dateCreated' }))
+        ],
+        [
+          'getSortedChildren() is called without init',
+          ({ store }) =>
+            catchError(() => (store.getSortedChildren as (id: Identifier) => Iterable<Node>).call(store, '_:c-1'))
+        ],
+        [
+          'getSortedChildren() is called with unsupported sortBy',
+          ({ store }) =>
+            catchError(() =>
+              store.getSortedChildren('_:c-1', { sortBy: 'position' } as unknown as GetSortedChildrenInit)
+            )
         ]
       ])
       .then('should throw', (_, error) => expect(error).toBeTruthy());
