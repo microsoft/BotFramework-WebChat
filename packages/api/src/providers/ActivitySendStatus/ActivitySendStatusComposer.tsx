@@ -97,10 +97,11 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
   );
 
   // Derived from `activities`, so an echo-back that changes the content of a sending activity is picked up.
+  // User activities only, as in `expiryByActivityKey`: a bot activity with the same `clientActivityID` shares the key.
   const isSending = useMemo<boolean>(
     () =>
       activities.some(activity => {
-        const key = getKeyByActivity(activity);
+        const key = activity.from.role === 'user' && getKeyByActivity(activity);
 
         return key && sendStatusByActivityKey.get(key) === 'sending' && !isPresentational(activity);
       }),
