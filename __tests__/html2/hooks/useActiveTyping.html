@@ -13,6 +13,7 @@
     <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
+        testHelpers: { createDirectLineEmulator },
         WebChat: {
           Components: { BasicWebChat, Composer },
           hooks: { useActiveTyping }
@@ -21,9 +22,7 @@
 
       run(async function () {
         const clock = lolex.createClock();
-
-        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
+        const { directLine, store } = createDirectLineEmulator({ ponyfill: clock });
 
         const RunFunction = ({ fn }) => {
           fn();
@@ -55,7 +54,7 @@
         await expect(renderWithFunction(() => useActiveTyping())).resolves.toEqual([{}]);
 
         // WHEN: Type "typing 1" without send.
-        await pageObjects.typeInSendBox('typing 1');
+        await directLine.actPostActivity(() => pageObjects.typeInSendBox('typing 1'));
 
         // THEN: `useActiveTyping` should return current user.
         await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
@@ -69,7 +68,16 @@
         ]);
 
         // WHEN: The message is sent.
-        await pageObjects.typeInSendBox('ENTER');
+        await (await directLine.actPostActivity(() => pageObjects.typeInSendBox('ENTER'))).resolveAll();
+
+        // Emulated, same as the mock bot's "typing 1" command: a message, then a typing activity.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', name: 'Bot', role: 'bot' },
+          text: 'Typing indicator should go away after 5 seconds.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({ from: { id: 'bot', name: 'Bot', role: 'bot' }, type: 'typing' });
 
         // THEN: The bot should reply.
         await pageConditions.numActivitiesShown(2);
@@ -87,7 +95,7 @@
         ]);
 
         // WHEN: The user type ".".
-        await pageObjects.typeInSendBox('.');
+        await directLine.actPostActivity(() => pageObjects.typeInSendBox('.'));
 
         // THEN: `useActiveTyping` should return both.
         const hookResult = await renderWithFunction(() => Object.values(useActiveTyping()[0]));

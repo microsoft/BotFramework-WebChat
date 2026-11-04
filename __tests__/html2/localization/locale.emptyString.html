@@ -18,26 +18,31 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
 
       // TODO: Should find ways to eliminate this line.
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(async function () {
-        renderWebChat(
-          {
-            directLine: createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-            locale: '',
-            store: testHelpers.createStore()
-          },
-          document.getElementById('webchat')
-        );
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat({ directLine, locale: '', store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('echo Hello');
+
+        await (
+          await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('echo Hello', { waitForSend: false })
+          )
+        ).resolveAll();
+
+        // Emulated, same as the mock bot's "echo" command.
+        await directLine.emulateIncomingActivity('Echoing back in a separate activity.');
+        await directLine.emulateIncomingActivity('Hello');
 
         await pageConditions.numActivitiesShown(3);
 
+        // THEN: With an empty locale, the UI is in English, e.g. "Just now" and "Type your message".
         await host.snapshot('local');
       });
     </script>

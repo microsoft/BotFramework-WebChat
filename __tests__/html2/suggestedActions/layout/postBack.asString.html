@@ -18,34 +18,66 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
 
       // TODO: Should find ways to eliminate this line.
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
         renderWebChat(
-          {
-            directLine: createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore(),
-            styleOptions: { suggestedActionLayout: 'stacked' }
-          },
+          { directLine, store, styleOptions: { suggestedActionLayout: 'stacked' } },
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
 
-        await pageObjects.sendMessageViaSendBox('suggested-actions');
+        await (
+          await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: false })
+          )
+        ).resolveAll();
+
+        // Emulated, same as the mock bot's "suggested-actions" command, with its first 2 actions and without their images.
+        await directLine.emulateIncomingActivity({
+          suggestedActions: {
+            actions: [
+              { title: 'IM back as string', type: 'imBack', value: 'postback imback-string' },
+              { title: 'Post back as string', type: 'postBack', value: 'postback postback-string' }
+            ],
+            to: []
+          },
+          text: 'Please select one of the actions below',
+          textFormat: 'plain',
+          type: 'message'
+        });
 
         await pageConditions.suggestedActionsShown();
 
         const buttons = document.querySelectorAll('.webchat__suggested-actions button');
 
-        await host.click(buttons[1]);
+        const { activity, resolveAll } = await directLine.actPostActivity(() => host.click(buttons[1]));
+
+        // THEN: The post back should send its value as the text of a message.
+        expect(activity).toMatchObject({
+          channelData: { postBack: true },
+          text: 'postback postback-string',
+          type: 'message'
+        });
+
+        await resolveAll();
+
+        // Emulated, same as the mock bot's reply to the text above, which is not a command it knows.
+        await directLine.emulateIncomingActivity({
+          text: 'Unknown command: `postback postback-string`.\r\n\r\nType `help` to learn more.',
+          type: 'message'
+        });
 
         await pageConditions.numActivitiesShown(3);
         await pageConditions.allOutgoingActivitiesSent();
 
+        // THEN: The post back is not shown in the transcript, only the bot's reply to it.
         await host.snapshot('local');
       });
     </script>
