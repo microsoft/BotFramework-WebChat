@@ -1,4 +1,4 @@
-import { is, parse } from 'valibot';
+import { is, object, parse } from 'valibot';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import assertUniquePositionInParts from './assertion/assertUniquePositionInParts.ts';
@@ -9,7 +9,10 @@ import attachHasPart from './private/attachHasPart.ts';
 import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './private/createReadonlyMap.ts';
 import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './private/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
+import createReadonlyArrayView from './private/createReadonlyArrayView.ts';
 import getPartIds from './private/getPartIds.ts';
+import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
+import VersionedArray from './private/VersionedArray.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
@@ -43,6 +46,9 @@ interface StoreTransaction {
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
+const EMPTY_NODES: readonly Node[] = Object.freeze([]);
+
+const nodeIdOnlySchema = object({ '@id': identifierSchema });
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
@@ -197,6 +203,69 @@ function setPartOf(node: Node, parentId: Identifier, included: boolean): Node {
   );
 }
 
+/**
+ * Updates sorted children of parents which children are added, removed, or changed `dateCreated`.
+ *
+ * Cost per change is O(1) when appending to the end, see `insertSortedChild()` for details.
+ *
+ * @returns Key is the ID of the parent, value is the new sorted child IDs.
+ */
+function updateSortedChildIds(
+  prevState: ReadonlyMap<string, Node>,
+  nextState: ReadonlyMap<string, Node>,
+  affectedNodeIds: ReadonlySet<Identifier>
+): Map<Identifier, VersionedArray<Identifier>> {
+  const insertions: [Identifier, Identifier][] = [];
+  const removals: [Identifier, Identifier][] = [];
+  const sortedChildIds = new Map<Identifier, VersionedArray<Identifier>>();
+
+  for (const id of affectedNodeIds) {
+    const prevNode = prevState.get(id);
+    const nextNode = nextState.get(id);
+    const dateCreatedChanged = prevNode?.dateCreated !== nextNode?.dateCreated;
+    const prevParentIds = getPartIds(prevNode, 'isPartOf');
+    const parentIds = getPartIds(nextNode, 'isPartOf');
+
+    for (const parentId of prevParentIds) {
+      (dateCreatedChanged || !parentIds.has(parentId)) && nextState.has(parentId) && removals.push([parentId, id]);
+    }
+
+    for (const parentId of parentIds) {
+      (dateCreatedChanged || !prevParentIds.has(parentId)) && insertions.push([parentId, id]);
+    }
+  }
+
+  const getBase = (parentId: Identifier): VersionedArray<Identifier> =>
+    sortedChildIds.get(parentId) ?? getSortedChildIds(prevState.get(parentId)) ?? new VersionedArray();
+
+  // Removes first, children remaining are either unchanged or new, so they can be compared using the next state.
+  for (const [parentId, id] of removals) {
+    sortedChildIds.set(
+      parentId,
+      removeSortedChild(
+        getBase(parentId),
+        id,
+        prevState.get(id)?.dateCreated,
+        childId => prevState.get(childId)?.dateCreated
+      )
+    );
+  }
+
+  for (const [parentId, id] of insertions) {
+    sortedChildIds.set(
+      parentId,
+      insertSortedChild(
+        getBase(parentId),
+        id,
+        nextState.get(id)?.dateCreated,
+        childId => nextState.get(childId)?.dateCreated
+      )
+    );
+  }
+
+  return sortedChildIds;
+}
+
 class Store {
   constructor(source: StoreSource) {
     const controller: StoreController = {
@@ -239,7 +308,7 @@ class Store {
           const node = nextState.get(id);
           const childIds = nextChildIds.sets.get(id);
 
-          return node && childIds ? attachHasPart(node, createReadonlySet(childIds)) : node;
+          return node && childIds ? attachHasPart(node, createReadonlySet(childIds), getSortedChildIds(node)) : node;
         };
 
         const setPendingChild = (parentId: Identifier, childId: Identifier, included: boolean): void => {
@@ -264,8 +333,8 @@ class Store {
             prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(id);
           }
 
-          // If children are changed in this transaction, `hasPart` will be generated on commit.
-          nextState.set(id, attachHasPart(node, nextChildIds.map.get(id) ?? EMPTY_IDS));
+          // If children are changed in this transaction, `hasPart` and sorted children will be generated on commit.
+          nextState.set(id, attachHasPart(node, nextChildIds.map.get(id) ?? EMPTY_IDS, undefined));
           setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getReferenceIds(node));
           affectedNodeIds.add(id);
         };
@@ -335,7 +404,7 @@ class Store {
                 const prevChildIds = new Set(getReferencingIds(nextChildIds, safeId));
 
                 // `hasPart` is not stored, it is mirrored to `isPartOf` of children below.
-                setNode(attachHasPart(safeNode, EMPTY_IDS));
+                setNode(attachHasPart(safeNode, EMPTY_IDS, undefined));
 
                 for (const [childId, included] of [
                   ...Array.from(prevChildIds)
@@ -361,11 +430,22 @@ class Store {
           // committed index is discarded and the previous version is still intact.
           const committedChildIds = commitBackwardReferenceIds(nextChildIds);
 
-          // Generates `hasPart` for nodes with changed children, this is O(number of properties) per node.
-          for (const id of nextChildIds.sets.keys()) {
+          const nextSortedChildIds = updateSortedChildIds(this.#state, nextState, affectedNodeIds);
+
+          // Generates `hasPart` and sorted children for nodes upserted or with changed children.
+          // This is O(number of properties) per node.
+          for (const id of new Set([...affectedNodeIds, ...nextChildIds.sets.keys(), ...nextSortedChildIds.keys()])) {
             const node = nextState.get(id);
 
-            node && nextState.set(id, attachHasPart(node, committedChildIds.get(id) ?? EMPTY_IDS));
+            node &&
+              nextState.set(
+                id,
+                attachHasPart(
+                  node,
+                  committedChildIds.get(id) ?? EMPTY_IDS,
+                  nextSortedChildIds.get(id) ?? getSortedChildIds(this.#state.get(id))
+                )
+              );
             node && affectedNodeIds.add(id);
           }
 
@@ -414,6 +494,26 @@ class Store {
    */
   getSnapshot(): ReadonlyMap<string, Node> {
     return this.#state;
+  }
+
+  /**
+   * Gets children of the node, sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
+   * same `dateCreated` are sorted by `@id`.
+   *
+   * Children are from the latest snapshot. This is O(1) regardless of the number of children, children are resolved on
+   * access. The returned array is read-only and is not affected by subsequent commits.
+   */
+  getSortedChildren(node: Node): readonly Node[] {
+    const { '@id': id } = parse(nodeIdOnlySchema, node);
+    const state = this.#state;
+    const sortedChildIds = getSortedChildIds(state.get(id));
+
+    return sortedChildIds
+      ? createReadonlyArrayView(
+          sortedChildIds.length,
+          index => state.get(sortedChildIds.at(index) as Identifier) as Node
+        )
+      : EMPTY_NODES;
   }
 
   /**

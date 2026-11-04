@@ -1,5 +1,6 @@
 import {
   custom,
+  finite,
   integer,
   is,
   minSize,
@@ -25,6 +26,13 @@ const nodeSchema = pipe(
       // OPINION: Each node can has a single ID only.
       '@id': identifierSchema,
       '@type': pipe(set(string()), minSize(1, 'Node must have at least one @type')),
+      // OPINION: dateCreated must be a Unix epoch number and not in a set/array.
+      dateCreated: optional(
+        pipe(
+          number('"dateCreated" property value must be a Unix epoch number'),
+          finite('"dateCreated" property value must be a Unix epoch number')
+        )
+      ),
       // OPINION: hasPart/isPartOf must reference to another node, not containing another node
       hasPart: optional(pipe(set(nodeReferenceSchema), readonly())),
       isPartOf: optional(pipe(set(nodeReferenceSchema), readonly())),

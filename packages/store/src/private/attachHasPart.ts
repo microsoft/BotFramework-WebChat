@@ -3,9 +3,12 @@ import type { Identifier } from '../node/NodeIdentifier.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import createReadonlySet from './createReadonlySet.ts';
 import getPartIds, { partIdsSymbol, type PartIds } from './getPartIds.ts';
+import { sortedChildIdsSymbol } from './sortedChildIds.ts';
+import type VersionedArray from './VersionedArray.ts';
 
 /**
- * Returns a copy of the node with `hasPart` generated from the IDs of its children.
+ * Returns a copy of the node with `hasPart` generated from the IDs of its children, and IDs of its children sorted by
+ * `dateCreated` for `Store.getSortedChildren()`.
  *
  * - `hasPart` is an enumerable getter, it will appear in spread, `Object.entries()`, and `JSON.stringify()`
  * - `hasPart` is generated on first access and cached, as `childIds` must be immutable
@@ -14,7 +17,11 @@ import getPartIds, { partIdsSymbol, type PartIds } from './getPartIds.ts';
  * The node must be created by `createNode()` or this function. Other properties are copied as-is without validation.
  * This is O(number of properties), regardless of the number of children.
  */
-function attachHasPart(node: Node, childIds: ReadonlySet<Identifier>): Node {
+function attachHasPart(
+  node: Node,
+  childIds: ReadonlySet<Identifier>,
+  sortedChildIds: VersionedArray<Identifier> | undefined
+): Node {
   const nextNode = {};
 
   // Do not use `Object.entries()`, it will invoke the `hasPart` getter and generate it.
@@ -32,8 +39,11 @@ function attachHasPart(node: Node, childIds: ReadonlySet<Identifier>): Node {
   }
 
   return Object.freeze(
-    Object.defineProperty(nextNode, partIdsSymbol, {
-      value: Object.freeze({ hasPart: childIds, isPartOf: getPartIds(node, 'isPartOf') } satisfies PartIds)
+    Object.defineProperties(nextNode, {
+      [partIdsSymbol]: {
+        value: Object.freeze({ hasPart: childIds, isPartOf: getPartIds(node, 'isPartOf') } satisfies PartIds)
+      },
+      [sortedChildIdsSymbol]: { value: sortedChildIds }
     })
   ) satisfies object as Node;
 }
