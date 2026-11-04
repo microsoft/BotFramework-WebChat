@@ -27,8 +27,8 @@
           await host.click(pageElements.sendButton());
         });
 
-        // THEN: Should send the focus back to the send box.
-        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+        // THEN: Should send the focus back to the send box, once the browser is idle.
+        await pageConditions.focusOn(pageElements.sendBoxTextBox(), 'send box');
 
         // THEN: Should set `inputmode="none"`, thus, hide the virtual keyboard.
         // Notes: We cannot test this functionality inside WebDriver. We assume the `inputmode` attribute will show/hide the virtual keyboard.
