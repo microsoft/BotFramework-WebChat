@@ -8,9 +8,12 @@ import attachHasPart from './private/attachHasPart.ts';
 import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './private/createReadonlyMap.ts';
 import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './private/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
+import createReadonlySkipList, {
+  type ReadWriteSkipList,
+  type VersionedReadonlySkipList
+} from './private/createReadonlySkipList.ts';
 import getPartIds from './private/getPartIds.ts';
 import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
-import VersionedSkipList from './private/VersionedSkipList.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
@@ -211,7 +214,8 @@ function setPartOf(node: Node, parentId: Identifier, included: boolean): Node {
 /**
  * Updates sorted children of parents which children are added, removed, or changed `dateCreated`.
  *
- * Removal is expected O(1), insertion is O(1) when appending to the end, otherwise, expected O(log n), see `insertSortedChild()` for details.
+ * Uses `mutate()` and `commit()`, the sorted children are not copied. Removal is expected O(1), insertion is O(1) when
+ * appending to the end, otherwise, expected O(log n), see `insertSortedChild()` for details.
  *
  * @returns Key is the ID of the parent, value is the new sorted child IDs.
  */
@@ -219,10 +223,10 @@ function updateSortedChildIds(
   prevState: ReadonlyMap<string, Node>,
   nextState: ReadonlyMap<string, Node>,
   affectedNodeIds: ReadonlySet<Identifier>
-): Map<Identifier, VersionedSkipList<Identifier>> {
+): Map<Identifier, VersionedReadonlySkipList<Identifier>> {
   const insertions: [Identifier, Identifier][] = [];
   const removals: [Identifier, Identifier][] = [];
-  const sortedChildIds = new Map<Identifier, VersionedSkipList<Identifier>>();
+  const sortedChildIds = new Map<Identifier, ReadWriteSkipList<Identifier>>();
 
   for (const id of affectedNodeIds) {
     const prevNode = prevState.get(id);
@@ -240,27 +244,38 @@ function updateSortedChildIds(
     }
   }
 
-  const getBase = (parentId: Identifier): VersionedSkipList<Identifier> =>
-    sortedChildIds.get(parentId) ?? getSortedChildIds(prevState.get(parentId)) ?? new VersionedSkipList();
+  // A new empty list is created for every parent, mutating a shared empty list would make other mutations of it O(size).
+  const mutate = (parentId: Identifier): ReadWriteSkipList<Identifier> => {
+    let mutableSortedChildIds = sortedChildIds.get(parentId);
+
+    mutableSortedChildIds ||
+      sortedChildIds.set(
+        parentId,
+        (mutableSortedChildIds = (
+          getSortedChildIds(prevState.get(parentId)) ?? createReadonlySkipList<Identifier>()
+        ).mutate())
+      );
+
+    return mutableSortedChildIds;
+  };
 
   // Removes first, children remaining are either unchanged or new, so they can be compared using the next state.
   for (const [parentId, id] of removals) {
-    sortedChildIds.set(parentId, removeSortedChild(getBase(parentId), id));
+    removeSortedChild(mutate(parentId), id);
   }
 
   for (const [parentId, id] of insertions) {
-    sortedChildIds.set(
-      parentId,
-      insertSortedChild(
-        getBase(parentId),
-        id,
-        nextState.get(id)?.dateCreated,
-        childId => nextState.get(childId)?.dateCreated
-      )
+    insertSortedChild(
+      mutate(parentId),
+      id,
+      nextState.get(id)?.dateCreated,
+      childId => nextState.get(childId)?.dateCreated
     );
   }
 
-  return sortedChildIds;
+  return new Map(
+    Array.from(sortedChildIds, ([parentId, mutableSortedChildIds]) => [parentId, mutableSortedChildIds.commit()])
+  );
 }
 
 class Store {

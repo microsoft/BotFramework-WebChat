@@ -4,7 +4,7 @@ import type { NodeReference } from '../node/NodeReference.ts';
 import createReadonlySet from './createReadonlySet.ts';
 import getPartIds, { partIdsSymbol, type PartIds } from './getPartIds.ts';
 import { sortedChildIdsSymbol } from './sortedChildIds.ts';
-import type VersionedSkipList from './VersionedSkipList.ts';
+import type { VersionedReadonlySkipList } from './createReadonlySkipList.ts';
 
 /**
  * Returns a copy of the node with `hasPart` generated from the IDs of its children, and IDs of its children sorted by
@@ -20,7 +20,7 @@ import type VersionedSkipList from './VersionedSkipList.ts';
 function attachHasPart(
   node: Node,
   childIds: ReadonlySet<Identifier>,
-  sortedChildIds: VersionedSkipList<Identifier> | undefined
+  sortedChildIds: VersionedReadonlySkipList<Identifier> | undefined
 ): Node {
   const nextNode = {};
 

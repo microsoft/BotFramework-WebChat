@@ -1,7 +1,6 @@
 import {
   custom,
   finite,
-  integer,
   is,
   minSize,
   number,
@@ -35,11 +34,7 @@ const nodeSchema = pipe(
       ),
       // OPINION: hasPart/isPartOf must reference to another node, not containing another node
       hasPart: optional(pipe(set(nodeReferenceSchema), readonly())),
-      isPartOf: optional(pipe(set(nodeReferenceSchema), readonly())),
-      // OPINION: position must be an integer and not in a set/array.
-      position: optional(
-        pipe(number('"position" property value must be integer'), integer('"position" property value must be integer'))
-      )
+      isPartOf: optional(pipe(set(nodeReferenceSchema), readonly()))
     },
     custom(value => is(propertyValueSchema, value))
   ),
