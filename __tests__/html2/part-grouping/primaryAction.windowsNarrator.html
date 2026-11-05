@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: screen reader primary action</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Paints the focused element yellow, so the snapshots show where the focus is. -->
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const createActivity = (id, position) => ({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              abstract: `Activity ${position}`,
+              author: { name: 'Research' },
+              isPartOf: { '@id': '_:g-00001', '@type': 'HowTo' }, // Same "isPartOf", so both activities are in one group.
+              keywords: ['AIGeneratedContent', 'AnalysisMessage'],
+              position,
+              type: 'https://schema.org/Message'
+            }
+          ],
+          id,
+          type: 'message'
+        });
+
+        // GIVEN: A group of 2 activities.
+        await directLine.emulateIncomingActivity(createActivity('group-activity-1', 1));
+        await directLine.emulateIncomingActivity(createActivity('group-activity-2', 2));
+
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        const activeDescendant = () =>
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'));
+        const groupButton = () => document.querySelector('.collapsible-grouping__header .activity-button');
+
+        // WHEN: The transcript is focused and ARROW_UP is pressed until the group is the active item.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ARROW_UP', 'ARROW_UP');
+
+        // The group, not one of its activities, is the active descendant.
+        await waitFor(() => expect(activeDescendant()).toBeTruthy());
+        expect(pageElements.focusedActivity()).toBeFalsy();
+        await pageConditions.scrollStabilized();
+
+        // THEN: The transcript is focused (yellow) and the focus indicator is around the group.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        await host.snapshot('local');
+
+        // WHEN: Narrator does the "primary action" on the active group (e.g. ENTER in scan mode).
+        // Narrator invokes the element referenced by `aria-activedescendant`, the browser dispatches a "click" on it; emulated here.
+        activeDescendant().click();
+
+        // THEN: The group's expand/collapse button is focused (yellow).
+        await waitFor(() => expect(document.activeElement).toBe(groupButton()));
+        await host.snapshot('local');
+
+        // WHEN: ESCAPE is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: The transcript is focused (yellow) again, with the group still the active item.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.transcript()));
+        expect(activeDescendant()).toBeTruthy();
+        expect(pageElements.focusedActivity()).toBeFalsy();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
