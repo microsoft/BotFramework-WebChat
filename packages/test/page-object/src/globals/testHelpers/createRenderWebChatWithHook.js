@@ -1,16 +1,9 @@
-import PropTypes from 'prop-types';
-
 import withResolvers from '../../utils/withResolvers';
 
 const RunHook = ({ fn, resolve }) => {
   resolve(fn?.());
 
   return false;
-};
-
-RunHook.propTypes = {
-  fn: PropTypes.func,
-  resolve: PropTypes.func.isRequired
 };
 
 export default function createRenderWebChatWithHook(props, element) {

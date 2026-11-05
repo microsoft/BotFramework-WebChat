@@ -1,10 +1,11 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 // TODO: [P1] #3350 No import from internal, we need to move setDictateState from bf-wc-core (Redux) to React Context.
 import { useSetDictateState } from 'botframework-webchat-api/internal.js';
 import { Constants } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useEffect } from 'react';
 import { Composer as DictateComposer } from 'react-dictate-button';
+import { function_, object, optional, pipe, readonly } from 'valibot';
 
 import useResumeAudioContext from './hooks/internal/useResumeAudioContext';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
@@ -28,7 +29,16 @@ const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-const Dictation = ({ onError }) => {
+const dictationPropsSchema = pipe(
+  object({
+    onError: optional(function_())
+  }),
+  readonly()
+);
+
+const Dictation = props => {
+  const { onError } = validateProps(dictationPropsSchema, props);
+
   const [, setDictateAbortable] = useSettableDictateAbortable();
   const [, setDictateInterims] = useDictateInterims();
   const [, setSendBox] = useSendBoxValue();
@@ -108,10 +118,6 @@ const Dictation = ({ onError }) => {
       started={uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING)}
     />
   );
-};
-
-Dictation.propTypes = {
-  onError: PropTypes.func
 };
 
 export default Dictation;

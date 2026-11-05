@@ -1,7 +1,8 @@
 /* eslint-disable no-magic-numbers */
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import random from 'math-random';
-import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, type MutableRefObject, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, type MutableRefObject } from 'react';
+import { custom, instance, is, nullish, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
@@ -12,10 +13,19 @@ import useRenderingActivityKeys from '../RenderingActivities/useRenderingActivit
 import TranscriptFocusContext, { type TranscriptFocusContextType } from './private/Context';
 import getDescendantId from './private/getDescendantId';
 
-type TranscriptFocusComposerProps = Readonly<{
-  children?: ReactNode | undefined;
-  containerRef: MutableRefObject<HTMLElement>;
-}>;
+const transcriptFocusComposerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    // A React ref is `null` until it is attached.
+    containerRef: custom<MutableRefObject<HTMLElement>>(value =>
+      is(object({ current: nullish(instance(HTMLElement)) }), value)
+    )
+  }),
+  readonly()
+);
+
+// Not `InferReactProps`: making `HTMLElement` deeply read-only is too deep for TypeScript (TS2589).
+type TranscriptFocusComposerProps = InferInput<typeof transcriptFocusComposerPropsSchema>;
 
 function uniqueId(count = Infinity) {
   return random()
@@ -23,7 +33,9 @@ function uniqueId(count = Infinity) {
     .substring(2, 2 + count);
 }
 
-const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps) => {
+const TranscriptFocusComposer = (props: TranscriptFocusComposerProps) => {
+  const { children, containerRef } = validateProps(transcriptFocusComposerPropsSchema, props);
+
   const [rawFocusedActivityGroupKey, setRawFocusedActivityGroupKey, rawFocusedActivityGroupKeyRef] = useStateRef<
     string | undefined
   >();
@@ -429,13 +441,5 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
 };
 
 TranscriptFocusComposer.displayName = 'TranscriptFocusComposer';
-
-TranscriptFocusComposer.propTypes = {
-  // PropTypes is not fully compatible with TypeScript.
-  // @ts-ignore
-  containerRef: PropTypes.shape({
-    current: PropTypes.instanceOf(HTMLElement)
-  }).isRequired
-};
 
 export default memo(TranscriptFocusComposer);

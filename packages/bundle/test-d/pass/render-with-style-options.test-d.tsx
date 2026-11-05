@@ -1,11 +1,11 @@
 import '../setup';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { type ReactElement } from 'react';
+import { expectAssignable } from 'tsd';
 
 import ReactWebChat, { createDirectLine } from '../../src/boot/exports/index';
 
 const directLine = createDirectLine({ token: '...' });
 const styleOptions = { accent: 'black', cardEmphasisBackgroundColor: 'orange' };
 
-ReactDOM.render(<ReactWebChat directLine={directLine} styleOptions={styleOptions} />, document.getElementById('app'));
+expectAssignable<ReactElement>(<ReactWebChat directLine={directLine} styleOptions={styleOptions} />);

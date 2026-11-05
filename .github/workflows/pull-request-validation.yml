@@ -142,6 +142,57 @@ jobs:
       - run: npm run build --if-present
         working-directory: samples
 
+  package-age:
+    name: Package age
+    # Fails if package-lock.json adds versions published less than 7 days ago, which consumers that install with a minimum
+    # release age cannot install yet. Re-run the job once they are old enough.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 2 # HEAD is the pull request merged into the base, its first parent is the base.
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Check the age of new package versions
+        env:
+          # Exact name@version entries to skip, e.g. to ship a security fix right away, separated by spaces or newlines.
+          BYPASS: ''
+          MIN_DAYS: 7
+          NOW: now # To check as of another time, e.g. 2026-10-31T12:00:00Z.
+        run: |
+          git diff --quiet HEAD^1 HEAD -- package-lock.json && echo 'Skipped, package-lock.json did not change.' && exit
+
+          # Every name@version from registry.npmjs.org in package-lock.json of a commit. Entries without "resolved" come from
+          # the registry too; workspaces are outside node_modules and links resolve to a local path.
+          versions() {
+            git show "$1:package-lock.json" | jq -r '.packages | to_entries[] | select(.key | contains("node_modules/"))
+              | select(.value.resolved // "https://registry.npmjs.org/" | startswith("https://registry.npmjs.org/"))
+              | "\(.value.name // (.key | sub(".*node_modules/"; "")))@\(.value.version)"' | sort -u
+          }
+
+          now=$(date -u -d "$NOW" +%s)
+          failed=0
+
+          for spec in $(comm -13 <(versions HEAD^1) <(versions HEAD)); do
+            grep -qxF "$spec" <(tr ' ' '\n' <<< "$BYPASS") && echo "::warning::$spec is in BYPASS, its age is not checked" && continue
+
+            time=$(timeout 60 npm view "$spec" time --json || timeout 60 npm view "$spec" time --json)
+            published=$(jq -r --arg version "${spec##*@}" '.[$version]' <<< "$time")
+            age=$(( (now - $(date -u -d "$published" +%s)) / 86400 ))
+
+            (( age < MIN_DAYS )) && echo "::error::$spec was published $published, $age days ago" && failed=1
+          done
+
+          (( failed )) && echo "Consumers that install with a minimum release age of $MIN_DAYS days cannot install them yet. Re-run this job once they are older, list them in BYPASS to ship them now, or redo the change from the package-lock.json of main with: npm install --before=$(date -u -d "@$(( now - MIN_DAYS * 86400 ))" +%F)"
+
+          exit $failed
+
   static-code-analysis:
     name: Static code analysis
     needs:
@@ -279,6 +330,15 @@ jobs:
       - name: Run tsd under packages/core (ESM)
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
+
+      # The steps above use @types/react@16 (our baseline), check with the types of the latest React too.
+      # In every workspace: packages that declare @types/react@16 would otherwise keep their own copy.
+      - name: Install @types/react@19 and @types/react-dom@19
+        run: npm install --no-save --workspaces --include-workspace-root @types/react@19 @types/react-dom@19
+
+      - name: Run tsd under packages/bundle with @types/react@19
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.mts
+        working-directory: ./packages/bundle
 
   bundler-test:
     name: Bundler test (${{ matrix.bundler }}, React ${{ matrix.react }})

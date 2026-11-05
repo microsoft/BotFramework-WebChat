@@ -3,6 +3,7 @@
 # - Starting from .webchat or .webchat-<themaPackageName>
 # - Followed by optional modifier class
 # - Followed by zero or more spaces
+# - Followed by an optional ":has(> ", for a rule on the parent of a class (e.g. the tooltip)
 # - Followed by a class selector with a 6-character file hash
 # - Followed by an underscore
 
@@ -11,7 +12,7 @@ language: Css
 rule:
   kind: selectors > descendant_selector
   not:
-    regex: "\\.(webchat|webchat-\\w*)(\\.\\w+--[\\w-]+)?\\s*\\.w[a-zA-Z0-9\\-_]{6}_"
+    regex: "\\.(webchat|webchat-\\w*)(\\.\\w+--[\\w-]+)?\\s*(:has\\(>\\s*)?\\.w[a-zA-Z0-9\\-_]{6}_"
 
 description: "Check if CSS is compiled by Lightning CSS plugin conforms to expected selector pattern"
 message: "Output CSS does not conform to Lightning CSS selector pattern. Check that the CSS file is compiled correctly."
