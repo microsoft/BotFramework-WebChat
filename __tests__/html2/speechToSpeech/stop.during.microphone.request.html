@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script data-presets="react" data-type="module" type="text/babel">
+      import { waitFor } from '@testduet/wait-for';
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+
+      setupMockMediaDevices();
+
+      // The browser asks for microphone permission: hold the first request until the user allows it.
+      let allowMicrophone;
+      let numMicrophoneRequests = 0;
+      const microphoneAllowed = new Promise(resolve => (allowMicrophone = resolve));
+      const { getUserMedia } = navigator.mediaDevices;
+      const streams = [];
+
+      navigator.mediaDevices.getUserMedia = async constraints => {
+        numMicrophoneRequests++;
+        await microphoneAllowed;
+
+        const stream = await getUserMedia(constraints);
+
+        streams.push(stream);
+
+        return stream;
+      };
+
+      const numLiveTracks = () =>
+        streams.flatMap(stream => stream.getTracks()).filter(({ readyState }) => readyState === 'live').length;
+
+      run(async function () {
+        const {
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            FluentThemeProvider,
+            testIds
+          }
+        } = window;
+
+        // GIVEN: Web Chat with speech-to-speech.
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        directLine.setCapability(
+          'getVoiceConfiguration',
+          { chunkIntervalMs: 100, sampleRate: 24000 },
+          { emitEvent: false }
+        );
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <Composer directLine={directLine} store={store}>
+              <BasicWebChat />
+            </Composer>
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+
+        // WHEN: The user starts talking and stops while the browser asks for microphone permission.
+        await host.click(micButton);
+        await waitFor(() => expect(numMicrophoneRequests).toBe(1));
+        await host.click(micButton);
+        await waitFor(() => expect(store.getState().voice.voiceState).toBe('idle'));
+
+        // WHEN: The user allows the microphone.
+        allowMicrophone();
+
+        // THEN: The microphone is off.
+        await waitFor(() => expect(streams).toHaveLength(1));
+        await waitFor(() => expect(numLiveTracks()).toBe(0));
+      });
+    </script>
+  </body>
+</html>
