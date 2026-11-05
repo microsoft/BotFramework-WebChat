@@ -6,6 +6,7 @@ import React, {
   type FocusEvent,
   type KeyboardEventHandler,
   type ReactNode,
+  type Ref,
   useCallback,
   useRef
 } from 'react';
@@ -27,12 +28,14 @@ const FocusTrap = ({
   children,
   onFocus,
   onLeave,
-  targetClassName
+  targetClassName,
+  targetRef
 }: Readonly<{
   children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
   targetClassName?: string | undefined;
+  targetRef?: Ref<HTMLDivElement> | undefined;
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
   // Keeps the "webchat__focus-trap" class name, which also finds nested traps below.
@@ -152,7 +155,7 @@ const FocusTrap = ({
         {children}
         <div ref={guardRef} tabIndex={0} />
       </div>
-      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />
+      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} ref={targetRef} tabIndex={-1} />
     </Fragment>
   );
 };
