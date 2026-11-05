@@ -24,6 +24,9 @@
 
   .basic-transcript__transcript {
     list-style-type: none;
+    margin: 0;
+    /* Block padding comes from `TranscriptFocus.module.css`, which ties with this rule on specificity. */
+    padding-inline: 0;
   }
 
   .basic-transcript__activity-focus-target {

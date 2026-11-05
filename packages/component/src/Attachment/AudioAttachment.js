@@ -1,9 +1,11 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import React from 'react';
 import { object, optional, pipe, readonly, string } from 'valibot';
 
 import AudioContent from './AudioContent';
-import useStyleSet from '../hooks/useStyleSet';
+
+import styles from './MediaAttachment.module.css';
 
 const audioAttachmentPropsSchema = pipe(
   object({
@@ -21,10 +23,10 @@ const audioAttachmentPropsSchema = pipe(
 const AudioAttachment = props => {
   const { attachment } = validateProps(audioAttachmentPropsSchema, props);
 
-  const [{ audioAttachment: audioAttachmentStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
 
   return (
-    <div className={audioAttachmentStyleSet}>
+    <div className={classNames['audio-attachment']}>
       <AudioContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );
