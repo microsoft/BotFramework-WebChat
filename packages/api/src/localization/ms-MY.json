@@ -145,7 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "Mesej mempunyai tindakan dicadangkan. Tekan shift tab 2 hingga 3 kali untuk memilih tindakan.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "Mesej mempunyai tindakan dicadangkan. Tekan $1 untuk memilih tindakan.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Mesej gagal dihantar.",
-  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Menghantar mesej.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Mesej baharu tersedia. Tekan $1 menumpukan butang \"$2\".",
   "TRANSCRIPT_MORE_MESSAGES": "Lebih banyak mesej",
   "TRANSCRIPT_NEW_MESSAGES": "Mesej baharu",

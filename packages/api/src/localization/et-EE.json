@@ -145,7 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "Sõnumil on soovitatavad tegevused. Nende valimiseks vajutage 2–3 korda klahvi Shift.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "Sõnumil on soovitatavad tegevused. Nende valimiseks vajutage $1.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Sõnumi saatmine nurjus.",
-  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sõnumi saatmine.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Saadaval on uued sõnumid. Fookuse viimiseks nupule „$2“ vajutage klahvi $1.",
   "TRANSCRIPT_MORE_MESSAGES": "Rohkem sõnumeid",
   "TRANSCRIPT_NEW_MESSAGES": "Uued sõnumid",

@@ -145,7 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "Bericht heeft voorgestelde acties. Druk 2 tot 3 keer op Shift en tabtoets om deze te selecteren.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "Bericht heeft voorgestelde acties. Druk op $1 om deze te selecteren.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Het bericht is niet verzonden.",
-  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Bericht verzenden.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Er zijn nieuwe berichten beschikbaar. Druk op $1 om de focus op de knop $2 te plaatsen.",
   "TRANSCRIPT_MORE_MESSAGES": "Meer berichten",
   "TRANSCRIPT_NEW_MESSAGES": "Nieuwe berichten",

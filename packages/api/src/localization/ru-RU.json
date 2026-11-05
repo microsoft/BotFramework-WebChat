@@ -145,7 +145,7 @@
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_LABEL_ALT": "Для сообщения есть предлагаемые действия. Нажмите SHIFT TAB 2 или 3 раза, чтобы выбрать нужное.",
   "TRANSCRIPT_LIVE_REGION_SUGGESTED_ACTIONS_WITH_ACCESS_KEY_LABEL_ALT": "Для сообщения есть предлагаемые действия. Нажмите $1, чтобы выбрать нужное.",
   "TRANSCRIPT_LIVE_REGION_SEND_FAILED_ALT": "Не удалось отправить сообщение.",
-  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Sending message.",
+  "TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT": "Отправка сообщения.",
   "TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT": "Доступны новые сообщения. Нажмите $1, чтобы выбрать кнопку \"$2\".",
   "TRANSCRIPT_MORE_MESSAGES": "Другие сообщения",
   "TRANSCRIPT_NEW_MESSAGES": "Новые сообщения",
