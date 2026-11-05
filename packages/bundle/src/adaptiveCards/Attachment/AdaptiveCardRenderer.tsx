@@ -30,6 +30,7 @@ import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionS
 import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEffect';
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import useImageAltTextModEffect from './AdaptiveCardHacks/useImageAltTextModEffect';
+import useInputErrorShouldBeDescriptionModEffect from './AdaptiveCardHacks/useInputErrorShouldBeDescriptionModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
 import { directLineHeadlessCardActionSchema } from './private/directLineCardActionSchema';
@@ -136,6 +137,8 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
   const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
   const [applyImageAltTextMod, undoImageAltTextMod] = useImageAltTextModEffect(adaptiveCard);
+  const [applyInputErrorShouldBeDescriptionMod, undoInputErrorShouldBeDescriptionMod] =
+    useInputErrorShouldBeDescriptionModEffect(adaptiveCard);
   const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
   const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
 
@@ -253,6 +256,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     undoActiveElementMod();
     undoDisabledMod();
     undoImageAltTextMod();
+    undoInputErrorShouldBeDescriptionMod();
     undoPersistValuesMod();
     undoRoleMod();
 
@@ -279,6 +283,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     undoActiveElementMod,
     undoDisabledMod,
     undoImageAltTextMod,
+    undoInputErrorShouldBeDescriptionMod,
     undoPersistValuesMod,
     undoRoleMod
   ]);
@@ -308,6 +313,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
       applyActiveElementMod(element);
       applyDisabledMod(element, disabled);
       applyImageAltTextMod(element);
+      applyInputErrorShouldBeDescriptionMod(element);
       applyPersistValuesMod(element);
       applyRoleMod(element);
     }
@@ -317,6 +323,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     applyActiveElementMod,
     applyDisabledMod,
     applyImageAltTextMod,
+    applyInputErrorShouldBeDescriptionMod,
     applyPersistValuesMod,
     applyRoleMod,
     classNames,
