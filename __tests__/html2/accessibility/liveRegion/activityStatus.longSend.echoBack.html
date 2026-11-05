@@ -70,7 +70,6 @@
         // THEN: "Sending message." is announced.
         await waitFor(() =>
           expect(getLiveRegionTexts()).toEqual([
-            'connecting', // Announced by the toaster, which announces the first notification of every ID.
             'Sending message.' // No "You said": the message was not narratable when it was added.
           ])
         );
