@@ -225,12 +225,17 @@
         // Otherwise, unmute cleanup would call acquireAndConnectMediaStream().
         
         // Start fresh recording
+        const callCountBeforeStart = getUserMediaCallCount;
+
         await host.click(micButton);
         await pageConditions.became(
           'Voice state is listening for cleanup test',
           () => getVoiceState() === 'listening',
           2000
         );
+
+        // Wait for the microphone request, so the mute below does not race the start-up.
+        await pageConditions.became('Microphone requested', () => getUserMediaCallCount > callCountBeforeStart, 2000);
 
         // Record the getUserMedia call count before mute
         const callCountBeforeMute = getUserMediaCallCount;

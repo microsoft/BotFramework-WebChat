@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from 'react';
+import { useRefFrom } from 'use-ref-from';
 import { useRecorder } from './useRecorder';
 import usePostVoiceActivity from '../../../hooks/internal/usePostVoiceActivity';
 import useVoiceRecordingMuted from '../../../hooks/useVoiceRecordingMuted';
@@ -11,6 +12,7 @@ import useVoiceState from '../../../hooks/useVoiceState';
 export function VoiceRecorderBridge(): null {
   const [muted] = useVoiceRecordingMuted();
   const [voiceState] = useVoiceState();
+  const mutedRef = useRefFrom(muted);
   const postVoiceActivity = usePostVoiceActivity();
 
   // Derive recording state from voiceState - recording is active when not idle
@@ -23,12 +25,14 @@ export function VoiceRecorderBridge(): null {
         type: 'event',
         value: {
           contentType: 'audio/webm',
-          content: base64,
+          // While muted, send silence: the worklet may still send audio recorded before it received MUTE.
+          // "A" is 0 in base64 and "=" is padding, so this zeroes every byte.
+          content: mutedRef.current ? base64.replace(/[^=]/gu, 'A') : base64,
           timestamp
         }
       } as any);
     },
-    [postVoiceActivity]
+    [mutedRef, postVoiceActivity]
   );
 
   const { mute, record } = useRecorder(handleAudioChunk);
