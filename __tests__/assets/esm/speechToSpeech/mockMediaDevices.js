@@ -42,8 +42,8 @@ export function setupMockMediaDevices() {
     // Mock sends from port2 → received by port1.onmessage (audio chunks)
     channel.port2.onmessage = ({ data }) => {
       if (data.command === 'START') {
+        // Like the real processor, START keeps "muted": a MUTE can arrive before START.
         recording = true;
-        muted = false;
         const bufferSize = options?.processorOptions?.bufferSize || 2400;
 
         // Send chunks at ~100ms intervals while recording
