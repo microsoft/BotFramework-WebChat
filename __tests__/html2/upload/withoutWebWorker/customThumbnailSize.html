@@ -10,8 +10,7 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const store = testHelpers.createStore();
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         window.Worker = undefined;
 
@@ -31,12 +30,28 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.uploadFile('seaofthieves.jpg');
+        await (
+          await directLine.actPostActivity(() => pageObjects.uploadFile('seaofthieves.jpg', { waitForSend: false }))
+        ).resolveAll();
+
+        // Emulated, same as the mock bot's reply to an upload: it links the file.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/octet-stream',
+              contentUrl: 'https://example.com/seaofthieves.jpg',
+              name: 'seaofthieves.jpg'
+            }
+          ],
+          text: 'You have uploaded:',
+          type: 'message'
+        });
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.allImagesLoaded();
 
+        // THEN: The uploaded image shows its 120 × 60 PNG thumbnail, scaled up.
         await host.snapshot('local');
       });
     </script>
