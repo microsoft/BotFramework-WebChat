@@ -20,22 +20,18 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createDirectLine, createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
       import { useSendFiles } from 'botframework-webchat/hook.js';
       import createRenderHook from '/assets/esm/createRenderHook.js';
-
-      const {
-        createStore,
-        token: { fetchDirectLineToken }
-      } = window.testHelpers;
 
       window.WebChat = { createStoreWithOptions, testIds };
 
       run(
         async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
           const renderHook = createRenderHook(
             document.getElementById('webchat'),
-            { directLine: createDirectLine({ token: await fetchDirectLineToken() }), store: createStore() },
+            { directLine, store },
             { renderWebChat: true }
           );
 
@@ -49,11 +45,30 @@
           blob1.name = 'index.png';
           blob2.name = 'index2.png';
 
-          sendFiles([blob1, blob2]);
+          await (await directLine.actPostActivity(() => sendFiles([blob1, blob2]))).resolveAll();
+
+          // Emulated, same as the mock bot's reply to an upload: it links each file.
+          await directLine.emulateIncomingActivity({
+            attachments: [
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'https://example.com/index.png',
+                name: 'index.png'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'https://example.com/index2.png',
+                name: 'index2.png'
+              }
+            ],
+            text: 'You have uploaded:',
+            type: 'message'
+          });
 
           await pageConditions.numActivitiesShown(2);
           await pageConditions.allOutgoingActivitiesSent();
 
+          // THEN: Both files are sent in one message with their sizes, followed by the bot's reply.
           await host.snapshot('local');
         },
         { ignoreErrors: true }

@@ -37,6 +37,7 @@
     "@fluentui/tokens": "1.0.0-alpha.23",
     "eventsource-parser": "4.1.2",
     "iter-fest": "0.3.1",
+    "jest-mock": "29.7.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   }
