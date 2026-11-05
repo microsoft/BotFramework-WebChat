@@ -1,9 +1,8 @@
 import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
 import { isPresentational } from 'botframework-webchat-core/internal.js';
-import { iteratorSome } from 'iter-fest';
 import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 
-import { useActivities, useGetActivityByKey, usePonyfill } from '../../hooks/index';
+import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
 import type { SendStatus } from '../../types/SendStatus';
@@ -23,7 +22,6 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const [activities] = useActivities();
   const forceRender = useForceRender();
-  const getActivityByKey = useGetActivityByKey();
   const getKeyByActivity = useGetKeyByActivity();
   const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
   const sendStatusByActivityKeyRef = useRef<ReadonlyMap<string, SendStatus>>(Object.freeze(new Map()));
@@ -98,16 +96,16 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
     [sendStatusByActivityKey]
   );
 
+  // Derived from `activities`, so an echo-back that changes the content of a sending activity is picked up.
+  // User activities only, as in `expiryByActivityKey`: a bot activity with the same `clientActivityID` shares the key.
   const isSending = useMemo<boolean>(
     () =>
-      iteratorSome(sendStatusByActivityKey.entries(), ([activityKey, status]) => {
-        if (status === 'sending') {
-          const activity = getActivityByKey(activityKey);
+      activities.some(activity => {
+        const key = activity.from.role === 'user' && getKeyByActivity(activity);
 
-          return activity && !isPresentational(activity);
-        }
+        return key && sendStatusByActivityKey.get(key) === 'sending' && !isPresentational(activity);
       }),
-    [getActivityByKey, sendStatusByActivityKey]
+    [activities, getKeyByActivity, sendStatusByActivityKey]
   );
 
   // Memoized on the boolean, so `useIsSending()` only re-renders when it flips.
