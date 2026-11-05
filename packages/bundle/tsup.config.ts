@@ -29,13 +29,6 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
     'botframework-webchat.schema': './src/boot/exports/schema.ts'
   },
-  env: {
-    ...config.env,
-    // Followings are required by microsoft-cognitiveservices-speech-sdk:
-    NODE_TLS_REJECT_UNAUTHORIZED: '',
-    SPEECH_CONDUCT_OCSP_CHECK: '',
-    SPEECH_OCSP_CACHE_ROOT: ''
-  },
   noExternal: [
     ...(config.noExternal ?? []),
     '@babel/runtime',
