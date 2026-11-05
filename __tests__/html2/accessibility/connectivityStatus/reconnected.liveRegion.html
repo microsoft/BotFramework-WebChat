@@ -45,15 +45,10 @@
         await directLine.emulateIncomingActivity('Hello, World!');
 
         // THEN: No "Connectivity Status: …" is announced while Web Chat starts, it would be queued before the message.
-        await waitFor(() =>
-          expect(getLiveRegionTexts()).toEqual([
-            'connecting', // Announced by the toaster, which announces the first notification of every ID.
-            'Bot said\nHello, World!'
-          ])
-        );
+        await waitFor(() => expect(getLiveRegionTexts()).toEqual(['Bot said\nHello, World!']));
         await pageConditions.scrollToBottomCompleted();
 
-        // THEN: The live region shows "connecting" and the message, there is no status bar.
+        // THEN: The live region shows only the message, there is no status bar.
         await host.snapshot('local');
 
         // ---
@@ -67,7 +62,6 @@
         // THEN: The status bar text is announced, once.
         await waitFor(() =>
           expect(getLiveRegionTexts()).toEqual([
-            'connecting',
             'Bot said\nHello, World!',
             'Connectivity Status: Network interruption occurred. Reconnecting…'
           ])
@@ -87,7 +81,6 @@
         // THEN: "Connected" is announced, once.
         await waitFor(() =>
           expect(getLiveRegionTexts()).toEqual([
-            'connecting',
             'Bot said\nHello, World!',
             'Connectivity Status: Network interruption occurred. Reconnecting…',
             'Connectivity Status: Connected'

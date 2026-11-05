@@ -56,12 +56,7 @@
         clock.tick(2_999);
 
         // THEN: Only the message is announced.
-        await waitFor(() =>
-          expect(getLiveRegionTexts()).toEqual([
-            'connecting', // Announced by the toaster, which announces the first notification of every ID.
-            'You said\nHello, World!'
-          ])
-        );
+        await waitFor(() => expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!']));
         expect(pageElements.activityStatuses()[0].innerText).toContain('Sending');
 
         // THEN: The live region shows "You said Hello, World!", the message shows "Sending".
@@ -73,9 +68,7 @@
         clock.tick(1);
 
         // THEN: "Sending message." is announced.
-        await waitFor(() =>
-          expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.'])
-        );
+        await waitFor(() => expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Sending message.']));
 
         // THEN: The live region shows "Sending message." under the message.
         await host.snapshot('local');
@@ -88,7 +81,7 @@
         // THEN: "Sending message." is not announced again.
         // No wait needed: the fake clock runs timers inside `tick()` and React 16 (`webchat-es5.js`) renders synchronously.
         expect(pageElements.activityStatuses()[0].innerText).toContain('Sending');
-        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+        expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Sending message.']);
 
         // ---
 
@@ -101,7 +94,7 @@
         clock.tick(10_000);
 
         // THEN: Nothing else is announced.
-        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+        expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Sending message.']);
 
         // THEN: The message shows "Just now", the live region still shows "Sending message." once.
         await host.snapshot('local');

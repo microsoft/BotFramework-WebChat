@@ -54,10 +54,6 @@
 
         await pageConditions.uiConnected();
 
-        // The connectivity notification is announced first, see `message.html`.
-        await waitFor(() => expect(ariaNotify).toHaveBeenCalledTimes(1));
-        ariaNotify.mockClear();
-
         // WHEN: The bot sends an Adaptive Card form with named and pre-filled inputs, as in `liveRegion/attachment/adaptiveCard.inputValue.html`.
         await directLine.emulateIncomingActivity({
           attachments: [

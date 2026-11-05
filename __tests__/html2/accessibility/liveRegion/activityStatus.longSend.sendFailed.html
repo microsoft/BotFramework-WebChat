@@ -62,11 +62,7 @@
 
           // THEN: The failure is announced.
           await waitFor(() =>
-            expect(getLiveRegionTexts()).toEqual([
-              'connecting', // Announced by the toaster, which announces the first notification of every ID.
-              'You said\nHello, World!',
-              'Failed to send message.'
-            ])
+            expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Failed to send message.'])
           );
 
           // WHEN: 10 seconds later.
@@ -74,7 +70,7 @@
 
           // THEN: "Sending message." is not announced.
           // No wait needed: the fake clock runs timers inside `tick()` and React 16 (`webchat-es5.js`) renders synchronously.
-          expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Failed to send message.']);
+          expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Failed to send message.']);
 
           // THEN: The live region shows "Failed to send message." after the message, the message shows "Send failed. Retry.".
           await host.snapshot('local');
