@@ -59,20 +59,14 @@
 
         clock.tick(3_000);
 
-        await waitFor(() =>
-          expect(getLiveRegionTexts()).toEqual([
-            'connecting', // Announced by the toaster, which announces the first notification of every ID.
-            'You said\nHello, World!',
-            'Sending message.'
-          ])
-        );
+        await waitFor(() => expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Sending message.']));
 
         // WHEN: The language changes to French while the message is still sending.
         render({ TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT: 'Envoi du message.' });
 
         // THEN: It is not announced again in French.
         // No wait needed: `renderWebChat()` re-renders synchronously with React 16 (`webchat-es5.js`).
-        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+        expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Sending message.']);
 
         // WHEN: The server acknowledges the message, then the language changes to German.
         await sendMessage.resolveAll();
@@ -82,7 +76,7 @@
         render({ TRANSCRIPT_LIVE_REGION_SEND_SENDING_ALT: 'Nachricht wird gesendet.' });
 
         // THEN: It is not announced again in German.
-        expect(getLiveRegionTexts()).toEqual(['connecting', 'You said\nHello, World!', 'Sending message.']);
+        expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!', 'Sending message.']);
 
         // WHEN: The user sends another message, which is still sending 3 seconds later.
         await directLine.emulateOutgoingActivity('Aloha!');
@@ -94,7 +88,6 @@
         // THEN: "Sending message." is announced once for the new message, in German.
         await waitFor(() =>
           expect(getLiveRegionTexts()).toEqual([
-            'connecting',
             'You said\nHello, World!',
             'Sending message.',
             'You said\nAloha!',

@@ -74,12 +74,10 @@
 
         // THEN: "Sending message." is not announced: the narratable activity under the key is not the user's.
         // No wait needed: the fake clock runs timers inside `tick()` and React 16 (`webchat-es5.js`) renders synchronously.
-        expect(getLiveRegionTexts()).toEqual([
-          'connecting' // Announced by the toaster. No "Bot said": its key was already in the transcript.
-        ]);
+        expect(getLiveRegionTexts()).toEqual([]); // No "Bot said": its key was already in the transcript.
         expect(pageElements.activityStatuses()[0].innerText).toContain('Sending'); // The user's send status.
 
-        // THEN: The live region shows "connecting" only, the bot message shows the user's "Sending" status.
+        // THEN: The live region is empty, the bot message shows the user's "Sending" status.
         await host.snapshot('local');
       });
     </script>

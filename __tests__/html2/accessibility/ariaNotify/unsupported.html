@@ -86,10 +86,10 @@
             Array.from(pageElements.liveRegion().children, child =>
               testHelpers.getAllTextContents(child).map(text => text.trim())
             )
-          ).toEqual([['connected'], ['Bot said', 'Hello, World!']])
+          ).toEqual([['Bot said', 'Hello, World!']])
         );
 
-        // THEN: The live region (top) shows "connected" and the message, the transcript shows the message.
+        // THEN: The live region (top) shows the message, the transcript shows the message.
         await host.snapshot('local');
       });
     </script>

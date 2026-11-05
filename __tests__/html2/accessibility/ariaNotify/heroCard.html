@@ -54,10 +54,6 @@
 
         await pageConditions.uiConnected();
 
-        // The connectivity notification is announced first, see `message.html`.
-        await waitFor(() => expect(ariaNotify).toHaveBeenCalledTimes(1));
-        ariaNotify.mockClear();
-
         // WHEN: The bot sends a hero card with an image and two buttons.
         await directLine.emulateIncomingActivity({
           attachments: [

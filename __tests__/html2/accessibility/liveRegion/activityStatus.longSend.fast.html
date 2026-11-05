@@ -64,10 +64,7 @@
 
         // THEN: Only the message is announced, "Sending message." is not.
         // No wait needed: the fake clock runs timers inside `tick()` and React 16 (`webchat-es5.js`) renders synchronously.
-        expect(getLiveRegionTexts()).toEqual([
-          'connecting', // Announced by the toaster, which announces the first notification of every ID.
-          'You said\nHello, World!'
-        ]);
+        expect(getLiveRegionTexts()).toEqual(['You said\nHello, World!']);
 
         // THEN: The live region shows "You said Hello, World!" only, the message shows "Just now".
         await host.snapshot('local');

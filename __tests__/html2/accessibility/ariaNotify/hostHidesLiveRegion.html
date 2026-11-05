@@ -65,15 +65,9 @@
 
         // THEN: The message is still announced, on the root element of Web Chat, which the host page did not hide.
         await waitFor(() =>
-          expect(ariaNotify.mock.calls).toEqual([
-            ['connected', { priority: 'normal' }], // The connectivity notification, see `message.html`.
-            ['Bot said Hello, World!', { priority: 'normal' }]
-          ])
+          expect(ariaNotify.mock.calls).toEqual([['Bot said Hello, World!', { priority: 'normal' }]])
         );
-        expect(ariaNotify.mock.contexts).toEqual([
-          document.querySelector('.webchat'),
-          document.querySelector('.webchat')
-        ]);
+        expect(ariaNotify.mock.contexts).toEqual([document.querySelector('.webchat')]);
 
         // THEN: The live region is not shown (hidden by the host page); the transcript shows the message.
         await host.snapshot('local');

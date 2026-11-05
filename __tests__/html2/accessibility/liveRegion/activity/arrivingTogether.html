@@ -58,7 +58,6 @@
           expect(
             [].map.call(pageElements.liveRegion().children, child => testHelpers.getAllTextContents(child).join('\n'))
           ).toEqual([
-            'connected', // The connectivity notification, queued before the messages.
             'Bot said\nFirst, preheat the oven.',
             'Bot said\nThen, mix the batter.',
             'Bot said\nFinally, bake for 20 minutes.'
