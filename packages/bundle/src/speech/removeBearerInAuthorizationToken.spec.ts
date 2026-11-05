@@ -4,7 +4,7 @@ import type RemoveBearerInAuthorizationTokenType from './removeBearerInAuthoriza
 let removeBearerInAuthorizationToken: typeof RemoveBearerInAuthorizationTokenType;
 let consoleWarn: jest.SpyInstance;
 
-beforeAll(() => {
+beforeAll(async () => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -16,7 +16,7 @@ beforeAll(() => {
         console.warn(...args)
   }));
 
-  removeBearerInAuthorizationToken = require('./removeBearerInAuthorizationToken').default;
+  removeBearerInAuthorizationToken = (await import('./removeBearerInAuthorizationToken')).default;
 });
 
 afterEach(() => consoleWarn.mockClear());
