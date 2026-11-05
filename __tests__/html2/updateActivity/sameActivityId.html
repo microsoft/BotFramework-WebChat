@@ -19,74 +19,86 @@
       import { waitFor } from '@testduet/wait-for';
 
       run(async function () {
-        const workingDirectLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        let firstBotActivityId;
-        let firstBotActivityTimestamp;
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const directLine = {
-          activity$: workingDirectLine.activity$.map(activity => {
-            if (!activity.channelData && activity.type === 'message') {
-              // Duplicate the ID using the first message activity from bot.
-
-              if (firstBotActivityId) {
-                return Object.assign({}, activity, {
-                  id: firstBotActivityId,
-                  timestamp: firstBotActivityTimestamp
-                });
-              }
-
-              firstBotActivityId = activity.id;
-              firstBotActivityTimestamp = activity.timestamp;
-            }
-
-            return activity;
-          }),
-          connectionStatus$: workingDirectLine.connectionStatus$,
-          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
-          token: workingDirectLine.token
-        };
-
-        WebChat.renderWebChat(
-          {
-            directLine,
-            store: testHelpers.createStore()
-          },
-          document.getElementById('webchat')
-        );
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
         // WHEN: An "echo" message is being sent to the bot.
-        await pageObjects.sendMessageViaSendBox('echo This message will be replaced by a carousel.', {
-          waitForSend: true
+        await (
+          await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('echo This message will be replaced by a carousel.', {
+              waitForSend: false
+            })
+          )
+        ).resolveAll();
+
+        // Every reply from the bot reuses the ID and timestamp of its first reply, so it replaces that reply in place.
+        const firstBotActivity = { id: 'bot-activity-1', timestamp: new Date().toISOString() };
+
+        // Emulated, same as the mock bot's "echo" command.
+        await directLine.emulateIncomingActivity({
+          ...firstBotActivity,
+          text: 'Echoing back in a separate activity.',
+          type: 'message'
         });
 
-        // THEN: Bot should reply with 2 messages. However, we change their `activity.id` to be the same value.
+        await directLine.emulateIncomingActivity({
+          ...firstBotActivity,
+          text: 'This message will be replaced by a carousel',
+          type: 'message'
+        });
+
+        // THEN: Bot should reply with 2 messages with the same `activity.id`.
         //       Thus, only the second message will be shown. And there are 2 messages in total only.
         await pageConditions.numActivitiesShown(2);
 
-        // The second reply arrives after the first one, wait until it replaced the first one.
-        await waitFor(
-          () =>
-            expect(pageElements.activityContents()[1]).toHaveProperty(
-              'textContent',
-              'This message will be replaced by a carousel'
-            ),
-          { timeout: 15_000 }
+        // Wait until the second reply replaced the first one.
+        await waitFor(() =>
+          expect(pageElements.activityContents()[1]).toHaveProperty(
+            'textContent',
+            'This message will be replaced by a carousel'
+          )
         );
 
         // THEN: It should show 1 outgoing message, and 1 incoming message.
         await host.snapshot('local');
 
         // WHEN: A "carousel" message is being sent.
-        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+        await (
+          await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox('carousel', { waitForSend: false }))
+        ).resolveAll();
+
+        // Emulated, same as the mock bot's "carousel" command, with local copies of its images.
+        await directLine.emulateIncomingActivity({
+          ...firstBotActivity,
+          attachmentLayout: 'carousel',
+          attachments: [1, 2, 3, 4].map(index => ({
+            content: {
+              buttons: [
+                { title: 'Places To Buy', type: 'imBack', value: 'Place to buy' },
+                { title: 'Related Products', type: 'imBack', value: 'Related Products' }
+              ],
+              images: [
+                { alt: `Details about image ${index}`, url: `/__tests__/html2/basic/assets/surface${index}.jpg` }
+              ],
+              subtitle: 'This is the subtitle',
+              text: 'Price: $XXX.XX USD',
+              title: `Details about image ${index}`
+            },
+            contentType: 'application/vnd.microsoft.card.hero'
+          })),
+          text: '',
+          type: 'message'
+        });
 
         // THEN: It should show 3 messages only because all messages from bot is being collapsed into a single message.
         await pageConditions.numActivitiesShown(3);
 
         // WHEN: The carousel replaced the earlier reply from the bot.
         //       The outgoing message alone satisfies the count above, so wait for the 4 cards of the carousel.
-        await waitFor(() => expect(pageElements.activityAttachments()[1]).toHaveLength(4), { timeout: 15_000 });
+        await waitFor(() => expect(pageElements.activityAttachments()[1]).toHaveLength(4));
 
         // WHEN: All images (in the carousel) are loaded.
         await pageConditions.allImagesLoaded();

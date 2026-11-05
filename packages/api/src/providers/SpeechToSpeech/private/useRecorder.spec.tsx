@@ -341,4 +341,144 @@ describe('useRecorder', () => {
     const hasNonZero = [...btoaCall].some((char: string) => char.charCodeAt(0) !== 0);
     expect(hasNonZero).toBe(true);
   });
+
+  describe('when muted or stopped during start-up', () => {
+    // Start-up then only awaits promises that are already resolved, a macrotask runs after all of them.
+    // eslint-disable-next-line no-restricted-globals
+    const settle = () => new Promise(resolve => setTimeout(resolve));
+
+    let resolveAddModule: () => void;
+    let resolveGetUserMedia: (stream: unknown) => void;
+
+    beforeEach(() => {
+      mockAudioContext.audioWorklet.addModule.mockImplementationOnce(
+        () => new Promise<void>(resolve => (resolveAddModule = resolve))
+      );
+      mockMediaDevices.getUserMedia.mockImplementationOnce(
+        () => new Promise(resolve => (resolveGetUserMedia = resolve))
+      );
+
+      render(<HookApp onAudioChunk={onAudioChunk} />);
+    });
+
+    afterEach(() => {
+      mockAudioContext.audioWorklet.addModule.mockReset().mockResolvedValue(undefined);
+      mockMediaDevices.getUserMedia.mockReset().mockResolvedValue(mockMediaStream);
+    });
+
+    test('should send MUTE before START and not acquire the microphone when muted while loading the worklet', async () => {
+      act(() => {
+        hookData?.record();
+        hookData?.mute();
+      });
+
+      resolveAddModule();
+
+      await waitFor(() => expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' }));
+
+      expect(mockWorkletPort.postMessage.mock.calls).toEqual([[{ command: 'MUTE' }], [{ command: 'START' }]]);
+      expect(mockMediaDevices.getUserMedia).not.toHaveBeenCalled();
+    });
+
+    test('should not create the worklet when stopped while loading the worklet', async () => {
+      act(() => {
+        const stopRecording = hookData?.record();
+
+        stopRecording?.();
+      });
+
+      resolveAddModule();
+
+      await settle();
+
+      expect(global.AudioWorkletNode).not.toHaveBeenCalled();
+      expect(mockMediaDevices.getUserMedia).not.toHaveBeenCalled();
+    });
+
+    test('should stop the microphone when muted while acquiring it', async () => {
+      const track = { stop: jest.fn() };
+
+      act(() => {
+        hookData?.record();
+      });
+
+      resolveAddModule();
+
+      await waitFor(() => expect(mockMediaDevices.getUserMedia).toHaveBeenCalledTimes(1));
+
+      act(() => {
+        hookData?.mute();
+      });
+
+      resolveGetUserMedia({ getTracks: () => [track] });
+
+      await waitFor(() => expect(mockWorkletPort.postMessage).toHaveBeenCalledWith({ command: 'START' }));
+
+      expect(mockWorkletPort.postMessage.mock.calls).toEqual([[{ command: 'MUTE' }], [{ command: 'START' }]]);
+      expect(track.stop).toHaveBeenCalledTimes(1);
+      expect(mockAudioContext.createMediaStreamSource).not.toHaveBeenCalled();
+    });
+
+    test('should stop the microphone and not send START when stopped while acquiring it', async () => {
+      const track = { stop: jest.fn() };
+      let stopRecording: (() => void) | undefined;
+
+      act(() => {
+        stopRecording = hookData?.record();
+      });
+
+      resolveAddModule();
+
+      await waitFor(() => expect(mockMediaDevices.getUserMedia).toHaveBeenCalledTimes(1));
+
+      act(() => {
+        stopRecording?.();
+      });
+
+      resolveGetUserMedia({ getTracks: () => [track] });
+
+      await settle();
+
+      expect(track.stop).toHaveBeenCalledTimes(1);
+      expect(mockAudioContext.createMediaStreamSource).not.toHaveBeenCalled();
+      expect(mockWorkletPort.postMessage.mock.calls).toEqual([[{ command: 'STOP' }]]);
+    });
+
+    test('should keep one microphone when muted and unmuted while acquiring it', async () => {
+      const firstTrack = { stop: jest.fn() };
+      const secondTrack = { stop: jest.fn() };
+      let unmute: (() => void) | undefined;
+
+      act(() => {
+        hookData?.record();
+      });
+
+      resolveAddModule();
+
+      await waitFor(() => expect(mockMediaDevices.getUserMedia).toHaveBeenCalledTimes(1));
+
+      act(() => {
+        unmute = hookData?.mute();
+      });
+
+      // Unmuting requests the microphone again, while the first request is still pending.
+      let resolveSecondGetUserMedia: (stream: unknown) => void;
+
+      mockMediaDevices.getUserMedia.mockImplementationOnce(
+        () => new Promise(resolve => (resolveSecondGetUserMedia = resolve))
+      );
+
+      act(() => {
+        unmute?.();
+      });
+
+      resolveGetUserMedia({ getTracks: () => [firstTrack] });
+      resolveSecondGetUserMedia({ getTracks: () => [secondTrack] });
+
+      await waitFor(() => expect(mockAudioContext.createMediaStreamSource).toHaveBeenCalledTimes(2));
+
+      expect(firstTrack.stop).toHaveBeenCalledTimes(1);
+      expect(secondTrack.stop).not.toHaveBeenCalled();
+    });
+  });
 });

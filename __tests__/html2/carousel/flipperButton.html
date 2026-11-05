@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -10,17 +10,40 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        WebChat.renderWebChat(
-          {
-            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore()
-          },
-          document.getElementById('webchat')
-        );
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('carousel');
+
+        await (
+          await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox('carousel', { waitForSend: false }))
+        ).resolveAll();
+
+        // Emulated, same as the mock bot's "carousel" command, with local copies of its images.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [1, 2, 3, 4].map(index => ({
+            content: {
+              buttons: [
+                { title: 'Places To Buy', type: 'imBack', value: 'Place to buy' },
+                { title: 'Related Products', type: 'imBack', value: 'Related Products' }
+              ],
+              images: [
+                { alt: `Details about image ${index}`, url: `/__tests__/html2/basic/assets/surface${index}.jpg` }
+              ],
+              subtitle: 'This is the subtitle',
+              text: 'Price: $XXX.XX USD',
+              title: `Details about image ${index}`
+            },
+            contentType: 'application/vnd.microsoft.card.hero'
+          })),
+          text: '',
+          type: 'message'
+        });
+
         await pageConditions.numActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
 
         // GIVEN: Carousel is at left most position.
         const carouselLayout = document.querySelector('.carousel-layout');
