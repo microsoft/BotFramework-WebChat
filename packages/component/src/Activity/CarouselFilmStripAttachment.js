@@ -1,8 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import cx from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
+import { any, array, boolean, function_, nonNullish, number, object, optional, pipe, readonly, string } from 'valibot';
 
 import Bubble from './Bubble';
 import ScreenReaderText from '../ScreenReaderText';
@@ -11,18 +12,45 @@ import styles from './CarouselFilmStripAttachment.module.css';
 
 const { useLocalizer } = hooks;
 
-const CarouselFilmStripAttachment = ({
-  activity,
-  attachment,
-  className = '',
-  fromUser,
-  hasAvatar,
-  hideNub,
-  index,
-  renderAttachment,
-  showAvatar,
-  showNub
-}) => {
+const carouselFilmStripAttachmentPropsSchema = pipe(
+  object({
+    activity: pipe(
+      object({
+        attachments: optional(array(any())),
+        from: pipe(object({ role: string() }), readonly()),
+        text: optional(string()),
+        textFormat: optional(string()),
+        timestamp: optional(string())
+      }),
+      readonly()
+    ),
+    attachment: pipe(object({ content: optional(any()) }), readonly()),
+    className: optional(string()),
+    fromUser: nonNullish(any()),
+    hasAvatar: nonNullish(any()),
+    hideNub: boolean(),
+    index: number(),
+    renderAttachment: function_(),
+    showAvatar: boolean(),
+    showNub: boolean()
+  }),
+  readonly()
+);
+
+const CarouselFilmStripAttachment = props => {
+  const {
+    activity,
+    attachment,
+    className = '',
+    fromUser,
+    hasAvatar,
+    hideNub,
+    index,
+    renderAttachment,
+    showAvatar,
+    showNub
+  } = validateProps(carouselFilmStripAttachmentPropsSchema, props);
+
   const localize = useLocalizer();
   const classNames = useStyles(styles);
 
@@ -52,29 +80,6 @@ const CarouselFilmStripAttachment = ({
       </Bubble>
     </li>
   );
-};
-
-CarouselFilmStripAttachment.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array,
-    from: PropTypes.shape({
-      role: PropTypes.string.isRequired
-    }).isRequired,
-    text: PropTypes.string,
-    textFormat: PropTypes.string,
-    timestamp: PropTypes.string
-  }).isRequired,
-  attachment: PropTypes.shape({
-    content: PropTypes.any
-  }).isRequired,
-  className: PropTypes.string,
-  fromUser: PropTypes.any.isRequired,
-  hasAvatar: PropTypes.any.isRequired,
-  hideNub: PropTypes.bool.isRequired,
-  index: PropTypes.number.isRequired,
-  renderAttachment: PropTypes.func.isRequired,
-  showAvatar: PropTypes.bool.isRequired,
-  showNub: PropTypes.bool.isRequired
 };
 
 export default CarouselFilmStripAttachment;

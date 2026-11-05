@@ -1,4 +1,5 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import {
   Composer as FilmComposer,
@@ -10,8 +11,8 @@ import {
 } from 'react-film';
 
 import cx from 'classnames';
-import PropTypes from 'prop-types';
 import React, { memo, useMemo } from 'react';
+import { any, array, boolean, function_, literal, object, optional, pipe, readonly, union } from 'valibot';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
@@ -20,14 +21,28 @@ import styles from './CarouselLayout.module.css';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
-const CarouselLayoutCore = ({
-  activity,
-  hideTimestamp = false,
-  renderActivityStatus = false,
-  renderAttachment,
-  renderAvatar = false,
-  showCallout = true
-}) => {
+const carouselLayoutPropsSchema = pipe(
+  object({
+    // `activity` is required, but `CarouselLayout` has a default value for it.
+    activity: optional(pipe(object({ attachments: optional(array(any())) }), readonly())),
+    hideTimestamp: optional(boolean()),
+    renderActivityStatus: optional(union([literal(false), function_()])),
+    renderAttachment: function_(),
+    renderAvatar: optional(union([literal(false), function_()])),
+    showCallout: optional(boolean())
+  }),
+  readonly()
+);
+
+const CarouselLayoutCore = props => {
+  const {
+    activity,
+    hideTimestamp = false,
+    renderActivityStatus = false,
+    renderAttachment,
+    renderAvatar = false,
+    showCallout = true
+  } = validateProps(carouselLayoutPropsSchema, props);
   const [{ root: filmRootClassName }] = useReactFilmStyleSetClassNames();
   const [direction] = useDirection();
   const [scrollBarWidth] = useScrollBarWidth();
@@ -69,19 +84,8 @@ const CarouselLayoutCore = ({
   );
 };
 
-CarouselLayoutCore.propTypes = {
-  activity: PropTypes.shape({
-    attachments: PropTypes.array
-  }).isRequired,
-  hideTimestamp: PropTypes.bool,
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  renderAttachment: PropTypes.func.isRequired,
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  showCallout: PropTypes.bool
-};
-
 const CarouselLayout = props => {
-  const { activity: { attachments = [] } = {} } = props;
+  const { activity: { attachments = [] } = {} } = validateProps(carouselLayoutPropsSchema, props);
   const [direction] = useDirection();
   const [nonce] = useNonce();
   const filmStyleSet = useMemo(() => createBasicStyleSetForReactFilm({ cursor: null }), []);
@@ -99,10 +103,6 @@ const CarouselLayout = props => {
       <CarouselLayoutCore {...props} />
     </FilmComposer>
   );
-};
-
-CarouselLayout.propTypes = {
-  ...CarouselLayoutCore.propTypes
 };
 
 export default memo(CarouselLayout);

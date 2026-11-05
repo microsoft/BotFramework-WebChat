@@ -1,13 +1,24 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
+import { number, object, optional, pipe, readonly, string } from 'valibot';
 
 const { useDirection } = hooks;
 
 const ICON_SIZE_FACTOR = 16;
 
-const WarningNotificationIcon = ({ className = '', size = 1 }) => {
+const warningNotificationIconPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    size: optional(number())
+  }),
+  readonly()
+);
+
+const WarningNotificationIcon = props => {
+  const { className = '', size = 1 } = validateProps(warningNotificationIconPropsSchema, props);
+
   const [direction] = useDirection();
 
   return (
@@ -21,11 +32,6 @@ const WarningNotificationIcon = ({ className = '', size = 1 }) => {
       <path d="M13.1,13.1H0L6.6,0L13.1,13.1z M7,10.5H6.1v0.9H7V10.5z M7,9.7V5.2H6.1v4.4L7,9.7z" fillRule="evenodd" />
     </svg>
   );
-};
-
-WarningNotificationIcon.propTypes = {
-  className: PropTypes.string,
-  size: PropTypes.number
 };
 
 export default WarningNotificationIcon;

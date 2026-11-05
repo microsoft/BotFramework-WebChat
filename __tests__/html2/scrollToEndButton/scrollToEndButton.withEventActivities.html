@@ -56,10 +56,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         // WHEN: Scroll to top to unstick.
-        pageElements.transcriptScrollable().scrollTop = 0;
-
-        // WHEN: Wait for scroll-to-bottom to detect it is no longer sticky.
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await pageObjects.scrollToTop();
 
         // WHEN: Receive an event activity.
         directLine.activityDeferredObservable.next(createEventActivity());
