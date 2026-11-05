@@ -87,7 +87,8 @@ function SuggestedActions() {
             image={image}
             // Image alt text should use `imageAltText` field and fallback to `text` field.
             // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#image-alt-text
-            imageAlt={image && (imageAltText || text)}
+            // Without either, the image is decorative: the button text names the button.
+            imageAlt={image && (imageAltText ?? text ?? '')}
             itemIndex={index}
             // eslint-disable-next-line react/no-array-index-key
             key={index}
