@@ -11,6 +11,7 @@ FLUENTUI_TOKENS_SRC := ./entry/@fluentui/tokens.js
 
 EVENTSOURCE_PARSER_STREAM_SRC := ./entry/eventsource-parser/stream.js
 ITER_FEST_SRC := ./entry/iter-fest.js
+JEST_MOCK_SRC := ./entry/jest-mock.js
 
 # build targets
 
@@ -24,6 +25,7 @@ FLUENTUI_TOKENS_OUT := out/@fluentui/tokens.js
 
 EVENTSOURCE_PARSER_STREAM_OUT := out/eventsource-parser/stream.js
 ITER_FEST_OUT := out/iter-fest.js
+JEST_MOCK_OUT := out/jest-mock.js
 
 # build options
 SHARED_FLAGS := --sourcemap --format=esm --bundle --platform=browser
@@ -108,7 +110,13 @@ $(ITER_FEST_OUT): $(ITER_FEST_SRC)
 	esbuild $(ITER_FEST_SRC) --outfile=$@ \
 		$(SHARED_FLAGS)
 
-all: $(REACT_OUT) $(REACT_JSX_RUNTIME_OUT) $(REACT_DOM_OUT) $(REACT_DOM_CLIENT_OUT) $(FLUENTUI_REACT_PROVIDER_OUT) $(FLUENTUI_TOKENS_OUT) $(EVENTSOURCE_PARSER_STREAM_OUT) $(ITER_FEST_OUT)
+$(JEST_MOCK_OUT): $(JEST_MOCK_SRC)
+	@mkdir -p out
+	esbuild $(JEST_MOCK_SRC) --outfile=$@ \
+		$(SHARED_FLAGS) \
+		--alias:jest-util=./module/jest-util.js
+
+all: $(REACT_OUT) $(REACT_JSX_RUNTIME_OUT) $(REACT_DOM_OUT) $(REACT_DOM_CLIENT_OUT) $(FLUENTUI_REACT_PROVIDER_OUT) $(FLUENTUI_TOKENS_OUT) $(EVENTSOURCE_PARSER_STREAM_OUT) $(ITER_FEST_OUT) $(JEST_MOCK_OUT)
 
 clean:
 	@rm -rf out/*
