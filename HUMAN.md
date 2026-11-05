@@ -5,13 +5,16 @@
 ### Package management
 
 - When adding dependencies, use `npm install`
-  - Do not add it to workspace root
-  - If it is an existing package, must use consistent version: either use existing version for the package or consider bumping every dependents to latest
+   - Do not add it to workspace root
+   - If it is an existing package, must use consistent version: either use existing version for the package or consider bumping every dependents to latest
+- Only add versions published 7 or more days ago, consumers that install with a minimum release age of 7 days cannot install newer ones
+   - npm 11.10 or later does it, with [`min-release-age=7`](https://docs.npmjs.com/cli/v11/using-npm/config#min-release-age) in `.npmrc`, older npm needs `npm install --before=<the date 7 days ago>`
+   - The "Package age" check fails until then. Versions already in `package-lock.json` are kept, so redo a bump from the `package-lock.json` of `main`
 - Unless stated otherwise, avoid Node.js packages or polyfills
-  - Use `ReadableStream`, `WritableStream`, `TransformStream`, instead of Node.js `buffer`
-  - Use Web Cryptography instead of Node.js `crypto`
-  - Do not use `fs`-like or `net`-like packages
-  - Do not use any Browserify-like packages
+   - Use `ReadableStream`, `WritableStream`, `TransformStream`, instead of Node.js `buffer`
+   - Use Web Cryptography instead of Node.js `crypto`
+   - Do not use `fs`-like or `net`-like packages
+   - Do not use any Browserify-like packages
 - Unless stated otherwise, verify newly added packages and transient packages must be either platform-neutral, browser-specific, or React-specific
 - Do not add external/publishing packages unless explicitly requested
 - Always prefix internal/non-publishing packages with `@msinternal/` to prevent package squatting
