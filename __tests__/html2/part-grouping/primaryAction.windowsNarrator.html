@@ -73,8 +73,9 @@
         expect(document.activeElement).toBe(pageElements.transcript());
         await host.snapshot('local');
 
-        // WHEN: Narrator does the "primary action" on the active group (e.g. ENTER in scan mode).
-        // Narrator invokes the element referenced by `aria-activedescendant`, the browser dispatches a "click" on it; emulated here.
+        // WHEN: The screen reader does the "primary action" on the active group (ENTER in Narrator scan mode or NVDA browse mode).
+        // Both ask the browser to run the accessibility default action (UI Automation Invoke, IAccessible2 doAction), which Chromium turns into a click on the active descendant.
+        // Neither WebDriver nor Chrome DevTools Protocol can run that action, so `click()` emulates it.
         activeDescendant().click();
 
         // THEN: The group's expand/collapse button is focused (yellow).
