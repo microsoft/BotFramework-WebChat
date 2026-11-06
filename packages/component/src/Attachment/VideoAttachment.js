@@ -1,16 +1,11 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import React from 'react';
 import { object, optional, pipe, readonly, string } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import VideoContent from './VideoContent';
 
-const ROOT_STYLE = {
-  display: 'flex',
-  flexDirection: 'column'
-};
+import styles from './MediaAttachment.module.css';
 
 const videoAttachmentPropsSchema = pipe(
   object({
@@ -27,11 +22,11 @@ const videoAttachmentPropsSchema = pipe(
 
 const VideoAttachment = props => {
   const { attachment } = validateProps(videoAttachmentPropsSchema, props);
-  const [{ videoAttachment: videoAttachmentStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  const classNames = useStyles(styles, webChatPrefixedClassName);
 
   return (
-    <div className={classNames(rootClassName, videoAttachmentStyleSet + '')}>
+    <div className={classNames['video-attachment']}>
       <VideoContent alt={attachment.name} src={attachment.contentUrl} />
     </div>
   );

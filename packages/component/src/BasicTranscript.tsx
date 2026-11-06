@@ -52,7 +52,6 @@ import {
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
 import useFocus from './hooks/useFocus';
-import useStyleSet from './hooks/useStyleSet';
 import ChatHistoryDOMComposer from './providers/ChatHistoryDOM/ChatHistoryDOMComposer';
 import useActivityElementMapRef from './providers/ChatHistoryDOM/useActivityElementRef';
 import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer';
@@ -456,7 +455,6 @@ type InternalTranscriptScrollableProps = Readonly<{
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTranscriptScrollableProps) => {
-  const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [sticky]: [boolean] = useSticky();
   const localize = useLocalizer();
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
@@ -484,7 +482,7 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
         {hasAnyChild && (
           <TranscriptActivityList
             aria-roledescription={transcriptRoleDescription}
-            className={classNames(activitiesStyleSet + '', transcriptClassNames['basic-transcript__transcript'])}
+            className={transcriptClassNames['basic-transcript__transcript']}
             role="feed"
           >
             {children}
