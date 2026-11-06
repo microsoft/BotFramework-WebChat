@@ -1,5 +1,5 @@
 import SkipListView, { getEntry, HEAD, type Entry, type Key, type Reader } from './SkipListView.ts';
-import { Overlay, VersionedStorage } from './VersionedStorage.ts';
+import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 
 const MAX_HEIGHT = 32;
 
@@ -224,7 +224,7 @@ class ReadonlySkipListImpl<T> extends SkipListView<T> implements VersionedReadon
   }
 
   mutate(): ReadWriteSkipList<T> {
-    return new ReadWriteSkipListImpl(new Overlay(this.#storage));
+    return new ReadWriteSkipListImpl(this.#storage.mutate());
   }
 }
 

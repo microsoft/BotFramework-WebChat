@@ -1,5 +1,5 @@
 import SetView from './SetView.ts';
-import { Overlay, VersionedStorage } from './VersionedStorage.ts';
+import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 
 /**
  * A read-only `Set` which can be mutated via an overlay without copying.
@@ -118,7 +118,7 @@ class ReadonlySetImpl<T> extends SetView<T> implements VersionedReadonlySet<T> {
   }
 
   mutate(): ReadWriteSet<T> {
-    return new ReadWriteSetImpl(new Overlay(this.#storage));
+    return new ReadWriteSetImpl(this.#storage.mutate());
   }
 }
 

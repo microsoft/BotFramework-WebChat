@@ -113,6 +113,84 @@ scenario(
       });
 
     bdd
+      .given('a recursive object', () => {
+        const value: { name: string; self?: unknown } = { name: 'Hello' };
+
+        value.self = value;
+
+        return value;
+      })
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should return a copy', (value, result) => expect(result).not.toBe(value))
+      .and('should point the recursive reference to the copy', (_, result) => expect(result.self).toBe(result))
+      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+
+    bdd
+      .given('a recursive array', () => {
+        const value: unknown[] = [1];
+
+        value.push(value);
+
+        return value;
+      })
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should return a copy', (value, result) => expect(result).not.toBe(value))
+      .and('should point the recursive reference to the copy', (_, result) => {
+        expect(result[0]).toBe(1);
+        expect(result[1]).toBe(result);
+      })
+      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+
+    bdd
+      .given('an indirectly recursive object through an array', () => {
+        const parent: { children: unknown[]; name: string } = { children: [], name: 'parent' };
+        const child = { name: 'child', parent };
+
+        parent.children.push(child, child);
+
+        return parent;
+      })
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should point the recursive references to the copy', (_, result) => {
+        expect(Reflect.get(result.children[0] as object, 'parent')).toBe(result);
+        expect(Reflect.get(result.children[1] as object, 'parent')).toBe(result);
+      })
+      .and('should freeze every copy', (_, result) => {
+        expect(Object.isFrozen(result)).toBe(true);
+        expect(Object.isFrozen(result.children)).toBe(true);
+        expect(Object.isFrozen(result.children[0])).toBe(true);
+      });
+
+    bdd
+      .given('a deeply frozen recursive object', () => {
+        const value: { name: string; self?: unknown } = { name: 'Hello' };
+
+        value.self = value;
+
+        return Object.freeze(value);
+      })
+      .when('deepFreeze() is called', value => deepFreeze(value, value))
+      .then('should return a copy', (value, result) => expect(result).not.toBe(value))
+      .and('should point the recursive reference to the copy', (_, result) => expect(result.self).toBe(result));
+
+    bdd
+      .given('a recursive Set', () => {
+        const value = new Set<unknown>();
+
+        value.add({ value });
+
+        return value;
+      })
+      .when('deepFreeze() is called', value => {
+        try {
+          return deepFreeze(undefined, value);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should throw', (_, result) => expect(result).toEqual(new TypeError('Recursive Set cannot be frozen')));
+
+    bdd
       .given('a sparse array', () => {
         const array: number[] = [];
 

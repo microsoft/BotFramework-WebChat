@@ -46,6 +46,12 @@ function mergeChanges<K, V>(base: ReadonlyMap<K, V>, changes: ReadonlyMap<K, V |
   return map;
 }
 
+// "Friend" access for `Overlay` to commit into the base version, it is not exposed outside of this module.
+let commitChanges: <K, V>(
+  base: VersionedStorage<K, V>,
+  changes: ReadonlyMap<K, V | typeof DELETED>
+) => VersionedStorage<K, V>;
+
 /**
  * A persistent (immutable) key-value storage. A new version can be committed in O(number of changes) without copying.
  *
@@ -58,6 +64,9 @@ function mergeChanges<K, V>(base: ReadonlyMap<K, V>, changes: ReadonlyMap<K, V |
  * - Committing on top of an older version (branching) copies the whole storage, O(size)
  *
  * Note: iterators of the head are live, committing on top of the head while iterating it will affect the iteration.
+ *
+ * Usage: `storage.mutate()` returns a writable `Overlay`, `overlay.commit()` returns a new read-only version. An overlay
+ * cannot be used to create another overlay.
  */
 class VersionedStorage<K, V> {
   constructor(map: Map<K, V>) {
@@ -68,18 +77,19 @@ class VersionedStorage<K, V> {
   readonly #size: number;
   #state: HeadState<K, V> | OlderState<K, V>;
 
+  static {
+    commitChanges = (base, changes) => base.#commit(changes);
+  }
+
   /**
-   * Commits changes on top of the base version and returns the new version.
+   * Commits changes on top of this version and returns the new version.
    */
-  static commit<K, V>(
-    base: VersionedStorage<K, V>,
-    changes: ReadonlyMap<K, V | typeof DELETED>
-  ): VersionedStorage<K, V> {
-    const { map } = base.#state;
+  #commit(changes: ReadonlyMap<K, V | typeof DELETED>): VersionedStorage<K, V> {
+    const { map } = this.#state;
 
     if (!map) {
-      // The base is not the head (branching), copy it.
-      const nextMap = new Map(base.toMap());
+      // This version is not the head (branching), copy it.
+      const nextMap = new Map(this.toMap());
 
       applyChanges(nextMap, changes);
 
@@ -96,7 +106,7 @@ class VersionedStorage<K, V> {
 
     const head = new VersionedStorage(map);
 
-    base.#state = Object.freeze({ changes: undo, map: undefined, next: head });
+    this.#state = Object.freeze({ changes: undo, map: undefined, next: head });
 
     return head;
   }
@@ -159,6 +169,15 @@ class VersionedStorage<K, V> {
   }
 
   /**
+   * Creates a writable overlay on top of this version, O(1). This version is not modified, even after the overlay is
+   * committed.
+   */
+  mutate(): Overlay<K, V> {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return new Overlay(this);
+  }
+
+  /**
    * Returns the content of this version as a `Map`.
    *
    * For the head, returns the underlying `Map` in O(1), it must not be modified. For an older version, returns a new
@@ -178,8 +197,9 @@ class VersionedStorage<K, V> {
 }
 
 /**
- * A writable overlay on top of a version of a `VersionedStorage`. Writes go to the overlay, reads go to the overlay
- * first, then the base version. The base version is not modified until `commit()`.
+ * A writable overlay on top of a version of a `VersionedStorage`, created by `VersionedStorage.mutate()`. Writes go to
+ * the overlay, reads go to the overlay first, then the base version. The base version is not modified, `commit()`
+ * returns a new version.
  */
 class Overlay<K, V> {
   constructor(base: VersionedStorage<K, V>) {
@@ -252,7 +272,7 @@ class Overlay<K, V> {
 
     this.#committed = true;
 
-    return VersionedStorage.commit(this.#base, this.#changes);
+    return commitChanges(this.#base, this.#changes);
   }
 
   /**
@@ -268,4 +288,4 @@ Object.freeze(Overlay);
 Object.freeze(VersionedStorage.prototype);
 Object.freeze(VersionedStorage);
 
-export { Overlay, VersionedStorage };
+export { VersionedStorage, type Overlay };

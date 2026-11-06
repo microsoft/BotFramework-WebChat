@@ -12,6 +12,31 @@ function isDangerousKey(key: string): boolean {
   return DANGEROUS_KEYS.has(key);
 }
 
+/** Marks a `Set` which is being frozen, used to detect a recursive `Set`, which cannot be frozen. */
+const IN_PROGRESS: unique symbol = Symbol('in progress');
+
+/**
+ * Ancestors being frozen within a single `deepFreeze()` call, used to point recursive references to the frozen version.
+ *
+ * Arrays and objects are pushed before their properties are frozen, and popped after. The frozen version is frozen
+ * after all its properties are set. As the depth is usually small, arrays with linear search is faster than `Map`.
+ */
+type Memo = {
+  /** Frozen versions of the ancestors, or `IN_PROGRESS` for `Set`, which cannot be referenced before it is created. */
+  readonly frozenValues: unknown[];
+  readonly values: object[];
+};
+
+function pushAncestor(memo: Memo, value: object, frozenValue: unknown): void {
+  memo.frozenValues.push(frozenValue);
+  memo.values.push(value);
+}
+
+function popAncestor(memo: Memo): void {
+  memo.frozenValues.pop();
+  memo.values.pop();
+}
+
 /** Returned by `getDataPropertyValue()` if it is not an own, enumerable data property. */
 const NOT_DATA_PROPERTY: unique symbol = Symbol('not data property');
 
@@ -54,27 +79,36 @@ function getNumReusableKeys(value: object): number | undefined {
 }
 
 /** Deeply freezes the item, reuses the original item (from `getDataPropertyValue()`) if possible. */
-function deepFreezeItem(originalItem: unknown, item: unknown): unknown {
+function deepFreezeItem(originalItem: unknown, item: unknown, memo: Memo): unknown {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return deepFreeze(originalItem === NOT_DATA_PROPERTY ? undefined : originalItem, item);
+  return deepFreezeWithMemo(originalItem === NOT_DATA_PROPERTY ? undefined : originalItem, item, memo);
 }
 
 /**
  * Freezes every item of the array in a single pass, and checks if the original value can be reused at the same time.
  */
-function deepFreezeArray(originalObject: object | undefined, value: readonly unknown[]): readonly unknown[] {
+function deepFreezeArray(
+  originalObject: object | undefined,
+  value: readonly unknown[],
+  memo: Memo
+): readonly unknown[] {
   const frozenValue: unknown[] = [];
   const numReusableKeys = Array.isArray(originalObject) ? getNumReusableKeys(originalObject) : undefined;
   let reusable = numReusableKeys === value.length;
 
+  pushAncestor(memo, value, frozenValue);
+
   for (let index = 0; index < value.length; index++) {
     const originalItem = getDataPropertyValue(originalObject, `${index}`);
-    const item = deepFreezeItem(originalItem, value[+index]);
+    const item = deepFreezeItem(originalItem, value[+index], memo);
 
     reusable &&= item === originalItem;
     frozenValue.push(item);
   }
 
+  popAncestor(memo);
+
+  // A recursive array is never reusable, as the recursive reference points to the copy, not the original.
   return reusable && Array.isArray(originalObject) ? originalObject : Object.freeze(frozenValue);
 }
 
@@ -85,11 +119,13 @@ function deepFreezeArray(originalObject: object | undefined, value: readonly unk
  * The copy is always a plain object (i.e. prototype is `Object.prototype`). Dangerous keys (e.g. `__proto__`,
  * `constructor`, and `prototype`) are skipped, and the original value is not reused if it has any of them.
  */
-function deepFreezeObject(originalObject: object | undefined, value: object): object {
+function deepFreezeObject(originalObject: object | undefined, value: object, memo: Memo): object {
   const frozenValue: Record<string, unknown> = {};
   const keys = Object.keys(value);
   let reusable =
     !!originalObject && !Array.isArray(originalObject) && getNumReusableKeys(originalObject) === keys.length;
+
+  pushAncestor(memo, value, frozenValue);
 
   for (const key of keys) {
     if (isDangerousKey(key)) {
@@ -99,7 +135,7 @@ function deepFreezeObject(originalObject: object | undefined, value: object): ob
     }
 
     const originalItem = getDataPropertyValue(originalObject, key);
-    const item = deepFreezeItem(originalItem, Reflect.get(value, key));
+    const item = deepFreezeItem(originalItem, Reflect.get(value, key), memo);
 
     reusable &&= item === originalItem;
 
@@ -107,7 +143,49 @@ function deepFreezeObject(originalObject: object | undefined, value: object): ob
     frozenValue[key] = item;
   }
 
+  popAncestor(memo);
+
+  // A recursive object is never reusable, as the recursive reference points to the copy, not the original.
   return reusable && originalObject ? originalObject : Object.freeze(frozenValue);
+}
+
+function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo): unknown {
+  if (!value || typeof value !== 'object') {
+    return value;
+  }
+
+  const ancestorIndex = memo.values.indexOf(value);
+
+  if (~ancestorIndex) {
+    const frozenValue = memo.frozenValues[+ancestorIndex];
+
+    if (frozenValue === IN_PROGRESS) {
+      throw new TypeError('Recursive Set cannot be frozen');
+    }
+
+    return frozenValue;
+  } else if (value instanceof Set || isReadonlySet(value)) {
+    pushAncestor(memo, value, IN_PROGRESS);
+
+    const originalItems = isReadonlySet(originalValue) ? Array.from(originalValue) : [];
+    const items = Array.from(value, (item, index) => deepFreezeWithMemo(originalItems[+index], item, memo));
+    const frozenValue =
+      isReadonlySet(originalValue) &&
+      originalItems.length === items.length &&
+      items.every((item, index) => item === originalItems[+index])
+        ? originalValue
+        : createReadonlySet(items);
+
+    popAncestor(memo);
+
+    return frozenValue;
+  }
+
+  const originalObject = originalValue && typeof originalValue === 'object' ? originalValue : undefined;
+
+  return Array.isArray(value)
+    ? deepFreezeArray(originalObject, value, memo)
+    : deepFreezeObject(originalObject, value, memo);
 }
 
 /**
@@ -118,6 +196,10 @@ function deepFreezeObject(originalObject: object | undefined, value: object): ob
  * returned as-is without copying, e.g. unchanged properties of a node from the store. Otherwise, it is copied, and
  * immutable parts of it are reused.
  *
+ * Recursive references point to the frozen version of the referenced ancestor. A recursive value is always copied, and
+ * its recursive references point to the copy. A recursive `Set` cannot be frozen and will
+ * throw, as a read-only `Set` cannot be created before its items.
+ *
  * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set,
  * only read-only `Set` created by `createReadonlySet()` is reused.
  *
@@ -125,24 +207,10 @@ function deepFreezeObject(originalObject: object | undefined, value: object): ob
  * @param value Value after validation.
  */
 function deepFreeze<T>(originalValue: unknown, value: T): T {
-  if (!value || typeof value !== 'object') {
-    return value;
-  } else if (value instanceof Set || isReadonlySet(value)) {
-    const originalItems = isReadonlySet(originalValue) ? Array.from(originalValue) : [];
-    const items = Array.from(value, (item, index) => deepFreeze(originalItems[+index], item));
-
-    return (isReadonlySet(originalValue) &&
-    originalItems.length === items.length &&
-    items.every((item, index) => item === originalItems[+index])
-      ? originalValue
-      : createReadonlySet(items)) satisfies unknown as T;
-  }
-
-  const originalObject = originalValue && typeof originalValue === 'object' ? originalValue : undefined;
-
-  return (Array.isArray(value)
-    ? deepFreezeArray(originalObject, value)
-    : deepFreezeObject(originalObject, value)) satisfies unknown as T;
+  // Primitives do not need a memo.
+  return (!value || typeof value !== 'object'
+    ? value
+    : deepFreezeWithMemo(originalValue, value, { frozenValues: [], values: [] })) satisfies unknown as T;
 }
 
 export default deepFreeze;

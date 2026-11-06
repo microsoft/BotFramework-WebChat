@@ -1,5 +1,5 @@
 import MapView from './MapView.ts';
-import { Overlay, VersionedStorage } from './VersionedStorage.ts';
+import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 
 /**
  * A read-only `Map` which can be mutated via an overlay without copying.
@@ -134,7 +134,7 @@ class ReadonlyMapImpl<K, V> extends MapView<K, V> implements VersionedReadonlyMa
   }
 
   mutate(): ReadWriteMap<K, V> {
-    return new ReadWriteMapImpl(new Overlay(this.#storage));
+    return new ReadWriteMapImpl(this.#storage.mutate());
   }
 
   values(): MapIterator<V> {
