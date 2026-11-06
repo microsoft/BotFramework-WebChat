@@ -3,7 +3,7 @@ import { expect } from 'expect';
 import NodeTest from 'node:test';
 import type { Node } from './node/Node.ts';
 import type { Identifier } from './node/NodeIdentifier.ts';
-import Store, { type GetSortedChildrenInit, type StoreController, type StoreTransaction } from './Store.ts';
+import Store, { type GetSortedPartsInit, type StoreController, type StoreTransaction } from './Store.ts';
 
 function createStore() {
   let controller: StoreController | undefined;
@@ -1320,6 +1320,82 @@ scenario(
       .and('should not change the store', ({ store }) =>
         expect(Array.from(store.getSnapshot().keys())).toEqual(['_:m-1'])
       );
+
+    bdd
+      .given('a store with a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => upsertMessage(transaction, '_:m-1'));
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when.oneOf<unknown>([
+        [
+          'edit() is called inside the transactor',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction => {
+                upsertMessage(transaction, '_:m-2');
+                controller.edit(transaction => upsertMessage(transaction, '_:m-3'));
+              })
+            )
+        ],
+        [
+          'edit() is called inside the updater',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => {
+                  controller.edit(transaction => upsertMessage(transaction, '_:m-3'));
+
+                  return { ...node!, text: ['Hello'] };
+                })
+              )
+            )
+        ]
+      ])
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(expect.objectContaining({ message: 'edit() cannot be called inside another edit()' }))
+      )
+      .and('should not change the store', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('a store with a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => upsertMessage(transaction, '_:m-1'));
+
+        return { controller, store };
+      })
+      .when('edit() is called inside the transactor and the error is caught', ({ controller }) =>
+        controller.edit(transaction => {
+          catchError(() => controller.edit(transaction => upsertMessage(transaction, '_:m-3')));
+          upsertMessage(transaction, '_:m-2');
+        })
+      )
+      .then('should commit the outer edit only', ({ store }) =>
+        expect(Array.from(store.getSnapshot().keys()).sort()).toEqual(['_:m-1', '_:m-2'])
+      );
+
+    bdd
+      .given('a store with a listener which edits once', () => {
+        const { controller, store } = createStore();
+        const calls: string[][] = [];
+
+        store.subscribe(affectedNodeIds => {
+          calls.push(Array.from(affectedNodeIds).sort());
+          calls.length === 1 && controller.edit(transaction => upsertMessage(transaction, '_:m-2'));
+        });
+
+        return { calls, controller, store };
+      })
+      .when('a message is upserted', ({ controller }) =>
+        controller.edit(transaction => upsertMessage(transaction, '_:m-1'))
+      )
+      .then('should allow edit() inside the listener', ({ store }) =>
+        expect(Array.from(store.getSnapshot().keys()).sort()).toEqual(['_:m-1', '_:m-2'])
+      )
+      .and('should notify both edits', ({ calls }) => expect(calls).toEqual([['_:m-1'], ['_:m-2']]));
   },
   NodeTest
 );
@@ -1584,12 +1660,12 @@ function createStoreWithConversations() {
   return { controller, store };
 }
 
-function getSortedChildIdsOf(store: Store, parentId: `_:${string}`): string[] {
-  return Array.from(store.getSortedChildren(parentId, { sortBy: 'dateCreated' }), child => child['@id']);
+function getSortedPartIdsOf(store: Store, parentId: `_:${string}`): string[] {
+  return Array.from(store.getSortedParts(parentId, { sortBy: 'dateCreated' }), child => child['@id']);
 }
 
 scenario(
-  'getSortedChildren',
+  'getSortedParts',
   bdd => {
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
@@ -1601,18 +1677,18 @@ scenario(
         })
       )
       .then('should sort by dateCreated', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2', '_:m-3'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2', '_:m-3'])
       )
       .and('should return the children nodes', ({ store }) => {
         const snapshot = store.getSnapshot();
 
-        expect(Array.from(store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }))).toEqual([
+        expect(Array.from(store.getSortedParts('_:c-1', { sortBy: 'dateCreated' }))).toEqual([
           snapshot.get('_:m-1'),
           snapshot.get('_:m-2'),
           snapshot.get('_:m-3')
         ]);
       })
-      .and('should not affect other parent', ({ store }) => expect(getSortedChildIdsOf(store, '_:c-2')).toEqual([]));
+      .and('should not affect other parent', ({ store }) => expect(getSortedPartIdsOf(store, '_:c-2')).toEqual([]));
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
@@ -1622,7 +1698,7 @@ scenario(
         }
       })
       .then('should sort by dateCreated', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2', '_:m-3', '_:m-4', '_:m-5'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2', '_:m-3', '_:m-4', '_:m-5'])
       );
 
     bdd
@@ -1636,7 +1712,7 @@ scenario(
         })
       )
       .then('should put them at the end, sorted by @id', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2', '_:m-a', '_:m-b'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2', '_:m-a', '_:m-b'])
       );
 
     bdd
@@ -1648,7 +1724,7 @@ scenario(
         controller.edit(transaction => upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], 1));
       })
       .then('should sort them by @id', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b', '_:m-c', '_:m-0'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b', '_:m-c', '_:m-0'])
       );
 
     bdd
@@ -1667,11 +1743,11 @@ scenario(
         controller.edit(transaction => upsertDatedMessage(transaction, '_:m-1', ['_:c-1'], 4))
       )
       .then('should re-sort', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-2', '_:m-3', '_:m-1'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-2', '_:m-3', '_:m-1'])
       );
 
     bdd
-      .given('a store with 3 sorted children and a result of getSortedChildren()', () => {
+      .given('a store with 3 sorted children and a result of getSortedParts()', () => {
         const { controller, store } = createStoreWithConversations();
 
         controller.edit(transaction => {
@@ -1682,7 +1758,7 @@ scenario(
 
         const snapshot = store.getSnapshot();
 
-        return { children: store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }), controller, snapshot, store };
+        return { children: store.getSortedParts('_:c-1', { sortBy: 'dateCreated' }), controller, snapshot, store };
       })
       .when('a child is removed, a child is deleted, and a child is added', ({ controller }) =>
         controller.edit(transaction => {
@@ -1692,7 +1768,7 @@ scenario(
         })
       )
       .then('should update the sorted children', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-0', '_:m-3'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-0', '_:m-3'])
       )
       .and('should keep the earlier result unchanged', ({ children, snapshot }) =>
         expect(Array.from(children)).toEqual([snapshot.get('_:m-1'), snapshot.get('_:m-2'), snapshot.get('_:m-3')])
@@ -1710,10 +1786,10 @@ scenario(
         controller.edit(transaction => upsertDatedMessage(transaction, '_:m-1', ['_:c-2'], 1))
       )
       .then('should remove from the previous parent', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual([])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual([])
       )
       .and('should add to the new parent', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-2')).toEqual(['_:m-1'])
+        expect(getSortedPartIdsOf(store, '_:c-2')).toEqual(['_:m-1'])
       );
 
     bdd
@@ -1726,9 +1802,80 @@ scenario(
         })
       )
       .then('should appear in both parents', ({ store }) => {
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2']);
-        expect(getSortedChildIdsOf(store, '_:c-2')).toEqual(['_:m-2', '_:m-3']);
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-1', '_:m-2']);
+        expect(getSortedPartIdsOf(store, '_:c-2')).toEqual(['_:m-2', '_:m-3']);
       });
+
+    bdd
+      .given('a store with a child shared by 2 parents, first in one and last in another', () => {
+        const { controller, store } = createStoreWithConversations();
+
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-1', ['_:c-1'], 1);
+          upsertDatedMessage(transaction, '_:m-shared', ['_:c-1', '_:c-2'], 2);
+          upsertDatedMessage(transaction, '_:m-3', ['_:c-1'], 3);
+          upsertDatedMessage(transaction, '_:m-0', ['_:c-2'], 0);
+          upsertDatedMessage(transaction, '_:m-x', ['_:c-2'], 1);
+        });
+
+        return { controller, store };
+      })
+      .when.oneOf<readonly [readonly string[], readonly string[]]>([
+        [
+          'nothing is changed',
+          () => [
+            ['_:m-1', '_:m-shared', '_:m-3'],
+            ['_:m-0', '_:m-x', '_:m-shared']
+          ]
+        ],
+        [
+          'dateCreated of the shared child is changed',
+          ({ controller }) => {
+            controller.edit(transaction => upsertDatedMessage(transaction, '_:m-shared', ['_:c-1', '_:c-2'], 0.5));
+
+            return [
+              ['_:m-shared', '_:m-1', '_:m-3'],
+              ['_:m-0', '_:m-shared', '_:m-x']
+            ];
+          }
+        ],
+        [
+          'the shared child leaves 1 parent',
+          ({ controller }) => {
+            controller.edit(transaction => upsertDatedMessage(transaction, '_:m-shared', ['_:c-2'], 2));
+
+            return [
+              ['_:m-1', '_:m-3'],
+              ['_:m-0', '_:m-x', '_:m-shared']
+            ];
+          }
+        ],
+        [
+          'the shared child is deleted',
+          ({ controller }) => {
+            controller.edit(transaction => transaction.delete('_:m-shared'));
+
+            return [
+              ['_:m-1', '_:m-3'],
+              ['_:m-0', '_:m-x']
+            ];
+          }
+        ],
+        [
+          'a parent is deleted',
+          ({ controller }) => {
+            controller.edit(transaction => transaction.delete('_:c-1'));
+
+            return [[], ['_:m-0', '_:m-x', '_:m-shared']];
+          }
+        ]
+      ])
+      .then('should sort the first parent properly', ({ store }, [expected]) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(expected)
+      )
+      .and('should sort the second parent properly', ({ store }, [, expected]) =>
+        expect(getSortedPartIdsOf(store, '_:c-2')).toEqual(expected)
+      );
 
     bdd
       .given('a store with a child in a conversation', () => {
@@ -1747,7 +1894,7 @@ scenario(
         expect(store.getSnapshot().get('_:c-1')).toBe(parent)
       )
       .and('should return the updated child', ({ store }) =>
-        expect(Array.from(store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }))[0]).toBe(
+        expect(Array.from(store.getSortedParts('_:c-1', { sortBy: 'dateCreated' }))[0]).toBe(
           store.getSnapshot().get('_:m-1')
         )
       );
@@ -1766,7 +1913,7 @@ scenario(
         )
       )
       .then('should keep sorted children', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-1'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-1'])
       );
 
     bdd
@@ -1787,7 +1934,7 @@ scenario(
         )
       )
       .then('should keep sorted children', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-1'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-1'])
       );
 
     bdd
@@ -1806,7 +1953,7 @@ scenario(
         })
       )
       .then('should only have the new child', ({ store }) =>
-        expect(getSortedChildIdsOf(store, '_:c-1')).toEqual(['_:m-2'])
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-2'])
       );
 
     bdd
@@ -1817,7 +1964,7 @@ scenario(
 
         return store;
       })
-      .when('getSortedChildren() is called', store => store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' }))
+      .when('getSortedParts() is called', store => store.getSortedParts('_:c-1', { sortBy: 'dateCreated' }))
       .then('should be iterable multiple times', (_, children) => {
         expect(Array.from(children, child => child['@id'])).toEqual(['_:m-1']);
         expect(Array.from(children, child => child['@id'])).toEqual(['_:m-1']);
@@ -1834,7 +1981,7 @@ scenario(
           upsertDatedMessage(transaction, '_:m-3', ['_:c-1'], 3);
         });
 
-        const iterator = store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' })[Symbol.iterator]();
+        const iterator = store.getSortedParts('_:c-1', { sortBy: 'dateCreated' })[Symbol.iterator]();
 
         return { controller, firstChild: iterator.next().value, iterator };
       })
@@ -1852,15 +1999,15 @@ scenario(
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
-      .when('getSortedChildren() is called on a node without children', ({ store }) =>
-        store.getSortedChildren('_:c-1', { sortBy: 'dateCreated' })
+      .when('getSortedParts() is called on a node without children', ({ store }) =>
+        store.getSortedParts('_:c-1', { sortBy: 'dateCreated' })
       )
       .then('should return an empty iterable', (_, children) => expect(Array.from(children)).toEqual([]));
 
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
-      .when('getSortedChildren() is called on a node not in the store', ({ store }) =>
-        store.getSortedChildren('_:unknown', { sortBy: 'dateCreated' })
+      .when('getSortedParts() is called on a node not in the store', ({ store }) =>
+        store.getSortedParts('_:unknown', { sortBy: 'dateCreated' })
       )
       .then('should return an empty iterable', (_, children) => expect(Array.from(children)).toEqual([]));
 
@@ -1868,24 +2015,22 @@ scenario(
       .given('a store with conversations', () => createStoreWithConversations())
       .when.oneOf<unknown>([
         [
-          'getSortedChildren() is called with a non-string',
-          ({ store }) => catchError(() => store.getSortedChildren({} as Identifier, { sortBy: 'dateCreated' }))
+          'getSortedParts() is called with a non-string',
+          ({ store }) => catchError(() => store.getSortedParts({} as Identifier, { sortBy: 'dateCreated' }))
         ],
         [
-          'getSortedChildren() is called with an invalid ID',
-          ({ store }) => catchError(() => store.getSortedChildren('m-1' as Identifier, { sortBy: 'dateCreated' }))
+          'getSortedParts() is called with an invalid ID',
+          ({ store }) => catchError(() => store.getSortedParts('m-1' as Identifier, { sortBy: 'dateCreated' }))
         ],
         [
-          'getSortedChildren() is called without init',
+          'getSortedParts() is called without init',
           ({ store }) =>
-            catchError(() => (store.getSortedChildren as (id: Identifier) => Iterable<Node>).call(store, '_:c-1'))
+            catchError(() => (store.getSortedParts as (id: Identifier) => Iterable<Node>).call(store, '_:c-1'))
         ],
         [
-          'getSortedChildren() is called with unsupported sortBy',
+          'getSortedParts() is called with unsupported sortBy',
           ({ store }) =>
-            catchError(() =>
-              store.getSortedChildren('_:c-1', { sortBy: 'position' } as unknown as GetSortedChildrenInit)
-            )
+            catchError(() => store.getSortedParts('_:c-1', { sortBy: 'position' } as unknown as GetSortedPartsInit))
         ]
       ])
       .then('should throw', (_, error) => expect(error).toBeTruthy());

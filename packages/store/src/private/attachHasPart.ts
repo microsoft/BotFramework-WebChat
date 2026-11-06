@@ -1,12 +1,12 @@
 import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import createReadonlyNodeSet from './createReadonlyNodeSet.ts';
+import createReadonlyNodeSet from '../structure/createReadonlyNodeSet.ts';
 import { sortedChildIdsSymbol } from './sortedChildIds.ts';
-import type { VersionedReadonlySkipList } from './createReadonlySkipList.ts';
+import type { VersionedReadonlySkipList } from '../structure/createReadonlySkipList.ts';
 
 /**
  * Returns a copy of the node with `hasPart` generated from the IDs of its children, and IDs of its children sorted by
- * `dateCreated` for `Store.getSortedChildren()`.
+ * `dateCreated` for `Store.getSortedParts()`.
  *
  * - `hasPart` is a `ReadonlyNodeSet` wrapping `childIds`, it is not copied if `childIds` is a read-only `Set`
  * - If `childIds` is empty, the node will not have `hasPart`

@@ -1,6 +1,6 @@
 import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import type { ReadWriteSkipList, VersionedReadonlySkipList } from './createReadonlySkipList.ts';
+import type { ReadWriteSkipList, VersionedReadonlySkipList } from '../structure/createReadonlySkipList.ts';
 
 // Hidden property on the parent node to cache IDs of its children, sorted by `dateCreated`, then `@id`.
 const sortedChildIdsSymbol = Symbol('sortedChildIds');

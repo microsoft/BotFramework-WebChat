@@ -1,7 +1,7 @@
 import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import { getNodeSetIds } from './createReadonlyNodeSet.ts';
-import createReadonlySet from './createReadonlySet.ts';
+import { getNodeSetIds } from '../structure/createReadonlyNodeSet.ts';
+import createReadonlySet from '../structure/createReadonlySet.ts';
 
 type PartProperty = 'hasPart' | 'isPartOf';
 

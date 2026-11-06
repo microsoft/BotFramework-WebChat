@@ -5,14 +5,14 @@ import type { Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
 import attachHasPart from './private/attachHasPart.ts';
-import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './private/createReadonlyMap.ts';
-import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './private/createReadonlySet.ts';
+import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './structure/createReadonlyMap.ts';
+import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './structure/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
 import createReadonlySkipList, {
   type ReadWriteSkipList,
   type VersionedReadonlySkipList
-} from './private/createReadonlySkipList.ts';
-import { getNodeSetIds } from './private/createReadonlyNodeSet.ts';
+} from './structure/createReadonlySkipList.ts';
+import { getNodeSetIds } from './structure/createReadonlyNodeSet.ts';
 import getPartIds from './private/getPartIds.ts';
 import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
 
@@ -23,6 +23,13 @@ interface StoreSource {
 }
 
 interface StoreController {
+  /**
+   * Edits the store in a transaction. All changes are committed at once after the transactor returns, or discarded if
+   * the transactor throws.
+   *
+   * `edit()` cannot be called inside another `edit()`, i.e. inside the transactor or the updater. Listeners are called
+   * after the edit has ended, they can call `edit()`.
+   */
   edit(transactor: (transaction: StoreTransaction) => void): void;
 }
 
@@ -49,7 +56,7 @@ interface StoreTransaction {
 
 const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
 
-const getSortedChildrenInitSchema = pipe(
+const getSortedPartsInitSchema = pipe(
   object({
     // Only `dateCreated` is supported for now.
     sortBy: literal('dateCreated', '"sortBy" must be "dateCreated"')
@@ -57,7 +64,7 @@ const getSortedChildrenInitSchema = pipe(
   readonly()
 );
 
-type GetSortedChildrenInit = InferInput<typeof getSortedChildrenInitSchema>;
+type GetSortedPartsInit = InferInput<typeof getSortedPartsInitSchema>;
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
@@ -289,204 +296,30 @@ function updateSortedChildIds(
 
 class Store {
   constructor(source: StoreSource) {
+    let editing = false;
+
     const controller: StoreController = {
-      // Multiple nodes can be added at once and they could cross reference each other.
-      // We need to add all of the nodes at once, mirror part relationships, and verify the graph integrity.
       edit: transactor => {
         if (typeof transactor !== 'function') {
           throw new TypeError('transactor must be a function');
         }
 
-        const affectedNodeIds = new Set<Identifier>();
-        let ended = false;
+        if (editing) {
+          throw new Error('edit() cannot be called inside another edit()');
+        }
 
-        // Key is the ID of children in `hasPart` which are not in the graph yet, value is IDs of their parents.
-        // When the child is upserted, the parents will be added to its `isPartOf`.
-        const pendingParentIds = new Map<Identifier, Set<Identifier>>();
+        editing = true;
 
-        // All edits are done on overlays without copying. If the transactor throws, overlays are discarded and the state
-        // is not changed.
-        const nextState = this.#state.mutate();
-        const nextBackwardReferenceIds: MutableBackwardReferenceIds = Object.freeze({
-          map: this.#backwardReferenceIds.mutate(),
-          sets: new Map()
-        });
-        const nextChildIds: MutableBackwardReferenceIds = Object.freeze({
-          map: this.#childIds.mutate(),
-          sets: new Map()
-        });
-        const nextForwardReferenceIds = this.#forwardReferenceIds.mutate();
-
-        const assertNotEnded = (): void => {
-          if (ended) {
-            throw new Error('Transaction has ended, it cannot be used after the transactor returns');
-          }
-        };
-
-        // Gets the node with `hasPart` reflecting changes made in this transaction.
-        // Nodes in `nextState` with changed children have their `hasPart` regenerated on commit.
-        const getNode = (id: Identifier): Node | undefined => {
-          const node = nextState.get(id);
-          const childIds = nextChildIds.sets.get(id);
-
-          return node && childIds ? attachHasPart(node, createReadonlySet(childIds), getSortedChildIds(node)) : node;
-        };
-
-        const setPendingChild = (parentId: Identifier, childId: Identifier, included: boolean): void => {
-          let parentIds = pendingParentIds.get(childId);
-
-          parentIds || pendingParentIds.set(childId, (parentIds = new Set()));
-          included ? parentIds.add(parentId) : parentIds.delete(parentId);
-          mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](childId);
-        };
-
-        // The node must not have `hasPart`, it will be generated from `isPartOf` of its children.
-        const setNode = (node: Node): void => {
-          const id = node['@id'];
-          const parentIds = getPartIds(node, 'isPartOf');
-          const prevParentIds = getPartIds(nextState.get(id), 'isPartOf');
-
-          for (const parentId of prevParentIds) {
-            parentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).delete(id);
-          }
-
-          for (const parentId of parentIds) {
-            prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(id);
-          }
-
-          // If children are changed in this transaction, `hasPart` and sorted children will be generated on commit.
-          nextState.set(id, attachHasPart(node, nextChildIds.map.get(id) ?? EMPTY_IDS, undefined));
-          setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getReferenceIds(node));
-          affectedNodeIds.add(id);
-        };
+        let affectedNodeIds: ReadonlySet<Identifier> | undefined;
 
         try {
-          transactor(
-            Object.freeze({
-              delete: (id: Identifier): void => {
-                assertNotEnded();
-
-                const safeId = parse(identifierSchema, id);
-                const node = nextState.get(safeId);
-
-                for (const parentId of getPartIds(node, 'isPartOf')) {
-                  mutateReferencingIds(nextChildIds, parentId).delete(safeId);
-                }
-
-                for (const parentId of pendingParentIds.get(safeId) ?? []) {
-                  mutateReferencingIds(nextChildIds, parentId).delete(safeId);
-                }
-
-                for (const [childId, parentIds] of pendingParentIds) {
-                  parentIds.delete(safeId) && mutateReferencingIds(nextChildIds, safeId).delete(childId);
-                }
-
-                pendingParentIds.delete(safeId);
-                nextState.delete(safeId) && affectedNodeIds.add(safeId);
-
-                setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, EMPTY_IDS);
-
-                // Children reference the deleted node via `isPartOf`, removing references will also remove them from
-                // `hasPart` of the deleted node.
-                // Copy before iterating as the set will be modified while removing references.
-                for (const nodeId of Array.from(getReferencingIds(nextBackwardReferenceIds, safeId))) {
-                  const node = nextState.get(nodeId);
-                  const nextNode = node && removeReference(node, safeId);
-
-                  nextNode && setNode(nextNode);
-                }
-              },
-              upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
-                assertNotEnded();
-
-                const safeId = parse(identifierSchema, id);
-
-                if (typeof updater !== 'function') {
-                  throw new TypeError('updater must be a function');
-                }
-
-                let safeNode = createNode(updater(getNode(safeId)));
-
-                if (safeNode['@id'] !== safeId) {
-                  throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
-                }
-
-                assertNotSelfPart(safeNode);
-
-                // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
-                for (const parentId of pendingParentIds.get(safeId) ?? []) {
-                  safeNode = setPartOf(safeNode, parentId, true);
-                }
-
-                pendingParentIds.delete(safeId);
-
-                // Copy before iterating as the set will be modified while mirroring.
-                const childIds = getPartIds(safeNode, 'hasPart');
-                const prevChildIds = new Set(getReferencingIds(nextChildIds, safeId));
-
-                // `hasPart` is not stored, it is mirrored to `isPartOf` of children below.
-                setNode(attachHasPart(safeNode, EMPTY_IDS, undefined));
-
-                for (const [childId, included] of [
-                  ...Array.from(prevChildIds)
-                    .filter(childId => !childIds.has(childId))
-                    .map(childId => [childId, false] as const),
-                  ...Array.from(childIds)
-                    .filter(childId => !prevChildIds.has(childId))
-                    .map(childId => [childId, true] as const)
-                ]) {
-                  const child = nextState.get(childId);
-
-                  child ? setNode(setPartOf(child, safeId, included)) : setPendingChild(safeId, childId, included);
-                }
-              }
-            })
-          );
+          affectedNodeIds = this.#commit(transactor);
         } finally {
-          ended = true;
+          editing = false;
         }
 
-        if (affectedNodeIds.size) {
-          // Commits are O(number of changes), previous snapshots are kept intact. If any assertion below fails, the
-          // committed index is discarded and the previous version is still intact.
-          const committedChildIds = commitBackwardReferenceIds(nextChildIds);
-
-          const nextSortedChildIds = updateSortedChildIds(this.#state, nextState, affectedNodeIds);
-
-          // Generates `hasPart` and sorted children for nodes upserted or with changed children.
-          // This is O(number of properties) per node.
-          for (const id of new Set([...affectedNodeIds, ...nextChildIds.sets.keys(), ...nextSortedChildIds.keys()])) {
-            const node = nextState.get(id);
-
-            node &&
-              nextState.set(
-                id,
-                attachHasPart(
-                  node,
-                  committedChildIds.get(id) ?? EMPTY_IDS,
-                  nextSortedChildIds.get(id) ?? getSortedChildIds(this.#state.get(id))
-                )
-              );
-            node && affectedNodeIds.add(id);
-          }
-
-          assertReferencedNodesInGraph(nextState, nextForwardReferenceIds, affectedNodeIds);
-
-          for (const [childId, [parentId]] of pendingParentIds) {
-            if (parentId) {
-              throw new Error(`Node "${parentId}" has part "${childId}" which is not in the graph`);
-            }
-          }
-
-          // THINK: Upsert/delete called twice with same node ID in the same transaction?
-
-          this.#backwardReferenceIds = commitBackwardReferenceIds(nextBackwardReferenceIds);
-          this.#childIds = committedChildIds;
-          this.#forwardReferenceIds = nextForwardReferenceIds.commit();
-          this.#state = nextState.commit();
-
-          this.#notifyAll(createReadonlySet(affectedNodeIds));
-        }
+        // Listeners are called after the edit has ended, they can start a new edit.
+        affectedNodeIds && this.#notifyAll(affectedNodeIds);
       }
     };
 
@@ -501,6 +334,209 @@ class Store {
   #forwardReferenceIds: ReferenceIds = createReadonlyMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
   #state: VersionedReadonlyMap<string, Node> = createReadonlyMap([]);
+
+  /**
+   * Runs the transactor and commits changes to the store.
+   *
+   * Multiple nodes can be added at once and they could cross reference each other. All nodes are added at once, part
+   * relationships are mirrored, then the graph integrity is verified.
+   *
+   * @returns IDs of nodes which are added, updated, or deleted, or `undefined` if nothing is changed.
+   */
+  #commit(transactor: (transaction: StoreTransaction) => void): ReadonlySet<Identifier> | undefined {
+    const affectedNodeIds = new Set<Identifier>();
+    let ended = false;
+
+    // Key is the ID of children in `hasPart` which are not in the graph yet, value is IDs of their parents.
+    // When the child is upserted, the parents will be added to its `isPartOf`.
+    const pendingParentIds = new Map<Identifier, Set<Identifier>>();
+
+    // All edits are done on overlays without copying. If the transactor throws, overlays are discarded and the state
+    // is not changed.
+    const nextState = this.#state.mutate();
+    const nextBackwardReferenceIds: MutableBackwardReferenceIds = Object.freeze({
+      map: this.#backwardReferenceIds.mutate(),
+      sets: new Map()
+    });
+    const nextChildIds: MutableBackwardReferenceIds = Object.freeze({
+      map: this.#childIds.mutate(),
+      sets: new Map()
+    });
+    const nextForwardReferenceIds = this.#forwardReferenceIds.mutate();
+
+    const assertNotEnded = (): void => {
+      if (ended) {
+        throw new Error('Transaction has ended, it cannot be used after the transactor returns');
+      }
+    };
+
+    // Gets the node with `hasPart` reflecting changes made in this transaction.
+    // Nodes in `nextState` with changed children have their `hasPart` regenerated on commit.
+    const getNode = (id: Identifier): Node | undefined => {
+      const node = nextState.get(id);
+      const childIds = nextChildIds.sets.get(id);
+
+      return node && childIds ? attachHasPart(node, createReadonlySet(childIds), getSortedChildIds(node)) : node;
+    };
+
+    const setPendingChild = (parentId: Identifier, childId: Identifier, included: boolean): void => {
+      let parentIds = pendingParentIds.get(childId);
+
+      parentIds || pendingParentIds.set(childId, (parentIds = new Set()));
+      included ? parentIds.add(parentId) : parentIds.delete(parentId);
+      mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](childId);
+    };
+
+    // The node must not have `hasPart`, it will be generated from `isPartOf` of its children.
+    const setNode = (node: Node): void => {
+      const id = node['@id'];
+      const parentIds = getPartIds(node, 'isPartOf');
+      const prevParentIds = getPartIds(nextState.get(id), 'isPartOf');
+
+      for (const parentId of prevParentIds) {
+        parentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).delete(id);
+      }
+
+      for (const parentId of parentIds) {
+        prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(id);
+      }
+
+      // If children are changed in this transaction, `hasPart` and sorted children will be generated on commit.
+      nextState.set(id, attachHasPart(node, nextChildIds.map.get(id) ?? EMPTY_IDS, undefined));
+      setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getReferenceIds(node));
+      affectedNodeIds.add(id);
+    };
+
+    try {
+      transactor(
+        Object.freeze({
+          delete: (id: Identifier): void => {
+            assertNotEnded();
+
+            const safeId = parse(identifierSchema, id);
+            const node = nextState.get(safeId);
+
+            for (const parentId of getPartIds(node, 'isPartOf')) {
+              mutateReferencingIds(nextChildIds, parentId).delete(safeId);
+            }
+
+            for (const parentId of pendingParentIds.get(safeId) ?? []) {
+              mutateReferencingIds(nextChildIds, parentId).delete(safeId);
+            }
+
+            for (const [childId, parentIds] of pendingParentIds) {
+              parentIds.delete(safeId) && mutateReferencingIds(nextChildIds, safeId).delete(childId);
+            }
+
+            pendingParentIds.delete(safeId);
+            nextState.delete(safeId) && affectedNodeIds.add(safeId);
+
+            setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, safeId, EMPTY_IDS);
+
+            // Children reference the deleted node via `isPartOf`, removing references will also remove them from
+            // `hasPart` of the deleted node.
+            // Copy before iterating as the set will be modified while removing references.
+            for (const nodeId of Array.from(getReferencingIds(nextBackwardReferenceIds, safeId))) {
+              const node = nextState.get(nodeId);
+              const nextNode = node && removeReference(node, safeId);
+
+              nextNode && setNode(nextNode);
+            }
+          },
+          upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
+            assertNotEnded();
+
+            const safeId = parse(identifierSchema, id);
+
+            if (typeof updater !== 'function') {
+              throw new TypeError('updater must be a function');
+            }
+
+            let safeNode = createNode(updater(getNode(safeId)));
+
+            if (safeNode['@id'] !== safeId) {
+              throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
+            }
+
+            assertNotSelfPart(safeNode);
+
+            // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
+            for (const parentId of pendingParentIds.get(safeId) ?? []) {
+              safeNode = setPartOf(safeNode, parentId, true);
+            }
+
+            pendingParentIds.delete(safeId);
+
+            // Copy before iterating as the set will be modified while mirroring.
+            const childIds = getPartIds(safeNode, 'hasPart');
+            const prevChildIds = new Set(getReferencingIds(nextChildIds, safeId));
+
+            // `hasPart` is not stored, it is mirrored to `isPartOf` of children below.
+            setNode(attachHasPart(safeNode, EMPTY_IDS, undefined));
+
+            for (const [childId, included] of [
+              ...Array.from(prevChildIds)
+                .filter(childId => !childIds.has(childId))
+                .map(childId => [childId, false] as const),
+              ...Array.from(childIds)
+                .filter(childId => !prevChildIds.has(childId))
+                .map(childId => [childId, true] as const)
+            ]) {
+              const child = nextState.get(childId);
+
+              child ? setNode(setPartOf(child, safeId, included)) : setPendingChild(safeId, childId, included);
+            }
+          }
+        })
+      );
+    } finally {
+      ended = true;
+    }
+
+    if (!affectedNodeIds.size) {
+      return undefined;
+    }
+
+    // Commits are O(number of changes), previous snapshots are kept intact. If any assertion below fails, the
+    // committed index is discarded and the previous version is still intact.
+    const committedChildIds = commitBackwardReferenceIds(nextChildIds);
+
+    const nextSortedChildIds = updateSortedChildIds(this.#state, nextState, affectedNodeIds);
+
+    // Generates `hasPart` and sorted children for nodes upserted or with changed children.
+    // This is O(number of properties) per node.
+    for (const id of new Set([...affectedNodeIds, ...nextChildIds.sets.keys(), ...nextSortedChildIds.keys()])) {
+      const node = nextState.get(id);
+
+      node &&
+        nextState.set(
+          id,
+          attachHasPart(
+            node,
+            committedChildIds.get(id) ?? EMPTY_IDS,
+            nextSortedChildIds.get(id) ?? getSortedChildIds(this.#state.get(id))
+          )
+        );
+      node && affectedNodeIds.add(id);
+    }
+
+    assertReferencedNodesInGraph(nextState, nextForwardReferenceIds, affectedNodeIds);
+
+    for (const [childId, [parentId]] of pendingParentIds) {
+      if (parentId) {
+        throw new Error(`Node "${parentId}" has part "${childId}" which is not in the graph`);
+      }
+    }
+
+    // THINK: Upsert/delete called twice with same node ID in the same transaction?
+
+    this.#backwardReferenceIds = commitBackwardReferenceIds(nextBackwardReferenceIds);
+    this.#childIds = committedChildIds;
+    this.#forwardReferenceIds = nextForwardReferenceIds.commit();
+    this.#state = nextState.commit();
+
+    return createReadonlySet(affectedNodeIds);
+  }
 
   #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
     for (const listener of this.#listeners) {
@@ -525,10 +561,10 @@ class Store {
    * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
    * subsequent commits.
    */
-  getSortedChildren(id: Identifier, init: GetSortedChildrenInit): Iterable<Node> {
+  getSortedParts(id: Identifier, init: GetSortedPartsInit): Iterable<Node> {
     const safeId = parse(identifierSchema, id);
 
-    parse(getSortedChildrenInitSchema, init);
+    parse(getSortedPartsInitSchema, init);
 
     const state = this.#state;
     const sortedChildIds = getSortedChildIds(state.get(safeId));
@@ -562,4 +598,4 @@ class Store {
 }
 
 export default Store;
-export type { GetSortedChildrenInit, StoreListener, StoreSource, StoreController, StoreTransaction };
+export type { GetSortedPartsInit, StoreListener, StoreSource, StoreController, StoreTransaction };

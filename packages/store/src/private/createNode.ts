@@ -1,8 +1,8 @@
 import { parse } from 'valibot';
 import { nodeSchema, type Node } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
-import createReadonlySet, { isReadonlySet } from './createReadonlySet.ts';
-import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from './createReadonlyNodeSet.ts';
+import createReadonlySet, { isReadonlySet } from '../structure/createReadonlySet.ts';
+import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from '../structure/createReadonlyNodeSet.ts';
 
 /**
  * Returns a deeply immutable copy of the value. Arrays and objects are frozen, and `Set` is replaced by a readonly `Set`.
