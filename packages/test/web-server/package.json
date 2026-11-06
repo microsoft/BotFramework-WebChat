@@ -27,7 +27,7 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
-    "tsup": "^8.5.1",
+    "tsup": "^9.0.0",
     "typescript": "^6.0.3"
   },
   "dependencies": {
