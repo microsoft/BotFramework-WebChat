@@ -98,7 +98,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       transcriptVisualKeyboardIndicatorStyle,
       transcriptVisualKeyboardIndicatorWidth,
       transitionDuration,
-      transitionEasing
+      transitionEasing,
+      videoHeight
     } = styleOptions;
 
     let bundleStyleProps = '';
@@ -155,6 +156,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.FontPrimary}: ${primaryFont};
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
+  ${CustomPropertyNames.HeightVideo}: ${typeof videoHeight === 'number' ? `${videoHeight}px` : videoHeight || 'unset'};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
   ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;

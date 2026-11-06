@@ -1,5 +1,10 @@
 import CSSTokens from '../CSSTokens';
 
+/**
+ * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+ * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function AudioAttachment() {
   return {
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.

@@ -57,6 +57,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
   const strictStyleOptions = normalizeStyleOptions(styleOptions);
 
   return Object.freeze({
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/BasicTranscript.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     activities: createActivitiesStyle(),
     /**
      * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.
@@ -70,7 +75,17 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     activityCopyButton: createActivityCopyButtonStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     audioAttachment: createAudioAttachmentStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     audioContent: createAudioContentStyle(),
     autoResizeTextArea: createAutoResizeTextAreaStyle(strictStyleOptions),
     avatar: createAvatarStyle(strictStyleOptions),
@@ -106,9 +121,19 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     carouselFlipper: createCarouselFlipper(strictStyleOptions),
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/ErrorBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     errorBox: createErrorBoxStyle(strictStyleOptions),
     errorNotification: createErrorNotificationStyle(strictStyleOptions),
     fileContent: createFileContentStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Avatar/ImageAvatar.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     imageAvatar: createImageAvatarStyle(),
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
@@ -132,14 +157,39 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     typingAnimation: createTypingAnimationStyle(strictStyleOptions),
     typingIndicator: createTypingIndicatorStyle(strictStyleOptions),
     uploadButton: createUploadButtonStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     videoAttachment: createVideoAttachmentStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     videoContent: createVideoContentStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     vimeoContent: createVimeoContentStyle(strictStyleOptions),
     warningNotification: createWarningNotificationStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/MediaAttachment.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     youTubeContent: createYouTubeContentStyle(strictStyleOptions),
 
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/ChatHistory/ChatHistoryBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     chatHistoryBox: createChatHistoryBoxStyleSet(),
     /**
      * @deprecated Not used for rendering since 4.19.0 (PR #5670), customizing it has no effect.

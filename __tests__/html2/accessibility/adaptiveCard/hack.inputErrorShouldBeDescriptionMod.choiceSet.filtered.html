@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      async function getInputState(element) {
+        const { description, properties } = await testHelpers.getAccessibilityNode(element);
+
+        return {
+          description: description?.value,
+          invalid: properties?.find(({ name }) => name === 'invalid')?.value.value
+        };
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A card with a required filtered choice set (text box with suggestions) and a Submit button.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    choices: [
+                      { title: 'Red', value: 'red' },
+                      { title: 'Blue', value: 'blue' }
+                    ],
+                    errorMessage: 'Please choose a color',
+                    id: 'color',
+                    isRequired: true,
+                    label: 'Color',
+                    placeholder: 'Type a color',
+                    style: 'filtered',
+                    type: 'Input.ChoiceSet'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.5'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const textBox = document.querySelector('input.ac-choiceSetInput-filtered');
+        // Adaptive Cards puts "aria-labelledby" on the wrapper of the text box, not on the text box.
+        const wrapper = textBox.closest('[aria-labelledby]');
+
+        // WHEN: The "Submit" button is clicked while nothing is chosen.
+        await host.click(document.querySelector('.ac-pushButton'));
+
+        // THEN: The text box should be focused, invalid and described by the error message.
+        //       Its name is not asserted: Adaptive Cards does not name it by the label, only by the placeholder.
+        await waitFor(() => expect(document.activeElement).toBe(textBox));
+        await waitFor(async () =>
+          expect(await getInputState(textBox)).toEqual({ description: 'Please choose a color', invalid: 'true' })
+        );
+
+        // THEN: The error message should not be part of the wrapper's label.
+        expect(await testHelpers.getAccessibleName(wrapper)).toBe('Color');
+
+        // THEN: The focused text box should show the error message below it.
+        await host.snapshot('local');
+
+        // Clearing the error is not tested here: once a value is typed, Adaptive Cards removes the placeholder name
+        // and the text box has no name (separate issue). Other input types test clearing the error.
+      });
+    </script>
+  </body>
+</html>
