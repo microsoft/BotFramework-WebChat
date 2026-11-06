@@ -1661,12 +1661,17 @@ function upsertDatedMessage(
   transaction: StoreTransaction,
   id: `_:${string}`,
   parentIds: readonly `_:${string}`[],
-  dateCreated?: number | undefined
+  dateCreated?: number | string | undefined
 ): void {
   transaction.upsert(id, () => ({
     '@id': id,
     '@type': new Set(['Message']),
-    ...(typeof dateCreated === 'number' ? { dateCreated } : {}),
+    // Number is seconds since 2026-01-01T00:00:00Z.
+    ...(typeof dateCreated === 'number'
+      ? { dateCreated: new Date(Date.UTC(2026, 0, 1) + dateCreated * 1_000).toISOString() }
+      : typeof dateCreated === 'string'
+        ? { dateCreated }
+        : {}),
     isPartOf: new Set(parentIds.map(parentId => ({ '@id': parentId })))
   }));
 }
@@ -2064,10 +2069,13 @@ scenario(
   'dateCreated',
   bdd => {
     for (const [name, dateCreated] of [
-      ['a string', '2026-01-01'],
-      ['a set of numbers', new Set([1])],
-      ['Infinity', Infinity],
-      ['NaN', NaN]
+      ['a number', 1_700_000_000_000],
+      ['a date-only string', '2026-01-01'],
+      ['a timestamp without time zone', '2026-01-01T00:00:00'],
+      ['an invalid month', '2026-13-01T00:00:00Z'],
+      ['a non-timestamp string', 'yesterday'],
+      ['a Date', new Date(0)],
+      ['a set of strings', new Set(['2026-01-01T00:00:00Z'])]
     ] satisfies [string, unknown][]) {
       bdd
         .given('a store with conversations', () => createStoreWithConversations())
@@ -2085,14 +2093,46 @@ scenario(
         .and('should not add the node', ({ store }) => expect(store.getSnapshot().has('_:m-1')).toBe(false));
     }
 
+    for (const dateCreated of ['2026-01-01T00:00:00Z', '2026-01-01T00:00:00.123Z', '2026-01-01T08:00:00+08:00']) {
+      bdd
+        .given('a store with conversations', () => createStoreWithConversations())
+        .when(`a node with dateCreated of "${dateCreated}" is upserted`, ({ controller }) =>
+          controller.edit(transaction => upsertDatedMessage(transaction, '_:m-1', [], dateCreated))
+        )
+        .then('should add the node as-is', ({ store }) =>
+          expect(store.getSnapshot().get('_:m-1')).toHaveProperty('dateCreated', dateCreated)
+        );
+    }
+
     bdd
       .given('a store with conversations', () => createStoreWithConversations())
-      .when('a node with dateCreated of a number is upserted', ({ controller }) =>
-        controller.edit(transaction => upsertDatedMessage(transaction, '_:m-1', [], 1_700_000_000_000))
+      .when('children with dateCreated in different time zones are added', ({ controller }) =>
+        controller.edit(transaction => {
+          // 2026-01-01T00:00:00Z
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00Z');
+          // 2025-12-31T23:30:00Z, earlier than "_:m-a", but sorted after it if compared as string.
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T01:30:00+02:00');
+          // 2026-01-01T00:00:00.500Z
+          upsertDatedMessage(transaction, '_:m-c', ['_:c-1'], '2025-12-31T19:00:00.5-05:00');
+        })
       )
-      .then('should add the node', ({ store }) =>
-        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('dateCreated', 1_700_000_000_000)
+      .then('should sort as Date', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a', '_:m-c'])
       );
+
+    bdd
+      .given('a store with 2 children of same dateCreated in different time zones', () => {
+        const { controller, store } = createStoreWithConversations();
+
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-2', ['_:c-1'], '2026-01-01T02:00:00+02:00');
+          upsertDatedMessage(transaction, '_:m-1', ['_:c-1'], '2026-01-01T00:00:00Z');
+        });
+
+        return { controller, store };
+      })
+      .when('getSortedParts() is called', ({ store }) => getSortedPartIdsOf(store, '_:c-1'))
+      .then('should sort by @id', (_, ids) => expect(ids).toEqual(['_:m-1', '_:m-2']));
   },
   NodeTest
 );

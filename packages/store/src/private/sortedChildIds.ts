@@ -10,15 +10,24 @@ type NodeWithSortedChildIds = Node & {
 };
 
 /**
+ * Converts `dateCreated` (ISO timestamp string) to epoch time for comparison as `Date`, `Infinity` if not set.
+ *
+ * ISO timestamps with different time zones (e.g. `+02:00` and `Z`) cannot be compared as string.
+ */
+function toTime(dateCreated: string | undefined): number {
+  return typeof dateCreated === 'string' ? new Date(dateCreated).getTime() : Infinity;
+}
+
+/**
  * Compares two children: earlier `dateCreated` comes first, children without `dateCreated` come last.
  * If `dateCreated` is the same, compares by `@id`.
  */
 function compareChild(
-  [xDateCreated, xId]: readonly [number | undefined, Identifier],
-  [yDateCreated, yId]: readonly [number | undefined, Identifier]
+  [xDateCreated, xId]: readonly [string | undefined, Identifier],
+  [yDateCreated, yId]: readonly [string | undefined, Identifier]
 ): number {
-  const x = xDateCreated ?? Infinity;
-  const y = yDateCreated ?? Infinity;
+  const x = toTime(xDateCreated);
+  const y = toTime(yDateCreated);
 
   return x === y ? Number(xId > yId) - Number(xId < yId) : Number(x > y) - Number(x < y);
 }
@@ -33,8 +42,8 @@ function compareChild(
 function insertSortedChild(
   sortedChildIds: ReadWriteSkipList<Identifier>,
   id: Identifier,
-  dateCreated: number | undefined,
-  getDateCreated: (id: Identifier) => number | undefined
+  dateCreated: string | undefined,
+  getDateCreated: (id: Identifier) => string | undefined
 ): void {
   sortedChildIds.insert(id, childId => compareChild([getDateCreated(childId), childId], [dateCreated, id]) > 0);
 }

@@ -1,9 +1,8 @@
 import {
   custom,
-  finite,
   is,
+  isoTimestamp,
   minSize,
-  number,
   objectWithRest,
   optional,
   pipe,
@@ -25,11 +24,11 @@ const nodeSchema = pipe(
       // OPINION: Each node can has a single ID only.
       '@id': identifierSchema,
       '@type': pipe(set(string()), minSize(1, 'Node must have at least one @type')),
-      // OPINION: dateCreated must be a Unix epoch number and not in a set/array.
+      // OPINION: dateCreated must be an ISO timestamp string with time zone and not in a set/array.
       dateCreated: optional(
         pipe(
-          number('"dateCreated" property value must be a Unix epoch number'),
-          finite('"dateCreated" property value must be a Unix epoch number')
+          string('"dateCreated" property value must be an ISO timestamp string'),
+          isoTimestamp('"dateCreated" property value must be an ISO timestamp string')
         )
       ),
       // OPINION: hasPart/isPartOf must reference to another node, not containing another node
