@@ -2,7 +2,7 @@ import { parse } from 'valibot';
 import { nodeSchema, type Node } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import createReadonlySet, { isReadonlySet } from './createReadonlySet.ts';
-import createReadonlyNodeSet from './createReadonlyNodeSet.ts';
+import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from './createReadonlyNodeSet.ts';
 
 /**
  * Returns a deeply immutable copy of the value. Arrays and objects are frozen, and `Set` is replaced by a readonly `Set`.
@@ -24,6 +24,21 @@ function deepFreeze<T>(value: T): T {
 }
 
 /**
+ * Returns a `ReadonlyNodeSet` of the node references.
+ *
+ * - If the original value is a `ReadonlyNodeSet`, it is immutable and returned as-is, i.e. unchanged parts are reused
+ * - Otherwise, IDs are copied via an iterator without creating an intermediate array
+ *
+ * @param originalValue Value before validation. It is validated, but validation always returns a new `Set`.
+ * @param value Value after validation.
+ */
+function toReadonlyNodeSet(originalValue: unknown, value: ReadonlySet<NodeReference>): ReadonlyNodeSet {
+  return getNodeSetIds(originalValue)
+    ? (originalValue satisfies unknown as ReadonlyNodeSet)
+    : createReadonlyNodeSet(value.values().map(({ '@id': id }) => id));
+}
+
+/**
  * Validates the value and creates an immutable node for storing in the graph.
  *
  * - The node is validated against the node schema
@@ -35,11 +50,12 @@ function deepFreeze<T>(value: T): T {
 function createNode(value: unknown): Node {
   return Object.freeze(
     Object.fromEntries(
-      Object.entries(parse(nodeSchema, value)).map(([key, value]) => [
+      Object.entries(parse(nodeSchema, value)).map(([key, safeValue]) => [
         key,
-        (key === 'hasPart' || key === 'isPartOf') && value instanceof Set
-          ? createReadonlyNodeSet(Array.from(value, ({ '@id': id }: NodeReference) => id))
-          : deepFreeze(value)
+        (key === 'hasPart' || key === 'isPartOf') && safeValue instanceof Set
+          ? // `value` is an object as it passed validation.
+            toReadonlyNodeSet(Reflect.get(value as object, key), safeValue)
+          : deepFreeze(safeValue)
       ])
     )
   ) satisfies object as Node;

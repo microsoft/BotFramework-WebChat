@@ -60,6 +60,45 @@ scenario(
       );
 
     bdd
+      .given('a node created by createNode()', () =>
+        createNode({
+          '@id': '_:thread',
+          '@type': new Set(['Thread']),
+          hasPart: new Set([{ '@id': '_:m-1' }]),
+          isPartOf: new Set([{ '@id': '_:conversation' }])
+        })
+      )
+      .when('spread and passed to createNode() again', node => createNode({ ...node }))
+      .then('should reuse hasPart without copying', (node, nextNode) => expect(nextNode.hasPart).toBe(node.hasPart))
+      .and('should reuse isPartOf without copying', (node, nextNode) => expect(nextNode.isPartOf).toBe(node.isPartOf))
+      .and('should be a different node', (node, nextNode) => expect(nextNode).not.toBe(node));
+
+    bdd
+      .given('a node created by createNode()', () =>
+        createNode({
+          '@id': '_:thread',
+          '@type': new Set(['Thread']),
+          isPartOf: new Set([{ '@id': '_:conversation' }])
+        })
+      )
+      .when('isPartOf is cloned, modified, and passed to createNode() again', node => {
+        const isPartOf = new Set(node.isPartOf);
+
+        isPartOf.add({ '@id': '_:channel' });
+
+        return createNode({ ...node, isPartOf });
+      })
+      .then('should have the new isPartOf', (_, nextNode) =>
+        expect(Array.from(getPartIds(nextNode, 'isPartOf'))).toEqual(['_:conversation', '_:channel'])
+      )
+      .and('should store isPartOf as read-only Set', (_, nextNode) =>
+        expect(() => (nextNode.isPartOf as Set<unknown>).add({ '@id': '_:m-3' })).toThrow(TypeError)
+      )
+      .and('should keep the previous isPartOf intact', node =>
+        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:conversation'])
+      );
+
+    bdd
       .given('a node without the cache', () =>
         parse(nodeSchema, {
           '@id': '_:conversation',
