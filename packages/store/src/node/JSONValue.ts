@@ -1,11 +1,12 @@
 import {
   array,
   boolean,
+  check,
+  custom,
   lazy,
   null_,
   number,
   pipe,
-  rawTransform,
   record,
   string,
   transform,
@@ -24,66 +25,42 @@ type JSONValue =
   | { readonly [key: string]: JSONValue }
   | readonly JSONValue[];
 
-const RECURSIVE: unique symbol = Symbol('recursive');
+/**
+ * Checks if the value is a plain object, i.e. created by `{}` or `Object.create(null)`.
+ *
+ * Class instances (e.g. `Date`, `Map`, `URL`) are not plain objects and are not JSON values.
+ */
+function isPlainObject(value: unknown): boolean {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+
+  return prototype === Object.prototype || prototype === null;
+}
 
 /**
- * Prepares the value for JSON serialization, following `JSON.stringify()`:
+ * Checks if the value is recursive, i.e. an array or plain object containing itself, directly or indirectly.
  *
- * - If the value has a `toJSON()` function, it is called with the key, and its returned value is used instead
- * - Objects and arrays are copied with their own enumerable properties only
- *
- * Other values are returned as-is to be validated by the schema.
- *
- * @returns The prepared value, or `RECURSIVE` if the value contains itself, directly or indirectly, after `toJSON()`.
+ * Recursive values cannot be serialized by `JSON.stringify()`. The same object appearing more than once without
+ * containing itself (e.g. `{ one: shared, two: shared }`) is not recursive.
  */
-function prepareJSONValue(key: string, value: unknown, ancestors: Set<object>): unknown {
-  const nextValue =
-    value && typeof value === 'object' && 'toJSON' in value && typeof value.toJSON === 'function'
-      ? value.toJSON(key)
-      : value;
-
-  if (!nextValue || typeof nextValue !== 'object') {
-    return nextValue;
-  } else if (ancestors.has(nextValue)) {
-    return RECURSIVE;
+function isRecursive(value: unknown, ancestors: Set<object> = new Set()): boolean {
+  // Other objects are not JSON values and will be rejected by the schema.
+  if (!value || typeof value !== 'object' || (!Array.isArray(value) && !isPlainObject(value))) {
+    return false;
+  } else if (ancestors.has(value)) {
+    return true;
   }
 
-  ancestors.add(nextValue);
+  ancestors.add(value);
 
-  try {
-    if (Array.isArray(nextValue)) {
-      const items: unknown[] = [];
+  const recursive = Object.values(value).some(value => isRecursive(value, ancestors));
 
-      for (const [index, item] of nextValue.entries()) {
-        const nextItem = prepareJSONValue(`${index}`, item, ancestors);
+  ancestors.delete(value);
 
-        if (nextItem === RECURSIVE) {
-          return RECURSIVE;
-        }
-
-        items.push(nextItem);
-      }
-
-      return items;
-    }
-
-    const entries: [string, unknown][] = [];
-
-    // Only own enumerable string keys, same as `JSON.stringify()`.
-    for (const [key, property] of Object.entries(nextValue)) {
-      const nextProperty = prepareJSONValue(key, property, ancestors);
-
-      if (nextProperty === RECURSIVE) {
-        return RECURSIVE;
-      }
-
-      entries.push([key, nextProperty]);
-    }
-
-    return Object.fromEntries(entries);
-  } finally {
-    ancestors.delete(nextValue);
-  }
+  return recursive;
 }
 
 const nonRecursiveJSONValueSchema: GenericSchema<JSONValue> =
@@ -107,6 +84,9 @@ const nonRecursiveJSONValueSchema: GenericSchema<JSONValue> =
           ])
         ),
         pipe(
+          // Only plain objects, class instances such as `Date` and `Map` are not allowed.
+          // Must be checked before `record()`, which copies the object into a plain object.
+          custom<{ readonly [key: string]: JSONValue }>(isPlainObject, 'Only plain object is allowed for JSON value'),
           // In object, remove property with value of undefined.
           // JSON.stringify({ one: 1, two: undefined, three: 3 }) === { one: 1, three: 3 }
           record(string(), union([nonRecursiveJSONValueSchema, undefined_()])),
@@ -115,30 +95,20 @@ const nonRecursiveJSONValueSchema: GenericSchema<JSONValue> =
           )
         )
       ],
-      'Only boolean, null, number, string, array, and object is allowed for JSON value'
+      'Only boolean, null, number, string, array, and plain object is allowed for JSON value'
     )
   );
 
 /**
- * Schema of JSON value, i.e. value which can be serialized by `JSON.stringify()`.
+ * Schema of JSON value: boolean, null, number, string, array, and plain object.
  *
- * Follows `JSON.stringify()`: `toJSON()` is honored and recursive values are rejected. They are handled once up front,
- * before parsing, as parsing recursive values would never end.
+ * - Recursive values are not allowed, they are checked once up front, as parsing them would never end
+ * - Class instances (e.g. `Date`, `Map`) are not allowed, `toJSON()` is not called
+ * - Property with value of `undefined` is removed, `undefined` in array is transformed into `null`
  */
 const jsonValueSchema: GenericSchema<unknown, JSONValue> = pipe(
   unknown(),
-  rawTransform(({ addIssue, dataset: { value }, NEVER }) => {
-    // Root key is empty string, same as `JSON.stringify()`.
-    const nextValue = prepareJSONValue('', value, new Set());
-
-    if (nextValue === RECURSIVE) {
-      addIssue({ message: 'JSON value must not be recursive' });
-
-      return NEVER;
-    }
-
-    return nextValue;
-  }),
+  check(value => !isRecursive(value), 'JSON value must not be recursive'),
   nonRecursiveJSONValueSchema
 );
 

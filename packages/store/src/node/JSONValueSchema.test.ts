@@ -87,46 +87,16 @@ scenario(
 
     bdd.given
       .oneOf<unknown>([
-        ['a Date', () => ({ date: new Date(0) })],
-        ['an object with toJSON() returning a primitive', () => ({ value: { toJSON: () => 'Hello' } })],
-        [
-          'an object with toJSON() returning an object with toJSON()',
-          () => ({ value: { toJSON: () => ({ nested: { toJSON: () => 1 } }) } })
-        ],
-        ['an array with toJSON() returning an array', () => [{ toJSON: () => [1, undefined] }]],
-        ['a root value with toJSON()', () => ({ toJSON: () => ({ one: 1, two: undefined }) })],
-        ['a class instance with toJSON() on prototype', () => [new URL('https://example.com/')]]
+        ['a Date', () => new Date(0)],
+        ['a Map', () => new Map([['one', 1]])],
+        ['a Set', () => new Set([1])],
+        ['a URL', () => new URL('https://example.com/')],
+        ['a class instance', () => new (class {})()],
+        ['an object with toJSON()', () => ({ toJSON: () => 'Hello' })],
+        ['a Date nested in an object', () => ({ date: new Date(0) })],
+        ['a Map nested in an array', () => [new Map()]],
+        ['a function', () => () => 1]
       ])
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should be same as JSON.stringify() then JSON.parse()', (target, result) =>
-        expect(result).toEqual(JSON.parse(JSON.stringify(target)))
-      );
-
-    bdd
-      .given('an object with toJSON() recording its key', () => {
-        const keys: string[] = [];
-        const record = {
-          toJSON: (key: string) => {
-            keys.push(key);
-
-            return key;
-          }
-        };
-
-        return { keys, target: { one: record, two: [record] } };
-      })
-      .when('parsed', ({ target }) => parse(jsonValueSchema, target))
-      .then('should call toJSON() with the key', ({ keys }) => expect(keys).toEqual(['one', '0']))
-      .and('should use the returned value', (_, result) => expect(result).toEqual({ one: 'one', two: ['0'] }));
-
-    bdd
-      .given('a toJSON() returning its ancestor', () => {
-        const value: { child?: unknown } = {};
-
-        value.child = { toJSON: () => value };
-
-        return value;
-      })
       .when('parsed', target => {
         try {
           return parse(jsonValueSchema, target);
@@ -134,28 +104,20 @@ scenario(
           return error;
         }
       })
-      .then('should throw', (_, result) =>
-        expect(result).toEqual(expect.objectContaining({ message: 'JSON value must not be recursive' }))
-      )
-      .and('should not be serializable by JSON.stringify()', target => expect(() => JSON.stringify(target)).toThrow());
+      .then('should throw', (_, result) => expect(result).toEqual(expect.any(Error)));
 
     bdd
-      .given('a toJSON() returning a function', () => ({ value: { toJSON: () => () => 1 } }))
-      .when('parsed', target => {
-        try {
-          return parse(jsonValueSchema, target);
-        } catch (error) {
-          return error;
-        }
-      })
-      .then('should throw as function is not a JSON value', (_, result) => expect(result).toEqual(expect.any(Error)));
-
-    bdd
-      .given('a frozen object without toJSON()', () => Object.freeze({ one: Object.freeze([1]) }))
+      .given('an object without prototype', () => Object.assign(Object.create(null), { one: 1 }))
       .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should not modify the input', (target, result) => {
+      .then('should succeed', (_, result) => expect(result).toEqual({ one: 1 }));
+
+    bdd
+      .given('a frozen object', () => Object.freeze({ one: Object.freeze([1]), two: undefined }))
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should remove undefined values without modifying the input', (target, result) => {
         expect(result).toEqual({ one: [1] });
         expect(Object.isFrozen(target)).toBe(true);
+        expect(target).toHaveProperty('two', undefined);
       });
   },
   NodeTest
