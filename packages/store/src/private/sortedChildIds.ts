@@ -10,25 +10,10 @@ type NodeWithSortedChildIds = Node & {
 };
 
 /**
- * Converts `dateCreated` (ISO timestamp string) to epoch time for comparison as `Date`, `Infinity` if not set.
- *
- * ISO timestamps with different time zones (e.g. `+02:00` and `Z`) cannot be compared as string.
- */
-function toTime(dateCreated: string | undefined): number {
-  return typeof dateCreated === 'string' ? new Date(dateCreated).getTime() : Infinity;
-}
-
-/**
  * Compares two children: earlier `dateCreated` comes first, children without `dateCreated` come last.
  * If `dateCreated` is the same, compares by `@id`.
  */
-function compareChild(
-  [xDateCreated, xId]: readonly [string | undefined, Identifier],
-  [yDateCreated, yId]: readonly [string | undefined, Identifier]
-): number {
-  const x = toTime(xDateCreated);
-  const y = toTime(yDateCreated);
-
+function compareChild([x, xId]: readonly [number, Identifier], [y, yId]: readonly [number, Identifier]): number {
   return x === y ? Number(xId > yId) - Number(xId < yId) : Number(x > y) - Number(x < y);
 }
 
@@ -37,15 +22,16 @@ function compareChild(
  *
  * Appending to the end (e.g. a new message) is O(1), otherwise, expected O(log n). No items are shifted.
  *
- * @param getDateCreated Returns `dateCreated` of existing children.
+ * @param dateCreatedTime `dateCreated` of the child as epoch time, `Infinity` if not set, see `getDateCreatedTime()`.
+ * @param getDateCreatedTime Returns `dateCreated` of existing children as epoch time, see `getDateCreatedTime()`.
  */
 function insertSortedChild(
   sortedChildIds: ReadWriteSkipList<Identifier>,
   id: Identifier,
-  dateCreated: string | undefined,
-  getDateCreated: (id: Identifier) => string | undefined
+  dateCreatedTime: number,
+  getDateCreatedTime: (id: Identifier) => number
 ): void {
-  sortedChildIds.insert(id, childId => compareChild([getDateCreated(childId), childId], [dateCreated, id]) > 0);
+  sortedChildIds.insert(id, childId => compareChild([getDateCreatedTime(childId), childId], [dateCreatedTime, id]) > 0);
 }
 
 /**

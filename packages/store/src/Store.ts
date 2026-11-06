@@ -8,6 +8,7 @@ import attachHasPart from './private/attachHasPart.ts';
 import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './structure/createReadonlyMap.ts';
 import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './structure/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
+import { getDateCreatedTime } from './private/dateCreatedTime.ts';
 import createReadonlySkipList, {
   type ReadWriteSkipList,
   type VersionedReadonlySkipList
@@ -281,11 +282,8 @@ function updateSortedChildIds(
   }
 
   for (const [parentId, id] of insertions) {
-    insertSortedChild(
-      mutate(parentId),
-      id,
-      nextState.get(id)?.dateCreated,
-      childId => nextState.get(childId)?.dateCreated
+    insertSortedChild(mutate(parentId), id, getDateCreatedTime(nextState.get(id)), childId =>
+      getDateCreatedTime(nextState.get(childId))
     );
   }
 

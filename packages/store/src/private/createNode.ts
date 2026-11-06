@@ -2,6 +2,7 @@ import { parse } from 'valibot';
 import { nodeSchema, type Node } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import createReadonlySet, { isReadonlySet } from '../structure/createReadonlySet.ts';
+import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
 import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from '../structure/createReadonlyNodeSet.ts';
 
 /**
@@ -44,19 +45,25 @@ function toReadonlyNodeSet(originalValue: unknown, value: ReadonlySet<NodeRefere
  * - The node is validated against the node schema
  * - The node is deeply frozen
  * - `hasPart` and `isPartOf` are stored as `ReadonlyNodeSet`, so `getPartIds()` can get the IDs in O(1)
+ * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getDateCreatedTime()`
  *
  * All nodes stored in the graph must be created by this function.
  */
 function createNode(value: unknown): Node {
+  const safeNode = parse(nodeSchema, value);
+
   return Object.freeze(
-    Object.fromEntries(
-      Object.entries(parse(nodeSchema, value)).map(([key, safeValue]) => [
-        key,
-        (key === 'hasPart' || key === 'isPartOf') && safeValue instanceof Set
-          ? // `value` is an object as it passed validation.
-            toReadonlyNodeSet(Reflect.get(value as object, key), safeValue)
-          : deepFreeze(safeValue)
-      ])
+    attachDateCreatedTime(
+      Object.fromEntries(
+        Object.entries(safeNode).map(([key, safeValue]) => [
+          key,
+          (key === 'hasPart' || key === 'isPartOf') && safeValue instanceof Set
+            ? // `value` is an object as it passed validation.
+              toReadonlyNodeSet(Reflect.get(value as object, key), safeValue)
+            : deepFreeze(safeValue)
+        ])
+      ),
+      parseDateCreatedTime(safeNode.dateCreated)
     )
   ) satisfies object as Node;
 }

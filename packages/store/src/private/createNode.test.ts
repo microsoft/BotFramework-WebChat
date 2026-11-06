@@ -3,7 +3,9 @@ import { expect } from 'expect';
 import NodeTest from 'node:test';
 import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
+import attachHasPart from './attachHasPart.ts';
 import createNode from './createNode.ts';
+import { getDateCreatedTime } from './dateCreatedTime.ts';
 import getPartIds from './getPartIds.ts';
 
 scenario(
@@ -20,7 +22,9 @@ scenario(
       .then('should be frozen', (_, node) => expect(Object.isFrozen(node)).toBe(true))
       .and('should only have properties from the input', (_, node) => {
         expect(Object.keys(node).sort()).toEqual(['@id', '@type', 'hasPart', 'isPartOf']);
-        expect(Object.getOwnPropertySymbols(node)).toEqual([]);
+        expect(
+          Object.getOwnPropertySymbols(node).filter(symbol => Object.prototype.propertyIsEnumerable.call(node, symbol))
+        ).toEqual([]);
       })
       .and('should equal to a plain node', (value, node) => expect(node).toEqual(value))
       .and('should store hasPart and isPartOf as read-only Set', (_, node) => {
@@ -113,6 +117,35 @@ scenario(
       .given('a node without hasPart', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
       .when('getPartIds() is called', node => getPartIds(node, 'hasPart'))
       .then('should return an empty Set', (_, partIds) => expect(partIds.size).toBe(0));
+
+    bdd
+      .given('a node with dateCreated', () => ({
+        '@id': '_:m-1',
+        '@type': new Set(['Message']),
+        dateCreated: '2026-01-01T08:00:00+08:00'
+      }))
+      .when('createNode() is called', value => createNode(value))
+      .then('getDateCreatedTime() should return the parsed time', (_, node) =>
+        expect(getDateCreatedTime(node)).toBe(Date.UTC(2026, 0, 1))
+      )
+      .and('should keep dateCreated as-is', (_, node) =>
+        expect(node).toHaveProperty('dateCreated', '2026-01-01T08:00:00+08:00')
+      )
+      .and('should keep the cached time after attachHasPart()', (_, node) =>
+        expect(getDateCreatedTime(attachHasPart(node, new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
+      );
+
+    bdd
+      .given('a node without dateCreated', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
+      .when('getDateCreatedTime() is called', node => getDateCreatedTime(node))
+      .then('should return Infinity', (_, time) => expect(time).toBe(Infinity));
+
+    bdd
+      .given('a node with dateCreated without the cache', () =>
+        parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']), dateCreated: '2026-01-01T00:00:00Z' })
+      )
+      .when('getDateCreatedTime() is called', node => getDateCreatedTime(node))
+      .then('should parse dateCreated', (_, time) => expect(time).toBe(Date.UTC(2026, 0, 1)));
   },
   NodeTest
 );
