@@ -12,7 +12,7 @@
          - Blank node reference
             - Strict `{ '@id': string }` without any other properties, must not reference the node itself
          - JSON literal
-            - `{ '@type': 'json', '@value': object }`
+            - `{ '@type': '@json', '@value': object }`
             - `@value` must be a JSON serializable object (no `Date`, function, `undefined`, recursion, etc.)
             - For convenience reason
                - Keys in object with `undefined` value will be removed
