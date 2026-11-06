@@ -57,6 +57,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
       - Node edges must be by-reference
       - Nodes are auto-converted to immutable by deep freezing
          - Array and objects are cloned before frozen, inputs are never modified
+         - Objects are cloned as plain object
       - All referenced nodes must be upserted in the same transaction
    - Membership (`hasPart`/`isPartOf`) are auto-fixed on commit
       - Adding a reference to `isPartOf` property, will automatically add a back-reference to the `hasPart` on the other side, and vice versa
