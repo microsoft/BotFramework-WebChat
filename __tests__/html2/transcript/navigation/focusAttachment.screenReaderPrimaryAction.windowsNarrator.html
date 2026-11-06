@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Paints the focused element yellow, so the snapshots show where the focus is. -->
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: An Adaptive Card with a text box, followed by a text message.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                body: [{ id: 'name', label: 'Your name', type: 'Input.Text' }],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Hello, World!', type: 'message' });
+
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        const activeDescendant = () =>
+          document.getElementById(pageElements.transcript().getAttribute('aria-activedescendant'));
+        const cardTextBox = () => document.querySelector('input.ac-textInput');
+
+        // WHEN: The transcript is focused and ARROW_UP is pressed until the card is the active message.
+        pageObjects.focusTranscript();
+        await host.sendKeys('ARROW_UP', 'ARROW_UP');
+
+        await waitFor(() => expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]));
+        await pageConditions.scrollStabilized();
+
+        // THEN: The transcript is focused (yellow) and the focus indicator is around the card.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        await host.snapshot('local');
+
+        // WHEN: The screen reader does the "primary action" on the active message (ENTER in Narrator scan mode or NVDA browse mode).
+        // Both ask the browser to run the accessibility default action (UI Automation Invoke, IAccessible2 doAction), which Chromium turns into a click on the active descendant.
+        // Neither WebDriver nor Chrome DevTools Protocol can run that action, so `click()` emulates it.
+        activeDescendant().click();
+
+        // THEN: The text box in the card is focused (yellow).
+        await waitFor(() => expect(document.activeElement).toBe(cardTextBox()));
+        await host.snapshot('local');
+
+        // WHEN: ESCAPE is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: The transcript is focused (yellow) again, with the card still the active message.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.transcript()));
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
