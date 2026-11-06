@@ -4,7 +4,7 @@
 - Properties
    - Property name
       - Term (non-IRI name) must be based on Schema.org
-      - Non-Schema.org properties must be specified in IRI
+      - Non-Schema.org properties must be specified in full IRI (no compact IRI)
    - Property value
       - Type supported (mixed use in array):
          - `boolean`, `number`, `string`
@@ -20,10 +20,10 @@
    - Rules
       - Plural form: unless specified, most property values must be an ordered array and must have at least 1 item
       - `@context` is not supported, must not be defined, and is assumed "https://schema.org"
-      - `@id` is required and must be a non-array string which is either a `https:` IRI or starts with `_:` (blank node identifier)
+      - `@id` is required and must be a non-array string which is either an IRI of `https:` or starts with `_:` (blank node identifier)
       - `@type` is required and must be `Set<string>` with at least one value
          - Term (non-IRI type) must be based on Schema.org
-         - Non-Schema.org types must be specified in IRI
+         - Non-Schema.org types must be specified in full IRI (no compact IRI)
       - `dateCreated`, when specified, must be a non-array `string` in ISO format
       - `hasPart` and `isPartOf`, when specified, must be `Set<{ '@id': string }>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
