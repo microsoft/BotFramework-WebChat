@@ -1,24 +1,50 @@
-Put our opinions into the node.
-
-The opinions are targeted around a few principles:
-
-- Simplifying downstream logics
-   - Must have `@id`: every node in the graph must be identifiable
-   - Uniform getter/setter: every property value is an array, except `@context` and `@id`
-   - Unique typing: node reference must be `{ "@id": string }` to reduce confusion with plain string
-   - Support multiple types: every `@type` must be an array of string
-   - Reduce confusion: property value with empty array and `null` is removed
-      - `[]` and `null` are same as if the property is removed
-   - Flattened: property values must be non-null literals, node reference, or JSON literals
-      - Any array containing `null` is not supported and will throw unless it is JSON literal, as it is likely a bug in code
-   - JSON literals will have boxing kept: `{ '@type': '@json', '@value': JSONValue }`
-      - `@value` could be null, if unwrapped, will be confusing as we removed nulls
-   - Do not handle full JSON-LD spec: `@context` is an opaque string and its schema is not honored
-   - Node reference only has `@id` and it should not contain `@type`
-   - Reduce confusion: node reference must not appear at the root of the flattened graph, they are semantically empty
-- Auto-linking for Schema.org: `hasPart` and `isPartOf` are auto-inversed
-- Keep its root: every node is compliant to JSON-LD, understood by standard parsers
-- Debuggability: must have at least one `@type`
-
-@param node
-@returns An opinionated node object which conforms to JSON-LD specification.
+- CAP theorem: always consistent and high availability, no partitioning
+- All nodes are stored flat in a hashmap and frozen
+   - Nodes are always by-reference (lookup `@id` in the hashmap) and never nested in another node
+- Properties
+   - Property name
+      - Term (non-IRI name) must be based on Schema.org
+      - Non-Schema.org properties must be specified in IRI
+   - Property value
+      - Type supported (mixed use in array):
+         - `boolean`, `number`, `string`
+            - Date time (temporal) should be represented by `string` in ISO format
+         - Blank node reference
+            - Strict `{ '@id': string }` without any other properties, must not reference the node itself
+         - JSON literal
+            - `{ '@type': 'json', '@value': object }`
+            - `@value` must be a JSON serializable object (no `Date`, function, `undefined`, recursion, etc.)
+            - For convenience reason
+               - Keys in object with `undefined` value will be removed
+               - Array with `undefined` element will be removed
+   - Rules
+      - Plural form: unless specified, most property values must be an ordered array and must have at least 1 item
+      - `@context` is not supported, must not be defined, and is assumed "https://schema.org"
+      - `@id` is required and must be a non-array string which is either a `https:` IRI or starts with `_:` (blank node identifier)
+      - `@type` is required and must be `Set<string>` with at least one value
+         - Term (non-IRI type) must be based on Schema.org
+         - Non-Schema.org types must be specified in IRI
+      - `dateCreated`, when specified, must be a non-array `string` in ISO format
+      - `hasPart` and `isPartOf`, when specified, must be `Set<{ '@id': string }>` (set of blank node identifiers)
+         - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
+         - Multiple membership: `isPartOf` of a node can contains more than one reference
+- Edits must be synchronous and are transactional
+   - Read are always clean and consistent
+   - Edit must not be nested in another edit
+   - Assertions are checked on commit
+      - Nodes are not runtime validated against Schema.org, they are "assume validated"
+         - Writer must follow Schema.org definition
+         - Reader must drop nodes and properties which violate Schema.org definition
+   - Upsert
+      - Dirty read: updater function pass modified version of the node
+      - Nodes must not contain another node, they must be upserted separately
+      - Nodes become immutable and are deep frozen to prevent modification
+         - Array and objects are cloned before frozen, inputs are never modified
+      - All referenced nodes must be upserted in the same transaction
+   - Membership (`hasPart`/`isPartOf`) are auto-fixed on commit
+      - Adding a reference to `isPartOf` property, will have the `hasPart` of the referenced node pointing back automatically, and vice versa
+      - Removing a node from the graph will automatically remove it from `hasPart` and `isPartOf` of the other nodes which reference it
+   - Failed transaction will not commit to the graph and is abandoned
+- Read
+   - Read a single node by node identifier
+   - Read multiple nodes participated in the same membership by node identifier of the container node, sorted by `dateCreated`
