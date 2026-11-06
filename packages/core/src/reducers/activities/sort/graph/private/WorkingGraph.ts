@@ -1,12 +1,17 @@
 import type { GraphIdentifier, GraphNode, GraphTransaction } from '../types';
-import { getParentId } from './nodeProperties';
+import { getParentId, withProperties } from './nodeProperties';
+import sortParentsFirst from './sortParentsFirst';
 import { forgetSortKeys, hasSameSortKey } from './sortKeys';
 
-/** Parts of each parent, in `position` order. Core's index of the `isPartOf` links (the store has no reverse lookup). */
+/**
+ * Parts of each parent, in `position` order. Core's ordered index of the `isPartOf` links: the store's `hasPart` is a
+ * set, and `getSortedParts()` sorts by `dateCreated` only, outside of a transaction.
+ */
 type PartIndex = ReadonlyMap<GraphIdentifier, readonly GraphIdentifier[]>;
 
 type FlushResult = {
-  readonly changedNodes: readonly GraphNode[];
+  /** IDs of the nodes core upserted. The stored versions are read from the snapshot after the commit. */
+  readonly changedNodeIds: readonly GraphIdentifier[];
   readonly changedParentIds: readonly GraphIdentifier[];
   readonly partIndex: PartIndex;
   /** The version of each changed node before this transaction (`undefined` for new nodes). */
@@ -18,7 +23,7 @@ type FlushResult = {
  * A store transaction with pending writes:
  *
  * - every changed node is upserted once, when the transaction is flushed (the store validates each upsert);
- * - parts are read from core's `PartIndex`, so parents do not need a `hasPart` set that grows with the transcript.
+ * - parts are read from core's ordered `PartIndex`, not from the store's `hasPart` (an unordered set).
  */
 class WorkingGraph {
   /**
@@ -72,21 +77,17 @@ class WorkingGraph {
   }
 
   /**
-   * Upserts the changed nodes into the store, then lets the store add the `hasPart` inverse of the `isPartOf` links
-   * (it rejects the commit otherwise). Returns the changed nodes as stored, with what `deriveState()` needs.
+   * Upserts the changed nodes into the store. The store derives `hasPart` from `isPartOf` when it commits.
+   *
+   * The store reads `hasPart` in an upsert as "these are my parts": a stale or missing `hasPart` would add or remove
+   * parts (a node read from the snapshot carries the `hasPart` of that commit). So parents are upserted first
+   * (`sortParentsFirst()`), and every upsert carries the `hasPart` of the store's current node, which includes the
+   * parts changed before it in this transaction.
    */
   flush(): FlushResult {
-    for (const node of this.#pendingNodes.values()) {
-      this.#transaction.upsert(node['@id'], () => node);
+    for (const node of sortParentsFirst(this.#pendingNodes.values(), id => this.getNode(id))) {
+      this.#transaction.upsert(node['@id'], current => withProperties(node, { hasPart: current?.hasPart }));
     }
-
-    this.#transaction.autoFixRelationship();
-
-    // The store keeps its own (validated, frozen) copy.
-    const changedNodes = Array.from(
-      this.#pendingNodes.values(),
-      node => this.#transaction.getNode(node['@id']) ?? node
-    );
 
     const partIndex = new Map(this.#partIndex);
 
@@ -95,7 +96,7 @@ class WorkingGraph {
     }
 
     return Object.freeze({
-      changedNodes: Object.freeze(changedNodes),
+      changedNodeIds: Object.freeze(Array.from(this.#pendingNodes.keys())),
       changedParentIds: Object.freeze(Array.from(this.#pendingParts.keys())),
       partIndex: Object.freeze(partIndex),
       previousNodes: this.#previousNodes,

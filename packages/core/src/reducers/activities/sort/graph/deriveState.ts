@@ -15,7 +15,6 @@ import type {
 import { getActivity } from './activityNode';
 import { CONVERSATION_ID, type ActivitiesGraph } from './createActivitiesGraph';
 import getSortedMessages, { type GetParts } from './getSortedMessages';
-import type { GraphJournal } from './private/graphJournal';
 import { getBoolean, getIdentifier, getNumber, getParentId, hasType } from './private/nodeProperties';
 import type { FlushResult } from './private/WorkingGraph';
 import type { GetNode, GraphIdentifier, GraphNode } from './types';
@@ -201,11 +200,6 @@ function updateGroupingMaps(
   });
 }
 
-type GraphChanges = FlushResult & {
-  /** The journal including this transaction. */
-  readonly graphJournal: GraphJournal;
-};
-
 /**
  * Derives core's `State` from the graph after a transaction: the graph is the source of truth, `State` is a read model
  * kept for the reducer, its selectors and `state.activities`.
@@ -217,9 +211,9 @@ type GraphChanges = FlushResult & {
 export default function deriveState(
   graph: ActivitiesGraph,
   previousState: State,
-  { changedNodes, changedParentIds, graphJournal, partIndex, previousNodes, sortedMessageIds }: GraphChanges
+  { changedNodeIds, changedParentIds, partIndex, previousNodes, sortedMessageIds }: FlushResult
 ): State {
-  // The store's snapshot of the commit that just happened: this state's graph.
+  // The store's immutable snapshot of the commit that just happened: this state's graph.
   const snapshot = graph.store.getSnapshot();
   const getNode: GetNode = id => snapshot.get(id);
   const getParts: GetParts = parentId => partIndex.get(parentId) ?? [];
@@ -234,8 +228,13 @@ export default function deriveState(
   // nodes, and the HowTo of an affected session (its entry is part of the HowTo's entry).
   const affectedParentIds = new Set<GraphIdentifier>(changedParentIds);
 
-  changedNodes.forEach(node => {
-    const nodeId = node['@id'];
+  changedNodeIds.forEach(nodeId => {
+    // Core never deletes a node (it detaches it), so every upserted node is in the snapshot.
+    const node = getNode(nodeId);
+
+    if (!node) {
+      return;
+    }
 
     [getParentId(node), getParentId(previousNodes.get(nodeId))].forEach(id => id && affectedParentIds.add(id));
     (hasType(node, HOW_TO_TYPE) || hasType(node, LIVESTREAM_SESSION_TYPE)) && affectedParentIds.add(nodeId);
@@ -278,14 +277,11 @@ export default function deriveState(
     activityMap: Object.freeze(activityMaps.activityMap) satisfies State['activityMap'],
     clientActivityIdToLocalIdMap: Object.freeze(activityMaps.clientActivityIdToLocalIdMap),
     graph,
-    graphJournal,
     graphPartIndex: partIndex,
-    graphVersion: graph.version,
+    graphSnapshot: snapshot,
     howToGroupingMap: Object.freeze(howToGroupingMap) satisfies HowToGroupingMap,
     livestreamSessionMap: Object.freeze(livestreamSessionMap) satisfies LivestreamSessionMap,
     sortedActivities: Object.freeze(sortedActivities),
     sortedChatHistoryList: Object.freeze(sortedChatHistoryList)
   } satisfies State);
 }
-
-export { type GraphChanges };

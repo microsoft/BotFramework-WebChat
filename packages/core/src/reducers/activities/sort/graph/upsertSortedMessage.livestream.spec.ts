@@ -59,7 +59,7 @@ scenario('upserting a livestream session', bdd => {
       const session = store.getSnapshot().get(SESSION_NODE_ID);
 
       expect(session).toHaveProperty('isPartOf', new Set([{ '@id': '_:conversation' }]));
-      expect(session).toHaveProperty('position', 1_000);
+      expect(session).toHaveProperty('position', [1_000]);
       expect(session).toHaveProperty([LOGICAL_TIMESTAMP], [1_000]);
     })
     .when('the second activity is upserted', (_, testStore) => upsertEach(testStore, message2))

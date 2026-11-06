@@ -9,8 +9,8 @@ import { FINALIZED, HOW_TO_TYPE, LIVESTREAM_SESSION_TYPE, LOGICAL_TIMESTAMP, STR
 /**
  * Removes a message from the transcript.
  *
- * The message node stays in the graph, outside of the tree: the journal (replay) has no tombstones for the store's
- * `delete()`.
+ * The message node stays in the graph, outside of the tree, as before. `transaction.delete()` exists now, but
+ * `WorkingGraph` does not support it yet.
  */
 export default function deleteSortedMessage(working: WorkingGraph, messageId: GraphIdentifier): void {
   const parentId = getParentId(getRequiredNode(working, messageId));

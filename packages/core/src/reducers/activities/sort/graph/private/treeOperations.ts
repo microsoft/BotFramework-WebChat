@@ -1,5 +1,5 @@
 import type { GraphIdentifier, GraphNode } from '../types';
-import { HOW_TO_TYPE, IDENTIFIER, LOGICAL_TIMESTAMP } from '../vocabulary';
+import { HOW_TO_TYPE, IDENTIFIER, LOGICAL_TIMESTAMP, POSITION } from '../vocabulary';
 import { getNumber, getParentId, hasType, toNumberValues, withProperties } from './nodeProperties';
 import { getSortKeys, setSortKeys, toSortKey, type SortKey } from './sortKeys';
 import type WorkingGraph from './WorkingGraph';
@@ -8,8 +8,8 @@ import type WorkingGraph from './WorkingGraph';
 // HowTo → (Message | livestream session), livestream session → Message revisions.
 // Every part has a `position` relative to its parent, strictly increasing in display order.
 //
-// Core writes `isPartOf` only; `WorkingGraph.flush()` lets the store add the `hasPart` inverse
-// (`transaction.autoFixRelationship()`).
+// Core writes `isPartOf` only; the store derives `hasPart` from it. The store sorts parts by `dateCreated` only
+// (`getSortedParts()`), so core keeps its own order: `position` and the part index (`WorkingGraph`).
 //
 // Like `upsert.ts` before, every level is an insertion sort: arrival order decides ties and parts without sort keys.
 // A stateless sort over a snapshot cannot reproduce this, so positions are written at upsert time.
@@ -45,7 +45,7 @@ const isGreaterInHowTo: IsGreater = (x, part) =>
 const isGreaterInLivestreamSession: IsGreater = (x, part) => x.streamSequence - part.streamSequence > 0;
 
 function getPositionInParent(node: GraphNode | undefined, parentId: GraphIdentifier): number | undefined {
-  return getParentId(node) === parentId ? node?.position : undefined;
+  return getParentId(node) === parentId ? getNumber(node, POSITION) : undefined;
 }
 
 function getRequiredNode(working: WorkingGraph, id: GraphIdentifier): GraphNode {
@@ -98,7 +98,10 @@ function writeParts(
         : lastPosition + POSITION_INCREMENT;
 
     working.setNode(
-      withProperties(part, { isPartOf: new Set([Object.freeze({ '@id': parentId })]), position: nextPosition })
+      withProperties(part, {
+        isPartOf: new Set([Object.freeze({ '@id': parentId })]),
+        [POSITION]: toNumberValues(nextPosition)
+      })
     );
 
     lastPosition = nextPosition;
@@ -162,7 +165,7 @@ function detachPart(working: WorkingGraph, partId: GraphIdentifier): GraphIdenti
     parentId,
     working.getParts(parentId).filter(id => id !== partId)
   );
-  working.setNode(withProperties(part, { isPartOf: undefined, position: undefined }));
+  working.setNode(withProperties(part, { isPartOf: undefined, [POSITION]: undefined }));
 
   return parentId;
 }
@@ -213,7 +216,7 @@ function afterPartLeft(working: WorkingGraph, formerParentId: GraphIdentifier | 
   if (working.getParts(formerParentId).length) {
     refreshHowToTimestamp(working, formerParentId);
   } else {
-    // Detached, not deleted: the journal (replay) has no tombstones for the store's `delete()`.
+    // Detached, not deleted (as before): `WorkingGraph` has no delete yet.
     detachPart(working, formerParentId);
   }
 }

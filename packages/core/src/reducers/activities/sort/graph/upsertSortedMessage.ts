@@ -21,6 +21,7 @@ import {
   LOCAL_TIMESTAMP,
   LOGICAL_TIMESTAMP,
   PART_POSITION,
+  POSITION,
   STREAM_SEQUENCE
 } from './vocabulary';
 
@@ -137,7 +138,7 @@ export default function upsertSortedMessage(
       hasPart: undefined,
       // Keep membership and position as a hint, `writeParts()` keeps the position if it is still in order.
       isPartOf: currentMessage?.isPartOf,
-      position: currentMessage?.position,
+      [POSITION]: toNumberValues(getNumber(currentMessage, POSITION)),
       [LOCAL_TIMESTAMP]: toNumberValues(localTimestamp),
       [LOGICAL_TIMESTAMP]: toNumberValues(logicalTimestamp),
       [PART_POSITION]: sessionId ? undefined : toNumberValues(howTo?.position),

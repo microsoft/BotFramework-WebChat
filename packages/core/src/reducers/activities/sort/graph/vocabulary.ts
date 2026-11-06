@@ -24,6 +24,12 @@ const LOGICAL_TIMESTAMP = 'urn:microsoft:webchat:sort:logical-timestamp';
 /** Position declared by the sender inside its HowTo (schema.org `Message.position`). Can be missing or duplicated. */
 const PART_POSITION = 'urn:microsoft:webchat:sort:part-position';
 
+/**
+ * schema.org `position`: display order of a part relative to its `isPartOf` parent, unique per parent, written by core.
+ * The store no longer treats `position` specially, so it is a plain property with one number (`[1000]`).
+ */
+const POSITION = 'position';
+
 /** Send status of an outgoing message: "sending", "send failed" or "sent". Pending William (question 4). */
 const SEND_STATUS = 'urn:microsoft:webchat:send-status';
 
@@ -58,6 +64,7 @@ export {
   LOGICAL_TIMESTAMP,
   MESSAGE_TYPE,
   PART_POSITION,
+  POSITION,
   SEND_STATUS,
   STREAM_SEQUENCE
 };

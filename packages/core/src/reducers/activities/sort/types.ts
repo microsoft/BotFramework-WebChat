@@ -1,8 +1,8 @@
 import type { Tagged } from 'type-fest';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type { ActivitiesGraph } from './graph/createActivitiesGraph';
-import type { GraphJournal } from './graph/private/graphJournal';
 import type { PartIndex } from './graph/private/WorkingGraph';
+import type { GraphNode } from './graph/types';
 import type { LocalId } from './property/LocalId';
 
 type Activity = WebChatActivity;
@@ -61,16 +61,13 @@ type State = {
    * `undefined` until the first activity.
    */
   readonly graph: ActivitiesGraph | undefined;
-  /** `graph.version` this state was derived at. If the graph moved on (replay), the graph is rebuilt. */
-  readonly graphVersion: number;
-  /**
-   * The changes of every transaction since the graph was created, newest first, shared between states (each state adds
-   * one link). It lets core rebuild the graph as this state saw it (replay); the store cannot be reset to an older
-   * snapshot.
-   */
-  readonly graphJournal: GraphJournal | undefined;
   /** Parts of each grouping, conversation and livestream session, in `position` order. */
   readonly graphPartIndex: PartIndex;
+  /**
+   * The store's (immutable) snapshot this state was derived from. If the store has committed since (an older state is
+   * reduced again, e.g. replay), the graph is rebuilt from this snapshot.
+   */
+  readonly graphSnapshot: ReadonlyMap<string, GraphNode> | undefined;
   readonly howToGroupingMap: HowToGroupingMap;
   readonly livestreamSessionMap: LivestreamSessionMap;
   readonly sortedChatHistoryList: SortedChatHistory;

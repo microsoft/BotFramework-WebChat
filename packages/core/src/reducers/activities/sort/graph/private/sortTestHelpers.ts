@@ -3,7 +3,8 @@ import getSortedMessages from '../getSortedMessages';
 import type { SortFacts } from '../SortFacts';
 import type { GraphIdentifier, GraphNode } from '../types';
 import upsertSortedMessage from '../upsertSortedMessage';
-import { getParentId } from './nodeProperties';
+import { POSITION } from '../vocabulary';
+import { getNumber, getParentId } from './nodeProperties';
 import WorkingGraph, { type PartIndex } from './WorkingGraph';
 
 const CONVERSATION_ID = '_:conversation';
@@ -44,7 +45,9 @@ function getPartIndexViolations({ partIndex, store }: TestGraph): readonly strin
   const violations: string[] = [];
 
   for (const [parentId, parts] of partsByParent) {
-    const expected = [...parts].sort(({ position: x = 0 }, { position: y = 0 }) => x - y).map(node => node['@id']);
+    const expected = [...parts]
+      .sort((x, y) => (getNumber(x, POSITION) ?? 0) - (getNumber(y, POSITION) ?? 0))
+      .map(node => node['@id']);
 
     expected.join() === (partIndex.get(parentId) ?? []).join() ||
       violations.push(`part index of ${parentId} is out of sync`);
@@ -95,7 +98,7 @@ function getView({ partIndex, store }: TestGraph): readonly ViewEntry[] {
     id => snapshot.get(id),
     id => partIndex.get(id) ?? [],
     CONVERSATION_ID
-  ).map(({ '@id': id, position, text }) => Object.freeze({ id, position, text }));
+  ).map(node => Object.freeze({ id: node['@id'], position: getNumber(node, POSITION), text: node['text'] }));
 }
 
 /** The parts of a node in `position` order, as IDs. */
@@ -104,7 +107,8 @@ function getPartIds({ partIndex }: TestGraph, parentId: GraphIdentifier): readon
 }
 
 /**
- * Checks the integrity rules listed in William's `Store.ts` that the sorter is responsible for. Returns the violations.
+ * Checks the integrity rules the sorter is responsible for (William's store no longer checks positions, it allows
+ * duplicates). Returns the violations.
  *
  * - Every `isPartOf` node is in the graph
  * - Parts of the same parent have a position, and no 2 parts have the same position
@@ -115,7 +119,7 @@ function getIntegrityViolations(snapshot: ReadonlyMap<string, GraphNode>): reado
   for (const [parentId, parts] of groupPartsByParent(snapshot)) {
     snapshot.has(parentId) || violations.push(`isPartOf missing ${parentId}`);
 
-    const positions = parts.map(({ position }) => position);
+    const positions = parts.map(part => getNumber(part, POSITION));
 
     positions.includes(undefined) && violations.push(`a part of ${parentId} has no position`);
     new Set(positions).size === positions.length || violations.push(`conflicting positions in ${parentId}`);

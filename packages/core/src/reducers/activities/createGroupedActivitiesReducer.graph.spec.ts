@@ -70,6 +70,37 @@ scenario('reducing an older state again (replay, time travel)', bdd => {
     )
     // Before the fix: [a-1, a-1, a-2], s0 had no ID map entry for a-1 but the graph had its node.
     .then('should have each activity once', (_, state) => expect(ids(state)).toEqual(['a-1', 'a-2']));
+
+  bdd
+    .given('a reducer with states s1 (a-1 updated into HowTo "h1") and s2 (a-1, a-2 in "h1")', () => {
+      const reducer = createGroupedActivitiesReducer(ponyfill, debugAPI);
+      const s0 = reducer(undefined, { type: '@@INIT' } as any);
+      // a-1 is in the graph before "h1": the snapshot lists the part before its parent.
+      const s1 = reducer(
+        reducer(s0, incoming(botActivity('a-1', 'one', 1_000))),
+        incoming(botActivity('a-1', 'one', 1_000, howTo('_:h1')))
+      );
+
+      reducer(s1, incoming(botActivity('a-2', 'two', 2_000, howTo('_:h1'))));
+
+      return { reducer, s1 };
+    })
+    // The graph of s1 is rebuilt from its snapshot: a conversation, a HowTo with a part, and the part.
+    .when('a-3 in "h1" is reduced from s1', ({ reducer, s1 }) =>
+      reducer(s1, incoming(botActivity('a-3', 'three', 3_000, howTo('_:h1'))))
+    )
+    .then('should have a-1 and a-3 only', (_, state) => expect(ids(state)).toEqual(['a-1', 'a-3']))
+    .and('should keep both in "h1"', (_, state) =>
+      expect(state.howToGroupingMap.get('_:h1' as any)?.partList).toHaveLength(2)
+    )
+    .and('should keep `isPartOf` of both in the store', (_, state) =>
+      expect(
+        state.sortedActivities.map(
+          activity =>
+            state.graph?.store.getSnapshot().get(activity.channelData['webchat:internal:local-id'])?.isPartOf?.size
+        )
+      ).toEqual([1, 1])
+    );
 });
 
 scenario('a transaction that throws', bdd => {
