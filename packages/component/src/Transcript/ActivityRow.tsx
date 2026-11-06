@@ -60,6 +60,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
   const bodyRef = useRef<HTMLDivElement>();
   // Keeps the "webchat__basic-transcript__activity-body" class name.
   const basicTranscriptClassNames = useStyles(styles, webChatPrefixedClassName);
+  const focusTrapTargetRef = useRef<HTMLDivElement>();
   const focusByActivityKey = useFocusByActivityKey();
   const getKeyByActivity = useGetKeyByActivity();
   // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
@@ -86,6 +87,9 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
 
   // When receive Escape key from descendant, focus back to the activity.
   const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
+
+  // Screen readers dispatch a click to the active descendant when users invoke its primary action.
+  const handleScreenReaderPrimaryAction = useCallback(() => focusTrapTargetRef.current?.focus(), [focusTrapTargetRef]);
 
   // When the user press UP/DOWN arrow keys, we put a visual focus indicator around the focused activity.
   // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the activity.
@@ -174,6 +178,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
         targetClassName={basicTranscriptClassNames['basic-transcript__activity-focus-target']}
+        targetRef={focusTrapTargetRef}
       >
         {focusTrapChildren}
       </FocusTrap>
@@ -188,6 +193,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
             className="webchat__basic-transcript__activity-active-descendant"
             // "id" is required for "aria-labelledby"
             id={descendantId}
+            onClick={handleScreenReaderPrimaryAction}
             role="article"
           >
             <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
