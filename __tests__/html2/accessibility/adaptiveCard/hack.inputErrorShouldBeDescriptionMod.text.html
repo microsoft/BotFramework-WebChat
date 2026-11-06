@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      async function getInputState(element) {
+        const { description, name, properties } = await testHelpers.getAccessibilityNode(element);
+
+        return {
+          description: description?.value,
+          invalid: properties?.find(({ name }) => name === 'invalid')?.value.value,
+          name: name?.value
+        };
+      }
+
+      function getDanglingLabelIds(element) {
+        return (element.getAttribute('aria-labelledby') || '')
+          .split(/\s+/u)
+          .filter(id => id && !document.getElementById(id));
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A card with a required text input and a Submit button.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    errorMessage: 'Please enter your name',
+                    id: 'name',
+                    isRequired: true,
+                    label: 'Name',
+                    type: 'Input.Text'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const input = document.querySelector('input.ac-textInput');
+        const submitButton = document.querySelector('.ac-pushButton');
+
+        // WHEN: The "Submit" button is clicked while the required input is empty.
+        await host.click(submitButton);
+
+        // THEN: The input should be focused and invalid, named by its label and described by the error message.
+        await waitFor(() => expect(document.activeElement).toBe(input));
+        await waitFor(async () =>
+          expect(await getInputState(input)).toEqual({
+            description: 'Please enter your name',
+            invalid: 'true',
+            name: 'Name'
+          })
+        );
+
+        // WHEN: The "Submit" button is clicked again: Adaptive Cards replaces the error message.
+        await host.click(submitButton);
+
+        // THEN: The input should still be described by the new error message only.
+        await waitFor(() => expect(document.activeElement).toBe(input));
+        await waitFor(async () =>
+          expect(await getInputState(input)).toEqual({
+            description: 'Please enter your name',
+            invalid: 'true',
+            name: 'Name'
+          })
+        );
+
+        // THEN: The focused input should show the error message below it.
+        await host.snapshot('local');
+
+        // WHEN: A name is typed.
+        await host.sendKeys('John');
+
+        // THEN: The input should be valid, named by its label only, without description.
+        await waitFor(async () =>
+          expect(await getInputState(input)).toEqual({ description: undefined, invalid: 'false', name: 'Name' })
+        );
+
+        // THEN: "aria-labelledby" should not point to the removed error message.
+        expect(getDanglingLabelIds(input)).toEqual([]);
+
+        // THEN: The error message should be gone.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
