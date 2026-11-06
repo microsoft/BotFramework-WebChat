@@ -63,6 +63,18 @@ let commitChanges: <K, V>(
  * - Reading an older version walks the undo logs towards the head, the walk is compressed for subsequent reads
  * - Committing on top of an older version (branching) copies the whole storage, O(size)
  *
+ * Why undo log: a read-only version must never change after it is handed out, e.g. `Store.getSnapshot()` returns it
+ * directly, and callers (such as `useSyncExternalStore()` or diffing previous/next snapshots) could still read it after
+ * the next commit. When committing, the older version must keep its content, the options are:
+ *
+ * 1. Copy on every commit: every version owns its `Map`, O(size) per commit
+ * 2. Forward chain: the new version is "older version + changes", commit is O(number of changes), but reading the head
+ *    walks the chain and gets slower on every commit, needs periodic flattening
+ * 3. Undo log (this): commit writes into the shared `Map`, the older version keeps the overwritten values
+ *
+ * The undo log keeps the hot path cheap (reading the head in O(1) and committing in O(number of changes)), and moves the
+ * cost to the rare path (reading or branching from an older version).
+ *
  * Note: iterators of the head are live, committing on top of the head while iterating it will affect the iteration.
  *
  * Usage: `storage.mutate()` returns a writable `Overlay`, `overlay.commit()` returns a new read-only version. An overlay
