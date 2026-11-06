@@ -1,7 +1,8 @@
 import { parse } from 'valibot';
 import { nodeSchema, type Node } from '../node/Node.ts';
+import type { NodeReference } from '../node/NodeReference.ts';
 import createReadonlySet, { isReadonlySet } from './createReadonlySet.ts';
-import { buildPartIds, partIdsSymbol, type PartIds } from './getPartIds.ts';
+import createReadonlyNodeSet from './createReadonlyNodeSet.ts';
 
 /**
  * Returns a deeply immutable copy of the value. Arrays and objects are frozen, and `Set` is replaced by a readonly `Set`.
@@ -27,27 +28,21 @@ function deepFreeze<T>(value: T): T {
  *
  * - The node is validated against the node schema
  * - The node is deeply frozen
- * - IDs of nodes in `hasPart` and `isPartOf` are cached in a hidden (non-enumerable) property for `getPartIds()`
+ * - `hasPart` and `isPartOf` are stored as `ReadonlyNodeSet`, so `getPartIds()` can get the IDs in O(1)
  *
  * All nodes stored in the graph must be created by this function.
  */
 function createNode(value: unknown): Node {
-  // Property values are deeply frozen, the node itself is frozen after part IDs are attached.
-  const node: Node = Object.fromEntries(
-    Object.entries(parse(nodeSchema, value)).map(([key, value]) => [key, deepFreeze(value)])
-  ) satisfies object as Node;
-
-  // The cache is built up front because the node is frozen and cannot be modified later.
-  // As nodes are immutable, the cache never goes stale. A copy of the node (e.g. via spread) will not carry the cache.
-  // Not enumerable: hidden from spread, `Object.entries()`, `JSON.stringify()`, and deep equality checks.
   return Object.freeze(
-    Object.defineProperty(node, partIdsSymbol, {
-      value: Object.freeze({
-        hasPart: buildPartIds(node, 'hasPart'),
-        isPartOf: buildPartIds(node, 'isPartOf')
-      } satisfies PartIds)
-    })
-  );
+    Object.fromEntries(
+      Object.entries(parse(nodeSchema, value)).map(([key, value]) => [
+        key,
+        (key === 'hasPart' || key === 'isPartOf') && value instanceof Set
+          ? createReadonlyNodeSet(Array.from(value, ({ '@id': id }: NodeReference) => id))
+          : deepFreeze(value)
+      ])
+    )
+  ) satisfies object as Node;
 }
 
 export default createNode;

@@ -12,6 +12,7 @@ import createReadonlySkipList, {
   type ReadWriteSkipList,
   type VersionedReadonlySkipList
 } from './private/createReadonlySkipList.ts';
+import { getNodeSetIds } from './private/createReadonlyNodeSet.ts';
 import getPartIds from './private/getPartIds.ts';
 import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
 
@@ -69,7 +70,19 @@ function getReferenceIds(node: Node): Set<Identifier> {
   const referenceIds = new Set<Identifier>();
 
   for (const [key, value] of Object.entries(node)) {
-    if (key !== '@context' && key !== '@id' && key !== '@type' && (value instanceof Set || Array.isArray(value))) {
+    const nodeSetIds = getNodeSetIds(value);
+
+    if (nodeSetIds) {
+      // `hasPart` and `isPartOf` contain node references only, add their IDs without checking.
+      for (const id of nodeSetIds) {
+        referenceIds.add(id);
+      }
+    } else if (
+      key !== '@context' &&
+      key !== '@id' &&
+      key !== '@type' &&
+      (value instanceof Set || Array.isArray(value))
+    ) {
       for (const item of value) {
         is(nodeReferenceSchema, item) && referenceIds.add(item['@id']);
       }
@@ -151,13 +164,9 @@ function setReferenceIds(
 
 /**
  * Gets entries of the node, excluding the generated `hasPart`.
- *
- * Do not use `Object.entries()`, it will invoke the `hasPart` getter and generate it.
  */
 function getEntriesWithoutHasPart(node: Node): [string, unknown][] {
-  return Object.keys(node)
-    .filter(key => key !== 'hasPart')
-    .map(key => [key, Reflect.get(node, key)]);
+  return Object.entries(node).filter(([key]) => key !== 'hasPart');
 }
 
 /**

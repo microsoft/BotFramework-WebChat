@@ -18,28 +18,23 @@ scenario(
       }))
       .when('createNode() is called', value => createNode(value))
       .then('should be frozen', (_, node) => expect(Object.isFrozen(node)).toBe(true))
-      .and('should only have enumerable properties from the input', (_, node) => {
+      .and('should only have properties from the input', (_, node) => {
         expect(Object.keys(node).sort()).toEqual(['@id', '@type', 'hasPart', 'isPartOf']);
-        expect(
-          Object.getOwnPropertySymbols(node).filter(
-            symbol => Object.hasOwn(node, symbol) && Object.getOwnPropertyDescriptor(node, symbol)?.enumerable
-          )
-        ).toEqual([]);
+        expect(Object.getOwnPropertySymbols(node)).toEqual([]);
       })
-      .and('should not copy the cache via spread', (_, node) =>
-        expect(Object.getOwnPropertySymbols({ ...node })).toEqual([])
-      )
       .and('should equal to a plain node', (value, node) => expect(node).toEqual(value))
-      .and('should serialize without the cache', (_, node) =>
-        expect(Object.keys(JSON.parse(JSON.stringify(node))).sort()).toEqual(['@id', '@type', 'hasPart', 'isPartOf'])
-      )
+      .and('should store hasPart and isPartOf as read-only Set', (_, node) => {
+        expect(node.hasPart).toBeInstanceOf(Set);
+        expect(node.isPartOf).toBeInstanceOf(Set);
+        expect(() => (node.hasPart as Set<unknown>).add({ '@id': '_:m-3' })).toThrow(TypeError);
+      })
       .and('getPartIds() should return IDs in hasPart', (_, node) =>
         expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1', '_:m-2'])
       )
       .and('getPartIds() should return IDs in isPartOf', (_, node) =>
         expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:conversation'])
       )
-      .and('getPartIds() should return the same cached Set on every call', (_, node) =>
+      .and('getPartIds() should return the same Set on every call without copying', (_, node) =>
         expect(getPartIds(node, 'hasPart')).toBe(getPartIds(node, 'hasPart'))
       )
       .and('getPartIds() should return a read-only Set', (_, node) =>
