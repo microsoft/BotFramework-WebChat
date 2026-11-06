@@ -1,8 +1,9 @@
 import { parse } from 'valibot';
-import { nodeSchema, type Node } from '../node/Node.ts';
+import { nodeSchema } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import createReadonlySet, { isReadonlySet } from '../structure/createReadonlySet.ts';
 import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
+import type { InternalNode } from './InternalNode.ts';
 import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from '../structure/createReadonlyNodeSet.ts';
 
 /**
@@ -47,9 +48,9 @@ function toReadonlyNodeSet(originalValue: unknown, value: ReadonlySet<NodeRefere
  * - `hasPart` and `isPartOf` are stored as `ReadonlyNodeSet`, so `getPartIds()` can get the IDs in O(1)
  * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getDateCreatedTime()`
  *
- * All nodes stored in the graph must be created by this function.
+ * All nodes stored in the graph must be created by this function, the returned node is branded as `InternalNode`.
  */
-function createNode(value: unknown): Node {
+function createNode(value: unknown): InternalNode {
   const safeNode = parse(nodeSchema, value);
 
   return Object.freeze(
@@ -65,7 +66,7 @@ function createNode(value: unknown): Node {
       ),
       parseDateCreatedTime(safeNode.dateCreated)
     )
-  ) satisfies object as Node;
+  ) satisfies object as InternalNode;
 }
 
 export default createNode;

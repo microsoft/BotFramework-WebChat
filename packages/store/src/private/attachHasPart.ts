@@ -1,7 +1,7 @@
-import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import createReadonlyNodeSet from '../structure/createReadonlyNodeSet.ts';
 import { attachDateCreatedTime, getDateCreatedTime } from './dateCreatedTime.ts';
+import type { InternalNode } from './InternalNode.ts';
 import { sortedChildIdsSymbol } from './sortedChildIds.ts';
 import type { VersionedReadonlySkipList } from '../structure/createReadonlySkipList.ts';
 
@@ -17,10 +17,10 @@ import type { VersionedReadonlySkipList } from '../structure/createReadonlySkipL
  * This is O(number of properties), regardless of the number of children.
  */
 function attachHasPart(
-  node: Node,
+  node: InternalNode,
   childIds: ReadonlySet<Identifier>,
   sortedChildIds: VersionedReadonlySkipList<Identifier> | undefined
-): Node {
+): InternalNode {
   const { hasPart: _, ...nextNode } = node;
 
   return Object.freeze(

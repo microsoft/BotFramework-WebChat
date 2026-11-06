@@ -8,6 +8,7 @@ import attachHasPart from './private/attachHasPart.ts';
 import createReadonlyMap, { type ReadWriteMap, type VersionedReadonlyMap } from './structure/createReadonlyMap.ts';
 import createReadonlySet, { type ReadWriteSet, type VersionedReadonlySet } from './structure/createReadonlySet.ts';
 import createNode from './private/createNode.ts';
+import type { InternalNode } from './private/InternalNode.ts';
 import { getDateCreatedTime } from './private/dateCreatedTime.ts';
 import createReadonlySkipList, {
   type ReadWriteSkipList,
@@ -173,7 +174,7 @@ function setReferenceIds(
 /**
  * Gets entries of the node, excluding the generated `hasPart`.
  */
-function getEntriesWithoutHasPart(node: Node): [string, unknown][] {
+function getEntriesWithoutHasPart(node: InternalNode): [string, unknown][] {
   return Object.entries(node).filter(([key]) => key !== 'hasPart');
 }
 
@@ -182,7 +183,7 @@ function getEntriesWithoutHasPart(node: Node): [string, unknown][] {
  *
  * @returns A new node without `hasPart` if references are removed, otherwise, `undefined`.
  */
-function removeReference(node: Node, id: Identifier): Node | undefined {
+function removeReference(node: InternalNode, id: Identifier): InternalNode | undefined {
   let changed = false;
   const nextEntries: [string, unknown][] = [];
 
@@ -214,7 +215,7 @@ function removeReference(node: Node, id: Identifier): Node | undefined {
  *
  * @returns A new node without `hasPart`.
  */
-function setPartOf(node: Node, parentId: Identifier, included: boolean): Node {
+function setPartOf(node: InternalNode, parentId: Identifier, included: boolean): InternalNode {
   const parentIds = new Set(getPartIds(node, 'isPartOf'));
 
   included ? parentIds.add(parentId) : parentIds.delete(parentId);
@@ -237,8 +238,8 @@ function setPartOf(node: Node, parentId: Identifier, included: boolean): Node {
  * @returns Key is the ID of the parent, value is the new sorted child IDs.
  */
 function updateSortedChildIds(
-  prevState: ReadonlyMap<string, Node>,
-  nextState: ReadonlyMap<string, Node>,
+  prevState: ReadonlyMap<string, InternalNode>,
+  nextState: ReadonlyMap<string, InternalNode>,
   affectedNodeIds: ReadonlySet<Identifier>
 ): Map<Identifier, VersionedReadonlySkipList<Identifier>> {
   const insertions: [Identifier, Identifier][] = [];
@@ -331,7 +332,7 @@ class Store {
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
   #forwardReferenceIds: ReferenceIds = createReadonlyMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
-  #state: VersionedReadonlyMap<string, Node> = createReadonlyMap([]);
+  #state: VersionedReadonlyMap<string, InternalNode> = createReadonlyMap([]);
 
   /**
    * Runs the transactor and commits changes to the store.
@@ -370,7 +371,7 @@ class Store {
 
     // Gets the node with `hasPart` reflecting changes made in this transaction.
     // Nodes in `nextState` with changed children have their `hasPart` regenerated on commit.
-    const getNode = (id: Identifier): Node | undefined => {
+    const getNode = (id: Identifier): InternalNode | undefined => {
       const node = nextState.get(id);
       const childIds = nextChildIds.sets.get(id);
 
@@ -386,7 +387,7 @@ class Store {
     };
 
     // The node must not have `hasPart`, it will be generated from `isPartOf` of its children.
-    const setNode = (node: Node): void => {
+    const setNode = (node: InternalNode): void => {
       const id = node['@id'];
       const parentIds = getPartIds(node, 'isPartOf');
       const prevParentIds = getPartIds(nextState.get(id), 'isPartOf');

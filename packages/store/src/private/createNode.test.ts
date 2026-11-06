@@ -6,6 +6,7 @@ import { nodeSchema } from '../node/Node.ts';
 import attachHasPart from './attachHasPart.ts';
 import createNode from './createNode.ts';
 import { getDateCreatedTime } from './dateCreatedTime.ts';
+import type { InternalNode } from './InternalNode.ts';
 import getPartIds from './getPartIds.ts';
 
 scenario(
@@ -141,11 +142,17 @@ scenario(
       .then('should return Infinity', (_, time) => expect(time).toBe(Infinity));
 
     bdd
-      .given('a node with dateCreated without the cache', () =>
-        parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']), dateCreated: '2026-01-01T00:00:00Z' })
+      .given('a node validated but not created by createNode()', () =>
+        parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']) })
       )
-      .when('getDateCreatedTime() is called', node => getDateCreatedTime(node))
-      .then('should parse dateCreated', (_, time) => expect(time).toBe(Date.UTC(2026, 0, 1)));
+      .when('createNode() is called', node => createNode(node))
+      .then('should return InternalNode', (node, internalNode) => {
+        // @ts-expect-error Node is not InternalNode, only nodes created by createNode() are branded.
+        const unbrandedNode: InternalNode = node;
+        const brandedNode: InternalNode = internalNode;
+
+        expect(brandedNode).toEqual(unbrandedNode);
+      });
   },
   NodeTest
 );
