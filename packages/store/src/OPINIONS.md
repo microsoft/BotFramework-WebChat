@@ -1,10 +1,12 @@
 - CAP theorem: always consistent and high availability, no partitioning
+- Subset of JSON-LD 1.1 specification
+- Context is assumed Schema.org
 - All nodes are stored flat in a hashmap and frozen
    - Nodes are always by-reference (lookup `@id` in the hashmap) and never nested in another node
 - Properties
    - Property name
-      - Term (non-IRI name) must be based on Schema.org
-      - Non-Schema.org properties must be specified in full IRI (no compact IRI)
+      - Term (non-IRI property name) must be based on Schema.org
+      - Non-Schema.org properties must be absolute IRI
    - Property value
       - Type supported (mixed use in array):
          - `boolean`, `number`, `string`
@@ -22,12 +24,12 @@
       - `@context` is not supported, must not be defined, and is assumed "https://schema.org"
       - `@id` is required and must be a non-array string which is either an IRI of `https:` or starts with `_:` (blank node identifier)
       - `@type` is required and must be `Set<string>` with at least one value
-         - Term (non-IRI type) must be based on Schema.org
-         - Non-Schema.org types must be specified in full IRI (no compact IRI)
+         - Term (non-IRI node type) must be based on Schema.org
+         - Non-Schema.org types must be absolute IRI
       - `dateCreated`, when specified, must be a non-array `string` in ISO format
       - `hasPart` and `isPartOf`, when specified, must be `Set<{ '@id': string }>` (set of blank node identifiers)
-         - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
-         - Multiple membership: `isPartOf` of a node can contains more than one reference
+         - Appear once in the same membership: a node must not appear twice in the same `hasPart` property (enforced by `Set<T>`)
+         - Appear in multiple membership: `isPartOf` can contains more than one reference
 - Edits must be synchronous and are transactional
    - Read are always clean and consistent
    - Edit must not be nested in another edit
@@ -47,4 +49,7 @@
    - Failed transaction will not commit to the graph and is abandoned
 - Read
    - Read a single node by node identifier
-   - Read multiple nodes participated in the same membership by node identifier of the container node, sorted by `dateCreated`
+   - Iterate multiple nodes participated in the same membership via node identifier of the member list, sorted by `dateCreated` in either ascending or descending order
+- Performance characteristics
+   - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
+   - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership
