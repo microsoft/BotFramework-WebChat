@@ -1,5 +1,17 @@
 import createReadonlySet, { isReadonlySet } from '../structure/createReadonlySet.ts';
 
+/**
+ * Keys which could be used for prototype pollution, they are skipped when copying an object.
+ *
+ * Validated value could contain them as own properties, e.g. `JSON.parse('{"__proto__":{}}')`.
+ */
+const DANGEROUS_KEYS: ReadonlySet<string> = Object.freeze(new Set(['__proto__', 'constructor', 'prototype']));
+
+/** Checks if the key could be used for prototype pollution, e.g. `__proto__`, `constructor`, and `prototype`. */
+function isDangerousKey(key: string): boolean {
+  return DANGEROUS_KEYS.has(key);
+}
+
 /** Returned by `getDataPropertyValue()` if it is not an own, enumerable data property. */
 const NOT_DATA_PROPERTY: unique symbol = Symbol('not data property');
 
@@ -69,6 +81,9 @@ function deepFreezeArray(originalObject: object | undefined, value: readonly unk
 /**
  * Freezes every property of the object in a single pass, and checks if the original value can be reused at the same
  * time.
+ *
+ * The copy is always a plain object (i.e. prototype is `Object.prototype`). Dangerous keys (e.g. `__proto__`,
+ * `constructor`, and `prototype`) are skipped, and the original value is not reused if it has any of them.
  */
 function deepFreezeObject(originalObject: object | undefined, value: object): object {
   const frozenValue: Record<string, unknown> = {};
@@ -77,16 +92,19 @@ function deepFreezeObject(originalObject: object | undefined, value: object): ob
     !!originalObject && !Array.isArray(originalObject) && getNumReusableKeys(originalObject) === keys.length;
 
   for (const key of keys) {
+    if (isDangerousKey(key)) {
+      reusable = false;
+
+      continue;
+    }
+
     const originalItem = getDataPropertyValue(originalObject, key);
     const item = deepFreezeItem(originalItem, Reflect.get(value, key));
 
     reusable &&= item === originalItem;
 
-    // "__proto__" must be defined as an own property, assigning it would change the prototype instead.
-    key === '__proto__'
-      ? Object.defineProperty(frozenValue, key, { configurable: true, enumerable: true, value: item, writable: true })
-      : // eslint-disable-next-line security/detect-object-injection
-        (frozenValue[key] = item);
+    // eslint-disable-next-line security/detect-object-injection
+    frozenValue[key] = item;
   }
 
   return reusable && originalObject ? originalObject : Object.freeze(frozenValue);
@@ -128,3 +146,4 @@ function deepFreeze<T>(originalValue: unknown, value: T): T {
 }
 
 export default deepFreeze;
+export { isDangerousKey };

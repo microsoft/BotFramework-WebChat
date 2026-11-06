@@ -58,18 +58,59 @@ scenario(
         expect(() => (result as Set<string>).add('two')).toThrow(TypeError);
       });
 
+    bdd.given
+      .oneOf([
+        ['"__proto__"', () => JSON.parse('{"__proto__":{"polluted":true},"name":"Hello"}')],
+        ['"constructor"', () => JSON.parse('{"constructor":{"polluted":true},"name":"Hello"}')],
+        ['"prototype"', () => JSON.parse('{"prototype":{"polluted":true},"name":"Hello"}')]
+      ])
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should skip the dangerous property', (_, result) => {
+        expect(Object.keys(result)).toEqual(['name']);
+        expect(Object.getOwnPropertyNames(result)).toEqual(['name']);
+      })
+      .and('should be a plain object', (_, result) => {
+        expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+        expect(result).not.toHaveProperty('polluted');
+      })
+      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+
     bdd
-      .given('an object with own "__proto__" property', () =>
-        JSON.parse('{"__proto__":{"polluted":true},"name":"Hello"}')
+      .given('a deeply frozen object with own "__proto__" property', () =>
+        Object.freeze(
+          Object.defineProperty({ name: 'Hello' }, '__proto__', { enumerable: true, value: Object.freeze({}) })
+        )
+      )
+      .when('deepFreeze() is called', value => deepFreeze(value, value))
+      .then('should not reuse the original value', (value, result) => expect(result).not.toBe(value))
+      .and('should skip the dangerous property', (_, result) => expect(result).toEqual({ name: 'Hello' }));
+
+    bdd
+      .given('an array of objects with dangerous properties nested', () =>
+        JSON.parse('[{"inner":{"__proto__":{"polluted":true},"value":1}}]')
       )
       .when('deepFreeze() is called', value => deepFreeze(undefined, value))
-      .then('should keep "__proto__" as an own property', (_, result) =>
-        expect(Object.getOwnPropertyDescriptor(result, '__proto__')?.value).toEqual({ polluted: true })
+      .then('should skip the nested dangerous property', (_, result) =>
+        expect(result).toEqual([{ inner: { value: 1 } }])
       )
-      .and('should not change the prototype', (_, result) =>
-        expect(Object.getPrototypeOf(result)).toBe(Object.prototype)
+      .and('should not pollute Object.prototype', () => expect({}).not.toHaveProperty('polluted'));
+
+    bdd
+      .given('an object with the same object appearing twice but not recursive', () => {
+        const shared = { value: 1 };
+
+        return { array: [shared, shared], one: shared, two: shared };
+      })
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should copy every occurrence', (_, result) =>
+        expect(result).toEqual({ array: [{ value: 1 }, { value: 1 }], one: { value: 1 }, two: { value: 1 } })
       )
-      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+      .and('should deeply freeze every occurrence', (_, result) => {
+        expect(Object.isFrozen(result.one)).toBe(true);
+        expect(Object.isFrozen(result.two)).toBe(true);
+        expect(Object.isFrozen(result.array[0])).toBe(true);
+        expect(Object.isFrozen(result.array[1])).toBe(true);
+      });
 
     bdd
       .given('a sparse array', () => {

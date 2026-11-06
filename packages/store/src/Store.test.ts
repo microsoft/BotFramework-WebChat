@@ -548,6 +548,85 @@ scenario(
       )
       .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
       .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
+
+    bdd
+      .given('a store and a JSON value with the same object appearing twice but not recursive', () => {
+        const shared = { value: 1 };
+
+        return { ...createStore(), value: { array: [shared, shared], one: shared, two: shared } };
+      })
+      .when('a node with the JSON value is upserted', ({ controller, store, value }) => {
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            data: [{ '@type': '@json', '@value': value }]
+          }))
+        );
+
+        return getPath(store.getSnapshot().get('_:m-1'), 'data', 0, '@value');
+      })
+      .then('should keep every occurrence', (_, value) =>
+        expect(value).toEqual({ array: [{ value: 1 }, { value: 1 }], one: { value: 1 }, two: { value: 1 } })
+      )
+      .and('should freeze every occurrence', (_, value) => {
+        expect(Object.isFrozen(getPath(value, 'one'))).toBe(true);
+        expect(Object.isFrozen(getPath(value, 'two'))).toBe(true);
+        expect(Object.isFrozen(getPath(value, 'array', 1))).toBe(true);
+      });
+
+    bdd
+      .given('a store and a JSON value with dangerous properties', () => ({
+        ...createStore(),
+        value: JSON.parse(
+          '{"__proto__":{"polluted":true},"constructor":{"polluted":true},"nested":{"prototype":{"polluted":true},"value":1}}'
+        )
+      }))
+      .when('a node with the JSON value is upserted', ({ controller, store, value }) => {
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            data: [{ '@type': '@json', '@value': value }]
+          }))
+        );
+
+        return getPath(store.getSnapshot().get('_:m-1'), 'data', 0, '@value');
+      })
+      .then('should skip dangerous properties', (_, value) => expect(value).toEqual({ nested: { value: 1 } }))
+      .and('should be plain objects', (_, value) => {
+        expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+        expect(Object.getOwnPropertyNames(value)).toEqual(['nested']);
+        expect(Object.getPrototypeOf(getPath(value, 'nested'))).toBe(Object.prototype);
+      })
+      .and('should not pollute Object.prototype', () => expect({}).not.toHaveProperty('polluted'));
+
+    bdd
+      .given('a store', () => createStore())
+      .when('a node with dangerous properties is upserted', ({ controller, store }) => {
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () =>
+            Object.assign(
+              JSON.parse('{"__proto__":["polluted"],"constructor":["polluted"],"prototype":["polluted"]}'),
+              {
+                '@id': '_:m-1',
+                '@type': new Set(['Message']),
+                text: ['Hello']
+              }
+            )
+          )
+        );
+
+        return store.getSnapshot().get('_:m-1');
+      })
+      .then('should skip dangerous properties', (_, node) => {
+        expect(Object.hasOwn(node ?? {}, '__proto__')).toBe(false);
+        expect(Object.hasOwn(node ?? {}, 'constructor')).toBe(false);
+        expect(Object.hasOwn(node ?? {}, 'prototype')).toBe(false);
+        expect(getPath(node, 'text')).toEqual(['Hello']);
+      })
+      .and('should be a plain object', (_, node) => expect(Object.getPrototypeOf(node)).toBe(Object.prototype))
+      .and('should not pollute Object.prototype', () => expect({}).not.toHaveProperty('polluted'));
   },
   NodeTest
 );
