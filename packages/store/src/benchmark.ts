@@ -2,10 +2,13 @@
 /* eslint-disable no-magic-numbers */
 
 /**
- * Benchmarks the store and prints average per node as a Markdown table.
+ * Benchmarks the store and prints average per node as a Markdown table, one row per benchmark, one column per number
+ * of nodes.
  *
- * Run by `npm run benchmark`. Numbers should stay flat (or grow slowly) as the number of nodes grows, linear growth
- * means something is O(n) per node.
+ * Run by `npm run benchmark`. Numbers should stay flat (or grow slowly) across a row as the number of nodes grows, linear
+ * growth means something is O(n) per node.
+ *
+ * To add a benchmark, add an entry to `BENCHMARKS`.
  *
  * - Append: children are upserted in `dateCreated` order, one transaction per child
  * - Random: children are upserted in random order, one transaction per child
@@ -20,6 +23,17 @@ const NUM_WARMUP_NODES = 5_000;
 const START_TIME = Date.UTC(2026, 0, 1);
 
 type Order = 'append' | 'random';
+
+type Benchmark = {
+  readonly fractionDigits: number;
+  readonly name: string;
+  /** Multiplier to convert the measured value (e.g. milliseconds) to the unit. */
+  readonly scale: number;
+  readonly unit: string;
+
+  /** Runs once and returns the measured total, e.g. time in milliseconds, or `undefined` if it cannot be measured. */
+  run(numNodes: number): number | undefined;
+};
 
 function gc(): void {
   // Only available with `--expose-gc`.
@@ -153,40 +167,55 @@ function formatNumber(value: number | undefined, fractionDigits: number): string
     : 'n/a';
 }
 
+const BENCHMARKS: readonly Benchmark[] = Object.freeze([
+  {
+    fractionDigits: 2,
+    name: 'Append',
+    run: (numNodes: number) => upsertChildren(numNodes, 'append').duration,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Random',
+    run: (numNodes: number) => upsertChildren(numNodes, 'random').duration,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 3,
+    name: 'Iterate',
+    run: (numNodes: number) => iterate(upsertChildren(numNodes, 'append').store, numNodes),
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 0,
+    name: 'Memory',
+    run: measureMemory,
+    scale: 1,
+    unit: 'bytes/node'
+  }
+]);
+
 function main(): void {
   // Warms up the JIT.
   upsertChildren(NUM_WARMUP_NODES, 'append');
   upsertChildren(NUM_WARMUP_NODES, 'random');
 
-  const rows = NUM_NODES.map(numNodes => {
-    const appendStores: Store[] = [];
+  const rows = BENCHMARKS.map(({ fractionDigits, name, run, scale, unit }) =>
+    Object.freeze([
+      `${name} (${unit})`,
+      ...NUM_NODES.map(numNodes => {
+        const value = measure(numNodes, () => run(numNodes));
 
-    const append = measure(numNodes, () => {
-      const { duration, store } = upsertChildren(numNodes, 'append');
-
-      appendStores.push(store);
-
-      return duration;
-    });
-
-    const random = measure(numNodes, () => upsertChildren(numNodes, 'random').duration);
-    const iteration = measure(numNodes, () => iterate(appendStores.shift() ?? createStore().store, numNodes));
-
-    appendStores.splice(0);
-
-    const memory = measure(numNodes, () => measureMemory(numNodes));
-
-    return Object.freeze([
-      numNodes.toLocaleString('en-US'),
-      formatNumber(append && append * 1_000, 2),
-      formatNumber(random && random * 1_000, 2),
-      formatNumber(iteration && iteration * 1_000, 3),
-      formatNumber(memory, 0)
-    ]);
-  });
+        return formatNumber(typeof value === 'number' ? value * scale : undefined, fractionDigits);
+      })
+    ])
+  );
 
   console.log(
-    toMarkdownTable(['Nodes', 'Append (µs/node)', 'Random (µs/node)', 'Iterate (µs/node)', 'Memory (bytes/node)'], rows)
+    toMarkdownTable(['Benchmark', ...NUM_NODES.map(numNodes => `${numNodes.toLocaleString('en-US')} nodes`)], rows)
   );
 
   typeof globalThis.gc === 'function' || console.log('\nMemory is not measured, run with `node --expose-gc`.');
