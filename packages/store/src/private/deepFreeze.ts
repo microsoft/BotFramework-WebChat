@@ -41,6 +41,57 @@ function getNumReusableKeys(value: object): number | undefined {
   return prototype === Object.prototype || prototype === null ? keys.length : undefined;
 }
 
+/** Deeply freezes the item, reuses the original item (from `getDataPropertyValue()`) if possible. */
+function deepFreezeItem(originalItem: unknown, item: unknown): unknown {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  return deepFreeze(originalItem === NOT_DATA_PROPERTY ? undefined : originalItem, item);
+}
+
+/**
+ * Freezes every item of the array in a single pass, and checks if the original value can be reused at the same time.
+ */
+function deepFreezeArray(originalObject: object | undefined, value: readonly unknown[]): readonly unknown[] {
+  const frozenValue: unknown[] = [];
+  const numReusableKeys = Array.isArray(originalObject) ? getNumReusableKeys(originalObject) : undefined;
+  let reusable = numReusableKeys === value.length;
+
+  for (let index = 0; index < value.length; index++) {
+    const originalItem = getDataPropertyValue(originalObject, `${index}`);
+    const item = deepFreezeItem(originalItem, value[+index]);
+
+    reusable &&= item === originalItem;
+    frozenValue.push(item);
+  }
+
+  return reusable && Array.isArray(originalObject) ? originalObject : Object.freeze(frozenValue);
+}
+
+/**
+ * Freezes every property of the object in a single pass, and checks if the original value can be reused at the same
+ * time.
+ */
+function deepFreezeObject(originalObject: object | undefined, value: object): object {
+  const frozenValue: Record<string, unknown> = {};
+  const keys = Object.keys(value);
+  let reusable =
+    !!originalObject && !Array.isArray(originalObject) && getNumReusableKeys(originalObject) === keys.length;
+
+  for (const key of keys) {
+    const originalItem = getDataPropertyValue(originalObject, key);
+    const item = deepFreezeItem(originalItem, Reflect.get(value, key));
+
+    reusable &&= item === originalItem;
+
+    // "__proto__" must be defined as an own property, assigning it would change the prototype instead.
+    key === '__proto__'
+      ? Object.defineProperty(frozenValue, key, { configurable: true, enumerable: true, value: item, writable: true })
+      : // eslint-disable-next-line security/detect-object-injection
+        (frozenValue[key] = item);
+  }
+
+  return reusable && originalObject ? originalObject : Object.freeze(frozenValue);
+}
+
 /**
  * Returns a deeply immutable version of the validated value. Arrays and objects are frozen, and `Set` is replaced by a
  * readonly `Set`.
@@ -70,27 +121,10 @@ function deepFreeze<T>(originalValue: unknown, value: T): T {
   }
 
   const originalObject = originalValue && typeof originalValue === 'object' ? originalValue : undefined;
-  const entries = (Array.isArray(value) ? value.entries() : Object.entries(value).values())
-    .map(([key, item]) => {
-      const originalItem = getDataPropertyValue(originalObject, `${key}`);
 
-      return [`${key}`, deepFreeze(originalItem === NOT_DATA_PROPERTY ? undefined : originalItem, item)] as const;
-    })
-    .toArray();
-
-  // Reuses the original value if it is deeply immutable and every property is the same as the validated value.
-  if (
-    originalObject &&
-    Array.isArray(originalObject) === Array.isArray(value) &&
-    getNumReusableKeys(originalObject) === entries.length &&
-    entries.every(([key, item]) => item === getDataPropertyValue(originalObject, key))
-  ) {
-    return originalObject satisfies object as T;
-  }
-
-  return Object.freeze(
-    Array.isArray(value) ? entries.map(([, item]) => item) : Object.fromEntries(entries)
-  ) satisfies object as T;
+  return (Array.isArray(value)
+    ? deepFreezeArray(originalObject, value)
+    : deepFreezeObject(originalObject, value)) satisfies unknown as T;
 }
 
 export default deepFreeze;

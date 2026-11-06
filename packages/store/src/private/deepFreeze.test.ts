@@ -59,6 +59,35 @@ scenario(
       });
 
     bdd
+      .given('an object with own "__proto__" property', () =>
+        JSON.parse('{"__proto__":{"polluted":true},"name":"Hello"}')
+      )
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should keep "__proto__" as an own property', (_, result) =>
+        expect(Object.getOwnPropertyDescriptor(result, '__proto__')?.value).toEqual({ polluted: true })
+      )
+      .and('should not change the prototype', (_, result) =>
+        expect(Object.getPrototypeOf(result)).toBe(Object.prototype)
+      )
+      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+
+    bdd
+      .given('a sparse array', () => {
+        const array: number[] = [];
+
+        array[0] = 1;
+        array[2] = 3;
+
+        return array;
+      })
+      .when('deepFreeze() is called', value => deepFreeze(undefined, value))
+      .then('should return a dense frozen copy', (_, result) => {
+        expect(result).toEqual([1, undefined, 3]);
+        expect(Object.keys(result)).toEqual(['0', '1', '2']);
+        expect(Object.isFrozen(result)).toBe(true);
+      });
+
+    bdd
       .given('a primitive value', () => 'Hello')
       .when('deepFreeze() is called', value => deepFreeze(value, value))
       .then('should return the value as-is', (value, result) => expect(result).toBe(value));

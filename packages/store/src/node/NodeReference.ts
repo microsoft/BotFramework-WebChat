@@ -10,14 +10,12 @@ const nodeReferenceSchema = pipe(
 /**
  * A reference to another node, it must only contain `@id`.
  *
- * Sealed by `Exact`: if the schema output has any properties other than `@id`, they will become `never`.
+ * Sealed by `Exact`: excess properties are rejected on TypeScript side, even if the value is not an object literal,
+ * e.g. `<T extends NodeReference<T>>(value: T)`. At runtime, excess properties are rejected by `nodeReferenceSchema`.
+ *
+ * If `T` is not specified, it is the schema output, which will become `never` if the schema output has any properties
+ * other than `@id`.
  */
-type NodeReference = Exact<{ readonly '@id': Identifier }, InferOutput<typeof nodeReferenceSchema>>;
+type NodeReference<T = InferOutput<typeof nodeReferenceSchema>> = Exact<{ readonly '@id': Identifier }, T>;
 
-/**
- * Seals the node reference on TypeScript side: excess properties are rejected even if the value is not an object
- * literal. At runtime, excess properties are rejected by `nodeReferenceSchema`.
- */
-type ExactNodeReference<T> = Exact<NodeReference, T>;
-
-export { nodeReferenceSchema, type ExactNodeReference, type NodeReference };
+export { nodeReferenceSchema, type NodeReference };
