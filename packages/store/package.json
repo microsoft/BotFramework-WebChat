@@ -17,6 +17,7 @@
     }
   },
   "scripts": {
+    "benchmark": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --expose-gc ./src/benchmark.ts",
     "build": "npm run build:run",
     "build:run": "tsup",
     "test": "node --test"
