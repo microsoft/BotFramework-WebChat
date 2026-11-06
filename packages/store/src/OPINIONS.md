@@ -17,7 +17,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 
 - CAP theorem: always consistent and high availability, no partitioning
 - Subset of JSON-LD 1.1 specification
-- Context is assumed Schema.org
+- Context is assumed Schema.org to promote interoperability
 - All nodes are stored flat in a hashmap, frozen, and plain
 - Properties
    - Property name
@@ -69,4 +69,4 @@ The new design is transactional (consistent without locking) and hyperlinking (g
    - Iterate multiple nodes in the same membership by the ID of the member list node, sorted by `dateCreated` in either ascending or descending order
 - Performance characteristics
    - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
-   - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership
+   - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership, where it use skip list to find insertion point
