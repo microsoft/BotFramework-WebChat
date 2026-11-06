@@ -6,7 +6,7 @@
 - Properties
    - Property name
       - Term (non-IRI property name) must be based on Schema.org
-      - Non-Schema.org properties must be absolute IRI
+      - Non-Schema.org properties must be named using absolute IRIs
    - Property value
       - Type supported (mixed use in array):
          - `boolean`, `number`, `string`
@@ -25,7 +25,7 @@
       - `@id` is required and must be a non-array string which is either an IRI of `https:` or starts with `_:` (blank node identifier)
       - `@type` is required and must be `Set<string>` with at least one value
          - Term (non-IRI node type) must be based on Schema.org
-         - Non-Schema.org types must be absolute IRI
+         - Non-Schema.org types must be absolute IRIs
       - `dateCreated`, when specified, must be a non-array `string` in ISO format
       - `hasPart` and `isPartOf`, when specified, must be `Set<{ '@id': string }>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property (enforced by `Set<T>`)
