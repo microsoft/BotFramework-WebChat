@@ -1,4 +1,4 @@
-import { is, literal, object, parse, pipe, readonly, type InferInput } from 'valibot';
+import { is, literal, object, optional, parse, picklist, pipe, readonly, type InferInput } from 'valibot';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import type { Node } from './node/Node.ts';
@@ -61,7 +61,8 @@ const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
 const getSortedPartsInitSchema = pipe(
   object({
     // Only `dateCreated` is supported for now.
-    sortBy: literal('dateCreated', '"sortBy" must be "dateCreated"')
+    by: literal('dateCreated', '"by" must be "dateCreated"'),
+    order: optional(picklist(['asc', 'desc'], '"order" must be "asc", "desc", or undefined'))
   }),
   readonly()
 );
@@ -551,10 +552,13 @@ class Store {
   }
 
   /**
-   * Gets children of the node with the specified ID from the latest snapshot, sorted by `init.sortBy`.
+   * Gets children of the node with the specified ID from the latest snapshot, sorted by `init.by` in `init.order`.
    *
-   * Only `sortBy: 'dateCreated'` is supported: sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
+   * Only `by: 'dateCreated'` is supported: sorted by `dateCreated`. Children without `dateCreated` are sorted last. Children with the
    * same `dateCreated` are sorted by `@id`.
+   *
+   * `order` is `'asc'` (default if `undefined`) or `'desc'`. Descending order is the exact reverse of ascending order,
+   * i.e. children without `dateCreated` are sorted first.
    *
    * Returns an empty iterable if the node does not exist or has no children. This is O(1) regardless of the number of children, children are resolved
    * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
@@ -563,15 +567,16 @@ class Store {
   getSortedParts(id: Identifier, init: GetSortedPartsInit): Iterable<Node> {
     const safeId = parse(identifierSchema, id);
 
-    parse(getSortedPartsInitSchema, init);
+    const { order } = parse(getSortedPartsInitSchema, init);
 
     const state = this.#state;
     const sortedChildIds = getSortedChildIds(state.get(safeId));
+    const orderedChildIds = order === 'desc' ? sortedChildIds?.reversed() : sortedChildIds;
 
     return Object.freeze({
       *[Symbol.iterator](): Iterator<Node> {
-        if (sortedChildIds) {
-          for (const childId of sortedChildIds) {
+        if (orderedChildIds) {
+          for (const childId of orderedChildIds) {
             yield state.get(childId) as Node;
           }
         }

@@ -19,6 +19,9 @@ interface VersionedReadonlySkipList<T> extends Iterable<T> {
 
   has(item: T): boolean;
 
+  /** Iterates items from the last to the first, O(1) per item. */
+  reversed(): Iterable<T>;
+
   /**
    * Creates a writable overlay on top of this list. Writes go to the overlay, reads go to the overlay first, then this
    * list. This list is not modified, even after the overlay is committed.

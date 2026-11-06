@@ -29,6 +29,7 @@ function toArrayBackward<T>(list: SkipList<T>): T[] {
 function expectItems<T>(list: SkipList<T>, expected: readonly T[]): void {
   expect(Array.from(list)).toEqual(expected);
   expect(toArrayBackward(list)).toEqual(expected);
+  expect(Array.from(list.reversed())).toEqual(expected.toReversed());
   expect(list.size).toBe(expected.length);
   expect(list.first).toBe(expected.at(0));
   expect(list.last).toBe(expected.at(-1));

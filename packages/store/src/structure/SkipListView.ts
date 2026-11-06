@@ -30,9 +30,18 @@ function getEntry<T>(read: Reader<T>, key: Key<T>): Entry<T> {
   return entry;
 }
 
-function* iterate<T>(read: Reader<T>): Generator<T> {
+/**
+ * Iterates items at level 0, forward via `next`, or backward via `previous`.
+ */
+function* iterate<T>(read: Reader<T>, direction: 'next' | 'previous'): Generator<T> {
   // Always read via the reader, if the list is committed on top while iterating, this version is read from undo logs.
-  for (let key: Key<T> = read(HEAD)?.next[0] ?? HEAD; key !== HEAD; key = getEntry(read, key).next[0] ?? HEAD) {
+  for (
+    // eslint-disable-next-line security/detect-object-injection
+    let key: Key<T> = read(HEAD)?.[direction][0] ?? HEAD;
+    key !== HEAD;
+    // eslint-disable-next-line security/detect-object-injection
+    key = getEntry(read, key)[direction][0] ?? HEAD
+  ) {
     yield key satisfies Key<T> as T;
   }
 }
@@ -65,8 +74,15 @@ abstract class SkipListView<T> {
     return item !== HEAD && !!this.read(item);
   }
 
+  /**
+   * Iterates items from the last to the first, O(1) per item.
+   */
+  reversed(): Iterable<T> {
+    return Object.freeze({ [Symbol.iterator]: () => iterate<T>(key => this.read(key), 'previous') });
+  }
+
   [Symbol.iterator](): Iterator<T> {
-    return iterate(key => this.read(key));
+    return iterate(key => this.read(key), 'next');
   }
 }
 
