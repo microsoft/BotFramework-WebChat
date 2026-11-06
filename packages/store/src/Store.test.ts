@@ -5,6 +5,16 @@ import type { Node } from './node/Node.ts';
 import type { Identifier } from './node/NodeIdentifier.ts';
 import Store, { type GetSortedPartsInit, type StoreController, type StoreTransaction } from './Store.ts';
 
+function catchError(fn: () => void): unknown {
+  try {
+    fn();
+  } catch (error) {
+    return error;
+  }
+
+  return undefined;
+}
+
 function createStore() {
   let controller: StoreController | undefined;
 
@@ -516,6 +526,28 @@ scenario(
         expect(Object.isFrozen(getPath(jsonLiteral, '@value', 'nested'))).toBe(true);
         expect(Object.isFrozen(getPath(jsonLiteral, '@value', 'nested', 'value'))).toBe(true);
       });
+
+    bdd
+      .given('a store and a recursive JSON value', () => {
+        const value: { self?: unknown } = {};
+
+        value.self = value;
+
+        return { ...createStore(), value };
+      })
+      .when('a node with the recursive JSON value is upserted', ({ controller, value }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              data: [{ '@type': '@json', '@value': value }]
+            }))
+          )
+        )
+      )
+      .then('should throw', (_, error) => expect(error).toEqual(expect.any(Error)))
+      .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
   },
   NodeTest
 );
@@ -636,16 +668,6 @@ function getPartIdsOf(
   const node = (storeOrSnapshot instanceof Store ? storeOrSnapshot.getSnapshot() : storeOrSnapshot).get(id);
 
   return Array.from((property === 'hasPart' ? node?.hasPart : node?.isPartOf) ?? [], ({ '@id': id }) => id).sort();
-}
-
-function catchError(fn: () => void): unknown {
-  try {
-    fn();
-  } catch (error) {
-    return error;
-  }
-
-  return undefined;
 }
 
 scenario(
