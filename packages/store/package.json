@@ -22,7 +22,8 @@
     "test": "node --test"
   },
   "devDependencies": {
-    "@types/node": "^25.9.1"
+    "@types/node": "^25.9.1",
+    "type-fest": "^5.6.0"
   },
   "dependencies": {
     "valibot": "1.2.0"

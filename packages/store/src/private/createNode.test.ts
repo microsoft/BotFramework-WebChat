@@ -9,6 +9,11 @@ import { getDateCreatedTime } from './dateCreatedTime.ts';
 import type { InternalNode } from './InternalNode.ts';
 import getPartIds from './getPartIds.ts';
 
+/** Gets a property of the node which is not in the node schema, e.g. `text`. */
+function getProperty(node: object, key: string): unknown {
+  return Reflect.get(node, key);
+}
+
 scenario(
   'createNode',
   bdd => {
@@ -153,6 +158,136 @@ scenario(
 
         expect(brandedNode).toEqual(unbrandedNode);
       });
+
+    bdd
+      .given('a node created by createNode()', () =>
+        createNode({
+          '@id': '_:m-1',
+          '@type': new Set(['Message']),
+          text: ['Hello, World!', { '@type': '@json', '@value': { items: [1, 2, { three: 3 }] } }]
+        })
+      )
+      .when('spread and passed to createNode() again', node =>
+        createNode({ ...node, keywords: ['greeting'] } satisfies object)
+      )
+      .then('should reuse @type as-is', (node, nextNode) => expect(nextNode['@type']).toBe(node['@type']))
+      .and('should reuse deeply frozen property value as-is', (node, nextNode) =>
+        expect(getProperty(nextNode, 'text')).toBe(getProperty(node, 'text'))
+      )
+      .and('should freeze new property value', (_, nextNode) => {
+        expect(Object.isFrozen(getProperty(nextNode, 'keywords'))).toBe(true);
+        expect(getProperty(nextNode, 'keywords')).toEqual(['greeting']);
+      });
+
+    bdd
+      .given('a property value which is deeply frozen by the caller', () =>
+        Object.freeze([
+          Object.freeze({ '@type': '@json', '@value': Object.freeze({ items: Object.freeze([1, 2]) }) }),
+          'Hello, World!'
+        ])
+      )
+      .when('createNode() is called', value =>
+        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
+      )
+      .then('should reuse the property value as-is', (value, node) => expect(getProperty(node, 'text')).toBe(value));
+
+    bdd
+      .given(
+        'a property value which is shallowly frozen with a deeply frozen JSON literal and a mutable JSON literal',
+        () => {
+          const frozenLiteral = Object.freeze({ '@type': '@json', '@value': Object.freeze([1, 2]) });
+          const mutableLiteral = { '@type': '@json', '@value': { items: [3] } };
+
+          return { frozenLiteral, mutableLiteral, value: Object.freeze([frozenLiteral, mutableLiteral]) };
+        }
+      )
+      .when('createNode() is called', ({ value }) =>
+        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
+      )
+      .then('should copy the property value', ({ value }, node) => {
+        expect(getProperty(node, 'text')).not.toBe(value);
+        expect(getProperty(node, 'text')).toEqual(value);
+      })
+      .and('should reuse the deeply frozen JSON literal', ({ frozenLiteral }, node) => {
+        const [literal] = getProperty(node, 'text') as readonly unknown[];
+
+        expect(literal).toBe(frozenLiteral);
+      })
+      .and('should copy and deeply freeze the mutable JSON literal', ({ mutableLiteral }, node) => {
+        const [, literal] = getProperty(node, 'text') as readonly { '@value': { items: number[] } }[];
+
+        expect(literal).not.toBe(mutableLiteral);
+        expect(Object.isFrozen(literal)).toBe(true);
+        expect(Object.isFrozen(literal?.['@value'])).toBe(true);
+        expect(Object.isFrozen(literal?.['@value'].items)).toBe(true);
+
+        mutableLiteral['@value'].items.push(4);
+
+        expect(literal?.['@value'].items).toEqual([3]);
+      });
+
+    bdd.given
+      .oneOf<readonly unknown[]>([
+        [
+          'a frozen array containing a frozen JSON literal with a getter',
+          () => {
+            let value = 0;
+
+            return Object.freeze([
+              Object.freeze(
+                Object.defineProperty({ '@type': '@json' }, '@value', { enumerable: true, get: () => ++value })
+              )
+            ]);
+          }
+        ],
+        [
+          'a frozen array containing a frozen JSON literal with a symbol key',
+          () => Object.freeze([Object.freeze({ '@type': '@json', '@value': 1, [Symbol('hidden')]: 1 })])
+        ],
+        [
+          'a frozen array containing a frozen JSON literal with a non-enumerable property',
+          () =>
+            Object.freeze([
+              Object.freeze(Object.defineProperty({ '@type': '@json', '@value': 1 }, 'hidden', { value: 1 }))
+            ])
+        ],
+        ['a frozen array with an extra property', () => Object.freeze(Object.assign(['Hello, World!'], { extra: 1 }))],
+        [
+          'a frozen array with a subclass prototype',
+          () => {
+            class MyArray<T> extends Array<T> {}
+
+            return Object.freeze(MyArray.from(['Hello, World!']));
+          }
+        ]
+      ])
+      .when('createNode() is called', value =>
+        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
+      )
+      .then('should not reuse the property value', (value, node) => expect(getProperty(node, 'text')).not.toBe(value))
+      .and('should deeply freeze the copy with own enumerable data properties only', (_, node) => {
+        const text = getProperty(node, 'text') as readonly unknown[];
+
+        expect(Object.getPrototypeOf(text)).toBe(Array.prototype);
+        expect(Reflect.ownKeys(text)).toEqual(['0', 'length']);
+        expect(Object.isFrozen(text)).toBe(true);
+
+        const [item] = text;
+
+        if (item && typeof item === 'object') {
+          expect(Reflect.ownKeys(item)).toEqual(['@type', '@value']);
+          expect(Reflect.getOwnPropertyDescriptor(item, '@value')).toHaveProperty('value');
+          expect(Object.isFrozen(item)).toBe(true);
+        }
+      });
+
+    bdd
+      .given('a frozen mutable Set', () => Object.freeze(new Set(['Message'])))
+      .when('createNode() is called', value => createNode({ '@id': '_:m-1', '@type': value }))
+      .then('should not reuse the Set', (value, node) => expect(node['@type']).not.toBe(value))
+      .and('should store as read-only Set', (_, node) =>
+        expect(() => (node['@type'] as Set<string>).add('Thing')).toThrow(TypeError)
+      );
   },
   NodeTest
 );
