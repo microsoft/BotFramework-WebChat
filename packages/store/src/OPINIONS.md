@@ -49,7 +49,7 @@
    - Failed transaction will not commit to the graph and is abandoned
 - Read
    - Read a single node by node identifier
-   - Iterate multiple nodes participated in the same membership via node identifier of the member list, sorted by `dateCreated` in either ascending or descending order
+   - Iterate multiple nodes participated in the same membership by node identifier of the member list node, sorted by `dateCreated` in either ascending or descending order
 - Performance characteristics
    - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
    - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership
