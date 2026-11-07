@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 // The reducer on the activities graph (William's store): replaying older states, failed transactions, and the send
-// status read from the message node. Repros of Review 2 (`~/webchat-tools/scratch/new-store/review2/`), as tests.
+// status read from the message node, as tests.
 import { scenario } from '@testduet/given-when-then';
 import createGroupedActivitiesReducer from './createGroupedActivitiesReducer';
 import * as toJSONValueModule from './sort/graph/private/toJSONValue';

@@ -12,7 +12,7 @@ const MAX_DEPTH = 16;
  *
  * QUESTION(William): the order also avoids a store bug: when a node is upserted after a parent listed it in `hasPart`
  * in the same transaction, the store drops the node's own `hasPart` before reading it, so its parts lose their
- * `isPartOf` (`~/webchat-tools/scratch/new-store-rebench3/probe/pending-parent-repro.mjs`).
+ * `isPartOf`.
  *
  * @param getNode Reads the nodes as they will be after the transaction, to find each node's parent.
  */

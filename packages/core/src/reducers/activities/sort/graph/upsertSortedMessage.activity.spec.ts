@@ -90,7 +90,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
 });
 
 // New: core has no unit test for the `localTimestamp` fallback (`upsert.ts:423`).
-// Core gives the same order (measured in `~/webchat-tools/scratch/new-store/core-parity-probe.log`).
+// Core (main's reducer) gives the same order.
 scenario('upserting activities without timestamp but with local timestamp', bdd => {
   bdd
     .given('2 activities without logical timestamp, the second one sent earlier', () =>

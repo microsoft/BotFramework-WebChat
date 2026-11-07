@@ -34,8 +34,8 @@ function toJSONValueWithAncestors(value: unknown, key: string, ancestors: Set<ob
 }
 
 /**
- * The JSON projection of a value, as `JSON.parse(JSON.stringify(value))` would give, deeply frozen. Never throws for a
- * host's value (unless its `toJSON()` throws).
+ * The JSON projection of a value, as `JSON.parse(JSON.stringify(value))` would give, deeply frozen. Throws only where
+ * `JSON.stringify` would: a getter or `toJSON()` that throws, or a revoked `Proxy`.
  *
  * The store only holds JSON (plain objects, arrays, strings, finite numbers, booleans, `null`) and rejects anything else,
  * while hosts can put any value into an activity. The node holds this projection; core keeps the host's activity

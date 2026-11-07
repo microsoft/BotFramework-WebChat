@@ -165,7 +165,7 @@ scenario('re-sending a middle revision of an ongoing livestream in a grouping', 
 });
 
 // New: same data as html2 `activityOrdering/partGroupingShouldUseMaxTimestamp.html` (no unit test in core).
-// Core gives the same order (measured in `~/webchat-tools/scratch/new-store/core-parity-probe.log`).
+// Core (main's reducer) gives the same order.
 scenario('a grouping with a livestream sorts by its latest part', bdd => {
   const howTo = { groupingId: '_:c-00001' };
 
@@ -204,7 +204,7 @@ scenario('a grouping with a livestream sorts by its latest part', bdd => {
 });
 
 // Intentional difference (not pinned in core): core lists the session twice, in the HowTo and on its own
-// (`["r1","r2 resent","r1","r2 resent"]`, measured in `~/webchat-tools/scratch/new-store/core-parity-probe.log`).
+// (`["r1","r2 resent","r1","r2 resent"]`, measured with main's reducer).
 // Here the session leaves the HowTo, like a plain activity does (#5967).
 scenario('re-sending a revision of an ongoing livestream in a grouping without `isPartOf`', bdd => {
   bdd
