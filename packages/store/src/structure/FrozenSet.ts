@@ -4,7 +4,7 @@ import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 /**
  * A writable overlay on top of a read-only `Set`.
  */
-interface ReadWriteSet<T> extends globalThis.ReadonlySet<T> {
+interface ReadWriteSet<T> extends ReadonlySet<T> {
   add(value: T): this;
   clear(): void;
 
@@ -15,7 +15,7 @@ interface ReadWriteSet<T> extends globalThis.ReadonlySet<T> {
    * set has been committed), otherwise, O(size) as the set is copied.
    */
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  commit(): ReadonlySet<T>;
+  commit(): FrozenSet<T>;
   delete(value: T): boolean;
 }
 
@@ -24,7 +24,7 @@ function throwReadonly(): never {
 }
 
 /**
- * A writable overlay on top of a `ReadonlySet`.
+ * A writable overlay on top of a `FrozenSet`.
  */
 class ReadWriteSetImpl<T> extends SetView<T> implements ReadWriteSet<T> {
   constructor(overlay: Overlay<T, T>) {
@@ -51,7 +51,7 @@ class ReadWriteSetImpl<T> extends SetView<T> implements ReadWriteSet<T> {
     this.#overlay.clear();
   }
 
-  commit(): ReadonlySet<T> {
+  commit(): FrozenSet<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return fromStorage(this.#overlay.commit());
   }
@@ -81,7 +81,7 @@ function toStorage<T>(iterable: Iterable<T> | null | undefined): VersionedStorag
   return new VersionedStorage(map);
 }
 
-/** Storage handed to the next `ReadonlySet` constructor, only set by `fromStorage()` during construction. */
+/** Storage handed to the next `FrozenSet` constructor, only set by `fromStorage()` during construction. */
 let nextStorage: VersionedStorage<unknown, unknown> | undefined;
 
 /**
@@ -102,7 +102,7 @@ let nextStorage: VersionedStorage<unknown, unknown> | undefined;
  *
  * Note: items are not frozen, freeze them before passing in if needed.
  */
-class ReadonlySet<T> extends SetView<T> {
+class FrozenSet<T> extends SetView<T> {
   constructor(iterable?: Iterable<T> | null | undefined) {
     super();
 
@@ -119,7 +119,7 @@ class ReadonlySet<T> extends SetView<T> {
 
   readonly #storage: VersionedStorage<T, T>;
 
-  static isReadonlySet(value: unknown): value is globalThis.ReadonlySet<unknown> {
+  static isFrozenSet(value: unknown): value is ReadonlySet<unknown> {
     return !!value && typeof value === 'object' && #storage in value;
   }
 
@@ -146,18 +146,18 @@ class ReadonlySet<T> extends SetView<T> {
   }
 }
 
-/** Creates a `ReadonlySet` backed by the storage without copying. */
-function fromStorage<T>(storage: VersionedStorage<T, T>): ReadonlySet<T> {
+/** Creates a `FrozenSet` backed by the storage without copying. */
+function fromStorage<T>(storage: VersionedStorage<T, T>): FrozenSet<T> {
   nextStorage = storage;
 
   try {
-    return new ReadonlySet<T>();
+    return new FrozenSet<T>();
   } finally {
     nextStorage = undefined;
   }
 }
 
-Object.defineProperties(ReadonlySet.prototype, {
+Object.defineProperties(FrozenSet.prototype, {
   // Mutating methods on `Set.prototype` would throw "incompatible receiver", override them with a clearer error.
   add: { value: throwReadonly },
   clear: { value: throwReadonly },
@@ -169,16 +169,16 @@ Object.defineProperty(ReadWriteSetImpl.prototype, 'constructor', { value: Set })
 Object.freeze(ReadWriteSetImpl.prototype);
 Object.freeze(ReadWriteSetImpl);
 // Some libraries compare `constructor` for equality, e.g. `expect().toEqual()`.
-Object.defineProperty(ReadonlySet.prototype, 'constructor', { value: Set });
-Object.freeze(ReadonlySet.prototype);
-Object.freeze(ReadonlySet);
+Object.defineProperty(FrozenSet.prototype, 'constructor', { value: Set });
+Object.freeze(FrozenSet.prototype);
+Object.freeze(FrozenSet);
 
 /**
- * Checks if the value is a `ReadonlySet`.
+ * Checks if the value is a `FrozenSet`.
  */
-function isReadonlySet(value: unknown): value is globalThis.ReadonlySet<unknown> {
-  return ReadonlySet.isReadonlySet(value);
+function isFrozenSet(value: unknown): value is ReadonlySet<unknown> {
+  return FrozenSet.isFrozenSet(value);
 }
 
-export default ReadonlySet;
-export { isReadonlySet, type ReadWriteSet };
+export default FrozenSet;
+export { isFrozenSet, type ReadWriteSet };

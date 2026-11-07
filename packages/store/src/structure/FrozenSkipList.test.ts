@@ -1,16 +1,16 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import ReadonlySkipList, { type ReadWriteSkipList } from './ReadonlySkipList.ts';
+import FrozenSkipList, { type ReadWriteSkipList } from './FrozenSkipList.ts';
 
-type SkipList<T> = ReadWriteSkipList<T> | ReadonlySkipList<T>;
+type SkipList<T> = ReadWriteSkipList<T> | FrozenSkipList<T>;
 
 function insert(list: ReadWriteSkipList<number>, item: number): ReadWriteSkipList<number> {
   return list.insert(item, other => other > item);
 }
 
-function createList(items: readonly number[]): ReadonlySkipList<number> {
-  return items.reduce(insert, new ReadonlySkipList<number>().mutate()).commit();
+function createList(items: readonly number[]): FrozenSkipList<number> {
+  return items.reduce(insert, new FrozenSkipList<number>().mutate()).commit();
 }
 
 function toArrayBackward<T>(list: SkipList<T>): T[] {
@@ -40,18 +40,18 @@ function createNumbers(count: number): number[] {
 }
 
 scenario(
-  'new ReadonlySkipList()',
+  'new FrozenSkipList()',
   bdd => {
     bdd
-      .given('an empty list', () => new ReadonlySkipList<number>())
+      .given('an empty list', () => new FrozenSkipList<number>())
       .when('read', list => list)
       .then('should have no items', (_, list) => expectItems(list, []))
       .and('should not have any item', (_, list) => expect(list.has(1)).toBe(false))
       .and('should be frozen', (_, list) => expect(Object.isFrozen(list)).toBe(true));
 
     bdd
-      .given('an empty list', () => new ReadonlySkipList<number>())
-      .when.oneOf<ReadonlySkipList<number>>([
+      .given('an empty list', () => new FrozenSkipList<number>())
+      .when.oneOf<FrozenSkipList<number>>([
         ['items are appended', list => [1, 2, 3, 4].reduce(insert, list.mutate()).commit()],
         ['items are prepended', list => [4, 3, 2, 1].reduce(insert, list.mutate()).commit()],
         ['items are inserted out of order', list => [3, 1, 4, 2].reduce(insert, list.mutate()).commit()]
@@ -86,7 +86,7 @@ scenario(
 
     bdd
       .given('a list', () => createList([1, 2, 3, 4]))
-      .when.oneOf<readonly [ReadonlySkipList<number>, readonly number[], boolean]>([
+      .when.oneOf<readonly [FrozenSkipList<number>, readonly number[], boolean]>([
         [
           'the first item is deleted',
           list => {
@@ -136,19 +136,19 @@ scenario(
 
     bdd
       .given('a committed list', () => createList([1, 2]))
-      .when('another list is constructed', () => new ReadonlySkipList<number>())
+      .when('another list is constructed', () => new FrozenSkipList<number>())
       .then('should not share storage with the committed list', (committed, list) => {
         expectItems(list, []);
         expectItems(committed, [1, 2]);
       });
 
     bdd
-      .given('an empty list', () => new ReadonlySkipList<number>())
+      .given('an empty list', () => new FrozenSkipList<number>())
       .when('1,000 random items are inserted and deleted, one commit per change', list => {
         const versions = [list];
 
         createNumbers(1_000).forEach((item, index) => {
-          const overlay = (versions.at(-1) as ReadonlySkipList<number>).mutate();
+          const overlay = (versions.at(-1) as FrozenSkipList<number>).mutate();
 
           // Delete the first item on every 3rd step.
           index % 3 === 2 ? overlay.delete(overlay.first as number) : insert(overlay, item);
@@ -174,7 +174,7 @@ scenario(
       });
 
     bdd
-      .given('an empty list', () => new ReadonlySkipList<number>())
+      .given('an empty list', () => new FrozenSkipList<number>())
       .when('1,000 random items are inserted and every 3rd is deleted in a single commit', list => {
         const overlay = list.mutate();
         const numbers = createNumbers(1_000);

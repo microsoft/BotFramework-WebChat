@@ -4,7 +4,7 @@ import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 /**
  * A writable overlay on top of a read-only `Map`.
  */
-interface ReadWriteMap<K, V> extends globalThis.ReadonlyMap<K, V> {
+interface ReadWriteMap<K, V> extends ReadonlyMap<K, V> {
   clear(): void;
 
   /**
@@ -14,7 +14,7 @@ interface ReadWriteMap<K, V> extends globalThis.ReadonlyMap<K, V> {
    * map has been committed), otherwise, O(size) as the map is copied.
    */
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  commit(): ReadonlyMap<K, V>;
+  commit(): FrozenMap<K, V>;
   delete(key: K): boolean;
   set(key: K, value: V): this;
 }
@@ -24,7 +24,7 @@ function throwReadonly(): never {
 }
 
 /**
- * A writable overlay on top of a `ReadonlyMap`.
+ * A writable overlay on top of a `FrozenMap`.
  */
 class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V> {
   constructor(overlay: Overlay<K, V>) {
@@ -45,7 +45,7 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
     this.#overlay.clear();
   }
 
-  commit(): ReadonlyMap<K, V> {
+  commit(): FrozenMap<K, V> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return fromStorage(this.#overlay.commit());
   }
@@ -81,7 +81,7 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
   }
 }
 
-/** Storage handed to the next `ReadonlyMap` constructor, only set by `fromStorage()` during construction. */
+/** Storage handed to the next `FrozenMap` constructor, only set by `fromStorage()` during construction. */
 let nextStorage: VersionedStorage<unknown, unknown> | undefined;
 
 /**
@@ -93,11 +93,11 @@ let nextStorage: VersionedStorage<unknown, unknown> | undefined;
  * - `Object.isFrozen()` is `true`
  * - `mutate()` creates a writable overlay without copying, `commit()` on the overlay returns a new immutable `Map`
  *
- * Similar to `ReadonlySet`, it does not extend `Map` but its prototype is chained to `Map.prototype`.
+ * Similar to `FrozenSet`, it does not extend `Map` but its prototype is chained to `Map.prototype`.
  *
  * Note: keys and values are not frozen, freeze them before passing in if needed.
  */
-class ReadonlyMap<K, V> extends MapView<K, V> {
+class FrozenMap<K, V> extends MapView<K, V> {
   constructor(iterable?: Iterable<readonly [K, V]> | null | undefined) {
     super();
 
@@ -115,7 +115,7 @@ class ReadonlyMap<K, V> extends MapView<K, V> {
 
   readonly #storage: VersionedStorage<K, V>;
 
-  static isReadonlyMap(value: unknown): value is globalThis.ReadonlyMap<unknown, unknown> {
+  static isFrozenMap(value: unknown): value is ReadonlyMap<unknown, unknown> {
     return !!value && typeof value === 'object' && #storage in value;
   }
 
@@ -154,18 +154,18 @@ class ReadonlyMap<K, V> extends MapView<K, V> {
   }
 }
 
-/** Creates a `ReadonlyMap` backed by the storage without copying. */
-function fromStorage<K, V>(storage: VersionedStorage<K, V>): ReadonlyMap<K, V> {
+/** Creates a `FrozenMap` backed by the storage without copying. */
+function fromStorage<K, V>(storage: VersionedStorage<K, V>): FrozenMap<K, V> {
   nextStorage = storage;
 
   try {
-    return new ReadonlyMap<K, V>();
+    return new FrozenMap<K, V>();
   } finally {
     nextStorage = undefined;
   }
 }
 
-Object.defineProperties(ReadonlyMap.prototype, {
+Object.defineProperties(FrozenMap.prototype, {
   // Mutating methods on `Map.prototype` would throw "incompatible receiver", override them with a clearer error.
   clear: { value: throwReadonly },
   delete: { value: throwReadonly },
@@ -177,16 +177,16 @@ Object.defineProperty(ReadWriteMapImpl.prototype, 'constructor', { value: Map })
 Object.freeze(ReadWriteMapImpl.prototype);
 Object.freeze(ReadWriteMapImpl);
 // Some libraries compare `constructor` for equality, e.g. `expect().toEqual()`.
-Object.defineProperty(ReadonlyMap.prototype, 'constructor', { value: Map });
-Object.freeze(ReadonlyMap.prototype);
-Object.freeze(ReadonlyMap);
+Object.defineProperty(FrozenMap.prototype, 'constructor', { value: Map });
+Object.freeze(FrozenMap.prototype);
+Object.freeze(FrozenMap);
 
 /**
- * Checks if the value is a `ReadonlyMap`.
+ * Checks if the value is a `FrozenMap`.
  */
-function isReadonlyMap(value: unknown): value is globalThis.ReadonlyMap<unknown, unknown> {
-  return ReadonlyMap.isReadonlyMap(value);
+function isFrozenMap(value: unknown): value is ReadonlyMap<unknown, unknown> {
+  return FrozenMap.isFrozenMap(value);
 }
 
-export default ReadonlyMap;
-export { isReadonlyMap, type ReadWriteMap };
+export default FrozenMap;
+export { isFrozenMap, type ReadWriteMap };

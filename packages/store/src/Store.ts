@@ -5,17 +5,17 @@ import type { Node } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
 import attachHasPart from './private/attachHasPart.ts';
-import ReadonlyMap, { type ReadWriteMap } from './structure/ReadonlyMap.ts';
-import ReadonlySet, { type ReadWriteSet } from './structure/ReadonlySet.ts';
+import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
+import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createNode from './private/createNode.ts';
 import type { InternalNode } from './private/InternalNode.ts';
 import { getDateCreatedTime } from './private/dateCreatedTime.ts';
-import ReadonlySkipList, { type ReadWriteSkipList } from './structure/ReadonlySkipList.ts';
-import { getNodeSetIds } from './structure/ReadonlyNodeSet.ts';
+import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
+import { getNodeSetIds } from './structure/FrozenNodeSet.ts';
 import getPartIds from './private/getPartIds.ts';
 import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
 
-type StoreListener = (affectedNodeIds: globalThis.ReadonlySet<Identifier>) => void;
+type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
 interface StoreSource {
   start(controller: StoreController): void;
@@ -53,7 +53,7 @@ interface StoreTransaction {
   upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
 }
 
-const EMPTY_IDS: globalThis.ReadonlySet<Identifier> = new ReadonlySet<Identifier>([]);
+const EMPTY_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
 
 const getSortedPartsInitSchema = pipe(
   object({
@@ -99,7 +99,7 @@ function getReferenceIds(node: Node): Set<Identifier> {
   return referenceIds;
 }
 
-type ReferenceIds = ReadonlyMap<Identifier, ReadonlySet<Identifier>>;
+type ReferenceIds = FrozenMap<Identifier, FrozenSet<Identifier>>;
 
 /**
  * Backward reference IDs (or child IDs) being modified in a transaction.
@@ -108,14 +108,11 @@ type ReferenceIds = ReadonlyMap<Identifier, ReadonlySet<Identifier>>;
  * being modified are mutated via an overlay and kept in `sets` until commit.
  */
 type MutableBackwardReferenceIds = {
-  readonly map: ReadWriteMap<Identifier, ReadonlySet<Identifier>>;
+  readonly map: ReadWriteMap<Identifier, FrozenSet<Identifier>>;
   readonly sets: Map<Identifier, ReadWriteSet<Identifier>>;
 };
 
-function getReferencingIds(
-  backwardReferenceIds: MutableBackwardReferenceIds,
-  id: Identifier
-): globalThis.ReadonlySet<Identifier> {
+function getReferencingIds(backwardReferenceIds: MutableBackwardReferenceIds, id: Identifier): ReadonlySet<Identifier> {
   return backwardReferenceIds.sets.get(id) ?? backwardReferenceIds.map.get(id) ?? EMPTY_IDS;
 }
 
@@ -129,7 +126,7 @@ function mutateReferencingIds(
   referencingIds ||
     backwardReferenceIds.sets.set(
       id,
-      (referencingIds = (backwardReferenceIds.map.get(id) ?? new ReadonlySet<Identifier>([])).mutate())
+      (referencingIds = (backwardReferenceIds.map.get(id) ?? new FrozenSet<Identifier>([])).mutate())
     );
 
   return referencingIds;
@@ -151,10 +148,10 @@ function commitBackwardReferenceIds(backwardReferenceIds: MutableBackwardReferen
  * Updates forward and backward reference maps with the new set of reference IDs of a node.
  */
 function setReferenceIds(
-  forwardReferenceIds: ReadWriteMap<Identifier, ReadonlySet<Identifier>>,
+  forwardReferenceIds: ReadWriteMap<Identifier, FrozenSet<Identifier>>,
   backwardReferenceIds: MutableBackwardReferenceIds,
   id: Identifier,
-  nextReferenceIds: globalThis.ReadonlySet<Identifier>
+  nextReferenceIds: ReadonlySet<Identifier>
 ): void {
   const prevReferenceIds = forwardReferenceIds.get(id) ?? EMPTY_IDS;
 
@@ -167,9 +164,7 @@ function setReferenceIds(
     prevReferenceIds.has(referenceId) || mutateReferencingIds(backwardReferenceIds, referenceId).add(id);
   }
 
-  nextReferenceIds.size
-    ? forwardReferenceIds.set(id, new ReadonlySet(nextReferenceIds))
-    : forwardReferenceIds.delete(id);
+  nextReferenceIds.size ? forwardReferenceIds.set(id, new FrozenSet(nextReferenceIds)) : forwardReferenceIds.delete(id);
 }
 
 /**
@@ -239,10 +234,10 @@ function setPartOf(node: InternalNode, parentId: Identifier, included: boolean):
  * @returns Key is the ID of the parent, value is the new sorted child IDs.
  */
 function updateSortedChildIds(
-  prevState: globalThis.ReadonlyMap<string, InternalNode>,
-  nextState: globalThis.ReadonlyMap<string, InternalNode>,
-  affectedNodeIds: globalThis.ReadonlySet<Identifier>
-): Map<Identifier, ReadonlySkipList<Identifier>> {
+  prevState: ReadonlyMap<string, InternalNode>,
+  nextState: ReadonlyMap<string, InternalNode>,
+  affectedNodeIds: ReadonlySet<Identifier>
+): Map<Identifier, FrozenSkipList<Identifier>> {
   const insertions: [Identifier, Identifier][] = [];
   const removals: [Identifier, Identifier][] = [];
   const sortedChildIds = new Map<Identifier, ReadWriteSkipList<Identifier>>();
@@ -271,7 +266,7 @@ function updateSortedChildIds(
       sortedChildIds.set(
         parentId,
         (mutableSortedChildIds = (
-          getSortedChildIds(prevState.get(parentId)) ?? new ReadonlySkipList<Identifier>()
+          getSortedChildIds(prevState.get(parentId)) ?? new FrozenSkipList<Identifier>()
         ).mutate())
       );
 
@@ -310,7 +305,7 @@ class Store {
 
         editing = true;
 
-        let affectedNodeIds: globalThis.ReadonlySet<Identifier> | undefined;
+        let affectedNodeIds: ReadonlySet<Identifier> | undefined;
 
         try {
           affectedNodeIds = this.#commit(transactor);
@@ -327,13 +322,13 @@ class Store {
   }
 
   /** Key is the node being referenced, values are IDs of nodes which reference the key node. */
-  #backwardReferenceIds: ReferenceIds = new ReadonlyMap([]);
+  #backwardReferenceIds: ReferenceIds = new FrozenMap([]);
   /** Key is the parent node, values are IDs of children which have the parent in `isPartOf`. */
-  #childIds: ReferenceIds = new ReadonlyMap([]);
+  #childIds: ReferenceIds = new FrozenMap([]);
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
-  #forwardReferenceIds: ReferenceIds = new ReadonlyMap([]);
+  #forwardReferenceIds: ReferenceIds = new FrozenMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
-  #state: ReadonlyMap<string, InternalNode> = new ReadonlyMap([]);
+  #state: FrozenMap<string, InternalNode> = new FrozenMap([]);
 
   /**
    * Runs the transactor and commits changes to the store.
@@ -343,7 +338,7 @@ class Store {
    *
    * @returns IDs of nodes which are added, updated, or deleted, or `undefined` if nothing is changed.
    */
-  #commit(transactor: (transaction: StoreTransaction) => void): globalThis.ReadonlySet<Identifier> | undefined {
+  #commit(transactor: (transaction: StoreTransaction) => void): ReadonlySet<Identifier> | undefined {
     const affectedNodeIds = new Set<Identifier>();
     let ended = false;
 
@@ -376,7 +371,7 @@ class Store {
       const node = nextState.get(id);
       const childIds = nextChildIds.sets.get(id);
 
-      return node && childIds ? attachHasPart(node, new ReadonlySet(childIds), getSortedChildIds(node)) : node;
+      return node && childIds ? attachHasPart(node, new FrozenSet(childIds), getSortedChildIds(node)) : node;
     };
 
     const setPendingChild = (parentId: Identifier, childId: Identifier, included: boolean): void => {
@@ -535,10 +530,10 @@ class Store {
     this.#forwardReferenceIds = nextForwardReferenceIds.commit();
     this.#state = nextState.commit();
 
-    return new ReadonlySet(affectedNodeIds);
+    return new FrozenSet(affectedNodeIds);
   }
 
-  #notifyAll(affectedNodeIds: globalThis.ReadonlySet<Identifier>) {
+  #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
     for (const listener of this.#listeners) {
       listener(affectedNodeIds);
     }
@@ -547,7 +542,7 @@ class Store {
   /**
    * Gets an immutable snapshot of all nodes. Snapshots are not affected by subsequent commits.
    */
-  getSnapshot(): globalThis.ReadonlyMap<string, Node> {
+  getSnapshot(): ReadonlyMap<string, Node> {
     return this.#state;
   }
 

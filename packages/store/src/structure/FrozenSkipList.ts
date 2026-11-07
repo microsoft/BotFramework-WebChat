@@ -34,7 +34,7 @@ interface ReadWriteSkipList<T> extends SkipListReader<T> {
    * same list has been committed), otherwise, O(size) as the list is copied.
    */
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  commit(): ReadonlySkipList<T>;
+  commit(): FrozenSkipList<T>;
 
   /**
    * Deletes the item, returns `true` if the item was in the list. This is expected O(1).
@@ -103,7 +103,7 @@ class ReadWriteSkipListImpl<T> extends SkipListView<T> implements ReadWriteSkipL
     return Math.max(0, this.#overlay.size - 1);
   }
 
-  commit(): ReadonlySkipList<T> {
+  commit(): FrozenSkipList<T> {
     for (const { next, previous } of this.#ownedEntries) {
       Object.freeze(next);
       Object.freeze(previous);
@@ -187,13 +187,13 @@ class ReadWriteSkipListImpl<T> extends SkipListView<T> implements ReadWriteSkipL
   }
 }
 
-/** Storage handed to the next `ReadonlySkipList` constructor, only set by `fromStorage()` during construction. */
+/** Storage handed to the next `FrozenSkipList` constructor, only set by `fromStorage()` during construction. */
 let nextStorage: VersionedStorage<unknown, unknown> | undefined;
 
 /**
  * A persistent (immutable) sorted list of unique items, using a skip list: doubly linked lists with express lanes.
  *
- * `new ReadonlySkipList()` creates an empty list. Use `mutate()` to create a writable overlay, then `commit()` to get a
+ * `new FrozenSkipList()` creates an empty list. Use `mutate()` to create a writable overlay, then `commit()` to get a
  * new immutable list.
  *
  * Links are kept in a `VersionedStorage`, `mutate()` creates an overlay without copying, and `commit()` writes the
@@ -202,7 +202,7 @@ let nextStorage: VersionedStorage<unknown, unknown> | undefined;
  * - Reading the latest version is O(1) per item
  * - Reading an old version walks the undo logs, see `VersionedStorage` for details
  */
-class ReadonlySkipList<T> extends SkipListView<T> implements SkipListReader<T> {
+class FrozenSkipList<T> extends SkipListView<T> implements SkipListReader<T> {
   constructor() {
     super();
 
@@ -239,12 +239,12 @@ class ReadonlySkipList<T> extends SkipListView<T> implements SkipListReader<T> {
   }
 }
 
-/** Creates a `ReadonlySkipList` backed by the storage without copying. */
-function fromStorage<T>(storage: VersionedStorage<Key<T>, Entry<T>>): ReadonlySkipList<T> {
+/** Creates a `FrozenSkipList` backed by the storage without copying. */
+function fromStorage<T>(storage: VersionedStorage<Key<T>, Entry<T>>): FrozenSkipList<T> {
   nextStorage = storage;
 
   try {
-    return new ReadonlySkipList<T>();
+    return new FrozenSkipList<T>();
   } finally {
     nextStorage = undefined;
   }
@@ -252,8 +252,8 @@ function fromStorage<T>(storage: VersionedStorage<Key<T>, Entry<T>>): ReadonlySk
 
 Object.freeze(ReadWriteSkipListImpl.prototype);
 Object.freeze(ReadWriteSkipListImpl);
-Object.freeze(ReadonlySkipList.prototype);
-Object.freeze(ReadonlySkipList);
+Object.freeze(FrozenSkipList.prototype);
+Object.freeze(FrozenSkipList);
 
-export default ReadonlySkipList;
+export default FrozenSkipList;
 export { type ReadWriteSkipList };

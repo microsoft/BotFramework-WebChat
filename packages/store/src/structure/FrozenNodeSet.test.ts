@@ -2,15 +2,15 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import ReadonlyNodeSet, { getNodeSetIds } from './ReadonlyNodeSet.ts';
-import ReadonlySet from './ReadonlySet.ts';
+import FrozenNodeSet, { getNodeSetIds } from './FrozenNodeSet.ts';
+import FrozenSet from './FrozenSet.ts';
 
 scenario(
-  'new ReadonlyNodeSet()',
+  'new FrozenNodeSet()',
   bdd => {
     bdd
       .given('IDs', (): Identifier[] => ['_:m-1', '_:m-2'])
-      .when('new ReadonlyNodeSet() is called', ids => new ReadonlyNodeSet(ids))
+      .when('new FrozenNodeSet() is called', ids => new FrozenNodeSet(ids))
       .then('should be a Set', (_, nodeSet) => expect(nodeSet).toBeInstanceOf(Set))
       .and('should be frozen', (_, nodeSet) => expect(Object.isFrozen(nodeSet)).toBe(true))
       .and('should have size', (_, nodeSet) => expect(nodeSet.size).toBe(2))
@@ -52,8 +52,8 @@ scenario(
 
     bdd
       .given('a mutable array of IDs', (): Identifier[] => ['_:m-1'])
-      .when('new ReadonlyNodeSet() is called and the array is modified', ids => {
-        const nodeSet = new ReadonlyNodeSet(ids);
+      .when('new FrozenNodeSet() is called and the array is modified', ids => {
+        const nodeSet = new FrozenNodeSet(ids);
 
         ids.push('_:m-2');
 
@@ -62,14 +62,14 @@ scenario(
       .then('should not be affected', (_, nodeSet) => expect(nodeSet.size).toBe(1));
 
     bdd
-      .given('a read-only Set of IDs', () => new ReadonlySet<Identifier>(['_:m-1']))
-      .when('new ReadonlyNodeSet() is called', ids => new ReadonlyNodeSet(ids))
+      .given('a read-only Set of IDs', () => new FrozenSet<Identifier>(['_:m-1']))
+      .when('new FrozenNodeSet() is called', ids => new FrozenNodeSet(ids))
       .then('getNodeSetIds() should return the same Set without copying', (ids, nodeSet) =>
         expect(getNodeSetIds(nodeSet)).toBe(ids)
       );
 
     bdd
-      .given('a node set', (): globalThis.ReadonlySet<unknown> => new ReadonlyNodeSet(['_:m-1']))
+      .given('a node set', (): ReadonlySet<unknown> => new FrozenNodeSet(['_:m-1']))
       .when.oneOf<() => unknown>([
         ['add() is called', nodeSet => () => (nodeSet as Set<unknown>).add({ '@id': '_:m-2' })],
         ['clear() is called', nodeSet => () => (nodeSet as Set<unknown>).clear()],
