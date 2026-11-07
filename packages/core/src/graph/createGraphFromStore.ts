@@ -1,9 +1,11 @@
+import {
+  getLocalIdFromActivity,
+  getPositionFromActivity,
+  type Activity
+} from '@msinternal/botframework-webchat-core-activities';
 import { SlantGraph, SlantNodeSchema } from '@msinternal/botframework-webchat-core-graph';
 import { parse } from 'valibot';
 import type createStore from '../createStore';
-import { getLocalIdFromActivity } from '../reducers/activities/sort/property/LocalId';
-import { getPositionFromActivity } from '../reducers/activities/sort/property/Position';
-import type { Activity } from '../reducers/activities/sort/types';
 
 function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph {
   const graph = new SlantGraph();

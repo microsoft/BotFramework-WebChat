@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "strict": false
+  },
+  "exclude": ["**/*.spec.ts"],
+  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
+}

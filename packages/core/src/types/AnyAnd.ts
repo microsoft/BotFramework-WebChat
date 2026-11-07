@@ -1,2 +1,2 @@
-// Moved with the activities core.
-export type { AnyAnd } from '../reducers/activities/sort/types/AnyAnd';
+// Moved to the activities core.
+export type { AnyAnd } from '@msinternal/botframework-webchat-core-activities';

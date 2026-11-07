@@ -1,2 +1,2 @@
-// Moved with the activities core.
-export type { DirectLineSuggestedAction } from '../../reducers/activities/sort/types/external/DirectLineSuggestedAction';
+// Moved to the activities core.
+export type { DirectLineSuggestedAction } from '@msinternal/botframework-webchat-core-activities';

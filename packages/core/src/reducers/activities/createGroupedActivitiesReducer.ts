@@ -29,20 +29,26 @@ import type {
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import { type RestrictedStoreDebugAPI } from '../../types/StoreDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import patchActivity from './sort/patchActivity';
-import createActivitiesGraph from './sort/graph/createActivitiesGraph';
-import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
-import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';
-import { getPositionFromActivity, setPositionInActivity } from './sort/property/Position';
-import { setReceivedAtInActivity } from './sort/property/ReceivedAt';
-import { querySendStatusFromOutgoingActivity, setSendStatusInOutgoingActivity } from './sort/property/SendStatus';
-import queryLocalIdAByActivityId from './sort/queryLocalIdByActivityId';
-import queryLocalIdAByClientActivityId from './sort/queryLocalIdByClientActivityId';
-import type { State } from './sort/types';
-import updateActivityChannelData, {
-  updateActivityChannelDataInternalSkipNameCheck
-} from './sort/updateActivityChannelData';
-import upsert, { INITIAL_STATE } from './sort/upsert';
+import {
+  createActivitiesGraph,
+  deleteActivityByLocalId,
+  generateLocalIdInActivity,
+  getLocalIdFromActivity,
+  getPositionFromActivity,
+  INITIAL_STATE,
+  patchActivity,
+  queryLocalIdByActivityId as queryLocalIdAByActivityId,
+  queryLocalIdByClientActivityId as queryLocalIdAByClientActivityId,
+  querySendStatusFromOutgoingActivity,
+  setLocalIdInActivity,
+  setPositionInActivity,
+  setReceivedAtInActivity,
+  setSendStatusInOutgoingActivity,
+  updateActivityChannelData,
+  updateActivityChannelDataInternalSkipNameCheck,
+  upsert,
+  type State
+} from '@msinternal/botframework-webchat-core-activities';
 
 type GroupedActivitiesAction =
   | DeleteActivityAction

@@ -1,2 +1,2 @@
-// Moved with the activities core.
-export { default } from '../reducers/activities/sort/utils/getOrgSchemaMessage';
+// Moved to the activities core.
+export { getOrgSchemaMessage as default } from '@msinternal/botframework-webchat-core-activities';

@@ -6,6 +6,7 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-core': './src/index.ts',
+    'botframework-webchat-core.activities': './src/boot/activities.ts',
     'botframework-webchat-core.activity': './src/boot/activity.ts',
     'botframework-webchat-core.graph': './src/boot/graph.ts',
     'botframework-webchat-core.internal': './src/boot/internal.ts',

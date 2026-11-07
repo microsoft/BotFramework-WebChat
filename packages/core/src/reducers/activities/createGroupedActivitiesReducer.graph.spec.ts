@@ -1,11 +1,9 @@
 /* eslint-disable no-restricted-globals */
-// The reducer on the activities graph (William's store): replaying older states, failed transactions, and the send
-// status read from the message node, as tests.
+// The reducer on the activities graph (William's store): replaying older states, and the send status read from the
+// message node, as tests. A transaction that throws is tested in the activities core (`graph/editState.spec.ts`).
+import { CONVERSATION_ID, getSortedMessages } from '@msinternal/botframework-webchat-core-activities';
 import { scenario } from '@testduet/given-when-then';
 import createGroupedActivitiesReducer from './createGroupedActivitiesReducer';
-import { CONVERSATION_ID } from './sort/graph/createActivitiesGraph';
-import getSortedMessages from './sort/graph/getSortedMessages';
-import * as toJSONValueModule from './sort/graph/private/toJSONValue';
 
 const ponyfill: any = { Date, clearTimeout, setTimeout };
 const debugAPI: any = { UNSAFE_callBreakpoint: { incomingActivity: () => undefined } };
@@ -39,7 +37,6 @@ function howTo(groupingId: string) {
 
 const incoming = (activity: unknown) => ({ payload: { activity }, type: 'DIRECT_LINE/INCOMING_ACTIVITY' }) as any;
 const ids = (state: any) => state.sortedActivities.map(({ id }: any) => id);
-const texts = (state: any) => state.sortedActivities.map(({ text }: any) => text);
 
 scenario('reducing an older state again (replay, time travel)', bdd => {
   bdd
@@ -224,47 +221,6 @@ scenario('the lists are patched from the first changed part of the conversation'
       expect(ids(appended)).toEqual(['m-1', 'm-2', 's-1', 's-1-2', 'm-3']);
       expect(positions(appended)).toEqual([1_000, 4_000, 5_000, 6_000, 7_000]);
     });
-});
-
-scenario('a transaction that throws', bdd => {
-  bdd
-    .given('a-1 in HowTo "h1"', () => {
-      const reducer = createGroupedActivitiesReducer(ponyfill, debugAPI);
-
-      return {
-        reducer,
-        state: reducer(
-          reducer(undefined, { type: '@@INIT' } as any),
-          incoming(botActivity('a-1', 'one', 1_000, howTo('_:h1')))
-        )
-      };
-    })
-    .when('an update of a-1 into "h2" throws, then a-2 arrives', ({ reducer, state }) => {
-      let error: unknown;
-      // The store rejects a `BigInt` in a JSON literal (as `JSON.stringify()` throws). The JSON projection never holds
-      // one, so it is injected here: the store throws after a-1 already left "h1" in the transaction.
-      const toJSONValueSpy = jest
-        .spyOn(toJSONValueModule, 'default')
-        .mockImplementationOnce(value => ({ ...(value as object), value: BigInt(1) }));
-
-      try {
-        reducer(state, incoming(botActivity('a-1', 'one updated', 1_000, howTo('_:h2'))));
-      } catch (caught) {
-        error = caught;
-      } finally {
-        toJSONValueSpy.mockRestore();
-      }
-
-      return { error, nextState: reducer(state, incoming(botActivity('a-2', 'two', 2_000))) };
-    })
-    .then('should throw', (_, { error }) => expect(error).toBeInstanceOf(Error))
-    // Before the fix: ["two"], the partial edit had detached a-1.
-    .and('should keep a-1 as before the failed update', (_, { nextState }) =>
-      expect(texts(nextState)).toEqual(['one', 'two'])
-    )
-    .and('should keep a-1 in "h1"', (_, { nextState }) =>
-      expect(nextState.howToGroupingMap.get('_:h1' as any)?.partList).toHaveLength(1)
-    );
 });
 
 scenario('the activity keeps the host’s objects, as before the store', bdd => {

@@ -15,6 +15,7 @@ module.exports = {
   'packages/component/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component'],
   'packages/component-better-link/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component-better-link'],
   'packages/core/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core'],
+  'packages/core-activities/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-activities'],
   'packages/core-debug-api/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-debug-api'],
   'packages/core-graph/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core-graph'],
   'packages/debug-theme/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:debug-theme'],

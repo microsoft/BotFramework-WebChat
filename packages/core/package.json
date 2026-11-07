@@ -15,6 +15,16 @@
         "default": "./dist/botframework-webchat-core.js"
       }
     },
+    "./activities": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.activities.d.mts",
+        "default": "./dist/botframework-webchat-core.activities.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.activities.d.ts",
+        "default": "./dist/botframework-webchat-core.activities.js"
+      }
+    },
     "./activity": {
       "import": {
         "default": "./boot/deprecated/activity.mjs"
@@ -137,7 +147,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\" \"../core-debug-api/package.json\" \"../core-graph/package.json\" \"../core-json-ld/package.json\" \"../store/package.json\"",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../core-activities/package.json\" \"../core-debug-api/package.json\"",
     "test:tsd": "tsd"
   },
   "engines": {
@@ -151,6 +161,7 @@
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-core-activities": "development",
     "@msinternal/botframework-webchat-core-debug-api": "development",
     "@msinternal/botframework-webchat-core-graph": "development",
     "@msinternal/botframework-webchat-core-json-ld": "development",
@@ -163,6 +174,7 @@
     "@babel/plugin-transform-typescript": "^7.29.7",
     "@babel/preset-env": "^7.29.7",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-core-activities": "0.0.0-0",
     "@msinternal/botframework-webchat-core-debug-api": "0.0.0-0",
     "@msinternal/botframework-webchat-core-graph": "0.0.0-0",
     "@msinternal/botframework-webchat-core-json-ld": "0.0.0-0",

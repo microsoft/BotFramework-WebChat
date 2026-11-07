@@ -1,2 +1,2 @@
-// Moved with the activities core.
-export type { WebChatCallURLCardAction } from '../../reducers/activities/sort/types/internal/WebChatCallURLCardAction';
+// Moved to the activities core.
+export type { WebChatCallURLCardAction } from '@msinternal/botframework-webchat-core-activities';

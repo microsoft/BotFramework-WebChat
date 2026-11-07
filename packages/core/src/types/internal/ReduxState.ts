@@ -1,5 +1,5 @@
 import type sendBoxAttachments from '../../reducers/sendBoxAttachments';
-import type { State } from '../../reducers/activities/sort/types';
+import type { State } from '@msinternal/botframework-webchat-core-activities';
 import type { WebChatActivity } from '../WebChatActivity';
 import type { Notification } from './Notification';
 

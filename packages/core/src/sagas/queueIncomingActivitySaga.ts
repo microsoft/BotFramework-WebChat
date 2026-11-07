@@ -1,3 +1,4 @@
+import { hasBotActivity, hasReplyTarget, type State } from '@msinternal/botframework-webchat-core-activities';
 import { buffers, channel, type Channel } from 'redux-saga';
 import { fork, put, select, take } from 'redux-saga/effects';
 
@@ -5,8 +6,6 @@ import incomingActivity, { INCOMING_ACTIVITY } from '../actions/incomingActivity
 import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
 import activityFromBot from '../definitions/activityFromBot';
-import { hasBotActivity, hasReplyTarget } from '../reducers/activities/sort/graph/queries';
-import type { State } from '../reducers/activities/sort/types';
 import { ofType as activitiesOfType } from '../selectors/activities';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { ReduxState } from '../types/internal/ReduxState';

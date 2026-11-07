@@ -25,7 +25,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import { setSendStatusInOutgoingActivity } from '../reducers/activities/sort/property/SendStatus';
+import { setSendStatusInOutgoingActivity } from '@msinternal/botframework-webchat-core-activities';
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';

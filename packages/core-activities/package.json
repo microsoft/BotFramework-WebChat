@@ -1,0 +1,79 @@
+{
+  "name": "@msinternal/botframework-webchat-core-activities",
+  "version": "0.0.0-0",
+  "description": "botframework-webchat-core/activities package",
+  "main": "./dist/botframework-webchat-core-activities.js",
+  "types": "./dist/botframework-webchat-core-activities.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-core-activities.d.mts",
+        "default": "./dist/botframework-webchat-core-activities.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core-activities.d.ts",
+        "default": "./dist/botframework-webchat-core-activities.js"
+      }
+    }
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "files": [
+    "./dist/**/*",
+    "./src/**/*",
+    "*.js"
+  ],
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/core-activities#readme",
+  "scripts": {
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "tsup",
+    "bump": "vg bump prod && vg bump dev && vg bump peer && (npm audit fix || exit 0)",
+    "eslint": "npm run precommit",
+    "postversion": "../../scripts/npm/postversion.sh",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "../../scripts/npm/preversion.sh",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../core-graph/package.json\" \"../core-json-ld/package.json\" \"../store/package.json\""
+  },
+  "pinDependencies": {
+    "@types/jest": [
+      "29",
+      "pinned jest@29"
+    ]
+  },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-core-graph": "development",
+    "@msinternal/botframework-webchat-core-json-ld": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
+    "botframework-webchat-store": "development"
+  },
+  "devDependencies": {
+    "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-core-graph": "0.0.0-0",
+    "@msinternal/botframework-webchat-core-json-ld": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
+    "@testduet/given-when-then": "^0.1.0",
+    "@types/jest": "^29.5.14",
+    "botframework-webchat-store": "0.0.0-0",
+    "type-fest": "^5.6.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "simple-update-in": "2.2.0",
+    "uuid": "14.0.0",
+    "valibot": "1.4.1"
+  }
+}

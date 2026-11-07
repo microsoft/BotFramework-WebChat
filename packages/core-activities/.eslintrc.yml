@@ -1,0 +1,34 @@
+extends:
+  - ../../.eslintrc.production.yml
+
+settings:
+  import/resolver:
+    node:
+      extensions: [.ts, .js]
+
+rules:
+  # The activities core does not know about Redux or the rest of core: core bundles it, not the other way around.
+  import/no-restricted-paths:
+    - error
+    - zones:
+        - target: ./src
+          from: ../
+          except:
+            - ./core-activities
+          message: The activities core must not import from other packages by path.
+  no-restricted-imports:
+    - error
+    - paths:
+        - name: botframework-webchat-core
+          message: The activities core must not import core (core bundles it).
+        - name: redux
+          message: The activities core is Redux-free.
+        - name: redux-saga
+          message: The activities core is Redux-free.
+      patterns:
+        - group:
+            - botframework-webchat-core/*
+          message: The activities core must not import core (core bundles it).
+        - group:
+            - redux-saga/*
+          message: The activities core is Redux-free.
