@@ -22,19 +22,85 @@ const IN_PROGRESS: unique symbol = Symbol('in progress');
  * after all its properties are set. As the depth is usually small, arrays with linear search is faster than `Map`.
  */
 type Memo = {
+  /** Clones arrays and objects before freezing, otherwise, freezes the original in place if possible. */
+  readonly clone: boolean;
   /** Frozen versions of the ancestors, or `IN_PROGRESS` for `Set`, which cannot be referenced before it is created. */
   readonly frozenValues: unknown[];
+  /** Whether a recursive reference to the ancestor has been handed out. */
+  readonly referenced: boolean[];
   readonly values: object[];
 };
 
 function pushAncestor(memo: Memo, value: object, frozenValue: unknown): void {
   memo.frozenValues.push(frozenValue);
+  memo.referenced.push(false);
   memo.values.push(value);
 }
 
 function popAncestor(memo: Memo): void {
   memo.frozenValues.pop();
+  memo.referenced.pop();
   memo.values.pop();
+}
+
+/**
+ * Replaces the frozen version of the innermost ancestor, when freezing in place is not possible and it is cloned.
+ *
+ * Throws if a recursive reference to the original has been handed out, as it cannot be pointed to the clone.
+ */
+function replaceAncestor(memo: Memo, frozenValue: object): void {
+  const index = memo.values.length - 1;
+
+  if (memo.referenced[+index]) {
+    throw new TypeError('Recursive value cannot be frozen in place as some of its properties cannot be redefined');
+  }
+
+  memo.frozenValues[+index] = frozenValue;
+}
+
+/**
+ * Returns the original array or object if it can be frozen in place, i.e. not cloning, otherwise, `undefined`.
+ *
+ * It must be extensible (i.e. not frozen, sealed, or prevented extensions) and its prototype must be `Array.prototype`
+ * or `Object.prototype`, so it is the same as a clone.
+ */
+function getInPlaceTarget(memo: Memo, originalObject: object | undefined, isArray: boolean): object | undefined {
+  return !memo.clone &&
+    originalObject &&
+    Array.isArray(originalObject) === isArray &&
+    Object.isExtensible(originalObject) &&
+    Object.getPrototypeOf(originalObject) === (isArray ? Array.prototype : Object.prototype)
+    ? originalObject
+    : undefined;
+}
+
+/** Sets an own, enumerable, writable, and configurable data property, replaces getters or non-enumerable properties. */
+function setDataProperty(target: object, key: string, value: unknown): boolean {
+  return Reflect.defineProperty(target, key, { configurable: true, enumerable: true, value, writable: true });
+}
+
+/**
+ * Deletes own properties of the in-place target which are not in the validated value, e.g. property with value of
+ * `undefined`, dangerous keys, symbol keys, and non-enumerable properties.
+ *
+ * @returns `false` if some properties cannot be deleted.
+ */
+function deleteExtraProperties(target: object, value: object, numKeys: number): boolean {
+  const ownKeys = Reflect.ownKeys(target);
+
+  // Fast path: nothing to delete. Arrays have an extra "length" own property.
+  if (ownKeys.length === numKeys + (Array.isArray(target) ? 1 : 0)) {
+    return true;
+  }
+
+  return ownKeys.every(
+    key =>
+      (typeof key === 'string' &&
+        !isDangerousKey(key) &&
+        Object.hasOwn(value, key) &&
+        (Object.prototype.propertyIsEnumerable.call(target, key) || (key === 'length' && Array.isArray(target)))) ||
+      Reflect.deleteProperty(target, key)
+  );
 }
 
 /** Returned by `getDataPropertyValue()` if it is not an own, enumerable data property. */
@@ -85,6 +151,22 @@ function deepFreezeItem(originalItem: unknown, item: unknown, memo: Memo): unkno
 }
 
 /**
+ * Clones properties of the in-place target which are frozen, i.e. keys of the validated value which are already set.
+ */
+function cloneObject(target: object, value: object): Record<string, unknown> {
+  const clone: Record<string, unknown> = {};
+
+  for (const key of Object.keys(value)) {
+    const item = getDataPropertyValue(target, key);
+
+    // eslint-disable-next-line security/detect-object-injection
+    isDangerousKey(key) || item === NOT_DATA_PROPERTY || (clone[key] = item);
+  }
+
+  return clone;
+}
+
+/**
  * Freezes every item of the array in a single pass, and checks if the original value can be reused at the same time.
  */
 function deepFreezeArray(
@@ -92,8 +174,9 @@ function deepFreezeArray(
   value: readonly unknown[],
   memo: Memo
 ): readonly unknown[] {
-  const frozenValue: unknown[] = [];
+  const inPlaceTarget = getInPlaceTarget(memo, originalObject, true) as unknown[] | undefined;
   const numReusableKeys = Array.isArray(originalObject) ? getNumReusableKeys(originalObject) : undefined;
+  let frozenValue: unknown[] = inPlaceTarget ?? [];
   let reusable = numReusableKeys === value.length;
 
   pushAncestor(memo, value, frozenValue);
@@ -103,7 +186,19 @@ function deepFreezeArray(
     const item = deepFreezeItem(originalItem, value[+index], memo);
 
     reusable &&= item === originalItem;
-    frozenValue.push(item);
+
+    if (frozenValue !== inPlaceTarget) {
+      frozenValue.push(item);
+    } else if (item !== originalItem && !setDataProperty(frozenValue, `${index}`, item)) {
+      // Cannot be frozen in place, clone frozen items so far.
+      frozenValue = [...frozenValue.slice(0, index), item];
+      replaceAncestor(memo, frozenValue);
+    }
+  }
+
+  if (frozenValue === inPlaceTarget && !deleteExtraProperties(frozenValue, value, value.length)) {
+    frozenValue = frozenValue.slice(0, value.length);
+    replaceAncestor(memo, frozenValue);
   }
 
   popAncestor(memo);
@@ -120,8 +215,10 @@ function deepFreezeArray(
  * `constructor`, and `prototype`) are skipped, and the original value is not reused if it has any of them.
  */
 function deepFreezeObject(originalObject: object | undefined, value: object, memo: Memo): object {
-  const frozenValue: Record<string, unknown> = {};
+  const inPlaceTarget = getInPlaceTarget(memo, originalObject, false) as Record<string, unknown> | undefined;
   const keys = Object.keys(value);
+  let frozenValue: Record<string, unknown> = inPlaceTarget ?? {};
+  let numKeys = 0;
   let reusable =
     !!originalObject && !Array.isArray(originalObject) && getNumReusableKeys(originalObject) === keys.length;
 
@@ -137,10 +234,24 @@ function deepFreezeObject(originalObject: object | undefined, value: object, mem
     const originalItem = getDataPropertyValue(originalObject, key);
     const item = deepFreezeItem(originalItem, Reflect.get(value, key), memo);
 
+    numKeys++;
     reusable &&= item === originalItem;
 
-    // eslint-disable-next-line security/detect-object-injection
-    frozenValue[key] = item;
+    if (frozenValue !== inPlaceTarget) {
+      // eslint-disable-next-line security/detect-object-injection
+      frozenValue[key] = item;
+    } else if (item !== originalItem && !setDataProperty(frozenValue, key, item)) {
+      // Cannot be frozen in place, clone frozen properties so far.
+      frozenValue = cloneObject(frozenValue, value);
+      // eslint-disable-next-line security/detect-object-injection
+      frozenValue[key] = item;
+      replaceAncestor(memo, frozenValue);
+    }
+  }
+
+  if (frozenValue === inPlaceTarget && !deleteExtraProperties(frozenValue, value, numKeys)) {
+    frozenValue = cloneObject(frozenValue, value);
+    replaceAncestor(memo, frozenValue);
   }
 
   popAncestor(memo);
@@ -162,6 +273,8 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
     if (frozenValue === IN_PROGRESS) {
       throw new TypeError('Recursive Set cannot be frozen');
     }
+
+    memo.referenced[+ancestorIndex] = true;
 
     return frozenValue;
   } else if (value instanceof Set || isReadonlySet(value)) {
@@ -203,15 +316,29 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
  * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set,
  * only read-only `Set` created by `createReadonlySet()` is reused.
  *
+ * When `init.clone` is `false`, the caller transfers ownership of the original value. Arrays and objects of the original
+ * value are modified and frozen in place instead of cloned: properties are replaced by their frozen versions, and
+ * properties not in the validated value (e.g. `undefined`, dangerous keys, symbol keys, and non-enumerable properties)
+ * are deleted. If an array or object cannot be frozen in place (e.g. it is sealed, has a non-plain prototype, or has
+ * non-configurable properties), it is cloned instead. If it is recursive and cannot be frozen in place, it will throw.
+ *
  * @param originalValue Value before validation. Validation could copy or transform the value.
  * @param value Value after validation.
+ * @param init.clone `true` (default) to clone arrays and objects before freezing, `false` to freeze them in place.
  */
-function deepFreeze<T>(originalValue: unknown, value: T): T {
+function deepFreeze<T>(originalValue: unknown, value: T, init?: DeepFreezeInit | undefined): T {
   // Primitives do not need a memo.
   return (!value || typeof value !== 'object'
     ? value
-    : deepFreezeWithMemo(originalValue, value, { frozenValues: [], values: [] })) satisfies unknown as T;
+    : deepFreezeWithMemo(originalValue, value, {
+        clone: init?.clone ?? true,
+        frozenValues: [],
+        referenced: [],
+        values: []
+      })) satisfies unknown as T;
 }
 
+type DeepFreezeInit = { readonly clone?: boolean | undefined };
+
 export default deepFreeze;
-export { isDangerousKey };
+export { isDangerousKey, type DeepFreezeInit };

@@ -2,7 +2,7 @@ import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
-import deepFreeze, { isDangerousKey } from './deepFreeze.ts';
+import deepFreeze, { isDangerousKey, type DeepFreezeInit } from './deepFreeze.ts';
 import type { InternalNode } from './InternalNode.ts';
 import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from '../structure/createReadonlyNodeSet.ts';
 
@@ -31,8 +31,11 @@ function toReadonlyNodeSet(originalValue: unknown, value: ReadonlySet<NodeRefere
  * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getDateCreatedTime()`
  *
  * All nodes stored in the graph must be created by this function, the returned node is branded as `InternalNode`.
+ *
+ * When `init.clone` is `false`, arrays and objects in property values of the node are frozen in place instead of
+ * cloned, the caller transfers their ownership, see `deepFreeze()`. The node itself is always a new object.
  */
-function createNode(value: unknown): InternalNode {
+function createNode(value: unknown, init?: DeepFreezeInit | undefined): InternalNode {
   const safeNode = parse(nodeSchema, value);
 
   return Object.freeze(
@@ -45,7 +48,7 @@ function createNode(value: unknown): InternalNode {
             (key === 'hasPart' || key === 'isPartOf') && safeValue instanceof Set
               ? // `value` is an object as it passed validation.
                 toReadonlyNodeSet(Reflect.get(value as object, key), safeValue)
-              : deepFreeze(Reflect.get(value as object, key), safeValue)
+              : deepFreeze(Reflect.get(value as object, key), safeValue, init)
           ])
       ),
       parseDateCreatedTime(safeNode.dateCreated)
