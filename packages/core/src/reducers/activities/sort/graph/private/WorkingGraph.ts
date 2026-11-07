@@ -85,6 +85,21 @@ class WorkingGraph {
     return this.#pendingParts.get(parentId) ?? this.#partIndex.get(parentId) ?? [];
   }
 
+  /** A node as it was before this transaction. */
+  getPreviousNode(id: GraphIdentifier): GraphNode | undefined {
+    return this.#snapshot.get(id);
+  }
+
+  /** The parts of a parent as they were before this transaction. */
+  getPreviousParts(parentId: GraphIdentifier): readonly GraphIdentifier[] {
+    return this.#partIndex.get(parentId) ?? [];
+  }
+
+  /** IDs of the parents whose parts changed so far in this transaction. */
+  getPendingParentIds(): IterableIterator<GraphIdentifier> {
+    return this.#pendingParts.keys();
+  }
+
   /** IDs of the nodes changed so far in this transaction. */
   getPendingNodeIds(): IterableIterator<GraphIdentifier> {
     return this.#pendingNodes.keys();

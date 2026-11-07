@@ -11,12 +11,18 @@ import {
 } from '../property/SendStatus';
 import type { Activity } from '../types';
 import getSortedMessages from './getSortedMessages';
+import {
+  getChangedConversationParts,
+  getChangedRange,
+  pushDisplayedMessages,
+  type GetParts
+} from './private/displayedMessages';
 import { isFlat } from './private/flatParts';
 import { getBoxedActivity, getString, withProperties } from './private/nodeProperties';
 import toJSONValue from './private/toJSONValue';
 import type WorkingGraph from './private/WorkingGraph';
 import type { SortFacts } from './SortFacts';
-import type { GraphIdentifier, GraphNode } from './types';
+import type { GetNode, GraphIdentifier, GraphNode } from './types';
 import { DIRECT_LINE_ACTIVITY, DIRECT_LINE_ACTIVITY_TYPE, MESSAGE_TYPE, SEND_STATUS } from './vocabulary';
 
 const POSITION_INCREMENT = 1_000;
@@ -250,16 +256,102 @@ function stampFlatActivityPositions(working: WorkingGraph, conversationId: Graph
 }
 
 /**
+ * `stampActivityPositions()` from the first changed part of the conversation on (`getChangedRange()`), for any
+ * transcript (HowTo groupings, livestream sessions). Same rule and result as the full pass:
+ *
+ * - the displayed messages of the parts before the first changed part are the same as before, and were stamped in
+ *   increasing order by an earlier pass: the full pass keeps them;
+ * - after the last changed part, the displayed messages are unchanged and in the same order as before (increasing):
+ *   from the first one that keeps its position, the full pass keeps them all.
+ *
+ * @returns `false` if the message before the first changed part has no position (the caller does the full pass).
+ */
+function stampChangedActivityPositions(working: WorkingGraph, conversationId: GraphIdentifier): boolean {
+  const getNode: GetNode = id => working.getNode(id);
+  const getParts: GetParts = id => working.getParts(id);
+  const partIds = working.getParts(conversationId);
+  const { firstIndex, lastIndex } = getChangedRange(
+    partIds,
+    working.getPreviousParts(conversationId),
+    getChangedConversationParts(
+      conversationId,
+      [...working.getPendingNodeIds(), ...working.getPendingParentIds()],
+      [getNode, id => working.getPreviousNode(id)]
+    )
+  );
+
+  let lastPosition: number | undefined = 0;
+
+  if (firstIndex) {
+    const previousMessages: GraphNode[] = [];
+
+    pushDisplayedMessages(getNode, getParts, partIds[firstIndex - 1]!, previousMessages);
+
+    // eslint-disable-next-line no-magic-numbers
+    const previousMessage = previousMessages.at(-1);
+
+    lastPosition = previousMessage && getCachedActivityPosition(previousMessage);
+  }
+
+  if (typeof lastPosition === 'undefined') {
+    return false;
+  }
+
+  // The displayed messages from the first changed part on, expanded part by part as the pass reaches them.
+  const messages: GraphNode[] = [];
+  let nextPartIndex = firstIndex;
+  // Index (in `messages`) of the last displayed message of the last changed part.
+  let lastChangedMessageIndex = -1;
+
+  const hasMessage = (index: number): boolean => {
+    while (messages.length <= index && nextPartIndex < partIds.length) {
+      // eslint-disable-next-line security/detect-object-injection
+      pushDisplayedMessages(getNode, getParts, partIds[nextPartIndex]!, messages);
+      nextPartIndex <= lastIndex && (lastChangedMessageIndex = messages.length - 1);
+      nextPartIndex++;
+    }
+
+    return index < messages.length;
+  };
+
+  for (let index = 0; hasMessage(index); index++) {
+    // eslint-disable-next-line security/detect-object-injection
+    const node = messages[index]!;
+    const position = getCachedActivityPosition(node);
+    const hasNextSibling = hasMessage(index + 1);
+    const nextSiblingPosition = hasNextSibling ? getCachedActivityPosition(messages[index + 1]!) : undefined;
+
+    if (index > lastChangedMessageIndex && typeof position !== 'undefined' && position > lastPosition) {
+      break;
+    }
+
+    const nextPosition =
+      typeof position !== 'undefined' && position > lastPosition
+        ? position
+        : hasNextSibling && typeof nextSiblingPosition !== 'undefined' && lastPosition + 1 <= nextSiblingPosition
+          ? lastPosition + 1
+          : lastPosition + POSITION_INCREMENT;
+
+    nextPosition !== position && setActivityPosition(working, node, nextPosition);
+
+    lastPosition = nextPosition;
+  }
+
+  return true;
+}
+
+/**
  * Stamps `channelData['webchat:internal:position']` over the flattened, displayed list, with the rule of `upsert.ts`:
  * keep a position if still increasing, else `last + 1` if it fits before the next one, else `last + 1000`.
  *
  * The graph keeps its own per-parent `position`; this one is the public output core had before.
  *
- * A flat conversation (messages only, the common case) takes the fast path (`stampFlatActivityPositions()`); a
- * conversation with a HowTo or a livestream session walks the whole tree.
+ * A flat conversation (messages only, the common case) takes the fast path (`stampFlatActivityPositions()`); other
+ * transcripts are stamped from their first changed part on (`stampChangedActivityPositions()`). The full pass over the
+ * whole tree is the fallback.
  */
 function stampActivityPositions(working: WorkingGraph, conversationId: GraphIdentifier): void {
-  if (stampFlatActivityPositions(working, conversationId)) {
+  if (stampFlatActivityPositions(working, conversationId) || stampChangedActivityPositions(working, conversationId)) {
     return;
   }
 
