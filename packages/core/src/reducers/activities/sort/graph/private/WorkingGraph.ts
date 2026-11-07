@@ -1,5 +1,6 @@
 import type { Activity } from '../../types';
 import type { GraphIdentifier, GraphNode, GraphTransaction } from '../types';
+import mutateMap from './mutateMap';
 import { getParentId, withProperties } from './nodeProperties';
 import sortParentsFirst from './sortParentsFirst';
 import { forgetSortKeys, hasSameSortKey } from './sortKeys';
@@ -7,6 +8,9 @@ import { forgetSortKeys, hasSameSortKey } from './sortKeys';
 /**
  * Parts of each parent, in `position` order. Core's ordered index of the `isPartOf` links: the store's `hasPart` is a
  * set, and `getSortedParts()` sorts by `dateCreated` only, outside of a transaction.
+ *
+ * One entry per parent (with a livestream session per bot reply, about one per reply): `flush()` keeps it in the
+ * store's persistent map, so a transaction costs O(changed parents), not O(parents).
  */
 type PartIndex = ReadonlyMap<GraphIdentifier, readonly GraphIdentifier[]>;
 
@@ -122,7 +126,7 @@ class WorkingGraph {
       this.#transaction.upsert(node['@id'], current => withProperties(node, { hasPart: current?.hasPart }));
     }
 
-    const partIndex = new Map(this.#partIndex);
+    const partIndex = mutateMap(this.#partIndex);
 
     for (const [parentId, partIds] of this.#pendingParts) {
       partIds.length ? partIndex.set(parentId, partIds) : partIndex.delete(parentId);
@@ -132,7 +136,7 @@ class WorkingGraph {
       changedActivities: this.#pendingActivities,
       changedNodeIds: Object.freeze(Array.from(this.#pendingNodes.keys())),
       changedParentIds: Object.freeze(Array.from(this.#pendingParts.keys())),
-      partIndex: Object.freeze(partIndex),
+      partIndex: partIndex.commit(),
       previousNodes: this.#previousNodes,
       sortedMessageIds: this.#sortedMessageIds
     });

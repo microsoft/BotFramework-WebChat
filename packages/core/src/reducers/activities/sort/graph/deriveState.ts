@@ -1,4 +1,4 @@
-import { createReadonlyMap, type ReadWriteMap, type VersionedReadonlyMap } from 'botframework-webchat-store';
+import { type ReadWriteMap } from 'botframework-webchat-store';
 import type { LocalId } from '../property/LocalId';
 import type {
   Activity,
@@ -17,6 +17,7 @@ import { CONVERSATION_ID, type ActivitiesGraph } from './createActivitiesGraph';
 import getSortedMessages, { type GetParts } from './getSortedMessages';
 import { getBoolean, getIdentifier, getNumber, getParentId, hasType } from './private/nodeProperties';
 import { getKnownFlat } from './private/flatParts';
+import mutateMap from './private/mutateMap';
 import type { FlushResult } from './private/WorkingGraph';
 import type { GetNode, GraphIdentifier, GraphNode } from './types';
 import {
@@ -201,19 +202,6 @@ function updateGroupingMaps(
         : howToGroupingMap.delete(getHowToGroupingId(parent));
     }
   });
-}
-
-/**
- * A writable overlay of the store's persistent map: O(1), and O(changes) to commit. A plain `Map` (e.g. of
- * `INITIAL_STATE`) is converted once, O(n).
- */
-function mutateMap<K, V>(map: ReadonlyMap<K, V>): ReadWriteMap<K, V> {
-  const versioned: VersionedReadonlyMap<K, V> =
-    typeof (map as Partial<VersionedReadonlyMap<K, V>>).mutate === 'function'
-      ? (map as VersionedReadonlyMap<K, V>)
-      : createReadonlyMap(map);
-
-  return versioned.mutate();
 }
 
 /**
