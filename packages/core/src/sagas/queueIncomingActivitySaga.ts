@@ -1,4 +1,9 @@
-import { hasBotActivity, hasReplyTarget, type State } from '@msinternal/botframework-webchat-core-activities';
+import {
+  hasBotActivity,
+  hasReplyTarget,
+  ReplyToIdHold,
+  type State
+} from '@msinternal/botframework-webchat-core-activities';
 import { buffers, channel, type Channel } from 'redux-saga';
 import { fork, put, select, take } from 'redux-saga/effects';
 
@@ -10,7 +15,6 @@ import { ofType as activitiesOfType } from '../selectors/activities';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { ReduxState } from '../types/internal/ReduxState';
 import type { WebChatActivity } from '../types/WebChatActivity';
-import ReplyToIdHold from './private/ReplyToIdHold';
 import whileConnected from './effects/whileConnected';
 
 // The transcript derived from the activities graph (William's store).

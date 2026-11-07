@@ -10,6 +10,7 @@ import postActivityFulfilled from './postActivityFulfilled';
 import postActivityImpeded from './postActivityImpeded';
 import postActivityPending from './postActivityPending';
 import postActivityRejected from './postActivityRejected';
+import prepareIncomingActivity from './prepareIncomingActivity';
 import receiveActivity from './receiveActivity';
 
 class FixedDate extends Date {
@@ -138,6 +139,26 @@ scenario('receiveActivity()', bdd => {
     })
     .and('should mark the restored one "sent"', (_, state) =>
       expect(state.sortedActivities.find(({ id }) => id === 'u-0')?.channelData['webchat:send-status']).toBe('sent')
+    );
+});
+
+scenario('prepareIncomingActivity()', bdd => {
+  bdd
+    .given('a-1', () => receiveActivity(createInitialState(), botActivity('a-1', 'one', 1_000), env))
+    .when('an update of a-1 is prepared', state => ({
+      activity: botActivity('a-1', 'one updated', 1_000),
+      prepared: prepareIncomingActivity(state, botActivity('a-1', 'one updated', 1_000), env),
+      state
+    }))
+    .then('should keep the local ID of a-1 and set the received time, without a position', (_, { prepared, state }) =>
+      expect(prepared.channelData).toEqual({
+        'webchat:internal:local-id': channelData(state, 0)?.['webchat:internal:local-id'],
+        'webchat:internal:received-at': 1_000
+      })
+    )
+    .and('should not change the state', (_, { state }) => expect(texts(state)).toEqual(['one']))
+    .and('should read as `receiveActivity()` once upserted', (_, { activity, state }) =>
+      expect(texts(receiveActivity(state, activity, env))).toEqual(['one updated'])
     );
 });
 

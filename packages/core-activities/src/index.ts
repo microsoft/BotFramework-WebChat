@@ -22,6 +22,7 @@ export { default as postActivityFulfilled } from './operations/postActivityFulfi
 export { default as postActivityImpeded } from './operations/postActivityImpeded';
 export { default as postActivityPending } from './operations/postActivityPending';
 export { default as postActivityRejected } from './operations/postActivityRejected';
+export { default as prepareIncomingActivity } from './operations/prepareIncomingActivity';
 export { default as receiveActivity } from './operations/receiveActivity';
 export { default as getLogicalTimestamp } from './private/getLogicalTimestamp';
 export {

@@ -25,6 +25,7 @@ export {
   postActivityImpeded,
   postActivityPending,
   postActivityRejected,
+  prepareIncomingActivity,
   queryLocalIdByActivityId,
   queryLocalIdByClientActivityId,
   queryPositionFromActivity,
