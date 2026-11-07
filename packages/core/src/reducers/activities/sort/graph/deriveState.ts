@@ -17,6 +17,7 @@ import { CONVERSATION_ID, type ActivitiesGraph } from './createActivitiesGraph';
 import getSortedMessages, { type GetParts } from './getSortedMessages';
 import { getBoolean, getIdentifier, getNumber, getParentId, hasType } from './private/nodeProperties';
 import { getKnownFlat } from './private/flatParts';
+import { getChangedConversationParts, getChangedRange, pushDisplayedMessages } from './private/displayedMessages';
 import mutateMap from './private/mutateMap';
 import type { FlushResult } from './private/WorkingGraph';
 import type { GetNode, GraphIdentifier, GraphNode } from './types';
@@ -284,13 +285,101 @@ function patchFlatLists(
 }
 
 /**
+ * Patches the previous lists from the first changed part of the conversation on (`getChangedRange()`), for any
+ * transcript (HowTo groupings, livestream sessions): the parts before it, and their displayed messages, are the same
+ * as before. The number of displayed messages before it is counted from the end of the previous list, so appending
+ * costs O(1) parts, not a walk of the whole tree.
+ *
+ * @returns `undefined` if the previous lists do not match the previous graph (the caller rebuilds them).
+ */
+function patchLists(
+  previousState: State,
+  changedIds: readonly GraphIdentifier[],
+  getNode: GetNode,
+  getParts: GetParts,
+  getPreviousNode: GetNode,
+  getKeptActivity: GetKeptActivity
+):
+  | {
+      readonly sortedActivities: readonly Activity[];
+      readonly sortedChatHistoryList: readonly SortedChatHistoryEntry[];
+    }
+  | undefined {
+  const {
+    graphPartIndex: prevPartIndex,
+    sortedActivities: prevActivities,
+    sortedChatHistoryList: prevList
+  } = previousState;
+  const getPreviousParts: GetParts = parentId => prevPartIndex.get(parentId) ?? [];
+  const partIds = getParts(CONVERSATION_ID);
+  const prevPartIds = getPreviousParts(CONVERSATION_ID);
+
+  if (prevList.length !== prevPartIds.length) {
+    return undefined;
+  }
+
+  const { firstIndex } = getChangedRange(
+    partIds,
+    prevPartIds,
+    getChangedConversationParts(CONVERSATION_ID, changedIds, [getNode, getPreviousNode])
+  );
+
+  const prevMessages: GraphNode[] = [];
+
+  for (let index = firstIndex; index < prevPartIds.length; index++) {
+    // eslint-disable-next-line security/detect-object-injection
+    pushDisplayedMessages(getPreviousNode, getPreviousParts, prevPartIds[index]!, prevMessages);
+  }
+
+  const prefixLength = prevActivities.length - prevMessages.length;
+
+  // The prefix must end with the last displayed message of the part before the first changed one (unchanged).
+  const lastPrefixMessages: GraphNode[] = [];
+
+  firstIndex && pushDisplayedMessages(getNode, getParts, partIds[firstIndex - 1]!, lastPrefixMessages);
+
+  // eslint-disable-next-line no-magic-numbers
+  const lastPrefixMessage = lastPrefixMessages.at(-1);
+
+  if (
+    prefixLength < 0 ||
+    (lastPrefixMessage && getActivityMapEntry(lastPrefixMessage, getKeptActivity)?.activity) !==
+      (prefixLength ? prevActivities[prefixLength - 1] : undefined)
+  ) {
+    return undefined;
+  }
+
+  const sortedActivities = prevActivities.slice(0, prefixLength);
+  const sortedChatHistoryList = prevList.slice(0, firstIndex);
+  const messages: GraphNode[] = [];
+
+  for (let index = firstIndex; index < partIds.length; index++) {
+    // eslint-disable-next-line security/detect-object-injection
+    const partId = partIds[index]!;
+    const part = getNode(partId);
+
+    part && sortedChatHistoryList.push(getSortedChatHistoryEntry(part));
+    pushDisplayedMessages(getNode, getParts, partId, messages);
+  }
+
+  messages.forEach(node => {
+    const entry = getActivityMapEntry(node, getKeptActivity);
+
+    entry && sortedActivities.push(entry.activity);
+  });
+
+  return { sortedActivities, sortedChatHistoryList };
+}
+
+/**
  * Derives core's `State` from the graph after a transaction: the graph is the source of truth, `State` is a read model
  * kept for the reducer, its selectors and `state.activities`.
  *
  * Incremental: maps are the store's persistent maps, edited in O(changes); only the changed nodes, and the groupings
- * and sessions they are (or were) part of, are recomputed. For a flat conversation the two lists
- * (`sortedChatHistoryList`, `sortedActivities`) are patched from the previous ones (`patchFlatLists()`), otherwise
- * rebuilt from the part index with cached entries. Reads do not validate (the store did).
+ * and sessions they are (or were) part of, are recomputed. The two lists (`sortedChatHistoryList`, `sortedActivities`)
+ * are patched from the previous ones: for a flat conversation by `patchFlatLists()`, otherwise from the first changed
+ * part of the conversation on (`patchLists()`). Rebuilding them from the part index (with cached entries) is the
+ * fallback. Reads do not validate (the store did).
  */
 export default function deriveState(
   graph: ActivitiesGraph,
@@ -348,14 +437,17 @@ export default function deriveState(
 
   updateGroupingMaps(howToGroupingMap, livestreamSessionMap, affectedParentIds, getNode, getParts, getKeptActivity);
 
-  const patchedLists = patchFlatLists(
-    previousState,
-    partIndex,
-    sortedMessageIds,
-    changedNodeIds,
-    getNode,
-    getKeptActivity
-  );
+  const patchedLists =
+    patchFlatLists(previousState, partIndex, sortedMessageIds, changedNodeIds, getNode, getKeptActivity) ??
+    patchLists(
+      previousState,
+      [...changedNodeIds, ...changedParentIds],
+      getNode,
+      getParts,
+      // Changed nodes as they were before the transaction; the others are the same in both.
+      id => (previousNodes.has(id) ? previousNodes.get(id) : getNode(id)),
+      getKeptActivity
+    );
 
   const sortedChatHistoryList =
     patchedLists?.sortedChatHistoryList ??

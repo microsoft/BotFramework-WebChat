@@ -3,6 +3,8 @@
 // status read from the message node, as tests.
 import { scenario } from '@testduet/given-when-then';
 import createGroupedActivitiesReducer from './createGroupedActivitiesReducer';
+import { CONVERSATION_ID } from './sort/graph/createActivitiesGraph';
+import getSortedMessages from './sort/graph/getSortedMessages';
 import * as toJSONValueModule from './sort/graph/private/toJSONValue';
 
 const ponyfill: any = { Date, clearTimeout, setTimeout };
@@ -120,6 +122,75 @@ scenario('reducing an older state again (replay, time travel)', bdd => {
     // Before the fix: [a-1, a-5, a-2, a-3], s1 sorted with the timestamp "h1" has in s2 (5s).
     .then('should sort with the timestamp "h1" has in s1 (2s)', (_, state) =>
       expect(ids(state)).toEqual(['a-1', 'a-2', 'a-3', 'a-5'])
+    );
+});
+
+scenario('the lists are patched from the first changed part of the conversation', bdd => {
+  // What a full walk of the state's graph lists.
+  const walk = (state: any) =>
+    getSortedMessages(
+      id => state.graphSnapshot.get(id),
+      id => state.graphPartIndex.get(id) ?? [],
+      CONVERSATION_ID
+    ).map(node => state.activityMap.get(node['@id'])?.activity);
+  const positions = (state: any) =>
+    state.sortedActivities.map(({ channelData }: any) => channelData['webchat:internal:position']);
+  const revision = (sessionId: string, id: string, timestamp: number, sequence?: number) =>
+    botActivity(id, id, timestamp, {
+      channelData:
+        typeof sequence === 'undefined'
+          ? { streamId: sessionId, streamType: 'final' }
+          : sessionId === id
+            ? { streamSequence: sequence, streamType: 'streaming' }
+            : { streamId: sessionId, streamSequence: sequence, streamType: 'streaming' },
+      // Interim revisions are typing activities.
+      type: typeof sequence === 'undefined' ? 'message' : 'typing'
+    });
+
+  bdd
+    .given('a reducer', () => createGroupedActivitiesReducer(ponyfill, debugAPI))
+    .when('messages, HowTo parts and livestream revisions arrive, at the end and in the middle', reducer => {
+      const states: any[] = [];
+      let state = reducer(undefined, { type: '@@INIT' } as any);
+
+      for (const activity of [
+        botActivity('m-1', 'm-1', 1_000),
+        revision('s-1', 's-1', 2_000, 1),
+        botActivity('h-1', 'h-1', 3_000, howTo('_:h1')),
+        botActivity('m-2', 'm-2', 4_000),
+        revision('s-1', 's-1-2', 2_500, 2),
+        botActivity('h-2', 'h-2', 3_500, howTo('_:h1')),
+        revision('s-2', 's-2', 5_000, 1),
+        botActivity('m-0', 'm-0', 500),
+        revision('s-1', 's-1-f', 6_000),
+        botActivity('m-2', 'm-2 updated', 1_500),
+        botActivity('h-1', 'h-1 updated', 3_000),
+        revision('s-2', 's-2-2', 5_500, 2),
+        botActivity('m-3', 'm-3', 7_000)
+      ]) {
+        state = reducer(state, incoming(activity));
+        states.push(state);
+      }
+
+      return states;
+    })
+    .then('should list what a full walk lists, after every action', (_, states) =>
+      states.forEach(state => {
+        const walked = walk(state);
+
+        expect(state.sortedActivities).toHaveLength(walked.length);
+        walked.forEach((activity: any, index: number) => expect(state.sortedActivities.at(index)).toBe(activity));
+      })
+    )
+    .and('should keep positions increasing, after every action', (_, states) =>
+      states.forEach(state =>
+        positions(state).forEach((position: number, index: number, array: number[]) =>
+          expect(position).toBeGreaterThan(index ? array[index - 1]! : 0)
+        )
+      )
+    )
+    .and('should end in the order main has', (_, states) =>
+      expect(ids(states.at(-1))).toEqual(['m-0', 'm-1', 'm-2', 'h-1', 'h-2', 's-2', 's-2-2', 's-1-f', 'm-3'])
     );
 });
 
