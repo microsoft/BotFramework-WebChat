@@ -15,6 +15,16 @@
         "default": "./dist/botframework-webchat-store-directlinejs.js"
       }
     },
+    "./structure": {
+      "import": {
+        "types": "./dist/botframework-webchat-store-structure.d.mts",
+        "default": "./dist/botframework-webchat-store-structure.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-store-structure.d.ts",
+        "default": "./dist/botframework-webchat-store-structure.js"
+      }
+    },
     ".": {
       "import": {
         "types": "./dist/botframework-webchat-store.d.mts",

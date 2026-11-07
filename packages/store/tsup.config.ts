@@ -6,7 +6,8 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-store': './src/index.ts',
-    'botframework-webchat-store-directlinejs': './src/directLineJS.ts'
+    'botframework-webchat-store-directlinejs': './src/directLineJS.ts',
+    'botframework-webchat-store-structure': './src/structure.ts'
   }
 }));
 
