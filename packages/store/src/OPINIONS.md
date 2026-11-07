@@ -31,10 +31,23 @@ The new design is transactional (consistent without locking) and hyperlinking (g
             - `Exact<{ '@id': string }>`, must not reference the node itself
          - JSON literal
             - `Exact<{ '@type': '@json', '@value': object }>`
-            - `@value` must be a JSON serializable object (no `Date`, function, `NaN`, `Infinity`, recursion, etc.)
-            - For convenience reason, `undefined` is normalized as `JSON.stringify()` does
-               - Keys in object with `undefined` value will be removed
-               - `undefined` element (including hole) in array will be transformed into `null`
+            - `@value` behaves exactly the same as `JSON.parse(JSON.stringify(value))`
+               - Story: JSON literal is what would be sent over the wire, so what you upsert is what the other side would receive
+                  - No surprises: it is the same as the well-known behavior of `JSON.stringify()`, nothing more, nothing less
+                  - The value is always copied, the input is never modified
+               - `undefined`, function, and symbol
+                  - In object, the key is removed, e.g. `{ one: 1, two: undefined }` become `{ one: 1 }`
+                  - In array, the element become `null`, e.g. `[1, undefined]` become `[1, null]`, and so do holes in sparse array
+                  - As `@value` itself, it is invalid, as `JSON.stringify(undefined)` returns `undefined`, which is not JSON
+               - `NaN`, `Infinity`, and `-Infinity` become `null`, `-0` become `0`
+               - `toJSON()` is called with the key, e.g. `Date` become an ISO string, `URL` become a string
+               - Boxed primitives are unwrapped, e.g. `new Number(1)` become `1`
+               - Other objects become plain objects of their own enumerable string-keyed properties
+                  - E.g. class instance become a plain object, `Map` and `Set` become `{}`
+                  - Symbol keys and non-enumerable properties are removed, getters are called once
+               - Arrays only keep elements up to `length`, extra properties are removed
+               - Invalid when `JSON.stringify()` would throw: recursion and `BigInt`
+               - The only exception: dangerous keys (e.g. `__proto__`, `constructor`, `prototype`) are removed for security reason, while `JSON.parse()` would keep them as own properties
    - Rules
       - Plural form: unless specified, most property values must reside in an array and must have at least 1 item
       - Prohibited `@context` must not be defined, and is assumed "https://schema.org"

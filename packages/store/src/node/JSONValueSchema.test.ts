@@ -91,11 +91,78 @@ scenario(
         ['a Map', () => new Map([['one', 1]])],
         ['a Set', () => new Set([1])],
         ['a URL', () => new URL('https://example.com/')],
-        ['a class instance', () => new (class {})()],
+        [
+          'a class instance',
+          () =>
+            new (class {
+              one = 1;
+            })()
+        ],
         ['an object with toJSON()', () => ({ toJSON: () => 'Hello' })],
+        [
+          'an object with toJSON() receiving the key',
+          () => ({ one: { toJSON: (key: string) => key }, two: [{ toJSON: (key: string) => key }] })
+        ],
         ['a Date nested in an object', () => ({ date: new Date(0) })],
         ['a Map nested in an array', () => [new Map()]],
-        ['a function', () => () => 1]
+        // eslint-disable-next-line no-new-wrappers
+        ['boxed primitives', () => [new Number(1), new String('one'), new Boolean(false)]],
+        ['NaN, Infinity, and -Infinity', () => [NaN, Infinity, -Infinity]],
+        ['NaN as property value', () => ({ one: NaN })],
+        ['functions and symbols in array', () => [() => 1, Symbol('one')]],
+        ['functions and symbols in object', () => ({ one: () => 1, three: 3, two: Symbol('two') })],
+        ['an object with symbol keys', () => ({ [Symbol('one')]: 1, two: 2 })],
+        ['an object with non-enumerable property', () => Object.defineProperty({ one: 1 }, 'two', { value: 2 })],
+        ['an array with extra property', () => Object.assign([1, 2], { three: 3 })],
+        ['a primitive', () => 'Hello'],
+        ['null', () => null]
+      ])
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should be the same as JSON.parse(JSON.stringify())', (target, result) =>
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)))
+      );
+
+    bdd
+      .given('an object with a getter', () => {
+        let numCalls = 0;
+
+        return {
+          getNumCalls: () => numCalls,
+          value: {
+            get one() {
+              numCalls++;
+
+              return 1;
+            }
+          }
+        };
+      })
+      .when('parsed', ({ value }) => parse(jsonValueSchema, value))
+      .then('should be the same as JSON.parse(JSON.stringify())', (_, result) => expect(result).toEqual({ one: 1 }))
+      .and('should call the getter once', ({ getNumCalls }) => expect(getNumCalls()).toBe(1))
+      .and('should return a plain data property', (_, result) =>
+        expect(Object.getOwnPropertyDescriptor(result, 'one')).toEqual({
+          configurable: true,
+          enumerable: true,
+          value: 1,
+          writable: true
+        })
+      );
+
+    bdd
+      .given('-0', () => -0)
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should be 0 as JSON.parse(JSON.stringify())', (target, result) => {
+        expect(Object.is(result, 0)).toBe(true);
+        expect(Object.is(JSON.parse(JSON.stringify(target)), 0)).toBe(true);
+      });
+
+    bdd.given
+      .oneOf<unknown>([
+        ['undefined', () => undefined],
+        ['a function', () => () => 1],
+        ['a symbol', () => Symbol('one')],
+        ['an object with toJSON() returning undefined', () => ({ toJSON: () => undefined })]
       ])
       .when('parsed', target => {
         try {
@@ -104,7 +171,46 @@ scenario(
           return error;
         }
       })
-      .then('should throw', (_, result) => expect(result).toEqual(expect.any(Error)));
+      .then('should throw', (_, result) =>
+        expect(result).toEqual(
+          expect.objectContaining({ message: 'JSON value must not be undefined, function, or symbol' })
+        )
+      )
+      .and('JSON.parse(JSON.stringify()) should also throw', target =>
+        expect(() => JSON.parse(JSON.stringify(target))).toThrow()
+      );
+
+    bdd.given
+      .oneOf<unknown>([
+        ['a BigInt', () => BigInt(1)],
+        ['a BigInt nested in an object', () => ({ one: BigInt(1) })]
+      ])
+      .when('parsed', target => {
+        try {
+          return parse(jsonValueSchema, target);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should throw', (_, result) =>
+        expect(result).toEqual(expect.objectContaining({ message: 'JSON value must not contain BigInt' }))
+      )
+      .and('JSON.stringify() should also throw', target => expect(() => JSON.stringify(target)).toThrow());
+
+    bdd
+      .given('an object with toJSON() which throws', () => ({
+        toJSON: () => {
+          throw new Error('Artificial error');
+        }
+      }))
+      .when('parsed', target => {
+        try {
+          return parse(jsonValueSchema, target);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should throw the error as-is', (_, result) => expect(result).toEqual(new Error('Artificial error')));
 
     bdd
       .given('an object without prototype', () => Object.assign(Object.create(null), { one: 1 }))
@@ -136,26 +242,16 @@ scenario(
       });
 
     bdd
-      .given('a deeply nested value with undefined', () => {
-        const unchanged = { four: [4] };
-
-        return { unchanged, value: { one: [{ two: undefined, three: 3 }, undefined], unchanged } };
-      })
+      .given('a deeply nested value with undefined', () => ({
+        value: { one: [{ two: undefined, three: 3 }, undefined], unchanged: { four: [4] } }
+      }))
       .when('parsed', ({ value }) => parse(jsonValueSchema, value))
       .then('should normalize undefined deeply', (_, result) =>
         expect(result).toEqual({ one: [{ three: 3 }, null], unchanged: { four: [4] } })
       )
-      .and('should reuse unchanged parts', ({ unchanged }, result) =>
-        expect(Reflect.get(result as object, 'unchanged')).toBe(unchanged)
-      )
       .and('should not modify the input', ({ value }) =>
         expect(value.one).toEqual([{ two: undefined, three: 3 }, undefined])
       );
-
-    bdd
-      .given('a JSON value without undefined', () => ({ one: [1, { two: 'two' }], three: null }))
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should return the value as-is', (target, result) => expect(result).toBe(target));
 
     bdd
       .given('an object with dangerous keys', () => JSON.parse('{"__proto__":{"polluted":true},"one":1}'))
@@ -164,31 +260,6 @@ scenario(
         expect(Object.keys(result as object)).toEqual(['one']);
         expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
       });
-
-    bdd.given
-      .oneOf<unknown>([
-        ['undefined', () => undefined],
-        ['NaN', () => NaN],
-        ['Infinity', () => Infinity],
-        ['a NaN nested in an array', () => [NaN]],
-        ['a symbol', () => Symbol('one')],
-        ['a bigint', () => BigInt(1)],
-        ['a function nested in an object', () => ({ one: () => 1 })]
-      ])
-      .when('parsed', target => {
-        try {
-          return parse(jsonValueSchema, target);
-        } catch (error) {
-          return error;
-        }
-      })
-      .then('should throw', (_, result) =>
-        expect(result).toEqual(
-          expect.objectContaining({
-            message: 'Only boolean, null, number, string, array, and plain object is allowed for JSON value'
-          })
-        )
-      );
   },
   NodeTest
 );
