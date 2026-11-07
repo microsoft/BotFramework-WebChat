@@ -52,7 +52,7 @@ type LivestreamSessionMap = ReadonlyMap<LivestreamSessionId, LivestreamSessionMa
 type ActivityMapEntry = ActivityEntry & { readonly activity: Activity };
 type ActivityMap = ReadonlyMap<LocalId, ActivityMapEntry>;
 
-type State = {
+type ActivitiesCoreState = {
   readonly activityIdToLocalIdMap: ReadonlyMap<string, LocalId>;
   readonly activityMap: ActivityMap;
   readonly clientActivityIdToLocalIdMap: ReadonlyMap<string, LocalId>;
@@ -87,7 +87,11 @@ type State = {
   readonly sortedActivities: readonly Activity[];
 };
 
+/** Same as `ActivitiesCoreState`, the name the code has used so far. */
+type State = ActivitiesCoreState;
+
 export {
+  type ActivitiesCoreState,
   type Activity,
   type ActivityEntry,
   type ActivityMap,

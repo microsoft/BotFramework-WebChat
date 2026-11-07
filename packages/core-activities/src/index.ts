@@ -15,6 +15,14 @@ export {
   type GraphTransaction
 } from './graph/types';
 export { default as patchActivity } from './patchActivity';
+export { default as createInitialState } from './operations/createInitialState';
+export { default as deleteActivityById } from './operations/deleteActivityById';
+export { default as markActivity } from './operations/markActivity';
+export { default as postActivityFulfilled } from './operations/postActivityFulfilled';
+export { default as postActivityImpeded } from './operations/postActivityImpeded';
+export { default as postActivityPending } from './operations/postActivityPending';
+export { default as postActivityRejected } from './operations/postActivityRejected';
+export { default as receiveActivity } from './operations/receiveActivity';
 export { default as getLogicalTimestamp } from './private/getLogicalTimestamp';
 export {
   default as getPartGroupingMetadataMap,
@@ -48,10 +56,18 @@ export {
   setSendStatusInOutgoingActivity,
   type SendStatus
 } from './property/SendStatus';
+export {
+  getActivities,
+  getActivityByLocalId,
+  getHowToGrouping,
+  getLivestreamSession,
+  getSortedChatHistory
+} from './queries';
 export { default as queryLocalIdByActivityId } from './queryLocalIdByActivityId';
 export { default as queryLocalIdByClientActivityId } from './queryLocalIdByClientActivityId';
 export { default as ReplyToIdHold, DEFAULT_TIMEOUT, type ReplyToIdHoldInit } from './ReplyToIdHold';
 export {
+  type ActivitiesCoreState,
   type Activity,
   type ActivityEntry,
   type ActivityMap,
@@ -75,6 +91,7 @@ export { type DirectLineAttachment } from './types/external/DirectLineAttachment
 export { type DirectLineCardAction } from './types/external/DirectLineCardAction';
 export { type DirectLineSuggestedAction } from './types/external/DirectLineSuggestedAction';
 export { type WebChatCallURLCardAction } from './types/internal/WebChatCallURLCardAction';
+export { SEND_FAILED, SENDING, SENT } from './types/internal/SendStatus';
 export { type WebChatActivity } from './types/WebChatActivity';
 export {
   default as updateActivityChannelData,
