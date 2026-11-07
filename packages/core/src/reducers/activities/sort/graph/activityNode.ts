@@ -276,7 +276,8 @@ function stampChangedActivityPositions(working: WorkingGraph, conversationId: Gr
     getChangedConversationParts(
       conversationId,
       [...working.getPendingNodeIds(), ...working.getPendingParentIds()],
-      [getNode, id => working.getPreviousNode(id)]
+      getNode,
+      id => working.getPreviousNode(id)
     )
   );
 

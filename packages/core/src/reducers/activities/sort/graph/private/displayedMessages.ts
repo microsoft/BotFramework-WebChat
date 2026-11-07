@@ -49,25 +49,34 @@ function pushDisplayedMessages(
   }
 }
 
+/** Changed parts of the conversation, by where they are: in its parts after the transaction, and before it. */
+type ChangedParts = {
+  readonly current: ReadonlySet<GraphIdentifier>;
+  readonly previous: ReadonlySet<GraphIdentifier>;
+};
+
 /**
  * The parts of the conversation whose displayed messages may have changed in a transaction: for every changed node
  * and every parent whose parts changed, the part of the conversation it is in, before and after the transaction.
  *
  * The other parts are unchanged: same nodes, same parts, same activities (core sets an activity with its node).
  *
- * @param getNodes Reads the nodes after the transaction, and before it.
+ * Each changed part is listed by where it is a part of the conversation (`isPartOf`, which the part index follows):
+ * after the transaction (`current`), before it (`previous`), or both. So `getChangedRange()` only looks a part up
+ * where it is: a new part is not searched for in the previous parts (a miss scans the whole array).
  */
 function getChangedConversationParts(
   conversationId: GraphIdentifier,
   changedIds: Iterable<GraphIdentifier>,
-  getNodes: readonly GetNode[]
-): ReadonlySet<GraphIdentifier> {
+  getNode: GetNode,
+  getPreviousNode: GetNode
+): ChangedParts {
   const changedPartIds = new Set<GraphIdentifier>();
 
   for (const id of changedIds) {
-    for (const getNode of getNodes) {
+    for (const read of [getNode, getPreviousNode]) {
       for (let current = id, depth = 0; depth < MAX_DEPTH; depth++) {
-        const parentId = getParentId(getNode(current));
+        const parentId = getParentId(read(current));
 
         if (!parentId) {
           break;
@@ -82,7 +91,15 @@ function getChangedConversationParts(
     }
   }
 
-  return changedPartIds;
+  const current = new Set<GraphIdentifier>();
+  const previous = new Set<GraphIdentifier>();
+
+  changedPartIds.forEach(id => {
+    getParentId(getNode(id)) === conversationId && current.add(id);
+    getParentId(getPreviousNode(id)) === conversationId && previous.add(id);
+  });
+
+  return Object.freeze({ current, previous });
 }
 
 /**
@@ -98,22 +115,26 @@ function getChangedConversationParts(
 function getChangedRange(
   partIds: readonly GraphIdentifier[],
   prevPartIds: readonly GraphIdentifier[],
-  changedPartIds: ReadonlySet<GraphIdentifier>
+  { current, previous }: ChangedParts
 ): { readonly firstIndex: number; readonly lastIndex: number } {
   let firstIndex = Math.min(partIds.length, prevPartIds.length);
   let lastIndex = -1;
 
-  changedPartIds.forEach(id => {
-    // IDs are unique: `lastIndexOf()` is the same index, found fast for appends (the common case).
+  // IDs are unique: `lastIndexOf()` is the same index, found fast for appends (the common case).
+  current.forEach(id => {
     const index = partIds.lastIndexOf(id);
-    const prevIndex = prevPartIds.lastIndexOf(id);
 
     ~index && (firstIndex = Math.min(firstIndex, index));
-    ~prevIndex && (firstIndex = Math.min(firstIndex, prevIndex));
     lastIndex = Math.max(lastIndex, index);
+  });
+
+  previous.forEach(id => {
+    const prevIndex = prevPartIds.lastIndexOf(id);
+
+    ~prevIndex && (firstIndex = Math.min(firstIndex, prevIndex));
   });
 
   return Object.freeze({ firstIndex, lastIndex });
 }
 
-export { getChangedConversationParts, getChangedRange, pushDisplayedMessages, type GetParts };
+export { getChangedConversationParts, getChangedRange, pushDisplayedMessages, type ChangedParts, type GetParts };

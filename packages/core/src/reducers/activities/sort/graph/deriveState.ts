@@ -217,6 +217,7 @@ function patchFlatLists(
   partIndex: FlushResult['partIndex'],
   sortedMessageIds: FlushResult['sortedMessageIds'],
   changedNodeIds: FlushResult['changedNodeIds'],
+  previousNodes: FlushResult['previousNodes'],
   getNode: GetNode,
   getKeptActivity: GetKeptActivity
 ):
@@ -242,12 +243,17 @@ function patchFlatLists(
   let prefixLength = Math.min(partIds.length, prevPartIds.length);
 
   changedNodeIds.forEach(id => {
-    // IDs are unique: `lastIndexOf()` is the same index, found fast for appends (the common case).
+    // IDs are unique: `lastIndexOf()` is the same index, found fast for appends (the common case). A new node is not in
+    // the previous parts: skip the search, a miss scans the whole array.
     const index = partIds.lastIndexOf(id);
-    const prevIndex = prevPartIds.lastIndexOf(id);
 
     ~index && (prefixLength = Math.min(prefixLength, index));
-    ~prevIndex && (prefixLength = Math.min(prefixLength, prevIndex));
+
+    if (previousNodes.get(id)) {
+      const prevIndex = prevPartIds.lastIndexOf(id);
+
+      ~prevIndex && (prefixLength = Math.min(prefixLength, prevIndex));
+    }
   });
 
   const sortedActivities = prevActivities.slice(0, prefixLength);
@@ -321,7 +327,7 @@ function patchLists(
   const { firstIndex } = getChangedRange(
     partIds,
     prevPartIds,
-    getChangedConversationParts(CONVERSATION_ID, changedIds, [getNode, getPreviousNode])
+    getChangedConversationParts(CONVERSATION_ID, changedIds, getNode, getPreviousNode)
   );
 
   const prevMessages: GraphNode[] = [];
@@ -438,7 +444,15 @@ export default function deriveState(
   updateGroupingMaps(howToGroupingMap, livestreamSessionMap, affectedParentIds, getNode, getParts, getKeptActivity);
 
   const patchedLists =
-    patchFlatLists(previousState, partIndex, sortedMessageIds, changedNodeIds, getNode, getKeptActivity) ??
+    patchFlatLists(
+      previousState,
+      partIndex,
+      sortedMessageIds,
+      changedNodeIds,
+      previousNodes,
+      getNode,
+      getKeptActivity
+    ) ??
     patchLists(
       previousState,
       [...changedNodeIds, ...changedParentIds],
