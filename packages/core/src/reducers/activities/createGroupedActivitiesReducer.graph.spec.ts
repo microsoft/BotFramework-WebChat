@@ -3,6 +3,7 @@
 // status read from the message node. Repros of Review 2 (`~/webchat-tools/scratch/new-store/review2/`), as tests.
 import { scenario } from '@testduet/given-when-then';
 import createGroupedActivitiesReducer from './createGroupedActivitiesReducer';
+import * as toJSONValueModule from './sort/graph/private/toJSONValue';
 
 const ponyfill: any = { Date, clearTimeout, setTimeout };
 const debugAPI: any = { UNSAFE_callBreakpoint: { incomingActivity: () => undefined } };
@@ -118,12 +119,18 @@ scenario('a transaction that throws', bdd => {
     })
     .when('an update of a-1 into "h2" throws, then a-2 arrives', ({ reducer, state }) => {
       let error: unknown;
+      // The store rejects `NaN` in a JSON literal. The JSON projection never holds one, so it is injected here: the store
+      // throws after a-1 already left "h1" in the transaction.
+      const toJSONValueSpy = jest
+        .spyOn(toJSONValueModule, 'default')
+        .mockImplementationOnce(value => ({ ...(value as object), value: NaN }));
 
       try {
-        // `NaN` is not valid in a JSON literal: the store throws after a-1 already left "h1" in the transaction.
-        reducer(state, incoming(botActivity('a-1', 'one updated', 1_000, { ...howTo('_:h2'), value: NaN })));
+        reducer(state, incoming(botActivity('a-1', 'one updated', 1_000, howTo('_:h2'))));
       } catch (caught) {
         error = caught;
+      } finally {
+        toJSONValueSpy.mockRestore();
       }
 
       return { error, nextState: reducer(state, incoming(botActivity('a-2', 'two', 2_000))) };
@@ -210,6 +217,45 @@ scenario('a `Date` in the activity, as `chatAdapter/sequenceId.*.html` send', bd
       expect((node?.['urn:microsoft:webchat:direct-line-activity:raw-json'] as any)[0]['@value'].timestamp).toBe(
         '1970-01-01T00:00:01.000Z'
       );
+    });
+});
+
+scenario('a function in the activity, as `runHook()` in html2 tests sends', bdd => {
+  bdd
+    .given('a reducer', () => createGroupedActivitiesReducer(ponyfill, debugAPI))
+    .when('an event with a function, a counter object and `NaN` arrives', reducer => {
+      const fn = () => undefined;
+      const ref = { count: 0 };
+
+      return {
+        fn,
+        ref,
+        state: reducer(
+          reducer(undefined, { type: '@@INIT' } as any),
+          incoming({
+            from: { role: 'user' },
+            name: '__RUN_HOOK',
+            ref,
+            timestamp: new Date(0).toISOString(),
+            type: 'event',
+            value: { fn, nan: NaN }
+          })
+        )
+      };
+    })
+    .then('should output the same function and objects', (_, { fn, ref, state }) => {
+      expect(state.sortedActivities[0]?.value.fn).toBe(fn);
+      expect(state.sortedActivities[0]?.ref).toBe(ref);
+      expect(state.sortedActivities[0]?.value.nan).toBeNaN();
+    })
+    .and('should keep the JSON projection in the store', (_, { state }) => {
+      const node = state.graph?.store
+        .getSnapshot()
+        .get(state.sortedActivities[0]?.channelData['webchat:internal:local-id'] ?? '');
+
+      expect((node?.['urn:microsoft:webchat:direct-line-activity:raw-json'] as any)[0]['@value'].value).toEqual({
+        nan: null
+      });
     });
 });
 

@@ -36,4 +36,46 @@ scenario('JSON projection of a value', bdd => {
       expect(actual).toEqual({ map: {}, point: { x: 1, y: 2 } });
       expect(Object.getPrototypeOf((actual as any).point)).toBe(Object.prototype);
     });
+
+  bdd
+    .given('a value with a function, a symbol, `undefined` and non-finite numbers', () => ({
+      fn: () => undefined,
+      list: [() => undefined, Symbol('s'), undefined, NaN, Infinity, 1],
+      nan: NaN,
+      symbol: Symbol('s'),
+      text: 'Hello',
+      undef: undefined
+    }))
+    .when('projected', value => toJSONValue(value))
+    .then('should equal `JSON.parse(JSON.stringify(value))`', (value, actual) =>
+      expect(actual).toEqual(JSON.parse(JSON.stringify(value)))
+    )
+    .and('should leave the properties out (not set them to `undefined`)', (_, actual) =>
+      expect(Object.keys(actual as object)).toEqual(['list', 'nan', 'text'])
+    );
+
+  bdd
+    .given('a value with a `bigint` and a reference to itself, where `JSON.stringify()` throws', () => {
+      const value: Record<string, unknown> = { big: BigInt(1), shared: { text: 'Hello' }, text: 'Hello' };
+
+      value['self'] = value;
+      value['list'] = [value, value['shared']];
+      value['again'] = value['shared'];
+
+      return value;
+    })
+    .when('projected', value => toJSONValue(value))
+    .then('should leave them out, and keep an object seen twice without recursion', (_, actual) =>
+      expect(actual).toEqual({
+        again: { text: 'Hello' },
+        list: [null, { text: 'Hello' }],
+        shared: { text: 'Hello' },
+        text: 'Hello'
+      })
+    );
+
+  bdd
+    .given('a function', () => () => undefined)
+    .when('projected', value => toJSONValue(value))
+    .then('should have no projection', (_, actual) => expect(actual).toBeUndefined());
 });
