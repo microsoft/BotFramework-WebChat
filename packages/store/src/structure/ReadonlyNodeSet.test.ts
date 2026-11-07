@@ -2,15 +2,15 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import createReadonlyNodeSet, { getNodeSetIds } from './createReadonlyNodeSet.ts';
-import createReadonlySet from './createReadonlySet.ts';
+import ReadonlyNodeSet, { getNodeSetIds } from './ReadonlyNodeSet.ts';
+import ReadonlySet from './ReadonlySet.ts';
 
 scenario(
-  'createReadonlyNodeSet',
+  'new ReadonlyNodeSet()',
   bdd => {
     bdd
       .given('IDs', (): Identifier[] => ['_:m-1', '_:m-2'])
-      .when('createReadonlyNodeSet() is called', ids => createReadonlyNodeSet(ids))
+      .when('new ReadonlyNodeSet() is called', ids => new ReadonlyNodeSet(ids))
       .then('should be a Set', (_, nodeSet) => expect(nodeSet).toBeInstanceOf(Set))
       .and('should be frozen', (_, nodeSet) => expect(Object.isFrozen(nodeSet)).toBe(true))
       .and('should have size', (_, nodeSet) => expect(nodeSet.size).toBe(2))
@@ -52,8 +52,8 @@ scenario(
 
     bdd
       .given('a mutable array of IDs', (): Identifier[] => ['_:m-1'])
-      .when('createReadonlyNodeSet() is called and the array is modified', ids => {
-        const nodeSet = createReadonlyNodeSet(ids);
+      .when('new ReadonlyNodeSet() is called and the array is modified', ids => {
+        const nodeSet = new ReadonlyNodeSet(ids);
 
         ids.push('_:m-2');
 
@@ -62,14 +62,14 @@ scenario(
       .then('should not be affected', (_, nodeSet) => expect(nodeSet.size).toBe(1));
 
     bdd
-      .given('a read-only Set of IDs', () => createReadonlySet<Identifier>(['_:m-1']))
-      .when('createReadonlyNodeSet() is called', ids => createReadonlyNodeSet(ids))
+      .given('a read-only Set of IDs', () => new ReadonlySet<Identifier>(['_:m-1']))
+      .when('new ReadonlyNodeSet() is called', ids => new ReadonlyNodeSet(ids))
       .then('getNodeSetIds() should return the same Set without copying', (ids, nodeSet) =>
         expect(getNodeSetIds(nodeSet)).toBe(ids)
       );
 
     bdd
-      .given('a node set', () => createReadonlyNodeSet(['_:m-1']))
+      .given('a node set', (): globalThis.ReadonlySet<unknown> => new ReadonlyNodeSet(['_:m-1']))
       .when.oneOf<() => unknown>([
         ['add() is called', nodeSet => () => (nodeSet as Set<unknown>).add({ '@id': '_:m-2' })],
         ['clear() is called', nodeSet => () => (nodeSet as Set<unknown>).clear()],

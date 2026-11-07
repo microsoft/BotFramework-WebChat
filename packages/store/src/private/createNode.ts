@@ -4,7 +4,7 @@ import type { NodeReference } from '../node/NodeReference.ts';
 import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
 import deepFreeze, { isDangerousKey } from './deepFreeze.ts';
 import type { InternalNode } from './InternalNode.ts';
-import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from '../structure/createReadonlyNodeSet.ts';
+import ReadonlyNodeSet, { getNodeSetIds } from '../structure/ReadonlyNodeSet.ts';
 
 /**
  * Returns a `ReadonlyNodeSet` of the node references.
@@ -18,7 +18,7 @@ import createReadonlyNodeSet, { getNodeSetIds, type ReadonlyNodeSet } from '../s
 function toReadonlyNodeSet(originalValue: unknown, value: ReadonlySet<NodeReference>): ReadonlyNodeSet {
   return getNodeSetIds(originalValue)
     ? (originalValue satisfies unknown as ReadonlyNodeSet)
-    : createReadonlyNodeSet(value.values().map(({ '@id': id }) => id));
+    : new ReadonlyNodeSet(value.values().map(({ '@id': id }) => id));
 }
 
 /**

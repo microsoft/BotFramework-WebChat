@@ -1,11 +1,13 @@
-import createReadonlySet, { isReadonlySet } from '../structure/createReadonlySet.ts';
+import ReadonlySet, { isReadonlySet } from '../structure/ReadonlySet.ts';
 
 /**
  * Keys which could be used for prototype pollution, they are skipped when copying an object.
  *
  * Validated value could contain them as own properties, e.g. `JSON.parse('{"__proto__":{}}')`.
  */
-const DANGEROUS_KEYS: ReadonlySet<string> = Object.freeze(new Set(['__proto__', 'constructor', 'prototype']));
+const DANGEROUS_KEYS: globalThis.ReadonlySet<string> = Object.freeze(
+  new Set(['__proto__', 'constructor', 'prototype'])
+);
 
 /** Checks if the key could be used for prototype pollution, e.g. `__proto__`, `constructor`, and `prototype`. */
 function isDangerousKey(key: string): boolean {
@@ -174,7 +176,7 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
       originalItems.length === items.length &&
       items.every((item, index) => item === originalItems[+index])
         ? originalValue
-        : createReadonlySet(items);
+        : new ReadonlySet(items);
 
     popAncestor(memo);
 
@@ -201,7 +203,7 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
  * throw, as a read-only `Set` cannot be created before its items.
  *
  * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set,
- * only read-only `Set` created by `createReadonlySet()` is reused.
+ * only read-only `Set` created by `new ReadonlySet()` is reused.
  *
  * @param originalValue Value before validation. Validation could copy or transform the value.
  * @param value Value after validation.

@@ -1,17 +1,19 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import createReadonlyMap, { isReadonlyMap } from './createReadonlyMap.ts';
+import ReadonlyMap, { isReadonlyMap } from './ReadonlyMap.ts';
 
 scenario(
-  'createReadonlyMap',
+  'new ReadonlyMap()',
   bdd => {
     bdd
-      .given('a readonly map', () =>
-        createReadonlyMap([
-          ['a', 1],
-          ['b', 2]
-        ])
+      .given(
+        'a readonly map',
+        () =>
+          new ReadonlyMap([
+            ['a', 1],
+            ['b', 2]
+          ])
       )
       .when('read', map => map)
       .then('should be instance of Map', (_, map) => expect(map).toBeInstanceOf(Map))
@@ -34,7 +36,7 @@ scenario(
         expect(Array.from(map.values())).toEqual([1, 2]);
       })
       .and('should support forEach()', (_, map) => {
-        const entries: [string, number, ReadonlyMap<string, number>][] = [];
+        const entries: [string, number, globalThis.ReadonlyMap<string, number>][] = [];
 
         map.forEach((value, key, target) => entries.push([key, value, target]));
 
@@ -57,7 +59,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly map', () => createReadonlyMap([['a', 1]]))
+      .given('a readonly map', () => new ReadonlyMap([['a', 1]]))
       .when('modified via set(), clear(), delete(), or Map.prototype', map => {
         const mutableMap = map as unknown as Map<string, number>;
 
@@ -80,7 +82,7 @@ scenario(
     bdd
       .given('a mutable map', () => new Map([['a', 1]]))
       .when('a readonly map is created from it and the original map is modified', mutableMap => {
-        const readonlyMap = createReadonlyMap(mutableMap);
+        const readonlyMap = new ReadonlyMap(mutableMap);
 
         mutableMap.set('b', 2);
 
@@ -97,15 +99,45 @@ scenario(
 );
 
 scenario(
+  'new ReadonlyMap() with nullish or invalid iterable',
+  bdd => {
+    bdd
+      .given('nothing', () => undefined)
+      .when.oneOf<globalThis.ReadonlyMap<unknown, unknown>>([
+        ['constructed without arguments', () => new ReadonlyMap()],
+        ['constructed with null', () => new ReadonlyMap(null)]
+      ])
+      .then('should be empty', (_, map) => expect(map.size).toBe(0))
+      .and('should be detected as readonly map', (_, map) => expect(isReadonlyMap(map)).toBe(true));
+
+    bdd
+      .given('a non-iterable value', () => 1)
+      .when('constructed', value => () => new ReadonlyMap(value as unknown as Iterable<[unknown, unknown]>))
+      .then('should throw TypeError', (_, fn) => expect(fn).toThrow(TypeError));
+
+    bdd
+      .given('a committed map', () => new ReadonlyMap([['a', 1]]).mutate().set('b', 2).commit())
+      .when('another map is constructed without arguments', () => new ReadonlyMap())
+      .then('should not share storage with the committed map', (committed, map) => {
+        expect(map.size).toBe(0);
+        expect(committed.size).toBe(2);
+      });
+  },
+  NodeTest
+);
+
+scenario(
   'ReadonlyMap.mutate()',
   bdd => {
     bdd
-      .given('a readonly map', () =>
-        createReadonlyMap([
-          ['a', 1],
-          ['b', 2],
-          ['c', 3]
-        ])
+      .given(
+        'a readonly map',
+        () =>
+          new ReadonlyMap([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
+          ])
       )
       .when('mutated without commit', map => {
         const readWriteMap = map.mutate();
@@ -138,12 +170,14 @@ scenario(
       );
 
     bdd
-      .given('a readonly map', () =>
-        createReadonlyMap([
-          ['a', 1],
-          ['b', 2],
-          ['c', 3]
-        ])
+      .given(
+        'a readonly map',
+        () =>
+          new ReadonlyMap([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
+          ])
       )
       .when('mutated and committed', map => {
         const readWriteMap = map.mutate();
@@ -187,7 +221,7 @@ scenario(
       });
 
     bdd
-      .given('a readonly map', () => createReadonlyMap([['a', 1]]))
+      .given('a readonly map', () => new ReadonlyMap([['a', 1]]))
       .when('mutated and committed multiple times', map => {
         const versions = [map];
 
@@ -209,7 +243,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly map', () => createReadonlyMap([['a', 1]]))
+      .given('a readonly map', () => new ReadonlyMap([['a', 1]]))
       .when('mutated twice from the same map and both committed', map => [
         map.mutate().set('b', 2).commit(),
         map.mutate().set('c', 3).commit()

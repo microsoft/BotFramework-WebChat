@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import createReadonlySet from '../structure/createReadonlySet.ts';
+import ReadonlySet from '../structure/ReadonlySet.ts';
 import deepFreeze from './deepFreeze.ts';
 
 scenario(
@@ -46,7 +46,7 @@ scenario(
       .and('should reuse the unchanged deeply frozen part', (value, result) => expect(result.items).toBe(value.items));
 
     bdd
-      .given('a read-only Set', () => createReadonlySet(['one', 'two']))
+      .given('a read-only Set', () => new ReadonlySet(['one', 'two']))
       .when('deepFreeze() is called with a validated copy', value => deepFreeze(value, new Set(value)))
       .then('should return the read-only Set as-is', (value, result) => expect(result).toBe(value));
 

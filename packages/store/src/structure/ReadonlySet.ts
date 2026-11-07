@@ -2,22 +2,9 @@ import SetView from './SetView.ts';
 import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 
 /**
- * A read-only `Set` which can be mutated via an overlay without copying.
- */
-interface VersionedReadonlySet<T> extends ReadonlySet<T> {
-  /**
-   * Creates a writable overlay on top of this set. Writes go to the overlay, reads go to the overlay first, then this
-   * set. This set is not modified, even after the overlay is committed.
-   *
-   * This is O(1) and does not copy the set.
-   */
-  mutate(): ReadWriteSet<T>;
-}
-
-/**
  * A writable overlay on top of a read-only `Set`.
  */
-interface ReadWriteSet<T> extends ReadonlySet<T> {
+interface ReadWriteSet<T> extends globalThis.ReadonlySet<T> {
   add(value: T): this;
   clear(): void;
 
@@ -27,7 +14,8 @@ interface ReadWriteSet<T> extends ReadonlySet<T> {
    * This is O(number of changes) if the underlying set is the latest version (i.e. no other overlay on top of the same
    * set has been committed), otherwise, O(size) as the set is copied.
    */
-  commit(): VersionedReadonlySet<T>;
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  commit(): ReadonlySet<T>;
   delete(value: T): boolean;
 }
 
@@ -36,7 +24,7 @@ function throwReadonly(): never {
 }
 
 /**
- * A writable overlay on top of a `ReadonlySetImpl`.
+ * A writable overlay on top of a `ReadonlySet`.
  */
 class ReadWriteSetImpl<T> extends SetView<T> implements ReadWriteSet<T> {
   constructor(overlay: Overlay<T, T>) {
@@ -63,9 +51,9 @@ class ReadWriteSetImpl<T> extends SetView<T> implements ReadWriteSet<T> {
     this.#overlay.clear();
   }
 
-  commit(): VersionedReadonlySet<T> {
+  commit(): ReadonlySet<T> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new ReadonlySetImpl(this.#overlay.commit());
+    return fromStorage(this.#overlay.commit());
   }
 
   delete(value: T): boolean {
@@ -81,27 +69,57 @@ class ReadWriteSetImpl<T> extends SetView<T> implements ReadWriteSet<T> {
   }
 }
 
+/** Copies into a private storage so changes to the original iterable will not leak in. */
+function toStorage<T>(iterable: Iterable<T> | null | undefined): VersionedStorage<T, T> {
+  const map = new Map<T, T>();
+
+  // Faster than `new Map(Array.from(iterable, value => [value, value]))` as it does not create tuples.
+  for (const value of iterable ?? []) {
+    map.set(value, value);
+  }
+
+  return new VersionedStorage(map);
+}
+
+/** Storage handed to the next `ReadonlySet` constructor, only set by `fromStorage()` during construction. */
+let nextStorage: VersionedStorage<unknown, unknown> | undefined;
+
 /**
- * An immutable `Set` backed by a versioned storage.
+ * An immutable `Set` which cannot be modified.
+ *
+ * - `instanceof Set` is `true`
+ * - `add()`, `clear()`, and `delete()` will throw
+ * - `Set.prototype.add.call()` will throw as it does not have the internal slots of a `Set`
+ * - Changing properties or prototype will fail
+ * - `Object.isFrozen()` is `true`
+ * - `mutate()` creates a writable overlay without copying, `commit()` on the overlay returns a new immutable `Set`
  *
  * It does not extend `Set`: a subclass of `Set` has the internal slots of a `Set`, which `Set.prototype.add.call()`
  * could modify. Instead, the prototype is chained to `Set.prototype` so `instanceof Set` is `true`, and all read
  * methods are delegated to the storage.
  *
  * Compared to a `Proxy`, method calls are plain property lookups without traps or bound functions.
+ *
+ * Note: items are not frozen, freeze them before passing in if needed.
  */
-class ReadonlySetImpl<T> extends SetView<T> implements VersionedReadonlySet<T> {
-  constructor(storage: VersionedStorage<T, T>) {
+class ReadonlySet<T> extends SetView<T> {
+  constructor(iterable?: Iterable<T> | null | undefined) {
     super();
 
-    this.#storage = storage;
+    const storage = nextStorage;
+
+    nextStorage = undefined;
+
+    this.#storage = storage
+      ? (storage satisfies VersionedStorage<unknown, unknown> as VersionedStorage<T, T>)
+      : toStorage(iterable);
 
     Object.freeze(this);
   }
 
   readonly #storage: VersionedStorage<T, T>;
 
-  static isReadonlySet(value: unknown): value is ReadonlySet<unknown> {
+  static isReadonlySet(value: unknown): value is globalThis.ReadonlySet<unknown> {
     return !!value && typeof value === 'object' && #storage in value;
   }
 
@@ -117,12 +135,29 @@ class ReadonlySetImpl<T> extends SetView<T> implements VersionedReadonlySet<T> {
     return this.#storage.toMap().keys();
   }
 
+  /**
+   * Creates a writable overlay on top of this set. Writes go to the overlay, reads go to the overlay first, then this
+   * set. This set is not modified, even after the overlay is committed.
+   *
+   * This is O(1) and does not copy the set.
+   */
   mutate(): ReadWriteSet<T> {
     return new ReadWriteSetImpl(this.#storage.mutate());
   }
 }
 
-Object.defineProperties(ReadonlySetImpl.prototype, {
+/** Creates a `ReadonlySet` backed by the storage without copying. */
+function fromStorage<T>(storage: VersionedStorage<T, T>): ReadonlySet<T> {
+  nextStorage = storage;
+
+  try {
+    return new ReadonlySet<T>();
+  } finally {
+    nextStorage = undefined;
+  }
+}
+
+Object.defineProperties(ReadonlySet.prototype, {
   // Mutating methods on `Set.prototype` would throw "incompatible receiver", override them with a clearer error.
   add: { value: throwReadonly },
   clear: { value: throwReadonly },
@@ -134,40 +169,16 @@ Object.defineProperty(ReadWriteSetImpl.prototype, 'constructor', { value: Set })
 Object.freeze(ReadWriteSetImpl.prototype);
 Object.freeze(ReadWriteSetImpl);
 // Some libraries compare `constructor` for equality, e.g. `expect().toEqual()`.
-Object.defineProperty(ReadonlySetImpl.prototype, 'constructor', { value: Set });
-Object.freeze(ReadonlySetImpl.prototype);
-Object.freeze(ReadonlySetImpl);
+Object.defineProperty(ReadonlySet.prototype, 'constructor', { value: Set });
+Object.freeze(ReadonlySet.prototype);
+Object.freeze(ReadonlySet);
 
 /**
- * Checks if the value is a readonly `Set` created by `createReadonlySet()`.
+ * Checks if the value is a `ReadonlySet`.
  */
-function isReadonlySet(value: unknown): value is ReadonlySet<unknown> {
-  return ReadonlySetImpl.isReadonlySet(value);
+function isReadonlySet(value: unknown): value is globalThis.ReadonlySet<unknown> {
+  return ReadonlySet.isReadonlySet(value);
 }
 
-/**
- * Creates an immutable `Set` which cannot be modified.
- *
- * - `instanceof Set` is `true`
- * - `add()`, `clear()`, and `delete()` will throw
- * - `Set.prototype.add.call()` will throw as it does not have the internal slots of a `Set`
- * - Changing properties or prototype will fail
- * - `Object.isFrozen()` is `true`
- * - `mutate()` creates a writable overlay without copying, `commit()` on the overlay returns a new immutable `Set`
- *
- * Note: items are not frozen, freeze them before passing in if needed.
- */
-function createReadonlySet<T>(iterable: Iterable<T>): VersionedReadonlySet<T> {
-  // Copy into a private storage so changes to the original iterable will not leak in.
-  const map = new Map<T, T>();
-
-  // Faster than `new Map(Array.from(iterable, value => [value, value]))` as it does not create tuples.
-  for (const value of iterable) {
-    map.set(value, value);
-  }
-
-  return new ReadonlySetImpl(new VersionedStorage(map));
-}
-
-export default createReadonlySet;
-export { isReadonlySet, type ReadWriteSet, type VersionedReadonlySet };
+export default ReadonlySet;
+export { isReadonlySet, type ReadWriteSet };

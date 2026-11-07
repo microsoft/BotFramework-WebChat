@@ -1,9 +1,9 @@
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import createReadonlyNodeSet from '../structure/createReadonlyNodeSet.ts';
+import ReadonlyNodeSet from '../structure/ReadonlyNodeSet.ts';
 import { attachDateCreatedTime, getDateCreatedTime } from './dateCreatedTime.ts';
 import type { InternalNode } from './InternalNode.ts';
 import { sortedChildIdsSymbol } from './sortedChildIds.ts';
-import type { VersionedReadonlySkipList } from '../structure/createReadonlySkipList.ts';
+import type ReadonlySkipList from '../structure/ReadonlySkipList.ts';
 
 /**
  * Returns a copy of the node with `hasPart` generated from the IDs of its children, and IDs of its children sorted by
@@ -19,14 +19,14 @@ import type { VersionedReadonlySkipList } from '../structure/createReadonlySkipL
 function attachHasPart(
   node: InternalNode,
   childIds: ReadonlySet<Identifier>,
-  sortedChildIds: VersionedReadonlySkipList<Identifier> | undefined
+  sortedChildIds: ReadonlySkipList<Identifier> | undefined
 ): InternalNode {
   const { hasPart: _, ...nextNode } = node;
 
   return Object.freeze(
     attachDateCreatedTime(
       Object.defineProperty(
-        childIds.size ? { ...nextNode, hasPart: createReadonlyNodeSet(childIds) } : nextNode,
+        childIds.size ? { ...nextNode, hasPart: new ReadonlyNodeSet(childIds) } : nextNode,
         sortedChildIdsSymbol,
         { value: sortedChildIds }
       ),
