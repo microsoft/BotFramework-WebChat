@@ -22,6 +22,9 @@ type SortKey = {
 /**
  * Sort keys of the parts of a parent, by the (immutable) parts array of the part index. The arrays are carried from
  * state to state, so a parent's keys are read from the nodes once, then spliced as parts move.
+ *
+ * The keys of an array hold in every state that has the array: when a part's key changes in place (e.g. a HowTo's
+ * timestamp), its parent gets a new array (`WorkingGraph.setNode()`, `carrySortKeys()`).
  */
 const sortKeysCache = new WeakMap<readonly GraphIdentifier[], readonly SortKey[]>();
 
@@ -78,9 +81,25 @@ function setSortKeys(partIds: readonly GraphIdentifier[], keys: readonly SortKey
   sortKeysCache.set(partIds, Object.freeze(keys));
 }
 
-/** Call when a part's sort key changed in place (e.g. a HowTo's timestamp), so its parent's keys are read again. */
-function forgetSortKeys(partIds: readonly GraphIdentifier[]): void {
-  sortKeysCache.delete(partIds);
+/**
+ * `nextPartIds` = `partIds` with the part at `index` changed in place to `part`: carries the cached keys of `partIds` (if
+ * any) with that one key replaced, O(n) copy instead of reading every part again.
+ */
+function carrySortKeys(
+  partIds: readonly GraphIdentifier[],
+  nextPartIds: readonly GraphIdentifier[],
+  index: number,
+  part: GraphNode
+): void {
+  const keys = sortKeysCache.get(partIds);
+
+  if (keys && index >= 0 && index < keys.length) {
+    const nextKeys = keys.slice();
+
+    // eslint-disable-next-line security/detect-object-injection
+    nextKeys[index] = toSortKey(part);
+    sortKeysCache.set(nextPartIds, Object.freeze(nextKeys));
+  }
 }
 
-export { forgetSortKeys, getSortKeys, hasSameSortKey, setSortKeys, toSortKey, type SortKey };
+export { carrySortKeys, getSortKeys, hasSameSortKey, setSortKeys, toSortKey, type SortKey };

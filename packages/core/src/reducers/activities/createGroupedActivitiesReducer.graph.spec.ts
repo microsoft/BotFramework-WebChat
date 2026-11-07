@@ -102,6 +102,25 @@ scenario('reducing an older state again (replay, time travel)', bdd => {
         )
       ).toEqual([1, 1])
     );
+
+  bdd
+    .given('s1 (a-1, HowTo "h1" with a-2, a-3) and s2 (a-4 joins "h1": its timestamp moves after a-3)', () => {
+      const reducer = createGroupedActivitiesReducer(ponyfill, debugAPI);
+      const s1 = [
+        botActivity('a-1', 'one', 1_000),
+        botActivity('a-2', 'two', 2_000, howTo('_:h1')),
+        botActivity('a-3', 'three', 3_000)
+      ].reduce((state, activity) => reducer(state, incoming(activity)), reducer(undefined, { type: '@@INIT' } as any));
+
+      reducer(s1, incoming(botActivity('a-4', 'four', 5_000, howTo('_:h1'))));
+
+      return { reducer, s1 };
+    })
+    .when('a-5 at 4s is reduced from s1', ({ reducer, s1 }) => reducer(s1, incoming(botActivity('a-5', 'five', 4_000))))
+    // Before the fix: [a-1, a-5, a-2, a-3], s1 sorted with the timestamp "h1" has in s2 (5s).
+    .then('should sort with the timestamp "h1" has in s1 (2s)', (_, state) =>
+      expect(ids(state)).toEqual(['a-1', 'a-2', 'a-3', 'a-5'])
+    );
 });
 
 scenario('a transaction that throws', bdd => {

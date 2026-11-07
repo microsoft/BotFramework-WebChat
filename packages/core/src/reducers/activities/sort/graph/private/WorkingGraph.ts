@@ -1,9 +1,10 @@
 import type { Activity } from '../../types';
 import type { GraphIdentifier, GraphNode, GraphTransaction } from '../types';
+import { inheritFlat } from './flatParts';
 import mutateMap from './mutateMap';
 import { getParentId, withProperties } from './nodeProperties';
 import sortParentsFirst from './sortParentsFirst';
-import { forgetSortKeys, hasSameSortKey } from './sortKeys';
+import { carrySortKeys, hasSameSortKey } from './sortKeys';
 
 /**
  * Parts of each parent, in `position` order. Core's ordered index of the `isPartOf` links: the store's `hasPart` is a
@@ -94,11 +95,16 @@ class WorkingGraph {
     const currentNode = this.getNode(id);
     const currentParentId = getParentId(currentNode);
 
-    // A part whose sort key changes in place (e.g. a HowTo's timestamp) makes its parent's cached keys stale.
-    currentNode &&
-      currentParentId &&
-      !hasSameSortKey(currentNode, node) &&
-      forgetSortKeys(this.getParts(currentParentId));
+    // A part whose sort key changes in place (e.g. a HowTo's timestamp): its parent gets a new parts array with the new
+    // key. The keys cached for the current array stay true for the states that hold it (e.g. replay, time travel).
+    if (currentNode && currentParentId && !hasSameSortKey(currentNode, node)) {
+      const partIds = this.getParts(currentParentId);
+      const nextPartIds = Object.freeze(partIds.slice());
+
+      this.setParts(currentParentId, nextPartIds);
+      inheritFlat(nextPartIds, partIds, null);
+      carrySortKeys(partIds, nextPartIds, partIds.indexOf(id), node);
+    }
 
     this.#previousNodes.has(id) || this.#previousNodes.set(id, this.#snapshot.get(id));
     this.#pendingNodes.set(id, node);
