@@ -176,6 +176,43 @@ scenario('the activity keeps the host’s objects, as before the store', bdd => 
     });
 });
 
+scenario('a `Date` in the activity, as `chatAdapter/sequenceId.*.html` send', bdd => {
+  bdd
+    .given('a reducer', () => createGroupedActivitiesReducer(ponyfill, debugAPI))
+    .when('a-2 then a-1 arrive with a `Date` in `timestamp`', reducer => {
+      const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const timestamp1 = new Date(1_000);
+
+      try {
+        return {
+          state: reducer(
+            reducer(
+              reducer(undefined, { type: '@@INIT' } as any),
+              incoming(botActivity('a-2', 'two', 2_000, { timestamp: new Date(2_000) }))
+            ),
+            incoming(botActivity('a-1', 'one', 1_000, { timestamp: timestamp1 }))
+          ),
+          timestamp1
+        };
+      } finally {
+        warn.mockRestore();
+      }
+    })
+    .then('should sort by the `Date`', (_, { state }) => expect(ids(state)).toEqual(['a-1', 'a-2']))
+    .and('should output the same `Date` object', (_, { state, timestamp1 }) =>
+      expect(state.sortedActivities[0]?.timestamp).toBe(timestamp1)
+    )
+    .and('should keep its ISO string in the store', (_, { state }) => {
+      const node = state.graph?.store
+        .getSnapshot()
+        .get(state.sortedActivities[0]?.channelData['webchat:internal:local-id'] ?? '');
+
+      expect((node?.['urn:microsoft:webchat:direct-line-activity:raw-json'] as any)[0]['@value'].timestamp).toBe(
+        '1970-01-01T00:00:01.000Z'
+      );
+    });
+});
+
 scenario('send status is read from the message node', bdd => {
   bdd
     .given('an outgoing activity, rejected', () => {

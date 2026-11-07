@@ -13,6 +13,7 @@ import type { Activity } from '../types';
 import getSortedMessages from './getSortedMessages';
 import { isFlat } from './private/flatParts';
 import { getBoxedActivity, getString, withProperties } from './private/nodeProperties';
+import toJSONValue from './private/toJSONValue';
 import type WorkingGraph from './private/WorkingGraph';
 import type { SortFacts } from './SortFacts';
 import type { GraphIdentifier, GraphNode } from './types';
@@ -54,14 +55,14 @@ function getCachedActivityPosition(node: GraphNode): number | undefined {
   return position;
 }
 
-/** Boxes the activity kept by core as the JSON literal the node holds. */
-function toJSONLiteral(keptActivity: Activity): Readonly<{ '@type': '@json'; '@value': unknown }> {
-  return Object.freeze({ '@type': '@json', '@value': keptActivity });
+/** Boxes a JSON value (see `toJSONValue()`) as the JSON literal the node holds. */
+function toJSONLiteral(jsonValue: unknown): Readonly<{ '@type': '@json'; '@value': unknown }> {
+  return Object.freeze({ '@type': '@json', '@value': jsonValue });
 }
 
 /**
  * Splits an activity: the send status goes to the node (`urn:microsoft:webchat:send-status`), the rest is kept by core
- * as the host sent it (`State.graphActivities`) and boxed in the node as a JSON literal.
+ * as the host sent it (`State.graphActivities`) and boxed in the node as a JSON literal of its JSON projection.
  */
 function splitActivity(activity: Activity): {
   readonly keptActivity: Activity;
@@ -73,7 +74,7 @@ function splitActivity(activity: Activity): {
   return {
     keptActivity,
     properties: Object.freeze({
-      [DIRECT_LINE_ACTIVITY]: [toJSONLiteral(keptActivity)],
+      [DIRECT_LINE_ACTIVITY]: [toJSONLiteral(toJSONValue(keptActivity))],
       [SEND_STATUS]: sendStatus ? [sendStatus] : undefined
     })
   };
@@ -158,12 +159,20 @@ function setSendStatus(working: WorkingGraph, node: GraphNode, sendStatus: SendS
 /** Sets the public position (`channelData['webchat:internal:position']`) of a message node and its kept activity. */
 function setActivityPosition(working: WorkingGraph, node: GraphNode, position: number): void {
   const keptActivity = working.getActivity(node['@id']);
+  const boxedActivity = getBoxedActivity(node);
 
   if (keptActivity) {
     const nextActivity = setPositionInActivity(keptActivity, position);
 
     working.setActivity(node['@id'], nextActivity);
-    working.setNode(withProperties(node, { [DIRECT_LINE_ACTIVITY]: [toJSONLiteral(nextActivity)] }));
+    working.setNode(
+      withProperties(node, {
+        // The JSON projection of `nextActivity`: the node's projection with the same (JSON) change.
+        [DIRECT_LINE_ACTIVITY]: [
+          toJSONLiteral(boxedActivity ? setPositionInActivity(boxedActivity, position) : toJSONValue(nextActivity))
+        ]
+      })
+    );
   }
 }
 
