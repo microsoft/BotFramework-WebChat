@@ -1,6 +1,8 @@
 const CustomPropertyNames = Object.freeze({
   // Make sure key names does not have JavaScript forbidden names.
   BackgroundCardPushButton: '--webchat__background--card-push-button',
+  BackgroundAvatar: '--webchat__background--avatar',
+  BackgroundAvatarUser: '--webchat__background--avatar-user',
   BackgroundBubble: '--webchat__background--bubble',
   BackgroundBubbleUser: '--webchat__background--bubble-user',
   BackgroundCodeBlock: '--webchat__background--code-block',
