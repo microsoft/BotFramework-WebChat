@@ -52,6 +52,11 @@ class WorkingGraph {
     return this.#pendingParts.get(parentId) ?? this.#partIndex.get(parentId) ?? [];
   }
 
+  /** IDs of the nodes changed so far in this transaction. */
+  getPendingNodeIds(): IterableIterator<GraphIdentifier> {
+    return this.#pendingNodes.keys();
+  }
+
   setNode(node: GraphNode): void {
     const id = node['@id'];
     const currentNode = this.getNode(id);

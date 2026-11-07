@@ -1,12 +1,12 @@
+import { createReadonlyMap, type ReadWriteMap, type VersionedReadonlyMap } from 'botframework-webchat-store';
 import type { LocalId } from '../property/LocalId';
 import type {
+  Activity,
   ActivityMapEntry,
   HowToGroupingId,
-  HowToGroupingMap,
   HowToGroupingMapEntry,
   HowToGroupingMapPartEntry,
   LivestreamSessionId,
-  LivestreamSessionMap,
   LivestreamSessionMapEntry,
   LivestreamSessionMapEntryActivityEntry,
   SortedChatHistoryEntry,
@@ -16,6 +16,7 @@ import { getActivity } from './activityNode';
 import { CONVERSATION_ID, type ActivitiesGraph } from './createActivitiesGraph';
 import getSortedMessages, { type GetParts } from './getSortedMessages';
 import { getBoolean, getIdentifier, getNumber, getParentId, hasType } from './private/nodeProperties';
+import { getKnownFlat } from './private/flatParts';
 import type { FlushResult } from './private/WorkingGraph';
 import type { GetNode, GraphIdentifier, GraphNode } from './types';
 import {
@@ -135,9 +136,9 @@ function toHowToGroupingMapEntry(howTo: GraphNode, getNode: GetNode, getParts: G
 }
 
 type ActivityMaps = {
-  readonly activityIdToLocalIdMap: Map<string, LocalId>;
-  readonly activityMap: Map<LocalId, ActivityMapEntry>;
-  readonly clientActivityIdToLocalIdMap: Map<string, LocalId>;
+  readonly activityIdToLocalIdMap: ReadWriteMap<string, LocalId>;
+  readonly activityMap: ReadWriteMap<LocalId, ActivityMapEntry>;
+  readonly clientActivityIdToLocalIdMap: ReadWriteMap<string, LocalId>;
 };
 
 /** Replaces the entries of one activity node; a node outside of the tree (deleted) only removes them. */
@@ -175,8 +176,8 @@ function updateActivityMaps(
 
 /** Recomputes the entries of the affected HowTo groupings and livestream sessions; detached ones are removed. */
 function updateGroupingMaps(
-  howToGroupingMap: Map<HowToGroupingId, HowToGroupingMapEntry>,
-  livestreamSessionMap: Map<LivestreamSessionId, LivestreamSessionMapEntry>,
+  howToGroupingMap: ReadWriteMap<HowToGroupingId, HowToGroupingMapEntry>,
+  livestreamSessionMap: ReadWriteMap<LivestreamSessionId, LivestreamSessionMapEntry>,
   affectedParentIds: ReadonlySet<GraphIdentifier>,
   getNode: GetNode,
   getParts: GetParts
@@ -201,12 +202,104 @@ function updateGroupingMaps(
 }
 
 /**
+ * A writable overlay of the store's persistent map: O(1), and O(changes) to commit. A plain `Map` (e.g. of
+ * `INITIAL_STATE`) is converted once, O(n).
+ */
+function mutateMap<K, V>(map: ReadonlyMap<K, V>): ReadWriteMap<K, V> {
+  const versioned: VersionedReadonlyMap<K, V> =
+    typeof (map as Partial<VersionedReadonlyMap<K, V>>).mutate === 'function'
+      ? (map as VersionedReadonlyMap<K, V>)
+      : createReadonlyMap(map);
+
+  return versioned.mutate();
+}
+
+/**
+ * When the conversation is flat now and was flat before (the displayed list is its parts array, see
+ * `stampFlatActivityPositions()`), patches the previous lists instead of rebuilding them: the parts before the first
+ * changed one are the same, and unchanged parts keep their order and their entries.
+ *
+ * @returns `undefined` if the fast path does not apply.
+ */
+function patchFlatLists(
+  previousState: State,
+  partIndex: FlushResult['partIndex'],
+  sortedMessageIds: FlushResult['sortedMessageIds'],
+  changedNodeIds: FlushResult['changedNodeIds'],
+  getNode: GetNode
+):
+  | {
+      readonly sortedActivities: readonly Activity[];
+      readonly sortedChatHistoryList: readonly SortedChatHistoryEntry[];
+    }
+  | undefined {
+  const partIds = partIndex.get(CONVERSATION_ID) ?? [];
+  const prevPartIds = previousState.graphPartIndex.get(CONVERSATION_ID) ?? [];
+  const { sortedActivities: prevActivities, sortedChatHistoryList: prevList } = previousState;
+
+  if (
+    sortedMessageIds !== partIds ||
+    getKnownFlat(prevPartIds) !== true ||
+    prevActivities.length !== prevPartIds.length ||
+    prevList.length !== prevPartIds.length
+  ) {
+    return undefined;
+  }
+
+  const changed = new Set(changedNodeIds);
+  let prefixLength = Math.min(partIds.length, prevPartIds.length);
+
+  changedNodeIds.forEach(id => {
+    // IDs are unique: `lastIndexOf()` is the same index, found fast for appends (the common case).
+    const index = partIds.lastIndexOf(id);
+    const prevIndex = prevPartIds.lastIndexOf(id);
+
+    ~index && (prefixLength = Math.min(prefixLength, index));
+    ~prevIndex && (prefixLength = Math.min(prefixLength, prevIndex));
+  });
+
+  const sortedActivities = prevActivities.slice(0, prefixLength);
+  const sortedChatHistoryList = prevList.slice(0, prefixLength);
+
+  for (let index = prefixLength, prevIndex = prefixLength; index < partIds.length; index++) {
+    // eslint-disable-next-line security/detect-object-injection
+    const id = partIds[index]!;
+
+    if (changed.has(id)) {
+      const node = getNode(id);
+      const entry = node && getActivityMapEntry(node);
+
+      if (!node || !entry) {
+        return undefined;
+      }
+
+      sortedActivities.push(entry.activity);
+      sortedChatHistoryList.push(getSortedChatHistoryEntry(node));
+    } else {
+      // eslint-disable-next-line security/detect-object-injection
+      while (prevIndex < prevPartIds.length && changed.has(prevPartIds[prevIndex]!)) {
+        prevIndex++;
+      }
+
+      // eslint-disable-next-line security/detect-object-injection
+      sortedActivities.push(prevActivities[prevIndex]!);
+      // eslint-disable-next-line security/detect-object-injection
+      sortedChatHistoryList.push(prevList[prevIndex]!);
+      prevIndex++;
+    }
+  }
+
+  return { sortedActivities, sortedChatHistoryList };
+}
+
+/**
  * Derives core's `State` from the graph after a transaction: the graph is the source of truth, `State` is a read model
  * kept for the reducer, its selectors and `state.activities`.
  *
- * Incremental: maps start from the previous state and only the changed nodes, and the groupings and sessions they are
- * (or were) part of, are recomputed. The two lists (`sortedChatHistoryList`, `sortedActivities`) are rebuilt from the
- * part index with cached entries, as `upsert.ts` rebuilt `sortedActivities`. Reads do not validate (the store did).
+ * Incremental: maps are the store's persistent maps, edited in O(changes); only the changed nodes, and the groupings
+ * and sessions they are (or were) part of, are recomputed. For a flat conversation the two lists
+ * (`sortedChatHistoryList`, `sortedActivities`) are patched from the previous ones (`patchFlatLists()`), otherwise
+ * rebuilt from the part index with cached entries. Reads do not validate (the store did).
  */
 export default function deriveState(
   graph: ActivitiesGraph,
@@ -219,9 +312,9 @@ export default function deriveState(
   const getParts: GetParts = parentId => partIndex.get(parentId) ?? [];
 
   const activityMaps: ActivityMaps = {
-    activityIdToLocalIdMap: new Map(previousState.activityIdToLocalIdMap),
-    activityMap: new Map(previousState.activityMap),
-    clientActivityIdToLocalIdMap: new Map(previousState.clientActivityIdToLocalIdMap)
+    activityIdToLocalIdMap: mutateMap(previousState.activityIdToLocalIdMap),
+    activityMap: mutateMap(previousState.activityMap),
+    clientActivityIdToLocalIdMap: mutateMap(previousState.clientActivityIdToLocalIdMap)
   };
 
   // Groupings and sessions to recompute: changed ones, the ones whose parts changed, the (former) parents of changed
@@ -248,39 +341,39 @@ export default function deriveState(
     sessionParentId && affectedParentIds.add(sessionParentId);
   });
 
-  const howToGroupingMap = new Map<HowToGroupingId, HowToGroupingMapEntry>(previousState.howToGroupingMap);
-  const livestreamSessionMap = new Map<LivestreamSessionId, LivestreamSessionMapEntry>(
-    previousState.livestreamSessionMap
-  );
+  const howToGroupingMap = mutateMap(previousState.howToGroupingMap);
+  const livestreamSessionMap = mutateMap(previousState.livestreamSessionMap);
 
   updateGroupingMaps(howToGroupingMap, livestreamSessionMap, affectedParentIds, getNode, getParts);
 
-  const sortedChatHistoryList: SortedChatHistoryEntry[] = [];
+  const patchedLists = patchFlatLists(previousState, partIndex, sortedMessageIds, changedNodeIds, getNode);
 
-  getParts(CONVERSATION_ID).forEach(partId => {
-    const part = getNode(partId);
+  const sortedChatHistoryList =
+    patchedLists?.sortedChatHistoryList ??
+    getParts(CONVERSATION_ID).flatMap(partId => {
+      const part = getNode(partId);
 
-    part && sortedChatHistoryList.push(getSortedChatHistoryEntry(part));
-  });
+      return part ? [getSortedChatHistoryEntry(part)] : [];
+    });
 
-  const sortedActivities = (
-    sortedMessageIds ?? getSortedMessages(getNode, getParts, CONVERSATION_ID).map(node => node['@id'])
-  ).flatMap(id => {
-    const node = getNode(id);
-    const entry = node && getActivityMapEntry(node);
+  const sortedActivities =
+    patchedLists?.sortedActivities ??
+    (sortedMessageIds ?? getSortedMessages(getNode, getParts, CONVERSATION_ID).map(node => node['@id'])).flatMap(id => {
+      const node = getNode(id);
+      const entry = node && getActivityMapEntry(node);
 
-    return entry ? [entry.activity] : [];
-  });
+      return entry ? [entry.activity] : [];
+    });
 
   return Object.freeze({
-    activityIdToLocalIdMap: Object.freeze(activityMaps.activityIdToLocalIdMap),
-    activityMap: Object.freeze(activityMaps.activityMap) satisfies State['activityMap'],
-    clientActivityIdToLocalIdMap: Object.freeze(activityMaps.clientActivityIdToLocalIdMap),
+    activityIdToLocalIdMap: activityMaps.activityIdToLocalIdMap.commit(),
+    activityMap: activityMaps.activityMap.commit(),
+    clientActivityIdToLocalIdMap: activityMaps.clientActivityIdToLocalIdMap.commit(),
     graph,
     graphPartIndex: partIndex,
     graphSnapshot: snapshot,
-    howToGroupingMap: Object.freeze(howToGroupingMap) satisfies HowToGroupingMap,
-    livestreamSessionMap: Object.freeze(livestreamSessionMap) satisfies LivestreamSessionMap,
+    howToGroupingMap: howToGroupingMap.commit(),
+    livestreamSessionMap: livestreamSessionMap.commit(),
     sortedActivities: Object.freeze(sortedActivities),
     sortedChatHistoryList: Object.freeze(sortedChatHistoryList)
   } satisfies State);

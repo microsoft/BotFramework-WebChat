@@ -1,6 +1,7 @@
 import type { GraphIdentifier, GraphNode } from '../types';
 import { HOW_TO_TYPE, IDENTIFIER, LOGICAL_TIMESTAMP, POSITION } from '../vocabulary';
 import { getNumber, getParentId, hasType, toNumberValues, withProperties } from './nodeProperties';
+import { inheritFlat } from './flatParts';
 import { getSortKeys, setSortKeys, toSortKey, type SortKey } from './sortKeys';
 import type WorkingGraph from './WorkingGraph';
 
@@ -148,6 +149,9 @@ function placePart(
 
   writeParts(working, parentId, nextPartIds, insertIndex);
 
+  // `writeParts()` stored `nextPartIds` as is (frozen): it is flat if `partIds` was and the new part is a message.
+  inheritFlat(nextPartIds, partIds, getNode(partId));
+
   // `writeParts()` stores `nextPartIds` as is (frozen): its keys are the ones spliced here.
   setSortKeys(working.getParts(parentId), nextKeys);
 }
@@ -161,10 +165,11 @@ function detachPart(working: WorkingGraph, partId: GraphIdentifier): GraphIdenti
     return undefined;
   }
 
-  working.setParts(
-    parentId,
-    working.getParts(parentId).filter(id => id !== partId)
-  );
+  const prevPartIds = working.getParts(parentId);
+  const nextPartIds = prevPartIds.filter(id => id !== partId);
+
+  working.setParts(parentId, nextPartIds);
+  inheritFlat(nextPartIds, prevPartIds, null);
   working.setNode(withProperties(part, { isPartOf: undefined, [POSITION]: undefined }));
 
   return parentId;

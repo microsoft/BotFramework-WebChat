@@ -53,9 +53,9 @@ type ActivityMapEntry = ActivityEntry & { readonly activity: Activity };
 type ActivityMap = ReadonlyMap<LocalId, ActivityMapEntry>;
 
 type State = {
-  readonly activityIdToLocalIdMap: Map<string, LocalId>;
+  readonly activityIdToLocalIdMap: ReadonlyMap<string, LocalId>;
   readonly activityMap: ActivityMap;
-  readonly clientActivityIdToLocalIdMap: Map<string, LocalId>;
+  readonly clientActivityIdToLocalIdMap: ReadonlyMap<string, LocalId>;
   /**
    * The source of truth: William's store holding the activities graph. The other fields are derived from it.
    * `undefined` until the first activity.

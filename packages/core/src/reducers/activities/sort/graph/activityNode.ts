@@ -11,6 +11,7 @@ import {
 } from '../property/SendStatus';
 import type { Activity } from '../types';
 import getSortedMessages from './getSortedMessages';
+import { isFlat } from './private/flatParts';
 import { getBoxedActivity, getString, withProperties } from './private/nodeProperties';
 import type WorkingGraph from './private/WorkingGraph';
 import type { SortFacts } from './SortFacts';
@@ -134,13 +135,107 @@ function setSendStatus(working: WorkingGraph, node: GraphNode, sendStatus: SendS
   working.setNode(withProperties(node, { [SEND_STATUS]: [sendStatus] }));
 }
 
+/** Sets the public position (`channelData['webchat:internal:position']`) of a message node. */
+function setActivityPosition(working: WorkingGraph, node: GraphNode, position: number): void {
+  const boxedActivity = getBoxedActivity(node);
+
+  boxedActivity &&
+    working.setNode(
+      withProperties(node, {
+        [DIRECT_LINE_ACTIVITY]: [
+          Object.freeze({ '@type': '@json', '@value': setPositionInActivity(boxedActivity, position) })
+        ]
+      })
+    );
+}
+
+/**
+ * `stampActivityPositions()` for a flat conversation (messages only), where the displayed list is the conversation's
+ * parts array. Same rule and result as the full pass: the messages before the first changed one keep their positions
+ * (they were stamped by an earlier pass and are unchanged), and after the last changed one the first kept position
+ * ends the pass (the rest was increasing before and is unchanged).
+ *
+ * @returns `false` if the conversation is not flat (the caller does the full pass).
+ */
+function stampFlatActivityPositions(working: WorkingGraph, conversationId: GraphIdentifier): boolean {
+  const partIds = working.getParts(conversationId);
+  const getNode = (id: GraphIdentifier) => working.getNode(id);
+
+  if (!isFlat(partIds, getNode)) {
+    return false;
+  }
+
+  let firstIndex = partIds.length;
+  let lastIndex = -1;
+
+  for (const id of working.getPendingNodeIds()) {
+    // IDs are unique: `lastIndexOf()` is the same index, found fast for appends (the common case).
+    const index = partIds.lastIndexOf(id);
+
+    if (~index) {
+      firstIndex = Math.min(firstIndex, index);
+      lastIndex = Math.max(lastIndex, index);
+    }
+  }
+
+  const getPosition = (index: number): number | undefined => {
+    // eslint-disable-next-line security/detect-object-injection
+    const node = index < partIds.length ? working.getNode(partIds[index]!) : undefined;
+
+    return node && getCachedActivityPosition(node);
+  };
+
+  let lastPosition = firstIndex ? getPosition(firstIndex - 1) : 0;
+
+  if (typeof lastPosition === 'undefined') {
+    return false;
+  }
+
+  let nextSiblingPosition = getPosition(firstIndex);
+
+  for (let index = firstIndex; index < partIds.length; index++) {
+    // eslint-disable-next-line security/detect-object-injection
+    const node = working.getNode(partIds[index]!)!;
+    const position = nextSiblingPosition;
+    const hasNextSibling = index + 1 < partIds.length;
+
+    nextSiblingPosition = getPosition(index + 1);
+
+    if (index > lastIndex && typeof position !== 'undefined' && position > lastPosition) {
+      break;
+    }
+
+    const nextPosition =
+      typeof position !== 'undefined' && position > lastPosition
+        ? position
+        : hasNextSibling && typeof nextSiblingPosition !== 'undefined' && lastPosition + 1 <= nextSiblingPosition
+          ? lastPosition + 1
+          : lastPosition + POSITION_INCREMENT;
+
+    nextPosition !== position && setActivityPosition(working, node, nextPosition);
+
+    lastPosition = nextPosition;
+  }
+
+  working.setSortedMessageIds(partIds);
+
+  return true;
+}
+
 /**
  * Stamps `channelData['webchat:internal:position']` over the flattened, displayed list, with the rule of `upsert.ts`:
  * keep a position if still increasing, else `last + 1` if it fits before the next one, else `last + 1000`.
  *
  * The graph keeps its own per-parent `position`; this one is the public output core had before.
+ *
+ * A flat conversation (messages only, the common case) takes the fast path (`stampFlatActivityPositions()`); a
+ * conversation with a HowTo or a livestream session walks the whole tree.
  */
 function stampActivityPositions(working: WorkingGraph, conversationId: GraphIdentifier): void {
+  if (stampFlatActivityPositions(working, conversationId)) {
+    return;
+  }
+
   const nodes = getSortedMessages(
     id => working.getNode(id),
     id => working.getParts(id),
@@ -167,16 +262,7 @@ function stampActivityPositions(working: WorkingGraph, conversationId: GraphIden
           ? lastPosition + 1
           : lastPosition + POSITION_INCREMENT;
 
-    const boxedActivity = nextPosition !== position && getBoxedActivity(node);
-
-    boxedActivity &&
-      working.setNode(
-        withProperties(node, {
-          [DIRECT_LINE_ACTIVITY]: [
-            Object.freeze({ '@type': '@json', '@value': setPositionInActivity(boxedActivity, nextPosition) })
-          ]
-        })
-      );
+    nextPosition !== position && setActivityPosition(working, node, nextPosition);
 
     lastPosition = nextPosition;
   }
