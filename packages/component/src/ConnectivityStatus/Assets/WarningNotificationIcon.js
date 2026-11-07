@@ -1,10 +1,6 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
 import React from 'react';
 import { number, object, optional, pipe, readonly, string } from 'valibot';
-
-const { useDirection } = hooks;
 
 const ICON_SIZE_FACTOR = 16;
 
@@ -19,12 +15,10 @@ const warningNotificationIconPropsSchema = pipe(
 const WarningNotificationIcon = props => {
   const { className = '', size = 1 } = validateProps(warningNotificationIconPropsSchema, props);
 
-  const [direction] = useDirection();
-
   return (
     <svg
       alt=""
-      className={classNames(className + '', direction === 'rtl' && 'webchat_warning--rtl')}
+      className={className}
       height={ICON_SIZE_FACTOR * size}
       viewBox="0 0 13.1 13.1"
       width={ICON_SIZE_FACTOR * size}
