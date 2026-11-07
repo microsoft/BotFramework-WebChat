@@ -1,4 +1,4 @@
-import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
+import type { ActivitiesCoreEnv } from './ActivitiesCoreEnv';
 import { stampActivityPositions, toActivityNode, toSortFacts } from './graph/activityNode';
 import { CONVERSATION_ID } from './graph/createActivitiesGraph';
 import editState from './graph/editState';
@@ -47,7 +47,7 @@ const INITIAL_STATE = Object.freeze({
  *
  * A state without a graph (e.g. `INITIAL_STATE`), or whose graph has moved on, gets a graph rebuilt from its nodes.
  */
-function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
+function upsert(ponyfill: ActivitiesCoreEnv, state: State, activity: Activity): State {
   return editState(state, working => {
     const { activity: keptActivity, node } = toActivityNode(activity);
     const changed = upsertSortedMessage(working, CONVERSATION_ID, node, toSortFacts(activity, ponyfill));

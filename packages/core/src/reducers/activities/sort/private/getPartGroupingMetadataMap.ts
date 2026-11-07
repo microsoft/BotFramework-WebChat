@@ -1,5 +1,5 @@
-import type { WebChatActivity } from '../../../../types/WebChatActivity';
-import getOrgSchemaMessage from '../../../../utils/getOrgSchemaMessage';
+import type { WebChatActivity } from '../types/WebChatActivity';
+import getOrgSchemaMessage from '../utils/getOrgSchemaMessage';
 
 type PartGroupingMetadataMapEntry = {
   readonly groupingId: string;

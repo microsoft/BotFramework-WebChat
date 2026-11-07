@@ -2,7 +2,7 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { parse } from 'valibot';
-import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { WebChatActivity } from './types/WebChatActivity';
 import { LocalIdSchema, type LocalId } from './property/LocalId';
 import {
   type Activity,

@@ -1,5 +1,4 @@
-import type { GlobalScopePonyfill } from '../../../../types/GlobalScopePonyfill';
-import getActivityLivestreamingMetadata from '../../../../utils/getActivityLivestreamingMetadata';
+import type { ActivitiesCoreEnv } from '../ActivitiesCoreEnv';
 import getLogicalTimestamp from '../private/getLogicalTimestamp';
 import getPartGroupingMetadataMap from '../private/getPartGroupingMetadataMap';
 import { getLocalIdFromActivity } from '../property/LocalId';
@@ -10,6 +9,7 @@ import {
   type SendStatus
 } from '../property/SendStatus';
 import type { Activity } from '../types';
+import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
 import getSortedMessages from './getSortedMessages';
 import {
   getChangedConversationParts,
@@ -127,7 +127,7 @@ function getActivity(node: GraphNode | undefined, keptActivity: Activity | undef
 }
 
 /** Extracts the sort facts of an activity, with the same helpers `upsert.ts` used. */
-function toSortFacts(activity: Activity, ponyfill: Pick<GlobalScopePonyfill, 'Date'>): SortFacts {
+function toSortFacts(activity: Activity, ponyfill: ActivitiesCoreEnv): SortFacts {
   const howTo = getPartGroupingMetadataMap(activity).get('HowTo');
   const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
   const { localTimestamp } = activity;

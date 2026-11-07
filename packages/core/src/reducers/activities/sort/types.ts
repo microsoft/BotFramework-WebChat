@@ -1,9 +1,9 @@
 import type { Tagged } from 'type-fest';
-import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type { ActivitiesGraph } from './graph/createActivitiesGraph';
 import type { ActivityTable, PartIndex } from './graph/private/WorkingGraph';
 import type { GraphNode } from './graph/types';
 import type { LocalId } from './property/LocalId';
+import type { WebChatActivity } from './types/WebChatActivity';
 
 type Activity = WebChatActivity;
 

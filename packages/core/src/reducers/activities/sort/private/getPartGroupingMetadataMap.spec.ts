@@ -2,7 +2,7 @@
 
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../../../types/WebChatActivity';
+import type { WebChatActivity } from '../types/WebChatActivity';
 import type { LocalId } from '../property/LocalId';
 import getPartGroupingMetadataMap, { type PartGroupingMetadataMapEntry } from './getPartGroupingMetadataMap';
 

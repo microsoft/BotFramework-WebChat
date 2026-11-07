@@ -1,4 +1,4 @@
-import type { WebChatActivity } from '../../../../../types/WebChatActivity';
+import type { WebChatActivity } from '../../types/WebChatActivity';
 import type { GraphIdentifier, GraphNode } from '../types';
 import { DIRECT_LINE_ACTIVITY, IDENTIFIER } from '../vocabulary';
 

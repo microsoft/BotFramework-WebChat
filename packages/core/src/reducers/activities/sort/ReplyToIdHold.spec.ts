@@ -7,11 +7,11 @@
 // The hold reads the transcript from the graph (`hasReplyTarget()`, `hasBotActivity()`).
 import { scenario } from '@testduet/given-when-then';
 import { parse } from 'valibot';
-import { hasBotActivity, hasReplyTarget } from '../../reducers/activities/sort/graph/queries';
-import { LocalIdSchema } from '../../reducers/activities/sort/property/LocalId';
-import type { State } from '../../reducers/activities/sort/types';
-import upsert, { INITIAL_STATE } from '../../reducers/activities/sort/upsert';
-import createFakeClock from './createFakeClock';
+import { hasBotActivity, hasReplyTarget } from './graph/queries';
+import createFakeClock from './private/createFakeClock';
+import { LocalIdSchema } from './property/LocalId';
+import type { State } from './types';
+import upsert, { INITIAL_STATE } from './upsert';
 import ReplyToIdHold from './ReplyToIdHold';
 
 type TestActivity = {

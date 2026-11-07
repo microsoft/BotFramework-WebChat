@@ -1,4 +1,4 @@
-import type { GlobalScopePonyfill } from '../../../../types/GlobalScopePonyfill';
+import type { ActivitiesCoreEnv } from '../ActivitiesCoreEnv';
 import type { Activity } from '../types';
 
 /**
@@ -9,10 +9,7 @@ import type { Activity } from '../types';
  * @param activity Activity to get sequence ID from.
  * @returns Sequence ID.
  */
-export default function getLogicalTimestamp(
-  activity: Activity,
-  ponyfill: Pick<GlobalScopePonyfill, 'Date'>
-): number | undefined {
+export default function getLogicalTimestamp(activity: Activity, ponyfill: ActivitiesCoreEnv): number | undefined {
   const sequenceId = activity.channelData?.['webchat:sequence-id'];
 
   if (typeof sequenceId === 'number') {

@@ -29,7 +29,7 @@ import type {
 import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
 import { type RestrictedStoreDebugAPI } from '../../types/StoreDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import patchActivity from './patchActivity';
+import patchActivity from './sort/patchActivity';
 import createActivitiesGraph from './sort/graph/createActivitiesGraph';
 import deleteActivityByLocalId from './sort/deleteActivityByLocalId';
 import { generateLocalIdInActivity, getLocalIdFromActivity, setLocalIdInActivity } from './sort/property/LocalId';

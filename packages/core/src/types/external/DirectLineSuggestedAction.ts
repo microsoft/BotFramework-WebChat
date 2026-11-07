@@ -1,8 +1,2 @@
-import type { DirectLineCardAction } from './DirectLineCardAction';
-
-type DirectLineSuggestedAction = {
-  actions?: DirectLineCardAction[];
-  to?: string[];
-};
-
-export type { DirectLineSuggestedAction };
+// Moved with the activities core.
+export type { DirectLineSuggestedAction } from '../../reducers/activities/sort/types/external/DirectLineSuggestedAction';

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
-import type { WebChatActivity } from '../../../types/WebChatActivity';
+import type { WebChatActivity } from './types/WebChatActivity';
 import type { Activity, ActivityMapEntry, HowToGroupingId, HowToGroupingMapEntry, SortedChatHistory } from './types';
 import upsert, { INITIAL_STATE } from './upsert';
 import { LocalIdSchema, type LocalId } from './property/LocalId';
