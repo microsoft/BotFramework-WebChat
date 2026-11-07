@@ -1,4 +1,4 @@
-import { getNumber, getParentId, hasType, toNumberValues, withProperties } from './private/nodeProperties';
+import { getBoolean, getNumber, getParentId, hasType, toNumberValues, withProperties } from './private/nodeProperties';
 import { afterPartLeft, detachPart, getRequiredNode, refreshHowToTimestamp } from './private/treeOperations';
 import type WorkingGraph from './private/WorkingGraph';
 import type { GraphIdentifier } from './types';
@@ -38,6 +38,11 @@ export default function deleteSortedMessage(working: WorkingGraph, messageId: Gr
 
     return;
   }
+
+  // A finalized session shows only its last revision. Losing a revision, it may show revisions that were hidden, with
+  // the positions they had when they were last shown, and a delete does not stamp (as before the store): the next
+  // stamp does the full pass (`State.graphStalePositions`).
+  getBoolean(parent, FINALIZED) && working.setStalePositions(true);
 
   // The final revision has no sequence number and sorts last.
   // eslint-disable-next-line no-magic-numbers

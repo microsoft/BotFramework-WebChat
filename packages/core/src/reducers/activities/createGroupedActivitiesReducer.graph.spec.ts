@@ -192,6 +192,38 @@ scenario('the lists are patched from the first changed part of the conversation'
     .and('should end in the order main has', (_, states) =>
       expect(ids(states.at(-1))).toEqual(['m-0', 'm-1', 'm-2', 'h-1', 'h-2', 's-2', 's-2-2', 's-1-f', 'm-3'])
     );
+
+  bdd
+    .given('m-1, session "s-1" (2s, 2.1s), m-2, then the final revision of "s-1" moves it after m-2', () => {
+      const reducer = createGroupedActivitiesReducer(ponyfill, debugAPI);
+      const state = [
+        botActivity('m-1', 'm-1', 1_000),
+        revision('s-1', 's-1', 2_000, 1),
+        revision('s-1', 's-1-2', 2_100, 2),
+        botActivity('m-2', 'm-2', 3_000),
+        revision('s-1', 's-1-f', 5_000)
+      ].reduce((state, activity) => reducer(state, incoming(activity)), reducer(undefined, { type: '@@INIT' } as any));
+
+      return { reducer, state };
+    })
+    .when('the final revision is deleted, then m-3 arrives', ({ reducer, state }) => {
+      const deleted = reducer(state, {
+        payload: { activityID: 's-1-f' },
+        type: 'DIRECT_LINE/DELETE_ACTIVITY'
+      } as any);
+
+      return { appended: reducer(deleted, incoming(botActivity('m-3', 'm-3', 6_000))), deleted };
+    })
+    // As main: a delete does not stamp, so the revisions shown again keep the positions they had.
+    .then('should show the earlier revisions again, with their old positions', (_, { deleted }) => {
+      expect(ids(deleted)).toEqual(['m-1', 'm-2', 's-1', 's-1-2']);
+      expect(positions(deleted)).toEqual([1_000, 4_000, 2_000, 3_000]);
+    })
+    // Before the fix: [1000, 4000, 2000, 3000, 4000], the stamping started at m-3.
+    .and('should stamp all positions again on the next action, as main', (_, { appended }) => {
+      expect(ids(appended)).toEqual(['m-1', 'm-2', 's-1', 's-1-2', 'm-3']);
+      expect(positions(appended)).toEqual([1_000, 4_000, 5_000, 6_000, 7_000]);
+    });
 });
 
 scenario('a transaction that throws', bdd => {

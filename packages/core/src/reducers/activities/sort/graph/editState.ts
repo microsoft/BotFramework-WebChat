@@ -26,7 +26,8 @@ export default function editState(state: State, editor: (working: WorkingGraph) 
       transaction,
       graph.store.getSnapshot(),
       state.graphPartIndex,
-      state.graphActivities
+      state.graphActivities,
+      state.graphStalePositions
     );
 
     if (editor(working)) {

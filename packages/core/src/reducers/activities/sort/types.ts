@@ -74,6 +74,13 @@ type State = {
    * reduced again, e.g. replay), the graph is rebuilt from this snapshot.
    */
   readonly graphSnapshot: ReadonlyMap<string, GraphNode> | undefined;
+  /**
+   * `true` if some displayed messages may have positions that are not increasing. A delete does not stamp positions
+   * (as before the store), and deleting a revision of a finalized livestream session can show its earlier revisions
+   * again, with the positions they had when they were last shown. The next action that stamps then does the full pass
+   * (the fast passes assume increasing positions before the change), and clears it.
+   */
+  readonly graphStalePositions: boolean;
   readonly howToGroupingMap: HowToGroupingMap;
   readonly livestreamSessionMap: LivestreamSessionMap;
   readonly sortedChatHistoryList: SortedChatHistory;

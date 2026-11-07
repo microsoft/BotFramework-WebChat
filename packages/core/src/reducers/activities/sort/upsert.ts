@@ -29,6 +29,7 @@ const INITIAL_STATE = Object.freeze({
   graphActivities: Object.freeze(new Map()),
   graphPartIndex: Object.freeze(new Map()),
   graphSnapshot: undefined,
+  graphStalePositions: false,
   livestreamSessionMap: Object.freeze(new Map()),
   howToGroupingMap: Object.freeze(new Map()),
   sortedActivities: Object.freeze([]),

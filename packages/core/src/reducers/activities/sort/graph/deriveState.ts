@@ -390,7 +390,15 @@ function patchLists(
 export default function deriveState(
   graph: ActivitiesGraph,
   previousState: State,
-  { changedActivities, changedNodeIds, changedParentIds, partIndex, previousNodes, sortedMessageIds }: FlushResult
+  {
+    changedActivities,
+    changedNodeIds,
+    changedParentIds,
+    partIndex,
+    previousNodes,
+    sortedMessageIds,
+    stalePositions
+  }: FlushResult
 ): State {
   // The store's immutable snapshot of the commit that just happened: this state's graph.
   const snapshot = graph.store.getSnapshot();
@@ -488,6 +496,7 @@ export default function deriveState(
     graphActivities: graphActivities.commit(),
     graphPartIndex: partIndex,
     graphSnapshot: snapshot,
+    graphStalePositions: stalePositions,
     howToGroupingMap: howToGroupingMap.commit(),
     livestreamSessionMap: livestreamSessionMap.commit(),
     sortedActivities: Object.freeze(sortedActivities),

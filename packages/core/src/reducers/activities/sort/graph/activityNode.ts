@@ -184,7 +184,8 @@ function setActivityPosition(working: WorkingGraph, node: GraphNode, position: n
 
 /**
  * `stampActivityPositions()` for a flat conversation (messages only), where the displayed list is the conversation's
- * parts array. Same rule and result as the full pass: the messages before the first changed one keep their positions
+ * parts array. Same rule and result as the full pass, if the previous positions were increasing (see
+ * `stampActivityPositions()`): the messages before the first changed one keep their positions
  * (they were stamped by an earlier pass and are unchanged), and after the last changed one the first kept position
  * ends the pass (the rest was increasing before and is unchanged).
  *
@@ -257,7 +258,8 @@ function stampFlatActivityPositions(working: WorkingGraph, conversationId: Graph
 
 /**
  * `stampActivityPositions()` from the first changed part of the conversation on (`getChangedRange()`), for any
- * transcript (HowTo groupings, livestream sessions). Same rule and result as the full pass:
+ * transcript (HowTo groupings, livestream sessions). Same rule and result as the full pass, if the previous positions
+ * were increasing (see `stampActivityPositions()`):
  *
  * - the displayed messages of the parts before the first changed part are the same as before, and were stamped in
  *   increasing order by an earlier pass: the full pass keeps them;
@@ -349,12 +351,18 @@ function stampChangedActivityPositions(working: WorkingGraph, conversationId: Gr
  *
  * A flat conversation (messages only, the common case) takes the fast path (`stampFlatActivityPositions()`); other
  * transcripts are stamped from their first changed part on (`stampChangedActivityPositions()`). The full pass over the
- * whole tree is the fallback.
+ * whole tree is the fallback. Both fast passes assume that the displayed messages had increasing positions before this
+ * transaction: when they may not (`State.graphStalePositions`, after a delete), the full pass runs.
  */
 function stampActivityPositions(working: WorkingGraph, conversationId: GraphIdentifier): void {
-  if (stampFlatActivityPositions(working, conversationId) || stampChangedActivityPositions(working, conversationId)) {
+  if (
+    !working.hasStalePositions() &&
+    (stampFlatActivityPositions(working, conversationId) || stampChangedActivityPositions(working, conversationId))
+  ) {
     return;
   }
+
+  working.setStalePositions(false);
 
   const nodes = getSortedMessages(
     id => working.getNode(id),

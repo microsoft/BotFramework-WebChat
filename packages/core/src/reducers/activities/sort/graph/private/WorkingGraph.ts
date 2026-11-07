@@ -31,6 +31,8 @@ type FlushResult = {
   /** The version of each changed node before this transaction (`undefined` for new nodes). */
   readonly previousNodes: ReadonlyMap<GraphIdentifier, GraphNode | undefined>;
   readonly sortedMessageIds: readonly GraphIdentifier[] | undefined;
+  /** See `State.graphStalePositions`. */
+  readonly stalePositions: boolean;
 };
 
 /**
@@ -44,16 +46,19 @@ class WorkingGraph {
    * @param snapshot The store's snapshot of the last commit (`store.getSnapshot()`). Reads hit it directly: nothing
    *                 is upserted before `flush()`.
    * @param activities The activities of the message nodes before this transaction.
+   * @param stalePositions See `State.graphStalePositions`.
    */
   constructor(
     transaction: GraphTransaction,
     snapshot: ReadonlyMap<string, GraphNode>,
     partIndex: PartIndex,
-    activities: ActivityTable = new Map()
+    activities: ActivityTable = new Map(),
+    stalePositions = false
   ) {
     this.#activities = activities;
     this.#partIndex = partIndex;
     this.#snapshot = snapshot;
+    this.#stalePositions = stalePositions;
     this.#transaction = transaction;
   }
 
@@ -65,6 +70,7 @@ class WorkingGraph {
   #previousNodes = new Map<GraphIdentifier, GraphNode | undefined>();
   #snapshot: ReadonlyMap<string, GraphNode>;
   #sortedMessageIds: readonly GraphIdentifier[] | undefined;
+  #stalePositions: boolean;
   #transaction: GraphTransaction;
 
   getNode(id: GraphIdentifier): GraphNode | undefined {
@@ -129,6 +135,18 @@ class WorkingGraph {
     this.#pendingParts.set(parentId, Object.isFrozen(partIds) ? partIds : Object.freeze(partIds));
   }
 
+  /**
+   * Whether some displayed messages may have positions that are not increasing (see `State.graphStalePositions`):
+   * `stampActivityPositions()` then does the full pass.
+   */
+  hasStalePositions(): boolean {
+    return this.#stalePositions;
+  }
+
+  setStalePositions(stalePositions: boolean): void {
+    this.#stalePositions = stalePositions;
+  }
+
   /** The displayed messages after this transaction, if already computed (by `stampActivityPositions()`). */
   setSortedMessageIds(sortedMessageIds: readonly GraphIdentifier[]): void {
     this.#sortedMessageIds = Object.freeze(sortedMessageIds);
@@ -159,7 +177,8 @@ class WorkingGraph {
       changedParentIds: Object.freeze(Array.from(this.#pendingParts.keys())),
       partIndex: partIndex.commit(),
       previousNodes: this.#previousNodes,
-      sortedMessageIds: this.#sortedMessageIds
+      sortedMessageIds: this.#sortedMessageIds,
+      stalePositions: this.#stalePositions
     });
   }
 }
