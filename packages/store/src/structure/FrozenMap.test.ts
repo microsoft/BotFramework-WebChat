@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import FrozenMap, { isFrozenMap } from './FrozenMap.ts';
+import FrozenMap from './FrozenMap.ts';
 
 scenario(
   'new FrozenMap()',
@@ -17,7 +17,7 @@ scenario(
       )
       .when('read', map => map)
       .then('should be instance of Map', (_, map) => expect(map).toBeInstanceOf(Map))
-      .and('should be detected as readonly map', (_, map) => expect(isFrozenMap(map)).toBe(true))
+      .and('should be detected as readonly map', (_, map) => expect(FrozenMap.isFrozenMap(map)).toBe(true))
       .and('should be frozen', (_, map) => expect(Object.isFrozen(map)).toBe(true))
       .and('should have size', (_, map) => expect(map.size).toBe(2))
       .and('should support get() and has()', (_, map) => {
@@ -92,7 +92,7 @@ scenario(
 
     bdd
       .given('a mutable map', () => new Map([['a', 1]]))
-      .when('checked', map => isFrozenMap(map))
+      .when('checked', map => FrozenMap.isFrozenMap(map))
       .then('should not be detected as readonly map', (_, result) => expect(result).toBe(false));
   },
   NodeTest
@@ -108,7 +108,7 @@ scenario(
         ['constructed with null', () => new FrozenMap(null)]
       ])
       .then('should be empty', (_, map) => expect(map.size).toBe(0))
-      .and('should be detected as readonly map', (_, map) => expect(isFrozenMap(map)).toBe(true));
+      .and('should be detected as readonly map', (_, map) => expect(FrozenMap.isFrozenMap(map)).toBe(true));
 
     bdd
       .given('a non-iterable value', () => 1)
@@ -189,7 +189,7 @@ scenario(
       })
       .then('should return a new readonly map with changes', (map, { nextMap }) => {
         expect(nextMap).not.toBe(map);
-        expect(isFrozenMap(nextMap)).toBe(true);
+        expect(FrozenMap.isFrozenMap(nextMap)).toBe(true);
         expect(Object.isFrozen(nextMap)).toBe(true);
         expect(nextMap.size).toBe(3);
         expect(Array.from(nextMap)).toEqual([

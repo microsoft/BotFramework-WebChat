@@ -181,12 +181,5 @@ Object.defineProperty(FrozenMap.prototype, 'constructor', { value: Map });
 Object.freeze(FrozenMap.prototype);
 Object.freeze(FrozenMap);
 
-/**
- * Checks if the value is a `FrozenMap`.
- */
-function isFrozenMap(value: unknown): value is ReadonlyMap<unknown, unknown> {
-  return FrozenMap.isFrozenMap(value);
-}
-
 export default FrozenMap;
-export { isFrozenMap, type ReadWriteMap };
+export { type ReadWriteMap };
