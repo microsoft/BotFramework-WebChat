@@ -2324,3 +2324,37 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'upsert with JSON literal',
+  bdd => {
+    bdd
+      .given('an empty store', () => createStore())
+      .when('a node with a JSON literal which is not plain JSON is upserted', ({ controller }) => {
+        const json = { a: [undefined], date: new Date(0), nan: NaN, undefined };
+
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            encoding: [{ '@type': '@json', '@value': json }]
+          }))
+        );
+
+        return json;
+      })
+      .then('should store the JSON literal as JSON.parse(JSON.stringify())', ({ store }, json) =>
+        expect(getPath(store.getSnapshot().get('_:m-1'), 'encoding', 0, '@value')).toEqual(
+          JSON.parse(JSON.stringify(json))
+        )
+      )
+      .and('should store Date as ISO string, NaN as null, and undefined in array as null', ({ store }) =>
+        expect(getPath(store.getSnapshot().get('_:m-1'), 'encoding', 0, '@value')).toEqual({
+          a: [null],
+          date: '1970-01-01T00:00:00.000Z',
+          nan: null
+        })
+      );
+  },
+  NodeTest
+);
