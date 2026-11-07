@@ -12,11 +12,14 @@
  *
  * - Append: children are upserted in `dateCreated` order, one transaction per child
  * - Random: children are upserted in random order, one transaction per child
+ * - Append, card: same as append, each child has an Adaptive Card-like JSON literal (~45 objects), with and without
+ *   cloning, i.e. `upsert(id, updater, { clone })`, up to 10,000 nodes as validating JSON literal is slow
  * - Iterate: iterating `getSortedParts()` after append
  * - Memory: heap used after append, requires `--expose-gc`
  */
 import Store, { type StoreController } from './Store.ts';
 
+const MAX_NUM_CARD_NODES = 10_000;
 const NUM_NODES = Object.freeze([1_000, 10_000, 50_000, 100_000]);
 const NUM_RUNS = 3;
 const NUM_WARMUP_NODES = 5_000;
@@ -75,12 +78,32 @@ function createIndices(numNodes: number, order: Order): number[] {
   return indices;
 }
 
+/** Creates an Adaptive Card-like JSON value with ~45 objects and arrays. */
+function createCard(index: number): unknown {
+  return {
+    actions: [{ data: { index }, title: 'OK', type: 'Action.Submit' }],
+    body: Array.from({ length: 10 }, (_, itemIndex) => ({
+      items: [
+        { size: 'medium', text: `Item ${itemIndex}`, type: 'TextBlock', wrap: true },
+        { type: 'Image', url: `https://example.com/${itemIndex}.png` }
+      ],
+      type: 'Container'
+    })),
+    type: 'AdaptiveCard',
+    version: '1.5'
+  };
+}
+
 /**
  * Upserts children into a store.
  *
  * @returns The store and time spent in milliseconds.
  */
-function upsertChildren(numNodes: number, order: Order): { readonly duration: number; readonly store: Store } {
+function upsertChildren(
+  numNodes: number,
+  order: Order,
+  init?: { readonly card?: boolean | undefined; readonly clone?: boolean | undefined } | undefined
+): { readonly duration: number; readonly store: Store } {
   const { controller, store } = createStore();
   const indices = createIndices(numNodes, order);
   const start = performance.now();
@@ -89,12 +112,17 @@ function upsertChildren(numNodes: number, order: Order): { readonly duration: nu
     const id = `_:m-${index}` as const;
 
     controller.edit(transaction =>
-      transaction.upsert(id, () => ({
-        '@id': id,
-        '@type': new Set(['Message']),
-        dateCreated: new Date(START_TIME + index * 1_000).toISOString(),
-        isPartOf: new Set([{ '@id': '_:c-1' }])
-      }))
+      transaction.upsert(
+        id,
+        () => ({
+          '@id': id,
+          '@type': new Set(['Message']),
+          dateCreated: new Date(START_TIME + index * 1_000).toISOString(),
+          isPartOf: new Set([{ '@id': '_:c-1' }]),
+          ...(init?.card && { encoding: [{ '@type': '@json' as const, '@value': createCard(index) }] })
+        }),
+        { clone: init?.clone }
+      )
     );
   }
 
@@ -179,6 +207,26 @@ const BENCHMARKS: readonly Benchmark[] = Object.freeze([
     fractionDigits: 2,
     name: 'Random',
     run: (numNodes: number) => upsertChildren(numNodes, 'random').duration,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Append, card (clone)',
+    run: (numNodes: number) =>
+      numNodes > MAX_NUM_CARD_NODES
+        ? undefined
+        : upsertChildren(numNodes, 'append', { card: true, clone: true }).duration,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Append, card (no clone)',
+    run: (numNodes: number) =>
+      numNodes > MAX_NUM_CARD_NODES
+        ? undefined
+        : upsertChildren(numNodes, 'append', { card: true, clone: false }).duration,
     scale: 1_000,
     unit: 'µs/node'
   },

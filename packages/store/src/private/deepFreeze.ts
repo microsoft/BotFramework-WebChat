@@ -86,14 +86,16 @@ function setDataProperty(target: object, key: string, value: unknown): boolean {
  * @returns `false` if some properties cannot be deleted.
  */
 function deleteExtraProperties(target: object, value: object, numKeys: number): boolean {
-  const ownKeys = Reflect.ownKeys(target);
-
   // Fast path: nothing to delete. Arrays have an extra "length" own property.
-  if (ownKeys.length === numKeys + (Array.isArray(target) ? 1 : 0)) {
+  // `Object.getOwnPropertyNames()` and `Object.getOwnPropertySymbols()` are much faster than `Reflect.ownKeys()` in V8.
+  if (
+    !Object.getOwnPropertySymbols(target).length &&
+    Object.getOwnPropertyNames(target).length === numKeys + (Array.isArray(target) ? 1 : 0)
+  ) {
     return true;
   }
 
-  return ownKeys.every(
+  return Reflect.ownKeys(target).every(
     key =>
       (typeof key === 'string' &&
         !isDangerousKey(key) &&
