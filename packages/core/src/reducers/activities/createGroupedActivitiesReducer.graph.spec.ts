@@ -241,11 +241,11 @@ scenario('a transaction that throws', bdd => {
     })
     .when('an update of a-1 into "h2" throws, then a-2 arrives', ({ reducer, state }) => {
       let error: unknown;
-      // The store rejects `NaN` in a JSON literal. The JSON projection never holds one, so it is injected here: the store
-      // throws after a-1 already left "h1" in the transaction.
+      // The store rejects a `BigInt` in a JSON literal (as `JSON.stringify()` throws). The JSON projection never holds
+      // one, so it is injected here: the store throws after a-1 already left "h1" in the transaction.
       const toJSONValueSpy = jest
         .spyOn(toJSONValueModule, 'default')
-        .mockImplementationOnce(value => ({ ...(value as object), value: NaN }));
+        .mockImplementationOnce(value => ({ ...(value as object), value: BigInt(1) }));
 
       try {
         reducer(state, incoming(botActivity('a-1', 'one updated', 1_000, howTo('_:h2'))));

@@ -1,20 +1,5 @@
-import {
-  array,
-  boolean,
-  check,
-  custom,
-  lazy,
-  null_,
-  number,
-  pipe,
-  record,
-  string,
-  transform,
-  undefined_,
-  union,
-  unknown,
-  type GenericSchema
-} from 'valibot';
+import { pipe, rawTransform, unknown, type GenericSchema } from 'valibot';
+import { isDangerousKey } from '../private/deepFreeze.ts';
 
 type JSONValue =
   | string
@@ -25,91 +10,147 @@ type JSONValue =
   | { readonly [key: string]: JSONValue }
   | readonly JSONValue[];
 
+/** Returned by `toJSONValue()` when `JSON.stringify()` would skip the value, i.e. `undefined`, function, and symbol. */
+const OMITTED: unique symbol = Symbol('omitted');
+
+/** Thrown when `JSON.stringify()` would throw. */
+class JSONValueError extends TypeError {}
+
 /**
- * Checks if the value is a plain object, i.e. created by `{}` or `Object.create(null)`.
+ * Unwraps boxed primitives, e.g. `new Number(1)`, as `JSON.stringify()` does.
  *
- * Class instances (e.g. `Date`, `Map`, `URL`) are not plain objects and are not JSON values.
+ * @see {@link https://tc39.es/ecma262/#sec-serializejsonproperty ECMAScript: SerializeJSONProperty}
  */
-function isPlainObject(value: unknown): boolean {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  const prototype = Object.getPrototypeOf(value);
-
-  return prototype === Object.prototype || prototype === null;
+function unbox(value: object): unknown {
+  return value instanceof Number
+    ? Number(value)
+    : value instanceof String
+      ? String(value)
+      : value instanceof Boolean || value instanceof BigInt
+        ? value.valueOf()
+        : value;
 }
 
 /**
- * Checks if the value is recursive, i.e. an array or plain object containing itself, directly or indirectly.
- *
- * Recursive values cannot be serialized by `JSON.stringify()`. The same object appearing more than once without
- * containing itself (e.g. `{ one: shared, two: shared }`) is not recursive.
+ * Calls `toJSON()` if any, then unwraps boxed primitives, as `JSON.stringify()` does.
  */
-function isRecursive(value: unknown, ancestors: Set<object> = new Set()): boolean {
-  // Other objects are not JSON values and will be rejected by the schema.
-  if (!value || typeof value !== 'object' || (!Array.isArray(value) && !isPlainObject(value))) {
-    return false;
-  } else if (ancestors.has(value)) {
-    return true;
+function preprocess(key: string, value: unknown): unknown {
+  if ((value && typeof value === 'object') || typeof value === 'bigint') {
+    const { toJSON } = value as { readonly toJSON?: unknown };
+
+    typeof toJSON === 'function' && (value = toJSON.call(value, key));
   }
 
-  ancestors.add(value);
-
-  const recursive = Object.values(value).some(value => isRecursive(value, ancestors));
-
-  ancestors.delete(value);
-
-  return recursive;
+  return value && typeof value === 'object' ? unbox(value) : value;
 }
 
-const nonRecursiveJSONValueSchema: GenericSchema<JSONValue> =
-  // Lazy because self-referencing.
-  lazy(() =>
-    union(
-      [
-        boolean(),
-        null_(),
-        number(),
-        string(),
-        array(
-          union([
-            nonRecursiveJSONValueSchema,
-            // In array, transform undefined into null.
-            // JSON.stringify([1, undefined, 3]) === [1, null, 3]
-            pipe(
-              undefined_(),
-              transform(() => null)
-            )
-          ])
-        ),
-        pipe(
-          // Only plain objects, class instances such as `Date` and `Map` are not allowed.
-          // Must be checked before `record()`, which copies the object into a plain object.
-          custom<{ readonly [key: string]: JSONValue }>(isPlainObject, 'Only plain object is allowed for JSON value'),
-          // In object, remove property with value of undefined.
-          // JSON.stringify({ one: 1, two: undefined, three: 3 }) === { one: 1, three: 3 }
-          record(string(), union([nonRecursiveJSONValueSchema, undefined_()])),
-          transform(value =>
-            Object.fromEntries(Object.entries(value).filter(([_, value]) => typeof value !== 'undefined'))
-          )
-        )
-      ],
-      'Only boolean, null, number, string, array, and plain object is allowed for JSON value'
-    )
-  );
+function toJSONArray(value: readonly unknown[], ancestors: object[]): JSONValue[] {
+  const array: JSONValue[] = [];
+
+  for (let index = 0; index < value.length; index++) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    const item = toJSONValue(`${index}`, value[+index], ancestors);
+
+    array.push(item === OMITTED ? null : item);
+  }
+
+  return array;
+}
+
+function toJSONObject(value: object, ancestors: object[]): Record<string, JSONValue> {
+  const object: Record<string, JSONValue> = {};
+
+  for (const key of Object.keys(value)) {
+    if (!isDangerousKey(key)) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      const item = toJSONValue(key, Reflect.get(value, key), ancestors);
+
+      // Dangerous keys are skipped, bracket assignment on plain object will not set prototype.
+      // eslint-disable-next-line security/detect-object-injection
+      item === OMITTED || (object[key] = item);
+    }
+  }
+
+  return object;
+}
 
 /**
- * Schema of JSON value: boolean, null, number, string, array, and plain object.
+ * Converts the value into what `JSON.parse(JSON.stringify(value))` would return, in a single pass.
  *
- * - Recursive values are not allowed, they are checked once up front, as parsing them would never end
- * - Class instances (e.g. `Date`, `Map`) are not allowed, `toJSON()` is not called
- * - Property with value of `undefined` is removed, `undefined` in array is transformed into `null`
+ * Follows the `SerializeJSONProperty` algorithm, then `JSON.parse()`:
+ *
+ * - `toJSON()` is called with the key, e.g. `Date` becomes an ISO string
+ * - Boxed primitives (e.g. `new Number(1)`) are unwrapped
+ * - `NaN`, `Infinity`, and `-Infinity` become `null`, `-0` becomes `0`
+ * - `undefined`, functions, and symbols are omitted: removed from object, or become `null` in array (including hole)
+ * - Other objects (e.g. class instances, `Map`, `Set`, objects without prototype) become plain objects of their own
+ *   enumerable string-keyed properties, getters are called once
+ * - Arrays become plain arrays of their `length`, extra properties are dropped
+ * - Throws on recursion and `BigInt`, as `JSON.stringify()` does
+ *
+ * The only difference: dangerous keys (e.g. `__proto__`, see `isDangerousKey()`) are removed and their getters are not
+ * called, while `JSON.parse()` would create them as own properties.
+ *
+ * @param key Key of the value in its parent, passed to `toJSON()`, `''` for the root.
+ * @param ancestors Arrays and objects being converted, to detect recursion.
+ */
+function toJSONValue(key: string, originalValue: unknown, ancestors: object[]): JSONValue | typeof OMITTED {
+  const value = preprocess(key, originalValue);
+
+  if (value === null || typeof value === 'boolean' || typeof value === 'string') {
+    return value;
+  } else if (typeof value === 'number') {
+    // `-0 + 0` is `0`.
+    return Number.isFinite(value) ? value + 0 : null;
+  } else if (typeof value === 'bigint') {
+    throw new JSONValueError('JSON value must not contain BigInt');
+  } else if (!value || typeof value !== 'object') {
+    // `undefined`, function, and symbol.
+    return OMITTED;
+  } else if (ancestors.includes(value)) {
+    throw new JSONValueError('JSON value must not be recursive');
+  }
+
+  ancestors.push(value);
+
+  const result = Array.isArray(value) ? toJSONArray(value, ancestors) : toJSONObject(value, ancestors);
+
+  ancestors.pop();
+
+  return result;
+}
+
+/**
+ * Schema of JSON value, the output is exactly the same as `JSON.parse(JSON.stringify(value))`, except dangerous keys are
+ * removed, see `toJSONValue()`.
+ *
+ * Fails when `JSON.parse(JSON.stringify(value))` would throw: recursion, `BigInt`, and when the value itself is omitted
+ * (`undefined`, function, or symbol), which `JSON.stringify()` returns `undefined`.
+ *
+ * Arrays and objects are always copied in a single pass, `toJSON()` and getters are called once, as `JSON.stringify()`
+ * does.
  */
 const jsonValueSchema: GenericSchema<unknown, JSONValue> = pipe(
   unknown(),
-  check(value => !isRecursive(value), 'JSON value must not be recursive'),
-  nonRecursiveJSONValueSchema
+  rawTransform(({ addIssue, dataset: { value }, NEVER }) => {
+    try {
+      const result = toJSONValue('', value, []);
+
+      if (result !== OMITTED) {
+        return result;
+      }
+
+      addIssue({ message: 'JSON value must not be undefined, function, or symbol' });
+    } catch (error) {
+      if (!(error instanceof JSONValueError)) {
+        throw error;
+      }
+
+      addIssue({ message: error.message });
+    }
+
+    return NEVER;
+  })
 );
 
 export { jsonValueSchema, type JSONValue };
