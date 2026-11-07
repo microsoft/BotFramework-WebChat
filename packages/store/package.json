@@ -5,14 +5,24 @@
   "license": "MIT",
   "author": "",
   "exports": {
-    ".": {
+    "./directlinejs": {
       "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
+        "types": "./dist/botframework-webchat-store-directlinejs.d.mts",
+        "default": "./dist/botframework-webchat-store-directlinejs.mjs"
       },
       "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "types": "./dist/botframework-webchat-store-directlinejs.d.ts",
+        "default": "./dist/botframework-webchat-store-directlinejs.js"
+      }
+    },
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-store.d.mts",
+        "default": "./dist/botframework-webchat-store.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-store.d.ts",
+        "default": "./dist/botframework-webchat-store.js"
       }
     }
   },

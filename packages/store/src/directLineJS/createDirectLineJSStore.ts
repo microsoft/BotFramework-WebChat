@@ -1,10 +1,10 @@
-import Store from './Store.ts';
+import Store from '../Store.ts';
 
-type DirectLineStoreInit = {
+type DirectLineJSStoreInit = {
   token: string;
 };
 
-function createDirectLineStore(_init: DirectLineStoreInit): Store {
+function createDirectLineStore(_init: DirectLineJSStoreInit): Store {
   return new Store({
     start(controller) {
       controller.edit(transaction => {
@@ -19,3 +19,4 @@ function createDirectLineStore(_init: DirectLineStoreInit): Store {
 }
 
 export default createDirectLineStore;
+export { type DirectLineJSStoreInit };
