@@ -3,6 +3,12 @@
 // `botframework-webchat-core/activities` only, so there is one copy of this module (its caches are per module).
 
 export { type ActivitiesCoreEnv } from './ActivitiesCoreEnv';
+export {
+  default as createActivitiesStore,
+  type ActivitiesStore,
+  type ActivitiesStoreChange,
+  type ActivitiesStoreListener
+} from './createActivitiesStore';
 export { default as deleteActivityByLocalId } from './deleteActivityByLocalId';
 export { CONVERSATION_ID, default as createActivitiesGraph, type ActivitiesGraph } from './graph/createActivitiesGraph';
 export { default as getSortedMessages, type GetParts } from './graph/getSortedMessages';
