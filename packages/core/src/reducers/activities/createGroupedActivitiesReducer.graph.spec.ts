@@ -138,6 +138,44 @@ scenario('a transaction that throws', bdd => {
     );
 });
 
+scenario('the activity keeps the host’s objects, as before the store', bdd => {
+  bdd
+    .given('a card object sent twice, as in `hack.persistValuesMod.html`', () => {
+      const reducer = createGroupedActivitiesReducer(ponyfill, debugAPI);
+      const card = {
+        content: { body: [], type: 'AdaptiveCard' },
+        contentType: 'application/vnd.microsoft.card.adaptive'
+      };
+
+      return { card, reducer };
+    })
+    .when('a-1 arrives with the card, then an update of a-1 with the same card', ({ card, reducer }) => {
+      const s1 = reducer(
+        reducer(undefined, { type: '@@INIT' } as any),
+        incoming(botActivity('a-1', 'one', 1_000, { attachments: [card] }))
+      );
+
+      return { s1, s2: reducer(s1, incoming(botActivity('a-1', 'one updated', 1_000, { attachments: [card] }))) };
+    })
+    .then('should output the same card object', ({ card }, { s1, s2 }) => {
+      expect(s1.sortedActivities[0]?.attachments?.[0]).toBe(card);
+      expect(s2.sortedActivities[0]?.attachments?.[0]).toBe(card);
+    })
+    .and('should output the same activity object from `activityMap`', (_, { s2 }) => {
+      const [activity] = s2.sortedActivities;
+
+      expect(s2.activityMap.get(activity?.channelData['webchat:internal:local-id'] as any)?.activity).toBe(activity);
+    })
+    .and('should keep a copy in the store', ({ card }, { s2 }) => {
+      const [activity] = s2.sortedActivities;
+      const node = s2.graph?.store.getSnapshot().get(activity?.channelData['webchat:internal:local-id'] ?? '');
+      const boxed = (node?.['urn:microsoft:webchat:direct-line-activity:raw-json'] as any)[0]['@value'];
+
+      expect(boxed.attachments[0]).toEqual(card);
+      expect(boxed.attachments[0]).not.toBe(card);
+    });
+});
+
 scenario('send status is read from the message node', bdd => {
   bdd
     .given('an outgoing activity, rejected', () => {

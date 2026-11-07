@@ -1,3 +1,4 @@
+import type { Activity } from '../../types';
 import type { GraphIdentifier, GraphNode, GraphTransaction } from '../types';
 import { getParentId, withProperties } from './nodeProperties';
 import sortParentsFirst from './sortParentsFirst';
@@ -9,7 +10,15 @@ import { forgetSortKeys, hasSameSortKey } from './sortKeys';
  */
 type PartIndex = ReadonlyMap<GraphIdentifier, readonly GraphIdentifier[]>;
 
+/**
+ * The activity of each message node, as the host sent it (see `State.graphActivities`): the store holds a JSON literal
+ * of it, core keeps the host's object.
+ */
+type ActivityTable = ReadonlyMap<GraphIdentifier, Activity>;
+
 type FlushResult = {
+  /** Activities set in this transaction, by node ID (their nodes are in `changedNodeIds`). */
+  readonly changedActivities: ActivityTable;
   /** IDs of the nodes core upserted. The stored versions are read from the snapshot after the commit. */
   readonly changedNodeIds: readonly GraphIdentifier[];
   readonly changedParentIds: readonly GraphIdentifier[];
@@ -29,14 +38,23 @@ class WorkingGraph {
   /**
    * @param snapshot The store's snapshot of the last commit (`store.getSnapshot()`). Reads hit it directly: nothing
    *                 is upserted before `flush()`.
+   * @param activities The activities of the message nodes before this transaction.
    */
-  constructor(transaction: GraphTransaction, snapshot: ReadonlyMap<string, GraphNode>, partIndex: PartIndex) {
+  constructor(
+    transaction: GraphTransaction,
+    snapshot: ReadonlyMap<string, GraphNode>,
+    partIndex: PartIndex,
+    activities: ActivityTable = new Map()
+  ) {
+    this.#activities = activities;
     this.#partIndex = partIndex;
     this.#snapshot = snapshot;
     this.#transaction = transaction;
   }
 
+  #activities: ActivityTable;
   #partIndex: PartIndex;
+  #pendingActivities = new Map<GraphIdentifier, Activity>();
   #pendingNodes = new Map<GraphIdentifier, GraphNode>();
   #pendingParts = new Map<GraphIdentifier, readonly GraphIdentifier[]>();
   #previousNodes = new Map<GraphIdentifier, GraphNode | undefined>();
@@ -46,6 +64,16 @@ class WorkingGraph {
 
   getNode(id: GraphIdentifier): GraphNode | undefined {
     return this.#pendingNodes.get(id) ?? this.#snapshot.get(id);
+  }
+
+  /** The activity of a message node, as the host sent it (with core's `channelData`, without the send status). */
+  getActivity(id: GraphIdentifier): Activity | undefined {
+    return this.#pendingActivities.get(id) ?? this.#activities.get(id);
+  }
+
+  /** Sets the activity of a message node; the caller also sets the node (its JSON literal), see `activityNode.ts`. */
+  setActivity(id: GraphIdentifier, activity: Activity): void {
+    this.#pendingActivities.set(id, activity);
   }
 
   getParts(parentId: GraphIdentifier): readonly GraphIdentifier[] {
@@ -101,6 +129,7 @@ class WorkingGraph {
     }
 
     return Object.freeze({
+      changedActivities: this.#pendingActivities,
       changedNodeIds: Object.freeze(Array.from(this.#pendingNodes.keys())),
       changedParentIds: Object.freeze(Array.from(this.#pendingParts.keys())),
       partIndex: Object.freeze(partIndex),
@@ -111,4 +140,4 @@ class WorkingGraph {
 }
 
 export default WorkingGraph;
-export { type FlushResult, type PartIndex };
+export { type ActivityTable, type FlushResult, type PartIndex };

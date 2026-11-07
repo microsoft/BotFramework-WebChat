@@ -29,21 +29,20 @@ import {
   STREAM_SEQUENCE
 } from './vocabulary';
 
-// Entries of unchanged nodes are reused: a node object only changes when the store stores a new version of it.
+// Entries of unchanged nodes are reused: a node object only changes when the store stores a new version of it, and the
+// entry is checked against the node's output activity (which only changes with the activity kept by core).
 const activityMapEntryCache = new WeakMap<GraphNode, ActivityMapEntry>();
 const sortedChatHistoryEntryCache = new WeakMap<GraphNode, SortedChatHistoryEntry>();
 
-function getActivityMapEntry(node: GraphNode): ActivityMapEntry | undefined {
+/** Reads the activity core keeps for a message node (`State.graphActivities`). */
+type GetKeptActivity = (id: GraphIdentifier) => Activity | undefined;
+
+function getActivityMapEntry(node: GraphNode, getKeptActivity: GetKeptActivity): ActivityMapEntry | undefined {
+  const activity = getActivity(node, getKeptActivity(node['@id']));
   const cachedEntry = activityMapEntryCache.get(node);
 
-  if (cachedEntry) {
-    return cachedEntry;
-  }
-
-  const activity = getActivity(node);
-
-  if (!activity) {
-    return undefined;
+  if (!activity || cachedEntry?.activity === activity) {
+    return activity && cachedEntry;
   }
 
   const entry: ActivityMapEntry = Object.freeze({
@@ -92,13 +91,14 @@ function getSortedChatHistoryEntry(part: GraphNode): SortedChatHistoryEntry {
 function toLivestreamSessionMapEntry(
   session: GraphNode,
   getNode: GetNode,
-  getParts: GetParts
+  getParts: GetParts,
+  getKeptActivity: GetKeptActivity
 ): LivestreamSessionMapEntry {
   const activities: LivestreamSessionMapEntryActivityEntry[] = [];
 
   getParts(session['@id']).forEach(revisionId => {
     const revision = getNode(revisionId);
-    const entry = revision && getActivityMapEntry(revision);
+    const entry = revision && getActivityMapEntry(revision, getKeptActivity);
 
     entry &&
       activities.push(
@@ -145,7 +145,8 @@ type ActivityMaps = {
 function updateActivityMaps(
   { activityIdToLocalIdMap, activityMap, clientActivityIdToLocalIdMap }: ActivityMaps,
   previousEntry: ActivityMapEntry | undefined,
-  node: GraphNode
+  node: GraphNode,
+  getKeptActivity: GetKeptActivity
 ): void {
   const activityLocalId = node['@id'] satisfies string as LocalId;
 
@@ -162,7 +163,7 @@ function updateActivityMaps(
     activityMap.delete(activityLocalId);
   }
 
-  const entry = getParentId(node) ? getActivityMapEntry(node) : undefined;
+  const entry = getParentId(node) ? getActivityMapEntry(node, getKeptActivity) : undefined;
 
   if (entry) {
     const { activity } = entry;
@@ -180,7 +181,8 @@ function updateGroupingMaps(
   livestreamSessionMap: ReadWriteMap<LivestreamSessionId, LivestreamSessionMapEntry>,
   affectedParentIds: ReadonlySet<GraphIdentifier>,
   getNode: GetNode,
-  getParts: GetParts
+  getParts: GetParts,
+  getKeptActivity: GetKeptActivity
 ): void {
   affectedParentIds.forEach(parentId => {
     const parent = getNode(parentId);
@@ -190,7 +192,7 @@ function updateGroupingMaps(
       isAttached
         ? livestreamSessionMap.set(
             getLivestreamSessionId(parent),
-            toLivestreamSessionMapEntry(parent, getNode, getParts)
+            toLivestreamSessionMapEntry(parent, getNode, getParts, getKeptActivity)
           )
         : livestreamSessionMap.delete(getLivestreamSessionId(parent));
     } else if (parent && hasType(parent, HOW_TO_TYPE)) {
@@ -226,7 +228,8 @@ function patchFlatLists(
   partIndex: FlushResult['partIndex'],
   sortedMessageIds: FlushResult['sortedMessageIds'],
   changedNodeIds: FlushResult['changedNodeIds'],
-  getNode: GetNode
+  getNode: GetNode,
+  getKeptActivity: GetKeptActivity
 ):
   | {
       readonly sortedActivities: readonly Activity[];
@@ -267,7 +270,7 @@ function patchFlatLists(
 
     if (changed.has(id)) {
       const node = getNode(id);
-      const entry = node && getActivityMapEntry(node);
+      const entry = node && getActivityMapEntry(node, getKeptActivity);
 
       if (!node || !entry) {
         return undefined;
@@ -304,12 +307,18 @@ function patchFlatLists(
 export default function deriveState(
   graph: ActivitiesGraph,
   previousState: State,
-  { changedNodeIds, changedParentIds, partIndex, previousNodes, sortedMessageIds }: FlushResult
+  { changedActivities, changedNodeIds, changedParentIds, partIndex, previousNodes, sortedMessageIds }: FlushResult
 ): State {
   // The store's immutable snapshot of the commit that just happened: this state's graph.
   const snapshot = graph.store.getSnapshot();
   const getNode: GetNode = id => snapshot.get(id);
   const getParts: GetParts = parentId => partIndex.get(parentId) ?? [];
+
+  const graphActivities = mutateMap(previousState.graphActivities);
+
+  changedActivities.forEach((activity, id) => graphActivities.set(id, activity));
+
+  const getKeptActivity: GetKeptActivity = id => graphActivities.get(id);
 
   const activityMaps: ActivityMaps = {
     activityIdToLocalIdMap: mutateMap(previousState.activityIdToLocalIdMap),
@@ -332,7 +341,12 @@ export default function deriveState(
     [getParentId(node), getParentId(previousNodes.get(nodeId))].forEach(id => id && affectedParentIds.add(id));
     (hasType(node, HOW_TO_TYPE) || hasType(node, LIVESTREAM_SESSION_TYPE)) && affectedParentIds.add(nodeId);
     hasType(node, DIRECT_LINE_ACTIVITY_TYPE) &&
-      updateActivityMaps(activityMaps, previousState.activityMap.get(nodeId satisfies string as LocalId), node);
+      updateActivityMaps(
+        activityMaps,
+        previousState.activityMap.get(nodeId satisfies string as LocalId),
+        node,
+        getKeptActivity
+      );
   });
 
   Array.from(affectedParentIds).forEach(parentId => {
@@ -344,9 +358,16 @@ export default function deriveState(
   const howToGroupingMap = mutateMap(previousState.howToGroupingMap);
   const livestreamSessionMap = mutateMap(previousState.livestreamSessionMap);
 
-  updateGroupingMaps(howToGroupingMap, livestreamSessionMap, affectedParentIds, getNode, getParts);
+  updateGroupingMaps(howToGroupingMap, livestreamSessionMap, affectedParentIds, getNode, getParts, getKeptActivity);
 
-  const patchedLists = patchFlatLists(previousState, partIndex, sortedMessageIds, changedNodeIds, getNode);
+  const patchedLists = patchFlatLists(
+    previousState,
+    partIndex,
+    sortedMessageIds,
+    changedNodeIds,
+    getNode,
+    getKeptActivity
+  );
 
   const sortedChatHistoryList =
     patchedLists?.sortedChatHistoryList ??
@@ -360,7 +381,7 @@ export default function deriveState(
     patchedLists?.sortedActivities ??
     (sortedMessageIds ?? getSortedMessages(getNode, getParts, CONVERSATION_ID).map(node => node['@id'])).flatMap(id => {
       const node = getNode(id);
-      const entry = node && getActivityMapEntry(node);
+      const entry = node && getActivityMapEntry(node, getKeptActivity);
 
       return entry ? [entry.activity] : [];
     });
@@ -370,6 +391,7 @@ export default function deriveState(
     activityMap: activityMaps.activityMap.commit(),
     clientActivityIdToLocalIdMap: activityMaps.clientActivityIdToLocalIdMap.commit(),
     graph,
+    graphActivities: graphActivities.commit(),
     graphPartIndex: partIndex,
     graphSnapshot: snapshot,
     howToGroupingMap: howToGroupingMap.commit(),

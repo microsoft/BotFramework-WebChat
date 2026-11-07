@@ -22,8 +22,11 @@ const POSITION_INCREMENT = 1_000;
 
 const SEND_STATUSES: ReadonlySet<string> = new Set<SendStatus>(['send failed', 'sending', 'sent']);
 
-/** Output activity of each node, so an unchanged node keeps the same activity object (and React does not re-render). */
-const outputActivityCache = new WeakMap<GraphNode, Activity>();
+/**
+ * Output activity of each kept activity (`State.graphActivities`) with its send status, so an unchanged activity keeps
+ * the same object (and React does not re-render).
+ */
+const outputActivityCache = new WeakMap<Activity, { readonly activity: Activity; readonly sendStatus: SendStatus }>();
 
 /** `webchat:internal:position` of each node (the node objects are immutable). */
 const activityPositionCache = new WeakMap<GraphNode, number | undefined>();
@@ -51,53 +54,67 @@ function getCachedActivityPosition(node: GraphNode): number | undefined {
   return position;
 }
 
+/** Boxes the activity kept by core as the JSON literal the node holds. */
+function toJSONLiteral(keptActivity: Activity): Readonly<{ '@type': '@json'; '@value': unknown }> {
+  return Object.freeze({ '@type': '@json', '@value': keptActivity });
+}
+
 /**
- * Splits an activity into the node properties: the send status goes to `urn:microsoft:webchat:send-status`, the rest is
- * boxed as a JSON literal.
+ * Splits an activity: the send status goes to the node (`urn:microsoft:webchat:send-status`), the rest is kept by core
+ * as the host sent it (`State.graphActivities`) and boxed in the node as a JSON literal.
  */
-function toActivityProperties(activity: Activity): Readonly<Record<string, unknown>> {
+function splitActivity(activity: Activity): {
+  readonly keptActivity: Activity;
+  readonly properties: Readonly<Record<string, unknown>>;
+} {
   const sendStatus = querySendStatusFromOutgoingActivity(activity);
+  const keptActivity = setSendStatusInOutgoingActivity(activity, undefined);
 
-  return Object.freeze({
-    [DIRECT_LINE_ACTIVITY]: [
-      Object.freeze({ '@type': '@json', '@value': setSendStatusInOutgoingActivity(activity, undefined) })
-    ],
-    [SEND_STATUS]: sendStatus ? [sendStatus] : undefined
-  });
-}
-
-/** The node of an activity: its local ID, the activity boxed as a JSON literal, and its send status. */
-function toActivityNode(activity: Activity): GraphNode {
-  return withProperties(
-    { '@id': getLocalIdFromActivity(activity), '@type': new Set([MESSAGE_TYPE, DIRECT_LINE_ACTIVITY_TYPE]) },
-    toActivityProperties(activity)
-  );
+  return {
+    keptActivity,
+    properties: Object.freeze({
+      [DIRECT_LINE_ACTIVITY]: [toJSONLiteral(keptActivity)],
+      [SEND_STATUS]: sendStatus ? [sendStatus] : undefined
+    })
+  };
 }
 
 /**
- * The activity of a node, as core outputs it: the boxed activity with the send status read from the node
- * (`urn:microsoft:webchat:send-status`) into `channelData['webchat:send-status']`.
+ * The node of an activity (its local ID, the activity boxed as a JSON literal, and its send status), and the activity
+ * core keeps for it (`WorkingGraph.setActivity()`).
  */
-function getActivity(node: GraphNode | undefined): Activity | undefined {
-  if (!node) {
-    return undefined;
-  }
+function toActivityNode(activity: Activity): { readonly activity: Activity; readonly node: GraphNode } {
+  const { keptActivity, properties } = splitActivity(activity);
 
-  const cachedActivity = outputActivityCache.get(node);
+  return {
+    activity: keptActivity,
+    node: withProperties(
+      { '@id': getLocalIdFromActivity(activity), '@type': new Set([MESSAGE_TYPE, DIRECT_LINE_ACTIVITY_TYPE]) },
+      properties
+    )
+  };
+}
 
-  if (cachedActivity) {
-    return cachedActivity;
-  }
-
-  const boxedActivity = getBoxedActivity(node);
+/**
+ * The activity of a node, as core outputs it: the activity kept by core (the host's object, not the store's JSON copy)
+ * with the send status read from the node (`urn:microsoft:webchat:send-status`) into `channelData['webchat:send-status']`.
+ */
+function getActivity(node: GraphNode | undefined, keptActivity: Activity | undefined): Activity | undefined {
   const sendStatus = getString(node, SEND_STATUS);
 
-  const activity =
-    boxedActivity && sendStatus && SEND_STATUSES.has(sendStatus)
-      ? setSendStatusInOutgoingActivity(boxedActivity, sendStatus satisfies string as SendStatus)
-      : boxedActivity;
+  if (!node || !keptActivity || !sendStatus || !SEND_STATUSES.has(sendStatus)) {
+    return node && keptActivity;
+  }
 
-  activity && outputActivityCache.set(node, activity);
+  const cached = outputActivityCache.get(keptActivity);
+
+  if (cached?.sendStatus === sendStatus) {
+    return cached.activity;
+  }
+
+  const activity = setSendStatusInOutgoingActivity(keptActivity, sendStatus satisfies string as SendStatus);
+
+  outputActivityCache.set(keptActivity, Object.freeze({ activity, sendStatus: sendStatus as SendStatus }));
 
   return activity;
 }
@@ -125,9 +142,12 @@ function toSortFacts(activity: Activity, ponyfill: Pick<GlobalScopePonyfill, 'Da
   });
 }
 
-/** Replaces the activity of a node (boxed activity and send status), keeping its place. */
+/** Replaces the activity of a node (kept activity, JSON literal and send status), keeping its place. */
 function replaceActivity(working: WorkingGraph, node: GraphNode, activity: Activity): void {
-  working.setNode(withProperties(node, toActivityProperties(activity)));
+  const { keptActivity, properties } = splitActivity(activity);
+
+  working.setActivity(node['@id'], keptActivity);
+  working.setNode(withProperties(node, properties));
 }
 
 /** Sets the send status of a node, keeping the boxed activity as-is. */
@@ -135,18 +155,16 @@ function setSendStatus(working: WorkingGraph, node: GraphNode, sendStatus: SendS
   working.setNode(withProperties(node, { [SEND_STATUS]: [sendStatus] }));
 }
 
-/** Sets the public position (`channelData['webchat:internal:position']`) of a message node. */
+/** Sets the public position (`channelData['webchat:internal:position']`) of a message node and its kept activity. */
 function setActivityPosition(working: WorkingGraph, node: GraphNode, position: number): void {
-  const boxedActivity = getBoxedActivity(node);
+  const keptActivity = working.getActivity(node['@id']);
 
-  boxedActivity &&
-    working.setNode(
-      withProperties(node, {
-        [DIRECT_LINE_ACTIVITY]: [
-          Object.freeze({ '@type': '@json', '@value': setPositionInActivity(boxedActivity, position) })
-        ]
-      })
-    );
+  if (keptActivity) {
+    const nextActivity = setPositionInActivity(keptActivity, position);
+
+    working.setActivity(node['@id'], nextActivity);
+    working.setNode(withProperties(node, { [DIRECT_LINE_ACTIVITY]: [toJSONLiteral(nextActivity)] }));
+  }
 }
 
 /**

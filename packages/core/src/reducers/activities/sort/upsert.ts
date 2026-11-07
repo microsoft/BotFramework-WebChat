@@ -11,6 +11,8 @@ import { type Activity, type State } from './types';
 //   each part with a `position` relative to its parent (`./graph/upsertSortedMessage.ts` has the sorting rules);
 // - every upsert is one store transaction: the message, its groupings, every changed `position`,
 //   and the public `channelData['webchat:internal:position']` (`stampActivityPositions()`), each node written once;
+// - the node holds a JSON literal of the activity; core keeps the host's activity object next to the graph
+//   (`State.graphActivities`) and outputs that one, so hosts get their own objects back, as before the store;
 // - `State` is derived from the graph after each transaction (`./graph/deriveState.ts`), and can rebuild its graph
 //   when it is stale (`./graph/editState.ts`).
 //
@@ -24,6 +26,7 @@ const INITIAL_STATE = Object.freeze({
   activityMap: Object.freeze(new Map()),
   clientActivityIdToLocalIdMap: Object.freeze(new Map()),
   graph: undefined,
+  graphActivities: Object.freeze(new Map()),
   graphPartIndex: Object.freeze(new Map()),
   graphSnapshot: undefined,
   livestreamSessionMap: Object.freeze(new Map()),
@@ -45,14 +48,13 @@ const INITIAL_STATE = Object.freeze({
  */
 function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
   return editState(state, working => {
-    const changed = upsertSortedMessage(
-      working,
-      CONVERSATION_ID,
-      toActivityNode(activity),
-      toSortFacts(activity, ponyfill)
-    );
+    const { activity: keptActivity, node } = toActivityNode(activity);
+    const changed = upsertSortedMessage(working, CONVERSATION_ID, node, toSortFacts(activity, ponyfill));
 
-    changed && stampActivityPositions(working, CONVERSATION_ID);
+    if (changed) {
+      working.setActivity(node['@id'], keptActivity);
+      stampActivityPositions(working, CONVERSATION_ID);
+    }
 
     return changed;
   });

@@ -1,7 +1,7 @@
 import type { Tagged } from 'type-fest';
 import type { WebChatActivity } from '../../../types/WebChatActivity';
 import type { ActivitiesGraph } from './graph/createActivitiesGraph';
-import type { PartIndex } from './graph/private/WorkingGraph';
+import type { ActivityTable, PartIndex } from './graph/private/WorkingGraph';
 import type { GraphNode } from './graph/types';
 import type { LocalId } from './property/LocalId';
 
@@ -61,6 +61,12 @@ type State = {
    * `undefined` until the first activity.
    */
   readonly graph: ActivitiesGraph | undefined;
+  /**
+   * The activity of each message node (by local ID), as the host sent it, with core's `channelData` (local ID,
+   * position), without the send status (on the node). The store only holds JSON (`Date`, functions and object identity
+   * are not kept), so the node holds a JSON literal of it and core outputs this one, as before the store.
+   */
+  readonly graphActivities: ActivityTable;
   /** Parts of each grouping, conversation and livestream session, in `position` order. */
   readonly graphPartIndex: PartIndex;
   /**

@@ -22,7 +22,12 @@ export default function editState(state: State, editor: (working: WorkingGraph) 
   let result: FlushResult | undefined;
 
   graph.edit(transaction => {
-    const working = new WorkingGraph(transaction, graph.store.getSnapshot(), state.graphPartIndex);
+    const working = new WorkingGraph(
+      transaction,
+      graph.store.getSnapshot(),
+      state.graphPartIndex,
+      state.graphActivities
+    );
 
     if (editor(working)) {
       result = working.flush();
