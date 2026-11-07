@@ -119,6 +119,76 @@ scenario(
         expect(Object.isFrozen(target)).toBe(true);
         expect(target).toHaveProperty('two', undefined);
       });
+
+    bdd
+      .given('a sparse array', () => {
+        const value: number[] = [];
+
+        value[0] = 1;
+        value[2] = 3;
+
+        return value;
+      })
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should transform holes into null', (_, result) => {
+        expect(result).toEqual([1, null, 3]);
+        expect(Object.keys(result as object)).toEqual(['0', '1', '2']);
+      });
+
+    bdd
+      .given('a deeply nested value with undefined', () => {
+        const unchanged = { four: [4] };
+
+        return { unchanged, value: { one: [{ two: undefined, three: 3 }, undefined], unchanged } };
+      })
+      .when('parsed', ({ value }) => parse(jsonValueSchema, value))
+      .then('should normalize undefined deeply', (_, result) =>
+        expect(result).toEqual({ one: [{ three: 3 }, null], unchanged: { four: [4] } })
+      )
+      .and('should reuse unchanged parts', ({ unchanged }, result) =>
+        expect(Reflect.get(result as object, 'unchanged')).toBe(unchanged)
+      )
+      .and('should not modify the input', ({ value }) =>
+        expect(value.one).toEqual([{ two: undefined, three: 3 }, undefined])
+      );
+
+    bdd
+      .given('a JSON value without undefined', () => ({ one: [1, { two: 'two' }], three: null }))
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should return the value as-is', (target, result) => expect(result).toBe(target));
+
+    bdd
+      .given('an object with dangerous keys', () => JSON.parse('{"__proto__":{"polluted":true},"one":1}'))
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should remove dangerous keys', (_, result) => {
+        expect(Object.keys(result as object)).toEqual(['one']);
+        expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+      });
+
+    bdd.given
+      .oneOf<unknown>([
+        ['undefined', () => undefined],
+        ['NaN', () => NaN],
+        ['Infinity', () => Infinity],
+        ['a NaN nested in an array', () => [NaN]],
+        ['a symbol', () => Symbol('one')],
+        ['a bigint', () => BigInt(1)],
+        ['a function nested in an object', () => ({ one: () => 1 })]
+      ])
+      .when('parsed', target => {
+        try {
+          return parse(jsonValueSchema, target);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should throw', (_, result) =>
+        expect(result).toEqual(
+          expect.objectContaining({
+            message: 'Only boolean, null, number, string, array, and plain object is allowed for JSON value'
+          })
+        )
+      );
   },
   NodeTest
 );

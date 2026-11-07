@@ -31,10 +31,10 @@ The new design is transactional (consistent without locking) and hyperlinking (g
             - `Exact<{ '@id': string }>`, must not reference the node itself
          - JSON literal
             - `Exact<{ '@type': '@json', '@value': object }>`
-            - `@value` must be a JSON serializable object (no `Date`, function, `undefined`, recursion, etc.)
-            - For convenience reason
+            - `@value` must be a JSON serializable object (no `Date`, function, `NaN`, `Infinity`, recursion, etc.)
+            - For convenience reason, `undefined` is normalized as `JSON.stringify()` does
                - Keys in object with `undefined` value will be removed
-               - Array with `undefined` element will be removed
+               - `undefined` element (including hole) in array will be transformed into `null`
    - Rules
       - Plural form: unless specified, most property values must reside in an array and must have at least 1 item
       - Prohibited `@context` must not be defined, and is assumed "https://schema.org"
