@@ -1,4 +1,4 @@
-import { boolean, is, literal, object, optional, parse, picklist, pipe, readonly, type InferInput } from 'valibot';
+import { is, literal, object, optional, parse, picklist, pipe, readonly, type InferInput } from 'valibot';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import type { Node } from './node/Node.ts';
@@ -52,12 +52,8 @@ interface StoreTransaction {
    *   to mirror `hasPart`: children added to `hasPart` will have the parent added to their `isPartOf`, and vice versa
    * - If a child in `hasPart` is not in the graph yet, it must be upserted later in the same transaction, the parent
    *   will be added to its `isPartOf` when it is upserted
-   *
-   * Ownership: by default, arrays and objects in the node returned by the updater are cloned before frozen, the node
-   * returned is never modified. When `init.clone` is `false`, the ownership of arrays and objects in the node is
-   * transferred to the store, they are modified and frozen in place without cloning, see `deepFreeze()`.
    */
-  upsert(id: Identifier, updater: (node: Node | undefined) => Node, init?: UpsertInit | undefined): void;
+  upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = createReadonlySet<Identifier>([]);
@@ -72,15 +68,6 @@ const getSortedPartsInitSchema = pipe(
 );
 
 type GetSortedPartsInit = InferInput<typeof getSortedPartsInitSchema>;
-
-const upsertInitSchema = pipe(
-  object({
-    clone: optional(boolean('"clone" must be a boolean or undefined'))
-  }),
-  readonly()
-);
-
-type UpsertInit = InferInput<typeof upsertInitSchema>;
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
@@ -456,17 +443,16 @@ class Store {
               nextNode && setNode(nextNode);
             }
           },
-          upsert: (id: Identifier, updater: (node: Node | undefined) => Node, init?: UpsertInit | undefined): void => {
+          upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
             assertNotEnded();
 
             const safeId = parse(identifierSchema, id);
-            const safeInit = parse(optional(upsertInitSchema), init);
 
             if (typeof updater !== 'function') {
               throw new TypeError('updater must be a function');
             }
 
-            let safeNode = createNode(updater(getNode(safeId)), safeInit);
+            let safeNode = createNode(updater(getNode(safeId)));
 
             if (safeNode['@id'] !== safeId) {
               throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
@@ -616,4 +602,4 @@ class Store {
 }
 
 export default Store;
-export type { GetSortedPartsInit, StoreListener, UpsertInit, StoreSource, StoreController, StoreTransaction };
+export type { GetSortedPartsInit, StoreListener, StoreSource, StoreController, StoreTransaction };

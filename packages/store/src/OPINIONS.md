@@ -56,9 +56,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
       - Dirty read: updater pass modified version of the node
       - Node edges must be by-reference
       - Nodes are auto-converted to immutable by deep freezing
-         - By default, array and objects are cloned before frozen, inputs are never modified
-         - With `{ clone: false }`, ownership of array and objects is transferred to the store, they are modified and frozen in place
-            - If they cannot be frozen in place (e.g. sealed, non-plain prototype, non-configurable properties), they are cloned
+         - Array and objects are cloned before frozen, inputs are never modified
          - Objects are cloned as plain object
       - All referenced nodes must be upserted in the same transaction
    - Membership (`hasPart`/`isPartOf`) are auto-fixed on commit
