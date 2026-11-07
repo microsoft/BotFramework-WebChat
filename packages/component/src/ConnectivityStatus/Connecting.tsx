@@ -1,14 +1,16 @@
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { Fragment, memo } from 'react';
-import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
 import { useLiveRegion } from '../providers/LiveRegionTwin';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
+
+import styles from './ConnectivityStatus.module.css';
 
 const { useDirection, useLocalizer } = hooks;
 
@@ -20,14 +22,12 @@ const connectivityStatusConnectingPropsSchema = pipe(
   readonly()
 );
 
-type ConnectivityStatusConnectingProps = InferInput<typeof connectivityStatusConnectingPropsSchema>;
+type ConnectivityStatusConnectingProps = InferReactProps<typeof connectivityStatusConnectingPropsSchema>;
 
 function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) {
   const { reconnect = false, slow = false } = validateProps(connectivityStatusConnectingPropsSchema, props);
 
-  const [
-    { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }
-  ] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [direction] = useDirection();
   const localize = useLocalizer();
 
@@ -48,7 +48,7 @@ function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) 
       <ScreenReaderText text={alt} />
       <div
         aria-hidden={true}
-        className={classNames('webchat__connectivityStatus', warningNotificationStyleSet + '')}
+        className={cx(classNames['connectivityStatus'], classNames['connectivityStatus--warning'])}
         dir={direction}
       >
         <WarningNotificationIcon />
@@ -58,11 +58,7 @@ function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) 
   ) : (
     <Fragment>
       <ScreenReaderText text={alt} />
-      <div
-        aria-hidden={true}
-        className={classNames('webchat__connectivityStatus', connectivityNotificationStyleSet + '')}
-        dir={direction}
-      >
+      <div aria-hidden={true} className={classNames['connectivityStatus']} dir={direction}>
         <SpinnerAnimation />
         {reconnect ? interruptedConnectionText : initialConnectionText}
       </div>

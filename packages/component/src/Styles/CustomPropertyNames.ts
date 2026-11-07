@@ -40,6 +40,8 @@ const CustomPropertyNames = Object.freeze({
   ColorCardPushButton: '--webchat__color--card-push-button',
   ColorCodeBlock: '--webchat__color--code-block',
   ColorConnectivityFailed: '--webchat__color--connectivity-failed',
+  ColorConnectivitySlow: '--webchat__color--connectivity-slow',
+  ColorNotificationText: '--webchat__color--notification-text',
   ColorSubtle: '--webchat__color--subtle',
   ColorTimestamp: '--webchat__color--timestamp',
   ColorTranscriptActivityVisualKeyboardIndicator: '--webchat__color--transcript-activity-visual-keyboard-indicator',
@@ -51,10 +53,15 @@ const CustomPropertyNames = Object.freeze({
   ColorTranscriptVisualKeyboardIndicator: '--webchat__color--transcript-visual-keyboard-indicator',
   FontPrimary: '--webchat__font--primary',
   FontMonospace: '--webchat__font--monospace',
+  FontSizeConnectivity: '--webchat__font-size--connectivity',
   FontSizeSmall: '--webchat__font-size--small',
   FontSizeTranscriptTerminator: '--webchat__font-size--transcript-terminator',
+  HeightSpinnerAnimation: '--webchat__height--spinner-animation',
   HeightVideo: '--webchat__height--video',
   IconURLExternalLink: '--webchat__icon-url--external-link',
+  MarginBlockConnectivity: '--webchat__margin-block--connectivity',
+  MarginInlineConnectivity: '--webchat__margin-inline--connectivity',
+  MarginSpinnerAnimation: '--webchat__margin--spinner-animation',
   MaxHeightImageBubble: '--webchat__max-height--image-bubble',
   MaxHeightSendBoxAttachmentBar: '--webchat__max-height--send-box-attachment-bar',
   MaxWidthAttachmentBubble: '--webchat__max-width--attachment-bubble',
@@ -72,6 +79,7 @@ const CustomPropertyNames = Object.freeze({
   SpaceBubbleNubUser: '--webchat__space--bubble-nub-user',
   TransitionDuration: '--webchat__transition-duration',
   TransitionEasing: '--webchat__transition-easing',
+  WidthSpinnerAnimation: '--webchat__width--spinner-animation',
   WordBreakMessageActivity: '--webchat__word-break--message-activity'
 }) satisfies Readonly<Record<string, `--webchat__${string}`>>;
 

@@ -7,6 +7,7 @@ import random from 'math-random';
 import React, { forwardRef, memo, useMemo, type Ref } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 import CustomPropertyNames from './CustomPropertyNames';
+import getDefaultSpinnerAnimationImageURL from './private/getDefaultSpinnerAnimationImageURL';
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
 const customPropertiesContainerPropsSchema = pipe(
@@ -26,6 +27,11 @@ const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 function uniqueId() {
   // eslint-disable-next-line no-magic-numbers
   return Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36);
+}
+
+// A number is in pixels, as emotion did; `unset` when the option is not set.
+function toLength(value: number | string | undefined): string {
+  return typeof value === 'number' ? `${value}px` : value || 'unset';
 }
 
 function hasBundleStyleOptions(styleOptions: StrictStyleOptions): styleOptions is StrictStyleOptions & {
@@ -70,13 +76,24 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       bubbleMinHeight,
       bubbleNubOffset,
       bubbleNubSize,
+      connectivityIconPadding,
+      connectivityMarginLeftRight,
+      connectivityMarginTopBottom,
+      connectivityTextSize,
+      failedConnectivity,
       fontSizeSmall,
       markdownExternalLinkIconImage,
       messageActivityWordBreak,
       monospaceFont,
+      notificationText,
       paddingRegular,
       primaryFont,
       sendBoxAttachmentBarMaxHeight,
+      slowConnectivity,
+      spinnerAnimationBackgroundImage,
+      spinnerAnimationHeight,
+      spinnerAnimationPadding,
+      spinnerAnimationWidth,
       subtle,
       timestampColor,
       transcriptActivityVisualKeyboardIndicatorColor,
@@ -119,6 +136,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   /* From component */
   ${CustomPropertyNames.BackgroundBubble}: ${bubbleBackground};
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
+  ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButton}: ${transcriptOverlayButtonBackground};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonBackgroundOnDisabled};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonBackgroundOnFocus};
@@ -143,6 +161,9 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorAccent}: ${accent};
   ${CustomPropertyNames.ColorBubble}: ${bubbleTextColor};
   ${CustomPropertyNames.ColorBubbleUser}: ${bubbleFromUserTextColor};
+  ${CustomPropertyNames.ColorConnectivityFailed}: ${failedConnectivity};
+  ${CustomPropertyNames.ColorConnectivitySlow}: ${slowConnectivity};
+  ${CustomPropertyNames.ColorNotificationText}: ${notificationText};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
   ${CustomPropertyNames.ColorTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorColor};
@@ -154,10 +175,15 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.FontMonospace}: ${monospaceFont};
   ${CustomPropertyNames.FontPrimary}: ${primaryFont};
+  ${CustomPropertyNames.FontSizeConnectivity}: ${toLength(connectivityTextSize)};
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
-  ${CustomPropertyNames.HeightVideo}: ${typeof videoHeight === 'number' ? `${videoHeight}px` : videoHeight || 'unset'};
+  ${CustomPropertyNames.HeightSpinnerAnimation}: ${toLength(spinnerAnimationHeight)};
+  ${CustomPropertyNames.HeightVideo}: ${toLength(videoHeight)};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
+  ${CustomPropertyNames.MarginBlockConnectivity}: ${toLength(connectivityMarginTopBottom)};
+  ${CustomPropertyNames.MarginInlineConnectivity}: ${toLength(connectivityMarginLeftRight)};
+  ${CustomPropertyNames.MarginSpinnerAnimation}: ${toLength(spinnerAnimationPadding)};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
   ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;
   ${CustomPropertyNames.MaxWidthAttachmentBubble}: ${bubbleAttachmentMaxWidth}px;
@@ -166,6 +192,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.MinWidthMessageBubble}: ${bubbleMessageMinWidth}px;
   ${CustomPropertyNames.MinHeightBubble}: ${bubbleMinHeight}px;
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
+  ${CustomPropertyNames.PaddingConnectivityIcon}: ${toLength(connectivityIconPadding)};
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
   ${CustomPropertyNames.SizeBubbleNub}: ${bubbleNubSize === undefined ? 'unset' : `${bubbleNubSize}px`};
@@ -174,6 +201,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.SpaceBubbleNubUser}: ${bubbleFromUserNubOffset}px;
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
   ${CustomPropertyNames.TransitionEasing}: ${transitionEasing};
+  ${CustomPropertyNames.WidthSpinnerAnimation}: ${toLength(spinnerAnimationWidth)};
   ${CustomPropertyNames.WordBreakMessageActivity}: ${messageActivityWordBreak};
   /* From bundle */
   ${bundleStyleProps}
