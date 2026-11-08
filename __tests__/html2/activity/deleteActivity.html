@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Delete an activity</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: The bot sent 2 messages.
+        await directLine.emulateIncomingActivity({ from: { role: 'bot' }, id: 'a-1', text: 'First', type: 'message' });
+        await directLine.emulateIncomingActivity({ from: { role: 'bot' }, id: 'a-2', text: 'Second', type: 'message' });
+
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: Both messages are shown.
+        await host.snapshot('local');
+
+        // WHEN: The first message is deleted.
+        store.dispatch({ payload: { activityID: 'a-1' }, type: 'DIRECT_LINE/DELETE_ACTIVITY' });
+
+        // THEN: Only the second message is shown, without the error of the development build.
+        await pageConditions.numActivitiesShown(1);
+
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Second');
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
