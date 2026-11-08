@@ -3,19 +3,48 @@
 /* eslint-disable security/detect-object-injection */
 
 import { act, render } from '@testing-library/react';
-import React, { memo, useLayoutEffect, useMemo, useReducer, useRef, type ReactElement, type ReactNode } from 'react';
+import {
+  muteVoiceRecording,
+  postVoiceActivity,
+  registerVoiceHandler,
+  setVoiceState,
+  unmuteVoiceRecording,
+  unregisterVoiceHandler,
+  type VoiceHandler,
+  type VoiceState,
+  type WebChatActivity
+} from 'botframework-webchat-core';
+import React, {
+  memo,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  type ReactElement,
+  type ReactNode
+} from 'react';
 import { applyMiddleware, legacy_createStore as createStore, type Store } from 'redux';
 
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
-import { useWebChatReduxContext } from '../../hooks/internal/WebChatReduxContext';
+import { useDispatch, useWebChatReduxContext } from '../../hooks/internal/WebChatReduxContext';
 import WebChatReduxProvider from '../../hooks/internal/WebChatReduxProvider';
+import usePostVoiceActivity from '../../hooks/internal/usePostVoiceActivity';
+import useRegisterVoiceHandler from '../../hooks/internal/useRegisterVoiceHandler';
+import useVoiceHandlers from '../../hooks/internal/useVoiceHandlers';
+import useVoiceStateWritable from '../../hooks/internal/useVoiceStateWritable';
 import useWebChatAPIContext from '../../hooks/internal/useWebChatAPIContext';
 import useConnectivityStatus from '../../hooks/useConnectivityStatus';
+import useDictateInterims from '../../hooks/useDictateInterims';
+import useDictateState from '../../hooks/useDictateState';
 import useNotifications from '../../hooks/useNotifications';
 import useReferenceGrammarID from '../../hooks/useReferenceGrammarID';
 import useSendBoxAttachments from '../../hooks/useSendBoxAttachments';
 import useSendBoxValue from '../../hooks/useSendBoxValue';
 import useSendTypingIndicator from '../../hooks/useSendTypingIndicator';
+import useShouldSpeakIncomingActivity from '../../hooks/useShouldSpeakIncomingActivity';
+import useVoiceRecordingMuted from '../../hooks/useVoiceRecordingMuted';
+import randomId from '../../utils/randomId';
 import ReduxDomainBridge from './ReduxDomainBridge';
 
 // Every hook switched from Redux to a domain context must re-render exactly as its implementation before the switch:
@@ -83,8 +112,37 @@ function useSelector<T>(selector: (state: any) => T, equalityFn: (x: T, y: T) =>
 
 const LEGACY_HOOKS: Readonly<Record<string, () => unknown>> = {
   useConnectivityStatus: () => [useSelector(({ connectivityStatus }) => connectivityStatus)],
+  useDictateInterims: () => [
+    useSelector(({ dictateInterims }) => dictateInterims) || [],
+    useWebChatAPIContext().setDictateInterims
+  ],
+  useDictateState: () => [useSelector(({ dictateState }) => dictateState)],
   useNotifications: () => [useSelector(({ notifications }) => notifications)],
+  usePostVoiceActivity: function usePostVoiceActivity() {
+    const dispatch = useDispatch();
+
+    return useCallback(
+      (activity: WebChatActivity) => {
+        dispatch(postVoiceActivity(activity));
+      },
+      [dispatch]
+    );
+  },
   useReferenceGrammarID: () => [useSelector(({ referenceGrammarID }) => referenceGrammarID)],
+  useRegisterVoiceHandler: function useRegisterVoiceHandler() {
+    const dispatch = useDispatch();
+
+    return useCallback(
+      (voiceHandler: VoiceHandler) => {
+        const id = randomId();
+        dispatch(registerVoiceHandler(id, voiceHandler));
+        return () => {
+          dispatch(unregisterVoiceHandler(id));
+        };
+      },
+      [dispatch]
+    );
+  },
   useSendBoxAttachments: function useSendBoxAttachments() {
     const sendBoxAttachments = useSelector(({ sendBoxAttachments }) => sendBoxAttachments);
     const { setSendBoxAttachments } = useWebChatAPIContext();
@@ -95,28 +153,82 @@ const LEGACY_HOOKS: Readonly<Record<string, () => unknown>> = {
     );
   },
   useSendBoxValue: () => [useSelector(({ sendBoxValue }) => sendBoxValue), useWebChatAPIContext().setSendBox],
-  useSendTypingIndicator: () => [useSelector(({ sendTypingIndicator }) => sendTypingIndicator)]
+  useSendTypingIndicator: () => [useSelector(({ sendTypingIndicator }) => sendTypingIndicator)],
+  useShouldSpeakIncomingActivity: function useShouldSpeakIncomingActivity() {
+    const { startSpeakingActivity, stopSpeakingActivity } = useWebChatAPIContext();
+
+    return [
+      useSelector(({ shouldSpeakIncomingActivity }) => shouldSpeakIncomingActivity),
+      useCallback(
+        value => {
+          value ? startSpeakingActivity() : stopSpeakingActivity();
+        },
+        [startSpeakingActivity, stopSpeakingActivity]
+      )
+    ];
+  },
+  useVoiceHandlers: () => Object.freeze([useSelector(state => state.voice.voiceHandlers)]),
+  useVoiceRecordingMuted: function useVoiceRecordingMuted() {
+    const dispatch = useDispatch();
+    const value = useSelector(({ voice }) => voice.microphoneMuted);
+
+    const setter = useCallback(
+      (muted: boolean) => {
+        dispatch(muted ? muteVoiceRecording() : unmuteVoiceRecording());
+      },
+      [dispatch]
+    );
+
+    return Object.freeze([value, setter]);
+  },
+  useVoiceStateWritable: function useVoiceStateWritable() {
+    const dispatch = useDispatch();
+    const setter = useCallback(
+      (state: VoiceState) => {
+        dispatch(setVoiceState(state));
+      },
+      [dispatch]
+    );
+    const value = useSelector(({ voice }) => voice.voiceState);
+    return Object.freeze([value, setter]);
+  }
 };
 
 // #endregion
 
 const HOOKS: Readonly<Record<keyof typeof LEGACY_HOOKS, () => unknown>> = {
   useConnectivityStatus,
+  useDictateInterims,
+  useDictateState,
   useNotifications,
+  usePostVoiceActivity,
   useReferenceGrammarID,
+  useRegisterVoiceHandler,
   useSendBoxAttachments,
   useSendBoxValue,
-  useSendTypingIndicator
+  useSendTypingIndicator,
+  useShouldSpeakIncomingActivity,
+  useVoiceHandlers,
+  useVoiceRecordingMuted,
+  useVoiceStateWritable
 };
 
 // Renders of each hook in `runActions()`, pinned so a change on both sides is noticed too.
 const NUM_RENDERS: Readonly<Record<keyof typeof LEGACY_HOOKS, number>> = {
   useConnectivityStatus: 5,
+  useDictateInterims: 5,
+  useDictateState: 4,
   useNotifications: 4,
+  usePostVoiceActivity: 2,
   useReferenceGrammarID: 4,
+  useRegisterVoiceHandler: 2,
   useSendBoxAttachments: 4,
   useSendBoxValue: 5,
-  useSendTypingIndicator: 4
+  useSendTypingIndicator: 4,
+  useShouldSpeakIncomingActivity: 4,
+  useVoiceHandlers: 4,
+  useVoiceRecordingMuted: 4,
+  useVoiceStateWritable: 4
 };
 
 type State = {
@@ -220,6 +332,11 @@ function Providers({ children, store }: { readonly children?: ReactNode; readonl
   );
 }
 
+// Functions differ between both implementations: only whether they kept their identity is compared.
+function withoutFunctions(value: unknown): unknown {
+  return typeof value === 'function' ? '(function)' : Array.isArray(value) ? value.map(withoutFunctions) : value;
+}
+
 // Describes the renders of a hook: the values, and whether each value (and the returned tuple) kept its identity.
 function describeRenders(renders: Renders): unknown[] {
   return renders.map((result, index) => {
@@ -231,7 +348,10 @@ function describeRenders(renders: Renders): unknown[] {
       elements: elements.map((element, elementIndex) =>
         typeof element === 'function'
           ? { function: true, sameAsPrevious: index > 0 && element === prevElements[elementIndex] }
-          : { sameAsPrevious: index > 0 && Object.is(element, prevElements[elementIndex]), value: element }
+          : {
+              sameAsPrevious: index > 0 && Object.is(element, prevElements[elementIndex]),
+              value: withoutFunctions(element)
+            }
       ),
       sameAsPrevious: index > 0 && result === prev
     };
@@ -310,13 +430,15 @@ describe.each(Object.keys(HOOKS))('%s()', name => {
     expect(renders).toHaveLength(legacyRenders.length);
     expect(describeRenders(renders)).toEqual(describeRenders(legacyRenders));
 
-    // The values are the same objects, read from the same store.
+    // The values are the same objects, read from the same store (`useDictateInterims()` makes a new empty array).
     renders.forEach((result, index) =>
-      (Array.isArray(result) ? result : [result]).forEach(
-        (element, elementIndex) =>
-          typeof element === 'function' ||
-          expect(Object.is(element, (legacyRenders[index] as unknown[])[elementIndex])).toBe(true)
-      )
+      (Array.isArray(result) ? result : [result]).forEach((element, elementIndex) => {
+        const legacyElement = (legacyRenders[index] as unknown[])[elementIndex];
+
+        typeof element === 'function' ||
+          (Array.isArray(element) && !element.length && Array.isArray(legacyElement) && !legacyElement.length) ||
+          expect(Object.is(element, legacyElement)).toBe(true);
+      })
     );
   }
 
@@ -388,5 +510,48 @@ describe.each(Object.keys(HOOKS))('%s()', name => {
     );
 
     expectSameRenders(legacyRenders, renders);
+  });
+});
+
+// Hooks whose setters dispatch by themselves (the others return setters of WebChatAPIContext, filled by <Composer>).
+const SETTER_CALLS: Readonly<Record<string, (result: unknown) => void>> = {
+  usePostVoiceActivity: (postVoiceActivity: (activity: WebChatActivity) => void) =>
+    postVoiceActivity({ from: { id: 'u' }, name: 'dtmf', type: 'event' } as WebChatActivity),
+  useRegisterVoiceHandler: (register: (voiceHandler: VoiceHandler) => () => void) =>
+    register({ queueAudio: jest.fn(), stopAllAudio: jest.fn() } as unknown as VoiceHandler)(),
+  useVoiceRecordingMuted: ([, setMuted]: [boolean, (muted: boolean) => void]) => {
+    setMuted(true);
+    setMuted(false);
+  },
+  useVoiceStateWritable: ([, setVoiceState]: [VoiceState, (state: VoiceState) => void]) => setVoiceState('listening')
+};
+
+describe.each(Object.keys(SETTER_CALLS))('setters of %s()', name => {
+  test('should dispatch the same actions as the implementation before', () => {
+    const legacyRenders: Renders = [];
+    const renders: Renders = [];
+    const store = createTestStore();
+
+    render(
+      <Providers store={store}>
+        <Probe renders={legacyRenders} useHook={LEGACY_HOOKS[name]} />
+        <Probe renders={renders} useHook={HOOKS[name]} />
+      </Providers>
+    );
+
+    // Voice handlers are registered under a random ID.
+    const callAndGetActions = (result: unknown) => {
+      store.actions.splice(0);
+      SETTER_CALLS[name](result);
+
+      return store.actions.map(action =>
+        JSON.parse(JSON.stringify(action, (key, value) => (key === 'id' && typeof value === 'string' ? 'ID' : value)))
+      );
+    };
+
+    const legacyActions = callAndGetActions(legacyRenders.at(-1));
+
+    expect(legacyActions.length).toBeGreaterThan(0);
+    expect(callAndGetActions(renders.at(-1))).toEqual(legacyActions);
   });
 });
