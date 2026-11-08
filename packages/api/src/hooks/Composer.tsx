@@ -1,4 +1,3 @@
-import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
 import {
   type LegacyActivityMiddleware,
@@ -6,42 +5,15 @@ import {
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
-import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
-  clearSuggestedActions,
-  connect as createConnectAction,
   createStoreWithOptions,
-  disconnect,
-  dismissNotification,
-  emitTypingIndicator,
-  markActivity,
-  postActivity,
-  sendEvent,
-  sendFiles,
-  sendMessage,
-  sendMessageBack,
-  sendPostBack,
-  setDictateInterims,
-  setDictateState,
-  setLanguage,
-  setNotification,
-  setSendBox,
-  setSendBoxAttachments,
-  setSendTimeout,
-  setSendTypingIndicator,
-  startDictate,
-  startSpeakingActivity,
-  startVoiceRecording,
   stopDictate,
-  stopSpeakingActivity,
-  stopVoiceRecording,
-  submitSendBox,
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import updateIn from 'simple-update-in';
 
 import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
@@ -62,6 +34,7 @@ import ActivityListenerComposer from '../providers/ActivityListener/ActivityList
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
+import ReduxProviders from '../providers/redux/ReduxProviders';
 import CapabilitiesComposer from '../providers/Capabilities/CapabilitiesComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
@@ -80,13 +53,15 @@ import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '.
 import ToastMiddleware from '../types/ToastMiddleware';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
-import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
-import { useDispatch } from './internal/WebChatReduxContext';
-import WebChatReduxProvider from './internal/WebChatReduxProvider';
 import defaultSelectVoice from './internal/defaultSelectVoice';
+import { useChatOperationsContext } from './internal/domains/ChatOperationsContext';
+import { useNotificationsContext } from './internal/domains/NotificationsContext';
+import { useSendBoxContext } from './internal/domains/SendBoxContext';
+import { useSpeechContext } from './internal/domains/SpeechContext';
+import { useVoiceContext } from './internal/domains/VoiceContext';
 import useVoiceHandlers from './internal/useVoiceHandlers';
 import activityFallbackPolymiddleware from './middleware/activityFallbackPolymiddleware';
 import applyMiddleware, {
@@ -100,48 +75,7 @@ import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
 
-// List of Redux actions factory we are hoisting as Web Chat functions
-const DISPATCHERS = {
-  clearSuggestedActions,
-  dismissNotification,
-  emitTypingIndicator,
-  markActivity,
-  postActivity,
-  sendEvent,
-  sendFiles,
-  sendMessage,
-  sendMessageBack,
-  sendPostBack,
-  setDictateInterims,
-  setDictateState,
-  setNotification,
-  setSendBox,
-  setSendBoxAttachments,
-  setSendTimeout,
-  startDictate,
-  startSpeakingActivity,
-  stopDictate,
-  stopSpeakingActivity,
-  submitSendBox
-};
-
 const EMPTY_ARRAY: readonly [] = Object.freeze([]);
-
-/**
- * Disconnects scheduled by unmounting.
- *
- * Strict Mode unmounts and mounts again right after the first mount, synchronously. DirectLineJS cannot start again after its
- * start is stopped, so unmounting disconnects in a microtask, and mounting again with the same store and connection cancels it.
- * Any other mount with the same store or the same Direct Line disconnects first, in the same order as without deferring.
- *
- * Remove when DirectLineJS can start again after its start is stopped.
- */
-const pendingDisconnects = new Set<{
-  readonly directLine: DirectLineJSBotConnection;
-  readonly dispatch: ReturnType<typeof useDispatch>;
-  readonly userID: string | undefined;
-  readonly username: string | undefined;
-}>();
 
 function createCardActionContext({
   cardActionMiddleware,
@@ -318,64 +252,19 @@ const ComposerCore = ({
 }: ComposerCoreProps) => {
   const [ponyfill] = usePonyfill();
   const [styleOptions] = useStyleOptions();
-  const dispatch = useDispatch();
+  const chatOperations = useChatOperationsContext();
+  const notifications = useNotificationsContext();
+  const sendBox = useSendBoxContext();
+  const speech = useSpeechContext();
+  const { startVoice, stopVoice: stopVoiceRecording } = useVoiceContext();
   const telemetryDimensionsRef = useRef({});
   const [voiceHandlers] = useVoiceHandlers();
 
+  const { dispatch } = chatOperations;
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
 
   const uiState = parseUIState(rawUIState, disabled);
-
-  useEffect(() => {
-    dispatch(setLanguage(locale));
-  }, [dispatch, locale]);
-
-  useEffect(() => {
-    dispatch(setSendTypingIndicator(!!sendTypingIndicator));
-  }, [dispatch, sendTypingIndicator]);
-
-  useEffect(() => {
-    // Mounted again with the same store and connection (e.g. Strict Mode): keep the connection.
-    const remountedPendingDisconnect = Array.from(pendingDisconnects).find(
-      pendingDisconnect =>
-        pendingDisconnect.directLine === directLine &&
-        pendingDisconnect.dispatch === dispatch &&
-        pendingDisconnect.userID === userID &&
-        pendingDisconnect.username === username
-    );
-
-    for (const pendingDisconnect of pendingDisconnects) {
-      if (
-        pendingDisconnect !== remountedPendingDisconnect &&
-        (pendingDisconnect.directLine === directLine || pendingDisconnect.dispatch === dispatch)
-      ) {
-        pendingDisconnects.delete(pendingDisconnect);
-        pendingDisconnect.dispatch(disconnect());
-      }
-    }
-
-    remountedPendingDisconnect
-      ? pendingDisconnects.delete(remountedPendingDisconnect)
-      : dispatch(
-          createConnectAction({
-            directLine,
-            userID,
-            username
-          })
-        );
-
-    return () => {
-      const pendingDisconnect = Object.freeze({ directLine, dispatch, userID, username });
-
-      pendingDisconnects.add(pendingDisconnect);
-
-      /**
-       * @todo TODO: [P3] disconnect() is an async call (pending -> fulfilled), we need to wait, or change it to reconnect()
-       */
-      queueMicrotask(() => pendingDisconnects.delete(pendingDisconnect) && dispatch(disconnect()));
-    };
-  }, [dispatch, directLine, userID, username]);
 
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
 
@@ -399,25 +288,36 @@ const ComposerCore = ({
   );
 
   const hoistedDispatchers = useMemo(
-    () =>
-      mapMap(
-        DISPATCHERS,
-        dispatcher =>
-          (...args) =>
-            // @ts-expect-error
-            dispatch(dispatcher(...args))
-      ),
-    [dispatch]
+    () => ({
+      clearSuggestedActions: chatOperations.clearSuggestedActions,
+      dismissNotification: notifications.dismissNotification,
+      emitTypingIndicator: sendBox.emitTypingIndicator,
+      markActivity: chatOperations.markActivity,
+      postActivity: chatOperations.postActivity,
+      sendEvent: chatOperations.sendEvent,
+      sendFiles: chatOperations.sendFiles,
+      sendMessage: chatOperations.sendMessage,
+      sendMessageBack: chatOperations.sendMessageBack,
+      sendPostBack: chatOperations.sendPostBack,
+      setDictateInterims: speech.setDictateInterims,
+      setDictateState: speech.setDictateState,
+      setNotification: notifications.setNotification,
+      setSendBox: sendBox.setValue,
+      setSendBoxAttachments: sendBox.setAttachments,
+      setSendTimeout: chatOperations.setSendTimeout,
+      startDictate: speech.startDictate,
+      startSpeakingActivity: speech.startSpeakingActivity,
+      stopDictate: speech.stopDictate,
+      stopSpeakingActivity: speech.stopSpeakingActivity,
+      submitSendBox: sendBox.submit
+    }),
+    [chatOperations, notifications, sendBox, speech]
   );
-
-  const startVoice = useCallback(() => {
-    dispatch(startVoiceRecording());
-  }, [dispatch]);
 
   const stopVoice = useCallback(() => {
     voiceHandlers.forEach(handler => handler.stopAllAudio());
-    dispatch(stopVoiceRecording());
-  }, [dispatch, voiceHandlers]);
+    stopVoiceRecording();
+  }, [stopVoiceRecording, voiceHandlers]);
 
   const patchedLocalizedStrings = useMemo(
     () => mergeStringsOverrides(getAllLocalizedStrings()[normalizeLanguage(locale)], locale, overrideLocalizedStrings),
@@ -772,7 +672,16 @@ type ComposerProps = ComposerWithStoreProps & {
 };
 
 // We will create a Redux store if it was not passed in
-const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStoreProps) => {
+const ComposerWithStore = ({
+  directLine,
+  locale,
+  onTelemetry,
+  sendTypingIndicator,
+  store,
+  userID,
+  username,
+  ...props
+}: ComposerWithStoreProps) => {
   const [ponyfill] = usePonyfill();
 
   const memoizedStore = useMemo(() => {
@@ -811,17 +720,28 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   }, [ponyfill, store]);
 
   return (
-    <WebChatReduxProvider store={memoizedStore}>
-      <ReduxStoreComposer store={memoizedStore}>
-        <GraphProvider store={memoizedStore}>
-          <ActivityKeyerComposer>
-            <ActivityAcknowledgementComposer>
-              <ComposerCore onTelemetry={onTelemetry} {...props} />
-            </ActivityAcknowledgementComposer>
-          </ActivityKeyerComposer>
-        </GraphProvider>
-      </ReduxStoreComposer>
-    </WebChatReduxProvider>
+    <ReduxProviders
+      directLine={directLine}
+      locale={locale}
+      sendTypingIndicator={sendTypingIndicator}
+      store={memoizedStore}
+      userID={userID}
+      username={username}
+    >
+      <ActivityKeyerComposer>
+        <ActivityAcknowledgementComposer>
+          <ComposerCore
+            directLine={directLine}
+            locale={locale}
+            onTelemetry={onTelemetry}
+            sendTypingIndicator={sendTypingIndicator}
+            userID={userID}
+            username={username}
+            {...props}
+          />
+        </ActivityAcknowledgementComposer>
+      </ActivityKeyerComposer>
+    </ReduxProviders>
   );
 };
 

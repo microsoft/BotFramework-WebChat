@@ -101,4 +101,11 @@ function useSelector<T>(
 
 export default context;
 
-export { useDispatch, useSelector, useStore, type WebChatReduxContextType, type WebChatReduxStore };
+export {
+  useDispatch,
+  useSelector,
+  useStore,
+  useWebChatReduxContext,
+  type WebChatReduxContextType,
+  type WebChatReduxStore
+};
