@@ -71,6 +71,10 @@
     "type-fest": "^5.6.0",
     "typescript": "^6.0.3"
   },
+  "peerDependencies": {
+    "core-js-pure": "^3.49.0",
+    "iter-fest": "^0.3.1"
+  },
   "dependencies": {
     "simple-update-in": "2.2.0",
     "uuid": "14.0.0",
