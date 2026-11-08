@@ -49,10 +49,12 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   const [styleElements, classNameState] = useMemo(() => {
     const {
       accent,
+      avatarBorderRadius,
       avatarSize,
       borderAnimationColor1,
       borderAnimationColor2,
       borderAnimationColor3,
+      botAvatarBackgroundColor,
       bubbleAttachmentMaxWidth,
       bubbleAttachmentMinWidth,
       bubbleBackground,
@@ -116,6 +118,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       transcriptVisualKeyboardIndicatorWidth,
       transitionDuration,
       transitionEasing,
+      userAvatarBackgroundColor,
       videoHeight
     } = styleOptions;
 
@@ -134,6 +137,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
 .${webchatCustomPropertiesClass}.${randomClass} {
   display: contents;
   /* From component */
+  ${CustomPropertyNames.BackgroundAvatar}: ${botAvatarBackgroundColor || accent};
+  ${CustomPropertyNames.BackgroundAvatarUser}: ${userAvatarBackgroundColor || accent};
   ${CustomPropertyNames.BackgroundBubble}: ${bubbleBackground};
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
   ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
@@ -147,6 +152,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
   ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
   ${CustomPropertyNames.BorderColorBubbleUser}: ${bubbleFromUserBorderColor};
+  ${CustomPropertyNames.BorderRadiusAvatar}: ${typeof avatarBorderRadius === 'number' ? `${avatarBorderRadius}px` : avatarBorderRadius || 'unset'};
   ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusBubbleUser}: ${bubbleFromUserBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusTranscriptTerminator}: ${transcriptTerminatorBorderRadius}px;

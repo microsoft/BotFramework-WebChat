@@ -88,6 +88,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      */
     audioContent: createAudioContentStyle(),
     autoResizeTextArea: createAutoResizeTextAreaStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Avatar/Avatar.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     avatar: createAvatarStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.0 (PR #5553), customizing it has no effect.
@@ -141,10 +146,15 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     fileContent: createFileContentStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
-     * The live styles are in `packages/component/src/Avatar/ImageAvatar.module.css`.
+     * The live styles are in `packages/component/src/Avatar/Avatar.module.css`.
      * This style set will be removed on or after 2028-10-16.
      */
     imageAvatar: createImageAvatarStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Avatar/Avatar.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.

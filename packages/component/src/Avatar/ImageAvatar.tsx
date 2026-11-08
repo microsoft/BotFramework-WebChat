@@ -4,7 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import React, { memo } from 'react';
 import { boolean, object, pipe, readonly } from 'valibot';
 
-import styles from './ImageAvatar.module.css';
+import styles from './Avatar.module.css';
 
 const { useAvatarForBot, useAvatarForUser } = hooks;
 
