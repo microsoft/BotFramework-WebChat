@@ -5,3 +5,23 @@ extends:
 # TODO: #3212 When we move to React Native, we should disable this.
 env:
   browser: true
+
+rules:
+  # Only the Redux providers read the Redux store: hooks read domain contexts, which the providers fill.
+  no-restricted-imports:
+    - error
+    - patterns:
+        - group:
+            - '**/WebChatReduxContext'
+            - '**/WebChatReduxContext.*'
+            - '**/WebChatReduxProvider'
+            - '**/WebChatReduxProvider.*'
+          message: Only the Redux providers (src/providers/redux/) use the Redux store. Hooks read domain contexts (src/hooks/internal/domains/).
+
+overrides:
+  - files:
+      - '**/*.spec.*'
+      - src/hooks/internal/WebChatReduxProvider.tsx
+      - src/providers/redux/**
+    rules:
+      no-restricted-imports: off
