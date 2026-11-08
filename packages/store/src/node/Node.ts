@@ -1,5 +1,7 @@
 import {
   isoTimestamp,
+  type BaseIssue,
+  type BaseSchema,
   minSize,
   objectWithRest,
   optional,
@@ -7,13 +9,12 @@ import {
   readonly,
   set,
   string,
-  transform,
   undefined_,
   type InferOutput
 } from 'valibot';
 import { identifierSchema } from './NodeIdentifier.ts';
 import { nodeReferenceSchema } from './NodeReference.ts';
-import { propertyValueSchema, type PropertyValue } from './PropertyValue.ts';
+import { propertyValueSchema } from './PropertyValue.ts';
 
 const nodeSchema = pipe(
   objectWithRest(
@@ -34,13 +35,10 @@ const nodeSchema = pipe(
       hasPart: optional(pipe(set(nodeReferenceSchema), readonly())),
       isPartOf: optional(pipe(set(nodeReferenceSchema), readonly()))
     },
-    pipe(
-      propertyValueSchema,
-      // The output of `propertyValueSchema` must be used as it is transformed, e.g. JSON literal as `JSON.stringify()`.
-      // Typed as `unknown` as named properties (e.g. `@id`, `@type`) are not `PropertyValue` and cannot satisfy an
-      // index signature of `PropertyValue`.
-      transform<PropertyValue, unknown>(value => value)
-    )
+    // The output of `propertyValueSchema` must be used as it is transformed, e.g. JSON literal as `JSON.stringify()`.
+    // Typed as `unknown` as named properties (e.g. `@id`, `@type`) are not `PropertyValue` and cannot satisfy an
+    // index signature of `PropertyValue`.
+    propertyValueSchema as BaseSchema<unknown, unknown, BaseIssue<unknown>>
   ),
   readonly()
 );
