@@ -1,6 +1,7 @@
 import { type Notification } from '../types/Notification';
-import { useSelector } from './internal/WebChatReduxContext';
+import { useNotificationsContext } from './internal/domains/NotificationsContext';
+import useSourceValue from './internal/domains/useSourceValue';
 
 export default function useNotifications(): [Notification[]] {
-  return [useSelector(({ notifications }) => notifications)];
+  return [useSourceValue(useNotificationsContext().notifications)];
 }

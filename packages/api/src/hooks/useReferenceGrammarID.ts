@@ -1,5 +1,6 @@
-import { useSelector } from './internal/WebChatReduxContext';
+import { useConnectivityContext } from './internal/domains/ConnectivityContext';
+import useSourceValue from './internal/domains/useSourceValue';
 
 export default function useReferenceGrammarID(): [string] {
-  return [useSelector(({ referenceGrammarID }) => referenceGrammarID)];
+  return [useSourceValue(useConnectivityContext().referenceGrammarID)];
 }

@@ -1,5 +1,6 @@
-import { useSelector } from './internal/WebChatReduxContext';
+import { useConnectivityContext } from './internal/domains/ConnectivityContext';
+import useSourceValue from './internal/domains/useSourceValue';
 
 export default function useConnectivityStatus(): [string] {
-  return [useSelector(({ connectivityStatus }) => connectivityStatus)];
+  return [useSourceValue(useConnectivityContext().connectivityStatus)];
 }

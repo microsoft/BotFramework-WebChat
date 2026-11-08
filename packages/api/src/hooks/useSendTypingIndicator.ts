@@ -1,5 +1,6 @@
-import { useSelector } from './internal/WebChatReduxContext';
+import { useSendBoxContext } from './internal/domains/SendBoxContext';
+import useSourceValue from './internal/domains/useSourceValue';
 
 export default function useSendTypingIndicator(): [boolean] {
-  return [useSelector(({ sendTypingIndicator }) => sendTypingIndicator)];
+  return [useSourceValue(useSendBoxContext().sendTypingIndicator)];
 }
