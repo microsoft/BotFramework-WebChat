@@ -1,0 +1,63 @@
+/* #region Default avatar */
+
+:global(.webchat) .defaultAvatar {
+  border-radius: var(--webchat__border-radius--avatar);
+  height: var(--webchat__size--avatar);
+  overflow: clip;
+  position: relative;
+  width: var(--webchat__size--avatar);
+
+  > * {
+    left: 0;
+    position: absolute;
+    top: 0;
+  }
+
+  &.defaultAvatar--fromUser {
+    --webchat-preserve-reason: target-class;
+  }
+}
+
+/* #endregion */
+
+/* #region Initials avatar */
+
+:global(.webchat) .initialsAvatar {
+  align-items: center;
+  background-color: var(--webchat__background--avatar);
+  color: White;
+  display: flex;
+  font-family: var(--webchat__font--primary);
+  height: var(--webchat__size--avatar);
+  justify-content: center;
+  overflow: hidden;
+  width: var(--webchat__size--avatar);
+
+  &.initialsAvatar--fromUser {
+    background-color: var(--webchat__background--avatar-user);
+  }
+
+  .initialsAvatar__initials {
+    justify-content: center;
+  }
+}
+
+/* #endregion */
+
+/* #region Image avatar */
+
+:global(.webchat) .imageAvatar {
+  align-items: center;
+  display: flex;
+  height: var(--webchat__size--avatar);
+  justify-content: center;
+  overflow: clip;
+  width: var(--webchat__size--avatar);
+
+  .imageAvatar__image {
+    height: auto;
+    width: 100%;
+  }
+}
+
+/* #endregion */
