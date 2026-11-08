@@ -3,7 +3,7 @@ import { expect } from 'expect';
 import NodeTest from 'node:test';
 import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
-import attachHasPart from './attachHasPart.ts';
+import ReadWriteNode from './ReadWriteNode.ts';
 import createNode from './createNode.ts';
 import { getDateCreatedTime } from './dateCreatedTime.ts';
 import type { InternalNode } from './InternalNode.ts';
@@ -137,8 +137,8 @@ scenario(
       .and('should keep dateCreated as-is', (_, node) =>
         expect(node).toHaveProperty('dateCreated', '2026-01-01T08:00:00+08:00')
       )
-      .and('should keep the cached time after attachHasPart()', (_, node) =>
-        expect(getDateCreatedTime(attachHasPart(node, new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
+      .and('should keep the cached time after ReadWriteNode.commit()', (_, node) =>
+        expect(getDateCreatedTime(new ReadWriteNode(node).commit(new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
       );
 
     bdd

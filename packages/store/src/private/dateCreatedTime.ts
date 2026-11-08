@@ -25,7 +25,7 @@ function attachDateCreatedTime<T extends object>(node: T, time: number): T {
 /**
  * Gets the cached `dateCreated` as epoch time, `Infinity` if not set.
  *
- * Only `InternalNode` (created by `createNode()` or `attachHasPart()`) has the cache, so it is not parsed again.
+ * Only `InternalNode` (created by `createNode()` or `ReadWriteNode.commit()`) has the cache, so it is not parsed again.
  */
 function getDateCreatedTime(node: NodeWithDateCreatedTime | undefined): number {
   // eslint-disable-next-line security/detect-object-injection
