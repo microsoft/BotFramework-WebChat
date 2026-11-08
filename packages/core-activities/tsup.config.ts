@@ -6,7 +6,16 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-core-activities': './src/index.ts'
-  }
+  },
+  // Core bundles this package and these Web Chat packages: import them, so core bundles each one once. Inlined here, core
+  // would have a second copy of the parts of them this package uses (and of the core-js internals they bundle).
+  external: [
+    ...(config.external ?? []),
+    '@msinternal/botframework-webchat-base',
+    '@msinternal/botframework-webchat-core-graph',
+    '@msinternal/botframework-webchat-core-json-ld',
+    'botframework-webchat-store'
+  ]
 }));
 
 export default defineConfig([

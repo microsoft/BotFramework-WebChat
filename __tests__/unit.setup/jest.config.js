@@ -102,8 +102,8 @@ module.exports = {
     // Do not transform anything under /test/*/(dist|lib).
     '/packages/(?:test/)?\\w+/(?:lib/|dist/.+?\\.js$|\\w+\\.js)',
 
-    // The activities core bundles `botframework-webchat-store`, whose classes extend `Set` and `Map`: transpiling its
-    // dist again breaks them. (The pattern above does not match package names with a hyphen.)
+    // The activities core's dist is built already: do not transpile it again. (The pattern above does not match package
+    // names with a hyphen.)
     '/packages/core-activities/dist/'
   ]
 };
