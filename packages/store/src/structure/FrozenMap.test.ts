@@ -1,21 +1,23 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import createReadonlyMap, { isReadonlyMap } from './createReadonlyMap.ts';
+import FrozenMap from './FrozenMap.ts';
 
 scenario(
-  'createReadonlyMap',
+  'new FrozenMap()',
   bdd => {
     bdd
-      .given('a readonly map', () =>
-        createReadonlyMap([
-          ['a', 1],
-          ['b', 2]
-        ])
+      .given(
+        'a readonly map',
+        () =>
+          new FrozenMap([
+            ['a', 1],
+            ['b', 2]
+          ])
       )
       .when('read', map => map)
       .then('should be instance of Map', (_, map) => expect(map).toBeInstanceOf(Map))
-      .and('should be detected as readonly map', (_, map) => expect(isReadonlyMap(map)).toBe(true))
+      .and('should be detected as readonly map', (_, map) => expect(FrozenMap.isFrozenMap(map)).toBe(true))
       .and('should be frozen', (_, map) => expect(Object.isFrozen(map)).toBe(true))
       .and('should have size', (_, map) => expect(map.size).toBe(2))
       .and('should support get() and has()', (_, map) => {
@@ -57,7 +59,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly map', () => createReadonlyMap([['a', 1]]))
+      .given('a readonly map', () => new FrozenMap([['a', 1]]))
       .when('modified via set(), clear(), delete(), or Map.prototype', map => {
         const mutableMap = map as unknown as Map<string, number>;
 
@@ -80,7 +82,7 @@ scenario(
     bdd
       .given('a mutable map', () => new Map([['a', 1]]))
       .when('a readonly map is created from it and the original map is modified', mutableMap => {
-        const readonlyMap = createReadonlyMap(mutableMap);
+        const readonlyMap = new FrozenMap(mutableMap);
 
         mutableMap.set('b', 2);
 
@@ -90,22 +92,52 @@ scenario(
 
     bdd
       .given('a mutable map', () => new Map([['a', 1]]))
-      .when('checked', map => isReadonlyMap(map))
+      .when('checked', map => FrozenMap.isFrozenMap(map))
       .then('should not be detected as readonly map', (_, result) => expect(result).toBe(false));
   },
   NodeTest
 );
 
 scenario(
-  'ReadonlyMap.mutate()',
+  'new FrozenMap() with nullish or invalid iterable',
   bdd => {
     bdd
-      .given('a readonly map', () =>
-        createReadonlyMap([
-          ['a', 1],
-          ['b', 2],
-          ['c', 3]
-        ])
+      .given('nothing', () => undefined)
+      .when.oneOf<ReadonlyMap<unknown, unknown>>([
+        ['constructed without arguments', () => new FrozenMap()],
+        ['constructed with null', () => new FrozenMap(null)]
+      ])
+      .then('should be empty', (_, map) => expect(map.size).toBe(0))
+      .and('should be detected as readonly map', (_, map) => expect(FrozenMap.isFrozenMap(map)).toBe(true));
+
+    bdd
+      .given('a non-iterable value', () => 1)
+      .when('constructed', value => () => new FrozenMap(value as unknown as Iterable<[unknown, unknown]>))
+      .then('should throw TypeError', (_, fn) => expect(fn).toThrow(TypeError));
+
+    bdd
+      .given('a committed map', () => new FrozenMap([['a', 1]]).mutate().set('b', 2).commit())
+      .when('another map is constructed without arguments', () => new FrozenMap())
+      .then('should not share storage with the committed map', (committed, map) => {
+        expect(map.size).toBe(0);
+        expect(committed.size).toBe(2);
+      });
+  },
+  NodeTest
+);
+
+scenario(
+  'FrozenMap.mutate()',
+  bdd => {
+    bdd
+      .given(
+        'a readonly map',
+        () =>
+          new FrozenMap([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
+          ])
       )
       .when('mutated without commit', map => {
         const readWriteMap = map.mutate();
@@ -138,12 +170,14 @@ scenario(
       );
 
     bdd
-      .given('a readonly map', () =>
-        createReadonlyMap([
-          ['a', 1],
-          ['b', 2],
-          ['c', 3]
-        ])
+      .given(
+        'a readonly map',
+        () =>
+          new FrozenMap([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
+          ])
       )
       .when('mutated and committed', map => {
         const readWriteMap = map.mutate();
@@ -155,7 +189,7 @@ scenario(
       })
       .then('should return a new readonly map with changes', (map, { nextMap }) => {
         expect(nextMap).not.toBe(map);
-        expect(isReadonlyMap(nextMap)).toBe(true);
+        expect(FrozenMap.isFrozenMap(nextMap)).toBe(true);
         expect(Object.isFrozen(nextMap)).toBe(true);
         expect(nextMap.size).toBe(3);
         expect(Array.from(nextMap)).toEqual([
@@ -187,7 +221,7 @@ scenario(
       });
 
     bdd
-      .given('a readonly map', () => createReadonlyMap([['a', 1]]))
+      .given('a readonly map', () => new FrozenMap([['a', 1]]))
       .when('mutated and committed multiple times', map => {
         const versions = [map];
 
@@ -209,7 +243,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly map', () => createReadonlyMap([['a', 1]]))
+      .given('a readonly map', () => new FrozenMap([['a', 1]]))
       .when('mutated twice from the same map and both committed', map => [
         map.mutate().set('b', 2).commit(),
         map.mutate().set('c', 3).commit()

@@ -1,12 +1,13 @@
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import type { InternalNode } from './InternalNode.ts';
-import type { ReadWriteSkipList, VersionedReadonlySkipList } from '../structure/createReadonlySkipList.ts';
+import type FrozenSkipList from '../structure/FrozenSkipList.ts';
+import { type ReadWriteSkipList } from '../structure/FrozenSkipList.ts';
 
 // Hidden property on the parent node to cache IDs of its children, sorted by `dateCreated`, then `@id`.
 const sortedChildIdsSymbol = Symbol('sortedChildIds');
 
 type NodeWithSortedChildIds = InternalNode & {
-  readonly [sortedChildIdsSymbol]?: VersionedReadonlySkipList<Identifier> | undefined;
+  readonly [sortedChildIdsSymbol]?: FrozenSkipList<Identifier> | undefined;
 };
 
 /**
@@ -46,9 +47,7 @@ function removeSortedChild(sortedChildIds: ReadWriteSkipList<Identifier>, id: Id
 /**
  * Gets IDs of children sorted by `dateCreated`, then `@id`. Returns `undefined` if the node has no children.
  */
-function getSortedChildIds(
-  node: NodeWithSortedChildIds | undefined
-): VersionedReadonlySkipList<Identifier> | undefined {
+function getSortedChildIds(node: NodeWithSortedChildIds | undefined): FrozenSkipList<Identifier> | undefined {
   // eslint-disable-next-line security/detect-object-injection
   return node?.[sortedChildIdsSymbol];
 }

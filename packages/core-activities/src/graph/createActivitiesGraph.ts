@@ -15,7 +15,7 @@ type ActivitiesGraph = {
 /**
  * Creates William's store with core as its source: core's reducer edits the graph when it receives an activity.
  *
- * `createDirectLineStore()` is not used: today it is a stub that adds a sample node.
+ * `createDirectLineJSStore()` (`botframework-webchat-store/directlinejs`) is not used: today it is a stub that adds a sample node.
  *
  * @param nodes Nodes to start with, e.g. the snapshot of an older `State` to rebuild its graph (replay).
  */

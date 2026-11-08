@@ -1,4 +1,4 @@
-import { type ReadWriteMap } from 'botframework-webchat-store';
+import { type ReadWriteMap } from 'botframework-webchat-store/structure';
 import type { LocalId } from '../property/LocalId';
 import type {
   Activity,

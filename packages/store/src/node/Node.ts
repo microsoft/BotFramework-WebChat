@@ -1,7 +1,7 @@
 import {
-  custom,
-  is,
   isoTimestamp,
+  type BaseIssue,
+  type BaseSchema,
   minSize,
   objectWithRest,
   optional,
@@ -35,7 +35,10 @@ const nodeSchema = pipe(
       hasPart: optional(pipe(set(nodeReferenceSchema), readonly())),
       isPartOf: optional(pipe(set(nodeReferenceSchema), readonly()))
     },
-    custom(value => is(propertyValueSchema, value))
+    // The output of `propertyValueSchema` must be used as it is transformed, e.g. JSON literal as `JSON.stringify()`.
+    // Typed as `unknown` as named properties (e.g. `@id`, `@type`) are not `PropertyValue` and cannot satisfy an
+    // index signature of `PropertyValue`.
+    propertyValueSchema as BaseSchema<unknown, unknown, BaseIssue<unknown>>
   ),
   readonly()
 );

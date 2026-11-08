@@ -1,16 +1,16 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import createReadonlySet, { isReadonlySet } from './createReadonlySet.ts';
+import FrozenSet, { isFrozenSet } from './FrozenSet.ts';
 
 scenario(
-  'createReadonlySet',
+  'new FrozenSet()',
   bdd => {
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('read', set => set)
       .then('should be instance of Set', (_, set) => expect(set).toBeInstanceOf(Set))
-      .and('should be detected as readonly set', (_, set) => expect(isReadonlySet(set)).toBe(true))
+      .and('should be detected as readonly set', (_, set) => expect(isFrozenSet(set)).toBe(true))
       .and('should be frozen', (_, set) => expect(Object.isFrozen(set)).toBe(true))
       .and('should have size', (_, set) => expect(set.size).toBe(3))
       .and('should support has()', (_, set) => {
@@ -38,7 +38,7 @@ scenario(
       .and('should have stable method reference', (_, set) => expect(set.has).toBe(set.has));
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('modified via add(), clear(), or delete()', set => {
         const mutableSet = set as unknown as Set<number>;
 
@@ -52,7 +52,7 @@ scenario(
       .and('should not be modified', set => expect(Array.from(set)).toEqual([1, 2, 3]));
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('modified via Set.prototype', set => [
         () => Set.prototype.add.call(set, 4),
         () => Set.prototype.clear.call(set),
@@ -66,7 +66,7 @@ scenario(
       .and('should not be modified', set => expect(Array.from(set)).toEqual([1, 2, 3]));
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('properties or prototype are modified', set => [
         () => Object.defineProperty(set, 'add', { value: () => undefined }),
         () => Object.setPrototypeOf(set, null)
@@ -79,13 +79,13 @@ scenario(
       .and('should still be a Set', set => expect(set).toBeInstanceOf(Set));
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('a property is set via Reflect.set()', set => Reflect.set(set, 'add', () => undefined))
       .then('should fail', (_, result) => expect(result).toBe(false))
       .and('add() should still throw', set => expect(() => (set as unknown as Set<number>).add(4)).toThrow(TypeError));
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('Set.prototype methods are called', set => set)
       .then('should not have own properties', (_, set) => expect(Reflect.ownKeys(set)).toEqual([]))
       .and('should have a "Set" string tag', (_, set) =>
@@ -103,13 +103,13 @@ scenario(
 
     bdd
       .given('a frozen subclass of Set', () => Object.freeze(new (class extends Set<number> {})([1, 2, 3])))
-      .when('checked', set => isReadonlySet(set))
+      .when('checked', set => isFrozenSet(set))
       .then('should not be detected as readonly set', (_, result) => expect(result).toBe(false));
 
     bdd
       .given('a mutable set', () => new Set([1, 2, 3]))
       .when('a readonly set is created from it and the original set is modified', mutableSet => {
-        const readonlySet = createReadonlySet(mutableSet);
+        const readonlySet = new FrozenSet(mutableSet);
 
         mutableSet.add(4);
 
@@ -119,17 +119,45 @@ scenario(
 
     bdd
       .given('a mutable set', () => new Set([1, 2, 3]))
-      .when('checked', set => isReadonlySet(set))
+      .when('checked', set => isFrozenSet(set))
       .then('should not be detected as readonly set', (_, result) => expect(result).toBe(false));
   },
   NodeTest
 );
 
 scenario(
-  'ReadonlySet.mutate()',
+  'new FrozenSet() with nullish or invalid iterable',
   bdd => {
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('nothing', () => undefined)
+      .when.oneOf<ReadonlySet<unknown>>([
+        ['constructed without arguments', () => new FrozenSet()],
+        ['constructed with null', () => new FrozenSet(null)]
+      ])
+      .then('should be empty', (_, set) => expect(set.size).toBe(0))
+      .and('should be detected as readonly set', (_, set) => expect(isFrozenSet(set)).toBe(true));
+
+    bdd
+      .given('a non-iterable value', () => 1)
+      .when('constructed', value => () => new FrozenSet(value as unknown as Iterable<unknown>))
+      .then('should throw TypeError', (_, fn) => expect(fn).toThrow(TypeError));
+
+    bdd
+      .given('a committed set', () => new FrozenSet([1]).mutate().add(2).commit())
+      .when('another set is constructed without arguments', () => new FrozenSet())
+      .then('should not share storage with the committed set', (committed, set) => {
+        expect(set.size).toBe(0);
+        expect(committed.size).toBe(2);
+      });
+  },
+  NodeTest
+);
+
+scenario(
+  'FrozenSet.mutate()',
+  bdd => {
+    bdd
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('mutated without commit', set => set.mutate().add(4).add(2))
       .then('overlay should read changes', (_, readWriteSet) => {
         expect(readWriteSet.size).toBe(4);
@@ -143,7 +171,7 @@ scenario(
       });
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('mutated and committed', set => {
         const readWriteSet = set.mutate();
 
@@ -155,7 +183,7 @@ scenario(
       })
       .then('should return a new readonly set with changes', (_, { nextSet }) => {
         expect(nextSet).not.toBe(_);
-        expect(isReadonlySet(nextSet)).toBe(true);
+        expect(isFrozenSet(nextSet)).toBe(true);
         expect(Object.isFrozen(nextSet)).toBe(true);
         expect(nextSet.size).toBe(3);
         expect(nextSet).toEqual(new Set([2, 3, 4]));
@@ -176,7 +204,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('mutated and committed multiple times', set => {
         const set2 = set.mutate().add(4).commit();
         const readWriteSet3 = set2.mutate();
@@ -208,7 +236,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('mutated twice from the same set and both committed', set => [
         set.mutate().add(4).commit(),
         set.mutate().add(5).commit()
@@ -223,7 +251,7 @@ scenario(
       );
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('cleared and committed', set => {
         const readWriteSet = set.mutate();
 
@@ -236,7 +264,7 @@ scenario(
       .and('original set should not be modified', set => expect(set).toEqual(new Set([1, 2, 3])));
 
     bdd
-      .given('a readonly set', () => createReadonlySet([1, 2, 3]))
+      .given('a readonly set', () => new FrozenSet([1, 2, 3]))
       .when('a value is added then deleted in the overlay', set => {
         const readWriteSet = set.mutate().add(4);
 

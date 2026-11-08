@@ -1,4 +1,4 @@
-import createReadonlySet, { isReadonlySet } from '../structure/createReadonlySet.ts';
+import FrozenSet, { isFrozenSet } from '../structure/FrozenSet.ts';
 
 /**
  * Keys which could be used for prototype pollution, they are skipped when copying an object.
@@ -164,17 +164,17 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
     }
 
     return frozenValue;
-  } else if (value instanceof Set || isReadonlySet(value)) {
+  } else if (value instanceof Set || isFrozenSet(value)) {
     pushAncestor(memo, value, IN_PROGRESS);
 
-    const originalItems = isReadonlySet(originalValue) ? Array.from(originalValue) : [];
+    const originalItems = isFrozenSet(originalValue) ? Array.from(originalValue) : [];
     const items = Array.from(value, (item, index) => deepFreezeWithMemo(originalItems[+index], item, memo));
     const frozenValue =
-      isReadonlySet(originalValue) &&
+      isFrozenSet(originalValue) &&
       originalItems.length === items.length &&
       items.every((item, index) => item === originalItems[+index])
         ? originalValue
-        : createReadonlySet(items);
+        : new FrozenSet(items);
 
     popAncestor(memo);
 
@@ -201,7 +201,7 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
  * throw, as a read-only `Set` cannot be created before its items.
  *
  * Note: `Object.freeze()` does not prevent `Set.prototype.add()` and `Set.prototype.delete()` from modifying the set,
- * only read-only `Set` created by `createReadonlySet()` is reused.
+ * only read-only `Set` created by `new FrozenSet()` is reused.
  *
  * @param originalValue Value before validation. Validation could copy or transform the value.
  * @param value Value after validation.

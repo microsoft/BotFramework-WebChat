@@ -1,10 +1,13 @@
 import type { InternalNode } from './InternalNode.ts';
+import type { UnfrozenNode } from './UnfrozenNode.ts';
 
 // Hidden property on the node to cache the parsed `dateCreated` as epoch time, so sorting does not parse it on every
 // comparison. A number is cached instead of a `Date` object because `Date` is mutable.
 const dateCreatedTimeSymbol = Symbol('dateCreatedTime');
 
-type NodeWithDateCreatedTime = InternalNode & { readonly [dateCreatedTimeSymbol]?: number | undefined };
+type NodeWithDateCreatedTime = (InternalNode | UnfrozenNode) & {
+  readonly [dateCreatedTimeSymbol]?: number | undefined;
+};
 
 /**
  * Parses `dateCreated` (ISO timestamp string) as `Date` and returns its epoch time, `Infinity` if not set.
@@ -25,7 +28,7 @@ function attachDateCreatedTime<T extends object>(node: T, time: number): T {
 /**
  * Gets the cached `dateCreated` as epoch time, `Infinity` if not set.
  *
- * Only `InternalNode` (created by `createNode()` or `attachHasPart()`) has the cache, so it is not parsed again.
+ * Only nodes created by `createNode()` have the cache, it is kept by `ReadWriteNode`, so it is not parsed again.
  */
 function getDateCreatedTime(node: NodeWithDateCreatedTime | undefined): number {
   // eslint-disable-next-line security/detect-object-injection

@@ -2,19 +2,6 @@ import MapView from './MapView.ts';
 import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
 
 /**
- * A read-only `Map` which can be mutated via an overlay without copying.
- */
-interface VersionedReadonlyMap<K, V> extends ReadonlyMap<K, V> {
-  /**
-   * Creates a writable overlay on top of this map. Writes go to the overlay, reads go to the overlay first, then this
-   * map. This map is not modified, even after the overlay is committed.
-   *
-   * This is O(1) and does not copy the map.
-   */
-  mutate(): ReadWriteMap<K, V>;
-}
-
-/**
  * A writable overlay on top of a read-only `Map`.
  */
 interface ReadWriteMap<K, V> extends ReadonlyMap<K, V> {
@@ -26,7 +13,8 @@ interface ReadWriteMap<K, V> extends ReadonlyMap<K, V> {
    * This is O(number of changes) if the underlying map is the latest version (i.e. no other overlay on top of the same
    * map has been committed), otherwise, O(size) as the map is copied.
    */
-  commit(): VersionedReadonlyMap<K, V>;
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  commit(): FrozenMap<K, V>;
   delete(key: K): boolean;
   set(key: K, value: V): this;
 }
@@ -36,7 +24,7 @@ function throwReadonly(): never {
 }
 
 /**
- * A writable overlay on top of a `ReadonlyMapImpl`.
+ * A writable overlay on top of a `FrozenMap`.
  */
 class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V> {
   constructor(overlay: Overlay<K, V>) {
@@ -57,9 +45,9 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
     this.#overlay.clear();
   }
 
-  commit(): VersionedReadonlyMap<K, V> {
+  commit(): FrozenMap<K, V> {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return new ReadonlyMapImpl(this.#overlay.commit());
+    return fromStorage(this.#overlay.commit());
   }
 
   delete(key: K): boolean {
@@ -93,23 +81,41 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
   }
 }
 
+/** Storage handed to the next `FrozenMap` constructor, only set by `fromStorage()` during construction. */
+let nextStorage: VersionedStorage<unknown, unknown> | undefined;
+
 /**
- * An immutable `Map` backed by a versioned storage.
+ * An immutable `Map` which cannot be modified.
  *
- * Similar to `createReadonlySet()`, it does not extend `Map` but its prototype is chained to `Map.prototype`.
+ * - `instanceof Map` is `true`
+ * - `clear()`, `delete()`, and `set()` will throw
+ * - `Map.prototype.set.call()` will throw as it does not have the internal slots of a `Map`
+ * - `Object.isFrozen()` is `true`
+ * - `mutate()` creates a writable overlay without copying, `commit()` on the overlay returns a new immutable `Map`
+ *
+ * Similar to `FrozenSet`, it does not extend `Map` but its prototype is chained to `Map.prototype`.
+ *
+ * Note: keys and values are not frozen, freeze them before passing in if needed.
  */
-class ReadonlyMapImpl<K, V> extends MapView<K, V> implements VersionedReadonlyMap<K, V> {
-  constructor(storage: VersionedStorage<K, V>) {
+class FrozenMap<K, V> extends MapView<K, V> {
+  constructor(iterable?: Iterable<readonly [K, V]> | null | undefined) {
     super();
 
-    this.#storage = storage;
+    const storage = nextStorage;
+
+    nextStorage = undefined;
+
+    // Copy into a private storage so changes to the original iterable will not leak in.
+    this.#storage = storage
+      ? (storage satisfies VersionedStorage<unknown, unknown> as VersionedStorage<K, V>)
+      : new VersionedStorage(new Map(iterable));
 
     Object.freeze(this);
   }
 
   readonly #storage: VersionedStorage<K, V>;
 
-  static isReadonlyMap(value: unknown): value is ReadonlyMap<unknown, unknown> {
+  static isFrozenMap(value: unknown): value is ReadonlyMap<unknown, unknown> {
     return !!value && typeof value === 'object' && #storage in value;
   }
 
@@ -133,6 +139,12 @@ class ReadonlyMapImpl<K, V> extends MapView<K, V> implements VersionedReadonlyMa
     return this.#storage.toMap().keys();
   }
 
+  /**
+   * Creates a writable overlay on top of this map. Writes go to the overlay, reads go to the overlay first, then this
+   * map. This map is not modified, even after the overlay is committed.
+   *
+   * This is O(1) and does not copy the map.
+   */
   mutate(): ReadWriteMap<K, V> {
     return new ReadWriteMapImpl(this.#storage.mutate());
   }
@@ -142,7 +154,18 @@ class ReadonlyMapImpl<K, V> extends MapView<K, V> implements VersionedReadonlyMa
   }
 }
 
-Object.defineProperties(ReadonlyMapImpl.prototype, {
+/** Creates a `FrozenMap` backed by the storage without copying. */
+function fromStorage<K, V>(storage: VersionedStorage<K, V>): FrozenMap<K, V> {
+  nextStorage = storage;
+
+  try {
+    return new FrozenMap<K, V>();
+  } finally {
+    nextStorage = undefined;
+  }
+}
+
+Object.defineProperties(FrozenMap.prototype, {
   // Mutating methods on `Map.prototype` would throw "incompatible receiver", override them with a clearer error.
   clear: { value: throwReadonly },
   delete: { value: throwReadonly },
@@ -154,32 +177,9 @@ Object.defineProperty(ReadWriteMapImpl.prototype, 'constructor', { value: Map })
 Object.freeze(ReadWriteMapImpl.prototype);
 Object.freeze(ReadWriteMapImpl);
 // Some libraries compare `constructor` for equality, e.g. `expect().toEqual()`.
-Object.defineProperty(ReadonlyMapImpl.prototype, 'constructor', { value: Map });
-Object.freeze(ReadonlyMapImpl.prototype);
-Object.freeze(ReadonlyMapImpl);
+Object.defineProperty(FrozenMap.prototype, 'constructor', { value: Map });
+Object.freeze(FrozenMap.prototype);
+Object.freeze(FrozenMap);
 
-/**
- * Checks if the value is a readonly `Map` created by `createReadonlyMap()`.
- */
-function isReadonlyMap(value: unknown): value is ReadonlyMap<unknown, unknown> {
-  return ReadonlyMapImpl.isReadonlyMap(value);
-}
-
-/**
- * Creates an immutable `Map` which cannot be modified.
- *
- * - `instanceof Map` is `true`
- * - `clear()`, `delete()`, and `set()` will throw
- * - `Map.prototype.set.call()` will throw as it does not have the internal slots of a `Map`
- * - `Object.isFrozen()` is `true`
- * - `mutate()` creates a writable overlay without copying, `commit()` on the overlay returns a new immutable `Map`
- *
- * Note: keys and values are not frozen, freeze them before passing in if needed.
- */
-function createReadonlyMap<K, V>(iterable: Iterable<readonly [K, V]>): VersionedReadonlyMap<K, V> {
-  // Copy into a private storage so changes to the original iterable will not leak in.
-  return new ReadonlyMapImpl(new VersionedStorage(new Map(iterable)));
-}
-
-export default createReadonlyMap;
-export { isReadonlyMap, type ReadWriteMap, type VersionedReadonlyMap };
+export default FrozenMap;
+export { type ReadWriteMap };

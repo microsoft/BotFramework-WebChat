@@ -3,11 +3,12 @@ import { expect } from 'expect';
 import NodeTest from 'node:test';
 import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
-import attachHasPart from './attachHasPart.ts';
 import createNode from './createNode.ts';
 import { getDateCreatedTime } from './dateCreatedTime.ts';
-import type { InternalNode } from './InternalNode.ts';
+import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
+import type { InternalNode } from './InternalNode.ts';
+import type { UnfrozenNode } from './UnfrozenNode.ts';
 
 /** Gets a property of the node which is not in the node schema, e.g. `text`. */
 function getProperty(node: object, key: string): unknown {
@@ -25,7 +26,9 @@ scenario(
         isPartOf: new Set([{ '@id': '_:conversation' }])
       }))
       .when('createNode() is called', value => createNode(value))
-      .then('should be frozen', (_, node) => expect(Object.isFrozen(node)).toBe(true))
+      .then('should not be frozen, so it can be modified in place before freezeNode()', (_, node) =>
+        expect(Object.isFrozen(node)).toBe(false)
+      )
       .and('should only have properties from the input', (_, node) => {
         expect(Object.keys(node).sort()).toEqual(['@id', '@type', 'hasPart', 'isPartOf']);
         expect(
@@ -137,8 +140,8 @@ scenario(
       .and('should keep dateCreated as-is', (_, node) =>
         expect(node).toHaveProperty('dateCreated', '2026-01-01T08:00:00+08:00')
       )
-      .and('should keep the cached time after attachHasPart()', (_, node) =>
-        expect(getDateCreatedTime(attachHasPart(node, new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
+      .and('should keep the cached time after freezeNode()', (_, node) =>
+        expect(getDateCreatedTime(freezeNode(node, new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
       );
 
     bdd
@@ -151,12 +154,18 @@ scenario(
         parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']) })
       )
       .when('createNode() is called', node => createNode(node))
-      .then('should return InternalNode', (node, internalNode) => {
-        // @ts-expect-error Node is not InternalNode, only nodes created by createNode() are branded.
-        const unbrandedNode: InternalNode = node;
-        const brandedNode: InternalNode = internalNode;
+      .then('should return UnfrozenNode', (node, unfrozenNode) => {
+        // @ts-expect-error Node is not UnfrozenNode, only nodes created by createNode() are branded.
+        const unbrandedNode: UnfrozenNode = node;
+        const brandedNode: UnfrozenNode = unfrozenNode;
 
         expect(brandedNode).toEqual(unbrandedNode);
+      })
+      .and('should not be assignable to InternalNode', (_, unfrozenNode) => {
+        // @ts-expect-error UnfrozenNode is not InternalNode, only nodes frozen by freezeNode() are stored in the graph.
+        const internalNode: InternalNode = unfrozenNode;
+
+        expect(internalNode).toBe(unfrozenNode);
       });
 
     bdd
@@ -288,6 +297,54 @@ scenario(
       .and('should store as read-only Set', (_, node) =>
         expect(() => (node['@type'] as Set<string>).add('Thing')).toThrow(TypeError)
       );
+  },
+  NodeTest
+);
+
+scenario(
+  'createNode with JSON literal',
+  bdd => {
+    bdd
+      .given('a node with a JSON literal which is not plain JSON', () => {
+        const json = { a: [undefined], date: new Date(0), nan: NaN, undefined };
+
+        return {
+          json,
+          value: { '@id': '_:m-1', '@type': new Set(['Message']), encoding: [{ '@type': '@json', '@value': json }] }
+        };
+      })
+      .when('createNode() is called', ({ value }) => createNode(value))
+      .then('should store the JSON literal as JSON.parse(JSON.stringify())', ({ json }, node) =>
+        expect(getProperty(node, 'encoding')).toEqual([
+          { '@type': '@json', '@value': JSON.parse(JSON.stringify(json)) }
+        ])
+      )
+      .and('should store Date as ISO string', (_, node) =>
+        expect(getProperty(node, 'encoding')).toEqual([
+          { '@type': '@json', '@value': expect.objectContaining({ date: '1970-01-01T00:00:00.000Z' }) }
+        ])
+      )
+      .and('should store NaN as null and undefined in array as null', (_, node) =>
+        expect(getProperty(node, 'encoding')).toEqual([
+          { '@type': '@json', '@value': expect.objectContaining({ a: [null], nan: null }) }
+        ])
+      )
+      .and('should remove key with value of undefined', (_, node) => {
+        const encoding = getProperty(node, 'encoding') as readonly { readonly '@value': object }[];
+
+        expect(Object.keys(encoding[0]?.['@value'] ?? {}).sort()).toEqual(['a', 'date', 'nan']);
+      })
+      .and('should deeply freeze the JSON literal', (_, node) => {
+        const encoding = getProperty(node, 'encoding') as readonly { readonly '@value': object }[];
+
+        expect(Object.isFrozen(encoding[0]?.['@value'])).toBe(true);
+      })
+      .and('should not modify the input', ({ json }) => {
+        expect(json.date).toBeInstanceOf(Date);
+        expect(json.nan).toBeNaN();
+        expect(json).toHaveProperty('undefined', undefined);
+        expect(json.a).toEqual([undefined]);
+      });
   },
   NodeTest
 );
