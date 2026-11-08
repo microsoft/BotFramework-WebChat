@@ -396,6 +396,8 @@ class Store {
 
             assertNotSelfPart(safeNode);
 
+            // Read before the draft takes ownership of the node, `hasPart` is regenerated on commit.
+            const childIds = getPartIds(safeNode, 'hasPart');
             const draft = new ReadWriteNode(safeNode);
 
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
@@ -420,7 +422,6 @@ class Store {
             setDraft(draft);
 
             // Copy before iterating as the set will be modified while mirroring.
-            const childIds = getPartIds(safeNode, 'hasPart');
             const prevChildIds = new Set(getReferencingIds(nextChildIds, safeId));
 
             for (const [childId, included] of [

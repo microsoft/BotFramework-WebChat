@@ -6,8 +6,7 @@ import { nodeSchema } from '../node/Node.ts';
  *
  * It looks the same as `Node`, but it is deeply frozen and has hidden properties attached (e.g. cached `dateCreated`
  * and sorted children). The brand is type-only, it differentiates it from the "external version" which could be
- * created by anyone, so internal functions relying on hidden properties will only accept nodes created by
- * `createNode()` or `ReadWriteNode.commit()`.
+ * created by anyone, so internal functions relying on hidden properties will only accept nodes frozen by `freezeNode()`.
  *
  * `InternalNode` is assignable to `Node`, but `Node` is not assignable to `InternalNode`.
  */

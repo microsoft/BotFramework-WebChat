@@ -5,11 +5,13 @@ import type { Identifier } from '../node/NodeIdentifier.ts';
 import FrozenSkipList from '../structure/FrozenSkipList.ts';
 import createNode from './createNode.ts';
 import { getDateCreatedTime } from './dateCreatedTime.ts';
+import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
 import ReadWriteNode from './ReadWriteNode.ts';
 import { getSortedChildIds } from './sortedChildIds.ts';
+import type { UnfrozenNode } from './UnfrozenNode.ts';
 
-function createMessage(): ReturnType<typeof createNode> {
+function createMessage(): UnfrozenNode {
   return createNode({
     '@id': '_:m-1',
     '@type': new Set(['Message']),
@@ -26,7 +28,9 @@ scenario(
   'new ReadWriteNode()',
   bdd => {
     bdd
-      .given('a node', () => createMessage())
+      .given('a frozen node in the graph with hasPart', () =>
+        freezeNode(createMessage(), new Set(['_:stale']), undefined)
+      )
       .when('committed without changes', node => new ReadWriteNode(node).commit(new Set(), undefined))
       .then('should be a new frozen node', (node, nextNode) => {
         expect(nextNode).not.toBe(node);
@@ -37,6 +41,37 @@ scenario(
         expect(nextNode.isPartOf).toBe(node.isPartOf);
         expect(Reflect.get(nextNode, 'citation')).toBe(Reflect.get(node, 'citation'));
       })
+      .and('should keep the cached dateCreated', (_, nextNode) =>
+        expect(getDateCreatedTime(nextNode)).toBe(Date.UTC(2026, 0, 1))
+      );
+
+    bdd
+      .given('an unfrozen node created by createNode()', () => createMessage())
+      .when('committed without changes', node => new ReadWriteNode(node).commit(new Set(), undefined))
+      .then('should freeze the node in place without copying', (node, nextNode) => {
+        expect(nextNode).toBe(node);
+        expect(Object.isFrozen(nextNode)).toBe(true);
+      })
+      .and('should not have hasPart', (_, nextNode) => expect(nextNode).not.toHaveProperty('hasPart'));
+
+    bdd
+      .given('a draft of an unfrozen node committed once', () => {
+        const draft = new ReadWriteNode(createMessage());
+
+        return { draft, firstNode: draft.commit(new Set(), undefined) };
+      })
+      .when('references are removed and committed again', ({ draft }) => {
+        draft.removeReferencesTo('_:c-2');
+
+        return draft.commit(new Set(), undefined);
+      })
+      .then('should copy on write', ({ firstNode }, nextNode) => expect(nextNode).not.toBe(firstNode))
+      .and('should not modify the first committed node', ({ firstNode }) =>
+        expect(Reflect.get(firstNode, 'citation')).toEqual([{ '@id': '_:c-1' }, { '@id': '_:c-2' }])
+      )
+      .and('should have the change', (_, nextNode) =>
+        expect(Reflect.get(nextNode, 'citation')).toEqual([{ '@id': '_:c-1' }])
+      )
       .and('should keep the cached dateCreated', (_, nextNode) =>
         expect(getDateCreatedTime(nextNode)).toBe(Date.UTC(2026, 0, 1))
       );
@@ -166,6 +201,7 @@ scenario(
         expect(Object.isFrozen(Reflect.get(nextNode, 'citation'))).toBe(true)
       )
       .and('should remove properties which become empty', (_, { nextNode }) => {
+        expect(Object.keys(nextNode)).not.toContain('mentions');
         expect(nextNode).not.toHaveProperty('isPartOf');
         expect(nextNode).not.toHaveProperty('mentions');
       })

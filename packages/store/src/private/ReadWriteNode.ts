@@ -1,16 +1,20 @@
 import { is } from 'valibot';
+import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import { nodeReferenceSchema, type NodeReference } from '../node/NodeReference.ts';
 import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
 import FrozenSet, { type ReadWriteSet } from '../structure/FrozenSet.ts';
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
 import { attachDateCreatedTime, getDateCreatedTime } from './dateCreatedTime.ts';
+import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
 import type { InternalNode } from './InternalNode.ts';
-import { sortedChildIdsSymbol } from './sortedChildIds.ts';
+import type { UnfrozenNode } from './UnfrozenNode.ts';
 
-/** Marks a property removed in `ReadWriteNode`. */
-const DELETED = Symbol('DELETED');
+type WritableNode = {
+  [key: string]: unknown;
+  isPartOf?: ReadonlySet<NodeReference> | undefined;
+};
 
 function isReferenceTo(id: Identifier, value: unknown): boolean {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
@@ -24,90 +28,95 @@ function isReferenceProperty(key: string, value: unknown): value is readonly unk
 }
 
 /**
- * A writable draft on top of a node in the graph, similar to `mutate()` of `FrozenMap`.
+ * A writable draft on top of a node, similar to `mutate()` of `FrozenMap`.
  *
- * Changes made by the store (e.g. mirroring `isPartOf`, removing references to a deleted node) are kept in the draft,
- * then `commit()` builds a single frozen node. The node is not validated again as changes are made by the store.
+ * Changes made by the store (e.g. mirroring `isPartOf`, removing references to a deleted node) are made on the draft,
+ * then `commit()` freezes it as a single node via `freezeNode()`. The node is not validated again as changes are made
+ * by the store.
  *
- * - The original node is not modified
- * - `hasPart` of the original node is ignored, it is generated on `commit()`
+ * - If the node is unfrozen (i.e. created by `createNode()`), the draft takes ownership and modifies it in place
+ * - If the node is frozen (i.e. in the graph), it is not modified, it is copied on first write or on commit
+ * - `hasPart` of the node is ignored, it is generated on `commit()`
  * - `isPartOf` is modified via `FrozenSet.mutate()` without copying
- * - Creating a draft is O(1) and does not copy the node
  */
 class ReadWriteNode {
-  constructor(node: InternalNode) {
+  /**
+   * @param node A node in the graph, or an unfrozen node created by `createNode()`. Unfrozen node is owned by the draft
+   *             and must not be used by the caller anymore.
+   */
+  constructor(node: InternalNode | UnfrozenNode) {
+    this.#dateCreatedTime = getDateCreatedTime(node);
     this.#node = node;
+    this.#writableNode = Object.isFrozen(node) ? undefined : node;
 
     Object.freeze(this);
   }
 
-  readonly #changes = new Map<string, unknown>();
-  readonly #node: InternalNode;
-  #partOfIds: ReadonlySet<Identifier> | undefined;
+  readonly #dateCreatedTime: number;
+  #node: Node;
   #readWritePartOfIds: ReadWriteSet<Identifier> | undefined;
+  #writableNode: WritableNode | undefined;
 
   get dateCreatedTime(): number {
-    return getDateCreatedTime(this.#node);
+    return this.#dateCreatedTime;
   }
 
   get id(): Identifier {
     return this.#node['@id'];
   }
 
-  /** Gets properties with changes applied, excluding `hasPart` and `isPartOf`. */
-  #getEntries(): [string, unknown][] {
-    const entries: [string, unknown][] = [];
+  /** Gets the node for writing, copies the node if it is frozen. `hasPart` is not copied. */
+  #write(): WritableNode {
+    if (!this.#writableNode) {
+      const { hasPart: _, ...node } = this.#node;
 
-    for (const [key, value] of Object.entries(this.#node)) {
-      const nextValue = this.#changes.has(key) ? this.#changes.get(key) : value;
-
-      key !== 'hasPart' && key !== 'isPartOf' && nextValue !== DELETED && entries.push([key, nextValue]);
+      this.#node = this.#writableNode = attachDateCreatedTime(node, this.#dateCreatedTime);
     }
 
-    return entries;
+    return this.#writableNode;
+  }
+
+  /** Gets properties with changes applied, excluding `hasPart` and `isPartOf`. */
+  #getEntries(): [string, unknown][] {
+    return Object.entries(this.#node).filter(([key]) => key !== 'hasPart' && key !== 'isPartOf');
   }
 
   /**
-   * Builds a frozen node with changes applied, `hasPart` generated from `childIds`, and `sortedChildIds` attached.
+   * Freezes the node with changes applied, `hasPart` generated from `childIds`, and `sortedChildIds` attached.
    *
-   * This is O(number of properties), regardless of the number of parts. The draft can be modified after commit.
+   * This is O(number of properties), regardless of the number of parts. If the draft owns the node, it is frozen in
+   * place without copying. The draft can be modified after commit, the next write will copy the committed node.
    */
   commit(childIds: ReadonlySet<Identifier>, sortedChildIds: FrozenSkipList<Identifier> | undefined): InternalNode {
+    const node = this.#write();
     const readWritePartOfIds = this.#readWritePartOfIds;
-    let nextNode: {
-      [key: string]: unknown;
-      hasPart?: ReadonlySet<NodeReference> | undefined;
-      isPartOf?: ReadonlySet<NodeReference> | undefined;
-    };
 
-    if (readWritePartOfIds || this.#changes.size) {
-      const partOfIds = readWritePartOfIds ? readWritePartOfIds.commit() : this.getPartOfIds();
+    if (readWritePartOfIds) {
+      const partOfIds = readWritePartOfIds.commit();
 
       // The overlay cannot be modified after commit, the next modification will create a new overlay.
-      this.#partOfIds = partOfIds;
       this.#readWritePartOfIds = undefined;
 
-      nextNode = Object.fromEntries(this.#getEntries());
-      partOfIds.size && (nextNode.isPartOf = new FrozenNodeSet(partOfIds));
-    } else {
-      const { hasPart: _, ...node } = this.#node;
-
-      nextNode = node;
+      if (partOfIds.size) {
+        node.isPartOf = new FrozenNodeSet(partOfIds);
+      } else {
+        delete node.isPartOf;
+      }
     }
 
-    childIds.size && (nextNode.hasPart = new FrozenNodeSet(childIds));
+    // The node is frozen in place, the draft no longer owns it.
+    this.#writableNode = undefined;
 
-    return Object.freeze(
-      attachDateCreatedTime(
-        Object.defineProperty(nextNode, sortedChildIdsSymbol, { value: sortedChildIds }),
-        this.dateCreatedTime
-      )
-    ) satisfies object as InternalNode;
+    return (this.#node = freezeNode(
+      node satisfies WritableNode as UnfrozenNode,
+      childIds,
+      sortedChildIds
+    ) satisfies InternalNode);
   }
 
   /** Gets IDs of parents in `isPartOf` with changes applied. */
   getPartOfIds(): ReadonlySet<Identifier> {
-    return this.#readWritePartOfIds ?? this.#partOfIds ?? getPartIds(this.#node, 'isPartOf');
+    return this.#readWritePartOfIds ?? getPartIds(this.#node, 'isPartOf');
   }
 
   /**
@@ -142,9 +151,17 @@ class ReadWriteNode {
         if (nextValues.length !== value.length) {
           changed = true;
 
+          const node = this.#write();
+
           // OPINION: Empty property value is same as if the property is removed.
           // Items are already frozen, only the array is new.
-          this.#changes.set(key, nextValues.length ? Object.freeze(nextValues) : DELETED);
+          if (nextValues.length) {
+            // eslint-disable-next-line security/detect-object-injection
+            node[key] = Object.freeze(nextValues);
+          } else {
+            // eslint-disable-next-line security/detect-object-injection
+            delete node[key];
+          }
         }
       }
     }
