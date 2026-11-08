@@ -1,5 +1,10 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
+/**
+ * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+ * The live styles are in `packages/component/src/ErrorBox.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createErrorBoxStyle({ monospaceFont, primaryFont }: StrictStyleOptions) {
   return {
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
