@@ -152,7 +152,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
   ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
   ${CustomPropertyNames.BorderColorBubbleUser}: ${bubbleFromUserBorderColor};
-  ${CustomPropertyNames.BorderRadiusAvatar}: ${typeof avatarBorderRadius === 'number' ? `${avatarBorderRadius}px` : avatarBorderRadius || 'unset'};
+  ${CustomPropertyNames.BorderRadiusAvatar}: ${toLength(avatarBorderRadius)};
   ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusBubbleUser}: ${bubbleFromUserBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusTranscriptTerminator}: ${transcriptTerminatorBorderRadius}px;
