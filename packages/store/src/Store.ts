@@ -1,4 +1,5 @@
 import { literal, object, optional, parse, picklist, pipe, readonly, type InferInput } from 'valibot';
+import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
 import type { Node } from './node/Node.ts';
@@ -471,11 +472,7 @@ class Store {
 
     assertReferencedNodesInGraph(nextState, nextForwardReferenceIds, affectedNodeIds);
 
-    for (const [childId, [parentId]] of pendingParentIds) {
-      if (parentId) {
-        throw new Error(`Node "${parentId}" has part "${childId}" which is not in the graph`);
-      }
-    }
+    assertNoPendingParts(pendingParentIds);
 
     // THINK: Upsert/delete called twice with same node ID in the same transaction?
 
