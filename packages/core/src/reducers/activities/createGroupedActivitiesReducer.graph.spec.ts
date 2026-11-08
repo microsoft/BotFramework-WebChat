@@ -221,6 +221,26 @@ scenario('the lists are patched from the first changed part of the conversation'
       expect(ids(appended)).toEqual(['m-1', 'm-2', 's-1', 's-1-2', 'm-3']);
       expect(positions(appended)).toEqual([1_000, 4_000, 5_000, 6_000, 7_000]);
     });
+
+  bdd
+    .given('session "s" (2s), m (3s), then the final revision of "s" (4s) moves it after m', () => {
+      const reducer = createGroupedActivitiesReducer(ponyfill, debugAPI);
+      const state = [revision('s', 's', 2_000, 1), botActivity('m', 'm', 3_000), revision('s', 's-f', 4_000)].reduce(
+        (state, activity) => reducer(state, incoming(activity)),
+        reducer(undefined, { type: '@@INIT' } as any)
+      );
+
+      return { reducer, state };
+    })
+    .when('the final revision is deleted, then revision 2 (5s) arrives', ({ reducer, state }) =>
+      reducer(
+        reducer(state, { payload: { activityID: 's-f' }, type: 'DIRECT_LINE/DELETE_ACTIVITY' } as any),
+        incoming(revision('s', 's-2', 5_000, 2))
+      )
+    )
+    .then('should keep the session after m', (_, state) => expect(ids(state)).toEqual(['m', 's', 's-2']))
+    // Intentional difference: main keeps the old position of s and gives s-2 the next one ([2000, 1000, 2000]).
+    .and('should stamp increasing positions', (_, state) => expect(positions(state)).toEqual([2_000, 3_000, 4_000]));
 });
 
 scenario('the activity keeps the host’s objects, as before the store', bdd => {

@@ -216,3 +216,41 @@ scenario('upserting a revision after the session is finalized', bdd => {
       expect(getView(testStore).map(({ id }) => id)).toEqual(['_:a-00002'])
     );
 });
+
+// Intentional difference: an interim revision never moves its session. Before the store, the fast path kept the session
+// in place only if it found a free position after the previous revision; otherwise the session was sorted again, after
+// an activity with the same timestamp, or to the bottom without a timestamp (`livestream-diffs.md`, C4).
+scenario('an interim revision after an activity sorted right after its session', bdd => {
+  const session = (id: string, sequenceNumber: number, logicalTimestamp: number | undefined) =>
+    buildMessage({ id, livestream: { final: false, sequenceNumber, sessionId: 's' }, logicalTimestamp, text: id });
+
+  const message = (id: string, logicalTimestamp: number) => buildMessage({ id, logicalTimestamp, text: id });
+
+  bdd
+    .given('session s (5s), y (9s), then x with the same timestamp as s (5s)', () =>
+      createSortedTestStore(session('s', 1, 5_000), message('y', 9_000), message('x', 5_000))
+    )
+    .when('revision 2 (6s) is upserted', testStore => upsertEach(testStore, session('s-2', 2, 6_000)))
+    // Before the store: x, s, s-2, y.
+    .then('should not move the session after x', (_, testStore) =>
+      expect(getView(testStore).map(({ id }) => id)).toEqual(['_:s', '_:s-2', '_:x', '_:y'])
+    )
+    .and('should keep the graph integrity', (_, { store }) =>
+      expect(getIntegrityViolations(store.getSnapshot())).toEqual([])
+    );
+
+  bdd
+    .given('session s without a timestamp, y (9s), then x (5s)', () =>
+      createSortedTestStore(session('s', 1, undefined), message('y', 9_000), message('x', 5_000))
+    )
+    .when('revision 2 without a timestamp is upserted', testStore =>
+      upsertEach(testStore, session('s-2', 2, undefined))
+    )
+    // Before the store: x, y, s, s-2.
+    .then('should not move the session to the bottom', (_, testStore) =>
+      expect(getView(testStore).map(({ id }) => id)).toEqual(['_:s', '_:s-2', '_:x', '_:y'])
+    )
+    .and('should keep the graph integrity', (_, { store }) =>
+      expect(getIntegrityViolations(store.getSnapshot())).toEqual([])
+    );
+});

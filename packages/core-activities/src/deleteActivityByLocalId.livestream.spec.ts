@@ -270,3 +270,24 @@ scenario('deleting every revision of a livestream session, then a new revision a
     .when('revision 2 arrives at 9s', state => upsertAll(state, revision('s-2', 2, 9_000)))
     .then('should sort the new session by revision 2, after m', (_, state) => expect(ids(state)).toEqual(['m', 's-2']));
 });
+
+// Intentional difference: a delete updates the timestamp of the session (as before the store), and the next activity is
+// sorted against it. Before the store, the session's entry in `sortedChatHistoryList` kept the timestamp it had before
+// the delete (`livestream-diffs.md`, C6). As before the store, the delete itself does not sort again.
+scenario('an activity after a delete changed the timestamp of a livestream session', bdd => {
+  bdd
+    .given('revisions 1 (1s) and 2 (5s), then revision 1 is deleted', () =>
+      deleteAll(upsertAll(INITIAL_STATE, revision('s', 1, 1_000), revision('s-2', 2, 5_000)), 's')
+    )
+    .when('m (3s) arrives', state => upsertAll(state, message('m', 3_000)))
+    // Before the store: s-2, m (sorted against 1s).
+    .then('should sort m against the timestamp of revision 2', (_, state) => expect(ids(state)).toEqual(['m', 's-2']));
+
+  bdd
+    .given('revision 1 (1s) and the final revision (9s), then the final revision is deleted', () =>
+      deleteAll(upsertAll(INITIAL_STATE, revision('s', 1, 1_000), revision('s-f', undefined, 9_000)), 's-f')
+    )
+    .when('m (5s) arrives', state => upsertAll(state, message('m', 5_000)))
+    // Before the store: m, s (sorted against 9s).
+    .then('should sort m against the timestamp of revision 1', (_, state) => expect(ids(state)).toEqual(['s', 'm']));
+});
