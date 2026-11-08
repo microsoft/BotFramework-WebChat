@@ -90,7 +90,8 @@ class ReadWriteSkipListImpl<T> extends SkipListView<T> implements ReadWriteSkipL
       return entry;
     }
 
-    const nextEntry: Entry<T> = { next: entry.next.slice(), previous: entry.previous.slice() };
+    // PERF: Spread instead of `slice()`, `slice()` of a frozen array is about 30x slower as it is not on the fast path.
+    const nextEntry: Entry<T> = { next: [...entry.next], previous: [...entry.previous] };
 
     this.#ownedEntries.add(nextEntry);
     this.#overlay.set(key, nextEntry);
