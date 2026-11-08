@@ -12,9 +12,15 @@
  *
  * - Append: children are upserted in `dateCreated` order, one transaction per child
  * - Random: children are upserted in random order, one transaction per child
+ * - Adopt: a parent is upserted with `hasPart` of existing children in a single transaction, `isPartOf` of every child
+ *   is updated
+ * - Pending: a parent is upserted with `hasPart` of children not in the graph yet, then children are upserted in the
+ *   same transaction
+ * - Delete parent: after append, the parent is deleted, `isPartOf` of every child is updated
  * - Iterate: iterating `getSortedParts()` after append
  * - Memory: heap used after append, requires `--expose-gc`
  */
+import type { Node } from './node/Node.ts';
 import Store, { type StoreController } from './Store.ts';
 
 const NUM_NODES = Object.freeze([1_000, 10_000, 50_000, 100_000]);
@@ -80,7 +86,10 @@ function createIndices(numNodes: number, order: Order): number[] {
  *
  * @returns The store and time spent in milliseconds.
  */
-function upsertChildren(numNodes: number, order: Order): { readonly duration: number; readonly store: Store } {
+function upsertChildren(
+  numNodes: number,
+  order: Order
+): { readonly controller: StoreController; readonly duration: number; readonly store: Store } {
   const { controller, store } = createStore();
   const indices = createIndices(numNodes, order);
   const start = performance.now();
@@ -98,7 +107,66 @@ function upsertChildren(numNodes: number, order: Order): { readonly duration: nu
     );
   }
 
-  return Object.freeze({ duration: performance.now() - start, store });
+  return Object.freeze({ controller, duration: performance.now() - start, store });
+}
+
+function createMessage(index: number, isPartOf?: Node['isPartOf']): Node {
+  const id = `_:m-${index}` as const;
+
+  return {
+    '@id': id,
+    '@type': new Set(['Message']),
+    dateCreated: new Date(START_TIME + index * 1_000).toISOString(),
+    ...(isPartOf ? { isPartOf } : {})
+  };
+}
+
+/** Upserts children without parent, then measures upserting the parent with `hasPart` of all children. */
+function adopt(numNodes: number): number {
+  const { controller } = createStore();
+  const ids = Array.from({ length: numNodes }, (_, index) => `_:m-${index}` as const);
+
+  controller.edit(transaction => ids.forEach((id, index) => transaction.upsert(id, () => createMessage(index))));
+
+  const start = performance.now();
+
+  controller.edit(transaction =>
+    transaction.upsert('_:c-1', node => ({
+      ...(node ?? { '@id': '_:c-1', '@type': new Set(['Conversation']) }),
+      hasPart: new Set(ids.map(id => ({ '@id': id })))
+    }))
+  );
+
+  return performance.now() - start;
+}
+
+/** Measures upserting a parent with `hasPart` of children not in the graph yet, then the children. */
+function pending(numNodes: number): number {
+  const { controller } = createStore();
+  const ids = Array.from({ length: numNodes }, (_, index) => `_:m-${index}` as const);
+  const start = performance.now();
+
+  controller.edit(transaction => {
+    transaction.upsert('_:c-2', () => ({
+      '@id': '_:c-2',
+      '@type': new Set(['Conversation']),
+      hasPart: new Set(ids.map(id => ({ '@id': id })))
+    }));
+
+    ids.forEach((id, index) => transaction.upsert(id, () => createMessage(index)));
+  });
+
+  return performance.now() - start;
+}
+
+/** Appends children, then measures deleting the parent. */
+function deleteParent(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  controller.edit(transaction => transaction.delete('_:c-1'));
+
+  return performance.now() - start;
 }
 
 function iterate(store: Store, numNodes: number): number {
@@ -179,6 +247,27 @@ const BENCHMARKS: readonly Benchmark[] = Object.freeze([
     fractionDigits: 2,
     name: 'Random',
     run: (numNodes: number) => upsertChildren(numNodes, 'random').duration,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Adopt',
+    run: adopt,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Pending',
+    run: pending,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Delete parent',
+    run: deleteParent,
     scale: 1_000,
     unit: 'µs/node'
   },
