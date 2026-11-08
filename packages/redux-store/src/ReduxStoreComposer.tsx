@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import reduxStoreSchema from './private/reduxStoreSchema';
+import ReduxSuggestedActionsMirror from './suggestedActions/ReduxSuggestedActionsMirror';
 import SuggestedActionsComposer from './suggestedActions/SuggestedActionsComposer';
 
 const reduxStoreComposerPropsSchema = pipe(
@@ -23,7 +24,11 @@ type ReduxStoreComposerProps = InferInput<typeof reduxStoreComposerPropsSchema>;
 function ReduxStoreComposer(props: ReduxStoreComposerProps) {
   const { children, store } = validateProps(reduxStoreComposerPropsSchema, props);
 
-  return <SuggestedActionsComposer store={store}>{children}</SuggestedActionsComposer>;
+  return (
+    <SuggestedActionsComposer>
+      <ReduxSuggestedActionsMirror store={store}>{children}</ReduxSuggestedActionsMirror>
+    </SuggestedActionsComposer>
+  );
 }
 
 export default memo(ReduxStoreComposer);

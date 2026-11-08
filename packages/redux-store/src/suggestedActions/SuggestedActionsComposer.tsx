@@ -1,23 +1,16 @@
-import {
-  CLEAR_SUGGESTED_ACTIONS,
-  SET_SUGGESTED_ACTIONS,
-  setSuggestedActionsActionSchema,
-  WebChatActivity,
-  type DirectLineCardAction
-} from 'botframework-webchat-core';
-import { setRawState } from 'botframework-webchat-core/internal.js';
+import { type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { type Action } from 'redux';
-import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import React, { memo, useCallback, useMemo, useState } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import reduxStoreSchema from '../private/reduxStoreSchema';
 import SuggestedActionsContext, { type SuggestedActionsContextType } from './private/SuggestedActionsContext';
+import SuggestedActionsStateContext, {
+  type SuggestedActionsStateContextType
+} from './private/SuggestedActionsStateContext';
 
 const suggestedActionsComposerPropsSchema = pipe(
   object({
-    children: optional(reactNode()),
-    store: reduxStoreSchema
+    children: optional(reactNode())
   }),
   readonly()
 );
@@ -26,11 +19,11 @@ type SuggestedActionsComposerProps = InferInput<typeof suggestedActionsComposerP
 
 const EMPTY_ARRAY = Object.freeze([]);
 
+/**
+ * Owns the suggested actions. Under a Redux store, `<ReduxSuggestedActionsMirror>` mirrors them to the store.
+ */
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
-  const {
-    children,
-    store: { dispatch }
-  } = validateProps(suggestedActionsComposerPropsSchema, props);
+  const { children } = validateProps(suggestedActionsComposerPropsSchema, props);
 
   const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
   const [suggestedActions, setSuggestedActionsRaw] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
@@ -42,42 +35,10 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     [setSuggestedActionsRaw]
   );
 
-  // #region Replicate to Redux store
-  const handleAction = useCallback(
-    (action: Action) => {
-      if (action.type === CLEAR_SUGGESTED_ACTIONS) {
-        setOriginActivity(undefined);
-        setSuggestedActionsRaw(EMPTY_ARRAY);
-      } else if (action.type === SET_SUGGESTED_ACTIONS) {
-        const result = safeParse(setSuggestedActionsActionSchema, action);
-
-        if (result.success) {
-          const {
-            payload: { originActivity, suggestedActions }
-          } = result.output;
-
-          setOriginActivity(originActivity);
-          setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
-        }
-      }
-    },
-    [setOriginActivity, setSuggestedActionsRaw]
+  const stateContext = useMemo<SuggestedActionsStateContextType>(
+    () => Object.freeze({ originActivity, setOriginActivity, setSuggestedActionsRaw, suggestedActions }),
+    [originActivity, setOriginActivity, setSuggestedActionsRaw, suggestedActions]
   );
-
-  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
-  useMemo(
-    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
-    [dispatch, originActivity]
-  );
-
-  useEffect(() => {
-    dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
-
-    return () => {
-      dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' });
-    };
-  }, [dispatch, handleAction]);
-  // #endregion
 
   const useSuggestedActions = useCallback<SuggestedActionsContextType['useSuggestedActions']>(
     () => Object.freeze([suggestedActions, setSuggestedActions, Object.freeze({ activity: originActivity })]),
@@ -86,8 +47,14 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
 
   const context = useMemo<SuggestedActionsContextType>(() => ({ useSuggestedActions }), [useSuggestedActions]);
 
-  return <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>;
+  return (
+    <SuggestedActionsStateContext.Provider value={stateContext}>
+      <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>
+    </SuggestedActionsStateContext.Provider>
+  );
 }
+
+SuggestedActionsComposer.displayName = 'SuggestedActionsComposer';
 
 export default memo(SuggestedActionsComposer);
 export { suggestedActionsComposerPropsSchema, type SuggestedActionsComposerProps };
