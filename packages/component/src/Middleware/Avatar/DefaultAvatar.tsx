@@ -1,23 +1,12 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo } from 'react';
-import { boolean, never, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, never, object, optional, pipe, readonly, string } from 'valibot';
 
+import styles from '../../Avatar/Avatar.module.css';
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
-import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
-import useStyleSet from '../../hooks/useStyleSet';
-
-const ROOT_STYLE = {
-  overflow: ['hidden', 'clip'],
-  position: 'relative',
-
-  '> *': {
-    left: 0,
-    position: 'absolute',
-    top: 0
-  }
-};
 
 const defaultAvatarPropsSchema = pipe(
   object({
@@ -29,7 +18,7 @@ const defaultAvatarPropsSchema = pipe(
   readonly()
 );
 
-type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
+type DefaultAvatarProps = InferReactProps<typeof defaultAvatarPropsSchema>;
 
 function DefaultAvatar(props: DefaultAvatarProps) {
   const {
@@ -38,19 +27,13 @@ function DefaultAvatar(props: DefaultAvatarProps) {
     fromUser
   } = validateProps(defaultAvatarPropsSchema, props, 'strict');
 
-  const [{ avatar: avatarStyleSet }] = useStyleSet();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  // Keeps the "webchat__defaultAvatar" class names.
+  const classNames = useStyles(styles, webChatPrefixedClassName);
 
   return (
     <div
       aria-hidden={ariaHidden}
-      className={classNames(
-        'webchat__defaultAvatar',
-        { 'webchat__defaultAvatar--fromUser': fromUser },
-        rootClassName,
-        avatarStyleSet + '',
-        className
-      )}
+      className={cx(classNames['defaultAvatar'], { [classNames['defaultAvatar--fromUser']]: fromUser }, className)}
     >
       <InitialsAvatar fromUser={fromUser} />
       <ImageAvatar fromUser={fromUser} />

@@ -727,7 +727,7 @@
           margin-block: var(--webchat-spacingVerticalXXS);
         }
 
-        :global(.stacked-loyout__bubble) .stacked-layout__message-status,
+        .stacked-layout__bubble .stacked-layout__message-status,
         .stacked-layout__bubble .stacked-layout__title,
         .stacked-layout__bubble .collapsible-content__summary,
         .stacked-layout__bubble .text-content {

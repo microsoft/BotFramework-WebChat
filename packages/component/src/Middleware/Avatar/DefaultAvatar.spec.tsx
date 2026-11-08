@@ -15,8 +15,8 @@ jest.mock('@msinternal/botframework-webchat-react-valibot', () => ({
 // Children and hooks need the Web Chat context, they are not under test.
 jest.mock('../../Avatar/ImageAvatar', () => () => null);
 jest.mock('../../Avatar/InitialsAvatar', () => () => 'CU');
-jest.mock('../../hooks/internal/styleToEmotionObject', () => ({ useStyleToEmotionObject: () => () => '' }));
-jest.mock('../../hooks/useStyleSet', () => () => [{ avatar: '' }]);
+// Unit tests have no CSS transform. The local name is needed for the "webchat__defaultAvatar" class name.
+jest.mock('../../Avatar/Avatar.module.css', () => ({ defaultAvatar: 'defaultAvatar' }));
 
 test('when "aria-hidden" is not set in production build, should hide initials from assistive technologies', () => {
   const { container } = render(<DefaultAvatar fromUser={true} />);
