@@ -1,8 +1,9 @@
+import type { Activity } from '@msinternal/botframework-webchat-core-activities';
+// The small entry point: core's `graph.js` entry does not take the rest of the activities core with it.
 import {
   getLocalIdFromActivity,
-  getPositionFromActivity,
-  type Activity
-} from '@msinternal/botframework-webchat-core-activities';
+  getPositionFromActivity
+} from '@msinternal/botframework-webchat-core-activities/property';
 import { SlantGraph, SlantNodeSchema } from '@msinternal/botframework-webchat-core-graph';
 import { parse } from 'valibot';
 import type createStore from '../createStore';

@@ -14,6 +14,16 @@
         "types": "./dist/botframework-webchat-core-activities.d.ts",
         "default": "./dist/botframework-webchat-core-activities.js"
       }
+    },
+    "./property": {
+      "import": {
+        "types": "./dist/botframework-webchat-core-activities.property.d.mts",
+        "default": "./dist/botframework-webchat-core-activities.property.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core-activities.property.d.ts",
+        "default": "./dist/botframework-webchat-core-activities.property.js"
+      }
     }
   },
   "author": "Microsoft Corporation",
