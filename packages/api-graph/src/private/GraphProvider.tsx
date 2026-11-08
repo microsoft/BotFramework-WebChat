@@ -7,12 +7,16 @@ import {
   type GraphSubscriber,
   type Identifier
 } from 'botframework-webchat-core/graph.js';
-import React, { memo, useLayoutEffect, useMemo, useState } from 'react';
+import React, { memo, useLayoutEffect, useMemo, useReducer, useState } from 'react';
 import { custom, function_, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
 
 const EMPTY_ARRAY = Object.freeze([]);
+
+function increment(value: number): number {
+  return value + 1;
+}
 
 const graphProviderPropsSchema = pipe(
   object({
@@ -29,7 +33,38 @@ type GraphProviderProps = InferInput<typeof graphProviderPropsSchema>;
 function GraphProvider(props: GraphProviderProps) {
   const { children, store } = validateProps(graphProviderPropsSchema, props);
 
-  const graph = useMemo(() => createGraphFromStore(store), [store]);
+  const [, forceRender] = useReducer(increment, 0);
+
+  const [graph, subscribeToActivities] = useMemo(() => {
+    const graph = createGraphFromStore(store);
+    const listeners = new Set<() => void>();
+    let { activities } = store.getState();
+
+    // The graph does not delete nodes (e.g. DIRECT_LINE/DELETE_ACTIVITY), so re-render to filter them out when Redux activities change.
+    // Subscribes while rendering, after the graph: a layout effect would be notified after the components below, which read Redux activities.
+    // Remove when the graph supports deleting nodes.
+    store.subscribe(() => {
+      const { activities: nextActivities } = store.getState();
+
+      if (!Object.is(activities, nextActivities)) {
+        activities = nextActivities;
+        listeners.forEach(listener => listener());
+      }
+    });
+
+    return Object.freeze([
+      graph,
+      (listener: () => void) => {
+        listeners.add(listener);
+
+        return () => {
+          listeners.delete(listener);
+        };
+      }
+    ] as const);
+  }, [store]);
+
+  useLayoutEffect(() => subscribeToActivities(forceRender), [forceRender, subscribeToActivities]);
 
   const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(EMPTY_ARRAY);
 
@@ -83,10 +118,11 @@ function GraphProvider(props: GraphProviderProps) {
     };
   }, [graph, setOrderedActivityNodes]);
 
+  const { activities: storeActivities } = store.getState();
+
   const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(() => {
     // Filter out stale graph nodes for activities no longer in Redux (e.g. pruned livestream revisions).
     // The graph does not support deletion, so stale nodes linger after computeSortedActivities prunes them.
-    const { activities: storeActivities } = store.getState();
     const validActivitySet = new Set<WebChatActivity>(storeActivities);
     const activities: WebChatActivity[] = [];
 
@@ -97,7 +133,7 @@ function GraphProvider(props: GraphProviderProps) {
     }
 
     return Object.freeze([Object.freeze(activities)] as const);
-  }, [orderedActivityNodes, store]);
+  }, [orderedActivityNodes, storeActivities]);
 
   const context = useMemo<GraphContextType>(
     () =>
