@@ -28,6 +28,13 @@ type ActivitiesStoreChange = {
 
 type ActivitiesStoreListener = (change: ActivitiesStoreChange) => void;
 
+/**
+ * William's store holding the activities graph, read only: its snapshot, the sorted parts of a node, and `subscribe()`.
+ */
+type ActivitiesStoreGraph = Pick<Store, 'getSnapshot' | 'getSortedParts' | 'subscribe'>;
+
+type GraphListener = Parameters<Store['subscribe']>[0];
+
 type ActivitiesStore = {
   /** Deletes the activity with the ID, if any. */
   readonly deleteActivity: (activityId: string) => void;
@@ -41,10 +48,15 @@ type ActivitiesStore = {
   readonly postActivityRejected: (clientActivityID: string) => void;
   readonly receiveActivity: (activity: WebChatActivity) => void;
   /**
-   * William's store holding the activities graph, read only. It notifies its own listeners before the state is derived
-   * from the graph: read the state from `getSnapshot()` in a listener of `subscribe()` instead.
+   * William's store holding the activities graph, read only. Its listeners are called at the end of the store's
+   * transaction, before the state is derived from the graph: read the state from `getSnapshot()` in a listener of
+   * `subscribe()` instead. A listener that throws does not stop the operation: the state is updated, then the error is
+   * thrown, as for the listeners of `subscribe()`. As there too, a notification calls the listeners subscribed when it
+   * starts.
+   *
+   * Subscribe here, not to `getSnapshot().graph.store`: the graph of the state belongs to the operations.
    */
-  readonly store: Store;
+  readonly store: ActivitiesStoreGraph;
   /** Calls the listener after each operation that changed the state, once the state is derived. */
   readonly subscribe: (listener: ActivitiesStoreListener) => () => void;
 };
@@ -64,14 +76,18 @@ const listenerSchema = function_();
  *
  * An operation called during another one, or from a listener, is queued and runs after it, in order. When an operation
  * throws, the state stays as it was: the error is thrown to the caller, or, for a queued operation, to the caller of the
- * operation that was running, once the queue is empty.
+ * operation that was running, once the queue is empty. When a listener throws, the other listeners are still called and
+ * the state is updated, then the first error is thrown the same way.
  */
 export default function createActivitiesStore(init: { readonly ponyfill: ActivitiesCoreEnv }): ActivitiesStore {
   const { ponyfill } = parse(createActivitiesStoreInitSchema, init);
   const env: ActivitiesCoreEnv = Object.freeze({ Date: ponyfill.Date as DateConstructor });
+  const graphListeners = new Set<GraphListener>();
   const listeners = new Set<ActivitiesStoreListener>();
   const queue: ((state: ActivitiesCoreState) => ActivitiesCoreState)[] = [];
-  let affectedNodeIdsList: ReadonlySet<string>[] | undefined;
+  let operationContext:
+    | { readonly affectedNodeIdsList: ReadonlySet<string>[]; readonly onListenerError: (error: unknown) => void }
+    | undefined;
   let running = false;
   let state = createInitialState();
 
@@ -86,20 +102,50 @@ export default function createActivitiesStore(init: { readonly ponyfill: Activit
   // build a new graph (as the reducer does on its first action). Recording it keeps this graph, from the first operation.
   state = Object.freeze({ ...state, graphSnapshot: graph.store.getSnapshot() });
 
-  graph.store.subscribe(affectedNodeIds => affectedNodeIdsList?.push(affectedNodeIds));
+  // This is the only listener of William's store. The store calls its listeners at the end of its transaction, inside
+  // the operation: one that throws would stop the operation after the graph has changed, before the state is derived.
+  // So the listeners of `store` are called here, and their errors are thrown once the state is updated.
+  graph.store.subscribe(affectedNodeIds => {
+    const context = operationContext;
+    let listenerError: { readonly error: unknown } | undefined;
+
+    context?.affectedNodeIdsList.push(affectedNodeIds);
+
+    for (const listener of Array.from(graphListeners)) {
+      try {
+        listener(affectedNodeIds);
+      } catch (error) {
+        if (context) {
+          context.onListenerError(error);
+        } else {
+          listenerError ??= { error };
+        }
+      }
+    }
+
+    if (listenerError) {
+      throw listenerError.error;
+    }
+  });
 
   const apply = (operation: (state: ActivitiesCoreState) => ActivitiesCoreState): void => {
     const previous = state;
     const affectedNodeIdsOfOperation: ReadonlySet<string>[] = [];
+    let listenerError: { readonly error: unknown } | undefined;
 
-    affectedNodeIdsList = affectedNodeIdsOfOperation;
+    operationContext = Object.freeze({
+      affectedNodeIdsList: affectedNodeIdsOfOperation,
+      onListenerError: (error: unknown) => {
+        listenerError ??= { error };
+      }
+    });
 
     let next: ActivitiesCoreState;
 
     try {
       next = operation(previous);
     } finally {
-      affectedNodeIdsList = undefined;
+      operationContext = undefined;
     }
 
     // The state is always the latest one, so the operations never rebuild the graph from an older snapshot.
@@ -107,28 +153,24 @@ export default function createActivitiesStore(init: { readonly ponyfill: Activit
       throw new Error('botframework-webchat internal: The activities store must keep its graph');
     }
 
-    if (next === previous) {
-      return;
-    }
+    if (next !== previous) {
+      state = next;
 
-    state = next;
+      const change: ActivitiesStoreChange = Object.freeze({
+        affectedNodeIds:
+          affectedNodeIdsOfOperation.length === 1
+            ? affectedNodeIdsOfOperation[0]
+            : new Set(affectedNodeIdsOfOperation.flatMap(affectedNodeIds => Array.from(affectedNodeIds))),
+        next,
+        previous
+      });
 
-    const change: ActivitiesStoreChange = Object.freeze({
-      affectedNodeIds:
-        affectedNodeIdsOfOperation.length === 1
-          ? affectedNodeIdsOfOperation[0]
-          : new Set(affectedNodeIdsOfOperation.flatMap(affectedNodeIds => Array.from(affectedNodeIds))),
-      next,
-      previous
-    });
-
-    let listenerError: { readonly error: unknown } | undefined;
-
-    for (const listener of Array.from(listeners)) {
-      try {
-        listener(change);
-      } catch (error) {
-        listenerError ??= { error };
+      for (const listener of Array.from(listeners)) {
+        try {
+          listener(change);
+        } catch (error) {
+          listenerError ??= { error };
+        }
       }
     }
 
@@ -176,7 +218,17 @@ export default function createActivitiesStore(init: { readonly ponyfill: Activit
     postActivityPending: (activity: WebChatActivity) => run(state => postActivityPending(state, activity, env)),
     postActivityRejected: (clientActivityID: string) => run(state => postActivityRejected(state, clientActivityID)),
     receiveActivity: (activity: WebChatActivity) => run(state => receiveActivity(state, activity, env)),
-    store: graph.store,
+    store: Object.freeze({
+      getSnapshot: () => graph.store.getSnapshot(),
+      getSortedParts: (...args: Parameters<Store['getSortedParts']>) => graph.store.getSortedParts(...args),
+      subscribe: (listener: GraphListener) => {
+        graphListeners.add(parse(listenerSchema, listener) as GraphListener);
+
+        return () => {
+          graphListeners.delete(listener);
+        };
+      }
+    }),
     subscribe: (listener: ActivitiesStoreListener) => {
       listeners.add(parse(listenerSchema, listener) as ActivitiesStoreListener);
 
@@ -187,4 +239,4 @@ export default function createActivitiesStore(init: { readonly ponyfill: Activit
   });
 }
 
-export type { ActivitiesStore, ActivitiesStoreChange, ActivitiesStoreListener };
+export type { ActivitiesStore, ActivitiesStoreChange, ActivitiesStoreGraph, ActivitiesStoreListener };

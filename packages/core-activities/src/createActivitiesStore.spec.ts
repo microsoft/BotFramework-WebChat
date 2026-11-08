@@ -26,7 +26,12 @@ scenario('createActivitiesStore()', bdd => {
     .given('a store', () => createActivitiesStore({ ponyfill }))
     .when('nothing happened', store => store)
     .then('should be empty', (_, store) => expect(store.getSnapshot().sortedActivities).toEqual([]))
-    .and('should hold the graph of its state', (_, store) => expect(store.getSnapshot().graph?.store).toBe(store.store))
+    .and('should read the graph of its state', (_, store) =>
+      expect(store.store.getSnapshot()).toBe(store.getSnapshot().graph?.store.getSnapshot())
+    )
+    .and('should not expose the store of the graph', (_, store) =>
+      expect(store.store).not.toBe(store.getSnapshot().graph?.store)
+    )
     .and('should be frozen', (_, store) => expect(Object.isFrozen(store)).toBe(true));
 
   bdd
@@ -176,4 +181,122 @@ scenario('an operation that throws', bdd => {
 
       expect(ids(store.getSnapshot())).toEqual(['a-1', 'a-2']);
     });
+});
+
+// Runs the function with `process.env.NODE_ENV` set: the store checks that it keeps its graph in development only.
+function withNodeEnv<T>(nodeEnv: string, fn: () => T): T {
+  const nodeEnvBefore = process.env.NODE_ENV;
+
+  process.env.NODE_ENV = nodeEnv;
+
+  try {
+    return fn();
+  } finally {
+    process.env.NODE_ENV = nodeEnvBefore;
+  }
+}
+
+function receiveEach(store: ReturnType<typeof createActivitiesStore>, activities: readonly Activity[]): unknown[] {
+  const errors: unknown[] = [];
+
+  for (const activity of activities) {
+    try {
+      store.receiveActivity(activity);
+    } catch (error) {
+      errors.push(error);
+    }
+  }
+
+  return errors;
+}
+
+scenario('a listener that throws', bdd => {
+  for (const nodeEnv of ['development', 'production']) {
+    bdd
+      .given(`in ${nodeEnv}, a store with a graph listener that throws, another graph listener and a listener`, () => {
+        const store = createActivitiesStore({ ponyfill });
+        const error = new Error('graph listener');
+        const graphListener = jest.fn();
+        const listener = jest.fn();
+
+        store.store.subscribe(() => {
+          throw error;
+        });
+        store.store.subscribe(graphListener);
+        store.subscribe(listener);
+
+        return { error, graph: store.getSnapshot().graph, graphListener, listener, store };
+      })
+      .when('a-1, then a-2 arrive', ({ store }) =>
+        withNodeEnv(nodeEnv, () =>
+          receiveEach(store, [botActivity('a-1', 'one', 1_000), botActivity('a-2', 'two', 2_000)])
+        )
+      )
+      .then('should throw the error of the listener each time', ({ error }, errors) =>
+        expect(errors).toEqual([error, error])
+      )
+      .and('should apply both', ({ store }) => expect(ids(store.getSnapshot())).toEqual(['a-1', 'a-2']))
+      .and('should keep its graph', ({ graph, store }) => expect(store.getSnapshot().graph).toBe(graph))
+      .and('should read from the graph the state was derived from', ({ store }) =>
+        expect(store.store.getSnapshot()).toBe(store.getSnapshot().graphSnapshot)
+      )
+      .and('should call the other listeners each time', ({ graphListener, listener }) => {
+        expect(graphListener).toHaveBeenCalledTimes(2);
+        expect(listener).toHaveBeenCalledTimes(2);
+      });
+  }
+
+  bdd
+    .given('a store with a listener that throws, and another listener', () => {
+      const store = createActivitiesStore({ ponyfill });
+      const error = new Error('listener');
+      const listener = jest.fn();
+
+      store.subscribe(() => {
+        throw error;
+      });
+      store.subscribe(listener);
+
+      return { error, listener, store };
+    })
+    .when('a-1, then a-2 arrive', ({ store }) =>
+      receiveEach(store, [botActivity('a-1', 'one', 1_000), botActivity('a-2', 'two', 2_000)])
+    )
+    .then('should throw the error of the listener each time', ({ error }, errors) =>
+      expect(errors).toEqual([error, error])
+    )
+    .and('should apply both', ({ store }) => expect(ids(store.getSnapshot())).toEqual(['a-1', 'a-2']))
+    .and('should call the other listener each time, with the derived state', ({ listener, store }) => {
+      expect(listener).toHaveBeenCalledTimes(2);
+      expect(listener.mock.calls[1]?.[0].next).toBe(store.getSnapshot());
+    });
+});
+
+scenario('unsubscribing during a notification', bdd => {
+  bdd
+    .given('a store whose first listener unsubscribes the second, on its graph and on itself', () => {
+      const store = createActivitiesStore({ ponyfill });
+      const graphListener = jest.fn();
+      const listener = jest.fn();
+      let unsubscribeGraphListener: () => void = () => undefined;
+      let unsubscribeListener: () => void = () => undefined;
+
+      store.store.subscribe(() => unsubscribeGraphListener());
+      unsubscribeGraphListener = store.store.subscribe(graphListener);
+      store.subscribe(() => unsubscribeListener());
+      unsubscribeListener = store.subscribe(listener);
+
+      return { graphListener, listener, store };
+    })
+    .when('a-1, then a-2 arrive', ({ store }) =>
+      receiveEach(store, [botActivity('a-1', 'one', 1_000), botActivity('a-2', 'two', 2_000)])
+    )
+    .then('should not throw', (_, errors) => expect(errors).toEqual([]))
+    // As Redux: the listeners of a notification are the ones subscribed when it starts.
+    .and('should still call the second listeners for a-1, not for a-2', ({ graphListener, listener }) => {
+      expect(graphListener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(ids(listener.mock.calls[0]?.[0].next)).toEqual(['a-1']);
+    })
+    .and('should apply both', ({ store }) => expect(ids(store.getSnapshot())).toEqual(['a-1', 'a-2']));
 });

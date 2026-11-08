@@ -2,8 +2,9 @@
 /* eslint-disable no-restricted-globals */
 // The direct adapter against the operations it wraps: the same sequences of actions, as core's reducer receives them,
 // are applied to `createActivitiesStore()` and folded over the pure operations (what the reducer does), and the
-// states must read the same after every step. The actions come from the generator of the equivalence fuzz used on this
-// branch (messages, HowTo parts, livestream revisions in and out of order, outgoing activities, marks and deletes).
+// states must read the same after every step. The actions are random (seeded): messages, HowTo parts, livestream
+// revisions in and out of order, outgoing activities, marks and deletes. Core compares the adapter with its reducer
+// (`createGroupedActivitiesReducer.adapter.spec.ts`).
 import { scenario } from '@testduet/given-when-then';
 import createActivitiesStore from './createActivitiesStore';
 import createInitialState from './operations/createInitialState';

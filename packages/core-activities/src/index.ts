@@ -7,6 +7,7 @@ export {
   default as createActivitiesStore,
   type ActivitiesStore,
   type ActivitiesStoreChange,
+  type ActivitiesStoreGraph,
   type ActivitiesStoreListener
 } from './createActivitiesStore';
 export { default as deleteActivityByLocalId } from './deleteActivityByLocalId';
