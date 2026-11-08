@@ -15,7 +15,7 @@
         "default": "./dist/botframework-webchat-core.js"
       }
     },
-    "./activities": {
+    "./activities.js": {
       "import": {
         "types": "./dist/botframework-webchat-core.activities.d.mts",
         "default": "./dist/botframework-webchat-core.activities.mjs"

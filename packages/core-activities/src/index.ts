@@ -1,6 +1,6 @@
 // The activities core: the activities graph (William's store), the per-activity operations on it, and the activity wire
 // format. No Redux: `botframework-webchat-core` bundles this package and reduces with it. Other packages reach it through
-// `botframework-webchat-core/activities` only, so there is one copy of this module (its caches are per module).
+// `botframework-webchat-core/activities.js` only, so there is one copy of this module (its caches are per module).
 
 export { type ActivitiesCoreEnv } from './ActivitiesCoreEnv';
 export {
