@@ -113,7 +113,10 @@ export default function upsertSortedMessage(
   const existingMessage = working.getNode(messageId);
 
   const sessionId = livestream && getLivestreamSessionNodeId(livestream.sessionId);
-  const existingSession = sessionId && working.getNode(sessionId);
+  const sessionNode = sessionId && working.getNode(sessionId);
+  // A session whose revisions were all deleted has left the transcript (`deleteSortedMessage()`): it starts anew, as
+  // before the store, where the delete removed it from `livestreamSessionMap`.
+  const existingSession = sessionNode && getParentId(sessionNode) ? sessionNode : undefined;
 
   if (existingSession && getBoolean(existingSession, FINALIZED)) {
     console.warn(
