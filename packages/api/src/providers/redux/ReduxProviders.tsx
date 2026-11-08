@@ -4,8 +4,15 @@ import React, { memo } from 'react';
 
 import { type WebChatReduxStore } from '../../hooks/internal/WebChatReduxContext';
 import WebChatReduxProvider from '../../hooks/internal/WebChatReduxProvider';
+import ReduxActivitiesCrossCheck from './ReduxActivitiesCrossCheck';
 import ReduxDomainBridge from './ReduxDomainBridge';
 import ReduxSessionEffects, { type ReduxSessionEffectsProps } from './ReduxSessionEffects';
+
+declare const process: {
+  env: {
+    NODE_ENV?: string | undefined;
+  };
+};
 
 type ReduxProvidersProps = ReduxSessionEffectsProps & {
   readonly store: WebChatReduxStore;
@@ -13,7 +20,7 @@ type ReduxProvidersProps = ReduxSessionEffectsProps & {
 
 /**
  * The providers of <Composer> over a Redux store: the store, suggested actions mirrored to the store, activities, the
- * domain contexts and the session effects.
+ * domain contexts and the session effects. In development builds, it also checks the activities against the store.
  */
 function ReduxProviders({
   children,
@@ -36,6 +43,7 @@ function ReduxProviders({
               userID={userID}
               username={username}
             >
+              {process.env.NODE_ENV !== 'production' && <ReduxActivitiesCrossCheck />}
               {children}
             </ReduxSessionEffects>
           </ReduxDomainBridge>

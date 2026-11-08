@@ -13,7 +13,7 @@ function refEquality<T>(x: T, y: T): boolean {
 /**
  * Reads a source and re-renders when its value changes.
  *
- * This is the `useSelector()` of `WebChatReduxContext` (like `useSelector()` of `react-redux@7`), with
+ * This is the `useSelector()` that `WebChatReduxContext` had (like `useSelector()` of `react-redux@7`), with
  * `selector(store.getState())` replaced by `source.get()`. Under the Redux store, it re-renders on the same changes, in
  * the same batch and with the same priority.
  *

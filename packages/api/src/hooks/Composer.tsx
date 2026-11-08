@@ -779,4 +779,5 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions,
 
 export default Composer;
 
+export { ComposerCore };
 export type { ComposerProps };
