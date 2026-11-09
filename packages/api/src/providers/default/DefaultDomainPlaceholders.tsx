@@ -6,13 +6,10 @@ import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 import ChatOperationsContext, {
   type ChatOperationsContextType
 } from '../../hooks/internal/domains/ChatOperationsContext';
-import ConnectivityContext, { type ConnectivityContextType } from '../../hooks/internal/domains/ConnectivityContext';
-import NotificationsContext, { type NotificationsContextType } from '../../hooks/internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
 import { type Source } from '../../hooks/internal/domains/Source';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
-import { type Notification } from '../../types/Notification';
 import warnPlaceholderOnce from './private/warnPlaceholderOnce';
 
 const defaultDomainPlaceholdersPropsSchema = pipe(
@@ -56,18 +53,6 @@ const CHAT_OPERATIONS: ChatOperationsContextType = Object.freeze({
   setSendTimeout: placeholder('setSendTimeout')
 });
 
-const CONNECTIVITY: ConnectivityContextType = Object.freeze({
-  connectivityStatus: createStaticSource('uninitialized'),
-  referenceGrammarID: createStaticSource<string>(null)
-});
-
-const NOTIFICATIONS: NotificationsContextType = Object.freeze({
-  dismissNotification: placeholder('dismissNotification'),
-  // Keyed by ID, as the `notifications` slice of the Redux store.
-  notifications: createStaticSource(Object.freeze({}) as Notification[]),
-  setNotification: placeholder('setNotification')
-});
-
 const SEND_BOX: SendBoxContextType = Object.freeze({
   attachments: createStaticSource<readonly SendBoxAttachment[]>(Object.freeze([])),
   emitTypingIndicator: placeholder('emitTypingIndicator'),
@@ -108,8 +93,8 @@ const VOICE: VoiceContextType = Object.freeze({
 });
 
 /**
- * Placeholders for the domains that the default providers do not own yet (connection, incoming and outgoing
- * activities, send box, notifications, speech and voice): static values, and operations that do nothing and warn once in
+ * Placeholders for the domains that the default providers do not own yet (outgoing activities, send box, speech and
+ * voice): static values, and operations that do nothing and warn once in
  * development. Each domain replaces its placeholder when it is built.
  */
 function DefaultDomainPlaceholders(props: DefaultDomainPlaceholdersProps) {
@@ -117,15 +102,11 @@ function DefaultDomainPlaceholders(props: DefaultDomainPlaceholdersProps) {
 
   return (
     <ChatOperationsContext.Provider value={CHAT_OPERATIONS}>
-      <ConnectivityContext.Provider value={CONNECTIVITY}>
-        <NotificationsContext.Provider value={NOTIFICATIONS}>
-          <SendBoxContext.Provider value={SEND_BOX}>
-            <SpeechContext.Provider value={SPEECH}>
-              <VoiceContext.Provider value={VOICE}>{children}</VoiceContext.Provider>
-            </SpeechContext.Provider>
-          </SendBoxContext.Provider>
-        </NotificationsContext.Provider>
-      </ConnectivityContext.Provider>
+      <SendBoxContext.Provider value={SEND_BOX}>
+        <SpeechContext.Provider value={SPEECH}>
+          <VoiceContext.Provider value={VOICE}>{children}</VoiceContext.Provider>
+        </SpeechContext.Provider>
+      </SendBoxContext.Provider>
     </ChatOperationsContext.Provider>
   );
 }

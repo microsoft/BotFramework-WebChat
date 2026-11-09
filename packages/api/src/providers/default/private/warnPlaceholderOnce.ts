@@ -30,6 +30,6 @@ export default function warnPlaceholderOnce(name: string): void {
 export function warnIncompleteOnce(): void {
   warnOnce(
     '(mount)',
-    'The default providers are for tests only: connection, incoming and outgoing activities, send box, notifications, speech and voice are placeholders.'
+    'The default providers are for tests only: outgoing activities, send box, speech and voice are placeholders.'
   );
 }
