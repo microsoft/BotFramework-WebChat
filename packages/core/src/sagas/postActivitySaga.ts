@@ -10,8 +10,7 @@ import {
 } from '../actions/postActivity';
 import languageSelector from '../selectors/language';
 import sendTimeoutSelector from '../selectors/sendTimeout';
-import dateToLocaleISOString from '../utils/dateToLocaleISOString';
-import deleteKey from '../utils/deleteKey';
+import createOutgoingActivity from '../services/private/createOutgoingActivity';
 import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 import observeOnce from './effects/observeOnce';
@@ -25,11 +24,9 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import { setSendStatusInOutgoingActivity } from '@msinternal/botframework-webchat-core-activities';
 import type { DirectLineActivity } from '../types/external/DirectLineActivity';
 import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
 import type { WebChatActivity } from '../types/WebChatActivity';
 
 // After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
@@ -44,72 +41,19 @@ function* postActivity(
   { meta: { method }, payload: { activity } }: PostActivityAction,
   ponyfill: GlobalScopePonyfill
 ) {
-  const attachments = (activity.type === 'message' && activity.attachments) || [];
   const clientActivityID = uniqueID();
   const locale = yield select(languageSelector);
-  const localTimeZone =
-    typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
   const now = new ponyfill.Date();
 
-  // Currently, we allow untyped outgoing activity as long as the chat adapter can deliver.
-  // In the future, we should warn if the outgoing activity is not matching the type.
-  let outgoingActivity: WebChatOutgoingActivity = {
-    ...deleteKey(activity, 'id'),
-    channelData: {
-      // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
-      // Please refer to #4362 for details. Remove on or after 2024-07-31.
-      ...deleteKey(activity.channelData, 'state', 'webchat:internal:local-id', 'webchat:internal:position'),
-      clientActivityID
-    },
-    channelId: 'webchat',
-    from: {
-      id: userID,
-      name: username,
-      role: 'user'
-    },
+  const outgoingActivity = createOutgoingActivity({
+    activity,
+    clientActivityID,
+    isFirstPost: !numActivitiesPosted,
     locale,
-    localTimestamp: dateToLocaleISOString(now),
-    localTimezone: localTimeZone,
-    ...(activity.type === 'message'
-      ? {
-          attachments:
-            attachments &&
-            attachments.map(({ contentType, contentUrl, name, thumbnailUrl }) => ({
-              contentType,
-              contentUrl,
-              name,
-              thumbnailUrl
-            })),
-          text: activity.text
-        }
-      : activity.type === 'event'
-        ? {
-            name: activity.name,
-            value: activity.value
-          }
-        : {})
-  };
-
-  // Remove local fields that should not be send to the service.
-  outgoingActivity = setSendStatusInOutgoingActivity(
-    // TODO: [P1] Need to rework WebChatActivity typing.
-    outgoingActivity as WebChatActivity,
-    undefined
-  ) as WebChatOutgoingActivity;
-
-  if (!numActivitiesPosted) {
-    outgoingActivity.entities = [
-      ...(outgoingActivity.entities || []),
-      {
-        // TODO: [P4] Currently in v3, we send the capabilities although the client might not actually have them
-        //       We need to understand why we need to send these, and only send capabilities the client have
-        requiresBotState: true,
-        supportsListening: true,
-        supportsTts: true,
-        type: 'ClientCapabilities'
-      }
-    ];
-  }
+    now,
+    userID,
+    username
+  });
 
   const meta: { clientActivityID: string; method: string } = { clientActivityID, method };
 

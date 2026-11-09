@@ -2,45 +2,15 @@ import { put, takeEvery } from 'redux-saga/effects';
 
 import postActivity from '../actions/postActivity';
 import sendMessage, { SEND_MESSAGE } from '../actions/sendMessage';
-import type { SendBoxAttachment } from '../types/SendBoxAttachment';
+import { hasMessageToSend, messageToActivity } from '../services/private/sendPayloadToActivity';
 import whileConnected from './effects/whileConnected';
 
-const EMPTY_ATTACHMENTS: readonly SendBoxAttachment[] = Object.freeze([]);
-
-function* postActivityWithMessage({
-  payload: { attachments = EMPTY_ATTACHMENTS, channelData, method, replyToId, text }
-}: ReturnType<typeof sendMessage>) {
-  yield put(
-    postActivity(
-      {
-        attachments: attachments.map(({ blob, thumbnailURL }) => ({
-          contentType: (blob instanceof File && blob.type) || 'application/octet-stream',
-          // Chat adapter should download the file as binary.
-          // In case the chat adapter naively echo back the URL, it will be treated as binary.
-          // eslint-disable-next-line no-restricted-properties
-          contentUrl: URL.createObjectURL(new Blob([blob], { type: 'application/octet-stream' })),
-          name: blob instanceof File ? blob.name : undefined,
-          thumbnailUrl: thumbnailURL?.toString()
-        })),
-        channelData: {
-          ...channelData,
-          attachmentSizes: attachments.map(({ blob: { size } }) => size)
-        },
-        replyToId: replyToId || undefined,
-        text: text || undefined,
-        textFormat: 'plain',
-        type: 'message'
-      } as any, // TODO: Fix WebChatActivity. Currently, it only works with incoming activity, not outgoing.
-      method
-    )
-  );
+function* postActivityWithMessage({ payload }: ReturnType<typeof sendMessage>) {
+  yield put(postActivity(messageToActivity(payload), payload.method));
 }
 
 function* sendMessageToPostActivity() {
-  yield takeEvery(
-    ({ payload, type }) => type === SEND_MESSAGE && (payload.text || payload.attachments?.length),
-    postActivityWithMessage
-  );
+  yield takeEvery(({ payload, type }) => type === SEND_MESSAGE && hasMessageToSend(payload), postActivityWithMessage);
 }
 
 export default function* sendMessageToPostActivitySaga() {
