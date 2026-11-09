@@ -58,8 +58,12 @@ const {
 
 const { BasicWebChat, Composer } = Components;
 
-function returnsPonyfill<T>(ponyfill: T): () => T {
-  return () => ponyfill;
+function returnsPonyfill<T>(ponyfill: T, calls: string[]): (init: unknown) => T {
+  return init => {
+    calls.push(`webSpeechPonyfillFactory(${JSON.stringify(init)})`);
+
+    return ponyfill;
+  };
 }
 
 // Not in the test environment: the activities core clones with it.
@@ -131,6 +135,8 @@ async function runScript(mode: 'default' | 'redux') {
       }
     },
     end: () => calls.push('end()'),
+    // Read on each connection status: Web Chat creates the ponyfill again with it.
+    referenceGrammarId: 'g-1',
     postActivity: (activity: any) => {
       calls.push(`postActivity(${activity.type}:${activity.text ?? ''})`);
 
@@ -146,7 +152,7 @@ async function runScript(mode: 'default' | 'redux') {
 
   const emitActivity = (activity: unknown) =>
     Array.from(activityObservers).forEach(observer => observer.next(activity));
-  const webSpeechPonyfillFactory = returnsPonyfill(ponyfill);
+  const webSpeechPonyfillFactory = returnsPonyfill(ponyfill, calls);
 
   const result = render(
     <Composer directLine={directLine} userID="u-1" webSpeechPonyfillFactory={webSpeechPonyfillFactory}>
@@ -231,7 +237,14 @@ test('the real <Dictation> and <Speak> call Web Speech the same in both modes', 
 
     expect(defaultMode).toEqual(redux);
     expect(defaultMode.map(({ calls, label }: any) => [label, calls])).toEqual([
-      ['mount, online', []],
+      // Created without a reference grammar ID, then with the one of Direct Line once connected.
+      [
+        'mount, online',
+        [
+          'webSpeechPonyfillFactory({"referenceGrammarID":null})',
+          'webSpeechPonyfillFactory({"referenceGrammarID":"g-1"})'
+        ]
+      ],
       // The microphone button primes the speech synthesis, then the dictation starts.
       ['click the microphone', ['speak("")', 'new SpeechRecognition#1', 'recognition#1.start()']],
       ['recognition starts, interim', []],
