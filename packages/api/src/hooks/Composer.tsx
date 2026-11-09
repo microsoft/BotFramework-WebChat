@@ -6,7 +6,6 @@ import {
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
-  createStoreWithOptions,
   stopDictate,
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
@@ -35,6 +34,8 @@ import ActivitySendStatusComposer from '../providers/ActivitySendStatus/Activity
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import ReduxProviders from '../providers/redux/ReduxProviders';
+import DefaultProviders from '../providers/default/DefaultProviders';
+import { internalDefaultModeEnabled } from '../providers/internalDefaultMode';
 import CapabilitiesComposer from '../providers/Capabilities/CapabilitiesComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
@@ -671,7 +672,8 @@ type ComposerProps = ComposerWithStoreProps & {
   readonly styleOptions?: StyleOptions | undefined;
 };
 
-// We will create a Redux store if it was not passed in
+// Mounts one of the two provider sets: over a Redux store (the host's, or one created for it), or the default providers
+// (no Redux, for tests only until they are complete). The set is the `key`: when it changes, the subtree remounts.
 const ComposerWithStore = ({
   directLine,
   locale,
@@ -682,66 +684,36 @@ const ComposerWithStore = ({
   username,
   ...props
 }: ComposerWithStoreProps) => {
-  const [ponyfill] = usePonyfill();
+  const children = (
+    <ActivityKeyerComposer>
+      <ActivityAcknowledgementComposer>
+        <ComposerCore
+          directLine={directLine}
+          locale={locale}
+          onTelemetry={onTelemetry}
+          sendTypingIndicator={sendTypingIndicator}
+          userID={userID}
+          username={username}
+          {...props}
+        />
+      </ActivityAcknowledgementComposer>
+    </ActivityKeyerComposer>
+  );
 
-  const memoizedStore = useMemo(() => {
-    const nextStore = store || createStoreWithOptions({ ponyfill });
-
-    const storePonyfill = nextStore.getState().internal?.ponyfill || {};
-
-    const keys = new Set([...Object.keys(storePonyfill), ...Object.keys(ponyfill)]);
-
-    // Filter out forbidden properties.
-    keys.delete('prototype');
-
-    Object.getOwnPropertyNames(Object.prototype).forEach(key => {
-      keys.delete(key);
-    });
-
-    const nativeFunction = (fn: (...args: unknown[]) => unknown): boolean =>
-      typeof fn === 'function' && ('' + fn).endsWith('() { [native code] }');
-
-    const ponyfillFunctionEquals = (x: (...args: unknown[]) => unknown, y: (...args: unknown[]) => unknown) =>
-      (nativeFunction(x) && nativeFunction(y)) || x === y;
-
-    // We have filtered out all forbidden properties.
-    // eslint-disable-next-line security/detect-object-injection
-    const differentKeys = Array.from(keys).filter(key => !ponyfillFunctionEquals(storePonyfill[key], ponyfill[key]));
-
-    if (differentKeys.length) {
-      console.warn(
-        `botframework-webchat: Ponyfill used in store should match the ponyfill passed in props: ${differentKeys.join(
-          ', '
-        )}`
-      );
-    }
-
-    return nextStore;
-  }, [ponyfill, store]);
-
-  return (
+  return store || !internalDefaultModeEnabled() ? (
     <ReduxProviders
       directLine={directLine}
+      key="redux"
       locale={locale}
       sendTypingIndicator={sendTypingIndicator}
-      store={memoizedStore}
+      store={store}
       userID={userID}
       username={username}
     >
-      <ActivityKeyerComposer>
-        <ActivityAcknowledgementComposer>
-          <ComposerCore
-            directLine={directLine}
-            locale={locale}
-            onTelemetry={onTelemetry}
-            sendTypingIndicator={sendTypingIndicator}
-            userID={userID}
-            username={username}
-            {...props}
-          />
-        </ActivityAcknowledgementComposer>
-      </ActivityKeyerComposer>
+      {children}
     </ReduxProviders>
+  ) : (
+    <DefaultProviders key="default">{children}</DefaultProviders>
   );
 };
 
