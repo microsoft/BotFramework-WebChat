@@ -179,7 +179,17 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     suggestedActions: createSuggestedActionsStyle(strictStyleOptions),
     toast: createToastStyle(strictStyleOptions),
     toaster: createToasterStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Middleware/TypingIndicator/TypingIndicator.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     typingAnimation: createTypingAnimationStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Middleware/TypingIndicator/TypingIndicator.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     typingIndicator: createTypingIndicatorStyle(strictStyleOptions),
     uploadButton: createUploadButtonStyle(strictStyleOptions),
     /**

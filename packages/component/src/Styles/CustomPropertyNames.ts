@@ -59,6 +59,7 @@ const CustomPropertyNames = Object.freeze({
   FontSizeSmall: '--webchat__font-size--small',
   FontSizeTranscriptTerminator: '--webchat__font-size--transcript-terminator',
   HeightSpinnerAnimation: '--webchat__height--spinner-animation',
+  HeightTypingAnimation: '--webchat__height--typing-animation',
   HeightVideo: '--webchat__height--video',
   IconURLExternalLink: '--webchat__icon-url--external-link',
   MarginBlockConnectivity: '--webchat__margin-block--connectivity',
@@ -82,6 +83,7 @@ const CustomPropertyNames = Object.freeze({
   TransitionDuration: '--webchat__transition-duration',
   TransitionEasing: '--webchat__transition-easing',
   WidthSpinnerAnimation: '--webchat__width--spinner-animation',
+  WidthTypingAnimation: '--webchat__width--typing-animation',
   WordBreakMessageActivity: '--webchat__word-break--message-activity'
 }) satisfies Readonly<Record<string, `--webchat__${string}`>>;
 
