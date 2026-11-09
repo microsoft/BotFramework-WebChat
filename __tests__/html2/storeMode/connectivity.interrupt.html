@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Connectivity, both store modes: a network interruption, then reconnected</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // Runs in the store mode of the run ("redux" or "default"), with the same expectations.
+      run(async function () {
+        // GIVEN: Web Chat connected.
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The network is interrupted.
+        const { resolve } = directLine.emulateReconnect();
+
+        // THEN: Reconnecting.
+        await pageConditions.connectivityStatusBecame('reconnecting');
+        await pageConditions.connectivityStatusShown('Network interruption occurred. Reconnecting…');
+
+        // WHEN: Reconnected.
+        resolve();
+
+        // THEN: The connectivity status is hidden.
+        await pageConditions.connectivityStatusBecame('reconnected');
+        await pageConditions.became('the connectivity status is hidden', () => !pageElements.connectivityStatus(), 1000);
+
+        // WHEN: The bot sends a message after reconnecting.
+        await directLine.emulateIncomingActivity('Welcome back.');
+
+        // THEN: It is shown.
+        await pageConditions.numActivitiesShown(1);
+      });
+    </script>
+  </body>
+</html>

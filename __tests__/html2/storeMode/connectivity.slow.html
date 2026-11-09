@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Connectivity, both store modes: a slow connection, then connected</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // Runs in the store mode of the run ("redux" or "default"), with the same expectations.
+      run(async function () {
+        const clock = lolex.createClock();
+
+        // GIVEN: A Direct Line that connects when the test says so, on a fake clock.
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ autoConnect: false, ponyfill: clock });
+
+        WebChat.renderWebChat({ directLine, ponyfill: clock, store }, document.getElementById('webchat'));
+
+        await pageConditions.webChatRendered();
+        await pageConditions.connectivityStatusShown('Connecting…');
+
+        // WHEN: 15 seconds pass without connecting.
+        clock.tick(15000);
+
+        // THEN: The connection is slow.
+        await pageConditions.connectivityStatusBecame('connectingslow');
+        await pageConditions.connectivityStatusShown('Taking longer than usual to connect.');
+
+        // WHEN: Connected.
+        directLine.emulateConnected();
+
+        // THEN: Connected, and the connectivity status is hidden.
+        await pageConditions.connectivityStatusBecame('connected');
+        await pageConditions.became('the connectivity status is hidden', () => !pageElements.connectivityStatus(), 1000);
+
+        // WHEN: Another 15 seconds pass.
+        clock.tick(15000);
+
+        // THEN: Still connected.
+        await pageConditions.became('the connectivity status stays hidden', () => !pageElements.connectivityStatus(), 1000);
+        await pageConditions.connectivityStatusBecame('connected');
+      });
+    </script>
+  </body>
+</html>

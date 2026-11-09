@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Connectivity, both store modes: connects, then shows activities from the bot</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // Runs in the store mode of the run ("redux" or "default"), with the same expectations: only the UI and the
+      // connectivity status are read.
+      run(async function () {
+        // GIVEN: A Direct Line that connects when the test says so.
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ autoConnect: false });
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.webChatRendered();
+
+        // THEN: "Connecting…" while connecting.
+        await pageConditions.connectivityStatusShown('Connecting…');
+
+        // WHEN: Connected.
+        directLine.emulateConnected();
+
+        // THEN: The connectivity status is hidden.
+        await pageConditions.uiConnected();
+        await pageConditions.connectivityStatusBecame('connected');
+
+        // WHEN: The bot sends 2 messages, the second one with suggested actions.
+        await directLine.emulateIncomingActivity('Hello.');
+        await directLine.emulateIncomingActivity({
+          suggestedActions: { actions: [{ title: 'Hi', type: 'imBack', value: 'Hi' }] },
+          text: 'How are you?',
+          type: 'message'
+        });
+
+        // THEN: Both messages and the suggested action are shown.
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.suggestedActionsShown();
+
+        expect(Array.from(pageElements.activityContents()).map(element => element.textContent.trim())).toEqual([
+          'Hello.',
+          'How are you?'
+        ]);
+        expect(Array.from(pageElements.suggestedActions()).map(element => element.textContent.trim())).toEqual(['Hi']);
+      });
+    </script>
+  </body>
+</html>

@@ -32,13 +32,13 @@
       import '/test-page-object.mjs';
 
       import { waitFor } from '@testduet/wait-for';
-      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, internal, ReactWebChat, testIds } from 'botframework-webchat';
       import { spyOn } from 'jest-mock';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
 
       // TODO: This is for `createDirectLineEmulator` and `pageElements.typingIndicator` only, should find ways to eliminate this line.
-      window.WebChat = { createStoreWithOptions, testIds };
+      window.WebChat = { createStoreWithOptions, internal, testIds };
 
       run(async function () {
         // GIVEN: The development build of React, which logs "Cannot update a component while rendering a different component" to console.error.

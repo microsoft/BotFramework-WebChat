@@ -63,7 +63,7 @@
 
         clock.tick(15000);
 
-        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING');
+        await pageConditions.connectivityStatusBecame('connectingslow');
         await pageConditions.connectivityStatusShown(/taking longer than usual/iu);
         await host.snapshot('local');
 

@@ -22,12 +22,12 @@
       import '/test-page-object.mjs';
 
       import { waitFor } from '@testduet/wait-for';
-      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { createStoreWithOptions, internal, ReactWebChat } from 'botframework-webchat';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
 
       // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
-      window.WebChat = { createStoreWithOptions };
+      window.WebChat = { createStoreWithOptions, internal };
 
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();

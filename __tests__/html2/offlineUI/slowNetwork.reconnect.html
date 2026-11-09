@@ -46,7 +46,7 @@
           document.getElementById('webchat')
         );
 
-        await pageConditions.actionDispatched('DIRECT_LINE/RECONNECT_PENDING');
+        await pageConditions.connectivityStatusBecame('reconnecting');
 
         clock.tick(15000); // "Connecting" will be gone after 400ms
 

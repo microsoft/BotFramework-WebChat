@@ -50,9 +50,8 @@
           document.getElementById('webchat')
         );
 
-        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_PENDING');
-        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_FULFILLED');
-        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_PENDING');
+        // Connected, then reconnecting: Direct Line says "connecting" right after "online" (in both store modes).
+        await pageConditions.connectivityStatusBecame('reconnecting');
 
         clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Network interruption occured"
 

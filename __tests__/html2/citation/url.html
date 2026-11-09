@@ -42,7 +42,7 @@
     import { createDarkTheme, webLightTheme } from '@fluentui/tokens';
     import { FluentProvider } from '@fluentui/react-provider';
     import { waitFor } from '@testduet/wait-for';
-    import { createDirectLine, createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+    import { createDirectLine, createStoreWithOptions, internal, ReactWebChat } from 'botframework-webchat';
     import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
     import { createElement } from 'react';
     import { createRoot } from 'react-dom/client';
@@ -52,7 +52,7 @@
     } = window;
 
     // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
-    window.WebChat = { createStoreWithOptions };
+    window.WebChat = { createStoreWithOptions, internal };
 
     // run = fn => fn();
     run(async function () {

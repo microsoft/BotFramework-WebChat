@@ -31,13 +31,13 @@
 
       import { FluentProvider } from '@fluentui/react-provider';
       import { webDarkTheme } from '@fluentui/tokens';
-      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, internal, ReactWebChat, testIds } from 'botframework-webchat';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
 
       // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
-      window.WebChat = { createStoreWithOptions };
+      window.WebChat = { createStoreWithOptions, internal };
 
       run(async function () {
         const searchParams = new URLSearchParams(location.search);
