@@ -311,6 +311,31 @@ const sendScripts: Readonly<Record<string, Script>> = Object.freeze({
     await context.step('set invalid attachments', () => ops.setSendBoxAttachments([{ blob: 'not a blob' }]));
     await context.step('submit', () => ops.submitSendBox());
   },
+  'send box: undefined values throw to the caller, as the reducers do, and change nothing': async context => {
+    const mock = await connectOnline(context);
+    const { ops } = context.driver;
+
+    await context.step('typing on, locale, send timeout, value, attachments', () => {
+      ops.setSendTypingIndicator(true);
+      ops.setLanguage('fr-FR');
+      ops.setSendTimeout(5_000);
+      ops.setSendBox('a');
+      ops.setSendBoxAttachments([{ blob: BLOB() }]);
+    });
+    await context.step('send box undefined', () => logThrow(() => ops.setSendBox(undefined)));
+    await context.step('attachments undefined', () => logThrow(() => ops.setSendBoxAttachments(undefined)));
+    await context.step('typing indicator undefined', () => logThrow(() => ops.setSendTypingIndicator(undefined)));
+    await context.step('locale undefined', () => logThrow(() => ops.setLanguage(undefined)));
+    await context.step('send timeout undefined', () => logThrow(() => ops.setSendTimeout(undefined)));
+    // Still typing, still in French, still 5 seconds.
+    await context.step('t=3000, type', () => {
+      context.clock.tick(3_000);
+      ops.setSendBox('ab');
+    });
+    await context.step('post', () => ops.sendMessage('hello'));
+    await context.step('t=8000', () => context.clock.tick(5_000));
+    await context.step('all return and echo', () => sendAll(mock));
+  },
   'send box values': async context => {
     const { ops } = context.driver;
     const attachments = Object.freeze([{ blob: BLOB() }]);

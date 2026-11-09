@@ -9,6 +9,7 @@ import type { ConnectionService, ConnectionSession } from './createConnectionSer
 import type { IncomingService, SuggestedActionsEmitter } from './createIncomingService';
 import createOutgoingActivity from './private/createOutgoingActivity';
 import createVoiceActivity from './private/createVoiceActivity';
+import throwIfUndefined from './private/throwIfUndefined';
 import createSagaQueue, { type SagaQueue } from './private/createSagaQueue';
 import {
   eventToActivity,
@@ -106,7 +107,8 @@ type VoicePost = {
  * - the typing activity is posted as any other (sending, echo, timeouts);
  * - the operations other than `sendMessage()` post with the method "keyboard";
  * - voice posts: dropped while offline, without an error; going offline unsubscribes them, without an error; they are
- *   not the first post (no `ClientCapabilities` on them, and the next post still carries it).
+ *   not the first post (no `ClientCapabilities` on them, and the next post still carries it);
+ * - a locale or send timeout set to `undefined` throws to the caller, and nothing changes (the reducers' check).
  *
  * Not kept: the send timers are cleared when the post completes (the saga left them running, unused).
  */
@@ -506,10 +508,13 @@ export default function createOutgoingService({
       whileOnline(() => hasMessageToSend(payload) && postLater(messageToActivity(payload), payload.method)),
     sendMessageBack: (payload: SendMessageBackPayload) => whileOnline(() => postLater(messageBackToActivity(payload))),
     sendPostBack: (payload: SendPostBackPayload) => whileOnline(() => postLater(postBackToActivity(payload))),
+    // As the reducers: `undefined` throws to the caller, and nothing changes.
     setLocale: (value: string) => {
+      throwIfUndefined(value, 'WEB_CHAT/SET_LANGUAGE', 'language');
       locale = value;
     },
     setSendTimeout: (value: number) => {
+      throwIfUndefined(value, 'WEB_CHAT/SET_SEND_TIMEOUT', 'sendTimeout');
       sendTimeout = value;
     },
     whileOnline

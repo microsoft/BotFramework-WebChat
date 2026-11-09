@@ -19,6 +19,7 @@ import createVoiceService from '../../services/createVoiceService';
 import createEmitter from '../../services/private/createEmitter';
 import createSagaQueue from '../../services/private/createSagaQueue';
 import setSendBoxAttachments from '../../actions/setSendBoxAttachments';
+import setSendTypingIndicator from '../../actions/setSendTypingIndicator';
 import submitSendBox from '../../actions/submitSendBox';
 import type { Source } from '../../services/types';
 import { describeVoiceHandlers, type CreateDriver, type Observation, type Operations } from './runParityScript';
@@ -172,7 +173,9 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     setSendBoxAttachments: attachments =>
       sendBox.setAttachments(setSendBoxAttachments(attachments).payload.attachments),
     setSendTimeout: sendTimeout => outgoing.setSendTimeout(sendTimeout),
-    setSendTypingIndicator: value => sendBox.setSendTypingIndicator(value),
+    // As the api (`<DefaultSessionEffects>`) and the action creator: a boolean.
+    setSendTypingIndicator: value =>
+      sendBox.setSendTypingIndicator(setSendTypingIndicator(value).payload.sendTypingIndicator),
     setVoiceState: voiceState => voice.setVoiceState(voiceState as Parameters<typeof voice.setVoiceState>[0]),
     startDictate: () => speech.startDictate(),
     startSpeakingActivity: () => speech.startSpeakingActivity(),

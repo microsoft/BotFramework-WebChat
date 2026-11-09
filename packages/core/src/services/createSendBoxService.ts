@@ -6,6 +6,7 @@ import type { ConnectionService, ConnectionSession } from './createConnectionSer
 import type { OutgoingService } from './createOutgoingService';
 import createCell from './private/createCell';
 import createSagaQueue, { type SagaAction, type SagaQueue } from './private/createSagaQueue';
+import throwIfUndefined from './private/throwIfUndefined';
 import type { SendMessagePayload } from './private/sendPayloadToActivity';
 import type { Notify, Source } from './types';
 
@@ -53,7 +54,8 @@ type Typing = {
  * - setting the same text again posts the typing indicator again;
  * - posting an event (or any activity that is not a message) cancels the wait without restarting the 3 seconds;
  * - the typing indicator enabled while online waits for the values set after the speech does (as its saga starts
- *   waiting then), until the speech waits again.
+ *   waiting then), until the speech waits again;
+ * - a value or attachments set to `undefined` throw to the caller, and nothing changes (the reducers' check).
  *
  * Not kept: the typing timer is cleared when cancelled (the saga left it running, unused).
  */
@@ -156,13 +158,18 @@ export default function createSendBoxService({
     };
   });
 
+  // As the reducers: `undefined` throws to the caller, and nothing changes.
   const setValue = (text: string) =>
     queue.batch(() => {
+      throwIfUndefined(text, 'WEB_CHAT/SET_SEND_BOX', 'sendBoxValue');
       value.set(text);
       queue.handleAction({ text, type: 'SET_SEND_BOX' });
     });
 
-  const setAttachments = (nextAttachments: readonly SendBoxAttachment[]) => attachments.set(nextAttachments);
+  const setAttachments = (nextAttachments: readonly SendBoxAttachment[]) => {
+    throwIfUndefined(nextAttachments, 'WEB_CHAT/SET_SEND_BOX_ATTACHMENTS', 'sendBoxAttachments');
+    attachments.set(nextAttachments);
+  };
 
   return Object.freeze({
     attachments: Object.freeze({ get: attachments.get, subscribe: attachments.subscribe }),
