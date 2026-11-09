@@ -25,3 +25,34 @@ overrides:
       - src/providers/redux/**
     rules:
       no-restricted-imports: off
+
+  # The default providers never use Redux.
+  - files:
+      - src/providers/default/**
+    excludedFiles:
+      - '**/*.spec.*'
+    rules:
+      no-restricted-imports:
+        - error
+        - paths:
+            - importNames:
+                - createStore
+                - createStoreWithDevTools
+                - createStoreWithOptions
+              message: The default providers never create a Redux store.
+              name: botframework-webchat-core
+            - importNames:
+                - ReduxStoreComposer
+              message: The default providers never use Redux.
+              name: '@msinternal/botframework-webchat-redux-store'
+          patterns:
+            - group:
+                - '**/WebChatReduxContext'
+                - '**/WebChatReduxContext.*'
+                - '**/WebChatReduxProvider'
+                - '**/WebChatReduxProvider.*'
+                - '**/providers/redux/**'
+                - redux
+                - redux-saga
+                - redux-saga/*
+              message: The default providers never use Redux.
