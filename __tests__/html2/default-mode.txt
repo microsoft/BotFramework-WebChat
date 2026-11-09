@@ -5,6 +5,7 @@
 # Stage 3 of the default providers: connection, incoming activities, notifications, suggested actions.
 # Stage 4: outgoing activities, the send box, the typing indicator, card actions. Generated from the folders that send,
 # run, then reviewed: every exclusion below has its reason.
+# Stage 5: speech and speech-to-speech (speech/, speechToSpeech/, the speech hooks).
 
 accessibility/**/*.html
 activityGrouping/**/*.html
@@ -22,6 +23,16 @@ feedbackStatus/**/*.html
 fluentTheme/**/*.html
 focusManagement/**/*.html
 grouping/**/*.html
+hooks/useDictateInterims.*.html
+hooks/useDictateState.html
+hooks/useMarkActivityAsSpoken.html
+hooks/useMicrophoneButtonClick.html
+hooks/useSendBoxSpeechInterimsVisible.*.html
+hooks/useShouldSpeakIncomingActivity.*.html
+hooks/useStartDictate.html
+hooks/useStopDictate.html
+hooks/useVoiceSelector.html
+hooks/useWebSpeechPonyfill.*.html
 livestream/**/*.html
 markdown/**/*.html
 middleware/cardAction/**/*.html
@@ -33,6 +44,8 @@ sendAttachmentOn/**/*.html
 sendBox/**/*.html
 sendBoxMiddleware/**/*.html
 sendBoxToolbarMiddleware/**/*.html
+speech/**/*.html
+speechToSpeech/**/*.html
 storeMode/**/*.html
 strictMode/directLine.html
 suggestedActions/**/*.html
@@ -63,12 +76,6 @@ upload/**/*.html
 !sendAttachmentOn/useSendMessage.withMessage.html
 !sendAttachmentOn/useSendMessage.withoutMessage.html
 
-# Counts the warnings in the console: the default providers warn that they are for tests only (until they are the
-# default), and that the speech placeholder does nothing when a card action stops dictation (stage 5).
-!adaptiveCard/openUrlDialog/dialogReturn/crossOrigin/failOnPostMessage/test.html
-!adaptiveCard/openUrlDialog/dialogReturn/invalidPayload/test.html
-!adaptiveCard/openUrlDialog/dialogReturn/popupBlocker/test.html
-!fluentTheme/hideAttachFileButton.html
-
 # Does not render Web Chat (<Composer>): nothing to check without Redux.
 !markdown/vnext/streamingRenderer.html
+!speech/mockSetup.html

@@ -28,7 +28,7 @@
         } = window;
 
         // GIVEN: Web Chat with Speech-to-Speech enabled
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const { directLine, getVoiceState, store } = testHelpers.createDirectLineEmulator();
 
         // Set voice configuration capability to enable microphone button
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
@@ -64,7 +64,7 @@
         // THEN: Verify voice state is recording/listening
         await pageConditions.became(
           'Voice state is listening',
-          () => store.getState().voice?.voiceState === 'listening',
+          () => getVoiceState() === 'listening',
           1000
         );
 

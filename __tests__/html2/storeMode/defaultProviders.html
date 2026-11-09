@@ -94,10 +94,8 @@
         // THEN: Only the default providers mounted (the runner checks it again when the test is done).
         expect(__INTERNAL_DO_NOT_USE__getProviderMountCounts()).toEqual({ default: 1, redux: 0 });
 
-        // THEN: It warns once, in development, that the default providers are for tests only.
-        expect(warnings.filter(message => message.includes('The default providers are for tests only'))).toHaveLength(
-          1
-        );
+        // THEN: It warns nothing: speech and voice are built, no placeholder is left.
+        expect(warnings).toEqual([]);
 
         console.warn = warn;
         root.unmount();

@@ -63,27 +63,19 @@
         };
 
         const audioChunks = [];
-        let currentVoiceState = 'idle';
-        let currentMicrophoneMuted = false;
 
         // Setup Web Chat with Speech-to-Speech
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const { directLine, getMicrophoneMuted, getVoiceState, store } = testHelpers.createDirectLineEmulator();
         directLine.setCapability('getVoiceConfiguration', { sampleRate: 24000, chunkIntervalMs: 100 }, { emitEvent: false });
 
-        // Track voiceState and microphoneMuted changes
-        store.subscribe(() => {
-          currentVoiceState = store.getState().voice?.voiceState || 'idle';
-          currentMicrophoneMuted = store.getState().voice?.microphoneMuted || false;
-        });
-
-        // Intercept postActivity to capture outgoing voice chunks
+        // Intercept postActivity to capture outgoing voice chunks, with the voiceState and microphoneMuted of then
         const originalPostActivity = directLine.postActivity.bind(directLine);
         directLine.postActivity = activity => {
           if (activity.name === 'media.chunk' && activity.type === 'event') {
             audioChunks.push({
               content: activity.value?.content,
-              voiceState: currentVoiceState,
-              microphoneMuted: currentMicrophoneMuted
+              voiceState: getVoiceState() || 'idle',
+              microphoneMuted: getMicrophoneMuted() || false
             });
           }
           return originalPostActivity(activity);
@@ -104,10 +96,6 @@
           
           return false;
         };
-
-        // Helper to get voice state from store
-        const getVoiceState = () => store.getState().voice?.voiceState;
-        const getMicrophoneMuted = () => store.getState().voice?.microphoneMuted;
 
         render(
           <FluentThemeProvider variant="fluent">

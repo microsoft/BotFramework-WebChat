@@ -245,5 +245,12 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
     }
   };
 
-  return { directLine, store };
+  // The state of speech-to-speech, in either mode: the store in Redux mode, the test handle in default mode.
+  const getVoiceState = () =>
+    defaultMode ? getTestHandle(directLine)?.getVoiceState() : store.getState().voice?.voiceState;
+
+  const getMicrophoneMuted = () =>
+    defaultMode ? getTestHandle(directLine)?.getMicrophoneMuted() : store.getState().voice?.microphoneMuted;
+
+  return { directLine, getMicrophoneMuted, getVoiceState, store };
 }
