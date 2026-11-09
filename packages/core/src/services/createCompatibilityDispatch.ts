@@ -104,4 +104,4 @@ export default function createCompatibilityDispatch({
   };
 }
 
-export { SEND_TYPES, type CompatibilityDispatch };
+export { type CompatibilityDispatch };
