@@ -1,16 +1,12 @@
-import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import React from 'react';
 
-import useStyleSet from '../../hooks/useStyleSet';
-
-const { useDirection } = hooks;
+import styles from '../ConnectivityStatus.module.css';
 
 const SpinnerAnimation = () => {
-  const [{ spinnerAnimation: spinnerAnimationStyleSet }] = useStyleSet();
-  const [direction] = useDirection();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
 
-  return <div className={classNames(spinnerAnimationStyleSet + '', direction === 'rtl' && 'webchat__spinner--rtl')} />;
+  return <div className={classNames['spinnerAnimation']} />;
 };
 
 export default SpinnerAnimation;

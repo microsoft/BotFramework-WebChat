@@ -124,6 +124,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     carouselFlipper: createCarouselFlipper(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/ConnectivityStatus/ConnectivityStatus.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
     /**
@@ -132,6 +137,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     errorBox: createErrorBoxStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/ConnectivityStatus/ConnectivityStatus.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     errorNotification: createErrorNotificationStyle(strictStyleOptions),
     fileContent: createFileContentStyle(strictStyleOptions),
     /**
@@ -153,6 +163,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBox: createSendBoxStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/ConnectivityStatus/ConnectivityStatus.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.0 (PR #5506), customizing it has no effect.
@@ -185,6 +200,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     vimeoContent: createVimeoContentStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/ConnectivityStatus/ConnectivityStatus.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     warningNotification: createWarningNotificationStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.

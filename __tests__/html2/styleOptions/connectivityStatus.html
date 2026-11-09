@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { Observable } from 'https://esm.sh/iter-fest';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const clock = lolex.createClock();
+        const connectionStatusObservers = new Set();
+
+        const directLine = {
+          activity$: new Observable(() => {}),
+          connectionStatus$: new Observable(observer => {
+            connectionStatusObservers.add(observer);
+
+            observer.next(0); // Uninitialized
+            observer.next(1); // Connecting
+          })
+        };
+
+        await testHelpers.preloadImages('/assets/staticspinner.png');
+
+        // GIVEN: Every connectivity status and spinner style option set to a value other than its default.
+        renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store: testHelpers.createStore(),
+            styleOptions: {
+              connectivityIconPadding: 4, // Numbers are in pixels.
+              connectivityMarginLeftRight: 30,
+              connectivityMarginTopBottom: 20,
+              connectivityTextSize: 16,
+              failedConnectivity: '#8000FF',
+              hideSendBox: true,
+              notificationText: '#107C10',
+              slowConnectivity: '#0078D4',
+              spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)',
+              spinnerAnimationHeight: 32,
+              spinnerAnimationPadding: 4,
+              spinnerAnimationWidth: 32
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await waitFor(() => expect(pageElements.connectivityStatus()).toHaveProperty('textContent', 'Connecting…'));
+
+        // THEN: A 32 pixels spinner, 4 pixels before green 16 pixels "Connecting…", 30 pixels from the left and 20 pixels from the bottom.
+        await host.snapshot('local');
+
+        // WHEN: Connecting takes longer than `slowConnectionAfter` (15 seconds).
+        clock.tick(15000);
+
+        await waitFor(() =>
+          expect(pageElements.connectivityStatus()).toHaveProperty(
+            'textContent',
+            'Taking longer than usual to connect.'
+          )
+        );
+
+        // THEN: A blue warning icon, 4 pixels before green text.
+        await host.snapshot('local');
+
+        // WHEN: The connection fails.
+        connectionStatusObservers.forEach(observer => observer.next(4)); // FailedToConnect
+
+        await waitFor(() =>
+          expect(pageElements.connectivityStatus()).toHaveProperty('textContent', 'Unable to connect.')
+        );
+
+        // THEN: A purple error icon, 4 pixels before purple bold text.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
