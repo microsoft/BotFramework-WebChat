@@ -12,6 +12,8 @@ import WebChatReduxProvider from './WebChatReduxProvider';
 
 type State = { readonly count: number; readonly other: number };
 
+const selectCount = ({ count }: State) => count;
+
 function reducer(
   state: State = { count: 0, other: 0 },
   { payload, type }: { payload?: number | undefined; type: string }
@@ -33,13 +35,13 @@ scenario(
         const renders: (readonly [number, number])[] = [];
 
         const Child = memo(({ countFromParent }: { readonly countFromParent: number }) => {
-          renders.push([countFromParent, useSelector(({ count }: State) => count)]);
+          renders.push([countFromParent, useSelector(selectCount)]);
 
           return null;
         });
 
         function Parent() {
-          return <Child countFromParent={useSelector(({ count }: State) => count)} />;
+          return <Child countFromParent={useSelector(selectCount)} />;
         }
 
         const store = createStore(reducer);
@@ -67,16 +69,11 @@ scenario(
       );
 
     bdd
-      .given('a component selecting a new array on every call, compared by its content', () => {
-        const renders: (readonly number[])[] = [];
+      .given('a component selecting one value of the state', () => {
+        const renders: number[] = [];
 
         function Counter() {
-          renders.push(
-            useSelector(
-              ({ count }: State) => [count],
-              ([x], [y]) => x === y
-            )
-          );
+          renders.push(useSelector(selectCount));
 
           return null;
         }
@@ -96,13 +93,13 @@ scenario(
 
         return renders;
       })
-      .then('should not re-render', (_, renders) => expect(renders).toEqual([[0]]))
+      .then('should not re-render', (_, renders) => expect(renders).toEqual([0]))
       .when('dispatching an action that changes the selected value', ({ renders, store }) => {
         store.dispatch({ type: 'INCREMENT_COUNT' });
 
         return renders;
       })
-      .then('should re-render once', (_, renders) => expect(renders).toEqual([[0], [1]]));
+      .then('should re-render once', (_, renders) => expect(renders).toEqual([0, 1]));
 
     bdd
       .given('a component dispatching while rendering', () => {
@@ -110,7 +107,7 @@ scenario(
         const store = createStore(reducer);
 
         function Counter() {
-          renders.push(useSelector(({ count }: State) => count));
+          renders.push(useSelector(selectCount));
 
           // Dispatches on every render, like calling the setter of `useSendBoxValue()` in render.
           store.dispatch({ payload: 1, type: 'SET_COUNT' });

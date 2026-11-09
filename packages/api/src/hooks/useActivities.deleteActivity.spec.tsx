@@ -17,8 +17,8 @@ const deleteActivity = (activityID: string) => ({ payload: { activityID }, type:
 function renderActivities() {
   let modules: {
     readonly act: typeof import('@testing-library/react/pure').act;
-    readonly GraphProvider: typeof import('@msinternal/botframework-webchat-api-graph').GraphProvider;
     readonly React: typeof import('react');
+    readonly ReduxGraphProvider: typeof import('./internal/ReduxGraphProvider').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
     readonly WebChatReduxProvider: typeof import('./internal/WebChatReduxProvider').default;
@@ -29,15 +29,15 @@ function renderActivities() {
 
     modules = {
       act,
-      GraphProvider: require('@msinternal/botframework-webchat-api-graph').GraphProvider,
       React: require('react'),
+      ReduxGraphProvider: require('./internal/ReduxGraphProvider').default,
       render,
       useActivities: require('./useActivities').default,
       WebChatReduxProvider: require('./internal/WebChatReduxProvider').default
     };
   });
 
-  const { act, GraphProvider, React, render, useActivities, WebChatReduxProvider } = modules;
+  const { act, React, ReduxGraphProvider, render, useActivities, WebChatReduxProvider } = modules;
   const errors: unknown[] = [];
   const renders: (readonly string[])[] = [];
   const store = createStore();
@@ -75,9 +75,9 @@ function renderActivities() {
   const { unmount } = render(
     <ErrorBoundary>
       <WebChatReduxProvider store={store}>
-        <GraphProvider store={store}>
+        <ReduxGraphProvider>
           <Activities />
-        </GraphProvider>
+        </ReduxGraphProvider>
       </WebChatReduxProvider>
     </ErrorBoundary>
   );

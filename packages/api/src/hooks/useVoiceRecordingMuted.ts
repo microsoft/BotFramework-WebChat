@@ -2,6 +2,8 @@ import { muteVoiceRecording, unmuteVoiceRecording } from 'botframework-webchat-c
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from './internal/WebChatReduxContext';
 
+const selectMicrophoneMuted = ({ voice }) => voice.microphoneMuted;
+
 /**
  * Hook to get and set voice recording mute state in speech-to-speech mode.
  *
@@ -11,7 +13,7 @@ import { useDispatch, useSelector } from './internal/WebChatReduxContext';
  */
 export default function useVoiceRecordingMuted(): readonly [boolean, (muted: boolean) => void] {
   const dispatch = useDispatch();
-  const value = useSelector(({ voice }) => voice.microphoneMuted);
+  const value = useSelector(selectMicrophoneMuted);
 
   const setter = useCallback(
     (muted: boolean) => {
