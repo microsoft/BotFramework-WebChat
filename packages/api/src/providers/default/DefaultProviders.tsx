@@ -11,10 +11,11 @@ import {
 } from 'botframework-webchat-core/internal.js';
 import React, { memo, useEffect, useMemo } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { custom, function_, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { custom, function_, is, object, optional, pipe, readonly, unknown, type InferInput } from 'valibot';
 
 import usePonyfill from '../../hooks/usePonyfill';
 import DefaultDomainProviders from './DefaultDomainProviders';
+import DefaultSessionEffects from './DefaultSessionEffects';
 import createGraphStoreFromActivitiesStore from './private/createGraphStoreFromActivitiesStore';
 import { warnIncompleteOnce } from './private/warnPlaceholderOnce';
 
@@ -26,7 +27,11 @@ const defaultProvidersPropsSchema = pipe(
         is(object({ getSnapshot: function_(), receiveActivity: function_(), subscribe: function_() }), value)
       )
     ),
-    children: optional(reactNode())
+    children: optional(reactNode()),
+    // Props of <Composer>, checked by its `propTypes`: not validated again, as in Redux mode.
+    directLine: optional(unknown()),
+    userID: optional(unknown()),
+    username: optional(unknown())
   }),
   readonly()
 );
@@ -43,7 +48,13 @@ const notify: Notify = callListeners => unstable_batchedUpdates(callListeners);
  * the domains not built yet are placeholders.
  */
 function DefaultProviders(props: DefaultProvidersProps) {
-  const { activitiesStore: activitiesStoreFromProps, children } = validateProps(defaultProvidersPropsSchema, props);
+  const {
+    activitiesStore: activitiesStoreFromProps,
+    children,
+    directLine,
+    userID,
+    username
+  } = validateProps(defaultProvidersPropsSchema, props);
   const [ponyfill] = usePonyfill();
 
   // As the Redux store that <Composer> creates: one set per ponyfill, which cannot change after the first render.
@@ -69,7 +80,14 @@ function DefaultProviders(props: DefaultProvidersProps) {
       <SuggestedActionsSubscriber subscribe={services.incoming.onSuggestedActions}>
         <GraphProvider store={graphStore}>
           <DefaultDomainProviders connection={services.connection} notifications={services.notifications}>
-            {children}
+            <DefaultSessionEffects
+              connection={services.connection}
+              directLine={directLine}
+              userID={userID as string | undefined}
+              username={username as string | undefined}
+            >
+              {children}
+            </DefaultSessionEffects>
           </DefaultDomainProviders>
         </GraphProvider>
       </SuggestedActionsSubscriber>

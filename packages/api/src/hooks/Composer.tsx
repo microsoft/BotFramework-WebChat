@@ -713,7 +713,9 @@ const ComposerWithStore = ({
       {children}
     </ReduxProviders>
   ) : (
-    <DefaultProviders key="default">{children}</DefaultProviders>
+    <DefaultProviders directLine={directLine} key="default" userID={userID} username={username}>
+      {children}
+    </DefaultProviders>
   );
 };
 
