@@ -1,19 +1,24 @@
-import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
-
-const { useDirection } = hooks;
+import { number, object, optional, pipe, readonly, string } from 'valibot';
 
 const ICON_SIZE_FACTOR = 16;
 
-const ErrorNotificationIcon = ({ className = '', size = 1 }) => {
-  const [direction] = useDirection();
+const errorNotificationIconPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    size: optional(number())
+  }),
+  readonly()
+);
+
+const ErrorNotificationIcon = props => {
+  const { className = '', size = 1 } = validateProps(errorNotificationIconPropsSchema, props);
 
   return (
     <svg
       alt=""
-      className={classNames(className + '', direction === 'rtl' && 'webchat__error--rtl')}
+      className={className}
       height={ICON_SIZE_FACTOR * size}
       viewBox="0 0 13.1 13.1"
       width={ICON_SIZE_FACTOR * size}
@@ -24,11 +29,6 @@ const ErrorNotificationIcon = ({ className = '', size = 1 }) => {
       />
     </svg>
   );
-};
-
-ErrorNotificationIcon.propTypes = {
-  className: PropTypes.string,
-  size: PropTypes.number
 };
 
 export default ErrorNotificationIcon;

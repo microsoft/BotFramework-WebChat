@@ -1,8 +1,10 @@
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { custom, is, nullish, object, optional, pipe, readonly, unknown } from 'valibot';
 
 import SpeakActivity from '../Activity/Speak';
 import { RestrictedActivityDebugAPI } from '../ActivityDebug';
@@ -20,18 +22,45 @@ import {
 } from './TranscriptFocus';
 import useActivityAccessibleName from './useActivityAccessibleName';
 
+import styles from '../BasicTranscript.module.css';
+
 import type { WebChatActivity } from 'botframework-webchat-core';
-import type { MouseEventHandler, PropsWithChildren } from 'react';
+import type { MouseEventHandler } from 'react';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
+const activityRowPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(value =>
+      is(
+        object({
+          channelData: optional(
+            object({
+              // Sent by the bot, any value including `null`, e.g. __tests__/html2/transcript/channelData.fallbackText.null.html.
+              speak: nullish(unknown()),
+              'webchat:fallback-text': nullish(unknown())
+            })
+          )
+        }),
+        value
+      )
+    ),
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
+type ActivityRowProps = InferReactProps<typeof activityRowPropsSchema>;
+
+const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>((props, ref) => {
+  const { activity, children } = validateProps(activityRowPropsSchema, props);
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
   const activityRef = useRefFrom(activity);
   const bodyRef = useRef<HTMLDivElement>();
+  // Keeps the "webchat__basic-transcript__activity-body" class name.
+  const basicTranscriptClassNames = useStyles(styles, webChatPrefixedClassName);
+  const focusTrapTargetRef = useRef<HTMLDivElement>();
   const focusByActivityKey = useFocusByActivityKey();
   const getKeyByActivity = useGetKeyByActivity();
   // TODO: [P2] #2858 We should use core/definitions/speakingActivity for this predicate instead
@@ -59,6 +88,9 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
   // When receive Escape key from descendant, focus back to the activity.
   const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
 
+  // Screen readers dispatch a click to the active descendant when users invoke its primary action.
+  const handleScreenReaderPrimaryAction = useCallback(() => focusTrapTargetRef.current?.focus(), [focusTrapTargetRef]);
+
   // When the user press UP/DOWN arrow keys, we put a visual focus indicator around the focused activity.
   // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the activity.
   // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
@@ -66,11 +98,11 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const focusTrapChildren = useMemo(
     () => (
-      <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
+      <div className={basicTranscriptClassNames['basic-transcript__activity-body']} ref={bodyRef}>
         {children}
       </div>
     ),
-    [bodyRef, children]
+    [basicTranscriptClassNames, bodyRef, children]
   );
 
   const activityIdRef = useRefFrom(activity.id);
@@ -145,7 +177,8 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
       <FocusTrap
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
-        targetClassName="webchat__basic-transcript__activity-focus-target"
+        targetClassName={basicTranscriptClassNames['basic-transcript__activity-focus-target']}
+        targetRef={focusTrapTargetRef}
       >
         {focusTrapChildren}
       </FocusTrap>
@@ -160,6 +193,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
             className="webchat__basic-transcript__activity-active-descendant"
             // "id" is required for "aria-labelledby"
             id={descendantId}
+            onClick={handleScreenReaderPrimaryAction}
             role="article"
           >
             <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
@@ -172,16 +206,5 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 });
 
 ActivityRow.displayName = 'ActivityRow';
-
-ActivityRow.propTypes = {
-  // PropTypes cannot fully capture TypeScript type.
-  // @ts-ignore
-  activity: PropTypes.shape({
-    channelData: PropTypes.shape({
-      speak: PropTypes.bool,
-      'webchat:fallback-text': PropTypes.string
-    })
-  }).isRequired
-};
 
 export default memo(ActivityRow);

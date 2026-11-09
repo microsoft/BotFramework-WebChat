@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script data-presets="react" data-type="module" type="text/babel">
+      import { waitFor } from '@testduet/wait-for';
+      import { setupMockMediaDevices } from '/assets/esm/speechToSpeech/mockMediaDevices.js';
+
+      setupMockMediaDevices();
+
+      // The first start loads the audio worklet: hold it, so the user can mute while it loads.
+      let releaseAudioWorklet;
+      let numAudioWorkletLoads = 0;
+      const audioWorkletReleased = new Promise(resolve => (releaseAudioWorklet = resolve));
+      const MockAudioContext = window.AudioContext;
+
+      window.AudioContext = function (options) {
+        const audioContext = new MockAudioContext(options);
+        const { addModule } = audioContext.audioWorklet;
+
+        audioContext.audioWorklet.addModule = async url => {
+          numAudioWorkletLoads++;
+          await audioWorkletReleased;
+
+          return addModule(url);
+        };
+
+        return audioContext;
+      };
+
+      const { getUserMedia } = navigator.mediaDevices;
+      const streams = [];
+
+      navigator.mediaDevices.getUserMedia = async constraints => {
+        const stream = await getUserMedia(constraints);
+
+        streams.push(stream);
+
+        return stream;
+      };
+
+      const numLiveTracks = () =>
+        streams.flatMap(stream => stream.getTracks()).filter(({ readyState }) => readyState === 'live').length;
+
+      run(async function () {
+        const {
+          React: { useEffect },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            FluentThemeProvider,
+            hooks: { useVoiceRecordingMuted },
+            testIds
+          }
+        } = window;
+
+        // GIVEN: Web Chat with speech-to-speech, recording which audio chunks are sent while muted.
+        const { directLine, getMicrophoneMuted, store } = testHelpers.createDirectLineEmulator();
+        const chunks = [];
+        const postActivity = directLine.postActivity.bind(directLine);
+
+        directLine.setCapability(
+          'getVoiceConfiguration',
+          { chunkIntervalMs: 100, sampleRate: 24000 },
+          { emitEvent: false }
+        );
+
+        directLine.postActivity = activity => {
+          activity.name === 'media.chunk' &&
+            chunks.push({
+              microphoneMuted: getMicrophoneMuted(),
+              silent: [...atob(activity.value.content)].every(char => char === '\0')
+            });
+
+          return postActivity(activity);
+        };
+
+        let muteControl;
+
+        // Its effect runs with Web Chat's effects of the same render: once "muteControl.muted" changes, Web Chat has applied it.
+        const MuteController = () => {
+          const [muted, setMuted] = useVoiceRecordingMuted();
+
+          useEffect(() => {
+            muteControl = Object.freeze({ muted, setMuted });
+          }, [muted, setMuted]);
+
+          return false;
+        };
+
+        render(
+          <FluentThemeProvider variant="fluent">
+            <Composer directLine={directLine} store={store}>
+              <BasicWebChat />
+              <MuteController />
+            </Composer>
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const micButton = document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+
+        // WHEN: The user starts talking and mutes while the audio worklet is still loading.
+        await host.click(micButton);
+        await waitFor(() => expect(numAudioWorkletLoads).toBe(1));
+
+        muteControl.setMuted(true);
+
+        await waitFor(() => expect(muteControl.muted).toBe(true));
+
+        // WHEN: The audio worklet has loaded.
+        releaseAudioWorklet();
+
+        // THEN: Audio chunks are sent, all of them silent, and the microphone is off.
+        await waitFor(() => expect(chunks.length).toBeGreaterThanOrEqual(2));
+        expect(chunks.filter(({ microphoneMuted, silent }) => !microphoneMuted || !silent)).toEqual([]);
+        expect(numLiveTracks()).toBe(0);
+
+        // WHEN: The user unmutes.
+        muteControl.setMuted(false);
+
+        // THEN: The microphone is on and audio is sent.
+        await waitFor(() => expect(numLiveTracks()).toBe(1));
+        await waitFor(() => expect(chunks.some(({ silent }) => !silent)).toBe(true));
+
+        // WHEN: The user stops talking.
+        await host.click(micButton);
+
+        // THEN: The microphone is off.
+        await waitFor(() => expect(numLiveTracks()).toBe(0));
+      });
+    </script>
+  </body>
+</html>

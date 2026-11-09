@@ -74,7 +74,9 @@ const MS_IN_SECOND = 1000;
 
 export function useRecorder(onAudioChunk: (base64: string, timestamp: string) => void) {
   const [{ Date }] = usePonyfill();
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
   const audioCtxRef = useRef<AudioContext | undefined>(undefined);
+  const mutedRef = useRef<boolean>(false);
   const sourceRef = useRef<MediaStreamAudioSourceNode | undefined>(undefined);
   const streamRef = useRef<MediaStream | undefined>(undefined);
   const voiceConfiguration = useCapabilities(caps => caps.voiceConfiguration);
@@ -84,15 +86,17 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
   const sampleRate = voiceConfiguration?.sampleRate ?? DEFAULT_SAMPLE_RATE;
 
   const stopMediaStream = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = undefined;
-    }
-  }, [streamRef]);
+    sourceRef.current?.disconnect();
+    streamRef.current?.getTracks().forEach(track => track.stop());
+
+    sourceRef.current = undefined;
+    streamRef.current = undefined;
+  }, [sourceRef, streamRef]);
 
   // Acquire MediaStream and connect source to worklet
   const acquireAndConnectMediaStream = useCallback(async () => {
     const audioCtx = audioCtxRef.current;
+    const worklet = workletRef.current;
     if (!audioCtx) {
       return;
     }
@@ -104,6 +108,17 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
         sampleRate
       }
     });
+
+    // Muted or stopped while waiting for the microphone (e.g. on the permission prompt).
+    if (mutedRef.current || workletRef.current !== worklet) {
+      stream.getTracks().forEach(track => track.stop());
+
+      return;
+    }
+
+    // Muted and unmuted while waiting, so an earlier request may have connected a microphone: release it.
+    stopMediaStream();
+
     streamRef.current = stream;
 
     const source = audioCtx.createMediaStreamSource(stream);
@@ -111,16 +126,18 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
       source.connect(workletRef.current);
     }
     sourceRef.current = source;
-  }, [audioCtxRef, sampleRate, sourceRef, streamRef, workletRef]);
+  }, [audioCtxRef, mutedRef, sampleRate, sourceRef, stopMediaStream, streamRef, workletRef]);
 
   const stopRecording = useCallback(() => {
+    abortControllerRef.current?.abort();
+
     if (workletRef.current) {
       workletRef.current.port.postMessage({ command: 'STOP' });
       workletRef.current.disconnect();
       workletRef.current = undefined;
     }
     stopMediaStream();
-  }, [stopMediaStream, workletRef]);
+  }, [abortControllerRef, stopMediaStream, workletRef]);
 
   const initAudio = useCallback(async () => {
     if (audioCtxRef.current) {
@@ -139,10 +156,19 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
   }, [audioCtxRef, sampleRate]);
 
   const startRecording = useCallback(async () => {
+    const abortController = new AbortController();
+
+    abortControllerRef.current = abortController;
+
     await initAudio();
     const audioCtx = audioCtxRef.current!; // audioCtx must be available after initAudio().
     if (audioCtx.state === 'suspended') {
       await audioCtx.resume();
+    }
+
+    // Stopped while loading the worklet.
+    if (abortController.signal.aborted) {
+      return;
     }
 
     const worklet = new AudioWorkletNode(audioCtx, 'audio-recorder', {
@@ -167,28 +193,32 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
     worklet.connect(audioCtx.destination);
     workletRef.current = worklet;
 
-    await acquireAndConnectMediaStream();
+    // Muted while starting: the microphone stays off until unmuted.
+    if (mutedRef.current) {
+      worklet.port.postMessage({ command: 'MUTE' });
+    } else {
+      await acquireAndConnectMediaStream();
+    }
 
-    worklet.port.postMessage({ command: 'START' });
+    !abortController.signal.aborted && worklet.port.postMessage({ command: 'START' });
   }, [
+    abortControllerRef,
     acquireAndConnectMediaStream,
     audioCtxRef,
     chunkIntervalMs,
     Date,
     initAudio,
+    mutedRef,
     onAudioChunk,
     sampleRate,
     workletRef
   ]);
 
   const muteRecording = useCallback(() => {
+    mutedRef.current = true;
+
     // Stop MediaStream (mic indicator OFF) and disconnect source
     stopMediaStream();
-
-    if (sourceRef.current) {
-      sourceRef.current.disconnect();
-      sourceRef.current = undefined;
-    }
 
     // Tell worklet to output silence
     if (workletRef.current) {
@@ -197,6 +227,8 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
 
     // Return unmute function
     return () => {
+      mutedRef.current = false;
+
       if (!audioCtxRef.current || !workletRef.current) {
         return;
       }
@@ -207,7 +239,7 @@ export function useRecorder(onAudioChunk: (base64: string, timestamp: string) =>
       // Restart MediaStream and reconnect source (fire and forget)
       acquireAndConnectMediaStream();
     };
-  }, [acquireAndConnectMediaStream, audioCtxRef, sourceRef, stopMediaStream, workletRef]);
+  }, [acquireAndConnectMediaStream, audioCtxRef, mutedRef, stopMediaStream, workletRef]);
 
   const record = useCallback(() => {
     startRecording();

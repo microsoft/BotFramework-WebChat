@@ -275,13 +275,12 @@ describe.each(SEQUENCES)('<DefaultProviders> with %s', (_, actions) => {
       expect(renders).toHaveLength(reduxRenders.length);
       expect(shown(activities)).toEqual(shown(reduxRenders.at(-1).activities));
 
-      // In the order of the activities store. (In both modes, a deleted activity is hidden at the next render only: the
-      // graph keeps its node, and <GraphProvider> filters the nodes when it renders.)
+      // In the order of the activities store, and without a deleted activity: <GraphProvider> re-renders when the
+      // activities change, and filters out the nodes of the deleted ones (the graph keeps them).
       const { sortedActivities } = activitiesStore.getSnapshot();
 
-      expect(activities.filter(activity => sortedActivities.includes(activity))).toEqual(
-        sortedActivities.filter(activity => activities.includes(activity))
-      );
+      expect(activities).toHaveLength(sortedActivities.length);
+      activities.forEach((activity, index) => expect(activity).toBe(sortedActivities.at(index)));
     };
 
     check();

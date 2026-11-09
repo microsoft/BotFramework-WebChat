@@ -29,18 +29,14 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
     'botframework-webchat.schema': './src/boot/exports/schema.ts'
   },
-  env: {
-    ...config.env,
-    // Followings are required by microsoft-cognitiveservices-speech-sdk:
-    NODE_TLS_REJECT_UNAUTHORIZED: '',
-    SPEECH_CONDUCT_OCSP_CHECK: '',
-    SPEECH_OCSP_CACHE_ROOT: ''
-  },
   noExternal: [
     ...(config.noExternal ?? []),
     '@babel/runtime',
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
+    // sanitize-html@2.17.6+ requires htmlparser2@12+, which is ESM-only and ships syntax newer than ES2019 (with domhandler, domutils,
+    // dom-serializer and entities). Bundling lowers it to ES2019, so webpack 4 and CommonJS consumers (e.g. Jest) need no extra setup.
+    'sanitize-html',
     'web-speech-cognitive-services',
     // Belows are the dependency chain related to "regex" where it is named export-only and does not work on Webpack 4/PPUX (CJS cannot import named export).
     // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"

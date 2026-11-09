@@ -122,6 +122,8 @@ There are a few reasons:
 
 - Failing static code analysis
    - Run `npm run precommit` and check for errors
+- Failing "Package age" check
+   - `package-lock.json` has versions published less than 7 days ago: re-run the check once they are, or redo the change from the `package-lock.json` of `main` with npm 11.10 or later, see [HUMAN.md](../HUMAN.md#package-management)
 - Flaky tests
 - Test infrastructure is down
    - All of us share the same test infrastructure, it will be rebuilt every weekend or on-demand

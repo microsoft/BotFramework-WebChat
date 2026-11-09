@@ -1,16 +1,20 @@
 /* eslint-disable no-magic-numbers */
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import React, {
   Fragment,
   memo,
   type FocusEvent,
   type KeyboardEventHandler,
   type ReactNode,
+  type Ref,
   useCallback,
   useRef
 } from 'react';
 
 import tabbableElements from '../Utils/tabbableElements';
 import { useRefFrom } from 'use-ref-from';
+
+import styles from './FocusTrap.module.css';
 
 // Media elements with native controls (`<audio controls>` and `<video controls>`) have their own tab stops,
 // such as play, volume, and more options. These tab stops are in a closed shadow tree: we cannot focus them,
@@ -24,14 +28,18 @@ const FocusTrap = ({
   children,
   onFocus,
   onLeave,
-  targetClassName
+  targetClassName,
+  targetRef
 }: Readonly<{
   children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
   targetClassName?: string | undefined;
+  targetRef?: Ref<HTMLDivElement> | undefined;
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
+  // Keeps the "webchat__focus-trap" class name, which also finds nested traps below.
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const guardRef = useRef<HTMLDivElement>();
   const lastFocused = useRef<HTMLElement>();
   const onFocusRef = useRefFrom(onFocus);
@@ -138,7 +146,7 @@ const FocusTrap = ({
   return (
     <Fragment>
       <div
-        className="webchat__focus-trap"
+        className={classNames['focus-trap']}
         onBlur={handleBlur}
         onFocus={handleFocus}
         onKeyDown={handleBodyKeyDown}
@@ -147,7 +155,7 @@ const FocusTrap = ({
         {children}
         <div ref={guardRef} tabIndex={0} />
       </div>
-      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />
+      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} ref={targetRef} tabIndex={-1} />
     </Fragment>
   );
 };

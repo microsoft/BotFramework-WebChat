@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import createDirectLineWithTranscript from '../createDirectLineWithTranscript';
 import ActivityGroupingContext from './ActivityGroupingContext';
 
@@ -246,10 +244,6 @@ const ActivityGroupingSurface = ({ children }) => {
   );
 
   return <ActivityGroupingContext.Provider value={context}>{children}</ActivityGroupingContext.Provider>;
-};
-
-ActivityGroupingSurface.propTypes = {
-  children: PropTypes.any
 };
 
 export default ActivityGroupingSurface;

@@ -1,3 +1,8 @@
+/**
+ * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+ * The live styles are in `packages/component/src/ChatHistory/ChatHistoryBox.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createChatHistoryBoxStyleSet() {
   return {
     '&.webchat__chat-history-box': {

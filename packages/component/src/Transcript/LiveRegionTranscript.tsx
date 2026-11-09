@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import { isPresentational } from 'botframework-webchat-core/internal.js';
 import type { RefObject } from 'react';
-import React, { memo, useEffect, useMemo, useRef } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, useRef } from 'react';
 
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
 import tabbableElements from '../Utils/tabbableElements';
@@ -9,7 +10,7 @@ import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import { useLiveRegion, useQueueStaticElement } from '../providers/LiveRegionTwin';
 import LiveRegionSendFailed from './LiveRegion/SendFailed';
-import isPresentational from './LiveRegion/isPresentational';
+import LiveRegionLongSend from './LiveRegion/LongSend';
 import useTypistNames from './useTypistNames';
 
 import type { ActivityElementMap } from './types';
@@ -80,7 +81,10 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
       }
 
       appendedActivities.unshift({ activity, key });
+    }
 
+    // Queue in transcript order, so activities arriving together are read oldest first.
+    for (const { activity } of appendedActivities) {
       isPresentational(activity) || queueStaticElement(<LiveRegionActivity activity={activity} />);
     }
 
@@ -130,7 +134,12 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
 
   useLiveRegion(() => typingIndicator, [typingIndicator]);
 
-  return <LiveRegionSendFailed />;
+  return (
+    <Fragment>
+      <LiveRegionSendFailed />
+      <LiveRegionLongSend />
+    </Fragment>
+  );
 };
 
 LiveRegionTranscript.displayName = 'LiveRegionTranscript';

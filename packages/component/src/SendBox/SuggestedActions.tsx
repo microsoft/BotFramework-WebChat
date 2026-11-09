@@ -1,10 +1,11 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { createBasicStyleSet as createBasicStyleSetForReactFilm, ReactFilm } from 'react-film';
+import { object, optional, pipe, readonly, string } from 'valibot';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
@@ -31,9 +32,23 @@ const ROOT_STYLE = {
   }
 };
 
-const SuggestedActionCarouselContainer = ({ children, className, label }) => {
+const suggestedActionContainerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    className: optional(string()),
+    label: string()
+  }),
+  readonly()
+);
+
+type SuggestedActionContainerProps = InferReactProps<typeof suggestedActionContainerPropsSchema>;
+
+const SuggestedActionCarouselContainer = (props: SuggestedActionContainerProps) => {
+  const { children, className, label } = validateProps(suggestedActionContainerPropsSchema, props);
+
   const [
     {
+      stylesRoot,
       suggestedActionsCarouselFlipperBoxWidth,
       suggestedActionsCarouselFlipperCursor,
       suggestedActionsCarouselFlipperSize
@@ -99,6 +114,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
           showDots={false}
           showScrollBar={false}
           styleSet={filmStyleSet}
+          stylesRoot={stylesRoot}
         >
           {children}
         </ReactFilm>
@@ -108,13 +124,9 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionCarouselContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
+const SuggestedActionFlowContainer = (props: SuggestedActionContainerProps) => {
+  const { children, className, label } = validateProps(suggestedActionContainerPropsSchema, props);
 
-const SuggestedActionFlowContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -143,13 +155,9 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionFlowContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
-};
+const SuggestedActionStackedContainer = (props: SuggestedActionContainerProps) => {
+  const { children, className, label } = validateProps(suggestedActionContainerPropsSchema, props);
 
-const SuggestedActionStackedContainer = ({ children, className, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -172,12 +180,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
-
-SuggestedActionStackedContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  label: PropTypes.string.isRequired
 };
 
 type SuggestedActionsProps = Readonly<{
@@ -226,7 +228,8 @@ const SuggestedActions = ({ className }: SuggestedActionsProps) => {
           image={image}
           // Image alt text should use `imageAltText` field and fallback to `text` field.
           // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#image-alt-text
-          imageAlt={image && (imageAltText || text)}
+          // Without either, the image is decorative: the button text names the button.
+          imageAlt={image && (imageAltText ?? text ?? '')}
           itemIndex={index}
           text={text}
           textClassName={

@@ -116,7 +116,8 @@ const BasicToaster = ({ className }) => {
   useLiveRegion(() => {
     const toAnnounce = [];
 
-    for (const notification of sortedNotifications.slice().reverse()) {
+    // Announce only rendered toasts, not hidden notifications such as the connectivity status.
+    for (const { notification } of sortedNotificationsWithChildren.slice().reverse()) {
       if (!notifiedElements.current.has(notification.id)) {
         notifiedElements.current.add(notification.id);
 
@@ -141,7 +142,7 @@ const BasicToaster = ({ className }) => {
     }
 
     return toAnnounce.length > 0 && <Fragment>{toAnnounce}</Fragment>;
-  }, [sortedNotifications]);
+  }, [sortedNotificationsWithChildren]);
 
   return (
     <div

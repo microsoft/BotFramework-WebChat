@@ -87,12 +87,12 @@ Serving Web Chat code from your own service is recommended for these environment
 
 For React web apps, it is important to have all React components rendered with the same version and instance of the React runtime.
 
-To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
+Web Chat supports React 16.8.6 to 19. To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
-When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 (latest supported) as ESM under the `/static/` directory.
+When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 as ESM under the `/static/` directory.
 
 <details>
-<summary>For React (latest supported)</summary>
+<summary>For React 18</summary>
 
 ```html
 <script type="importmap">
@@ -188,6 +188,65 @@ Then, import Web Chat into your code:
 ```tsx
 import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 ```
+
+webpack 5, esbuild and Vite need no changes to bundle Web Chat; our CI renders Web Chat bundled by each of them in Chrome.
+
+#### Bundling with webpack 4
+
+webpack 4 cannot parse syntax newer than ES2019. To bundle Web Chat, add the following to `webpack.config.js` and install `babel-loader@8` and `@babel/preset-env`. Our CI tests it with webpack 4.47.0.
+
+```js
+const { sep } = require('path');
+
+// Dependencies of Web Chat that ship syntax newer than ES2019 (e.g. `?.`, `#private`, `1_000`), which webpack 4 cannot parse.
+const transpilePackages = [
+  'event-as-promise',
+  'htmlparser2',
+  'iter-fest',
+  'micromark-util-decode-numeric-character-reference',
+  'micromark-util-sanitize-uri',
+  'microsoft-cognitiveservices-speech-sdk',
+  'mime',
+  'react-dictate-button',
+  'react-film',
+  'swiper',
+  'uuid',
+  'valibot',
+  'web-speech-cognitive-services'
+];
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      // Lets .mjs import named exports from CommonJS, like create-react-app@4.
+      { include: /node_modules/u, test: /\.mjs$/u, type: 'javascript/auto' },
+      {
+        // The innermost package in the path: "node_modules/react-film/node_modules/mime/…" is "mime".
+        include: path => transpilePackages.includes(path.split(`${sep}node_modules${sep}`).pop().split(sep)[0]),
+        test: /\.m?js$/u,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            configFile: false,
+            presets: [['@babel/preset-env', { modules: false, targets: 'chrome 70' }]], // ES2018, which webpack 4 parses.
+            sourceType: 'unambiguous'
+          }
+        }
+      }
+    ]
+  }
+};
+```
+
+- If your app already transpiles `node_modules`, add these packages to its rule instead.
+- webpack 4 does not support `"exports"` in `package.json`. Web Chat 4.19.2 and earlier also need these in `resolve.alias`:
+
+   ```js
+   '@redux-devtools/extension$': '@redux-devtools/extension/lib/index.js',
+   'botframework-webchat/schema.js$': 'botframework-webchat/dist/botframework-webchat.schema.js'
+   ```
 
 ## Step 2: Constructing chat adapter
 

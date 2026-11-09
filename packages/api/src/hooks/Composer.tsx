@@ -5,14 +5,29 @@ import {
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import {
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import updateIn from 'simple-update-in';
+import {
+  any,
+  array,
+  boolean,
+  function_,
+  literal,
+  nullish,
+  object,
+  optional,
+  picklist,
+  pipe,
+  readonly,
+  string,
+  union
+} from 'valibot';
 
 import { type StrictStyleOptions, type StyleOptions } from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
@@ -28,7 +43,6 @@ import {
 } from '../middleware/SendBoxToolbarMiddleware';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
-import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
@@ -164,6 +178,52 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
+const legacyMiddlewareSchema = union([array(function_()), function_()]);
+
+const composerCorePropsSchema = pipe(
+  object({
+    activityStatusMiddleware: optional(legacyMiddlewareSchema),
+    attachmentForScreenReaderMiddleware: optional(legacyMiddlewareSchema),
+    attachmentMiddleware: optional(legacyMiddlewareSchema),
+    avatarMiddleware: optional(legacyMiddlewareSchema),
+    cardActionMiddleware: optional(legacyMiddlewareSchema),
+    children: optional(reactNode()),
+    // `null` from `dir: searchParams.get('dir')`, e.g. __tests__/html2/fluentTheme/uiState.html.
+    dir: nullish(picklist(['auto', 'ltr', 'rtl'])),
+    directLine: pipe(
+      object({
+        activity$: pipe(object({ subscribe: function_() }), readonly()),
+        connectionStatus$: pipe(object({ subscribe: function_() }), readonly()),
+        end: optional(function_()),
+        getSessionId: optional(function_()),
+        // Some adapters, such as one that only receives, do not have `postActivity`.
+        postActivity: optional(function_()),
+        referenceGrammarID: optional(string()),
+        token: optional(string())
+      }),
+      readonly()
+    ),
+    disabled: optional(boolean()),
+    downscaleImageToDataURL: optional(function_()),
+    grammars: optional(array(string())),
+    groupActivitiesMiddleware: optional(legacyMiddlewareSchema),
+    locale: optional(string()),
+    onTelemetry: optional(function_()),
+    overrideLocalizedStrings: optional(any()),
+    // `false` disables Markdown, `null` in __tests__/html2/markdown/renderMarkdown.null.html.
+    renderMarkdown: nullish(union([literal(false), function_()])),
+    scrollToEndButtonMiddleware: optional(legacyMiddlewareSchema),
+    selectVoice: optional(function_()),
+    sendTypingIndicator: optional(boolean()),
+    toastMiddleware: optional(legacyMiddlewareSchema),
+    typingIndicatorMiddleware: optional(legacyMiddlewareSchema),
+    uiState: optional(picklist(['blueprint', 'disabled'])),
+    userID: optional(string()),
+    username: optional(string())
+  }),
+  readonly()
+);
+
 type ComposerCoreProps = Readonly<{
   /**
    * @deprecated Use `polymiddleware` instead. The `activityMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2027-08-21.
@@ -223,36 +283,41 @@ type ComposerCoreProps = Readonly<{
   username?: string;
 }>;
 
-const ComposerCore = ({
-  activityMiddleware: activityMiddlewareFromProps,
-  activityStatusMiddleware,
-  attachmentForScreenReaderMiddleware,
-  attachmentMiddleware,
-  avatarMiddleware: avatarMiddlewareFromProps,
-  cardActionMiddleware,
-  children,
-  dir = 'auto',
-  directLine,
-  disabled = false,
-  downscaleImageToDataURL,
-  grammars = EMPTY_ARRAY,
-  groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
-  locale = window.navigator.language || 'en-US',
-  onTelemetry,
-  overrideLocalizedStrings,
-  polymiddleware: polymiddlewareFromProps,
-  renderMarkdown,
-  scrollToEndButtonMiddleware,
-  selectVoice,
-  sendBoxMiddleware,
-  sendBoxToolbarMiddleware,
-  sendTypingIndicator = false,
-  toastMiddleware,
-  typingIndicatorMiddleware,
-  uiState: rawUIState,
-  userID = '',
-  username = ''
-}: ComposerCoreProps) => {
+const ComposerCore = (props: ComposerCoreProps) => {
+  // The TypeScript type is richer than the schema, the schema validates what the `propTypes` did.
+  validateProps(composerCorePropsSchema, props);
+
+  const {
+    activityMiddleware: activityMiddlewareFromProps,
+    activityStatusMiddleware,
+    attachmentForScreenReaderMiddleware,
+    attachmentMiddleware,
+    avatarMiddleware: avatarMiddlewareFromProps,
+    cardActionMiddleware,
+    children,
+    dir = 'auto',
+    directLine,
+    disabled = false,
+    downscaleImageToDataURL,
+    grammars = EMPTY_ARRAY,
+    groupActivitiesMiddleware: groupActivitiesMiddlewareFromProps,
+    locale = window.navigator.language || 'en-US',
+    onTelemetry,
+    overrideLocalizedStrings,
+    polymiddleware: polymiddlewareFromProps,
+    renderMarkdown,
+    scrollToEndButtonMiddleware,
+    selectVoice,
+    sendBoxMiddleware,
+    sendBoxToolbarMiddleware,
+    sendTypingIndicator = false,
+    toastMiddleware,
+    typingIndicatorMiddleware,
+    uiState: rawUIState,
+    userID = '',
+    username = ''
+  } = props;
+
   const [ponyfill] = usePonyfill();
   const [styleOptions] = useStyleOptions();
   const chatOperations = useChatOperationsContext();
@@ -582,24 +647,22 @@ const ComposerCore = ({
   return (
     <WebChatAPIContext.Provider value={context}>
       <CapabilitiesComposer>
-        <ActivityListenerComposer>
-          <ActivitySendStatusComposer>
-            <ActivityTypingComposer>
-              <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
-                <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                  <GroupActivitiesComposer groupActivitiesMiddleware={groupActivitiesMiddleware}>
-                    <PolymiddlewareComposer polymiddleware={polymiddleware}>
-                      <SpeechToSpeechComposer>
-                        {typeof children === 'function' ? children(context) : children}
-                      </SpeechToSpeechComposer>
-                    </PolymiddlewareComposer>
-                  </GroupActivitiesComposer>
-                  <ActivitySendStatusTelemetryComposer />
-                </SendBoxToolbarMiddlewareProvider>
-              </SendBoxMiddlewareProvider>
-            </ActivityTypingComposer>
-          </ActivitySendStatusComposer>
-        </ActivityListenerComposer>
+        <ActivitySendStatusComposer>
+          <ActivityTypingComposer>
+            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
+                <GroupActivitiesComposer groupActivitiesMiddleware={groupActivitiesMiddleware}>
+                  <PolymiddlewareComposer polymiddleware={polymiddleware}>
+                    <SpeechToSpeechComposer>
+                      {typeof children === 'function' ? children(context) : children}
+                    </SpeechToSpeechComposer>
+                  </PolymiddlewareComposer>
+                </GroupActivitiesComposer>
+                <ActivitySendStatusTelemetryComposer />
+              </SendBoxToolbarMiddlewareProvider>
+            </SendBoxMiddlewareProvider>
+          </ActivityTypingComposer>
+        </ActivitySendStatusComposer>
       </CapabilitiesComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
@@ -613,51 +676,18 @@ const ComposerCore = ({
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
 
-ComposerCore.propTypes = {
-  activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  avatarMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  cardActionMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  children: PropTypes.any,
-  dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
-  // PropTypes.shape({ ... }) did not honor isRequired for its members.
-  // @ts-ignore
-  directLine: PropTypes.shape({
-    activity$: PropTypes.shape({
-      subscribe: PropTypes.func.isRequired
-    }).isRequired,
-    connectionStatus$: PropTypes.shape({
-      subscribe: PropTypes.func.isRequired
-    }).isRequired,
-    end: PropTypes.func,
-    getSessionId: PropTypes.func,
-    postActivity: PropTypes.func.isRequired,
-    referenceGrammarID: PropTypes.string,
-    token: PropTypes.string
-  }).isRequired,
-  disabled: PropTypes.bool,
-  downscaleImageToDataURL: PropTypes.func,
-  grammars: PropTypes.arrayOf(PropTypes.string),
-  groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  locale: PropTypes.string,
-  onTelemetry: PropTypes.func,
-  overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
-  renderMarkdown: PropTypes.func,
-  scrollToEndButtonMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  selectVoice: PropTypes.func,
-  sendTypingIndicator: PropTypes.bool,
-  toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  uiState: PropTypes.oneOf(['blueprint', 'disabled']),
-  userID: PropTypes.string,
-  username: PropTypes.string
-};
-
 type ComposerWithStoreProps = ComposerCoreProps &
   Readonly<{
     store?: any;
   }>;
+
+const composerWithStorePropsSchema = pipe(
+  object({
+    onTelemetry: optional(function_()),
+    store: optional(any())
+  }),
+  readonly()
+);
 
 type ComposerProps = ComposerWithStoreProps & {
   readonly internalRenderErrorBox?: any;
@@ -677,16 +707,11 @@ type ComposerProps = ComposerWithStoreProps & {
 
 // Mounts one of the two provider sets: over a Redux store (the host's, or one created for it), or the default providers
 // (no Redux, for tests only until they are complete). The set is the `key`: when it changes, the subtree remounts.
-const ComposerWithStore = ({
-  directLine,
-  locale,
-  onTelemetry,
-  sendTypingIndicator,
-  store,
-  userID,
-  username,
-  ...props
-}: ComposerWithStoreProps) => {
+const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
+  validateProps(composerWithStorePropsSchema, propsWithStore);
+
+  const { directLine, locale, onTelemetry, sendTypingIndicator, store, userID, username, ...props } = propsWithStore;
+
   const children = (
     <ActivityKeyerComposer>
       <ActivityAcknowledgementComposer>
@@ -727,11 +752,6 @@ const ComposerWithStore = ({
       {children}
     </DefaultProviders>
   );
-};
-
-ComposerWithStore.propTypes = {
-  onTelemetry: PropTypes.func,
-  store: PropTypes.any
 };
 
 const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions, ...props }: ComposerProps) => {

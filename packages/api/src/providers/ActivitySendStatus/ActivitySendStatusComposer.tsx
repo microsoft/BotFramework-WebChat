@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { querySendStatusFromOutgoingActivity } from 'botframework-webchat-core/activity.js';
+import { isPresentational } from 'botframework-webchat-core/internal.js';
+import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 
 import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
@@ -10,14 +11,16 @@ import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import type { ActivitySendStatusContextType } from './private/Context';
 import ActivitySendStatusContext from './private/Context';
 import isMapEqual from './private/isMapEqual';
+import type { ActivitySendStatusSubContextType } from './private/SubContext';
+import ActivitySendStatusSubContext from './private/SubContext';
 
 // Magic numbers for `expiryByActivityKey`.
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
 const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
-  const [activities] = useActivities();
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
+  const [activities] = useActivities();
   const forceRender = useForceRender();
   const getKeyByActivity = useGetKeyByActivity();
   const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
@@ -93,9 +96,29 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
     [sendStatusByActivityKey]
   );
 
+  // Derived from `activities`, so an echo-back that changes the content of a sending activity is picked up.
+  // User activities only, as in `expiryByActivityKey`: a bot activity with the same `clientActivityID` shares the key.
+  const isSending = useMemo<boolean>(
+    () =>
+      activities.some(activity => {
+        const key = activity.from.role === 'user' && getKeyByActivity(activity);
+
+        return key && sendStatusByActivityKey.get(key) === 'sending' && !isPresentational(activity);
+      }),
+    [activities, getKeyByActivity, sendStatusByActivityKey]
+  );
+
+  // Memoized on the boolean, so `useIsSending()` only re-renders when it flips.
+  const isSendingState = useMemo<readonly [boolean]>(() => freezeArray([isSending]), [isSending]);
+
   const context = useMemo<ActivitySendStatusContextType>(
-    () => ({ sendStatusByActivityKeyState }),
+    () => Object.freeze({ sendStatusByActivityKeyState }),
     [sendStatusByActivityKeyState]
+  );
+
+  const subContext = useMemo<ActivitySendStatusSubContextType>(
+    () => Object.freeze({ isSendingState }),
+    [isSendingState]
   );
 
   // Finds the closest expiry. This is the time we should recompute `sendStatusByActivityKey`.
@@ -120,7 +143,11 @@ const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNod
     }
   }, [clearTimeout, Date, forceRender, nextExpiry, setTimeout]);
 
-  return <ActivitySendStatusContext.Provider value={context}>{children}</ActivitySendStatusContext.Provider>;
+  return (
+    <ActivitySendStatusContext.Provider value={context}>
+      <ActivitySendStatusSubContext.Provider value={subContext}>{children}</ActivitySendStatusSubContext.Provider>
+    </ActivitySendStatusContext.Provider>
+  );
 };
 
 export default ActivitySendStatusComposer;

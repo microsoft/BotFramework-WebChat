@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <!-- Shows the live region, so the snapshot shows what is announced. -->
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        // GIVEN: Web Chat keeps what it announced in the live region, so it can be checked and seen in the snapshot.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: {
+              hideSendBox: true,
+              internalLiveRegionFadeAfter: 60_000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600); // Dismisses "Connecting…".
+
+        await pageConditions.uiConnected();
+
+        const getLiveRegionTexts = () =>
+          Array.from(pageElements.liveRegion().children, child => testHelpers.getAllTextContents(child).join('\n'));
+
+        // WHEN: The user sends a message that is not narrated, which the server does not acknowledge.
+        const sendMessage = await directLine.emulateOutgoingActivity({
+          channelData: { 'webchat:fallback-text': '' }, // Not narrated: no "You said", no "Sending message."
+          from: { id: 'user', role: 'user' },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: The bot replies with a narratable message.
+        //       The chat adapter copied the user message's `clientActivityID` into it, so both get the same key.
+        await directLine.emulateIncomingActivity({
+          channelData: { clientActivityID: sendMessage.activity.channelData.clientActivityID },
+          from: { id: 'bot', role: 'bot' },
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        // The transcript shows one message per key: the bot message replaces the user's message.
+        await waitFor(() => expect(pageElements.activities()[0].innerText).toContain('Aloha!'));
+
+        // WHEN: 3 seconds later.
+        clock.tick(3_000);
+
+        // THEN: "Sending message." is not announced: the narratable activity under the key is not the user's.
+        // No wait needed: the fake clock runs timers inside `tick()` and React 16 (`webchat-es5.js`) renders synchronously.
+        expect(getLiveRegionTexts()).toEqual([]); // No "Bot said": its key was already in the transcript.
+        expect(pageElements.activityStatuses()[0].innerText).toContain('Sending'); // The user's send status.
+
+        // THEN: The live region is empty, the bot message shows the user's "Sending" status.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

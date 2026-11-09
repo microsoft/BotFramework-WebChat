@@ -5,8 +5,9 @@ export {
   type SetRawStateAction
 } from '../internal/actions/setRawState';
 
-export { default as StoreDebugAPIRegistry } from '../internal/StoreDebugAPIRegistry';
 export { type StoreDebugAPI } from '../types/StoreDebugAPI';
+export { default as isPresentational } from '../utils/isPresentational';
+export { default as StoreDebugAPIRegistry } from '../internal/StoreDebugAPIRegistry';
 
 export { RestrictedDebugAPI, type InferPublic } from '@msinternal/botframework-webchat-core-debug-api';
 

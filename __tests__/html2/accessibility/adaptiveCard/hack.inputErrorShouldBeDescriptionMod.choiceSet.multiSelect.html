@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      async function getInputState(element) {
+        const { description, name, properties } = await testHelpers.getAccessibilityNode(element);
+
+        return {
+          description: description?.value,
+          invalid: properties?.find(({ name }) => name === 'invalid')?.value.value,
+          name: name?.value
+        };
+      }
+
+      function getDanglingLabelIds(element) {
+        return (element.getAttribute('aria-labelledby') || '')
+          .split(/\s+/u)
+          .filter(id => id && !document.getElementById(id));
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A card with a required multi-select choice set (checkboxes) and a Submit button, similar to the card in #5613.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    choices: [
+                      { title: 'Project Manager', value: 'Project Manager' },
+                      { title: 'Software Engineer', value: 'Software Engineer' }
+                    ],
+                    errorMessage: 'Please select the role',
+                    id: 'roles',
+                    isMultiSelect: true,
+                    isRequired: true,
+                    label: 'Role',
+                    style: 'expanded',
+                    type: 'Input.ChoiceSet'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [projectManagerCheckbox, softwareEngineerCheckbox] = document.querySelectorAll(
+          '.ac-choiceSetInput-multiSelect input[type="checkbox"]'
+        );
+
+        // WHEN: The "Submit" button is clicked while nothing is selected.
+        await host.click(document.querySelector('.ac-pushButton'));
+
+        // THEN: The first checkbox should be focused and invalid, named by the label and its choice, and described by the error message.
+        //       Adaptive Cards only puts the label and the error message on the first checkbox.
+        await waitFor(() => expect(document.activeElement).toBe(projectManagerCheckbox));
+        await waitFor(async () =>
+          expect(await getInputState(projectManagerCheckbox)).toEqual({
+            description: 'Please select the role',
+            invalid: 'true',
+            name: 'Role Project Manager'
+          })
+        );
+
+        expect(await getInputState(softwareEngineerCheckbox)).toEqual({
+          description: undefined,
+          invalid: 'false',
+          name: 'Software Engineer'
+        });
+
+        // THEN: The error message should show below the choices.
+        await host.snapshot('local');
+
+        // WHEN: "Project Manager" is selected.
+        await host.sendKeys(' ');
+
+        // THEN: The checkbox should be valid, named by the label and its choice only, without description.
+        await waitFor(() => expect(projectManagerCheckbox).toHaveProperty('checked', true));
+        await waitFor(async () =>
+          expect(await getInputState(projectManagerCheckbox)).toEqual({
+            description: undefined,
+            invalid: 'false',
+            name: 'Role Project Manager'
+          })
+        );
+
+        // THEN: "aria-labelledby" should not point to the removed error message.
+        expect(getDanglingLabelIds(projectManagerCheckbox)).toEqual([]);
+
+        // THEN: The error message should be gone and "Project Manager" selected.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

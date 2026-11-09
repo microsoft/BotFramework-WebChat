@@ -67,11 +67,11 @@
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/jest": "^29.5.14",
     "@types/react": "^16.14.70",
-    "tsup": "^8.5.1",
+    "tsup": "^9.0.0",
     "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",
-    "valibot": "1.2.0"
+    "valibot": "^1.4.2"
   }
 }

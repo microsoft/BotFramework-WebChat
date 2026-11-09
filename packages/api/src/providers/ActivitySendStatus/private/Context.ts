@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import type { SendStatus } from '../../../types/SendStatus';
 
 type ActivitySendStatusContextType = {
-  sendStatusByActivityKeyState: readonly [ReadonlyMap<string, SendStatus>];
+  readonly sendStatusByActivityKeyState: readonly [ReadonlyMap<string, SendStatus>];
 };
 
 const ActivitySendStatusContext = createContext<ActivitySendStatusContextType>(

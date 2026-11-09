@@ -3,6 +3,7 @@
 # - Starting from .webchat or .webchat-<themaPackageName>
 # - Followed by optional modifier class
 # - Followed by zero or more spaces
+# - Followed by an optional ":has(> ", for a rule on the parent of a class (e.g. the tooltip)
 # - Followed by a class selector with a 6-character file hash
 # - Followed by an underscore
 
@@ -11,9 +12,25 @@ language: Css
 rule:
   kind: selectors > descendant_selector
   not:
-    regex: "\\.(webchat|webchat-\\w*)(\\.\\w+--[\\w-]+)?\\s*\\.w[a-zA-Z0-9\\-_]{6}_"
+    regex: "\\.(webchat|webchat-\\w*)(\\.\\w+--[\\w-]+)?\\s*(:has\\(>\\s*)?\\.w[a-zA-Z0-9\\-_]{6}_"
 
 description: "Check if CSS is compiled by Lightning CSS plugin conforms to expected selector pattern"
 message: "Output CSS does not conform to Lightning CSS selector pattern. Check that the CSS file is compiled correctly."
+severity: error
+args: [dist/*.css]
+
+---
+# This rule checks that the Lightning CSS plugin removed every "--webchat-preserve-reason" declaration.
+# The declaration keeps the class name of a rule without styles of its own (e.g. a class for themes) in the class map,
+# and esbuildPlugins.mjs removes it once the class map is built, so it must not appear in the output CSS.
+
+id: no-preserve-reason-lightning-css
+language: Css
+rule:
+  kind: property_name
+  regex: "^--webchat-preserve-reason$"
+
+description: "Check that CSS compiled by Lightning CSS plugin has no --webchat-preserve-reason declarations"
+message: "Output CSS has a --webchat-preserve-reason declaration. Check that esbuildPlugins.mjs removes it after the class map is built."
 severity: error
 args: [dist/*.css]

@@ -87,7 +87,7 @@
   },
   "dependencies": {
     "simple-update-in": "2.2.0",
-    "uuid": "14.0.0",
-    "valibot": "1.4.1"
+    "uuid": "14.0.1",
+    "valibot": "1.4.2"
   }
 }

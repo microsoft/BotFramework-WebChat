@@ -14,3 +14,6 @@ rules:
         - group:
             - '@msinternal/botframework-webchat-api-*'
           message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'
+      paths:
+        - name: '@msinternal/botframework-webchat-styles/react'
+          message: 'Every copy of @msinternal/botframework-webchat-styles/react has its own React context, import it from botframework-webchat-component/internal.js instead.'

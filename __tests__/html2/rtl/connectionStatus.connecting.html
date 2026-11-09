@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { Observable } from 'https://esm.sh/iter-fest';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const clock = lolex.createClock();
+
+        // GIVEN: A Direct Line that stays connecting.
+        const directLine = {
+          activity$: new Observable(() => {}),
+          connectionStatus$: new Observable(observer => {
+            observer.next(0); // Uninitialized
+            observer.next(1); // Connecting
+          })
+        };
+
+        await testHelpers.preloadImages('/assets/staticspinner.png');
+
+        // WHEN: Web Chat is rendered in Arabic (right-to-left).
+        renderWebChat(
+          {
+            directLine,
+            locale: 'ar-EG',
+            ponyfill: clock,
+            store: testHelpers.createStore(),
+            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await waitFor(() => expect(pageElements.connectivityStatus()).toHaveProperty('textContent', 'يتم التوصيل…'));
+
+        expect(pageElements.connectivityStatus().matches(':dir(rtl)')).toBe(true);
+
+        // THEN: The spinner should be on the right, with a gap between it and "Connecting…" on its left.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

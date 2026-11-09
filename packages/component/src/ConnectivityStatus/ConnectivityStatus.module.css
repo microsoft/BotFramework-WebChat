@@ -1,0 +1,43 @@
+/* #region Connectivity status */
+
+:global(.webchat) .connectivityStatus {
+  align-items: center;
+  color: var(--webchat__color--notification-text);
+  display: flex;
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat__font-size--connectivity);
+  margin-block: var(--webchat__margin-block--connectivity);
+  margin-inline: var(--webchat__margin-inline--connectivity);
+
+  > svg {
+    padding-inline-end: var(--webchat__padding--connectivity-icon);
+  }
+
+  &.connectivityStatus--error {
+    color: var(--webchat__color--connectivity-failed);
+    font-weight: bold;
+
+    > svg {
+      fill: var(--webchat__color--connectivity-failed);
+    }
+  }
+
+  &.connectivityStatus--warning > svg {
+    fill: var(--webchat__color--connectivity-slow);
+  }
+}
+
+/* #endregion */
+
+/* #region Spinner animation */
+
+:global(.webchat) .spinnerAnimation {
+  background-image: var(--webchat__background-image--spinner-animation);
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: var(--webchat__height--spinner-animation);
+  margin-inline-end: var(--webchat__margin--spinner-animation);
+  width: var(--webchat__width--spinner-animation);
+}
+
+/* #endregion */

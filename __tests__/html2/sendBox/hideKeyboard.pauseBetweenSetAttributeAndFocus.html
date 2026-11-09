@@ -9,7 +9,7 @@
       {
         "imports": {
           "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
-          "jest-mock": "https://esm.sh/jest-mock"
+          "jest-mock": "/__dist__/packages/test/test-assets/out/jest-mock.js"
         }
       }
     </script>
@@ -27,13 +27,13 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
+        const idleCallbacks = [];
         const timeline = [];
 
-        const originalRequestIdleCallback = window.requestIdleCallback;
-
+        // Holds idle callbacks until the test runs them, as if the browser were busy.
         const requestIdleCallback = spyOn(window, 'requestIdleCallback').mockImplementation(callback => {
           timeline.push('requestIdleCallback()');
-          originalRequestIdleCallback.call(window, callback);
+          idleCallbacks.push(callback);
         });
 
         WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
@@ -61,6 +61,14 @@
 
           // WHEN: Click on the send button.
           await host.click(pageElements.sendButton());
+
+          await waitFor(() => expect(idleCallbacks).toHaveLength(1));
+
+          // THEN: Should not focus on the send box until the browser is idle.
+          expect(document.activeElement === sendBoxTextBox).toBe(false);
+
+          // WHEN: The browser is idle.
+          idleCallbacks.forEach(callback => callback());
 
           await waitFor(() =>
             expect(timeline).toEqual([

@@ -9,7 +9,9 @@ export {
 } from 'botframework-webchat-api/internal.js';
 export {
   CodeHighlighterComposer,
+  combineCSSModules,
   createIconComponent,
+  CSSModuleThemeComposer,
   InjectStyleElements,
   injectStyleElementsPropsSchema,
   parseDocumentFragmentFromString,
@@ -18,7 +20,8 @@ export {
   serializeDocumentFragmentIntoString,
   useActivityStyleOptions,
   useCodeHighlighter,
-  useLiveRegion
+  useLiveRegion,
+  useStyles
 } from 'botframework-webchat-component/internal.js';
 export {
   getOrgSchemaMessage,

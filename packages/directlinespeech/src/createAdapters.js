@@ -11,6 +11,7 @@ import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
 import DirectLineSpeech from './DirectLineSpeech';
 import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
 import refreshDirectLineToken from './utils/refreshDirectLineToken';
+import removeBearerInAuthorizationToken from './removeBearerInAuthorizationToken';
 import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
 
 const DIRECT_LINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
@@ -39,8 +40,11 @@ export default async function create({
     throw new Error('"fetchCredentials" must be specified.');
   }
 
+  const fetchCredentialsWithoutBearer = async () =>
+    removeBearerInAuthorizationToken(await resolveFunctionOrReturnValue(fetchCredentials));
+
   const { authorizationToken, directLineToken, directLineSpeechHostname, region, subscriptionKey } =
-    await resolveFunctionOrReturnValue(fetchCredentials);
+    await fetchCredentialsWithoutBearer();
 
   if (
     (!authorizationToken && !subscriptionKey) ||
@@ -187,7 +191,7 @@ export default async function create({
         authorizationToken,
         directLineSpeechHostname: nextDirectLineSpeechHostname,
         region: nextRegion
-      } = await resolveFunctionOrReturnValue(fetchCredentials);
+      } = await fetchCredentialsWithoutBearer();
 
       if (!authorizationToken) {
         return console.warn(

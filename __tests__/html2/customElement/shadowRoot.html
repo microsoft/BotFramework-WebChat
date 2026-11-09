@@ -3,8 +3,9 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <!-- React 18: React 16 does not support an element inside a shadow root, see shadowRoot.react16.throw.html. -->
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -59,6 +60,8 @@
 
         await pageConditions.uiConnected();
         await pageConditions.scrollToBottomCompleted();
+
+        // THEN: Web Chat in the shadow root shows the transcript, styled through `stylesRoot`.
         await host.snapshot('local');
 
         for (const style of document.querySelector('webchat-element').shadowRoot.querySelectorAll('style')) {

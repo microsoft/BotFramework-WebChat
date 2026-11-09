@@ -7,5 +7,10 @@ env:
   browser: true
 
 rules:
+  no-restricted-imports:
+    - error
+    - paths:
+        - name: '@msinternal/botframework-webchat-styles/react'
+          message: 'Every copy of @msinternal/botframework-webchat-styles/react has its own React context, import it from botframework-webchat/internal.js instead.'
   react/destructuring-assignment: off
   react/require-default-props: off

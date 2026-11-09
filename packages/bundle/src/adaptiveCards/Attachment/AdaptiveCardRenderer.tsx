@@ -1,11 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
 import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware.js';
 import { getTabIndex, hooks } from 'botframework-webchat-component';
-import { useQueueStaticElement } from 'botframework-webchat-component/internal.js';
+import { useQueueStaticElement, useStyles } from 'botframework-webchat-component/internal.js';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, {
@@ -31,6 +30,7 @@ import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionS
 import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEffect';
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import useImageAltTextModEffect from './AdaptiveCardHacks/useImageAltTextModEffect';
+import useInputErrorShouldBeDescriptionModEffect from './AdaptiveCardHacks/useInputErrorShouldBeDescriptionModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
 import { directLineHeadlessCardActionSchema } from './private/directLineCardActionSchema';
@@ -53,6 +53,11 @@ const adaptiveCardRendererPropsSchema = pipe(
 
 type AdaptiveCardRendererProps = InferInput<typeof adaptiveCardRendererPropsSchema>;
 
+type AdaptiveCardRenderResult = {
+  readonly element?: HTMLElement | undefined;
+  readonly errors?: readonly Error[] | undefined;
+};
+
 function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const {
     actionPerformedClassName,
@@ -65,7 +70,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
   const [uiState] = useUIState();
-  const contentRef = useRef<HTMLDivElement>();
+  const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
   const queueStaticElement = useQueueStaticElement();
@@ -132,6 +137,8 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
   const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
   const [applyImageAltTextMod, undoImageAltTextMod] = useImageAltTextModEffect(adaptiveCard);
+  const [applyInputErrorShouldBeDescriptionMod, undoInputErrorShouldBeDescriptionMod] =
+    useInputErrorShouldBeDescriptionModEffect(adaptiveCard);
   const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
   const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
 
@@ -223,20 +230,48 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   // For accessibility issue #1340, `tabindex="0"` must not be set for the root container if it is not interactive.
   const setTabIndexAtCardRoot = !!tapAction;
 
-  const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
+  const lastRenderRef = useRef<
+    { readonly inputs: readonly unknown[]; readonly result: AdaptiveCardRenderResult } | undefined
+  >(undefined);
+
+  const { element, errors } = useMemo<AdaptiveCardRenderResult>(() => {
+    const inputs = Object.freeze([
+      adaptiveCard,
+      adaptiveCardsHostConfig,
+      GlobalSettings,
+      HostConfig,
+      renderMarkdownAsHTML,
+      setTabIndexAtCardRoot
+    ]);
+
+    const { current: lastRender } = lastRenderRef;
+
+    // Render the card once per inputs: the card reads its inputs from the DOM of its last render.
+    // React 19 in Strict Mode calls `useMemo()` twice and keeps the first result, the inputs on screen would be detached from the card.
+    if (lastRender && lastRender.inputs.every((value, index) => Object.is(value, inputs.at(index)))) {
+      return lastRender.result;
+    }
+
     undoActionShouldBePushButtonMod();
     undoActiveElementMod();
     undoDisabledMod();
     undoImageAltTextMod();
+    undoInputErrorShouldBeDescriptionMod();
     undoPersistValuesMod();
     undoRoleMod();
 
-    return renderAdaptiveCard(adaptiveCard, {
-      adaptiveCardsHostConfig,
-      adaptiveCardsPackage: { GlobalSettings, HostConfig },
-      renderMarkdownAsHTML,
-      setTabIndexAtCardRoot
-    });
+    const result: AdaptiveCardRenderResult = Object.freeze(
+      renderAdaptiveCard(adaptiveCard, {
+        adaptiveCardsHostConfig,
+        adaptiveCardsPackage: { GlobalSettings, HostConfig },
+        renderMarkdownAsHTML,
+        setTabIndexAtCardRoot
+      })
+    );
+
+    lastRenderRef.current = Object.freeze({ inputs, result });
+
+    return result;
   }, [
     adaptiveCard,
     adaptiveCardsHostConfig,
@@ -248,6 +283,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     undoActiveElementMod,
     undoDisabledMod,
     undoImageAltTextMod,
+    undoInputErrorShouldBeDescriptionMod,
     undoPersistValuesMod,
     undoRoleMod
   ]);
@@ -277,6 +313,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
       applyActiveElementMod(element);
       applyDisabledMod(element, disabled);
       applyImageAltTextMod(element);
+      applyInputErrorShouldBeDescriptionMod(element);
       applyPersistValuesMod(element);
       applyRoleMod(element);
     }
@@ -286,6 +323,7 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
     applyActiveElementMod,
     applyDisabledMod,
     applyImageAltTextMod,
+    applyInputErrorShouldBeDescriptionMod,
     applyPersistValuesMod,
     applyRoleMod,
     classNames,

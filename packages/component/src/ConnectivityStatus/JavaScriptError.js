@@ -1,16 +1,18 @@
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React from 'react';
 
 import ErrorNotificationIcon from './Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
-import useStyleSet from '../hooks/useStyleSet';
 import { useLiveRegion } from '../providers/LiveRegionTwin';
+
+import styles from './ConnectivityStatus.module.css';
 
 const { useDirection, useLocalizer } = hooks;
 
 const ConnectivityStatusJavaScriptError = () => {
-  const [{ errorNotification: errorNotificationStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [direction] = useDirection();
   const localize = useLocalizer();
 
@@ -25,7 +27,7 @@ const ConnectivityStatusJavaScriptError = () => {
       <ScreenReaderText text={alt} />
       <div
         aria-hidden={true}
-        className={classNames('webchat__connectivityStatus', errorNotificationStyleSet + '')}
+        className={cx(classNames['connectivityStatus'], classNames['connectivityStatus--error'])}
         dir={direction}
       >
         <ErrorNotificationIcon />

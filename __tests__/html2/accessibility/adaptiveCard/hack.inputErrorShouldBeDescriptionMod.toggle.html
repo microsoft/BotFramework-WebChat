@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      async function getInputState(element) {
+        const { description, name, properties } = await testHelpers.getAccessibilityNode(element);
+
+        return {
+          description: description?.value,
+          invalid: properties?.find(({ name }) => name === 'invalid')?.value.value,
+          name: name?.value
+        };
+      }
+
+      function getDanglingLabelIds(element) {
+        return (element.getAttribute('aria-labelledby') || '')
+          .split(/\s+/u)
+          .filter(id => id && !document.getElementById(id));
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          { directLine, store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: A card with a required toggle and a Submit button.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                actions: [{ title: 'Submit', type: 'Action.Submit' }],
+                body: [
+                  {
+                    errorMessage: 'Please accept the terms',
+                    id: 'terms',
+                    isRequired: true,
+                    label: 'Terms',
+                    title: 'I agree to the terms',
+                    type: 'Input.Toggle'
+                  }
+                ],
+                type: 'AdaptiveCard',
+                version: '1.3'
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const checkbox = document.querySelector('.ac-toggleInput input[type="checkbox"]');
+
+        // WHEN: The "Submit" button is clicked while the required toggle is off.
+        await host.click(document.querySelector('.ac-pushButton'));
+
+        // THEN: The checkbox should be focused and invalid, named by its label and title, and described by the error message.
+        await waitFor(() => expect(document.activeElement).toBe(checkbox));
+        await waitFor(async () =>
+          expect(await getInputState(checkbox)).toEqual({
+            description: 'Please accept the terms',
+            invalid: 'true',
+            name: 'Terms I agree to the terms'
+          })
+        );
+
+        // THEN: The error message should show below the checkbox.
+        await host.snapshot('local');
+
+        // WHEN: The checkbox is checked.
+        await host.sendKeys(' ');
+
+        // THEN: The checkbox should be valid, named by its label and title only, without description.
+        await waitFor(() => expect(checkbox).toHaveProperty('checked', true));
+        await waitFor(async () =>
+          expect(await getInputState(checkbox)).toEqual({
+            description: undefined,
+            invalid: 'false',
+            name: 'Terms I agree to the terms'
+          })
+        );
+
+        // THEN: "aria-labelledby" should not point to the removed error message.
+        expect(getDanglingLabelIds(checkbox)).toEqual([]);
+
+        // THEN: The error message should be gone and the checkbox checked.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

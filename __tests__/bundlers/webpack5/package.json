@@ -1,0 +1,18 @@
+{
+  "name": "@msinternal/botframework-webchat-bundlers-webpack5",
+  "version": "0.0.0-0",
+  "description": "A Web Chat app bundled with webpack 5, see ../README.md",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
+    "react16": "npm install --no-save react@16.8.6 react-dom@16.8.6",
+    "react18": "npm install --no-save react@18.3.1 react-dom@18.3.1",
+    "react19": "npm install --no-save react@19.3.1 react-dom@19.3.1"
+  },
+  "devDependencies": {
+    "webpack": "5.107.2",
+    "webpack-cli": "7.2.3"
+  }
+}

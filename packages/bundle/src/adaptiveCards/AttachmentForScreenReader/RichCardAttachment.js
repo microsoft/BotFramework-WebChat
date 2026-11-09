@@ -1,11 +1,21 @@
 /* eslint-disable react/no-array-index-key */
-import PropTypes from 'prop-types';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React from 'react';
 import { hooks } from 'botframework-webchat-component';
+import { any, object, optional, pipe, readonly } from 'valibot';
 
 const { useLocalizer } = hooks;
 
-const RichCardAttachment = ({ content = {} }) => {
+const richCardAttachmentPropsSchema = pipe(
+  object({
+    // Required, but has a default value.
+    content: optional(any())
+  }),
+  readonly()
+);
+
+const RichCardAttachment = props => {
+  const { content = {} } = validateProps(richCardAttachmentPropsSchema, props);
   const localize = useLocalizer();
   const { buttons, facts, image, images, items, subtitle, tax, text, title, total, vat } = content;
 
@@ -70,10 +80,6 @@ const RichCardAttachment = ({ content = {} }) => {
       )}
     </div>
   );
-};
-
-RichCardAttachment.propTypes = {
-  content: PropTypes.any.isRequired
 };
 
 export default RichCardAttachment;
