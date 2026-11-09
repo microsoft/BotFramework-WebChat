@@ -4,6 +4,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import { sendMessage } from 'botframework-webchat-core';
 import {
   createActivitiesStore,
+  createCompatibilityDispatch,
   createConnectionService,
   createEmitter,
   createIncomingService,
@@ -107,14 +108,29 @@ function DefaultProviders(props: DefaultProvidersProps) {
       queue
     });
     const speech = createSpeechService({ activitiesStore, connection, incoming, notify, queue });
+    // For the test handle: the suggested actions set last, as the `suggestedActions` of the Redux store.
+    let lastSuggestedActions: readonly unknown[] = [];
+
+    suggestedActions.subscribe(actions => {
+      lastSuggestedActions = actions;
+    });
+
     const testHandle = Object.freeze({
+      dismissNotification: notifications.dismissNotification,
+      dispatch: createCompatibilityDispatch({ outgoing }),
       getActivities: () => activitiesStore.getSnapshot().sortedActivities,
       getConnectivityStatus: () => connection.connectivityStatus.get(),
       getDictateState: () => speech.dictateState.get(),
+      getLanguage: () => outgoing.getLocale(),
       getMicrophoneMuted: () => voice.microphoneMuted.get(),
       getSendBoxValue: () => sendBox.value.get(),
+      getSuggestedActions: () => lastSuggestedActions,
       getVoiceState: () => voice.voiceState.get(),
-      postActivity: (activity, method?: string) => outgoing.postActivity(activity, method)
+      postActivity: (activity, method?: string) => outgoing.postActivity(activity, method),
+      receiveActivity: activity => {
+        activitiesStore.receiveActivity(activity);
+      },
+      setNotification: notifications.setNotification
     });
 
     return Object.freeze({

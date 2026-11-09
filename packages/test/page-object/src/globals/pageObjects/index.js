@@ -4,11 +4,14 @@ import clickScrollToEndButton from './clickScrollToEndButton';
 import clickSendButton from './clickSendButton';
 import clickToasterHeader from './clickToasterHeader';
 import dismissToast from './dismissToast';
+import dispatch from './internal/dispatchAction';
 import focusScrollToEndButton from './focusScrollToEndButton';
 import focusSendBoxTextBox from './focusSendBoxTextBox';
 import focusTranscript from './focusTranscript';
 import getActivities from './getActivities';
 import getActivityBoundingBoxes from './getActivityBoundingBoxes';
+import getLanguage from './getLanguage';
+import getSuggestedActions from './getSuggestedActions';
 import observeLiveRegion from './observeLiveRegion';
 import runHook from './runHook';
 import scrollToBottom from './scrollToBottom';
@@ -26,11 +29,14 @@ export {
   clickSendButton,
   clickToasterHeader,
   dismissToast,
+  dispatch,
   focusScrollToEndButton,
   focusSendBoxTextBox,
   focusTranscript,
   getActivities,
   getActivityBoundingBoxes,
+  getLanguage,
+  getSuggestedActions,
   observeLiveRegion,
   runHook,
   scrollToBottom,

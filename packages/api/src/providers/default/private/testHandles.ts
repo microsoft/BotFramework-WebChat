@@ -1,21 +1,38 @@
 import { type DirectLineJSBotConnection, type WebChatActivity } from 'botframework-webchat-core';
 
 /**
- * For tests only: what the default providers connected to a Direct Line show, without a Redux store, and a way to post as
- * the emulator does in Redux mode (a `POST_ACTIVITY` through the store). The html2 helpers use it in default mode, as
- * they use the Redux store in Redux mode.
+ * For tests only: what the default providers connected to a Direct Line show, without a Redux store, and a way to do what
+ * the html2 helpers do through the store in Redux mode (e.g. the emulator posts with a `POST_ACTIVITY`). The html2 helpers
+ * use it in default mode, as they use the Redux store in Redux mode.
  */
 type TestHandle = {
+  /** As `SET_NOTIFICATION` and `DISMISS_NOTIFICATION` dispatched to the Redux store. */
+  readonly dismissNotification: (id: string) => void;
+  /** As `store.dispatch()` of the actions that send activities (the `dispatch()` of card action middleware). */
+  readonly dispatch: (action: unknown) => unknown;
   readonly getActivities: () => readonly WebChatActivity[];
   readonly getConnectivityStatus: () => string;
   /** `DictateState`, as the `dictateState` of the Redux store. */
   readonly getDictateState: () => number;
+  /** As `language` of the Redux store. */
+  readonly getLanguage: () => string;
   /** As `voice.microphoneMuted` of the Redux store. */
   readonly getMicrophoneMuted: () => boolean;
   readonly getSendBoxValue: () => string;
+  /** As `suggestedActions` of the Redux store. */
+  readonly getSuggestedActions: () => readonly unknown[];
   /** As `voice.voiceState` of the Redux store. */
   readonly getVoiceState: () => string;
   readonly postActivity: (activity: WebChatActivity, method?: string) => void;
+  /** As `INCOMING_ACTIVITY` dispatched to the Redux store: into the activities, as is (not through Direct Line). */
+  readonly receiveActivity: (activity: WebChatActivity) => void;
+  readonly setNotification: (notification: {
+    readonly alt?: string | undefined;
+    readonly data?: unknown;
+    readonly id: string;
+    readonly level: string;
+    readonly message?: string | undefined;
+  }) => void;
 };
 
 const testHandles = new WeakMap<DirectLineJSBotConnection, TestHandle>();

@@ -26,8 +26,12 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
   // eslint-disable-next-line prefer-const
   let directLine;
 
+  // The default providers connected to this Direct Line or, to read only, when Web Chat connected to a wrapper of it (e.g.
+  // a chat adapter that transforms activities), those that connected last.
+  const getOwnTestHandle = () => getTestHandle(directLine) || getTestHandle();
+
   const findActivity = id =>
-    (defaultMode ? getTestHandle(directLine)?.getActivities() || [] : store.getState().activities).find(
+    (defaultMode ? getOwnTestHandle()?.getActivities() || [] : store.getState().activities).find(
       activity => activity.id === id
     );
 
@@ -246,11 +250,10 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
   };
 
   // The state of speech-to-speech, in either mode: the store in Redux mode, the test handle in default mode.
-  const getVoiceState = () =>
-    defaultMode ? getTestHandle(directLine)?.getVoiceState() : store.getState().voice?.voiceState;
+  const getVoiceState = () => (defaultMode ? getOwnTestHandle()?.getVoiceState() : store.getState().voice?.voiceState);
 
   const getMicrophoneMuted = () =>
-    defaultMode ? getTestHandle(directLine)?.getMicrophoneMuted() : store.getState().voice?.microphoneMuted;
+    defaultMode ? getOwnTestHandle()?.getMicrophoneMuted() : store.getState().voice?.microphoneMuted;
 
   return { directLine, getMicrophoneMuted, getVoiceState, store };
 }

@@ -1,8 +1,8 @@
-import { dispatch } from '../testHelpers/createStore';
+import dispatchAction from './internal/dispatchAction';
 import allOutgoingActivitiesSent from '../pageConditions/allOutgoingActivitiesSent';
 
 export default async function sendMessageViaCode(text, { waitForSend = true } = {}) {
-  dispatch({
+  dispatchAction({
     payload: { method: 'code', text },
     type: 'WEB_CHAT/SEND_MESSAGE'
   });
