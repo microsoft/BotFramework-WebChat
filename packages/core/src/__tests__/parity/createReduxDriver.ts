@@ -6,31 +6,53 @@ import disconnect from '../../actions/disconnect';
 import emitTypingIndicator from '../../actions/emitTypingIndicator';
 import { INCOMING_ACTIVITY } from '../../actions/incomingActivity';
 import markActivity from '../../actions/markActivity';
+import muteVoiceRecording from '../../actions/muteVoiceRecording';
 import postActivity, { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING } from '../../actions/postActivity';
+import postVoiceActivity from '../../actions/postVoiceActivity';
+import registerVoiceHandler from '../../actions/registerVoiceHandler';
 import sendEvent from '../../actions/sendEvent';
 import sendFiles from '../../actions/sendFiles';
 import sendMessage from '../../actions/sendMessage';
 import sendMessageBack from '../../actions/sendMessageBack';
 import sendPostBack from '../../actions/sendPostBack';
+import setDictateInterims from '../../actions/setDictateInterims';
+import setDictateState from '../../actions/setDictateState';
 import setLanguage from '../../actions/setLanguage';
 import setSendBox from '../../actions/setSendBox';
 import setSendBoxAttachments from '../../actions/setSendBoxAttachments';
 import setSendTimeout from '../../actions/setSendTimeout';
 import setSendTypingIndicator from '../../actions/setSendTypingIndicator';
 import { SET_SUGGESTED_ACTIONS } from '../../actions/setSuggestedActions';
+import setVoiceState from '../../actions/setVoiceState';
+import startDictate from '../../actions/startDictate';
+import startSpeakingActivity from '../../actions/startSpeakingActivity';
+import startVoiceRecording from '../../actions/startVoiceRecording';
+import stopDictate from '../../actions/stopDictate';
+import stopSpeakingActivity from '../../actions/stopSpeakingActivity';
+import stopVoiceRecording from '../../actions/stopVoiceRecording';
 import submitSendBox from '../../actions/submitSendBox';
+import unmuteVoiceRecording from '../../actions/unmuteVoiceRecording';
+import unregisterVoiceHandler from '../../actions/unregisterVoiceHandler';
 import { withOptions } from '../../createStore';
-import type { CreateDriver, Observation, Operations } from './runParityScript';
+import { describeVoiceHandlers, type CreateDriver, type Observation, type Operations } from './runParityScript';
 
 const KEYS = Object.freeze([
   'activities',
   'connectivityStatus',
+  'dictateInterims',
+  'dictateState',
+  'microphoneMuted',
   'notifications',
   'referenceGrammarID',
   'sendBoxAttachments',
   'sendBoxValue',
-  'sendTypingIndicator'
+  'sendTypingIndicator',
+  'shouldSpeakIncomingActivity',
+  'voiceHandlers',
+  'voiceState'
 ] as const);
+
+type RawObservation = Omit<Observation, 'voiceHandlers'> & { readonly voiceHandlers: ReadonlyMap<string, unknown> };
 
 const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const store = withOptions({ ponyfill }, undefined, () => next => (action: any) => {
@@ -65,37 +87,55 @@ const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions,
     return result;
   });
 
-  const observe = (): Observation => {
+  const observeRaw = (): RawObservation => {
     const {
       activities,
       connectivityStatus,
+      dictateInterims,
+      dictateState,
       notifications,
       referenceGrammarID,
       sendBoxAttachments,
       sendBoxValue,
-      sendTypingIndicator
+      sendTypingIndicator,
+      shouldSpeakIncomingActivity,
+      voice: { microphoneMuted, voiceHandlers, voiceState }
     } = store.getState();
 
     return {
       activities,
       connectivityStatus,
+      dictateInterims,
+      dictateState,
+      microphoneMuted,
       notifications,
       referenceGrammarID,
       sendBoxAttachments,
       sendBoxValue,
-      sendTypingIndicator
+      sendTypingIndicator,
+      shouldSpeakIncomingActivity,
+      voiceHandlers,
+      voiceState
     };
   };
 
-  let last = observe();
+  const observe = (): Observation => {
+    const raw = observeRaw();
+
+    return { ...raw, voiceHandlers: describeVoiceHandlers(raw.voiceHandlers) };
+  };
+
+  let last = observeRaw();
 
   // Records first: a listener that throws stops the listeners after it.
   const unsubscribeRecorder = store.subscribe(() => {
-    const next = observe();
+    const next = observeRaw();
 
     for (const key of KEYS) {
       // eslint-disable-next-line security/detect-object-injection
-      Object.is(next[key], last[key]) || onChange(key, next[key]);
+      Object.is(next[key], last[key]) ||
+        // eslint-disable-next-line security/detect-object-injection
+        onChange(key, key === 'voiceHandlers' ? describeVoiceHandlers(next.voiceHandlers) : next[key]);
     }
 
     last = next;
@@ -116,22 +156,42 @@ const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions,
   });
 
   const { dispatch } = store;
+  let numVoiceHandlers = 0;
 
   const ops: Operations = Object.freeze({
     clearSuggestedActions: () => dispatch(clearSuggestedActions()),
     emitTypingIndicator: () => dispatch(emitTypingIndicator()),
     markActivity: (activity, name, value) => dispatch(markActivity(activity, name, value)),
     postActivity: (activity, method) => dispatch(postActivity(activity, method)),
+    postVoiceActivity: activity => dispatch(postVoiceActivity(activity)),
+    // As the api: a new ID for each handler.
+    registerVoiceHandler: voiceHandler => {
+      const id = `v${++numVoiceHandlers}`;
+
+      dispatch(registerVoiceHandler(id, voiceHandler));
+
+      return () => dispatch(unregisterVoiceHandler(id));
+    },
     sendEvent: (name, value) => dispatch(sendEvent(name, value)),
     sendFiles: files => dispatch(sendFiles(files)),
     sendMessage: (text, method, init) => dispatch(sendMessage(text, method, init)),
     sendMessageBack: (value, text, displayText, init) => dispatch(sendMessageBack(value, text, displayText, init)),
     sendPostBack: (value, init) => dispatch(sendPostBack(value, init)),
+    setDictateInterims: dictateInterims => dispatch(setDictateInterims(dictateInterims)),
+    setDictateState: dictateState => dispatch(setDictateState(dictateState)),
     setLanguage: language => dispatch(setLanguage(language)),
+    setMuted: muted => dispatch(muted ? muteVoiceRecording() : unmuteVoiceRecording()),
     setSendBox: text => dispatch(setSendBox(text)),
     setSendBoxAttachments: attachments => dispatch(setSendBoxAttachments(attachments)),
     setSendTimeout: sendTimeout => dispatch(setSendTimeout(sendTimeout)),
     setSendTypingIndicator: value => dispatch(setSendTypingIndicator(value)),
+    setVoiceState: voiceState => dispatch(setVoiceState(voiceState as Parameters<typeof setVoiceState>[0])),
+    startDictate: () => dispatch(startDictate()),
+    startSpeakingActivity: () => dispatch(startSpeakingActivity()),
+    startVoice: () => dispatch(startVoiceRecording()),
+    stopDictate: () => dispatch(stopDictate()),
+    stopSpeakingActivity: () => dispatch(stopSpeakingActivity()),
+    stopVoice: () => dispatch(stopVoiceRecording()),
     submitSendBox: (method, init) => dispatch(submitSendBox(method, init && { channelData: init.channelData }))
   });
 

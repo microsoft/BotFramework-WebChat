@@ -96,6 +96,19 @@ const outgoingScripts: Readonly<Record<string, Script>> = Object.freeze({
       mock.post(1).echo();
     });
   },
+  'the post echoes inside subscribe(): the echo is not missed': async context => {
+    const mock = await connectOnline(context, { ...DIRECT_LINE, postEchoesOnSubscribe: true });
+
+    await context.step('post', () => context.driver.ops.postActivity(message('hello')));
+    await context.step('returns', () => mock.post(1).next());
+    await context.step('t=300000', () => context.clock.tick(300_000));
+  },
+  'the post echoes and returns inside subscribe()': async context => {
+    await connectOnline(context, { ...DIRECT_LINE, postEchoesOnSubscribe: true, postReturnsOnSubscribe: true });
+
+    await context.step('post', () => context.driver.ops.postActivity(message('hello')));
+    await context.step('t=300000', () => context.clock.tick(300_000));
+  },
 
   // Send timeouts.
   'no echo: impeded at 20 s, echo at 25 s, sent': async context => {

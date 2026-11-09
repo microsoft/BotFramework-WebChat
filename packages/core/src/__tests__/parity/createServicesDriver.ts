@@ -21,6 +21,11 @@ import type { CreateDriver, Observation, Operations } from './runParityScript';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
+// Not built yet: the values of speech and voice stay the initial ones, their operations do nothing.
+function notBuiltYet(): undefined {
+  return undefined;
+}
+
 const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const activitiesStore = createActivitiesStore({ ponyfill });
   const notifications = createNotificationsCell({ ponyfill });
@@ -77,11 +82,17 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
   const observe = (): Observation => ({
     activities: activitiesStore.getSnapshot().sortedActivities,
     connectivityStatus: connection.connectivityStatus.get(),
+    dictateInterims: EMPTY_ARRAY,
+    dictateState: 0,
+    microphoneMuted: false,
     notifications: notifications.notifications.get(),
     referenceGrammarID: connection.referenceGrammarID.get(),
     sendBoxAttachments: sendBox.attachments.get(),
     sendBoxValue: sendBox.value.get(),
-    sendTypingIndicator: sendBox.sendTypingIndicator.get()
+    sendTypingIndicator: sendBox.sendTypingIndicator.get(),
+    shouldSpeakIncomingActivity: false,
+    voiceHandlers: EMPTY_ARRAY,
+    voiceState: 'idle'
   });
 
   // Records first: a listener that throws stops the listeners after it.
@@ -108,18 +119,30 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     emitTypingIndicator: () => outgoing.emitTypingIndicator(),
     markActivity: ({ id }, name, value) => activitiesStore.markActivity(id, name, value),
     postActivity: (activity, method) => outgoing.postActivity(activity, method),
+    postVoiceActivity: notBuiltYet,
+    registerVoiceHandler: () => notBuiltYet,
     sendEvent: (name, value) => outgoing.sendEvent(sendEvent(name, value).payload),
     sendFiles: files => outgoing.sendFiles(sendFiles(files).payload),
     sendMessage: (text, method, init) => outgoing.sendMessage(sendMessage(text, method, init).payload),
     sendMessageBack: (value, text, displayText, init) =>
       outgoing.sendMessageBack(sendMessageBack(value, text, displayText, init).payload),
     sendPostBack: (value, init) => outgoing.sendPostBack(sendPostBack(value, init).payload),
+    setDictateInterims: notBuiltYet,
+    setDictateState: notBuiltYet,
     setLanguage: language => outgoing.setLocale(language),
+    setMuted: notBuiltYet,
     setSendBox: text => sendBox.setValue(text),
     setSendBoxAttachments: attachments =>
       sendBox.setAttachments(setSendBoxAttachments(attachments).payload.attachments),
     setSendTimeout: sendTimeout => outgoing.setSendTimeout(sendTimeout),
     setSendTypingIndicator: value => sendBox.setSendTypingIndicator(value),
+    setVoiceState: notBuiltYet,
+    startDictate: notBuiltYet,
+    startSpeakingActivity: notBuiltYet,
+    startVoice: notBuiltYet,
+    stopDictate: notBuiltYet,
+    stopSpeakingActivity: notBuiltYet,
+    stopVoice: notBuiltYet,
     submitSendBox: (method, init) =>
       sendBox.submit(submitSendBox(method, init && { channelData: init.channelData }).payload)
   });

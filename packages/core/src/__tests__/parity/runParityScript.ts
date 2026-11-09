@@ -2,8 +2,9 @@
 /* eslint-disable no-magic-numbers */
 // Runs one script of the parity specs on a driver (the sagas through a Redux store, or the services) and records what
 // a host can observe, step by step: the calls to Direct Line and the activities posted, the values of connectivity
-// status, reference grammar ID, notifications, activities and send box (each change, in order, and the order of the
-// changes across values), the suggested actions set or cleared, `console.warn/error`, and the timers.
+// status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in order, and the
+// order of the changes across values), the suggested actions set or cleared, the calls to the voice handlers,
+// `console.warn/error`, and the timers.
 import lolex from 'lolex';
 
 import createMockDirectLine, { type MockDirectLine, type MockDirectLineInit } from './createMockDirectLine';
@@ -11,14 +12,43 @@ import createMockDirectLine, { type MockDirectLine, type MockDirectLineInit } fr
 type Observation = {
   readonly activities: readonly unknown[];
   readonly connectivityStatus: string;
+  readonly dictateInterims: readonly string[];
+  readonly dictateState: number;
+  readonly microphoneMuted: boolean;
   readonly notifications: Readonly<Record<string, unknown>>;
   readonly referenceGrammarID: string | null;
   readonly sendBoxAttachments: readonly unknown[];
   readonly sendBoxValue: string;
   readonly sendTypingIndicator: boolean;
+  readonly shouldSpeakIncomingActivity: boolean;
+  /** The labels of the voice handlers registered, in order (a new list on each change of the handlers). */
+  readonly voiceHandlers: readonly string[];
+  readonly voiceState: string;
 };
 
 type ObservationKey = keyof Observation;
+
+/** The values of speech and voice: recorded only by the scripts that ask for them (`RunOptions.speech`). */
+const SPEECH_KEYS: readonly ObservationKey[] = Object.freeze([
+  'dictateInterims',
+  'dictateState',
+  'microphoneMuted',
+  'shouldSpeakIncomingActivity',
+  'voiceHandlers',
+  'voiceState'
+]);
+
+/** A voice handler of the scripts: its calls are logged, in the calls and in the order of changes. */
+type ScriptVoiceHandler = {
+  readonly label: string;
+  readonly queueAudio: (base64: string) => void;
+  readonly stopAllAudio: () => void;
+};
+
+/** The labels of the voice handlers, as the scripts named them. */
+function describeVoiceHandlers(voiceHandlers: ReadonlyMap<string, unknown>): readonly string[] {
+  return Array.from(voiceHandlers.values(), handler => (handler as Partial<ScriptVoiceHandler>)?.label ?? '?');
+}
 
 type Faults = {
   /** Makes "the post is fulfilled" throw, for the echo with this text. */
@@ -37,6 +67,9 @@ type Operations = {
   readonly emitTypingIndicator: () => void;
   readonly markActivity: (activity: { id: string }, name: string, value: unknown) => void;
   readonly postActivity: (activity: any, method?: string | undefined) => void;
+  readonly postVoiceActivity: (activity: any) => void;
+  /** Registers the handler, returns the function that unregisters it (the api picks a random ID). */
+  readonly registerVoiceHandler: (voiceHandler: ScriptVoiceHandler) => () => void;
   readonly sendEvent: (name: string, value?: unknown) => void;
   readonly sendFiles: (files: readonly any[]) => void;
   readonly sendMessage: (
@@ -51,11 +84,24 @@ type Operations = {
     init?: { replyToId?: string | undefined }
   ) => void;
   readonly sendPostBack: (value: unknown, init?: { replyToId?: string | undefined }) => void;
+  readonly setDictateInterims: (dictateInterims: readonly string[]) => void;
+  readonly setDictateState: (dictateState: number) => void;
   readonly setLanguage: (language: string) => void;
+  /** `MUTE_RECORDING` or `UNMUTE_RECORDING`. */
+  readonly setMuted: (muted: boolean) => void;
   readonly setSendBox: (text: string) => void;
   readonly setSendBoxAttachments: (attachments: readonly any[]) => void;
   readonly setSendTimeout: (sendTimeout: number) => void;
   readonly setSendTypingIndicator: (value: boolean) => void;
+  readonly setVoiceState: (voiceState: string) => void;
+  readonly startDictate: () => void;
+  readonly startSpeakingActivity: () => void;
+  /** `START_RECORDING` of speech-to-speech. */
+  readonly startVoice: () => void;
+  readonly stopDictate: () => void;
+  readonly stopSpeakingActivity: () => void;
+  /** `STOP_RECORDING` of speech-to-speech (`<Composer>` stops the audio of the handlers first, in both modes). */
+  readonly stopVoice: () => void;
   readonly submitSendBox: (method?: string | undefined, init?: { channelData?: any }) => void;
 };
 
@@ -100,6 +146,8 @@ type StepRecord = {
 type ScriptContext = {
   readonly clock: any;
   readonly createDirectLine: (init: MockDirectLineInit) => MockDirectLine;
+  /** A voice handler named `label`: its calls are recorded. */
+  readonly createVoiceHandler: (label: string) => ScriptVoiceHandler;
   readonly driver: Driver;
   readonly faults: Faults;
   /** Runs `fn` (if any), lets the promises settle, then records what changed since the previous step. */
@@ -111,6 +159,8 @@ type Script = (context: ScriptContext) => Promise<void>;
 type RunOptions = {
   /** Keeps the random IDs (client activity IDs, local IDs), to check that the normalization is needed. */
   readonly raw?: boolean | undefined;
+  /** Also records the values of speech and voice (`SPEECH_KEYS`). */
+  readonly speech?: boolean | undefined;
 };
 
 async function flush(): Promise<void> {
@@ -175,8 +225,9 @@ function describeConsoleArgs(args: unknown[]): string {
 export default async function runParityScript(
   createDriver: CreateDriver,
   script: Script,
-  { raw }: RunOptions = {}
+  { raw, speech }: RunOptions = {}
 ): Promise<StepRecord[]> {
+  const isRecorded = (key: ObservationKey) => speech || !SPEECH_KEYS.includes(key);
   const clock = lolex.createClock();
   const calls: string[] = [];
   const changes: Partial<Record<ObservationKey, unknown[]>> = {};
@@ -229,12 +280,21 @@ export default async function runParityScript(
     driver = createDriver({
       faults,
       onChange: (key, value) => {
-        // eslint-disable-next-line security/detect-object-injection
-        (changes[key] || (changes[key] = [])).push(value);
-        order.push(key);
+        if (isRecorded(key)) {
+          // eslint-disable-next-line security/detect-object-injection
+          (changes[key] || (changes[key] = [])).push(value);
+          order.push(key);
+        }
       },
       onSuggestedActions: (actions, origin) => {
-        suggestedActions.push({ actions, origin: origin && (origin as any).id });
+        // The origin activity, and whether it was marked as spoken then (speech marks it after picking).
+        const originSpeak = (origin as any)?.channelData?.speak;
+
+        suggestedActions.push({
+          actions,
+          origin: origin && (origin as any).id,
+          ...(typeof originSpeak === 'undefined' ? {} : { originSpeak })
+        });
         order.push('suggestedActions');
       },
       ponyfill
@@ -248,6 +308,18 @@ export default async function runParityScript(
         directLines.push(mock);
 
         return mock;
+      },
+      createVoiceHandler: label => {
+        const logCall = (message: string) => {
+          calls.push(message);
+          order.push(message);
+        };
+
+        return Object.freeze({
+          label,
+          queueAudio: (base64: string) => logCall(`${label}.queueAudio(${base64})`),
+          stopAllAudio: () => logCall(`${label}.stopAllAudio()`)
+        });
       },
       driver,
       faults,
@@ -263,7 +335,9 @@ export default async function runParityScript(
           label,
           order: order.splice(0),
           posted: directLines.flatMap(mock => mock.takePosted()),
-          state: driver.observe(),
+          state: Object.fromEntries(
+            Object.entries(driver.observe()).filter(([key]) => isRecorded(key as ObservationKey))
+          ) as Observation,
           suggestedActions: suggestedActions.splice(0),
           timers: timers.splice(0)
         });
@@ -294,7 +368,7 @@ export default async function runParityScript(
   return raw ? result : normalizeRandomIDs(result);
 }
 
-export { normalizeRandomIDs };
+export { describeVoiceHandlers, normalizeRandomIDs, SPEECH_KEYS };
 
 export type {
   CreateDriver,
@@ -302,9 +376,11 @@ export type {
   DriverInit,
   Faults,
   Observation,
+  ObservationKey,
   Operations,
   RunOptions,
   Script,
   ScriptContext,
+  ScriptVoiceHandler,
   StepRecord
 };

@@ -39,6 +39,11 @@ type MockDirectLineInit = {
   readonly noEnd?: boolean | undefined;
   /** The observable returned by `postActivity()` emits the activity ID and completes when subscribed (e.g. the voice posts of the html2 emulator). */
   readonly postReturnsOnSubscribe?: boolean | undefined;
+  /**
+   * The posted activity is echoed back on `activity$` when the observable returned by `postActivity()` is subscribed,
+   * synchronously, inside `subscribe()` (before `postReturnsOnSubscribe`, if both).
+   */
+  readonly postEchoesOnSubscribe?: boolean | undefined;
   readonly token?: string | undefined;
 };
 
@@ -113,7 +118,16 @@ function deepCopy(value: any): any {
 type CallLog = { push(message: string): unknown };
 
 export default function createMockDirectLine(calls: CallLog, init: MockDirectLineInit): MockDirectLine {
-  const { name, noEnd, noSetUserId, onActivitySubscribe, postReturnsOnSubscribe, replayStatus, token } = init;
+  const {
+    name,
+    noEnd,
+    noSetUserId,
+    onActivitySubscribe,
+    postEchoesOnSubscribe,
+    postReturnsOnSubscribe,
+    replayStatus,
+    token
+  } = init;
   const log = (message: string) => calls.push(`${name}.${message}`);
   const posted: unknown[] = [];
   const posts: MockPost[] = [];
@@ -180,6 +194,8 @@ export default function createMockDirectLine(calls: CallLog, init: MockDirectLin
 
         log(`post#${n}.subscribe#${id}`);
         observers.add(observer);
+
+        postEchoesOnSubscribe && post.echo();
 
         if (postReturnsOnSubscribe) {
           post.next();
