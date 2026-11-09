@@ -20,9 +20,7 @@ import {
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  type VoiceHandler,
-  type VoiceState,
-  type WebChatActivity
+  type VoiceHandler
 } from 'botframework-webchat-core';
 import {
   createCompatibilityDispatch,
@@ -74,12 +72,28 @@ const defaultDomainProvidersPropsSchema = pipe(
 type DefaultDomainProvidersProps = InferInput<typeof defaultDomainProvidersPropsSchema>;
 
 /**
+ * An operation of a domain context: builds the action with its creator (which validates the arguments, and throws as in
+ * Redux mode), runs it on the services, and returns the action, as `dispatch()` does in Redux mode.
+ */
+function operation<TArgs extends unknown[], TAction>(
+  createAction: (...args: TArgs) => TAction,
+  run: (action: TAction) => void
+): (...args: TArgs) => TAction {
+  return (...args) => {
+    const action = createAction(...args);
+
+    run(action);
+
+    return action;
+  };
+}
+
+/**
  * The domain contexts of the default providers, from the services: connectivity, notifications, chat operations, the
  * send box, speech and voice.
  *
- * The operations build their payloads with the action creators of the same names (which validate them, and throw as in
- * Redux mode), and return the action, as `dispatch()` does in Redux mode. The voice operations return nothing, as in
- * Redux mode.
+ * The operations build their payloads with the action creators of the same names, and return the action (see
+ * `operation()`). The voice operations are those of the services, and return nothing, as in Redux mode.
  */
 function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
   const { children, connection, notifications, outgoing, sendBox, speech, suggestedActions, voice } = validateProps(
@@ -90,75 +104,24 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
   const chatOperationsContext = useMemo<ChatOperationsContextType>(
     () =>
       Object.freeze({
-        clearSuggestedActions: () => {
-          const action = clearSuggestedActions();
-
-          // The array of a clear, so clearing again does not re-render, as in Redux mode.
-          suggestedActions.emit(CLEARED_SUGGESTED_ACTIONS, undefined);
-
-          return action;
-        },
+        // The array of a clear, so clearing again does not re-render, as in Redux mode.
+        clearSuggestedActions: operation(clearSuggestedActions, () =>
+          suggestedActions.emit(CLEARED_SUGGESTED_ACTIONS, undefined)
+        ),
         dispatch: createCompatibilityDispatch({ outgoing }),
-        markActivity: (...args: Parameters<typeof markActivity>) => {
-          const action = markActivity(...args);
-          const {
-            payload: { activityID, name, value }
-          } = action;
-
-          // Through speech: every mark may start the dictation, as MARK_ACTIVITY goes through its saga.
-          speech.markActivity({ id: activityID }, name, value);
-
-          return action;
-        },
-        postActivity: (...args: Parameters<typeof postActivity>) => {
-          const action = postActivity(...args);
-
-          outgoing.postActivity(action.payload.activity, action.meta.method);
-
-          return action;
-        },
-        sendEvent: (...args: Parameters<typeof sendEvent>) => {
-          const action = sendEvent(...args);
-
-          outgoing.sendEvent(action.payload);
-
-          return action;
-        },
-        sendFiles: (...args: Parameters<typeof sendFiles>) => {
-          const action = sendFiles(...args);
-
-          outgoing.sendFiles(action.payload);
-
-          return action;
-        },
-        sendMessage: (...args: Parameters<typeof sendMessage>) => {
-          const action = sendMessage(...args);
-
-          outgoing.sendMessage(action.payload);
-
-          return action;
-        },
-        sendMessageBack: (...args: Parameters<typeof sendMessageBack>) => {
-          const action = sendMessageBack(...args);
-
-          outgoing.sendMessageBack(action.payload);
-
-          return action;
-        },
-        sendPostBack: (...args: Parameters<typeof sendPostBack>) => {
-          const action = sendPostBack(...args);
-
-          outgoing.sendPostBack(action.payload);
-
-          return action;
-        },
-        setSendTimeout: (...args: Parameters<typeof setSendTimeout>) => {
-          const action = setSendTimeout(...args);
-
-          outgoing.setSendTimeout(action.payload.sendTimeout);
-
-          return action;
-        }
+        // Through speech: every mark may start the dictation, as MARK_ACTIVITY goes through its saga.
+        markActivity: operation(markActivity, ({ payload: { activityID, name, value } }) =>
+          speech.markActivity({ id: activityID }, name, value)
+        ),
+        postActivity: operation(postActivity, ({ meta, payload }) =>
+          outgoing.postActivity(payload.activity, meta.method)
+        ),
+        sendEvent: operation(sendEvent, ({ payload }) => outgoing.sendEvent(payload)),
+        sendFiles: operation(sendFiles, ({ payload }) => outgoing.sendFiles(payload)),
+        sendMessage: operation(sendMessage, ({ payload }) => outgoing.sendMessage(payload)),
+        sendMessageBack: operation(sendMessageBack, ({ payload }) => outgoing.sendMessageBack(payload)),
+        sendPostBack: operation(sendPostBack, ({ payload }) => outgoing.sendPostBack(payload)),
+        setSendTimeout: operation(setSendTimeout, ({ payload }) => outgoing.setSendTimeout(payload.sendTimeout))
       }) as unknown as ChatOperationsContextType,
     [outgoing, speech, suggestedActions]
   );
@@ -188,35 +151,11 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
     () =>
       Object.freeze({
         attachments: sendBox.attachments,
-        emitTypingIndicator: () => {
-          const action = emitTypingIndicator();
-
-          outgoing.emitTypingIndicator();
-
-          return action;
-        },
+        emitTypingIndicator: operation(emitTypingIndicator, () => outgoing.emitTypingIndicator()),
         sendTypingIndicator: sendBox.sendTypingIndicator,
-        setAttachments: (...args: Parameters<typeof setSendBoxAttachments>) => {
-          const action = setSendBoxAttachments(...args);
-
-          sendBox.setAttachments(action.payload.attachments);
-
-          return action;
-        },
-        setValue: (...args: Parameters<typeof setSendBox>) => {
-          const action = setSendBox(...args);
-
-          sendBox.setValue(action.payload.text);
-
-          return action;
-        },
-        submit: (...args: Parameters<typeof submitSendBox>) => {
-          const action = submitSendBox(...args);
-
-          sendBox.submit(action.payload);
-
-          return action;
-        },
+        setAttachments: operation(setSendBoxAttachments, ({ payload }) => sendBox.setAttachments(payload.attachments)),
+        setValue: operation(setSendBox, ({ payload }) => sendBox.setValue(payload.text)),
+        submit: operation(submitSendBox, ({ payload }) => sendBox.submit(payload)),
         value: sendBox.value
       }) as unknown as SendBoxContextType,
     [outgoing, sendBox]
@@ -227,41 +166,15 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
       Object.freeze({
         dictateInterims: speech.dictateInterims as SpeechContextType['dictateInterims'],
         dictateState: speech.dictateState,
-        setDictateInterims: (...args: Parameters<typeof setDictateInterims>) => {
-          const action = setDictateInterims(...args);
-
-          speech.setDictateInterims(action.payload.dictateInterims);
-
-          return action;
-        },
-        setDictateState: (...args: Parameters<typeof setDictateState>) => {
-          const action = setDictateState(...args);
-
-          speech.setDictateState(action.payload.dictateState);
-
-          return action;
-        },
+        setDictateInterims: operation(setDictateInterims, ({ payload }) =>
+          speech.setDictateInterims(payload.dictateInterims)
+        ),
+        setDictateState: operation(setDictateState, ({ payload }) => speech.setDictateState(payload.dictateState)),
         shouldSpeakIncomingActivity: speech.shouldSpeakIncomingActivity,
-        startDictate: () => {
-          speech.startDictate();
-
-          return startDictate();
-        },
-        startSpeakingActivity: () => {
-          speech.startSpeakingActivity();
-
-          return startSpeakingActivity();
-        },
-        stopDictate: () => {
-          speech.stopDictate();
-
-          return stopDictate();
-        },
-        stopSpeakingActivity: () => {
-          speech.stopSpeakingActivity();
-
-          return stopSpeakingActivity();
-        }
+        startDictate: operation(startDictate, () => speech.startDictate()),
+        startSpeakingActivity: operation(startSpeakingActivity, () => speech.startSpeakingActivity()),
+        stopDictate: operation(stopDictate, () => speech.stopDictate()),
+        stopSpeakingActivity: operation(stopSpeakingActivity, () => speech.stopSpeakingActivity())
       }) as unknown as SpeechContextType,
     [speech]
   );
@@ -270,23 +183,13 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
     () =>
       Object.freeze({
         microphoneMuted: voice.microphoneMuted,
-        postVoiceActivity: (activity: WebChatActivity) => {
-          outgoing.postVoiceActivity(activity);
-        },
+        postVoiceActivity: outgoing.postVoiceActivity,
         // A new ID for each handler, as in Redux mode.
         registerVoiceHandler: (voiceHandler: VoiceHandler) => voice.registerVoiceHandler(randomId(), voiceHandler),
-        setMuted: (muted: boolean) => {
-          voice.setMuted(muted);
-        },
-        setVoiceState: (voiceState: VoiceState) => {
-          voice.setVoiceState(voiceState);
-        },
-        startVoice: () => {
-          voice.startVoice();
-        },
-        stopVoice: () => {
-          voice.stopVoice();
-        },
+        setMuted: voice.setMuted,
+        setVoiceState: voice.setVoiceState,
+        startVoice: voice.startVoice,
+        stopVoice: voice.stopVoice,
         voiceHandlers: voice.voiceHandlers,
         voiceState: voice.voiceState
       }),
