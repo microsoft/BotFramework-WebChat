@@ -199,11 +199,22 @@ export default function createConnectionService({
     session = undefined;
 
     const { activitySubscription, directLine, phase, statusSubscription } = current;
+    let endFailed = false;
 
     // DirectLineJS starts only after the first subscription to `activity$`: the keep-alive subscription is unsubscribed,
     // and `end()` is called only if the connection went online once (quirk).
-    activitySubscription.unsubscribe();
-    phase === 'connecting' || directLine.end();
+    if (phase === 'connecting') {
+      activitySubscription.unsubscribe();
+    } else {
+      try {
+        activitySubscription.unsubscribe();
+        directLine.end();
+      } catch {
+        // As the sagas: a Direct Line without `end()`, or an `end()` that throws, fails the connection, not everything.
+        endFailed = true;
+      }
+    }
+
     statusSubscription.unsubscribe();
 
     // CONNECT_REJECTED, RECONNECT_REJECTED.
@@ -215,7 +226,7 @@ export default function createConnectionService({
     goOffline();
 
     // Disconnecting while connecting or reconnecting is an error too (quirk).
-    writeStatus(reason === 'disconnect' && phase === 'online' ? 'notconnected' : 'error');
+    writeStatus(reason === 'disconnect' && phase === 'online' && !endFailed ? 'notconnected' : 'error');
   };
 
   const handleStatus = (connectionStatus: number) => {
@@ -330,8 +341,14 @@ export default function createConnectionService({
 
       if (current) {
         session = undefined;
-        current.activitySubscription.unsubscribe();
-        current.phase === 'connecting' || current.directLine.end();
+
+        try {
+          current.activitySubscription.unsubscribe();
+          current.phase === 'connecting' || current.directLine.end();
+        } catch {
+          // Stopping anyway.
+        }
+
         current.statusSubscription.unsubscribe();
       }
     }

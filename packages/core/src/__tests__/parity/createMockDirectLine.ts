@@ -19,6 +19,8 @@ type MockDirectLineInit = {
   readonly replayStatus?: boolean | undefined;
   /** Without `setUserId()`, as some chat adapters. */
   readonly noSetUserId?: boolean | undefined;
+  /** Without `end()`, as some chat adapters (calling it throws a `TypeError`). */
+  readonly noEnd?: boolean | undefined;
   readonly token?: string | undefined;
 };
 
@@ -73,7 +75,7 @@ function createMockObservable<T>(
 }
 
 export default function createMockDirectLine(calls: string[], init: MockDirectLineInit): MockDirectLine {
-  const { name, noSetUserId, onActivitySubscribe, replayStatus, token } = init;
+  const { name, noEnd, noSetUserId, onActivitySubscribe, replayStatus, token } = init;
   const log = (message: string) => calls.push(`${name}.${message}`);
   let { referenceGrammarId } = init;
   let status = 0;
@@ -90,13 +92,13 @@ export default function createMockDirectLine(calls: string[], init: MockDirectLi
   const directLine: any = {
     activity$: activity.observable,
     connectionStatus$: connectionStatus.observable,
-    end: () => log('end()'),
     get referenceGrammarId() {
       return referenceGrammarId;
     },
     token
   };
 
+  noEnd || (directLine.end = () => log('end()'));
   noSetUserId || (directLine.setUserId = (userID: unknown) => log(`setUserId(${JSON.stringify(userID)})`));
 
   mock = Object.freeze({

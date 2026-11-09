@@ -201,6 +201,54 @@ const connectionScripts: Readonly<Record<string, Script>> = Object.freeze({
     await step('connect', () => driver.connect({ directLine: mock.directLine, userID: 'u-1', username: 'User' }));
   },
 
+  // offlineUI/invalidCredentials.html: every subscription of `connectionStatus$` gets 4 (failed) right after 2.
+  'failed right after online, on every subscription': async ({ createDirectLine, driver, step }) => {
+    const mock = createDirectLine(DIRECT_LINE);
+    const directLine = {
+      ...mock.directLine,
+      connectionStatus$: {
+        subscribe: (observer: { next: (value: number) => void }) =>
+          mock.directLine.connectionStatus$.subscribe({
+            next: (value: number) => {
+              observer.next(value);
+              value === 2 && observer.next(4);
+            }
+          })
+      }
+    };
+
+    await step('connect', () => driver.connect({ directLine, userID: 'u-1', username: 'User' }));
+    await step('status 1', () => mock.emitStatus(1));
+    await step('status 2', () => mock.emitStatus(2));
+  },
+
+  // Chat adapters without end() (offlineUI/invalidCredentials.html): the sagas fail the connection, it is not fatal.
+  'Direct Line without end(): disconnect after online': async context => {
+    const mock = await connectOnline(context, { ...DIRECT_LINE, noEnd: true });
+
+    await context.step('disconnect', () => context.driver.disconnect());
+    await context.step('connect again', () =>
+      context.driver.connect({ directLine: mock.directLine, userID: 'u-1', username: 'User' })
+    );
+  },
+  'Direct Line without end(): failed after online': async context => {
+    const mock = await connectOnline(context, { ...DIRECT_LINE, noEnd: true });
+
+    await context.step('status 4', () => mock.emitStatus(4));
+  },
+  'Direct Line without end(): disconnect while reconnecting': async context => {
+    const mock = await connectOnline(context, { ...DIRECT_LINE, noEnd: true });
+
+    await context.step('status 1', () => mock.emitStatus(1));
+    await context.step('disconnect', () => context.driver.disconnect());
+  },
+  'Direct Line without end(): disconnect while connecting': async ({ createDirectLine, driver, step }) => {
+    const mock = createDirectLine({ ...DIRECT_LINE, noEnd: true });
+
+    await step('connect', () => driver.connect({ directLine: mock.directLine, userID: 'u-1', username: 'User' }));
+    await step('disconnect', () => driver.disconnect());
+  },
+
   // Swaps, as the providers do them: disconnect, then connect.
   'swap Direct Line': async context => {
     await connectOnline(context);

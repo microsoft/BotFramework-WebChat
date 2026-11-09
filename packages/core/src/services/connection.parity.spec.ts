@@ -17,9 +17,9 @@ const DIFFERENT = Object.freeze([
   'fatal: a listener of the status throws on reconnecting'
 ]);
 
-// The user ID is random when none is valid.
+// The user ID is random when none is valid (`r_` and up to 10 characters).
 function normalize(records: readonly StepRecord[]): unknown {
-  return JSON.parse(JSON.stringify(records).replace(/r_[\da-z]{10}/gu, 'r_<random>'));
+  return JSON.parse(JSON.stringify(records).replace(/"r_[\da-z]{1,10}\\"/gu, '"r_<random>\\"'));
 }
 
 describe.each(Object.keys(connectionScripts).filter(name => !DIFFERENT.includes(name)))('%s', name => {
