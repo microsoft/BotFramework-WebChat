@@ -13,3 +13,28 @@ rules:
         - group:
             - '@msinternal/botframework-webchat-api-*'
           message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'
+
+overrides:
+  # The services of the default providers (no Redux) do not use Redux, the actions or the sagas.
+  - files:
+      - src/services/**
+    excludedFiles:
+      - '**/*.spec.*'
+    rules:
+      no-restricted-imports:
+        - error
+        - patterns:
+            - group:
+                - '@msinternal/botframework-webchat-api-*'
+              message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'
+            - group:
+                - redux
+                - redux-saga
+                - redux-saga/*
+                - '**/actions/*'
+                - '**/createReducer'
+                - '**/createSagas'
+                - '**/createStore'
+                - '**/reducers/*'
+                - '**/sagas/*'
+              message: The services do not use Redux, its actions, reducers or sagas.
