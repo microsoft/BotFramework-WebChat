@@ -1,7 +1,7 @@
 import { select, takeEvery } from 'redux-saga/effects';
 import { VOICE_POST_ACTIVITY } from '../actions/postVoiceActivity';
 import languageSelector from '../selectors/language';
-import dateToLocaleISOString from '../utils/dateToLocaleISOString';
+import createVoiceActivity from '../services/private/createVoiceActivity';
 import whileConnected from './effects/whileConnected';
 import observeOnce from './effects/observeOnce';
 
@@ -29,28 +29,7 @@ function* postVoiceActivity(
   ponyfill: GlobalScopePonyfill
 ) {
   const locale: string = yield select(languageSelector);
-  const localTimeZone =
-    typeof window.Intl === 'undefined' ? undefined : new Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const now = new ponyfill.Date();
-
-  const outgoingActivity = {
-    ...activity,
-    channelId: 'webchat',
-    from: {
-      id: userID,
-      name: username,
-      role: 'user'
-    },
-    locale,
-    localTimestamp: dateToLocaleISOString(now),
-    localTimezone: localTimeZone,
-    ...(activity.type === 'event'
-      ? {
-          name: activity.name,
-          value: activity.value
-        }
-      : {})
-  };
+  const outgoingActivity = createVoiceActivity({ activity, locale, now: new ponyfill.Date(), userID, username });
 
   try {
     yield observeOnce(directLine.postActivity(outgoingActivity as DirectLineActivity));

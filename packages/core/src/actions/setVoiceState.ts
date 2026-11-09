@@ -1,6 +1,6 @@
-const VOICE_SET_STATE = 'WEB_CHAT/VOICE_SET_STATE' as const;
+import type { VoiceState } from '../types/VoiceState';
 
-type VoiceState = 'idle' | 'listening' | 'user_speaking' | 'processing' | 'bot_speaking';
+const VOICE_SET_STATE = 'WEB_CHAT/VOICE_SET_STATE' as const;
 
 type VoiceSetStateAction = {
   type: typeof VOICE_SET_STATE;

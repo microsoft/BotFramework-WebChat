@@ -6,6 +6,8 @@ import { VOICE_STOP_RECORDING } from '../actions/stopVoiceRecording';
 import { VOICE_UNMUTE_RECORDING } from '../actions/unmuteVoiceRecording';
 import { VOICE_UNREGISTER_HANDLER } from '../actions/unregisterVoiceHandler';
 
+import nextVoiceState from '../services/private/nextVoiceState';
+
 import type { VoiceMuteRecordingAction } from '../actions/muteVoiceRecording';
 import type { VoiceHandler, VoiceRegisterHandlerAction } from '../actions/registerVoiceHandler';
 import type { VoiceSetStateAction, VoiceState } from '../actions/setVoiceState';
@@ -41,58 +43,29 @@ export default function voiceActivity(
 ): VoiceActivityState {
   switch (action.type) {
     case VOICE_MUTE_RECORDING:
-      return {
-        ...state,
-        microphoneMuted: true
-      };
+      return nextVoiceState(state, { type: 'mute' });
 
-    case VOICE_REGISTER_HANDLER: {
-      const newHandlers = new Map(state.voiceHandlers);
-      newHandlers.set(action.payload.id, action.payload.voiceHandler);
-      return {
-        ...state,
-        voiceHandlers: newHandlers
-      };
-    }
+    case VOICE_REGISTER_HANDLER:
+      return nextVoiceState(state, {
+        id: action.payload.id,
+        type: 'register',
+        voiceHandler: action.payload.voiceHandler
+      });
 
-    case VOICE_UNREGISTER_HANDLER: {
-      const newHandlers = new Map(state.voiceHandlers);
-      newHandlers.delete(action.payload.id);
-      return {
-        ...state,
-        voiceHandlers: newHandlers
-      };
-    }
+    case VOICE_UNREGISTER_HANDLER:
+      return nextVoiceState(state, { id: action.payload.id, type: 'unregister' });
 
     case VOICE_SET_STATE:
-      return {
-        ...state,
-        voiceState: action.payload.voiceState
-      };
+      return nextVoiceState(state, { type: 'setState', voiceState: action.payload.voiceState });
 
     case VOICE_START_RECORDING:
-      if (state.voiceState !== 'idle') {
-        console.warn(`botframework-webchat: Should not transit from "${state.voiceState}" to "listening"`);
-      }
-
-      return {
-        ...state,
-        microphoneMuted: false,
-        voiceState: 'listening'
-      };
+      return nextVoiceState(state, { type: 'start' });
 
     case VOICE_STOP_RECORDING:
-      return {
-        ...state,
-        microphoneMuted: false,
-        voiceState: 'idle'
-      };
+      return nextVoiceState(state, { type: 'stop' });
 
     case VOICE_UNMUTE_RECORDING:
-      return {
-        ...state,
-        microphoneMuted: false
-      };
+      return nextVoiceState(state, { type: 'unmute' });
 
     default:
       return state;

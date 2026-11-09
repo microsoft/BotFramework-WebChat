@@ -1,8 +1,9 @@
-import { DICTATING, IDLE, STARTING, STOPPING, WILL_START } from '../constants/DictateState';
+import { IDLE } from '../constants/DictateState';
 
 import { SET_DICTATE_STATE } from '../actions/setDictateState';
 import { START_DICTATE } from '../actions/startDictate';
 import { STOP_DICTATE } from '../actions/stopDictate';
+import nextDictateState from '../services/private/nextDictateState';
 
 const DEFAULT_STATE = IDLE;
 
@@ -13,19 +14,11 @@ export default function dictateState(state = DEFAULT_STATE, { payload, type }) {
       break;
 
     case START_DICTATE:
-      if (state === IDLE || state === STOPPING || state === WILL_START) {
-        state = STARTING;
-      }
-
+      state = nextDictateState(state, 'start');
       break;
 
     case STOP_DICTATE:
-      if (state === STARTING || state === DICTATING) {
-        state = STOPPING;
-      } else if (state === WILL_START) {
-        state = IDLE;
-      }
-
+      state = nextDictateState(state, 'stop');
       break;
 
     default:

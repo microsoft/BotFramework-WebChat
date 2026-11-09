@@ -1,9 +1,6 @@
-const VOICE_REGISTER_HANDLER = 'WEB_CHAT/VOICE_REGISTER_HANDLER' as const;
+import type { VoiceHandler } from '../types/VoiceHandler';
 
-type VoiceHandler = {
-  queueAudio: (base64: string) => void;
-  stopAllAudio: () => void;
-};
+const VOICE_REGISTER_HANDLER = 'WEB_CHAT/VOICE_REGISTER_HANDLER' as const;
 
 type VoiceRegisterHandlerAction = {
   type: typeof VOICE_REGISTER_HANDLER;
