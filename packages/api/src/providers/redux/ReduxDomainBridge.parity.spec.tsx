@@ -3,28 +3,44 @@
 /* eslint-disable security/detect-object-injection */
 
 import { act, render } from '@testing-library/react';
+import { ReduxStoreComposer, useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
 import {
+  CLEAR_SUGGESTED_ACTIONS,
+  clearSuggestedActions,
+  createStore as createWebChatStore,
+  SET_SUGGESTED_ACTIONS,
+  setSuggestedActions,
+  setSuggestedActionsActionSchema,
   muteVoiceRecording,
   postVoiceActivity,
   registerVoiceHandler,
   setVoiceState,
   unmuteVoiceRecording,
   unregisterVoiceHandler,
+  type DirectLineCardAction,
   type VoiceHandler,
   type VoiceState,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { setRawState } from 'botframework-webchat-core/internal.js';
 import React, {
+  createContext,
   memo,
   useCallback,
+  useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useReducer,
   useRef,
+  useState,
+  type Dispatch,
   type ReactElement,
-  type ReactNode
+  type ReactNode,
+  type SetStateAction
 } from 'react';
-import { applyMiddleware, legacy_createStore as createStore, type Store } from 'redux';
+import { applyMiddleware, legacy_createStore as createStore, type Action, type Store } from 'redux';
+import { safeParse } from 'valibot';
 
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
 import { useDispatch, useWebChatReduxContext } from '../../hooks/internal/WebChatReduxContext';
@@ -553,5 +569,274 @@ describe.each(Object.keys(SETTER_CALLS))('setters of %s()', name => {
 
     expect(legacyActions.length).toBeGreaterThan(0);
     expect(callAndGetActions(renders.at(-1))).toEqual(legacyActions);
+  });
+});
+
+// #region <SuggestedActionsComposer> at 25d812243, verbatim (without prop validation): the context held a hook.
+
+const EMPTY_ARRAY = Object.freeze([]);
+
+type LegacySuggestedActionsContextType = Readonly<{
+  useSuggestedActions: () => readonly [
+    readonly DirectLineCardAction[],
+    Dispatch<SetStateAction<readonly DirectLineCardAction[]>>,
+    Readonly<{ activity: undefined | WebChatActivity }>
+  ];
+}>;
+
+const LegacySuggestedActionsContext = createContext<LegacySuggestedActionsContextType>(
+  new Proxy({} as LegacySuggestedActionsContextType, {
+    get() {
+      throw new Error('botframework-webchat: This hook can only be used under <SuggestedActionsContext>');
+    }
+  })
+);
+
+function LegacySuggestedActionsComposerImpl({
+  children,
+  store: { dispatch }
+}: {
+  readonly children: ReactNode;
+  readonly store: Store;
+}) {
+  const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
+  const [suggestedActions, setSuggestedActionsRaw] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
+  const setSuggestedActions = useCallback<typeof setSuggestedActionsRaw>(
+    suggestedActions => {
+      setOriginActivity(undefined);
+      setSuggestedActionsRaw(suggestedActions);
+    },
+    [setSuggestedActionsRaw]
+  );
+
+  // #region Replicate to Redux store
+  const handleAction = useCallback(
+    (action: Action) => {
+      if (action.type === CLEAR_SUGGESTED_ACTIONS) {
+        setOriginActivity(undefined);
+        setSuggestedActionsRaw(EMPTY_ARRAY);
+      } else if (action.type === SET_SUGGESTED_ACTIONS) {
+        const result = safeParse(setSuggestedActionsActionSchema, action);
+
+        if (result.success) {
+          const {
+            payload: { originActivity, suggestedActions }
+          } = result.output;
+
+          setOriginActivity(originActivity);
+          setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+        }
+      }
+    },
+    [setOriginActivity, setSuggestedActionsRaw]
+  );
+
+  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
+  useMemo(
+    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
+    [dispatch, originActivity]
+  );
+
+  useEffect(() => {
+    dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
+
+    return () => {
+      dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' });
+    };
+  }, [dispatch, handleAction]);
+  // #endregion
+
+  const useSuggestedActions = useCallback<LegacySuggestedActionsContextType['useSuggestedActions']>(
+    () => Object.freeze([suggestedActions, setSuggestedActions, Object.freeze({ activity: originActivity })]),
+    [originActivity, setSuggestedActions, suggestedActions]
+  );
+
+  const context = useMemo<LegacySuggestedActionsContextType>(() => ({ useSuggestedActions }), [useSuggestedActions]);
+
+  return <LegacySuggestedActionsContext.Provider value={context}>{children}</LegacySuggestedActionsContext.Provider>;
+}
+
+const LegacySuggestedActionsComposer = memo(LegacySuggestedActionsComposerImpl);
+
+const useLegacySuggestedActions = () => useContext(LegacySuggestedActionsContext).useSuggestedActions();
+
+// #endregion
+
+// The public hooks object, read in a component as hosts do (not inside another hook).
+function CurrentSuggestedActionsRecorder({ renders }: { readonly renders: Renders }) {
+  renders.push(useSuggestedActionsHooks().useSuggestedActions());
+
+  return null;
+}
+
+const CurrentSuggestedActionsProbe = memo(CurrentSuggestedActionsRecorder);
+
+describe('useSuggestedActionsHooks().useSuggestedActions()', () => {
+  const CARD_ACTIONS_1: readonly DirectLineCardAction[] = Object.freeze([
+    Object.freeze({ title: 'One', type: 'imBack', value: 'One' } satisfies DirectLineCardAction)
+  ]);
+
+  const CARD_ACTIONS_2: readonly DirectLineCardAction[] = Object.freeze([
+    Object.freeze({ title: 'Two', type: 'imBack', value: 'Two' } satisfies DirectLineCardAction)
+  ]);
+
+  const ORIGIN_ACTIVITY = Object.freeze({
+    channelData: Object.freeze({}),
+    from: Object.freeze({ id: 'bot', role: 'bot' }),
+    id: 'a-1',
+    type: 'message'
+  }) as unknown as WebChatActivity;
+
+  type Snapshot = {
+    readonly actionTypes: readonly string[];
+    readonly renders: unknown[];
+    readonly suggestedActions: unknown;
+    readonly suggestedActionsOriginActivity: unknown;
+  };
+
+  type SuggestedActionsState = ReturnType<ReturnType<typeof useSuggestedActionsHooks>['useSuggestedActions']>;
+
+  // Runs one sequence of steps on a tree of one implementation, with its own stores, and records every step.
+  function runSteps(
+    renderTree: (store: Store, renders: Renders) => ReactElement,
+    { batch = false }: { readonly batch?: boolean } = {}
+  ): Snapshot[] {
+    const actionTypes: string[] = [];
+    const createLoggedStore = () =>
+      createWebChatStore({}, () => next => (action: Action) => {
+        actionTypes.push(action.type);
+
+        return next(action);
+      });
+
+    const renders: Renders = [];
+    const snapshots: Snapshot[] = [];
+    const store = createLoggedStore();
+    const store2 = createLoggedStore();
+    let currentStore = store;
+
+    const snap = () => {
+      const { suggestedActions, suggestedActionsOriginActivity } = currentStore.getState();
+
+      snapshots.push({
+        actionTypes: actionTypes.splice(0),
+        renders: describeRenders(renders),
+        suggestedActions,
+        suggestedActionsOriginActivity
+      });
+    };
+
+    const setter = () => (renders.at(-1) as SuggestedActionsState)[1];
+    const run = (fn: () => void) => (batch ? act(fn) : fn());
+
+    const result = render(renderTree(store, renders));
+
+    snap();
+
+    run(() => store.dispatch(setSuggestedActions(CARD_ACTIONS_1, ORIGIN_ACTIVITY)));
+    snap();
+
+    // The same suggested actions again: a new array.
+    run(() => store.dispatch(setSuggestedActions(CARD_ACTIONS_1, ORIGIN_ACTIVITY)));
+    snap();
+
+    run(() => setter()(CARD_ACTIONS_2));
+    snap();
+
+    run(() => setter()(suggestedActions => suggestedActions));
+    snap();
+
+    run(() => store.dispatch(clearSuggestedActions()));
+    snap();
+
+    run(() => store.dispatch(clearSuggestedActions()));
+    snap();
+
+    run(() => store.dispatch({ type: 'TEST/UNRELATED' }));
+    snap();
+
+    act(() => {
+      store.dispatch(setSuggestedActions(CARD_ACTIONS_2, ORIGIN_ACTIVITY));
+      setter()(CARD_ACTIONS_1);
+      store.dispatch(setSuggestedActions(CARD_ACTIONS_1, ORIGIN_ACTIVITY));
+    });
+    snap();
+
+    // A render of the parent, with the same store.
+    result.rerender(renderTree(store, renders));
+    snap();
+
+    // Swapping the store.
+    currentStore = store2;
+    result.rerender(renderTree(store2, renders));
+    snap();
+
+    // Only the new store is followed.
+    run(() => store.dispatch(clearSuggestedActions()));
+    snap();
+
+    run(() => store2.dispatch(clearSuggestedActions()));
+    snap();
+
+    result.unmount();
+    snap();
+
+    return snapshots;
+  }
+
+  const renderLegacy = (store: Store, renders: Renders) => (
+    <LegacySuggestedActionsComposer store={store}>
+      <Probe renders={renders} useHook={useLegacySuggestedActions} />
+    </LegacySuggestedActionsComposer>
+  );
+
+  const renderCurrent = (store: Store, renders: Renders) => (
+    <ReduxStoreComposer store={store}>
+      <CurrentSuggestedActionsProbe renders={renders} />
+    </ReduxStoreComposer>
+  );
+
+  test.each([
+    ['outside of act()', false, 10],
+    ['each step in act()', true, 7]
+  ])(
+    'should render, write to the store and dispatch as the implementation before, %s',
+    (_: string, batch: boolean, numRenders: number) => {
+      const legacySnapshots = runSteps(renderLegacy, { batch });
+      const snapshots = runSteps(renderCurrent, { batch });
+
+      expect(snapshots).toEqual(legacySnapshots);
+
+      // Pinned, so a change on both sides is noticed too.
+      expect(snapshots.at(-1)?.renders).toHaveLength(numRenders);
+    }
+  );
+
+  test('should keep the hooks object and the setter for the lifetime of the composer', () => {
+    const hooks: unknown[] = [];
+    const renders: Renders = [];
+    const store = createWebChatStore();
+
+    function HooksProbe() {
+      hooks.push(useSuggestedActionsHooks());
+      renders.push(useSuggestedActionsHooks().useSuggestedActions());
+
+      return null;
+    }
+
+    render(
+      <ReduxStoreComposer store={store}>
+        <HooksProbe />
+      </ReduxStoreComposer>
+    );
+
+    act(() => {
+      store.dispatch(setSuggestedActions(CARD_ACTIONS_1, ORIGIN_ACTIVITY));
+    });
+
+    expect(renders).toHaveLength(2);
+    expect(hooks[1]).toBe(hooks[0]);
+    expect((renders[1] as SuggestedActionsState)[1]).toBe((renders[0] as SuggestedActionsState)[1]);
+    expect((renders[1] as SuggestedActionsState)[2]).toEqual({ activity: ORIGIN_ACTIVITY });
   });
 });

@@ -9,11 +9,14 @@ import {
   type DirectLineCardAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { object, parse, string } from 'valibot';
 
 import ReduxStoreComposer from './ReduxStoreComposer';
 import SuggestedActionsComposer from './suggestedActions/SuggestedActionsComposer';
+import SuggestedActionsContext, {
+  type SuggestedActionsContextType
+} from './suggestedActions/private/SuggestedActionsContext';
 import useSuggestedActionsHooks from './suggestedActions/useSuggestedActionsHooks';
 
 type SuggestedActionsState = ReturnType<ReturnType<typeof useSuggestedActionsHooks>['useSuggestedActions']>;
@@ -61,6 +64,29 @@ describe('<SuggestedActionsComposer> without a store', () => {
 
     expect(lastOf(states)[0]).toBe(CARD_ACTIONS);
     expect(lastOf(states)[2]).toEqual({ activity: undefined });
+  });
+
+  test('should provide values and a setter, not hooks', () => {
+    const contexts: SuggestedActionsContextType[] = [];
+
+    function ContextProbe() {
+      contexts.push(useContext(SuggestedActionsContext));
+
+      return null;
+    }
+
+    render(
+      <SuggestedActionsComposer>
+        <ContextProbe />
+      </SuggestedActionsComposer>
+    );
+
+    act(() => lastOf(contexts).setSuggestedActions(CARD_ACTIONS));
+
+    expect(contexts).toHaveLength(2);
+    expect(Object.keys(lastOf(contexts)).sort()).toEqual(['originActivity', 'setSuggestedActions', 'suggestedActions']);
+    expect(lastOf(contexts).suggestedActions).toBe(CARD_ACTIONS);
+    expect(lastOf(contexts).setSuggestedActions).toBe(contexts.at(0)?.setSuggestedActions);
   });
 });
 

@@ -21,6 +21,8 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 /**
  * Owns the suggested actions. Under a Redux store, `<ReduxSuggestedActionsMirror>` mirrors them to the store.
+ *
+ * `useSuggestedActionsHooks().useSuggestedActions()` reads them.
  */
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const { children } = validateProps(suggestedActionsComposerPropsSchema, props);
@@ -40,12 +42,10 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     [originActivity, setOriginActivity, setSuggestedActionsRaw, suggestedActions]
   );
 
-  const useSuggestedActions = useCallback<SuggestedActionsContextType['useSuggestedActions']>(
-    () => Object.freeze([suggestedActions, setSuggestedActions, Object.freeze({ activity: originActivity })]),
+  const context = useMemo<SuggestedActionsContextType>(
+    () => Object.freeze({ originActivity, setSuggestedActions, suggestedActions }),
     [originActivity, setSuggestedActions, suggestedActions]
   );
-
-  const context = useMemo<SuggestedActionsContextType>(() => ({ useSuggestedActions }), [useSuggestedActions]);
 
   return (
     <SuggestedActionsStateContext.Provider value={stateContext}>
