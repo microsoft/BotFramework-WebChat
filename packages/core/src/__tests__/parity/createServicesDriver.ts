@@ -14,6 +14,7 @@ import createIncomingService, { type SuggestedActionsEmitter } from '../../servi
 import createNotificationsCell from '../../services/createNotificationsCell';
 import createOutgoingService from '../../services/createOutgoingService';
 import createSendBoxService from '../../services/createSendBoxService';
+import createSpeechService from '../../services/createSpeechService';
 import createVoiceService from '../../services/createVoiceService';
 import createEmitter from '../../services/private/createEmitter';
 import createSagaQueue from '../../services/private/createSagaQueue';
@@ -23,11 +24,6 @@ import type { Source } from '../../services/types';
 import { describeVoiceHandlers, type CreateDriver, type Observation, type Operations } from './runParityScript';
 
 const EMPTY_ARRAY = Object.freeze([]);
-
-// Not built yet: the values of speech and voice stay the initial ones, their operations do nothing.
-function notBuiltYet(): undefined {
-  return undefined;
-}
 
 const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const activitiesStore = createActivitiesStore({ ponyfill });
@@ -83,23 +79,26 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connection,
     createSendMessagePayload: (text, method, init) => sendMessage(text, method, init).payload,
     outgoing,
-    ponyfill
+    ponyfill,
+    queue
   });
+  // Started when online after the send box, as the speech sagas after the typing indicator saga.
+  const speech = createSpeechService({ activitiesStore, connection, incoming, queue });
 
   const unsubscribeSuggestedActions = suggestedActions.subscribe(onSuggestedActions);
 
   const observe = (): Observation => ({
     activities: activitiesStore.getSnapshot().sortedActivities,
     connectivityStatus: connection.connectivityStatus.get(),
-    dictateInterims: EMPTY_ARRAY,
-    dictateState: 0,
+    dictateInterims: speech.dictateInterims.get(),
+    dictateState: speech.dictateState.get(),
     microphoneMuted: voice.microphoneMuted.get(),
     notifications: notifications.notifications.get(),
     referenceGrammarID: connection.referenceGrammarID.get(),
     sendBoxAttachments: sendBox.attachments.get(),
     sendBoxValue: sendBox.value.get(),
     sendTypingIndicator: sendBox.sendTypingIndicator.get(),
-    shouldSpeakIncomingActivity: false,
+    shouldSpeakIncomingActivity: speech.shouldSpeakIncomingActivity.get(),
     voiceHandlers: describeVoiceHandlers(voice.voiceHandlers.get()),
     voiceState: voice.voiceState.get()
   });
@@ -129,6 +128,11 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     sendBox.attachments.subscribe(() => onChange('sendBoxAttachments', sendBox.attachments.get())),
     sendBox.value.subscribe(() => onChange('sendBoxValue', sendBox.value.get())),
     sendBox.sendTypingIndicator.subscribe(() => onChange('sendTypingIndicator', sendBox.sendTypingIndicator.get())),
+    speech.dictateInterims.subscribe(() => onChange('dictateInterims', speech.dictateInterims.get())),
+    speech.dictateState.subscribe(() => onChange('dictateState', speech.dictateState.get())),
+    speech.shouldSpeakIncomingActivity.subscribe(() =>
+      onChange('shouldSpeakIncomingActivity', speech.shouldSpeakIncomingActivity.get())
+    ),
     // In the order the Redux driver compares them.
     onChangeOf('microphoneMuted', voice.microphoneMuted),
     onChangeOf('voiceHandlers', voice.voiceHandlers, describeVoiceHandlers),
@@ -148,7 +152,8 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
   const ops: Operations = Object.freeze({
     clearSuggestedActions: () => suggestedActions.emit(EMPTY_ARRAY, undefined),
     emitTypingIndicator: () => outgoing.emitTypingIndicator(),
-    markActivity: ({ id }, name, value) => activitiesStore.markActivity(id, name, value),
+    // Every mark goes through speech, as MARK_ACTIVITY goes through its saga.
+    markActivity: (activity, name, value) => speech.markActivity(activity, name, value),
     postActivity: (activity, method) => outgoing.postActivity(activity, method),
     postVoiceActivity: activity => outgoing.postVoiceActivity(activity),
     // As the api: a new ID for each handler.
@@ -159,8 +164,8 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     sendMessageBack: (value, text, displayText, init) =>
       outgoing.sendMessageBack(sendMessageBack(value, text, displayText, init).payload),
     sendPostBack: (value, init) => outgoing.sendPostBack(sendPostBack(value, init).payload),
-    setDictateInterims: notBuiltYet,
-    setDictateState: notBuiltYet,
+    setDictateInterims: dictateInterims => speech.setDictateInterims(dictateInterims),
+    setDictateState: dictateState => speech.setDictateState(dictateState),
     setLanguage: language => outgoing.setLocale(language),
     setMuted: muted => voice.setMuted(muted),
     setSendBox: text => sendBox.setValue(text),
@@ -169,11 +174,11 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     setSendTimeout: sendTimeout => outgoing.setSendTimeout(sendTimeout),
     setSendTypingIndicator: value => sendBox.setSendTypingIndicator(value),
     setVoiceState: voiceState => voice.setVoiceState(voiceState as Parameters<typeof voice.setVoiceState>[0]),
-    startDictate: notBuiltYet,
-    startSpeakingActivity: notBuiltYet,
+    startDictate: () => speech.startDictate(),
+    startSpeakingActivity: () => speech.startSpeakingActivity(),
     startVoice: () => voice.startVoice(),
-    stopDictate: notBuiltYet,
-    stopSpeakingActivity: notBuiltYet,
+    stopDictate: () => speech.stopDictate(),
+    stopSpeakingActivity: () => speech.stopSpeakingActivity(),
     stopVoice: () => voice.stopVoice(),
     submitSendBox: (method, init) =>
       sendBox.submit(submitSendBox(method, init && { channelData: init.channelData }).payload)

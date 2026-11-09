@@ -58,10 +58,10 @@ describe('the parity harness', () => {
     expect(await run(name)).toEqual(await run(name));
   });
 
-  test('without "speech", the values of speech and voice are not recorded', async () => {
-    const [record] = (await runParityScript(createReduxDriver, speechScripts['inputHint: expecting, spoken'])).slice(
-      -2
-    );
+  test('with "speech" false, the values of speech and voice are not recorded', async () => {
+    const [record] = (
+      await runParityScript(createReduxDriver, speechScripts['inputHint: expecting, spoken'], { speech: false })
+    ).slice(-2);
 
     expect(Object.keys(record.state)).not.toContain('dictateState');
     expect(record.order).not.toContain('dictateState');
@@ -265,6 +265,12 @@ describe('the sagas, pinned', () => {
       'dictateState=1',
       'dictateState=2'
     ]);
+    // Unchanged, it still checks: the activity to speak was replaced (by one of the user, with the same ID).
+    expect(
+      summarize(
+        await run('quirk: an unchanged will start starts, once the activity to speak is replaced without a mark')
+      )['will start, unchanged']
+    ).toEqual(['dictateState=2']);
   });
 });
 

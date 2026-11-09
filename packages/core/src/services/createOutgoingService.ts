@@ -7,7 +7,6 @@ import type { WebChatActivity } from '../types/WebChatActivity';
 import uniqueID from '../utils/uniqueID';
 import type { ConnectionService, ConnectionSession } from './createConnectionService';
 import type { IncomingService, SuggestedActionsEmitter } from './createIncomingService';
-import createEmitter from './private/createEmitter';
 import createOutgoingActivity from './private/createOutgoingActivity';
 import createVoiceActivity from './private/createVoiceActivity';
 import createSagaQueue, { type SagaQueue } from './private/createSagaQueue';
@@ -31,21 +30,14 @@ import {
 const HARD_SEND_TIMEOUT = 300_000;
 const DEFAULT_SEND_TIMEOUT = 20_000;
 
-type PendingListener = (activity: WebChatOutgoingActivity, init: { readonly method: string }) => void;
-type PostListener = (activity: WebChatActivity) => void;
-
 type OutgoingService = {
   /**
-   * Runs `fn`; what the sagas would do after the current action (clearing the suggested actions after a message, and
-   * "send failed" when `postActivity()` throws) is done when the outermost `batch()` returns.
+   * Runs `fn`; what the sagas would do after the current action (posting, clearing the suggested actions after a
+   * message, and "send failed" when `postActivity()` throws) is done when the outermost `batch()` returns.
    */
   readonly batch: <T>(fn: () => T) => T;
   /** Posts the typing activity, as `EMIT_TYPING_INDICATOR`. */
   readonly emitTypingIndicator: () => void;
-  /** Calls the listener after each activity is added as "sending" (for the speech of later stages). */
-  readonly onPending: (listener: PendingListener) => () => void;
-  /** Calls the listener with each activity posted while online, before anything else (the typing indicator). */
-  readonly onPost: (listener: PostListener) => () => void;
   /** Posts the activity, as `POST_ACTIVITY`: dropped while offline. */
   readonly postActivity: (activity: WebChatActivity, method?: string) => void;
   /**
@@ -123,7 +115,7 @@ export default function createOutgoingService({
   connection,
   incoming,
   ponyfill,
-  queue: { batch, later } = createSagaQueue(),
+  queue: { batch, handleAction, later, onAction } = createSagaQueue(),
   suggestedActions
 }: {
   readonly activitiesStore: Pick<
@@ -138,8 +130,6 @@ export default function createOutgoingService({
   readonly suggestedActions: Pick<SuggestedActionsEmitter, 'emit'>;
 }): OutgoingService {
   const echoListeners = new Set<(activity: WebChatActivity) => void>();
-  const pendingEmitter = createEmitter<Parameters<PendingListener>>();
-  const postEmitter = createEmitter<Parameters<PostListener>>();
   let locale = 'en-US';
   let sendTimeout = DEFAULT_SEND_TIMEOUT;
   let session: Session | undefined;
@@ -177,7 +167,8 @@ export default function createOutgoingService({
     let clientActivityID: string;
 
     try {
-      postEmitter.emit(activity);
+      // `POST_ACTIVITY`: the post saga builds the activity, the typing indicator saga waits again.
+      handleAction({ activity, type: 'POST_ACTIVITY' });
 
       clientActivityID = uniqueID();
       outgoingActivity = createOutgoingActivity({
@@ -189,10 +180,31 @@ export default function createOutgoingService({
         userID: current.userID,
         username: current.username
       });
+    } catch (error) {
+      // As the saga: an error before writing "sending" stops everything; this saga stops first.
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      stopSession(current, false);
+      fail(error);
 
+      return;
+    }
+
+    // Then it puts "sending": after the current action.
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    later(() => postPending(current, outgoingActivity, clientActivityID, method));
+  };
+
+  // `POST_ACTIVITY_PENDING`: "sending", the sagas waiting for it (clearing the suggested actions, speech), then the post.
+  const postPending = (
+    current: Session,
+    outgoingActivity: WebChatOutgoingActivity,
+    clientActivityID: string,
+    method: string
+  ) => {
+    try {
       activitiesStore.postActivityPending(outgoingActivity as WebChatActivity);
     } catch (error) {
-      // As the saga: an error before or while writing "sending" stops everything; this saga stops first.
+      // As the saga: an error while writing "sending" stops everything; this saga stops first.
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       stopSession(current, false);
       fail(error);
@@ -227,22 +239,17 @@ export default function createOutgoingService({
     };
 
     try {
-      pendingEmitter.emit(outgoingActivity, { method });
+      handleAction({ activity: outgoingActivity, method, type: 'POST_ACTIVITY_PENDING' });
     } catch (error) {
       fail(error);
 
       return;
     }
 
-    // `clearSuggestedActionsOnPostActivitySaga`, after this action.
-    outgoingActivity.type === 'message' &&
-      later(() => {
-        try {
-          suggestedActions.emit(Object.freeze([]), undefined);
-        } catch (error) {
-          fail(error);
-        }
-      });
+    // Gone offline meanwhile: the saga was cancelled.
+    if (current.stopped) {
+      return;
+    }
 
     current.inFlight.add(record);
 
@@ -389,7 +396,23 @@ export default function createOutgoingService({
 
     session = current;
 
-    return () => stopSession(current, true);
+    // clearSuggestedActionsOnPostActivitySaga: a message pending clears the suggested actions, after the action.
+    const stopClearing = onAction(
+      action => action.type === 'POST_ACTIVITY_PENDING' && action.activity.type === 'message',
+      () =>
+        later(() => {
+          try {
+            suggestedActions.emit(Object.freeze([]), undefined);
+          } catch (error) {
+            fail(error);
+          }
+        })
+    );
+
+    return () => {
+      stopClearing();
+      stopSession(current, true);
+    };
   });
 
   incoming.onActivity(activity => {
@@ -404,6 +427,9 @@ export default function createOutgoingService({
 
       current && post(current, activity, method);
     });
+
+  // A saga puts `POST_ACTIVITY`: posted after the current action, if still online.
+  const postLater = (activity: WebChatActivity, method?: string) => later(() => postActivity(activity, method));
 
   // The senders: while online, the payload to the activity, then post it; an error stops everything, as in the sagas.
   const whileOnline = (fn: () => void) =>
@@ -468,20 +494,18 @@ export default function createOutgoingService({
 
   return Object.freeze({
     batch,
-    emitTypingIndicator: () => postActivity({ type: 'typing' } as WebChatActivity),
-    onPending: pendingEmitter.subscribe,
-    onPost: postEmitter.subscribe,
+    // emitTypingIndicatorToPostActivitySaga: while online, puts the typing activity.
+    emitTypingIndicator: () => whileOnline(() => postLater({ type: 'typing' } as WebChatActivity)),
     postActivity,
     postVoiceActivity,
     sendEvent: (payload: SendEventPayload) =>
-      whileOnline(() => hasEventToSend(payload) && postActivity(eventToActivity(payload))),
+      whileOnline(() => hasEventToSend(payload) && postLater(eventToActivity(payload))),
     sendFiles: (payload: SendFilesPayload) =>
-      whileOnline(() => hasFilesToSend(payload) && postActivity(filesToActivity(payload))),
+      whileOnline(() => hasFilesToSend(payload) && postLater(filesToActivity(payload))),
     sendMessage: (payload: SendMessagePayload) =>
-      whileOnline(() => hasMessageToSend(payload) && postActivity(messageToActivity(payload), payload.method)),
-    sendMessageBack: (payload: SendMessageBackPayload) =>
-      whileOnline(() => postActivity(messageBackToActivity(payload))),
-    sendPostBack: (payload: SendPostBackPayload) => whileOnline(() => postActivity(postBackToActivity(payload))),
+      whileOnline(() => hasMessageToSend(payload) && postLater(messageToActivity(payload), payload.method)),
+    sendMessageBack: (payload: SendMessageBackPayload) => whileOnline(() => postLater(messageBackToActivity(payload))),
+    sendPostBack: (payload: SendPostBackPayload) => whileOnline(() => postLater(postBackToActivity(payload))),
     setLocale: (value: string) => {
       locale = value;
     },
@@ -492,4 +516,4 @@ export default function createOutgoingService({
   });
 }
 
-export type { OutgoingService, PendingListener, PostListener };
+export type { OutgoingService };

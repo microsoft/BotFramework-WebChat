@@ -5,7 +5,7 @@ import type { SendBoxAttachment } from '../types/SendBoxAttachment';
 import type { ConnectionService, ConnectionSession } from './createConnectionService';
 import type { OutgoingService } from './createOutgoingService';
 import createCell from './private/createCell';
-import createEmitter from './private/createEmitter';
+import createSagaQueue, { type SagaAction, type SagaQueue } from './private/createSagaQueue';
 import type { SendMessagePayload } from './private/sendPayloadToActivity';
 import type { Notify, Source } from './types';
 
@@ -14,14 +14,10 @@ const SEND_INTERVAL = 3000;
 
 const EMPTY_ATTACHMENTS: readonly SendBoxAttachment[] = Object.freeze([]);
 
-type ValueListener = (value: string) => void;
-
 type SubmitPayload = { readonly channelData?: unknown; readonly method?: string | undefined };
 
 type SendBoxService = {
   readonly attachments: Source<readonly SendBoxAttachment[]>;
-  /** Calls the listener after each `setValue()`, also with the same value (for the speech of later stages). */
-  readonly onValue: (listener: ValueListener) => () => void;
   readonly sendTypingIndicator: Source<boolean>;
   /** As `SET_SEND_BOX_ATTACHMENTS`. */
   readonly setAttachments: (attachments: readonly SendBoxAttachment[]) => void;
@@ -35,15 +31,16 @@ type SendBoxService = {
 };
 
 type Typing = {
-  active: boolean;
   lastSend: number;
   /** The typing indicator waiting, if any: its timer, then the turn after it fires. */
   pending?: { readonly timer: ReturnType<GlobalScopePonyfill['setTimeout']> } | undefined;
+  /** While enabled: stops waiting for the values set and the posts. */
+  stop?: (() => void) | undefined;
 };
 
 /**
  * The send box without Redux: its value, attachments and typing flag, as the reducers of the same names, and what
- * `submitSendBoxSaga` and `sendTypingIndicatorOnSetSendBoxSaga` do.
+ * `submitSendBoxSaga` and `sendTypingIndicatorOnSetSendBoxSaga` do, in the order of the sagas (`queue`).
  *
  * While online and with the typing indicator enabled, each value set with a text posts the typing activity, at most
  * every 3 seconds: a value set before then waits, and the latest value set restarts the wait. Posting another activity
@@ -54,7 +51,9 @@ type Typing = {
  * - submitting while offline does nothing, and keeps the send box;
  * - submitting only spaces clears the send box and sends nothing;
  * - setting the same text again posts the typing indicator again;
- * - posting an event (or any activity that is not a message) cancels the wait without restarting the 3 seconds.
+ * - posting an event (or any activity that is not a message) cancels the wait without restarting the 3 seconds;
+ * - the typing indicator enabled while online waits for the values set after the speech does (as its saga starts
+ *   waiting then), until the speech waits again.
  *
  * Not kept: the typing timer is cleared when cancelled (the saga left it running, unused).
  */
@@ -63,7 +62,8 @@ export default function createSendBoxService({
   createSendMessagePayload,
   notify = callListeners => callListeners(),
   outgoing,
-  ponyfill
+  ponyfill,
+  queue = createSagaQueue()
 }: {
   readonly connection: Pick<ConnectionService, 'onOnline'>;
   /** The payload of `sendMessage()`, as its action creator builds and validates it. */
@@ -73,13 +73,14 @@ export default function createSendBoxService({
     init: { readonly attachments: readonly SendBoxAttachment[]; readonly channelData: any }
   ) => SendMessagePayload;
   readonly notify?: Notify | undefined;
-  readonly outgoing: Pick<OutgoingService, 'emitTypingIndicator' | 'onPost' | 'sendMessage' | 'whileOnline'>;
+  readonly outgoing: Pick<OutgoingService, 'emitTypingIndicator' | 'sendMessage' | 'whileOnline'>;
   readonly ponyfill: Pick<GlobalScopePonyfill, 'clearTimeout' | 'Date' | 'setTimeout'>;
+  /** The order of the sagas, shared by the services. */
+  readonly queue?: SagaQueue | undefined;
 }): SendBoxService {
   const attachments = createCell(EMPTY_ATTACHMENTS, notify);
   const sendTypingIndicator = createCell(false, notify);
   const value = createCell('', notify);
-  const valueEmitter = createEmitter<Parameters<ValueListener>>();
   // While online: the state of the typing indicator.
   let typing: Typing | undefined;
 
@@ -88,49 +89,31 @@ export default function createSendBoxService({
     current.pending = undefined;
   };
 
+  // Puts `EMIT_TYPING_INDICATOR`; once it ran, the 3 seconds start.
   const emitTyping = (current: Typing) => {
     current.pending = undefined;
-    outgoing.emitTypingIndicator();
-    current.lastSend = ponyfill.Date.now();
+
+    queue.later(() => {
+      outgoing.emitTypingIndicator();
+      current.lastSend = ponyfill.Date.now();
+    });
   };
 
-  connection.onOnline((_: ConnectionSession) => {
-    const current: Typing = { active: sendTypingIndicator.get(), lastSend: -Infinity };
+  const handleTypingAction = (current: Typing, action: SagaAction) => {
+    // As `takeLatest()`: the latest action cancels the typing indicator waiting.
+    cancelTyping(current);
 
-    typing = current;
-
-    return () => {
-      cancelTyping(current);
-      typing === current && (typing = undefined);
-    };
-  });
-
-  // A post (other than typing) cancels the typing indicator waiting; a message restarts the 3 seconds.
-  outgoing.onPost(activity => {
-    const current = typing;
-
-    if (current?.active && activity.type !== 'typing') {
-      cancelTyping(current);
-      activity.type === 'message' && (current.lastSend = -Infinity);
-    }
-  });
-
-  const setValue = (text: string) => {
-    value.set(text);
-
-    const current = typing;
-
-    // As `takeLatest()`: the latest text cancels the typing indicator waiting.
-    if (current?.active && text) {
-      cancelTyping(current);
-
+    if (action.type === 'SET_SEND_BOX') {
       const interval = SEND_INTERVAL - ponyfill.Date.now() + current.lastSend;
 
       if (interval > 0) {
         // As the saga's `sleep()`: it resumes a turn after the timer fires, so a value set in between cancels it.
         const pending = {
           timer: ponyfill.setTimeout(
-            () => Promise.resolve().then(() => current.pending === pending && emitTyping(current)),
+            () =>
+              Promise.resolve().then(
+                () => current.pending === pending && current.stop && queue.batch(() => emitTyping(current))
+              ),
             interval
           )
         };
@@ -139,16 +122,50 @@ export default function createSendBoxService({
       } else {
         emitTyping(current);
       }
+    } else if (action.type === 'POST_ACTIVITY' && action.activity.type === 'message') {
+      current.lastSend = -Infinity;
     }
-
-    valueEmitter.emit(text);
   };
+
+  // The typing indicator saga waits (again, at the end of the list) for the values set and the posts.
+  const startTyping = (current: Typing) => {
+    current.lastSend = -Infinity;
+    current.stop = queue.onAction(
+      action =>
+        (action.type === 'SET_SEND_BOX' && !!action.text) ||
+        (action.type === 'POST_ACTIVITY' && action.activity.type !== 'typing'),
+      action => handleTypingAction(current, action)
+    );
+  };
+
+  const stopTyping = (current: Typing) => {
+    cancelTyping(current);
+    current.stop?.();
+    current.stop = undefined;
+  };
+
+  connection.onOnline((_: ConnectionSession) => {
+    const current: Typing = { lastSend: -Infinity };
+
+    typing = current;
+    sendTypingIndicator.get() && startTyping(current);
+
+    return () => {
+      stopTyping(current);
+      typing === current && (typing = undefined);
+    };
+  });
+
+  const setValue = (text: string) =>
+    queue.batch(() => {
+      value.set(text);
+      queue.handleAction({ text, type: 'SET_SEND_BOX' });
+    });
 
   const setAttachments = (nextAttachments: readonly SendBoxAttachment[]) => attachments.set(nextAttachments);
 
   return Object.freeze({
     attachments: Object.freeze({ get: attachments.get, subscribe: attachments.subscribe }),
-    onValue: valueEmitter.subscribe,
     sendTypingIndicator: Object.freeze({ get: sendTypingIndicator.get, subscribe: sendTypingIndicator.subscribe }),
     setAttachments,
     setSendTypingIndicator: (nextSendTypingIndicator: boolean) => {
@@ -156,11 +173,9 @@ export default function createSendBoxService({
 
       const current = typing;
 
-      if (current && current.active !== !!nextSendTypingIndicator) {
-        current.active = !!nextSendTypingIndicator;
-
-        // Enabled again: the 3 seconds restart. Disabled: the typing indicator waiting is cancelled.
-        current.active ? (current.lastSend = -Infinity) : cancelTyping(current);
+      // Enabled again: the saga waits again (the 3 seconds restart). Disabled: the typing indicator waiting is cancelled.
+      if (current && !current.stop !== !nextSendTypingIndicator) {
+        nextSendTypingIndicator ? startTyping(current) : stopTyping(current);
       }
     },
     setValue,
@@ -176,14 +191,19 @@ export default function createSendBoxService({
             channelData
           });
 
-          // The value is cleared before the message is posted, the attachments after.
-          setValue('');
-          outgoing.sendMessage(payload);
-          setAttachments(Object.freeze([]));
+          // Puts the message, then clears the value, then the attachments: each after the previous one ran.
+          queue.later(() => {
+            outgoing.sendMessage(payload);
+
+            queue.later(() => {
+              setValue('');
+              queue.later(() => setAttachments(Object.freeze([])));
+            });
+          });
         }
       }),
     value: Object.freeze({ get: value.get, subscribe: value.subscribe })
   });
 }
 
-export type { SendBoxService, SubmitPayload, ValueListener };
+export type { SendBoxService, SubmitPayload };

@@ -28,7 +28,7 @@ type Observation = {
 
 type ObservationKey = keyof Observation;
 
-/** The values of speech and voice: recorded only by the scripts that ask for them (`RunOptions.speech`). */
+/** The values of speech and voice: not recorded with `RunOptions.speech` false. */
 const SPEECH_KEYS: readonly ObservationKey[] = Object.freeze([
   'dictateInterims',
   'dictateState',
@@ -159,7 +159,7 @@ type Script = (context: ScriptContext) => Promise<void>;
 type RunOptions = {
   /** Keeps the random IDs (client activity IDs, local IDs), to check that the normalization is needed. */
   readonly raw?: boolean | undefined;
-  /** Also records the values of speech and voice (`SPEECH_KEYS`). */
+  /** Also records the values of speech and voice (`SPEECH_KEYS`): `true` by default. */
   readonly speech?: boolean | undefined;
 };
 
@@ -225,7 +225,7 @@ function describeConsoleArgs(args: unknown[]): string {
 export default async function runParityScript(
   createDriver: CreateDriver,
   script: Script,
-  { raw, speech }: RunOptions = {}
+  { raw, speech = true }: RunOptions = {}
 ): Promise<StepRecord[]> {
   const isRecorded = (key: ObservationKey) => speech || !SPEECH_KEYS.includes(key);
   const clock = lolex.createClock();

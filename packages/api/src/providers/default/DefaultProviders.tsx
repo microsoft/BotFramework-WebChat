@@ -94,7 +94,8 @@ function DefaultProviders(props: DefaultProvidersProps) {
       createSendMessagePayload: (text, method, init) => sendMessage(text, method, init).payload,
       notify,
       outgoing,
-      ponyfill
+      ponyfill,
+      queue
     });
     const testHandle = Object.freeze({
       getActivities: () => activitiesStore.getSnapshot().sortedActivities,

@@ -395,6 +395,25 @@ const speechScripts: Readonly<Record<string, Script>> = Object.freeze({
     });
     await context.step('idle', () => ops.setDictateState(IDLE));
   },
+  'quirk: an unchanged will start starts, once the activity to speak is replaced without a mark': async context => {
+    const mock = await connectOnline(context);
+    const { ops } = context.driver;
+
+    await context.step('speak incoming', () => ops.startSpeakingActivity());
+    await context.step('expecting, spoken', () =>
+      mock.emitActivity(botMessage('b1', 1_000, { inputHint: 'expectingInput' }))
+    );
+    await context.step('replaced by an activity of the user with the same ID', () =>
+      mock.emitActivity({
+        from: { id: 'u-1', role: 'user' },
+        id: 'b1',
+        text: 'replaced',
+        timestamp: new Date(1_000).toISOString(),
+        type: 'message'
+      })
+    );
+    await context.step('will start, unchanged', () => ops.setDictateState(WILL_START));
+  },
   'quirk: any mark re-checks the auto start (a "read" mark while will start)': async context => {
     const mock = await connectOnline(context);
     const { ops } = context.driver;

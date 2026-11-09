@@ -44,18 +44,17 @@ export {
   type Notifications,
   type NotificationsCell
 } from '../services/createNotificationsCell';
-export {
-  default as createOutgoingService,
-  type OutgoingService,
-  type PendingListener,
-  type PostListener
-} from '../services/createOutgoingService';
+export { default as createOutgoingService, type OutgoingService } from '../services/createOutgoingService';
 export {
   default as createSendBoxService,
   type SendBoxService,
-  type SubmitPayload,
-  type ValueListener
+  type SubmitPayload
 } from '../services/createSendBoxService';
+export {
+  default as createSpeechService,
+  type SpeechActivitiesStore,
+  type SpeechService
+} from '../services/createSpeechService';
 export { default as createVoiceService, type VoiceService } from '../services/createVoiceService';
 export { default as createEmitter, type Emitter } from '../services/private/createEmitter';
 export { default as createSagaQueue, type SagaQueue } from '../services/private/createSagaQueue';

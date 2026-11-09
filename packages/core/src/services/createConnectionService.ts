@@ -44,6 +44,8 @@ type ConnectionService = {
    * The caller stops its own work first.
    */
   readonly fail: (error: unknown, options?: FailOptions) => void;
+  /** `true` after an error that the sagas would not catch (`fail()`): every saga is stopped, for good. */
+  readonly hasFailed: () => boolean;
   /**
    * Calls `start` each time the connection goes online, and the function it returns when it goes offline (reconnecting
    * or disconnecting), as `whileConnected()` of the sagas. Starters run in the order they were added.
@@ -421,6 +423,7 @@ export default function createConnectionService({
       options?.insideWrite && (lastWriteError = { error });
       fail(error, 'external');
     },
+    hasFailed: () => fatal,
     onOnline: (start: OnlineStarter) => {
       starters.push(start);
 
