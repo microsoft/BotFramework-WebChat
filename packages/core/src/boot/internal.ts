@@ -19,3 +19,23 @@ export {
   type ActivitiesStoreGraph,
   type ActivitiesStoreListener
 } from '@msinternal/botframework-webchat-core-activities';
+
+// The services of the default providers (no Redux), for the api. Internal, as the activities store.
+export {
+  default as createConnectionService,
+  type ConnectionService,
+  type ConnectionSession,
+  type OnlineStarter
+} from '../services/createConnectionService';
+export {
+  default as createIncomingService,
+  type IncomingService,
+  type IncomingVoicePort
+} from '../services/createIncomingService';
+export {
+  default as createNotificationsCell,
+  type NotificationInit,
+  type Notifications,
+  type NotificationsCell
+} from '../services/createNotificationsCell';
+export { type Notify, type Source as ServiceSource } from '../services/types';
