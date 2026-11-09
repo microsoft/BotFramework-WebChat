@@ -439,6 +439,18 @@ const speechScripts: Readonly<Record<string, Script>> = Object.freeze({
     await context.step('state', () => logThrow(() => ops.markActivity({ id: 'b1' }, 'state', 1)));
   },
 
+  'undefined dictate state or interims throws to the caller, nothing else happens': async context => {
+    const mock = await connectOnline(context);
+    const { ops } = context.driver;
+
+    await context.step('speak incoming, spoken', () => {
+      ops.startSpeakingActivity();
+      mock.emitActivity(botMessage('b1', 1_000, { inputHint: 'expectingInput' }));
+    });
+    await context.step('interims undefined', () => logThrow(() => ops.setDictateInterims(undefined)));
+    await context.step('dictate state undefined', () => logThrow(() => ops.setDictateState(undefined)));
+    await context.step('interims', () => ops.setDictateInterims(['a']));
+  },
   // Stopping the speech.
   'stop speaking: marks every spoken activity, then starts the dictation': async context => {
     const mock = await connectOnline(context);

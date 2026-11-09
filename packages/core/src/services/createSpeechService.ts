@@ -10,6 +10,7 @@ import createCell from './private/createCell';
 import createSagaQueue, { type SagaQueue } from './private/createSagaQueue';
 import nextDictateState from './private/nextDictateState';
 import { hasSpeakableContent, isFromOthers } from './private/speakableIncomingActivity';
+import throwIfUndefined from './private/throwIfUndefined';
 import type { Notify, Source } from './types';
 
 type SpeechActivitiesStore = Pick<ActivitiesStore, 'getSnapshot' | 'markActivity'>;
@@ -65,7 +66,8 @@ const EMPTY_INTERIMS: readonly string[] = Object.freeze([]);
  * - an activity ignoring input stops the dictation, also when not spoken;
  * - speaking the incoming activities is kept after going offline, until stopped;
  * - a message to speak with an attachment of `content: null` (without `speak` or `text`) throws: everything stops;
- * - after an error that stops everything, the operations only set the values (no saga).
+ * - after an error that stops everything, the operations only set the values (no saga);
+ * - setting the dictate state or interims to `undefined` throws, as the reducers of Redux mode do.
  */
 export default function createSpeechService({
   activitiesStore,
@@ -232,10 +234,15 @@ export default function createSpeechService({
       queue.batch(() => writeMark(activity, name, value)),
     setDictateInterims: (value: readonly string[]) =>
       queue.batch(() => {
+        throwIfUndefined(value, 'WEB_CHAT/SET_DICTATE_INTERIMS', 'dictateInterims');
         dictateInterims.set(value);
         queue.handleAction({ type: 'SET_DICTATE_INTERIMS' });
       }),
-    setDictateState: (value: number) => queue.batch(() => writeDictateState(value)),
+    setDictateState: (value: number) =>
+      queue.batch(() => {
+        throwIfUndefined(value, 'WEB_CHAT/SET_DICTATE_STATE', 'dictateState');
+        writeDictateState(value);
+      }),
     shouldSpeakIncomingActivity: Object.freeze({
       get: shouldSpeakIncomingActivity.get,
       subscribe: shouldSpeakIncomingActivity.subscribe
