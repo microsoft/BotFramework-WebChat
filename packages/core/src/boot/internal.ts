@@ -56,6 +56,7 @@ export {
   type SubmitPayload,
   type ValueListener
 } from '../services/createSendBoxService';
+export { default as createVoiceService, type VoiceService } from '../services/createVoiceService';
 export { default as createEmitter, type Emitter } from '../services/private/createEmitter';
 export { default as createSagaQueue, type SagaQueue } from '../services/private/createSagaQueue';
 export {

@@ -14,11 +14,13 @@ import createIncomingService, { type SuggestedActionsEmitter } from '../../servi
 import createNotificationsCell from '../../services/createNotificationsCell';
 import createOutgoingService from '../../services/createOutgoingService';
 import createSendBoxService from '../../services/createSendBoxService';
+import createVoiceService from '../../services/createVoiceService';
 import createEmitter from '../../services/private/createEmitter';
 import createSagaQueue from '../../services/private/createSagaQueue';
 import setSendBoxAttachments from '../../actions/setSendBoxAttachments';
 import submitSendBox from '../../actions/submitSendBox';
-import type { CreateDriver, Observation, Operations } from './runParityScript';
+import type { Source } from '../../services/types';
+import { describeVoiceHandlers, type CreateDriver, type Observation, type Operations } from './runParityScript';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
@@ -34,6 +36,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
   const notifications = createNotificationsCell({ ponyfill });
   const connection = createConnectionService({ notifications, ponyfill });
   const suggestedActions: SuggestedActionsEmitter = createEmitter();
+  const voice = createVoiceService();
   const incoming = createIncomingService({
     activitiesStore: {
       getSnapshot: activitiesStore.getSnapshot,
@@ -48,7 +51,8 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connection,
     ponyfill,
     queue,
-    suggestedActions
+    suggestedActions,
+    voice: voice.port
   });
   const outgoing = createOutgoingService({
     activitiesStore: {
@@ -89,16 +93,32 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connectivityStatus: connection.connectivityStatus.get(),
     dictateInterims: EMPTY_ARRAY,
     dictateState: 0,
-    microphoneMuted: false,
+    microphoneMuted: voice.microphoneMuted.get(),
     notifications: notifications.notifications.get(),
     referenceGrammarID: connection.referenceGrammarID.get(),
     sendBoxAttachments: sendBox.attachments.get(),
     sendBoxValue: sendBox.value.get(),
     sendTypingIndicator: sendBox.sendTypingIndicator.get(),
     shouldSpeakIncomingActivity: false,
-    voiceHandlers: EMPTY_ARRAY,
-    voiceState: 'idle'
+    voiceHandlers: describeVoiceHandlers(voice.voiceHandlers.get()),
+    voiceState: voice.voiceState.get()
   });
+
+  // A source of the voice: notified on every operation, recorded when its value changes.
+  const onChangeOf = <T>(
+    key: keyof Observation,
+    source: Source<T>,
+    describe: (value: T) => unknown = value => value
+  ) => {
+    let last = source.get();
+
+    return source.subscribe(() => {
+      const next = source.get();
+
+      Object.is(next, last) || onChange(key, describe(next));
+      last = next;
+    });
+  };
 
   // Records first: a listener that throws stops the listeners after it.
   const unsubscribes = [
@@ -109,6 +129,10 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     sendBox.attachments.subscribe(() => onChange('sendBoxAttachments', sendBox.attachments.get())),
     sendBox.value.subscribe(() => onChange('sendBoxValue', sendBox.value.get())),
     sendBox.sendTypingIndicator.subscribe(() => onChange('sendTypingIndicator', sendBox.sendTypingIndicator.get())),
+    // In the order the Redux driver compares them.
+    onChangeOf('microphoneMuted', voice.microphoneMuted),
+    onChangeOf('voiceHandlers', voice.voiceHandlers, describeVoiceHandlers),
+    onChangeOf('voiceState', voice.voiceState),
     connection.connectivityStatus.subscribe(() => {
       const connectivityStatus = connection.connectivityStatus.get();
 
@@ -118,14 +142,17 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     })
   ];
 
+  let numVoiceHandlers = 0;
+
   // As the api: the action creators validate and build the payloads.
   const ops: Operations = Object.freeze({
     clearSuggestedActions: () => suggestedActions.emit(EMPTY_ARRAY, undefined),
     emitTypingIndicator: () => outgoing.emitTypingIndicator(),
     markActivity: ({ id }, name, value) => activitiesStore.markActivity(id, name, value),
     postActivity: (activity, method) => outgoing.postActivity(activity, method),
-    postVoiceActivity: notBuiltYet,
-    registerVoiceHandler: () => notBuiltYet,
+    postVoiceActivity: activity => outgoing.postVoiceActivity(activity),
+    // As the api: a new ID for each handler.
+    registerVoiceHandler: voiceHandler => voice.registerVoiceHandler(`v${++numVoiceHandlers}`, voiceHandler),
     sendEvent: (name, value) => outgoing.sendEvent(sendEvent(name, value).payload),
     sendFiles: files => outgoing.sendFiles(sendFiles(files).payload),
     sendMessage: (text, method, init) => outgoing.sendMessage(sendMessage(text, method, init).payload),
@@ -135,19 +162,19 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     setDictateInterims: notBuiltYet,
     setDictateState: notBuiltYet,
     setLanguage: language => outgoing.setLocale(language),
-    setMuted: notBuiltYet,
+    setMuted: muted => voice.setMuted(muted),
     setSendBox: text => sendBox.setValue(text),
     setSendBoxAttachments: attachments =>
       sendBox.setAttachments(setSendBoxAttachments(attachments).payload.attachments),
     setSendTimeout: sendTimeout => outgoing.setSendTimeout(sendTimeout),
     setSendTypingIndicator: value => sendBox.setSendTypingIndicator(value),
-    setVoiceState: notBuiltYet,
+    setVoiceState: voiceState => voice.setVoiceState(voiceState as Parameters<typeof voice.setVoiceState>[0]),
     startDictate: notBuiltYet,
     startSpeakingActivity: notBuiltYet,
-    startVoice: notBuiltYet,
+    startVoice: () => voice.startVoice(),
     stopDictate: notBuiltYet,
     stopSpeakingActivity: notBuiltYet,
-    stopVoice: notBuiltYet,
+    stopVoice: () => voice.stopVoice(),
     submitSendBox: (method, init) =>
       sendBox.submit(submitSendBox(method, init && { channelData: init.channelData }).payload)
   });

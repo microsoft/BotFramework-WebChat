@@ -9,6 +9,7 @@ import type { ConnectionService, ConnectionSession } from './createConnectionSer
 import type { IncomingService, SuggestedActionsEmitter } from './createIncomingService';
 import createEmitter from './private/createEmitter';
 import createOutgoingActivity from './private/createOutgoingActivity';
+import createVoiceActivity from './private/createVoiceActivity';
 import createSagaQueue, { type SagaQueue } from './private/createSagaQueue';
 import {
   eventToActivity,
@@ -47,6 +48,11 @@ type OutgoingService = {
   readonly onPost: (listener: PostListener) => () => void;
   /** Posts the activity, as `POST_ACTIVITY`: dropped while offline. */
   readonly postActivity: (activity: WebChatActivity, method?: string) => void;
+  /**
+   * Posts a voice activity of speech-to-speech, as `VOICE_POST_ACTIVITY`: while online, fire and forget (not in the
+   * transcript, no echo, no timeout, no client capabilities, not counted as a post).
+   */
+  readonly postVoiceActivity: (activity: WebChatActivity) => void;
   readonly sendEvent: (payload: SendEventPayload) => void;
   readonly sendFiles: (payload: SendFilesPayload) => void;
   readonly sendMessage: (payload: SendMessagePayload) => void;
@@ -76,17 +82,27 @@ type Session = ConnectionSession & {
   readonly inFlight: Set<Post>;
   numActivitiesPosted: number;
   stopped: boolean;
+  /** The voice posts not returned yet. */
+  readonly voicePosts: Set<VoicePost>;
+};
+
+type VoicePost = {
+  /** `true` once the post returned, completed or failed. */
+  settled: boolean;
+  subscription?: { unsubscribe(): void } | undefined;
 };
 
 /**
  * The outgoing activities without Redux: the same observable behaviour as `postActivitySaga`, the
- * `send*ToPostActivitySaga`, `emitTypingIndicatorToPostActivitySaga` and `clearSuggestedActionsOnPostActivitySaga`,
- * including the calls made to Direct Line and their order.
+ * `send*ToPostActivitySaga`, `emitTypingIndicatorToPostActivitySaga`, `clearSuggestedActionsOnPostActivitySaga` and
+ * `postVoiceActivitySaga`, including the calls made to Direct Line and their order.
  *
  * While online, a post: adds the activity as "sending", calls `postActivity()` of Direct Line, then waits for both its
  * return and the echo (an incoming activity with the same client activity ID and an ID): "sent". After the send timeout
  * (20 s by default), "send failed" in `channelData.state` only; after 5 minutes, "send failed". An error of Direct Line
  * is "send failed" too. Going offline, the posts in flight are "send failed".
+ *
+ * A voice post (speech-to-speech) only calls `postActivity()` of Direct Line, while online: an error is logged.
  *
  * Quirks kept on purpose, as in Redux mode (to fix in both modes later):
  *
@@ -96,7 +112,9 @@ type Session = ConnectionSession & {
  * - a post cancelled when going offline is "send failed" without an error in the console;
  * - when "sent" cannot be written, the post is reported as failed; when "sending" cannot be written, everything stops;
  * - the typing activity is posted as any other (sending, echo, timeouts);
- * - the operations other than `sendMessage()` post with the method "keyboard".
+ * - the operations other than `sendMessage()` post with the method "keyboard";
+ * - voice posts: dropped while offline, without an error; going offline unsubscribes them, without an error; they are
+ *   not the first post (no `ClientCapabilities` on them, and the next post still carries it).
  *
  * Not kept: the send timers are cleared when the post completes (the saga left them running, unused).
  */
@@ -337,6 +355,12 @@ export default function createOutgoingService({
         record.subscription = undefined;
       }
 
+      // Then the voice posts in flight (postVoiceActivitySaga is forked after postActivitySaga), without an error.
+      for (const voicePost of Array.from(current.voicePosts)) {
+        current.voicePosts.delete(voicePost);
+        voicePost.subscription?.unsubscribe();
+      }
+
       // The echo listeners of this session.
       echoListeners.clear();
     }
@@ -355,7 +379,13 @@ export default function createOutgoingService({
   };
 
   connection.onOnline((online: ConnectionSession) => {
-    const current: Session = { ...online, inFlight: new Set(), numActivitiesPosted: 0, stopped: false };
+    const current: Session = {
+      ...online,
+      inFlight: new Set(),
+      numActivitiesPosted: 0,
+      stopped: false,
+      voicePosts: new Set()
+    };
 
     session = current;
 
@@ -387,12 +417,62 @@ export default function createOutgoingService({
       }
     });
 
+  const failVoicePost = (error: unknown) =>
+    console.error('botframework-webchat: Failed to post voice activity to chat adapter.', error);
+
+  // postVoiceActivitySaga: while online, posts and waits for the first value, the completion or the error, as
+  // `observeOnce()`: it unsubscribes a turn later, then logs the error, if any. Going offline unsubscribes it, silently.
+  const postVoiceActivity = (activity: WebChatActivity) => {
+    const current = session;
+
+    if (!current) {
+      return;
+    }
+
+    const voicePost: VoicePost = { settled: false };
+
+    const settle = (error?: { readonly error: unknown }) => {
+      if (!voicePost.settled) {
+        voicePost.settled = true;
+
+        Promise.resolve().then(() => {
+          if (current.voicePosts.delete(voicePost)) {
+            voicePost.subscription?.unsubscribe();
+            error && failVoicePost(error.error);
+          }
+        });
+      }
+    };
+
+    try {
+      const voiceActivity = createVoiceActivity({
+        activity,
+        locale,
+        now: new ponyfill.Date(),
+        userID: current.userID,
+        username: current.username
+      });
+
+      current.voicePosts.add(voicePost);
+
+      voicePost.subscription = current.directLine.postActivity(voiceActivity as DirectLineActivity).subscribe({
+        complete: () => settle(),
+        error: (error: unknown) => settle({ error }),
+        next: () => settle()
+      });
+    } catch (error) {
+      current.voicePosts.delete(voicePost);
+      failVoicePost(error);
+    }
+  };
+
   return Object.freeze({
     batch,
     emitTypingIndicator: () => postActivity({ type: 'typing' } as WebChatActivity),
     onPending: pendingEmitter.subscribe,
     onPost: postEmitter.subscribe,
     postActivity,
+    postVoiceActivity,
     sendEvent: (payload: SendEventPayload) =>
       whileOnline(() => hasEventToSend(payload) && postActivity(eventToActivity(payload))),
     sendFiles: (payload: SendFilesPayload) =>
