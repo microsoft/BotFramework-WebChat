@@ -11,6 +11,8 @@ import {
   createOutgoingService,
   createSagaQueue,
   createSendBoxService,
+  createSpeechService,
+  createVoiceService,
   type ActivitiesStore,
   type Notify,
   type SuggestedActionsEmitter
@@ -24,7 +26,6 @@ import { countProviderMount } from '../internalDefaultMode';
 import DefaultDomainProviders from './DefaultDomainProviders';
 import DefaultSessionEffects from './DefaultSessionEffects';
 import createGraphStoreFromActivitiesStore from './private/createGraphStoreFromActivitiesStore';
-import { warnIncompleteOnce } from './private/warnPlaceholderOnce';
 
 const defaultProvidersPropsSchema = pipe(
   object({
@@ -53,8 +54,8 @@ const notify: Notify = callListeners => unstable_batchedUpdates(callListeners);
 
 /**
  * The providers of `<Composer>` without Redux: suggested actions, activities from the activities store, connectivity,
- * notifications, outgoing activities and the send box from the services, and the domain contexts. Internal and for tests
- * only, until every domain is built: speech and voice are placeholders.
+ * notifications, outgoing activities, the send box, speech and voice from the services, and the domain contexts.
+ * Internal: the default providers are used only when switched on for tests, until they become the default.
  */
 function DefaultProviders(props: DefaultProvidersProps) {
   const {
@@ -78,8 +79,16 @@ function DefaultProviders(props: DefaultProvidersProps) {
     const connection = createConnectionService({ notifications, notify, ponyfill });
     // Set by the incoming activities, cleared by the outgoing messages and clearSuggestedActions().
     const suggestedActions: SuggestedActionsEmitter = createEmitter();
-    const incoming = createIncomingService({ activitiesStore, connection, ponyfill, queue, suggestedActions });
-    // Started when online in this order, as the sagas: outgoing activities, then the send box.
+    const voice = createVoiceService({ notify });
+    const incoming = createIncomingService({
+      activitiesStore,
+      connection,
+      ponyfill,
+      queue,
+      suggestedActions,
+      voice: voice.port
+    });
+    // Started when online in this order, as the sagas: outgoing activities, the send box, then speech.
     const outgoing = createOutgoingService({
       activitiesStore,
       connection,
@@ -97,10 +106,14 @@ function DefaultProviders(props: DefaultProvidersProps) {
       ponyfill,
       queue
     });
+    const speech = createSpeechService({ activitiesStore, connection, incoming, notify, queue });
     const testHandle = Object.freeze({
       getActivities: () => activitiesStore.getSnapshot().sortedActivities,
       getConnectivityStatus: () => connection.connectivityStatus.get(),
+      getDictateState: () => speech.dictateState.get(),
+      getMicrophoneMuted: () => voice.microphoneMuted.get(),
       getSendBoxValue: () => sendBox.value.get(),
+      getVoiceState: () => voice.voiceState.get(),
       postActivity: (activity, method?: string) => outgoing.postActivity(activity, method)
     });
 
@@ -111,8 +124,10 @@ function DefaultProviders(props: DefaultProvidersProps) {
       notifications,
       outgoing,
       sendBox,
+      speech,
       suggestedActions,
-      testHandle
+      testHandle,
+      voice
     });
   }, [activitiesStoreFromProps, ponyfill]);
 
@@ -123,7 +138,6 @@ function DefaultProviders(props: DefaultProvidersProps) {
 
   useEffect(() => {
     countProviderMount('default');
-    warnIncompleteOnce();
   }, []);
 
   return (
@@ -131,12 +145,13 @@ function DefaultProviders(props: DefaultProvidersProps) {
       <SuggestedActionsSubscriber subscribe={services.suggestedActions.subscribe}>
         <GraphProvider store={graphStore}>
           <DefaultDomainProviders
-            activitiesStore={services.activitiesStore}
             connection={services.connection}
             notifications={services.notifications}
             outgoing={services.outgoing}
             sendBox={services.sendBox}
+            speech={services.speech}
             suggestedActions={services.suggestedActions}
+            voice={services.voice}
           >
             <DefaultSessionEffects
               connection={services.connection}

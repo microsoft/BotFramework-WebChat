@@ -21,6 +21,11 @@ function mockFunctionsOf(moduleName: string): Record<string, unknown> {
 jest.mock('redux', () => mockFunctionsOf('redux'));
 jest.mock('redux-saga', () => mockFunctionsOf('redux-saga'));
 
+// No microphone in the tests: speech-to-speech records nothing (both modes).
+jest.mock('../providers/SpeechToSpeech/private/useRecorder', () => ({
+  useRecorder: () => ({ mute: () => () => undefined, record: () => () => undefined })
+}));
+
 import { act, render } from '@testing-library/react';
 import { createStore as createWebChatStore, type WebChatActivity } from 'botframework-webchat-core';
 import lolex from 'lolex';
@@ -34,10 +39,18 @@ import Composer from './Composer';
 import { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import useActivities from './useActivities';
 import useConnectivityStatus from './useConnectivityStatus';
+import useDictateInterims from './useDictateInterims';
+import useDictateState from './useDictateState';
 import useNotifications from './useNotifications';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useSendBoxValue from './useSendBoxValue';
+import useShouldSpeakIncomingActivity from './useShouldSpeakIncomingActivity';
 import useSuggestedActions from './useSuggestedActions';
+import useVoiceRecordingMuted from './useVoiceRecordingMuted';
+import useVoiceState from './useVoiceState';
+import usePostVoiceActivity from './internal/usePostVoiceActivity';
+import useRegisterVoiceHandler from './internal/useRegisterVoiceHandler';
+import useVoiceHandlers from './internal/useVoiceHandlers';
 
 // A Direct Line that logs the calls made to it, in order. `connectionStatus$` replays the current status, as DirectLineJS.
 function createScriptedDirectLine(name: string, calls: string[]) {
@@ -692,5 +705,285 @@ describe('sending with the default providers', () => {
       ['clear a third time', 0],
       ['unmount', 0]
     ]);
+  });
+});
+
+describe('speech and voice with the default providers', () => {
+  async function flush() {
+    for (let index = 0; index < 20; index++) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.resolve();
+    }
+  }
+  // The same script in each mode, through the public hooks and <Composer>: a spoken bot message expecting input, the
+  // end of its speech, the dictation (as <Dictation> calls the hooks), a card action while the dictation will start,
+  // typing while speaking, then speech-to-speech (a handler, start, audio, mute, stop, a voice post).
+  async function runSpeechScript(mode: 'default' | 'redux') {
+    const calls: string[] = [];
+    const clock = lolex.createClock();
+    const contexts: WebChatAPIContextType[] = [];
+    const activityObservers = new Set<{ next?: (value: unknown) => void }>();
+    const posts: { activity: any; observer?: any }[] = [];
+    const renders: unknown[] = [];
+    const steps: unknown[] = [];
+    const voice: {
+      postVoiceActivity?: (activity: WebChatActivity) => void;
+      registerVoiceHandler?: (handler: any) => () => void;
+      setMuted?: (muted: boolean) => void;
+    } = {};
+
+    setInternalDefaultModeEnabled(mode === 'default');
+
+    const directLine = {
+      activity$: {
+        subscribe: (observer: { next?: (value: unknown) => void }) => {
+          activityObservers.add(observer);
+
+          return { unsubscribe: () => activityObservers.delete(observer) };
+        }
+      },
+      connectionStatus$: {
+        subscribe: (observer: { next?: (value: unknown) => void }) => {
+          observer.next?.(2);
+
+          return { unsubscribe: () => undefined };
+        }
+      },
+      end: () => calls.push('end()'),
+      postActivity: (activity: any) => {
+        const post: { activity: any; observer?: any } = { activity };
+        const n = posts.push(post);
+
+        calls.push(`postActivity#${n}(${activity.type}:${activity.text ?? activity.name ?? ''})`);
+
+        return {
+          subscribe: (observer: any) => {
+            post.observer = observer;
+
+            return { unsubscribe: () => calls.push(`post#${n}.unsubscribe`) };
+          }
+        };
+      },
+      setUserId: () => undefined
+    };
+
+    const emitActivity = (activity: unknown) =>
+      Array.from(activityObservers).forEach(observer => observer.next?.(activity));
+
+    const HookProbe = memo(() => {
+      const [activities] = useActivities();
+      const [dictateInterims] = useDictateInterims();
+      const [dictateState] = useDictateState();
+      const [sendBoxValue] = useSendBoxValue();
+      const [shouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
+      const [suggestedActions] = useSuggestedActions();
+
+      renders.push({
+        activities: activities.map(({ channelData, id, text, type }: any) => ({
+          id,
+          sendStatus: channelData?.['webchat:send-status'],
+          speak: channelData?.speak,
+          text,
+          type
+        })),
+        dictateInterims,
+        dictateState,
+        sendBoxValue,
+        shouldSpeakIncomingActivity,
+        suggestedActions: suggestedActions.length
+      });
+
+      return null;
+    });
+
+    const VoiceProbe = memo(() => {
+      const [microphoneMuted, setMuted] = useVoiceRecordingMuted();
+      const [voiceHandlers] = useVoiceHandlers();
+      const [voiceState] = useVoiceState();
+
+      voice.postVoiceActivity = usePostVoiceActivity();
+      voice.registerVoiceHandler = useRegisterVoiceHandler();
+      voice.setMuted = setMuted;
+
+      renders.push({ microphoneMuted, voiceHandlers: voiceHandlers.size, voiceState });
+
+      return null;
+    });
+
+    const result = render(
+      <Composer directLine={directLine} ponyfill={{ ...clock }} sendTypingIndicator={true} userID="u-1" username="User">
+        {(context: WebChatAPIContextType) => {
+          contexts.push(context);
+
+          return (
+            <React.Fragment>
+              <HookProbe />
+              <VoiceProbe />
+            </React.Fragment>
+          );
+        }}
+      </Composer>
+    );
+
+    const step = async (label: string, fn?: () => void) => {
+      act(() => {
+        fn?.();
+      });
+
+      await flush();
+
+      steps.push({ calls: calls.splice(0), label, renders: renders.splice(0) });
+    };
+
+    const context = () => contexts.at(-1);
+    const sendAll = () =>
+      posts.forEach(({ activity, observer }, index) => {
+        observer?.next(`a${index + 1}`);
+        activity.type === 'message' &&
+          emitActivity({ ...activity, id: `a${index + 1}`, timestamp: new Date((index + 1) * 1_000).toISOString() });
+      });
+    const botMessage = (id: string, inputHint: string, extra: Record<string, unknown> = {}) => ({
+      from: { id: 'bot', role: 'bot' },
+      id,
+      inputHint,
+      text: id,
+      timestamp: new Date(500).toISOString(),
+      type: 'message',
+      ...extra
+    });
+
+    await step('mount, online');
+    await step('speak incoming', () => context().startSpeakingActivity());
+    await step('bot expecting input, with suggested actions', () =>
+      emitActivity(
+        botMessage('b1', 'expectingInput', {
+          suggestedActions: { actions: [{ title: 'Hi', type: 'imBack', value: 'Hi' }] }
+        })
+      )
+    );
+    await step('speech ends', () => context().markActivity({ id: 'b1' }, 'speak', false));
+    await step('dictating', () => {
+      context().setDictateInterims(['hel']);
+      context().setDictateState(3);
+    });
+    await step('recognized', () => {
+      context().setDictateInterims([]);
+      context().setSendBox('hello');
+      context().submitSendBox('speech');
+      context().startSpeakingActivity();
+    });
+    await step('return, echo', sendAll);
+    await step('dictation ends', () => {
+      context().setDictateState(0);
+      context().stopDictate();
+    });
+    await step('bot expecting input again', () => emitActivity(botMessage('b2', 'expectingInput')));
+    await step('card action while will start', () =>
+      context().onCardAction({ title: 'card', type: 'imBack', value: 'card' })
+    );
+    await step('speech ends again', () => context().markActivity({ id: 'b2' }, 'speak', false));
+    await step('speak incoming, bot accepting input', () => {
+      context().startSpeakingActivity();
+      emitActivity(botMessage('b3', 'acceptingInput'));
+    });
+    await step('t=5000, type while speaking', () => {
+      clock.tick(5_000);
+      context().setSendBox('typed');
+    });
+    await step('microphone button: start dictate', () => {
+      context().stopSpeakingActivity();
+      context().startDictate();
+    });
+    await step('ignoring input stops the dictation', () => emitActivity(botMessage('b4', 'ignoringInput')));
+
+    const handlerCalls: string[] = [];
+    let unregister: () => void;
+
+    await step('register a voice handler', () => {
+      unregister = voice.registerVoiceHandler({
+        queueAudio: (content: string) => handlerCalls.push(`queueAudio(${content})`),
+        stopAllAudio: () => handlerCalls.push('stopAllAudio()')
+      });
+    });
+    await step('start voice', () => context().startVoice());
+    await step('audio, then user speaking', () => {
+      emitActivity({
+        from: { id: 'bot', role: 'bot' },
+        name: 'media.chunk',
+        type: 'event',
+        value: { content: 'AAAA' },
+        valueType: 'azure.directline.audio.chunk'
+      });
+      emitActivity({
+        from: { id: 'bot', role: 'bot' },
+        name: 'request.update',
+        type: 'event',
+        value: { state: 'detected' },
+        valueType: 'azure.directline.audio.state'
+      });
+    });
+    await step('voice post, mute', () => {
+      voice.postVoiceActivity({ name: 'media.chunk', type: 'event', value: { content: 'BBBB' } } as any);
+      voice.setMuted(true);
+    });
+    await step('stop voice', () => context().stopVoice());
+    await step('unregister', () => unregister());
+    await step('unmount', () => result.unmount());
+
+    return { handlerCalls, steps };
+  }
+
+  test('should show the same as Redux mode, with the same renders and calls to Direct Line', async () => {
+    const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const redux = await runSpeechScript('redux');
+
+      jest.clearAllMocks();
+
+      const defaultMode = await runSpeechScript('default');
+
+      expect(defaultMode).toEqual(redux);
+      expect(getReduxCalls()).toEqual([]);
+      // No placeholder, no "for tests only": no warning at all.
+      expect(warn).not.toHaveBeenCalled();
+
+      // What it shows, to read the comparison: the number of renders of each step, and the dictate states.
+      expect(
+        defaultMode.steps.map(({ label, renders }: any) => [
+          label,
+          renders.length,
+          renders.filter(render => 'dictateState' in render).map(({ dictateState }) => dictateState)
+        ])
+      ).toEqual([
+        ['mount, online', 2, [0]],
+        ['speak incoming', 1, [0]],
+        // Received, marked, suggested actions (actions, origin), then "will start".
+        ['bot expecting input, with suggested actions', 5, [0, 0, 0, 0, 1]],
+        ['speech ends', 1, [2]],
+        ['dictating', 1, [3]],
+        ['recognized', 1, [3]],
+        ['return, echo', 2, [3, 3]],
+        ['dictation ends', 1, [0]],
+        ['bot expecting input again', 3, [0, 0, 1]],
+        ['card action while will start', 1, [0]],
+        ['speech ends again', 1, [0]],
+        ['speak incoming, bot accepting input', 3, [0, 0, 0]],
+        ['t=5000, type while speaking', 1, [0]],
+        ['microphone button: start dictate', 1, [2]],
+        ['ignoring input stops the dictation', 2, [2, 4]],
+        // The handlers change stopVoice() of <Composer>: every reader of its context renders, in both modes.
+        ['register a voice handler', 2, [4]],
+        ['start voice', 1, []],
+        ['audio, then user speaking', 1, []],
+        ['voice post, mute', 1, []],
+        ['stop voice', 1, []],
+        ['unregister', 2, [4]],
+        ['unmount', 0, []]
+      ]);
+      expect(defaultMode.handlerCalls).toEqual(['queueAudio(AAAA)', 'stopAllAudio()', 'stopAllAudio()']);
+    } finally {
+      error.mockRestore();
+    }
   });
 });

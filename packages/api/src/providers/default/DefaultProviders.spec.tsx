@@ -12,6 +12,7 @@ import React, { memo, type ReactNode } from 'react';
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
 import { useSpeechContext } from '../../hooks/internal/domains/SpeechContext';
 import { useVoiceContext } from '../../hooks/internal/domains/VoiceContext';
+import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import useActivities from '../../hooks/useActivities';
 import useConnectivityStatus from '../../hooks/useConnectivityStatus';
 import useNotifications from '../../hooks/useNotifications';
@@ -392,7 +393,7 @@ describe('<DefaultProviders>', () => {
     expect(states.at(-1)[2]).toEqual({ activity: undefined });
   });
 
-  test('should provide placeholders with the initial values of the Redux store, and warn once in development', () => {
+  test('should provide speech and voice with the initial values of the Redux store, and warn nothing', () => {
     const renders: unknown[] = [];
     const reduxState = createStoreWithOptions({ ponyfill: PONYFILL }).getState();
 
@@ -402,10 +403,16 @@ describe('<DefaultProviders>', () => {
 
       renders.push({
         connectivityStatus: useConnectivityStatus()[0],
+        dictateInterims: useSourceValue(speech.dictateInterims),
+        dictateState: useSourceValue(speech.dictateState),
+        microphoneMuted: useSourceValue(voice.microphoneMuted),
         notifications: useNotifications()[0],
         sendBoxValue: useSendBoxValue()[0],
+        shouldSpeakIncomingActivity: useSourceValue(speech.shouldSpeakIncomingActivity),
         speech,
-        voice
+        voice,
+        voiceHandlers: useSourceValue(voice.voiceHandlers),
+        voiceState: useSourceValue(voice.voiceState)
       });
 
       return null;
@@ -422,22 +429,27 @@ describe('<DefaultProviders>', () => {
       </PonyfillComposer>
     );
 
-    const [{ connectivityStatus, notifications, sendBoxValue, speech, voice }] = renders as any[];
+    const [first] = renders as any[];
 
-    expect(connectivityStatus).toBe(reduxState.connectivityStatus);
-    expect(notifications).toEqual(reduxState.notifications);
-    expect(sendBoxValue).toBe(reduxState.sendBoxValue);
+    expect(first.connectivityStatus).toBe(reduxState.connectivityStatus);
+    expect(first.notifications).toEqual(reduxState.notifications);
+    expect(first.sendBoxValue).toBe(reduxState.sendBoxValue);
+    expect(first.dictateInterims).toEqual(reduxState.dictateInterims);
+    expect(first.dictateState).toBe(reduxState.dictateState);
+    expect(first.shouldSpeakIncomingActivity).toBe(reduxState.shouldSpeakIncomingActivity);
+    expect(first.microphoneMuted).toBe(reduxState.voice.microphoneMuted);
+    expect(first.voiceHandlers).toEqual(reduxState.voice.voiceHandlers);
+    expect(first.voiceState).toBe(reduxState.voice.voiceState);
 
-    expect(speech.startDictate()).toBeUndefined();
-    speech.startDictate();
-    expect(typeof voice.registerVoiceHandler({})).toBe('function');
+    // The operations work, and return what dispatch() returns in Redux mode.
+    act(() => expect(first.speech.startDictate()).toEqual({ type: 'WEB_CHAT/START_DICTATE' }));
+    act(() => expect(first.voice.startVoice()).toBeUndefined());
 
-    const messages = warn.mock.calls.map(([message]) => message);
+    expect((renders.at(-1) as any).dictateState).toBe(2);
+    expect((renders.at(-1) as any).voiceState).toBe('listening');
 
-    expect(messages.filter(message => message.includes('"startDictate"'))).toHaveLength(1);
-    expect(messages.filter(message => message.includes('"registerVoiceHandler"'))).toHaveLength(1);
-
-    // Last test of the file: <DefaultProviders> mounted many times, and warned once.
-    expect(allWarnings.filter(message => message.includes('for tests only'))).toHaveLength(1);
+    // Last test of the file: <DefaultProviders> mounted many times, and warned nothing of its own (the other warnings are
+    // the deprecation of deleting activities, from the sequences above).
+    expect(allWarnings.filter(message => !message.includes('Delete activity is being deprecated'))).toEqual([]);
   });
 });

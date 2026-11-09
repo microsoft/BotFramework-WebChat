@@ -10,19 +10,29 @@ import {
   sendMessage,
   sendMessageBack,
   sendPostBack,
+  setDictateInterims,
+  setDictateState,
   setSendBox,
   setSendBoxAttachments,
   setSendTimeout,
-  submitSendBox
+  startDictate,
+  startSpeakingActivity,
+  stopDictate,
+  stopSpeakingActivity,
+  submitSendBox,
+  type VoiceHandler,
+  type VoiceState,
+  type WebChatActivity
 } from 'botframework-webchat-core';
 import {
   createCompatibilityDispatch,
-  type ActivitiesStore,
   type ConnectionService,
   type NotificationsCell,
   type OutgoingService,
   type SendBoxService,
-  type SuggestedActionsEmitter
+  type SpeechService,
+  type SuggestedActionsEmitter,
+  type VoiceService
 } from 'botframework-webchat-core/internal.js';
 import React, { memo, useMemo } from 'react';
 import { custom, function_, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
@@ -33,13 +43,12 @@ import ChatOperationsContext, {
 import ConnectivityContext, { type ConnectivityContextType } from '../../hooks/internal/domains/ConnectivityContext';
 import NotificationsContext, { type NotificationsContextType } from '../../hooks/internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
-import DefaultDomainPlaceholders from './DefaultDomainPlaceholders';
+import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
+import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
+import randomId from '../../utils/randomId';
 
 const defaultDomainProvidersPropsSchema = pipe(
   object({
-    activitiesStore: custom<Pick<ActivitiesStore, 'markActivity'>>(value =>
-      is(object({ markActivity: function_() }), value)
-    ),
     children: optional(reactNode()),
     connection: custom<Pick<ConnectionService, 'connectivityStatus' | 'referenceGrammarID'>>(value =>
       is(object({ connectivityStatus: object({}), referenceGrammarID: object({}) }), value)
@@ -51,7 +60,13 @@ const defaultDomainProvidersPropsSchema = pipe(
       is(object({ postActivity: function_(), whileOnline: function_() }), value)
     ),
     sendBox: custom<SendBoxService>(value => is(object({ setValue: function_(), submit: function_() }), value)),
-    suggestedActions: custom<SuggestedActionsEmitter>(value => is(object({ emit: function_() }), value))
+    speech: custom<SpeechService>(value =>
+      is(object({ markActivity: function_(), setDictateState: function_() }), value)
+    ),
+    suggestedActions: custom<SuggestedActionsEmitter>(value => is(object({ emit: function_() }), value)),
+    voice: custom<VoiceService>(value =>
+      is(object({ registerVoiceHandler: function_(), startVoice: function_() }), value)
+    )
   }),
   readonly()
 );
@@ -59,14 +74,15 @@ const defaultDomainProvidersPropsSchema = pipe(
 type DefaultDomainProvidersProps = InferInput<typeof defaultDomainProvidersPropsSchema>;
 
 /**
- * The domain contexts of the default providers: connectivity, notifications, chat operations and the send box from the
- * services, placeholders for the domains not built yet (speech and voice).
+ * The domain contexts of the default providers, from the services: connectivity, notifications, chat operations, the
+ * send box, speech and voice.
  *
  * The operations build their payloads with the action creators of the same names (which validate them, and throw as in
- * Redux mode), and return the action, as `dispatch()` does in Redux mode.
+ * Redux mode), and return the action, as `dispatch()` does in Redux mode. The voice operations return nothing, as in
+ * Redux mode.
  */
 function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
-  const { activitiesStore, children, connection, notifications, outgoing, sendBox, suggestedActions } = validateProps(
+  const { children, connection, notifications, outgoing, sendBox, speech, suggestedActions, voice } = validateProps(
     defaultDomainProvidersPropsSchema,
     props
   );
@@ -89,7 +105,8 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
             payload: { activityID, name, value }
           } = action;
 
-          activitiesStore.markActivity(activityID, name, value);
+          // Through speech: every mark may start the dictation, as MARK_ACTIVITY goes through its saga.
+          speech.markActivity({ id: activityID }, name, value);
 
           return action;
         },
@@ -143,7 +160,7 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
           return action;
         }
       }) as unknown as ChatOperationsContextType,
-    [activitiesStore, outgoing, suggestedActions]
+    [outgoing, speech, suggestedActions]
   );
 
   const connectivityContext = useMemo<ConnectivityContextType>(
@@ -205,12 +222,85 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
     [outgoing, sendBox]
   );
 
+  const speechContext = useMemo<SpeechContextType>(
+    () =>
+      Object.freeze({
+        dictateInterims: speech.dictateInterims as SpeechContextType['dictateInterims'],
+        dictateState: speech.dictateState,
+        setDictateInterims: (...args: Parameters<typeof setDictateInterims>) => {
+          const action = setDictateInterims(...args);
+
+          speech.setDictateInterims(action.payload.dictateInterims);
+
+          return action;
+        },
+        setDictateState: (...args: Parameters<typeof setDictateState>) => {
+          const action = setDictateState(...args);
+
+          speech.setDictateState(action.payload.dictateState);
+
+          return action;
+        },
+        shouldSpeakIncomingActivity: speech.shouldSpeakIncomingActivity,
+        startDictate: () => {
+          speech.startDictate();
+
+          return startDictate();
+        },
+        startSpeakingActivity: () => {
+          speech.startSpeakingActivity();
+
+          return startSpeakingActivity();
+        },
+        stopDictate: () => {
+          speech.stopDictate();
+
+          return stopDictate();
+        },
+        stopSpeakingActivity: () => {
+          speech.stopSpeakingActivity();
+
+          return stopSpeakingActivity();
+        }
+      }) as unknown as SpeechContextType,
+    [speech]
+  );
+
+  const voiceContext = useMemo<VoiceContextType>(
+    () =>
+      Object.freeze({
+        microphoneMuted: voice.microphoneMuted,
+        postVoiceActivity: (activity: WebChatActivity) => {
+          outgoing.postVoiceActivity(activity);
+        },
+        // A new ID for each handler, as in Redux mode.
+        registerVoiceHandler: (voiceHandler: VoiceHandler) => voice.registerVoiceHandler(randomId(), voiceHandler),
+        setMuted: (muted: boolean) => {
+          voice.setMuted(muted);
+        },
+        setVoiceState: (voiceState: VoiceState) => {
+          voice.setVoiceState(voiceState);
+        },
+        startVoice: () => {
+          voice.startVoice();
+        },
+        stopVoice: () => {
+          voice.stopVoice();
+        },
+        voiceHandlers: voice.voiceHandlers,
+        voiceState: voice.voiceState
+      }),
+    [outgoing, voice]
+  );
+
   return (
     <ChatOperationsContext.Provider value={chatOperationsContext}>
       <ConnectivityContext.Provider value={connectivityContext}>
         <NotificationsContext.Provider value={notificationsContext}>
           <SendBoxContext.Provider value={sendBoxContext}>
-            <DefaultDomainPlaceholders>{children}</DefaultDomainPlaceholders>
+            <SpeechContext.Provider value={speechContext}>
+              <VoiceContext.Provider value={voiceContext}>{children}</VoiceContext.Provider>
+            </SpeechContext.Provider>
           </SendBoxContext.Provider>
         </NotificationsContext.Provider>
       </ConnectivityContext.Provider>

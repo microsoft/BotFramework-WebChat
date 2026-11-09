@@ -8,7 +8,13 @@ import { type DirectLineJSBotConnection, type WebChatActivity } from 'botframewo
 type TestHandle = {
   readonly getActivities: () => readonly WebChatActivity[];
   readonly getConnectivityStatus: () => string;
+  /** `DictateState`, as the `dictateState` of the Redux store. */
+  readonly getDictateState: () => number;
+  /** As `voice.microphoneMuted` of the Redux store. */
+  readonly getMicrophoneMuted: () => boolean;
   readonly getSendBoxValue: () => string;
+  /** As `voice.voiceState` of the Redux store. */
+  readonly getVoiceState: () => string;
   readonly postActivity: (activity: WebChatActivity, method?: string) => void;
 };
 
