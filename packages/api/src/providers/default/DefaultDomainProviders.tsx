@@ -1,4 +1,5 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { CLEARED_SUGGESTED_ACTIONS } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
   emitTypingIndicator,
@@ -57,8 +58,6 @@ const defaultDomainProvidersPropsSchema = pipe(
 
 type DefaultDomainProvidersProps = InferInput<typeof defaultDomainProvidersPropsSchema>;
 
-const NO_SUGGESTED_ACTIONS = Object.freeze([]);
-
 /**
  * The domain contexts of the default providers: connectivity, notifications, chat operations and the send box from the
  * services, placeholders for the domains not built yet (speech and voice).
@@ -78,7 +77,8 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
         clearSuggestedActions: () => {
           const action = clearSuggestedActions();
 
-          suggestedActions.emit(NO_SUGGESTED_ACTIONS, undefined);
+          // The array of a clear, so clearing again does not re-render, as in Redux mode.
+          suggestedActions.emit(CLEARED_SUGGESTED_ACTIONS, undefined);
 
           return action;
         },

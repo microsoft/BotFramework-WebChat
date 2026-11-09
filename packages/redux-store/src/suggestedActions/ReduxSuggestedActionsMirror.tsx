@@ -10,6 +10,7 @@ import { type Action } from 'redux';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
+import CLEARED_SUGGESTED_ACTIONS from './CLEARED_SUGGESTED_ACTIONS';
 import SuggestedActionsStateContext from './private/SuggestedActionsStateContext';
 
 const reduxSuggestedActionsMirrorPropsSchema = pipe(
@@ -21,8 +22,6 @@ const reduxSuggestedActionsMirrorPropsSchema = pipe(
 );
 
 type ReduxSuggestedActionsMirrorProps = InferInput<typeof reduxSuggestedActionsMirrorPropsSchema>;
-
-const EMPTY_ARRAY = Object.freeze([]);
 
 /**
  * Mirrors the suggested actions of `<SuggestedActionsComposer>` to the Redux store, and applies the set and clear
@@ -44,7 +43,7 @@ function ReduxSuggestedActionsMirror(props: ReduxSuggestedActionsMirrorProps) {
     (action: Action) => {
       if (action.type === CLEAR_SUGGESTED_ACTIONS) {
         setOriginActivity(undefined);
-        setSuggestedActionsRaw(EMPTY_ARRAY);
+        setSuggestedActionsRaw(CLEARED_SUGGESTED_ACTIONS);
       } else if (action.type === SET_SUGGESTED_ACTIONS) {
         const result = safeParse(setSuggestedActionsActionSchema, action);
 

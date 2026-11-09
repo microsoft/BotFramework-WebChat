@@ -3,6 +3,7 @@
 
 import { act, render } from '@testing-library/react';
 import {
+  clearSuggestedActions,
   createStore,
   setSuggestedActions,
   type DirectLineCardAction,
@@ -12,6 +13,7 @@ import React from 'react';
 import { object, parse } from 'valibot';
 
 import ReduxStoreComposer from '../ReduxStoreComposer';
+import CLEARED_SUGGESTED_ACTIONS from './CLEARED_SUGGESTED_ACTIONS';
 import SuggestedActionsComposer from './SuggestedActionsComposer';
 import SuggestedActionsSubscriber, { type SuggestedActionsListener } from './SuggestedActionsSubscriber';
 import useSuggestedActionsHooks from './useSuggestedActionsHooks';
@@ -99,4 +101,59 @@ test('sets the suggested actions as the Redux mirror does with SET_SUGGESTED_ACT
   mirrorResult.unmount();
 
   expect(listeners.size).toBe(0);
+});
+
+test('a clear keeps its array, as the Redux mirror does with CLEAR_SUGGESTED_ACTIONS: no re-render when cleared', () => {
+  const listeners = new Set<SuggestedActionsListener>();
+  const subscribe = (listener: SuggestedActionsListener) => {
+    listeners.add(listener);
+
+    return () => listeners.delete(listener);
+  };
+
+  const subscriberStates: SuggestedActionsState[] = [];
+  const mirrorStates: SuggestedActionsState[] = [];
+  const store = createStore();
+
+  const subscriberResult = render(
+    <SuggestedActionsComposer>
+      <SuggestedActionsSubscriber subscribe={subscribe}>
+        <SuggestedActionsProbe states={subscriberStates} />
+      </SuggestedActionsSubscriber>
+    </SuggestedActionsComposer>
+  );
+
+  const mirrorResult = render(
+    <ReduxStoreComposer store={store}>
+      <SuggestedActionsProbe states={mirrorStates} />
+    </ReduxStoreComposer>
+  );
+
+  const numRenders: [number, number][] = [];
+
+  // Clear, clear again, set, clear, clear again.
+  for (const actions of [undefined, undefined, CARD_ACTIONS, undefined, undefined]) {
+    const before: [number, number] = [subscriberStates.length, mirrorStates.length];
+
+    act(() =>
+      listeners.forEach(listener =>
+        actions ? listener(actions, ORIGIN_ACTIVITY) : listener(CLEARED_SUGGESTED_ACTIONS, undefined)
+      )
+    );
+    act(() => {
+      store.dispatch(actions ? setSuggestedActions(actions, ORIGIN_ACTIVITY) : clearSuggestedActions());
+    });
+
+    numRenders.push([subscriberStates.length - before[0], mirrorStates.length - before[1]]);
+
+    actions || expect(lastOf(subscriberStates)[0]).toBe(CLEARED_SUGGESTED_ACTIONS);
+    actions || expect(lastOf(mirrorStates)[0]).toBe(CLEARED_SUGGESTED_ACTIONS);
+  }
+
+  // The same renders on both sides, and none for a clear when already cleared.
+  expect(numRenders.map(([subscriber]) => subscriber)).toEqual(numRenders.map(([, mirror]) => mirror));
+  expect(numRenders.map(([subscriber]) => subscriber > 0)).toEqual([true, false, true, true, false]);
+
+  subscriberResult.unmount();
+  mirrorResult.unmount();
 });

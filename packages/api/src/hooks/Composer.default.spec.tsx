@@ -607,4 +607,90 @@ describe('sending with the default providers', () => {
       error.mockRestore();
     }
   });
+
+  // clearSuggestedActions() when there is nothing to clear: no re-render, as in Redux mode (the same empty array).
+  async function runClearScript(mode: 'default' | 'redux') {
+    const calls: string[] = [];
+    const contexts: WebChatAPIContextType[] = [];
+    const dl = createPostingDirectLine(calls);
+    const steps: unknown[] = [];
+    let numRenders = 0;
+    let suggestedActions: readonly unknown[] = [];
+
+    setInternalDefaultModeEnabled(mode === 'default');
+
+    const SuggestedActionsProbe = memo(() => {
+      [suggestedActions] = useSuggestedActions();
+      numRenders++;
+
+      return null;
+    });
+
+    const result = render(
+      <Composer directLine={dl.directLine} userID="u-1" username="User">
+        {(context: WebChatAPIContextType) => {
+          contexts.push(context);
+
+          return <SuggestedActionsProbe />;
+        }}
+      </Composer>
+    );
+
+    const step = async (label: string, fn?: () => void) => {
+      act(() => {
+        fn?.();
+      });
+
+      await flush();
+
+      steps.push({ label, numActions: suggestedActions.length, renders: numRenders });
+      numRenders = 0;
+    };
+
+    const clear = () => contexts.at(-1).clearSuggestedActions();
+
+    await step('mount, online');
+    await step('clear with nothing to clear', clear);
+    await step('clear again', clear);
+    await step('bot message with suggested actions', () =>
+      dl.emitActivity({
+        from: { id: 'bot', role: 'bot' },
+        id: 'b1',
+        suggestedActions: { actions: [{ title: 'Hi', type: 'imBack', value: 'Hi' }] },
+        text: 'Hello',
+        timestamp: new Date(500).toISOString(),
+        type: 'message'
+      })
+    );
+    await step('clear', clear);
+    await step('clear again, nothing to clear', clear);
+    await step('clear a third time', clear);
+    await step('unmount', () => result.unmount());
+
+    return steps;
+  }
+
+  test('clearSuggestedActions() should re-render as in Redux mode, not when already cleared', async () => {
+    const redux = await runClearScript('redux');
+
+    jest.clearAllMocks();
+
+    const defaultMode = await runClearScript('default');
+
+    expect(defaultMode).toEqual(redux);
+    expect(getReduxCalls()).toEqual([]);
+
+    // What it shows, to read the comparison: a clear re-renders once, then not again (the origin and the actions of a
+    // set are 2 updates, outside a batch, in both modes).
+    expect(defaultMode.map(({ label, renders }: any) => [label, renders])).toEqual([
+      ['mount, online', expect.any(Number)],
+      ['clear with nothing to clear', 1],
+      ['clear again', 0],
+      ['bot message with suggested actions', 2],
+      ['clear', 1],
+      ['clear again, nothing to clear', 0],
+      ['clear a third time', 0],
+      ['unmount', 0]
+    ]);
+  });
 });

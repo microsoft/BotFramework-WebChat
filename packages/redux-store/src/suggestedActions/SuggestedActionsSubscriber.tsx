@@ -3,6 +3,7 @@ import { reactNode, validateProps } from '@msinternal/botframework-webchat-react
 import React, { Fragment, memo, useContext, useEffect } from 'react';
 import { custom, function_, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
+import CLEARED_SUGGESTED_ACTIONS from './CLEARED_SUGGESTED_ACTIONS';
 import SuggestedActionsStateContext from './private/SuggestedActionsStateContext';
 
 type SuggestedActionsListener = (
@@ -33,7 +34,13 @@ function SuggestedActionsSubscriber(props: SuggestedActionsSubscriberProps) {
     () =>
       subscribe((suggestedActions, originActivity) => {
         setOriginActivity(originActivity);
-        setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+        // A clear keeps its array (as `<ReduxSuggestedActionsMirror>` on `CLEAR_SUGGESTED_ACTIONS`): no re-render when
+        // already cleared. Any other set is a new array, as on `SET_SUGGESTED_ACTIONS`.
+        setSuggestedActionsRaw(
+          suggestedActions === CLEARED_SUGGESTED_ACTIONS
+            ? CLEARED_SUGGESTED_ACTIONS
+            : Object.freeze(Array.from(suggestedActions))
+        );
       }),
     [setOriginActivity, setSuggestedActionsRaw, subscribe]
   );
