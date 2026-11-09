@@ -3,35 +3,42 @@
 const { readFileSync } = require('fs');
 const { join } = require('path');
 
-// In default mode (`WEBCHAT_TEST_STORE_MODE=default`, Web Chat without Redux, for tests only), only the tests listed in
-// `../html2/default-mode.txt` run: the default providers do not do everything yet. Lines are globs relative to
-// `__tests__/html2/`, `!` excludes, `#` comments.
-function readDefaultModeList() {
+// In default mode (`WEBCHAT_TEST_STORE_MODE=default`, Web Chat without Redux, for tests only), the tests listed in
+// `../html2/default-mode.txt` run, except those listed in `../html2/redux-only.txt`, which need the Redux store (they run
+// in Redux mode only). Lines are globs relative to `__tests__/html2/`, `!` excludes (in default-mode.txt), `#` comments.
+function readList(name) {
   // eslint-disable-next-line security/detect-non-literal-fs-filename
-  return readFileSync(join(__dirname, '../html2/default-mode.txt'), 'utf8')
+  return readFileSync(join(__dirname, '../html2', name), 'utf8')
     .split('\n')
     .map(line => line.replace(/#.*/u, '').trim())
     .filter(Boolean);
 }
 
-// Exclusions, as `testPathIgnorePatterns` (Jest does not exclude with "!" in `testMatch`): "**" is any path, "*" any
-// characters but "/".
+// Exclusions, as `testPathIgnorePatterns` (Jest does not exclude with "!" in `testMatch`): "**/" is any folders (or
+// none), "**" any path, "*" any characters but "/".
 function globToPathPattern(glob) {
   const pattern = glob
-    .split('**')
-    .map(part =>
-      part
-        .split('*')
-        .map(text => text.replace(/[.+?^${}()|[\]\\]/gu, '\\$&'))
-        .join('[^/]*')
+    .split('**/')
+    .map(segment =>
+      segment
+        .split('**')
+        .map(part =>
+          part
+            .split('*')
+            .map(text => text.replace(/[.+?^${}()|[\]\\]/gu, '\\$&'))
+            .join('[^/]*')
+        )
+        .join('.*')
     )
-    .join('.*');
+    .join('(?:.*/)?');
 
   return `/__tests__/html2/${pattern}$`;
 }
 
 const defaultMode = process.env.WEBCHAT_TEST_STORE_MODE === 'default';
-const defaultModeList = defaultMode ? readDefaultModeList() : [];
+const defaultModeList = defaultMode
+  ? [...readList('default-mode.txt'), ...readList('redux-only.txt').map(glob => `!${glob}`)]
+  : [];
 
 module.exports = {
   displayName: { color: 'cyan', name: 'html2' },

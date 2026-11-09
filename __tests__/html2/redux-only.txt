@@ -1,0 +1,38 @@
+# html2 tests that never run in default mode (WEBCHAT_TEST_STORE_MODE=default: Web Chat without Redux). They run in Redux
+# mode only, as every other test. Globs relative to __tests__/html2/, "#" comments. The runner reads this file in default
+# mode only, after default-mode.txt.
+
+# Needs the Redux store of the host: what the test checks is the store itself, or it changes Web Chat through the store
+# in a way a host without a store cannot.
+
+# DELETE_ACTIVITY dispatched to the store.
+activity/deleteActivity.html
+# A second store created with the state of the first (rehydration).
+activityStatus/rehydrateSendFailedRetry.html
+# The debug API of the root element exists only with a store from the host.
+debugAPI/breakpoint/root.incomingActivity.html
+# Activities dispatched to the store before Web Chat subscribes to it.
+livestream/batchedActivities*.html
+# The same store across a remount.
+markdown/codeBlock/remount.html
+# Store middleware that dispatches an invalid action, for a fatal error.
+offlineUI/fatalError.html
+# The warning when the ponyfill of the store and the ponyfill prop differ.
+ponyfill/ponyfill.reactOnly.html
+ponyfill/ponyfill.reduxOnly.html
+# The suggested actions of the store: its actions and its state.
+store/**/*.html
+# Store middleware that sets a notification when connected.
+toast/accessibility.html
+toast/layout.html
+
+# Does not render Web Chat (<Composer>): nothing runs without Redux, and the runner would fail it in default mode (the
+# default providers never mount).
+boot/bundle*.html
+boot/deprecation/*.html
+boot/metaTag.directLine.*.html
+hooks/useInjectStylesElements/*.html
+markdown/vnext/streamingRenderer.html
+speech/mockSetup.html
+styleOptions/createAdaptiveCardsStyleSet.html
+withEmoji/**/*.html
