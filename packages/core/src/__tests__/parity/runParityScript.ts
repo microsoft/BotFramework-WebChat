@@ -14,6 +14,8 @@ type Observation = {
   readonly connectivityStatus: string;
   readonly dictateInterims: readonly string[];
   readonly dictateState: number;
+  /** Not a change: only in the state after each step (the services have no event for it). */
+  readonly language: string;
   readonly microphoneMuted: boolean;
   readonly notifications: Readonly<Record<string, unknown>>;
   readonly referenceGrammarID: string | null;

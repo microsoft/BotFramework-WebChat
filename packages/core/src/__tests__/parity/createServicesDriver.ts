@@ -93,6 +93,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connectivityStatus: connection.connectivityStatus.get(),
     dictateInterims: speech.dictateInterims.get(),
     dictateState: speech.dictateState.get(),
+    language: outgoing.getLocale(),
     microphoneMuted: voice.microphoneMuted.get(),
     notifications: notifications.notifications.get(),
     referenceGrammarID: connection.referenceGrammarID.get(),

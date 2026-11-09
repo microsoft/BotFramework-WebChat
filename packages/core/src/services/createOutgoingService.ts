@@ -39,6 +39,8 @@ type OutgoingService = {
   readonly batch: <T>(fn: () => T) => T;
   /** Posts the typing activity, as `EMIT_TYPING_INDICATOR`. */
   readonly emitTypingIndicator: () => void;
+  /** The locale of the activities posted, as the `language` of the Redux store. */
+  readonly getLocale: () => string;
   /** Posts the activity, as `POST_ACTIVITY`: dropped while offline. */
   readonly postActivity: (activity: WebChatActivity, method?: string) => void;
   /**
@@ -498,6 +500,7 @@ export default function createOutgoingService({
     batch,
     // emitTypingIndicatorToPostActivitySaga: while online, puts the typing activity.
     emitTypingIndicator: () => whileOnline(() => postLater({ type: 'typing' } as WebChatActivity)),
+    getLocale: () => locale,
     postActivity,
     postVoiceActivity,
     sendEvent: (payload: SendEventPayload) =>
