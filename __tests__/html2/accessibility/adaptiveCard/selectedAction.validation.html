@@ -117,7 +117,7 @@
           role: 'button'
         });
 
-        expect(store.getState().activities.filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
+        expect(pageObjects.getActivities().filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
 
         // THEN: The card should show the error and the "Submit" button should not look selected.
         await host.snapshot('local');

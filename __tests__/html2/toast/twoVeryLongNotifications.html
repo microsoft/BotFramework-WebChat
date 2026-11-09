@@ -18,7 +18,7 @@
 
         await pageConditions.uiConnected();
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'lorem ipsum 1',
@@ -32,7 +32,7 @@
 
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'lorem ipsum 2',
@@ -41,7 +41,7 @@
           }
         });
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'lorem ipsum 3',
@@ -59,14 +59,14 @@
 
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/DISMISS_NOTIFICATION',
           payload: {
             id: 'lorem ipsum 1'
           }
         });
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/DISMISS_NOTIFICATION',
           payload: {
             id: 'lorem ipsum 2'

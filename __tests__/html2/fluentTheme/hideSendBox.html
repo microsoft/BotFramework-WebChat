@@ -59,7 +59,7 @@
         });
 
         await pageConditions.numActivitiesShown(1);
-        await waitFor(() => expect(store.getState().suggestedActions).toHaveLength(2));
+        await waitFor(() => expect(pageObjects.getSuggestedActions()).toHaveLength(2));
 
         // THEN: The send box, its toolbar, and the suggested actions should not be rendered.
         expect(pageElements.byTestId(testIds.sendBoxContainer)).toBeFalsy();

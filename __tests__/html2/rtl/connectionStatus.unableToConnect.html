@@ -20,7 +20,6 @@
 
       import { createDirectLine, createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
       import { Observable } from 'https://esm.sh/iter-fest';
-      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
 
       // TODO: Should find ways to eliminate this line.
       window.WebChat = { createStoreWithOptions, testIds };
@@ -48,7 +47,7 @@
           document.getElementById('webchat')
         );
 
-        await waitFor(() => expect(store.getState().connectivityStatus).toBe('error'));
+        await pageConditions.connectivityStatusBecame('error');
 
         clock.tick(600);
 

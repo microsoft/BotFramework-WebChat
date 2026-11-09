@@ -56,7 +56,7 @@
         await pageConditions.uiConnected();
 
         // WHEN: A notification is shown.
-        store.dispatch({
+        pageObjects.dispatch({
           payload: { id: '1', level: 'info', message: 'Notification 1.' },
           type: 'WEB_CHAT/SET_NOTIFICATION'
         });

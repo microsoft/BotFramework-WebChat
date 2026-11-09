@@ -38,7 +38,7 @@
         // WHEN: Web Chat connected, then a notification is shown as a toast.
         await pageConditions.uiConnected();
 
-        store.dispatch({
+        pageObjects.dispatch({
           payload: { id: 'privacypolicy', level: 'info', message: 'Please read our privacy policy.' },
           type: 'WEB_CHAT/SET_NOTIFICATION'
         });

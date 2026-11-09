@@ -35,11 +35,11 @@
         await pageConditions.uiConnected();
 
         // WHEN: Two notifications are shown and the toaster is expanded.
-        store.dispatch({
+        pageObjects.dispatch({
           payload: { id: '1', level: 'info', message: 'Notification 1.' },
           type: 'WEB_CHAT/SET_NOTIFICATION'
         });
-        store.dispatch({
+        pageObjects.dispatch({
           payload: { id: '2', level: 'error', message: 'Notification 2.' },
           type: 'WEB_CHAT/SET_NOTIFICATION'
         });

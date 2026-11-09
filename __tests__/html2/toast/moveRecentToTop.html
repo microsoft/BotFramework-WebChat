@@ -16,7 +16,7 @@
 
         await pageConditions.uiConnected();
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: '1',
@@ -27,7 +27,7 @@
 
         await pageConditions.toastShown(1);
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: '2',
@@ -42,7 +42,7 @@
 
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: '1',

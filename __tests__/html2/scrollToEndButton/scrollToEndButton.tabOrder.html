@@ -39,7 +39,7 @@
         await host.sendKeys('ARROW_UP', 'ARROW_UP');
         await pageConditions.scrollStabilized(0);
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SEND_MESSAGE',
           payload: {
             text: 'herocard'

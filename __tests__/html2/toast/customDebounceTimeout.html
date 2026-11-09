@@ -18,7 +18,7 @@
 
         await pageConditions.uiConnected();
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'privacypolicy',
@@ -31,7 +31,7 @@
         await pageConditions.toastShown('Please read our privacy policy.');
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'privacypolicy',
@@ -44,7 +44,7 @@
         await pageConditions.toastShown('Please read our privacy policy again.');
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/DISMISS_NOTIFICATION',
           payload: {
             id: 'privacypolicy'

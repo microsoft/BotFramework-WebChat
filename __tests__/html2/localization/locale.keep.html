@@ -46,9 +46,7 @@
         await pageObjects.sendMessageViaSendBox('dump-activity', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);
 
-        let storeState = store.getState();
-
-        const activityFromBotYueTraditional = storeState.activities.find(({ from }) => from.role === 'bot');
+        const activityFromBotYueTraditional = pageObjects.getActivities().find(({ from }) => from.role === 'bot');
 
         expect(activityFromBotYueTraditional).toBeTruthy();
 
@@ -60,7 +58,7 @@
         expect(activityLocaleYueTraditional).toBe('yue-Hant');
 
         // Web Chat Core should use "yue-Hant" when talking to the bot.
-        expect(storeState.language).toBe('yue-Hant');
+        expect(pageObjects.getLanguage()).toBe('yue-Hant');
 
         // On-the-fly change the language to "en-HK" and do the same test again.
         window.WebChat.renderWebChat(
@@ -75,11 +73,9 @@
         await pageObjects.sendMessageViaSendBox('dump-activity', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(4);
 
-        storeState = store.getState();
-
-        const activityFromBotEnglishHongKong = storeState.activities.find(
-          activity => activity !== activityFromBotYueTraditional && activity.from.role === 'bot'
-        );
+        const activityFromBotEnglishHongKong = pageObjects
+          .getActivities()
+          .find(activity => activity !== activityFromBotYueTraditional && activity.from.role === 'bot');
 
         expect(activityFromBotEnglishHongKong).toBeTruthy();
 
@@ -91,7 +87,7 @@
         expect(activityLocaleEnglishHongKong).toBe('en-HK');
 
         // Web Chat Core should use "en-HK" when talking to the bot.
-        expect(storeState.language).toBe('en-HK');
+        expect(pageObjects.getLanguage()).toBe('en-HK');
       });
     </script>
   </body>

@@ -45,9 +45,6 @@
               next =>
               (...args) => {
                 const [{ activity, attachment }] = args;
-                const { activities } = store.getState();
-                const messageActivities = activities.filter(activity => activity.type === 'message');
-                const mostRecent = messageActivities.pop() === activity;
 
                 if (attachment.contentType === 'application/vnd.microsoft.card.hero') {
                   return <AutoDisableHeroCardContent activity={activity} attachment={attachment} />;

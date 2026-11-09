@@ -93,7 +93,7 @@
 
         // THEN: Nothing should be announced, as the action was not performed.
         expect(getLiveRegionTexts()).toEqual(liveRegionTextsBeforeSubmit);
-        expect(store.getState().activities.filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
+        expect(pageObjects.getActivities().filter(({ from: { role } }) => role === 'user')).toHaveLength(0);
 
         // THEN: The live region should not show "Selected" and the card should show the error.
         await host.snapshot('local');

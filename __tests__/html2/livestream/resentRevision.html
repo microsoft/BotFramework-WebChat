@@ -124,8 +124,8 @@
           )
         );
 
-        // THEN: Should keep each revision once in the store.
-        expect(store.getState().activities.map(({ id }) => id)).toEqual(['t-00001', 't-00002', 't-00003']);
+        // THEN: Should keep each revision once in the activities.
+        expect(pageObjects.getActivities().map(({ id }) => id)).toEqual(['t-00001', 't-00002', 't-00003']);
 
         // THEN: Should have 1 activity key with each revision once.
         await waitFor(() =>

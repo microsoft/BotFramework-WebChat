@@ -80,7 +80,7 @@
 
         await pageConditions.numActivitiesShown(3);
 
-        const { activities } = store.getState();
+        const activities = pageObjects.getActivities();
 
         // THEN: The first outgoing message should be the second, after the bot's message.
         expect(activities[1].text).toBe('User activity has timestamp of 1.');
@@ -119,7 +119,7 @@
         // THEN: At least one outgoing message should marked as sent.
         await pageConditions.became(
           'one message has been sent',
-          () => store.getState().activities.find(activity => activity.channelData.state === 'sent'),
+          () => pageObjects.getActivities().find(activity => activity.channelData.state === 'sent'),
           2000
         );
 

@@ -40,12 +40,19 @@
           { waitForSend: false }
         );
 
-        await pageConditions.actionDispatched(
-          'DIRECT_LINE/INCOMING_ACTIVITY',
-          ({ payload: { activity } = {}, type }) =>
-            type === 'DIRECT_LINE/INCOMING_ACTIVITY' &&
-            activity.from.role === 'user' &&
-            activity.text === 'There should be no space before and after this message.'
+        // THEN: The message is sent without the spaces.
+        await pageConditions.became(
+          'the message without spaces is sent',
+          () =>
+            pageObjects
+              .getActivities()
+              .some(
+                ({ channelData, from, text }) =>
+                  from.role === 'user' &&
+                  text === 'There should be no space before and after this message.' &&
+                  channelData['webchat:send-status'] === 'sent'
+              ),
+          15000
         );
 
         await pageConditions.minNumActivitiesShown(2);

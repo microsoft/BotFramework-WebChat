@@ -14,7 +14,7 @@
       run(async function () {
         const attachmentMiddleware = () => next => card => {
           const { activity, attachment } = card;
-          const { activities } = store.getState();
+          const activities = pageObjects.getActivities();
 
           const messages = activities.filter(activity => activity.type === 'message');
           const mostRecent = messages.pop() === activity;

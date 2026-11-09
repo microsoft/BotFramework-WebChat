@@ -22,7 +22,7 @@
 
         await pageConditions.uiConnected();
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'privacypolicy',
@@ -36,7 +36,7 @@
 
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
           payload: {
             id: 'privacypolicy',
@@ -54,7 +54,7 @@
 
         await host.snapshot('local');
 
-        store.dispatch({
+        pageObjects.dispatch({
           type: 'WEB_CHAT/DISMISS_NOTIFICATION',
           payload: {
             id: 'privacypolicy'
