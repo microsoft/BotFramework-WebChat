@@ -267,6 +267,12 @@ jobs:
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
+      # The store's tests run with node --test, Jest skips them.
+      - name: Run node --test under packages/store
+        run: npm test
+        timeout-minutes: 5
+        working-directory: ./packages/store
+
       - if: always()
         name: Append ID to test result
         run: |
