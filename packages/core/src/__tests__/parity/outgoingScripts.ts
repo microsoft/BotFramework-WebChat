@@ -172,6 +172,32 @@ const outgoingScripts: Readonly<Record<string, Script>> = Object.freeze({
       mock.post(1).echo();
     });
   },
+  'send timeouts in one tick of the clock': async context => {
+    await connectOnline(context);
+
+    await context.step('post', () => context.driver.ops.postActivity(message('hello')));
+    // The hard timeout starts when the send timeout is handled, after the tick: not at 300 s.
+    await context.step('t=300000 in one tick', () => context.clock.tick(300_000));
+    await context.step('t=579999', () => context.clock.tick(279_999));
+    await context.step('t=580000', () => context.clock.tick(1));
+  },
+  'returns in the same turn as the send timeout': async context => {
+    const mock = await connectOnline(context);
+
+    await context.step('post', () => context.driver.ops.postActivity(message('hello')));
+    await context.step('echo', () => mock.post(1).echo());
+    await context.step('t=20000, returns', () => {
+      context.clock.tick(20_000);
+      mock.post(1).next();
+    });
+    await context.step('post again', () => context.driver.ops.postActivity(message('again')));
+    await context.step('t=320000, echo, returns', () => {
+      context.clock.tick(20_000);
+      context.clock.tick(280_000);
+      mock.post(2).echo();
+      mock.post(2).next();
+    });
+  },
   'send timeout set before connect': async context => {
     context.driver.ops.setSendTimeout(1_000);
 

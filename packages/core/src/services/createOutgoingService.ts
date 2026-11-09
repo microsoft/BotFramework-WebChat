@@ -304,11 +304,15 @@ export default function createOutgoingService({
       return;
     }
 
-    // The send timeout, then the hard timeout; read when posting.
+    // The send timeout, then the hard timeout; read when posting. As the saga's `sleep()`, each resumes a turn after its
+    // timer fires: the hard timeout starts once the send timeout is handled, not within the same `tick()` of a fake clock.
     const timeout = sendTimeout;
 
+    const resumeIfInFlight = (fn: () => void) => () =>
+      Promise.resolve().then(() => current.inFlight.has(record) && fn());
+
     record.impedeTimer = ponyfill.setTimeout(
-      () => {
+      resumeIfInFlight(() => {
         record.impedeTimer = undefined;
 
         try {
@@ -322,7 +326,7 @@ export default function createOutgoingService({
         }
 
         record.hardTimer = ponyfill.setTimeout(
-          () => {
+          resumeIfInFlight(() => {
             record.hardTimer = undefined;
             record.subscription?.unsubscribe();
             record.subscription = undefined;
@@ -331,10 +335,10 @@ export default function createOutgoingService({
                 ? new Error('timed out while waiting for postActivity to return any values')
                 : new Error('timed out while waiting for outgoing message to echo back')
             );
-          },
+          }),
           Math.max(HARD_SEND_TIMEOUT - timeout, 0)
         );
-      },
+      }),
       Math.max(timeout, 0)
     );
   };
