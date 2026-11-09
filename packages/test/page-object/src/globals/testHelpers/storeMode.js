@@ -15,7 +15,7 @@ const STORE_MODE_NAME = 'webchat-test-store-mode';
 
 /**
  * Thrown by the helpers when a test needs the Redux store (initial state, store middleware, dispatch, state or action
- * history, outgoing activities of the emulator) in default mode.
+ * history) in default mode.
  */
 export class ReduxOnlyTest extends Error {
   constructor(message) {
@@ -53,7 +53,7 @@ export function getWebChatInternal() {
   return window.__WEBCHAT_TEST_INTERNAL__ || window.WebChat?.internal;
 }
 
-/** The read-only test handle of the default providers connected to the Direct Line, if any. */
+/** The test handle of the default providers connected to the Direct Line, if any (reads, and posts as the emulator). */
 export function getTestHandle(directLine) {
   return getWebChatInternal()?.__INTERNAL_DO_NOT_USE__getTestHandle?.(directLine);
 }
@@ -95,4 +95,24 @@ export function installStoreMode() {
       applyStoreMode(value?.internal);
     }
   });
+
+  // An ESM page that imports "botframework-webchat" through its import map, and sets `window.WebChat` for the helpers
+  // without the internal entry: the internal entry of the same module. The page's own imports load it first, and
+  // `run()` talks to the host before calling the test, so it is registered before Web Chat renders (if not, the runner
+  // fails the test: the Redux providers mounted). Not a literal, so the bundler leaves it to the browser.
+  let importMap;
+
+  try {
+    importMap = JSON.parse(document.querySelector('script[type="importmap"]')?.textContent || '{}');
+  } catch {
+    importMap = {};
+  }
+
+  if (importMap.imports?.['botframework-webchat']) {
+    const specifier = 'botframework-webchat';
+
+    import(/* webpackIgnore: true */ specifier)
+      .then(({ internal }) => internal && !window.__WEBCHAT_TEST_INTERNAL__ && registerWebChatInternal(internal))
+      .catch(() => undefined);
+  }
 }

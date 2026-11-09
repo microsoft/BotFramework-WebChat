@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Sending, both store modes: no echo, "Send failed" after the send timeout, sent when echoed later, retry</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // Runs in the store mode of the run ("redux" or "default"), with the same expectations, through the UI only.
+      run(async function () {
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+        const statusOf = index => pageElements.activityStatuses()[index]?.innerText || '';
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+        clock.tick(400);
+        await pageConditions.uiConnected();
+
+        // GIVEN: A message sent; the service returns, but does not echo back.
+        const first = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('First', { waitForSend: false })
+        );
+
+        first.resolvePostActivity();
+
+        await pageConditions.became('"Sending"', () => statusOf(0).includes('Sending'), 1000);
+
+        // WHEN: 20 seconds pass.
+        clock.tick(20000);
+
+        // THEN: "Send failed. Retry."
+        await pageConditions.became('"Send failed"', () => statusOf(0).includes('Send failed. Retry.'), 1000);
+
+        // WHEN: The echo comes later.
+        await first.echoBack();
+
+        // THEN: Sent.
+        await pageConditions.became('sent after the echo', () => !statusOf(0).includes('Send failed'), 1000);
+
+        // GIVEN: Another message, the service fails.
+        const second = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Second', { waitForSend: false })
+        );
+
+        second.rejectPostActivity(new Error('artificial error'));
+
+        // THEN: "Send failed. Retry.", and the error in the console.
+        await pageConditions.became('"Send failed"', () => statusOf(1).includes('Send failed. Retry.'), 1000);
+        await pageConditions.errorMessageLogged('artificial error');
+
+        // WHEN: Retry is clicked.
+        const retry = await directLine.actPostActivity(() =>
+          host.click(pageElements.activityStatuses()[1].querySelector('button'))
+        );
+
+        // THEN: Posted again, then sent.
+        expect(retry.activity).toEqual(expect.objectContaining({ text: 'Second', type: 'message' }));
+
+        await retry.resolveAll();
+
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.became('the retry is sent', () => !statusOf(2).includes('Sending'), 1000);
+      }, { ignoreErrors: true });
+    </script>
+  </body>
+</html>

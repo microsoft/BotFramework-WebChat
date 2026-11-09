@@ -7,7 +7,7 @@ import createDeferredObservable from '../../utils/createDeferredObservable';
 import became from '../pageConditions/became';
 import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
-import getStoreMode, { getTestHandle, ReduxOnlyTest } from './storeMode';
+import getStoreMode, { getTestHandle } from './storeMode';
 
 function isNativeClock() {
   return ('' + setTimeout).endsWith('() { [native code] }');
@@ -31,10 +31,22 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
       activity => activity.id === id
     );
 
-  const throwInDefaultMode = name => {
+  // As a POST_ACTIVITY through the store: in default mode, the test handle of the default providers posts it.
+  const postActivityAsCode = activity => {
     if (defaultMode) {
-      // The default providers send nothing yet (stage 4).
-      throw new ReduxOnlyTest(`createDirectLineEmulator().${name}() sends through the Redux store.`);
+      const testHandle = getTestHandle(directLine);
+
+      if (!testHandle) {
+        throw new Error('createDirectLineEmulator(): Web Chat is not connected to this Direct Line yet.');
+      }
+
+      testHandle.postActivity(activity, 'code');
+    } else {
+      store.dispatch({
+        meta: { method: 'code' },
+        payload: { activity },
+        type: 'DIRECT_LINE/POST_ACTIVITY'
+      });
     }
   };
 
@@ -98,8 +110,6 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
   };
 
   const actPostActivity = async (fn, { id: idFromOptions } = {}) => {
-    throwInDefaultMode('actPostActivity');
-
     const postActivityCallWithResolvers = withResolvers();
 
     postActivityCallDeferreds.push(postActivityCallWithResolvers);
@@ -223,8 +233,6 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
       activityDeferredObservable.next(activity);
     },
     emulateOutgoingActivity: (activity, options) => {
-      throwInDefaultMode('emulateOutgoingActivity');
-
       if (typeof activity === 'string') {
         activity = {
           from: { id: 'user', role: 'user' },
@@ -233,15 +241,7 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
         };
       }
 
-      return actPostActivity(
-        () =>
-          store.dispatch({
-            meta: { method: 'code' },
-            payload: { activity },
-            type: 'DIRECT_LINE/POST_ACTIVITY'
-          }),
-        options
-      );
+      return actPostActivity(() => postActivityAsCode(activity), options);
     }
   };
 

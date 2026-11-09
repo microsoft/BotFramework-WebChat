@@ -2,52 +2,73 @@
 # only). Globs relative to __tests__/html2/, "!" excludes, "#" comments. The runner reads this file in default mode only,
 # and fails a test if Web Chat mounted the Redux providers or never mounted the default providers.
 #
-# Stage 3 of the default providers: connection, incoming activities, notifications, suggested actions. Generated from the
-# folders that only receive activities, run, then reviewed: every exclusion below has its reason.
+# Stage 3 of the default providers: connection, incoming activities, notifications, suggested actions.
+# Stage 4: outgoing activities, the send box, the typing indicator, card actions. Generated from the folders that send,
+# run, then reviewed: every exclusion below has its reason.
 
+accessibility/**/*.html
 activityGrouping/**/*.html
 activityOrdering/**/*.html
+activityStatus/**/*.html
+adaptiveCard/**/*.html
+attachment/**/*.html
+basic/**/*.html
+cardAction/**/*.html
+carousel/**/*.html
 chatHistory/**/*.html
 citation/**/*.html
+feedbackForm/**/*.html
+feedbackStatus/**/*.html
+fluentTheme/**/*.html
+focusManagement/**/*.html
 grouping/**/*.html
 livestream/**/*.html
 markdown/**/*.html
+middleware/cardAction/**/*.html
 offlineUI/**/*.html
 part-grouping/**/*.html
-replyToId/*.html
+replyToId/**/*.html
+richCard/**/*.html
+sendAttachmentOn/**/*.html
+sendBox/**/*.html
+sendBoxMiddleware/**/*.html
+sendBoxToolbarMiddleware/**/*.html
 storeMode/**/*.html
 strictMode/directLine.html
 suggestedActions/**/*.html
+transcript/**/*.html
 typing/**/*.html
+upload/**/*.html
 
-# Sends activities (outgoing activities, stage 4): the emulator's actPostActivity() or emulateOutgoingActivity(), the
-# send box, or a click on a suggested action.
-!activityGrouping/activityGrouping.disableTimestamp.html
-!activityGrouping/activityGrouping.groupingActivityStatus.html
-!activityGrouping/activityGrouping.legacyActivityStatusMiddleware.html
-!activityOrdering/twoOutgoingMessage.html
-!markdown/heroCard.html
-!markdown/noJavaScriptScheme.html
-!markdown/rel.html
-!markdown/renderMarkdown.null.html
-!suggestedActions/layout.*.html
-!suggestedActions/layout/*.html
-!suggestedActions/stacked.buttonTextWrap.*.html
-!suggestedActions/suggestedActions.accessKey.html
-!suggestedActions/suggestedActions.noAccessKey.html
-!suggestedActions/suggestedActions.rovingTabIndex.*.html
-!suggestedActions/suggestedActions.scroll*.html
-!typing/changeTypingAnimationDuration.html
-!typing/noUserTypingIndicator.html
-!typing/shouldHideTypingIndicator.html
-!typing/shouldShowTypingIndicator.html
-!typing/simple.html
-
-# Needs the Redux store: store middleware, dispatch() or getState() on it, or the same store across a remount.
+# Needs the Redux store: store middleware, dispatch() or getState() on it, its action history, or the same store across a
+# remount.
+!accessibility/adaptiveCard/selectedAction.announcement.validation.html
+!accessibility/adaptiveCard/selectedAction.validation.html
+!accessibility/liveRegion/newMessages.html
+!activityStatus/rehydrateSendFailedRetry.html
+!basic/sendBox.trimOutgoing.html
+!fluentTheme/hideSendBox.copilot.html
+!fluentTheme/hideSendBox.html
+!focusManagement/disableHeroCard.obsolete.html
+!focusManagement/scrollToEndButton.receiveHeroCard.html
+!focusManagement/scrollToEndButton.receiveMessage.html
 !livestream/batchedActivities*.html
 !livestream/resentRevision*.html
 !markdown/codeBlock/remount.html
 !offlineUI/fatalError.html
+!sendAttachmentOn/invalidImage.html
+!sendAttachmentOn/useSendBoxAttachments.html
+!sendAttachmentOn/useSendFiles.*.html
+!sendAttachmentOn/useSendMessage.customThumbnail.html
+!sendAttachmentOn/useSendMessage.withMessage.html
+!sendAttachmentOn/useSendMessage.withoutMessage.html
+
+# Counts the warnings in the console: the default providers warn that they are for tests only (until they are the
+# default), and that the speech placeholder does nothing when a card action stops dictation (stage 5).
+!adaptiveCard/openUrlDialog/dialogReturn/crossOrigin/failOnPostMessage/test.html
+!adaptiveCard/openUrlDialog/dialogReturn/invalidPayload/test.html
+!adaptiveCard/openUrlDialog/dialogReturn/popupBlocker/test.html
+!fluentTheme/hideAttachFileButton.html
 
 # Does not render Web Chat (<Composer>): nothing to check without Redux.
 !markdown/vnext/streamingRenderer.html

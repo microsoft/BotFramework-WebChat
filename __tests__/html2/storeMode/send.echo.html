@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Sending, both store modes: echo and return, the suggested actions cleared, the typing indicator</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // Runs in the store mode of the run ("redux" or "default"), with the same expectations, through the UI only.
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+        await pageConditions.uiConnected();
+
+        // GIVEN: The bot suggests an action.
+        await directLine.emulateIncomingActivity({
+          suggestedActions: { actions: [{ title: 'Hello', type: 'imBack', value: 'Hello' }] },
+          text: 'Say hello.'
+        });
+
+        await pageConditions.became(
+          'the suggested action is shown',
+          () => pageElements.suggestedActions().length === 1,
+          1000
+        );
+
+        // WHEN: A message is sent through the send box.
+        const { echoBack, resolvePostActivity } = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Hi', { waitForSend: false })
+        );
+
+        // THEN: It is shown as "Sending", the send box is empty, and the suggested actions are cleared.
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.became(
+          'the message is sending',
+          () => pageElements.activityStatuses().at(-1)?.innerText.includes('Sending'),
+          1000
+        );
+        await pageConditions.became('the send box is empty', () => pageElements.sendBoxTextBox().value === '', 1000);
+        await pageConditions.became(
+          'the suggested actions are cleared',
+          () => pageElements.suggestedActions().length === 0,
+          1000
+        );
+
+        // WHEN: The service echoes it back, then returns.
+        await echoBack();
+
+        // THEN: Still "Sending": the return is needed too.
+        expect(pageElements.activityStatuses().at(-1).innerText).toContain('Sending');
+
+        resolvePostActivity();
+
+        // THEN: Sent.
+        await pageConditions.became(
+          'the message is sent',
+          () => !pageElements.activityStatuses().at(-1)?.innerText.includes('Sending'),
+          1000
+        );
+
+        // WHEN: A suggested action is clicked.
+        await directLine.emulateIncomingActivity({
+          suggestedActions: { actions: [{ title: 'Again', type: 'imBack', value: 'Again' }] },
+          text: 'Again?'
+        });
+        await pageConditions.became('the new suggested action', () => pageElements.suggestedActions().length === 1, 1000);
+
+        const clicked = await directLine.actPostActivity(() => host.click(pageElements.suggestedActions()[0]));
+
+        // THEN: It is sent as an imBack.
+        expect(clicked.activity).toEqual(expect.objectContaining({ text: 'Again', type: 'message' }));
+
+        await clicked.resolveAll();
+        await pageConditions.numActivitiesShown(4);
+      });
+    </script>
+  </body>
+</html>

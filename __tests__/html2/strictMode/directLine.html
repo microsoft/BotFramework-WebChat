@@ -66,11 +66,6 @@
         // THEN: Web Chat should connect.
         await pageConditions.uiConnected();
 
-        // The default providers (no Redux) do not send yet (stage 4 of the default providers): connecting is the test.
-        if (testHelpers.getStoreMode() === 'default') {
-          return;
-        }
-
         // WHEN: "echo Hello, World!" is sent.
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
 

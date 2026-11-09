@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Sending, both store modes: going offline fails the message in flight; sent again once reconnected</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // Runs in the store mode of the run ("redux" or "default"), with the same expectations, through the UI only.
+      run(async function () {
+        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+        const statusOf = index => pageElements.activityStatuses()[index]?.innerText || '';
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+        clock.tick(400);
+        await pageConditions.uiConnected();
+
+        // GIVEN: A message in flight.
+        await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox('Hello', { waitForSend: false }));
+        await pageConditions.became('"Sending"', () => statusOf(0).includes('Sending'), 1000);
+
+        // WHEN: The network is interrupted.
+        const { resolve } = directLine.emulateReconnect();
+
+        // THEN: Reconnecting, and the message failed, at once (no timeout).
+        await pageConditions.connectivityStatusBecame('reconnecting');
+        await pageConditions.became('"Send failed"', () => statusOf(0).includes('Send failed. Retry.'), 1000);
+
+        // WHEN: Reconnected, then retry is clicked.
+        resolve();
+        await pageConditions.connectivityStatusBecame('reconnected');
+
+        const retry = await directLine.actPostActivity(() =>
+          host.click(pageElements.activityStatuses()[0].querySelector('button'))
+        );
+
+        await retry.resolveAll();
+
+        // THEN: The retry is sent.
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.became('the retry is sent', () => !statusOf(1).includes('Sending'), 1000);
+      });
+    </script>
+  </body>
+</html>
