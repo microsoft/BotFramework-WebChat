@@ -291,6 +291,26 @@ const sendScripts: Readonly<Record<string, Script>> = Object.freeze({
     });
     await context.step('all return and echo', () => sendAll(mock));
   },
+  'submit: postActivity() throws': async context => {
+    const mock = await connectOnline(context);
+    const { ops } = context.driver;
+
+    await context.step('set the value and attachments', () => {
+      ops.setSendBox('hello');
+      ops.setSendBoxAttachments([{ blob: BLOB() }]);
+    });
+    await context.step('submit, postActivity() throws', () => {
+      mock.setPostThrows(true);
+      ops.submitSendBox();
+    });
+  },
+  'submit: invalid attachments': async context => {
+    await connectOnline(context);
+    const { ops } = context.driver;
+
+    await context.step('set invalid attachments', () => ops.setSendBoxAttachments([{ blob: 'not a blob' }]));
+    await context.step('submit', () => ops.submitSendBox());
+  },
   'send box values': async context => {
     const { ops } = context.driver;
     const attachments = Object.freeze([{ blob: BLOB() }]);

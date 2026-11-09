@@ -12,12 +12,15 @@ import createConnectionService from '../../services/createConnectionService';
 import createIncomingService, { type SuggestedActionsEmitter } from '../../services/createIncomingService';
 import createNotificationsCell from '../../services/createNotificationsCell';
 import createOutgoingService from '../../services/createOutgoingService';
+import createSendBoxService from '../../services/createSendBoxService';
 import createEmitter from '../../services/private/createEmitter';
+import setSendBoxAttachments from '../../actions/setSendBoxAttachments';
+import submitSendBox from '../../actions/submitSendBox';
 import type { CreateDriver, Observation, Operations } from './runParityScript';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
-// The send box comes in the next commit, the raw actions of card action middleware with the api.
+// The raw actions of card action middleware come with the api.
 const notYet = (name: string) => () => {
   throw new Error(`The services driver cannot ${name}() yet.`);
 };
@@ -66,6 +69,12 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     ponyfill,
     suggestedActions
   });
+  const sendBox = createSendBoxService({
+    connection,
+    createSendMessagePayload: (text, method, init) => sendMessage(text, method, init).payload,
+    outgoing,
+    ponyfill
+  });
 
   const unsubscribeSuggestedActions = suggestedActions.subscribe(onSuggestedActions);
 
@@ -74,9 +83,9 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connectivityStatus: connection.connectivityStatus.get(),
     notifications: notifications.notifications.get(),
     referenceGrammarID: connection.referenceGrammarID.get(),
-    sendBoxAttachments: EMPTY_ARRAY,
-    sendBoxValue: '',
-    sendTypingIndicator: false
+    sendBoxAttachments: sendBox.attachments.get(),
+    sendBoxValue: sendBox.value.get(),
+    sendTypingIndicator: sendBox.sendTypingIndicator.get()
   });
 
   // Records first: a listener that throws stops the listeners after it.
@@ -85,6 +94,9 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connection.connectivityStatus.subscribe(() => onChange('connectivityStatus', connection.connectivityStatus.get())),
     notifications.notifications.subscribe(() => onChange('notifications', notifications.notifications.get())),
     connection.referenceGrammarID.subscribe(() => onChange('referenceGrammarID', connection.referenceGrammarID.get())),
+    sendBox.attachments.subscribe(() => onChange('sendBoxAttachments', sendBox.attachments.get())),
+    sendBox.value.subscribe(() => onChange('sendBoxValue', sendBox.value.get())),
+    sendBox.sendTypingIndicator.subscribe(() => onChange('sendTypingIndicator', sendBox.sendTypingIndicator.get())),
     connection.connectivityStatus.subscribe(() => {
       const connectivityStatus = connection.connectivityStatus.get();
 
@@ -107,11 +119,13 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
       outgoing.sendMessageBack(sendMessageBack(value, text, displayText, init).payload),
     sendPostBack: (value, init) => outgoing.sendPostBack(sendPostBack(value, init).payload),
     setLanguage: language => outgoing.setLocale(language),
-    setSendBox: notYet('setSendBox'),
-    setSendBoxAttachments: notYet('setSendBoxAttachments'),
+    setSendBox: text => sendBox.setValue(text),
+    setSendBoxAttachments: attachments =>
+      sendBox.setAttachments(setSendBoxAttachments(attachments).payload.attachments),
     setSendTimeout: sendTimeout => outgoing.setSendTimeout(sendTimeout),
-    setSendTypingIndicator: notYet('setSendTypingIndicator'),
-    submitSendBox: notYet('submitSendBox')
+    setSendTypingIndicator: value => sendBox.setSendTypingIndicator(value),
+    submitSendBox: (method, init) =>
+      sendBox.submit(submitSendBox(method, init && { channelData: init.channelData }).payload)
   });
 
   return Object.freeze({

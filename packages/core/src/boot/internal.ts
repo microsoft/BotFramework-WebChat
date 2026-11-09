@@ -30,7 +30,9 @@ export {
 export {
   default as createIncomingService,
   type IncomingService,
-  type IncomingVoicePort
+  type IncomingVoicePort,
+  type SuggestedActionsEmitter,
+  type SuggestedActionsListener
 } from '../services/createIncomingService';
 export {
   default as createNotificationsCell,
@@ -38,4 +40,24 @@ export {
   type Notifications,
   type NotificationsCell
 } from '../services/createNotificationsCell';
+export {
+  default as createOutgoingService,
+  type OutgoingService,
+  type PendingListener,
+  type PostListener
+} from '../services/createOutgoingService';
+export {
+  default as createSendBoxService,
+  type SendBoxService,
+  type SubmitPayload,
+  type ValueListener
+} from '../services/createSendBoxService';
+export { default as createEmitter, type Emitter } from '../services/private/createEmitter';
+export {
+  type SendEventPayload,
+  type SendFilesPayload,
+  type SendMessageBackPayload,
+  type SendMessagePayload,
+  type SendPostBackPayload
+} from '../services/private/sendPayloadToActivity';
 export { type Notify, type Source as ServiceSource } from '../services/types';
