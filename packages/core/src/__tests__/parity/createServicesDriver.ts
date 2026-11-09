@@ -5,7 +5,32 @@ import { createActivitiesStore } from '@msinternal/botframework-webchat-core-act
 import createConnectionService from '../../services/createConnectionService';
 import createIncomingService from '../../services/createIncomingService';
 import createNotificationsCell from '../../services/createNotificationsCell';
-import type { CreateDriver, Observation } from './runParityScript';
+import type { CreateDriver, Observation, Operations } from './runParityScript';
+
+const EMPTY_ARRAY = Object.freeze([]);
+
+// The outgoing activities and the send box come in the next commits.
+const notYet = (name: string) => () => {
+  throw new Error(`The services driver cannot ${name}() yet.`);
+};
+
+const OPS: Operations = Object.freeze({
+  clearSuggestedActions: notYet('clearSuggestedActions'),
+  emitTypingIndicator: notYet('emitTypingIndicator'),
+  markActivity: notYet('markActivity'),
+  postActivity: notYet('postActivity'),
+  sendEvent: notYet('sendEvent'),
+  sendFiles: notYet('sendFiles'),
+  sendMessage: notYet('sendMessage'),
+  sendMessageBack: notYet('sendMessageBack'),
+  sendPostBack: notYet('sendPostBack'),
+  setLanguage: notYet('setLanguage'),
+  setSendBox: notYet('setSendBox'),
+  setSendBoxAttachments: notYet('setSendBoxAttachments'),
+  setSendTimeout: notYet('setSendTimeout'),
+  setSendTypingIndicator: notYet('setSendTypingIndicator'),
+  submitSendBox: notYet('submitSendBox')
+});
 
 const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const activitiesStore = createActivitiesStore({ ponyfill });
@@ -15,7 +40,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     activitiesStore: {
       getSnapshot: activitiesStore.getSnapshot,
       receiveActivity: activity => {
-        if (faults.receiveThrowsFor === activity.id) {
+        if (faults.receiveThrowsFor && faults.receiveThrowsFor === activity.id) {
           throw new Error(`receive ${faults.receiveThrowsFor}`);
         }
 
@@ -32,7 +57,10 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     activities: activitiesStore.getSnapshot().sortedActivities,
     connectivityStatus: connection.connectivityStatus.get(),
     notifications: notifications.notifications.get(),
-    referenceGrammarID: connection.referenceGrammarID.get()
+    referenceGrammarID: connection.referenceGrammarID.get(),
+    sendBoxAttachments: EMPTY_ARRAY,
+    sendBoxValue: '',
+    sendTypingIndicator: false
   });
 
   // Records first: a listener that throws stops the listeners after it.
@@ -58,7 +86,9 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
       unsubscribeSuggestedActions();
       connection.dispose();
     },
-    observe
+    observe,
+    ops: OPS,
+    rawDispatch: notYet('rawDispatch')
   });
 };
 
