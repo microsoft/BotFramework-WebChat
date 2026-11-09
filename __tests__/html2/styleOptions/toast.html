@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Every toast style option set to a value other than its default.
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              hideSendBox: true,
+              toastErrorBackgroundColor: '#FFE0E8',
+              toastErrorColor: '#8000FF',
+              toastFontSize: 18, // Numbers are in pixels.
+              toastIconWidth: 60,
+              toastInfoBackgroundColor: '#C0FFFF',
+              toastInfoColor: '#0000C0',
+              toastSeparatorColor: '#FF00FF',
+              toastSuccessBackgroundColor: '#C0FFC0',
+              toastSuccessColor: '#006000',
+              toastTextPadding: 12,
+              toastWarnBackgroundColor: '#FFE0A0',
+              toastWarnColor: '#A04000',
+              toasterHeight: 44,
+              toasterMaxHeight: 220,
+              toasterSingularMaxHeight: 70
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: 4 notifications, one per level, are shown one after another, and the toaster is expanded.
+        // Waiting for each one gives each a later timestamp: the most recent is on top.
+        store.dispatch({
+          payload: {
+            id: 'success',
+            level: 'success',
+            message:
+              'Success notification, long enough to wrap to 3 lines, so the toaster cuts it when it is the only notification.'
+          },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toastShown(1);
+
+        store.dispatch({
+          payload: { id: 'info', level: 'info', message: 'Information notification.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toasterExpandable();
+        await pageObjects.clickToasterHeader();
+        await pageConditions.toasterExpanded();
+        await pageConditions.toastShown(2);
+
+        store.dispatch({
+          payload: { id: 'warn', level: 'warn', message: 'Warning notification.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toastShown(3);
+
+        store.dispatch({
+          payload: { id: 'error', level: 'error', message: 'Error notification.' },
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toastShown(4);
+
+        // THEN: A 44 pixels light pink header with purple "4 Notifications: …", 18 pixels text, 60 pixels wide icon boxes.
+        // THEN: Purple, brown, blue and green toasts with magenta separators; the 220 pixels maximum height cuts the green one.
+        await host.snapshot('local');
+
+        // WHEN: The error notification is dismissed.
+        store.dispatch({ payload: { id: 'error' }, type: 'WEB_CHAT/DISMISS_NOTIFICATION' });
+
+        await pageConditions.toastShown(3);
+
+        // THEN: A light orange header with brown "3 Notifications: …".
+        await host.snapshot('local');
+
+        // WHEN: The warning notification is dismissed.
+        store.dispatch({ payload: { id: 'warn' }, type: 'WEB_CHAT/DISMISS_NOTIFICATION' });
+
+        await pageConditions.toastShown(2);
+
+        // THEN: A light blue header with blue "2 Notifications: …".
+        await host.snapshot('local');
+
+        // WHEN: The information notification is dismissed.
+        store.dispatch({ payload: { id: 'info' }, type: 'WEB_CHAT/DISMISS_NOTIFICATION' });
+
+        await waitFor(() => expect(pageElements.toasterHeader()).toBeFalsy());
+        await pageConditions.toastShown(1);
+
+        // THEN: A light green toaster with the green notification, with 12 pixels above the text, cut at 70 pixels.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
