@@ -7,7 +7,7 @@ import {
 } from 'botframework-webchat-core';
 import { setRawState } from 'botframework-webchat-core/internal.js';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { type Action } from 'redux';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
@@ -64,11 +64,13 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     [setOriginActivity, setSuggestedActionsRaw]
   );
 
-  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
-  useMemo(
-    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
-    [dispatch, originActivity]
-  );
+  // Layout effects: the store has them by the time they show.
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActions', suggestedActions));
+  }, [dispatch, suggestedActions]);
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity }));
+  }, [dispatch, originActivity]);
 
   useEffect(() => {
     dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
