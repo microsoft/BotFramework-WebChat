@@ -5,7 +5,8 @@
 # Stage 3 of the default providers: connection, incoming activities, notifications, suggested actions.
 # Stage 4: outgoing activities, the send box, the typing indicator, card actions. Generated from the folders that send,
 # run, then reviewed: every exclusion below has its reason.
-# Stage 5: speech and speech-to-speech (speech/, speechToSpeech/, the speech hooks).
+# Stage 5: speech and speech-to-speech (speech/, speechToSpeech/, the speech hooks), and the pages of the setters that
+# throw on undefined (localization/, the send box, typing, locale and send timeout hooks).
 
 accessibility/**/*.html
 activityGrouping/**/*.html
@@ -25,15 +26,25 @@ focusManagement/**/*.html
 grouping/**/*.html
 hooks/useDictateInterims.*.html
 hooks/useDictateState.html
+hooks/useEmitTypingIndicator.html
+hooks/useGetSendTimeoutForActivity.html
+hooks/useLanguage.*.html
 hooks/useMarkActivityAsSpoken.html
 hooks/useMicrophoneButtonClick.html
 hooks/useSendBoxSpeechInterimsVisible.*.html
+hooks/useSendBoxValue.*.html
+hooks/useSendTimeoutForActivity.html
+hooks/useSendTypingIndicator.*.html
 hooks/useShouldSpeakIncomingActivity.*.html
 hooks/useStartDictate.html
 hooks/useStopDictate.html
+hooks/useSubmitSendBox.html
+hooks/useTextBoxSubmit.*.html
+hooks/useTimeoutForSend.*.html
 hooks/useVoiceSelector.html
 hooks/useWebSpeechPonyfill.*.html
 livestream/**/*.html
+localization/**/*.html
 markdown/**/*.html
 middleware/cardAction/**/*.html
 offlineUI/**/*.html
@@ -65,8 +76,11 @@ upload/**/*.html
 !focusManagement/disableHeroCard.obsolete.html
 !focusManagement/scrollToEndButton.receiveHeroCard.html
 !focusManagement/scrollToEndButton.receiveMessage.html
+!hooks/useTextBoxSubmit.sendBox.html
+!hooks/useTextBoxSubmit.sendBoxWithoutKeyboard.html
 !livestream/batchedActivities*.html
 !livestream/resentRevision*.html
+!localization/locale.keep.html
 !markdown/codeBlock/remount.html
 !offlineUI/fatalError.html
 !sendAttachmentOn/invalidImage.html
