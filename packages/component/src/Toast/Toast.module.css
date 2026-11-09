@@ -26,7 +26,7 @@
     min-height: var(--webchat__height--toaster);
     outline: 0;
     padding: 0;
-    text-align: left;
+    text-align: start;
 
     &:focus .toaster__expandIconFocus {
       border-color: rgba(26, 10, 0, 0.7);

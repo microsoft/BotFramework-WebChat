@@ -15,7 +15,7 @@ import { useLiveRegion } from './providers/LiveRegionTwin';
 
 import styles from './Toast/Toast.module.css';
 
-const { useDebouncedNotifications, useLocalizer, useRenderToast } = hooks;
+const { useDebouncedNotifications, useDirection, useLocalizer, useRenderToast } = hooks;
 
 const LEVEL_AS_NUMBER = {
   error: 1,
@@ -57,6 +57,7 @@ const BasicToaster = ({ className }) => {
   // Keeps the "webchat__toaster" class names.
   const classNames = useStyles(styles, webChatPrefixedClassName);
   const [debouncedNotifications] = useDebouncedNotifications();
+  const [direction] = useDirection();
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
   const renderToast = useRenderToast();
@@ -142,6 +143,7 @@ const BasicToaster = ({ className }) => {
         },
         className
       )}
+      dir={direction}
       role="log"
     >
       {expandable && (
