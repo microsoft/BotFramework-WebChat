@@ -14,8 +14,8 @@ function noop() {
   // The host or <Composer> owns the store: nothing to release.
 }
 
-// These are props of <Composer>, already checked by its `propTypes`. They are not validated again: an invalid value
-// should warn, as before, instead of throwing.
+// These are props of <Composer>, already checked by its valibot schema (`validateProps()`). They are not validated
+// again: an invalid value should warn, as before, instead of throwing.
 type ReduxSessionEffectsProps = {
   readonly children?: ReactNode | undefined;
   readonly directLine: DirectLineJSBotConnection;

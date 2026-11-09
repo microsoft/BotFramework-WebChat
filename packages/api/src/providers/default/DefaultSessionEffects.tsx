@@ -9,8 +9,8 @@ import React, { Fragment, memo, useEffect, type ReactNode } from 'react';
 import connectWithDeferredDisconnect from '../private/connectWithDeferredDisconnect';
 import { deleteTestHandle, setTestHandle, type TestHandle } from './private/testHandles';
 
-// These are props of <Composer>, already checked by its `propTypes`. They are not validated again: an invalid value
-// should warn, as in Redux mode, instead of throwing.
+// These are props of <Composer>, already checked by its valibot schema (`validateProps()`). They are not validated
+// again: an invalid value should warn, as in Redux mode, instead of throwing.
 type DefaultSessionEffectsProps = {
   readonly children?: ReactNode | undefined;
   readonly connection: Pick<ConnectionService, 'connect' | 'disconnect' | 'dispose'>;

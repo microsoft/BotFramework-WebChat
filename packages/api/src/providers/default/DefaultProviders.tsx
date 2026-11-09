@@ -36,7 +36,7 @@ const defaultProvidersPropsSchema = pipe(
       )
     ),
     children: optional(reactNode()),
-    // Props of <Composer>, checked by its `propTypes`: not validated again, as in Redux mode.
+    // Props of <Composer>, checked by its valibot schema (`validateProps()`): not validated again, as in Redux mode.
     directLine: optional(unknown()),
     locale: optional(unknown()),
     sendTypingIndicator: optional(unknown()),
