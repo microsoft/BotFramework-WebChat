@@ -538,6 +538,17 @@ const outgoingScripts: Readonly<Record<string, Script>> = Object.freeze({
       mock.post(1).echo();
     });
     await context.step('t=300000', () => context.clock.tick(300_000));
+  },
+  'fault: posting something that is not an activity': async context => {
+    const mock = await connectOnline(context);
+
+    await context.step('post', () => context.driver.ops.postActivity(message('first')));
+    await context.step('post null', () => context.driver.ops.postActivity(null));
+    await context.step('post after', () => context.driver.ops.postActivity(message('after')));
+    await context.step('the first returns, echo', () => {
+      mock.post(1).next();
+      mock.post(1).echo();
+    });
   }
 });
 

@@ -1,41 +1,32 @@
 // The services of the default providers (no Redux), on the clock of the script: the notifications cell, the connection
-// service, the incoming service, and the activities store.
+// service, the incoming service, the outgoing service, and the activities store. The operations take the payloads of
+// the action creators, as the api passes them.
 import { createActivitiesStore } from '@msinternal/botframework-webchat-core-activities';
 
+import sendEvent from '../../actions/sendEvent';
+import sendFiles from '../../actions/sendFiles';
+import sendMessage from '../../actions/sendMessage';
+import sendMessageBack from '../../actions/sendMessageBack';
+import sendPostBack from '../../actions/sendPostBack';
 import createConnectionService from '../../services/createConnectionService';
-import createIncomingService from '../../services/createIncomingService';
+import createIncomingService, { type SuggestedActionsEmitter } from '../../services/createIncomingService';
 import createNotificationsCell from '../../services/createNotificationsCell';
+import createOutgoingService from '../../services/createOutgoingService';
+import createEmitter from '../../services/private/createEmitter';
 import type { CreateDriver, Observation, Operations } from './runParityScript';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
-// The outgoing activities and the send box come in the next commits.
+// The send box comes in the next commit, the raw actions of card action middleware with the api.
 const notYet = (name: string) => () => {
   throw new Error(`The services driver cannot ${name}() yet.`);
 };
-
-const OPS: Operations = Object.freeze({
-  clearSuggestedActions: notYet('clearSuggestedActions'),
-  emitTypingIndicator: notYet('emitTypingIndicator'),
-  markActivity: notYet('markActivity'),
-  postActivity: notYet('postActivity'),
-  sendEvent: notYet('sendEvent'),
-  sendFiles: notYet('sendFiles'),
-  sendMessage: notYet('sendMessage'),
-  sendMessageBack: notYet('sendMessageBack'),
-  sendPostBack: notYet('sendPostBack'),
-  setLanguage: notYet('setLanguage'),
-  setSendBox: notYet('setSendBox'),
-  setSendBoxAttachments: notYet('setSendBoxAttachments'),
-  setSendTimeout: notYet('setSendTimeout'),
-  setSendTypingIndicator: notYet('setSendTypingIndicator'),
-  submitSendBox: notYet('submitSendBox')
-});
 
 const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const activitiesStore = createActivitiesStore({ ponyfill });
   const notifications = createNotificationsCell({ ponyfill });
   const connection = createConnectionService({ notifications, ponyfill });
+  const suggestedActions: SuggestedActionsEmitter = createEmitter();
   const incoming = createIncomingService({
     activitiesStore: {
       getSnapshot: activitiesStore.getSnapshot,
@@ -48,10 +39,35 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
       }
     },
     connection,
-    ponyfill
+    ponyfill,
+    suggestedActions
+  });
+  const outgoing = createOutgoingService({
+    activitiesStore: {
+      postActivityFulfilled: (clientActivityID, activity) => {
+        if (faults.fulfilledThrowsFor && faults.fulfilledThrowsFor === (activity as any).text) {
+          throw new Error(`fulfilled ${faults.fulfilledThrowsFor}`);
+        }
+
+        activitiesStore.postActivityFulfilled(clientActivityID, activity);
+      },
+      postActivityImpeded: activitiesStore.postActivityImpeded,
+      postActivityPending: activity => {
+        if (faults.pendingThrowsFor && faults.pendingThrowsFor === (activity as any).text) {
+          throw new Error(`pending ${faults.pendingThrowsFor}`);
+        }
+
+        activitiesStore.postActivityPending(activity);
+      },
+      postActivityRejected: activitiesStore.postActivityRejected
+    },
+    connection,
+    incoming,
+    ponyfill,
+    suggestedActions
   });
 
-  const unsubscribeSuggestedActions = incoming.onSuggestedActions(onSuggestedActions);
+  const unsubscribeSuggestedActions = suggestedActions.subscribe(onSuggestedActions);
 
   const observe = (): Observation => ({
     activities: activitiesStore.getSnapshot().sortedActivities,
@@ -78,6 +94,26 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     })
   ];
 
+  // As the api: the action creators validate and build the payloads.
+  const ops: Operations = Object.freeze({
+    clearSuggestedActions: () => suggestedActions.emit(EMPTY_ARRAY, undefined),
+    emitTypingIndicator: () => outgoing.emitTypingIndicator(),
+    markActivity: ({ id }, name, value) => activitiesStore.markActivity(id, name, value),
+    postActivity: (activity, method) => outgoing.postActivity(activity, method),
+    sendEvent: (name, value) => outgoing.sendEvent(sendEvent(name, value).payload),
+    sendFiles: files => outgoing.sendFiles(sendFiles(files).payload),
+    sendMessage: (text, method, init) => outgoing.sendMessage(sendMessage(text, method, init).payload),
+    sendMessageBack: (value, text, displayText, init) =>
+      outgoing.sendMessageBack(sendMessageBack(value, text, displayText, init).payload),
+    sendPostBack: (value, init) => outgoing.sendPostBack(sendPostBack(value, init).payload),
+    setLanguage: language => outgoing.setLocale(language),
+    setSendBox: notYet('setSendBox'),
+    setSendBoxAttachments: notYet('setSendBoxAttachments'),
+    setSendTimeout: sendTimeout => outgoing.setSendTimeout(sendTimeout),
+    setSendTypingIndicator: notYet('setSendTypingIndicator'),
+    submitSendBox: notYet('submitSendBox')
+  });
+
   return Object.freeze({
     connect: init => connection.connect(init),
     disconnect: () => connection.disconnect(),
@@ -87,7 +123,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
       connection.dispose();
     },
     observe,
-    ops: OPS,
+    ops,
     rawDispatch: notYet('rawDispatch')
   });
 };
