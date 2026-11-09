@@ -57,6 +57,7 @@ export {
   type ValueListener
 } from '../services/createSendBoxService';
 export { default as createEmitter, type Emitter } from '../services/private/createEmitter';
+export { default as createSagaQueue, type SagaQueue } from '../services/private/createSagaQueue';
 export {
   type SendEventPayload,
   type SendFilesPayload,

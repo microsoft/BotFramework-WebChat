@@ -9,6 +9,7 @@ import type { ConnectionService, ConnectionSession } from './createConnectionSer
 import type { IncomingService, SuggestedActionsEmitter } from './createIncomingService';
 import createEmitter from './private/createEmitter';
 import createOutgoingActivity from './private/createOutgoingActivity';
+import createSagaQueue, { type SagaQueue } from './private/createSagaQueue';
 import {
   eventToActivity,
   filesToActivity,
@@ -104,6 +105,7 @@ export default function createOutgoingService({
   connection,
   incoming,
   ponyfill,
+  queue: { batch, later } = createSagaQueue(),
   suggestedActions
 }: {
   readonly activitiesStore: Pick<
@@ -113,39 +115,16 @@ export default function createOutgoingService({
   readonly connection: Pick<ConnectionService, 'fail' | 'onOnline'>;
   readonly incoming: Pick<IncomingService, 'onActivity'>;
   readonly ponyfill: Pick<GlobalScopePonyfill, 'clearTimeout' | 'Date' | 'setTimeout'>;
+  /** The order of the sagas, shared by the services. */
+  readonly queue?: SagaQueue | undefined;
   readonly suggestedActions: Pick<SuggestedActionsEmitter, 'emit'>;
 }): OutgoingService {
   const echoListeners = new Set<(activity: WebChatActivity) => void>();
   const pendingEmitter = createEmitter<Parameters<PendingListener>>();
   const postEmitter = createEmitter<Parameters<PostListener>>();
-  const queue: (() => void)[] = [];
-  let depth = 0;
   let locale = 'en-US';
   let sendTimeout = DEFAULT_SEND_TIMEOUT;
   let session: Session | undefined;
-
-  // As the "asap" queue of redux-saga: what a saga does after the current action waits for the outermost operation.
-  const batch = <T>(fn: () => T): T => {
-    depth++;
-
-    try {
-      return fn();
-    } finally {
-      if (!--depth) {
-        depth++;
-
-        try {
-          while (queue.length) {
-            queue.shift()();
-          }
-        } finally {
-          depth--;
-        }
-      }
-    }
-  };
-
-  const later = (fn: () => void) => (depth ? queue.push(fn) : fn());
 
   // An error the sagas do not catch stops everything; while posting, it is thrown inside an action.
   const fail = (error: unknown) => connection.fail(error, { insideWrite: true });

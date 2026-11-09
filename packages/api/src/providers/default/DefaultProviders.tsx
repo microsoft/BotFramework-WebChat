@@ -9,6 +9,7 @@ import {
   createIncomingService,
   createNotificationsCell,
   createOutgoingService,
+  createSagaQueue,
   createSendBoxService,
   type ActivitiesStore,
   type Notify,
@@ -71,13 +72,22 @@ function DefaultProviders(props: DefaultProvidersProps) {
   // Creating them does nothing else (no subscription, no timer), so the set of a discarded render is simply dropped.
   const services = useMemo(() => {
     const activitiesStore = activitiesStoreFromProps || createActivitiesStore({ ponyfill });
+    // One queue for the services, as redux-saga has one for the sagas: what they do after an operation, in order.
+    const queue = createSagaQueue();
     const notifications = createNotificationsCell({ notify, ponyfill });
     const connection = createConnectionService({ notifications, notify, ponyfill });
     // Set by the incoming activities, cleared by the outgoing messages and clearSuggestedActions().
     const suggestedActions: SuggestedActionsEmitter = createEmitter();
-    const incoming = createIncomingService({ activitiesStore, connection, ponyfill, suggestedActions });
+    const incoming = createIncomingService({ activitiesStore, connection, ponyfill, queue, suggestedActions });
     // Started when online in this order, as the sagas: outgoing activities, then the send box.
-    const outgoing = createOutgoingService({ activitiesStore, connection, incoming, ponyfill, suggestedActions });
+    const outgoing = createOutgoingService({
+      activitiesStore,
+      connection,
+      incoming,
+      ponyfill,
+      queue,
+      suggestedActions
+    });
     const sendBox = createSendBoxService({
       connection,
       // As in Redux mode, the action creator builds and validates the message.

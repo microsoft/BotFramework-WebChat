@@ -15,6 +15,7 @@ import createNotificationsCell from '../../services/createNotificationsCell';
 import createOutgoingService from '../../services/createOutgoingService';
 import createSendBoxService from '../../services/createSendBoxService';
 import createEmitter from '../../services/private/createEmitter';
+import createSagaQueue from '../../services/private/createSagaQueue';
 import setSendBoxAttachments from '../../actions/setSendBoxAttachments';
 import submitSendBox from '../../actions/submitSendBox';
 import type { CreateDriver, Observation, Operations } from './runParityScript';
@@ -28,6 +29,8 @@ function notBuiltYet(): undefined {
 
 const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const activitiesStore = createActivitiesStore({ ponyfill });
+  // One queue for the services, as redux-saga has one for the sagas.
+  const queue = createSagaQueue();
   const notifications = createNotificationsCell({ ponyfill });
   const connection = createConnectionService({ notifications, ponyfill });
   const suggestedActions: SuggestedActionsEmitter = createEmitter();
@@ -44,6 +47,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     },
     connection,
     ponyfill,
+    queue,
     suggestedActions
   });
   const outgoing = createOutgoingService({
@@ -68,6 +72,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     connection,
     incoming,
     ponyfill,
+    queue,
     suggestedActions
   });
   const sendBox = createSendBoxService({

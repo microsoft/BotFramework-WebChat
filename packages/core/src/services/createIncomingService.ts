@@ -12,6 +12,7 @@ import isVoiceActivity from '../utils/voiceActivity/isVoiceActivity';
 import isVoiceTranscriptActivity from '../utils/voiceActivity/isVoiceTranscriptActivity';
 import type { ConnectionService, ConnectionSession } from './createConnectionService';
 import createEmitter, { type Emitter } from './private/createEmitter';
+import createSagaQueue, { type SagaQueue } from './private/createSagaQueue';
 import patchIncomingActivity from './private/patchIncomingActivity';
 import pickSuggestedActions from './private/pickSuggestedActions';
 import subscribeQueue from './private/subscribeQueue';
@@ -55,18 +56,24 @@ const EMPTY_ARRAY: readonly DirectLineCardAction[] = Object.freeze([]);
  * activities store, calls the activity listeners, and picks the suggested actions. When the connection goes offline,
  * held and queued activities are dropped.
  *
+ * As the saga, in the order of the other sagas (`queue`): the suggested actions are set after what the activity
+ * listeners queued, and the next activity released is received after them.
+ *
  * An error stops everything, as a saga error does in Redux mode (`connection.fail()`).
  */
 export default function createIncomingService({
   activitiesStore,
   connection,
   ponyfill,
+  queue = createSagaQueue(),
   suggestedActions: suggestedActionsEmitter = createEmitter(),
   voice
 }: {
   readonly activitiesStore: Pick<ActivitiesStore, 'getSnapshot' | 'receiveActivity'>;
   readonly connection: Pick<ConnectionService, 'fail' | 'onOnline'>;
   readonly ponyfill: Pick<GlobalScopePonyfill, 'clearTimeout' | 'setTimeout'>;
+  /** The order of the sagas, shared by the services. */
+  readonly queue?: SagaQueue | undefined;
   /** Where the suggested actions are emitted, shared with the services that clear them. */
   readonly suggestedActions?: SuggestedActionsEmitter | undefined;
   readonly voice?: IncomingVoicePort | undefined;
@@ -118,44 +125,75 @@ export default function createIncomingService({
     let releasing = false;
     let stopped = false;
 
-    // queueIncomingActivitySaga: receives the activity, then picks the suggested actions, one activity at a time.
-    const receive = (activity: WebChatActivity) => {
-      releaseQueue.push(activity);
+    // queueIncomingActivitySaga: receives the activity, then picks the suggested actions, one activity at a time. Each
+    // step is a `put()` of the saga: received (its listeners run), then the suggested actions set, then the next one.
+    const receive = (activity: WebChatActivity) =>
+      queue.batch(() => {
+        releaseQueue.push(activity);
 
-      if (releasing) {
+        if (!releasing) {
+          releasing = true;
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          releaseNext();
+        }
+      });
+
+    // An error while receiving (a "put") stops this part first, then everything.
+    const failWhileReceiving = (error: unknown) => {
+      releasing = false;
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      stopQueue();
+      connection.fail(error, { insideWrite: true });
+    };
+
+    const releaseNext = () => {
+      // `stopped` changes when the connection goes offline during a listener.
+      if (stopped || !releaseQueue.length) {
+        releasing = false;
+
         return;
       }
 
-      releasing = true;
+      const next = releaseQueue.shift();
+      let suggestedActions: ReturnType<typeof pickSuggestedActions>;
 
       try {
-        // `stopped` changes when the connection goes offline during a listener.
-        // eslint-disable-next-line no-unmodified-loop-condition
-        while (!stopped && releaseQueue.length) {
-          const next = releaseQueue.shift();
+        activitiesStore.receiveActivity(next);
+        activityEmitter.emit(next);
 
-          activitiesStore.receiveActivity(next);
-          activityEmitter.emit(next);
-
-          // Every activity that reaches the transcript can release replies waiting for it.
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          hold.recheck();
-
-          const suggestedActions = pickSuggestedActions(activitiesStore.getSnapshot().sortedActivities, userID);
-
-          if (suggestedActions) {
-            const { originActivity, suggestedActions: actions = EMPTY_ARRAY } = suggestedActions;
-
-            suggestedActionsEmitter.emit(actions, originActivity);
-          }
-        }
-      } catch (error) {
-        // As the saga: an error while receiving (a "put") stops this part first, then everything.
+        // Every activity that reaches the transcript can release replies waiting for it.
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        stopQueue();
-        connection.fail(error, { insideWrite: true });
-      } finally {
-        releasing = false;
+        hold.recheck();
+
+        suggestedActions = pickSuggestedActions(activitiesStore.getSnapshot().sortedActivities, userID);
+      } catch (error) {
+        failWhileReceiving(error);
+
+        return;
+      }
+
+      if (suggestedActions) {
+        const { originActivity, suggestedActions: actions = EMPTY_ARRAY } = suggestedActions;
+
+        queue.later(() => {
+          if (stopped) {
+            releasing = false;
+
+            return;
+          }
+
+          try {
+            suggestedActionsEmitter.emit(actions, originActivity);
+          } catch (error) {
+            failWhileReceiving(error);
+
+            return;
+          }
+
+          queue.later(releaseNext);
+        });
+      } else {
+        queue.later(releaseNext);
       }
     };
 
