@@ -28,8 +28,5 @@ export default function warnPlaceholderOnce(name: string): void {
  * Warns once, in development only, that the default providers are incomplete.
  */
 export function warnIncompleteOnce(): void {
-  warnOnce(
-    '(mount)',
-    'The default providers are for tests only: outgoing activities, send box, speech and voice are placeholders.'
-  );
+  warnOnce('(mount)', 'The default providers are for tests only: speech and voice are placeholders.');
 }

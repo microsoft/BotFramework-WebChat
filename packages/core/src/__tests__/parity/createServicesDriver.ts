@@ -8,6 +8,7 @@ import sendFiles from '../../actions/sendFiles';
 import sendMessage from '../../actions/sendMessage';
 import sendMessageBack from '../../actions/sendMessageBack';
 import sendPostBack from '../../actions/sendPostBack';
+import createCompatibilityDispatch from '../../services/createCompatibilityDispatch';
 import createConnectionService from '../../services/createConnectionService';
 import createIncomingService, { type SuggestedActionsEmitter } from '../../services/createIncomingService';
 import createNotificationsCell from '../../services/createNotificationsCell';
@@ -19,11 +20,6 @@ import submitSendBox from '../../actions/submitSendBox';
 import type { CreateDriver, Observation, Operations } from './runParityScript';
 
 const EMPTY_ARRAY = Object.freeze([]);
-
-// The raw actions of card action middleware come with the api.
-const notYet = (name: string) => () => {
-  throw new Error(`The services driver cannot ${name}() yet.`);
-};
 
 const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
   const activitiesStore = createActivitiesStore({ ponyfill });
@@ -138,7 +134,7 @@ const createServicesDriver: CreateDriver = ({ faults, onChange, onSuggestedActio
     },
     observe,
     ops,
-    rawDispatch: notYet('rawDispatch')
+    rawDispatch: createCompatibilityDispatch({ outgoing })
   });
 };
 

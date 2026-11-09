@@ -23,6 +23,7 @@ jest.mock('redux-saga', () => mockFunctionsOf('redux-saga'));
 
 import { act, render } from '@testing-library/react';
 import { createStore as createWebChatStore, type WebChatActivity } from 'botframework-webchat-core';
+import lolex from 'lolex';
 import React, { memo, useEffect } from 'react';
 import * as redux from 'redux';
 import * as reduxSaga from 'redux-saga';
@@ -35,6 +36,7 @@ import useActivities from './useActivities';
 import useConnectivityStatus from './useConnectivityStatus';
 import useNotifications from './useNotifications';
 import useReferenceGrammarID from './useReferenceGrammarID';
+import useSendBoxValue from './useSendBoxValue';
 import useSuggestedActions from './useSuggestedActions';
 
 // A Direct Line that logs the calls made to it, in order. `connectionStatus$` replays the current status, as DirectLineJS.
@@ -399,6 +401,208 @@ describe('the connection of the default providers', () => {
 
       // Only the warnings of React about updates outside act().
       expect(error.mock.calls.filter(([message]) => !String(message).includes('not wrapped in act'))).toEqual([]);
+    } finally {
+      error.mockRestore();
+    }
+  });
+});
+
+describe('sending with the default providers', () => {
+  // A Direct Line that goes online, logs the posts and the subscriptions of what they return, and lets the script
+  // return or fail each post and echo it back.
+  function createPostingDirectLine(calls: string[]) {
+    const activityObservers = new Set<{ next?: (value: unknown) => void }>();
+    const posts: { activity: any; observer?: any }[] = [];
+
+    return {
+      directLine: {
+        activity$: {
+          subscribe: (observer: { next?: (value: unknown) => void }) => {
+            activityObservers.add(observer);
+
+            return { unsubscribe: () => activityObservers.delete(observer) };
+          }
+        },
+        connectionStatus$: {
+          subscribe: (observer: { next?: (value: unknown) => void }) => {
+            observer.next?.(2);
+
+            return { unsubscribe: () => undefined };
+          }
+        },
+        end: () => calls.push('end()'),
+        postActivity: (activity: any) => {
+          const post: { activity: any; observer?: any } = { activity };
+          const n = posts.push(post);
+
+          calls.push(`postActivity#${n}(${activity.type}:${activity.text ?? activity.name ?? ''})`);
+
+          return {
+            subscribe: (observer: any) => {
+              post.observer = observer;
+
+              return { unsubscribe: () => calls.push(`post#${n}.unsubscribe`) };
+            }
+          };
+        },
+        setUserId: () => undefined
+      },
+      echo: (n: number) =>
+        Array.from(activityObservers).forEach(observer =>
+          observer.next?.({ ...posts[n - 1].activity, id: `a${n}`, timestamp: new Date(n * 1_000).toISOString() })
+        ),
+      emitActivity: (activity: unknown) => Array.from(activityObservers).forEach(observer => observer.next?.(activity)),
+      fail: (n: number) => posts[n - 1].observer.error(new Error('artificial')),
+      numPosts: () => posts.length,
+      ret: (n: number) => posts[n - 1].observer.next(`a${n}`)
+    };
+  }
+
+  async function flush() {
+    for (let index = 0; index < 20; index++) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.resolve();
+    }
+  }
+
+  // The same script in each mode: typing, submit, a card action, a failed post and its retry.
+  async function runSendingScript(mode: 'default' | 'redux') {
+    const calls: string[] = [];
+    const clock = lolex.createClock();
+    const contexts: WebChatAPIContextType[] = [];
+    const dl = createPostingDirectLine(calls);
+    const renders: unknown[] = [];
+    const steps: unknown[] = [];
+    let latestActivities: readonly WebChatActivity[] = [];
+
+    setInternalDefaultModeEnabled(mode === 'default');
+
+    const HookProbe = memo(() => {
+      const [activities] = useActivities();
+      const [sendBoxValue] = useSendBoxValue();
+      const [suggestedActions] = useSuggestedActions();
+
+      latestActivities = activities;
+      renders.push({
+        activities: activities.map(({ channelData, id, text, type }: any) => ({
+          id,
+          sendStatus: channelData?.['webchat:send-status'],
+          state: channelData?.state,
+          text,
+          type
+        })),
+        sendBoxValue,
+        suggestedActions: suggestedActions.length
+      });
+
+      return null;
+    });
+
+    const children = (context: WebChatAPIContextType) => {
+      contexts.push(context);
+
+      return <HookProbe />;
+    };
+
+    const result = render(
+      <Composer
+        directLine={dl.directLine}
+        ponyfill={{ ...clock }}
+        sendTypingIndicator={true}
+        userID="u-1"
+        username="User"
+      >
+        {children}
+      </Composer>
+    );
+
+    const step = async (label: string, fn?: () => void) => {
+      act(() => {
+        fn?.();
+      });
+
+      await flush();
+
+      steps.push({ calls: calls.splice(0), label, last: renders.at(-1), renders: renders.splice(0).length });
+    };
+
+    const context = () => contexts.at(-1);
+
+    await step('mount, online');
+    await step('bot message with suggested actions', () =>
+      dl.emitActivity({
+        from: { id: 'bot', role: 'bot' },
+        id: 'b1',
+        suggestedActions: { actions: [{ title: 'Hi', type: 'imBack', value: 'Hi' }] },
+        text: 'Hello',
+        timestamp: new Date(500).toISOString(),
+        type: 'message'
+      })
+    );
+    await step('type "H"', () => context().setSendBox('H'));
+    await step('t=1000, type "Hi"', () => {
+      clock.tick(1_000);
+      context().setSendBox('Hi');
+    });
+    await step('submit', () => context().submitSendBox());
+    await step('return and echo the posts', () => {
+      for (let n = 1; n <= dl.numPosts(); n++) {
+        dl.ret(n);
+        dl.echo(n);
+      }
+    });
+    await step('card action imBack', () => context().onCardAction({ title: 'card', type: 'imBack', value: 'card' }));
+    await step('the card action post fails', () => dl.fail(dl.numPosts()));
+    await step('retry', () => context().postActivity(latestActivities.at(-1)));
+    await step('return and echo the retry', () => {
+      dl.ret(dl.numPosts());
+      dl.echo(dl.numPosts());
+    });
+    await step('t=30000', () => clock.tick(29_000));
+    await step('unmount', () => result.unmount());
+
+    return steps;
+  }
+
+  test('should show the same as Redux mode, with the same renders and calls to Direct Line', async () => {
+    const error = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    try {
+      const redux = await runSendingScript('redux');
+
+      jest.clearAllMocks();
+
+      const defaultMode = await runSendingScript('default');
+
+      expect(defaultMode).toEqual(redux);
+      expect(getReduxCalls()).toEqual([]);
+
+      // What it shows, to read the comparison.
+      expect(defaultMode.map(({ calls, label }: any) => [label, calls])).toEqual([
+        ['mount, online', []],
+        ['bot message with suggested actions', []],
+        ['type "H"', ['postActivity#1(typing:)']],
+        ['t=1000, type "Hi"', []],
+        ['submit', ['postActivity#2(message:Hi)']],
+        ['return and echo the posts', ['post#1.unsubscribe', 'post#2.unsubscribe']],
+        ['card action imBack', ['postActivity#3(message:card)']],
+        ['the card action post fails', ['post#3.unsubscribe']],
+        ['retry', ['postActivity#4(message:card)']],
+        ['return and echo the retry', ['post#4.unsubscribe']],
+        ['t=30000', []],
+        ['unmount', ['end()']]
+      ]);
+      expect((defaultMode.find(({ label }: any) => label === 'return and echo the retry') as any).last).toEqual({
+        activities: [
+          { id: 'b1', sendStatus: undefined, state: undefined, text: 'Hello', type: 'message' },
+          { id: 'a1', sendStatus: 'sent', state: 'sent', text: undefined, type: 'typing' },
+          { id: 'a2', sendStatus: 'sent', state: 'sent', text: 'Hi', type: 'message' },
+          { id: undefined, sendStatus: 'send failed', state: 'send failed', text: 'card', type: 'message' },
+          { id: 'a4', sendStatus: 'sent', state: 'sent', text: 'card', type: 'message' }
+        ],
+        sendBoxValue: '',
+        suggestedActions: 0
+      });
     } finally {
       error.mockRestore();
     }

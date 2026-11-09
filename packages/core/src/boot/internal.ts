@@ -22,6 +22,10 @@ export {
 
 // The services of the default providers (no Redux), for the api. Internal, as the activities store.
 export {
+  default as createCompatibilityDispatch,
+  type CompatibilityDispatch
+} from '../services/createCompatibilityDispatch';
+export {
   default as createConnectionService,
   type ConnectionService,
   type ConnectionSession,

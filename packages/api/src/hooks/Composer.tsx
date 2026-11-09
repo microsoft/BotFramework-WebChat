@@ -6,7 +6,6 @@ import {
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import {
-  stopDictate,
   type DirectLineJSBotConnection,
   type GlobalScopePonyfill,
   type WebChatActivity
@@ -85,6 +84,7 @@ function createCardActionContext({
   dispatch,
   markAllAsAcknowledged,
   ponyfill,
+  stopDictate,
   styleOptions
 }: {
   cardActionMiddleware: readonly CardActionMiddleware[];
@@ -93,6 +93,7 @@ function createCardActionContext({
   dispatch: (...args: unknown[]) => unknown;
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
+  stopDictate: () => void;
   styleOptions: StrictStyleOptions;
 }): { readonly onCardAction: PerformCardAction } {
   const runMiddleware = applyMiddleware(
@@ -105,9 +106,10 @@ function createCardActionContext({
     onCardAction: (cardAction, { target }: { target?: any } = {}, init) => {
       markAllAsAcknowledged();
 
-      // Stop speech recognition only if under interactive mode.
+      // Stop speech recognition only if under interactive mode. Through the speech domain: in Redux mode, the same
+      // `STOP_DICTATE` action on the same store; card action middleware only sees its own actions.
       if (!continuous) {
-        dispatch(stopDictate());
+        stopDictate();
       }
 
       return runMiddleware({
@@ -278,9 +280,10 @@ const ComposerCore = ({
         dispatch,
         markAllAsAcknowledged,
         ponyfill,
+        stopDictate: speech.stopDictate,
         styleOptions
       }),
-    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill, styleOptions]
+    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill, speech.stopDictate, styleOptions]
   );
 
   const patchedSelectVoice = useMemo(
@@ -713,7 +716,14 @@ const ComposerWithStore = ({
       {children}
     </ReduxProviders>
   ) : (
-    <DefaultProviders directLine={directLine} key="default" userID={userID} username={username}>
+    <DefaultProviders
+      directLine={directLine}
+      key="default"
+      locale={locale}
+      sendTypingIndicator={sendTypingIndicator}
+      userID={userID}
+      username={username}
+    >
       {children}
     </DefaultProviders>
   );

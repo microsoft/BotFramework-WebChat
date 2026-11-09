@@ -3,7 +3,7 @@
 
 import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { render } from '@testing-library/react';
-import { sendMessage, stopDictate } from 'botframework-webchat-core';
+import { sendMessage } from 'botframework-webchat-core';
 import React, { type ReactNode } from 'react';
 
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
@@ -187,7 +187,7 @@ describe('<ComposerCore> under stub domain contexts, without a Redux store', () 
     expect(stubs.voice.stopVoice).toHaveBeenCalledTimes(1);
   });
 
-  test('onCardAction() should dispatch through the chat operations', () => {
+  test('onCardAction() should stop dictation through the speech domain, then dispatch through the chat operations', () => {
     const stubs = createStubs();
     let context: WebChatAPIContextType;
 
@@ -199,11 +199,12 @@ describe('<ComposerCore> under stub domain contexts, without a Redux store', () 
 
     context.onCardAction({ title: 'Hi', type: 'imBack', value: 'Hi' });
 
-    expect(stubs.chatOperations.dispatch).toHaveBeenNthCalledWith(1, stopDictate());
-    expect(stubs.chatOperations.dispatch).toHaveBeenNthCalledWith(
-      2,
-      sendMessage('Hi', 'imBack', { replyToId: undefined })
+    expect(stubs.speech.stopDictate).toHaveBeenCalledTimes(1);
+    expect((stubs.speech.stopDictate as jest.Mock).mock.invocationCallOrder[0]).toBeLessThan(
+      (stubs.chatOperations.dispatch as jest.Mock).mock.invocationCallOrder[0]
     );
+    expect(stubs.chatOperations.dispatch).toHaveBeenCalledTimes(1);
+    expect(stubs.chatOperations.dispatch).toHaveBeenCalledWith(sendMessage('Hi', 'imBack', { replyToId: undefined }));
   });
 
   test('hooks under it should read the domain contexts', () => {

@@ -1,12 +1,15 @@
 import { type DirectLineJSBotConnection, type WebChatActivity } from 'botframework-webchat-core';
 
 /**
- * For tests only, read only: what the default providers connected to a Direct Line show, without a Redux store.
- * The html2 helpers wait on it in default mode, as they wait on the Redux store in Redux mode.
+ * For tests only: what the default providers connected to a Direct Line show, without a Redux store, and a way to post as
+ * the emulator does in Redux mode (a `POST_ACTIVITY` through the store). The html2 helpers use it in default mode, as
+ * they use the Redux store in Redux mode.
  */
 type TestHandle = {
   readonly getActivities: () => readonly WebChatActivity[];
   readonly getConnectivityStatus: () => string;
+  readonly getSendBoxValue: () => string;
+  readonly postActivity: (activity: WebChatActivity, method?: string) => void;
 };
 
 const testHandles = new WeakMap<DirectLineJSBotConnection, TestHandle>();

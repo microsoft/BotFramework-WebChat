@@ -10,7 +10,7 @@ import { createActivitiesStore, type ActivitiesStore } from 'botframework-webcha
 import React, { memo, type ReactNode } from 'react';
 
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
-import { useChatOperationsContext } from '../../hooks/internal/domains/ChatOperationsContext';
+import { useSpeechContext } from '../../hooks/internal/domains/SpeechContext';
 import { useVoiceContext } from '../../hooks/internal/domains/VoiceContext';
 import useActivities from '../../hooks/useActivities';
 import useConnectivityStatus from '../../hooks/useConnectivityStatus';
@@ -397,14 +397,14 @@ describe('<DefaultProviders>', () => {
     const reduxState = createStoreWithOptions({ ponyfill: PONYFILL }).getState();
 
     function DomainProbe() {
-      const chatOperations = useChatOperationsContext();
+      const speech = useSpeechContext();
       const voice = useVoiceContext();
 
       renders.push({
-        chatOperations,
         connectivityStatus: useConnectivityStatus()[0],
         notifications: useNotifications()[0],
         sendBoxValue: useSendBoxValue()[0],
+        speech,
         voice
       });
 
@@ -422,19 +422,19 @@ describe('<DefaultProviders>', () => {
       </PonyfillComposer>
     );
 
-    const [{ chatOperations, connectivityStatus, notifications, sendBoxValue, voice }] = renders as any[];
+    const [{ connectivityStatus, notifications, sendBoxValue, speech, voice }] = renders as any[];
 
     expect(connectivityStatus).toBe(reduxState.connectivityStatus);
     expect(notifications).toEqual(reduxState.notifications);
     expect(sendBoxValue).toBe(reduxState.sendBoxValue);
 
-    expect(chatOperations.sendMessage('Hello')).toBeUndefined();
-    chatOperations.sendMessage('Hello again');
+    expect(speech.startDictate()).toBeUndefined();
+    speech.startDictate();
     expect(typeof voice.registerVoiceHandler({})).toBe('function');
 
     const messages = warn.mock.calls.map(([message]) => message);
 
-    expect(messages.filter(message => message.includes('"sendMessage"'))).toHaveLength(1);
+    expect(messages.filter(message => message.includes('"startDictate"'))).toHaveLength(1);
     expect(messages.filter(message => message.includes('"registerVoiceHandler"'))).toHaveLength(1);
 
     // Last test of the file: <DefaultProviders> mounted many times, and warned once.
