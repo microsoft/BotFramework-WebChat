@@ -4,7 +4,7 @@
     <!-- The provider set without Redux: internal, for tests only. -->
     <meta name="webchat-test-store-mode" content="default" />
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <title>Default providers: Web Chat without a store renders without Redux</title>
+    <title>Default providers: Web Chat without a store renders and connects without Redux</title>
     <script type="importmap">
       {
         "imports": {
@@ -25,8 +25,8 @@
     <script type="module">
       import { pageConditions, run, testHelpers } from '/assets/esm/test.js';
 
-      import { createStore, ReactWebChat } from 'botframework-webchat';
-      import { __INTERNAL_DO_NOT_USE__setDefaultModeEnabled } from 'botframework-webchat-api/internal.js';
+      import { ReactWebChat } from 'botframework-webchat';
+      import { __INTERNAL_DO_NOT_USE__getProviderMountCounts } from 'botframework-webchat-api/internal.js';
       import { createElement, version as reactVersion } from 'react';
       import { createRoot } from 'react-dom/client';
 
@@ -54,16 +54,14 @@
       }
 
       run(async function () {
-        // GIVEN: The page declares the default providers, and applies it to Web Chat.
+        // GIVEN: The page declares the default providers; the page-object applied it to Web Chat when it loaded.
         expect(testHelpers.getStoreMode()).toBe('default');
-
-        __INTERNAL_DO_NOT_USE__setDefaultModeEnabled(testHelpers.getStoreMode() === 'default');
 
         // THEN: The helpers give no store, and refuse what needs one.
         expect(testHelpers.createStore()).toBeUndefined();
         expect(() => testHelpers.createStore({ sendBoxValue: 'Hello' })).toThrow(testHelpers.ReduxOnlyTest);
         expect(() => pageObjects.getActivities()).toThrow(testHelpers.ReduxOnlyTest);
-        expect(() => testHelpers.createDirectLineEmulator()).toThrow(testHelpers.ReduxOnlyTest);
+        expect(testHelpers.createDirectLineEmulator().store).toBeUndefined();
 
         const warnings = [];
         const { warn } = console;
@@ -86,29 +84,23 @@
         expect(pageElements.activities()).toHaveLength(0);
         expect(pageElements.transcript()).toBeTruthy();
 
-        // THEN: It does not connect: the connection is not built in the default providers yet.
-        expect(subscriptions).toEqual({ activity$: 0, connectionStatus$: 0 });
+        // THEN: It connects, without Redux: the connection service subscribes to Direct Line.
+        await pageConditions.became(
+          'Web Chat connects through the connection service',
+          () => subscriptions.activity$ > 0 && subscriptions.connectionStatus$ > 0,
+          5000
+        );
+
+        // THEN: Only the default providers mounted (the runner checks it again when the test is done).
+        expect(__INTERNAL_DO_NOT_USE__getProviderMountCounts()).toEqual({ default: 1, redux: 0 });
 
         // THEN: It warns once, in development, that the default providers are for tests only.
         expect(warnings.filter(message => message.includes('The default providers are for tests only'))).toHaveLength(
           1
         );
 
-        // WHEN: The host passes a store.
-        root.render(createElement(ReactWebChat, { directLine, store: createStore() }));
-
-        // THEN: Web Chat remounts on the Redux providers, and connects.
-        await pageConditions.became(
-          'Web Chat connects through its Redux store',
-          () => subscriptions.activity$ > 0 && subscriptions.connectionStatus$ > 0,
-          5000
-        );
-
-        expect(pageElements.sendBoxTextBox()).toBeTruthy();
-
         console.warn = warn;
         root.unmount();
-        __INTERNAL_DO_NOT_USE__setDefaultModeEnabled(false);
       });
     </script>
   </body>

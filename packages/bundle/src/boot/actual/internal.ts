@@ -1,5 +1,12 @@
 // We should review exports in this file to make sure 1P = 3P.
 export { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat-api/internal.js';
+// For tests only (html2): the switch to the default providers (no Redux), the mount counts of the provider sets, and the
+// read-only test handle of the default providers. Deleted when the default providers ship.
+export {
+  __INTERNAL_DO_NOT_USE__getProviderMountCounts,
+  __INTERNAL_DO_NOT_USE__getTestHandle,
+  __INTERNAL_DO_NOT_USE__setDefaultModeEnabled
+} from 'botframework-webchat-api/internal.js';
 export {
   CodeHighlighterComposer,
   createIconComponent,

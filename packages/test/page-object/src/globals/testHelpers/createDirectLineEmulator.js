@@ -7,7 +7,7 @@ import createDeferredObservable from '../../utils/createDeferredObservable';
 import became from '../pageConditions/became';
 import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
-import getStoreMode, { ReduxOnlyTest } from './storeMode';
+import getStoreMode, { getTestHandle, ReduxOnlyTest } from './storeMode';
 
 function isNativeClock() {
   return ('' + setTimeout).endsWith('() { [native code] }');
@@ -18,13 +18,25 @@ function uniqueId() {
 }
 
 export default function createDirectLineEmulator({ autoConnect = true, initialState, ponyfill = {} } = {}) {
-  if (getStoreMode() === 'default') {
-    // It waits for activities in the Redux store; the default providers have no test handle yet.
-    throw new ReduxOnlyTest('createDirectLineEmulator() reads activities from the Redux store.');
-  }
-
+  const defaultMode = getStoreMode() === 'default';
   const { Date = window.Date } = ponyfill;
+  // In default mode, no store: Web Chat runs on the default providers, read through their test handle.
   const store = createStoreWithOptions({ ponyfill }, initialState);
+
+  // eslint-disable-next-line prefer-const
+  let directLine;
+
+  const findActivity = id =>
+    (defaultMode ? getTestHandle(directLine)?.getActivities() || [] : store.getState().activities).find(
+      activity => activity.id === id
+    );
+
+  const throwInDefaultMode = name => {
+    if (defaultMode) {
+      // The default providers send nothing yet (stage 4).
+      throw new ReduxOnlyTest(`createDirectLineEmulator().${name}() sends through the Redux store.`);
+    }
+  };
 
   if (!isNativeClock()) {
     throw new Error('Fake timer is detected at global-level. You must pass it via the "ponyfill" option.');
@@ -86,6 +98,8 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
   };
 
   const actPostActivity = async (fn, { id: idFromOptions } = {}) => {
+    throwInDefaultMode('actPostActivity');
+
     const postActivityCallWithResolvers = withResolvers();
 
     postActivityCallDeferreds.push(postActivityCallWithResolvers);
@@ -104,11 +118,7 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
 
       activityDeferredObservable.next(echoBackActivity);
 
-      await became(
-        'echo back activity appears in the store',
-        () => store.getState().activities.find(activity => activity.id === echoBackActivity.id),
-        1000
-      );
+      await became('echo back activity appears in the store', () => findActivity(echoBackActivity.id), 1000);
     };
 
     const rejectPostActivity = error => returnPostActivityDeferred.reject(error);
@@ -135,7 +145,7 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
     eventTarget.dispatchEvent(new Event('capabilitieschanged'));
   };
 
-  const directLine = {
+  directLine = {
     activity$: shareObservable(activityDeferredObservable.observable),
     actPostActivity,
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
@@ -198,12 +208,7 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
 
       activityDeferredObservable.next(activity);
 
-      skipWait ||
-        (await became(
-          'incoming activity appears in the store',
-          () => store.getState().activities.find(activity => activity.id === id),
-          1000
-        ));
+      skipWait || (await became('incoming activity appears in the store', () => findActivity(id), 1000));
     },
     emulateIncomingVoiceActivity: activity => {
       activity = updateIn(activity, ['timestamp'], timestamp =>
@@ -218,6 +223,8 @@ export default function createDirectLineEmulator({ autoConnect = true, initialSt
       activityDeferredObservable.next(activity);
     },
     emulateOutgoingActivity: (activity, options) => {
+      throwInDefaultMode('emulateOutgoingActivity');
+
       if (typeof activity === 'string') {
         activity = {
           from: { id: 'user', role: 'user' },

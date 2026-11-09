@@ -24,7 +24,7 @@ import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
 import sleep from './sleep';
 import stringToArrayBuffer from './stringToArrayBuffer';
-import getStoreMode, { ReduxOnlyTest } from './storeMode';
+import getStoreMode, { getTestHandle, ReduxOnlyTest, registerWebChatInternal } from './storeMode';
 
 export { default as hideKnownError } from './hideKnownError';
 
@@ -47,11 +47,13 @@ export {
   getFocusedAccessibilityNode,
   getRenderedColor,
   getStoreMode,
+  getTestHandle,
   isCardInView,
   isFlipperHidden,
   iterateAsyncIterable,
   preloadImages,
   ReduxOnlyTest,
+  registerWebChatInternal,
   shareObservable,
   sleep,
   speech,

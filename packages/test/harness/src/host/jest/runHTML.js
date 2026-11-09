@@ -59,7 +59,15 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
   try {
     const absoluteURL = new URL(url, 'https://webchat2/__tests__/html2/');
 
-    STORE_MODE && (absoluteURL.hash = new URLSearchParams({ 'webchat-test-store-mode': STORE_MODE }).toString());
+    if (STORE_MODE) {
+      absoluteURL.hash = new URLSearchParams({ 'webchat-test-store-mode': STORE_MODE }).toString();
+
+      // Also as a cookie, kept when a page redirects to a URL with another fragment. A cookie needs a page of the site.
+      global.__operation__ = 'setting the store mode cookie';
+
+      await webDriver.get(new URL('/assets/index.css', absoluteURL).toString());
+      await webDriver.manage().addCookie({ name: 'webchat-test-store-mode', path: '/', value: STORE_MODE });
+    }
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 

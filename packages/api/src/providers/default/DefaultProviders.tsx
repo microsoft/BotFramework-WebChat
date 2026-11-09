@@ -14,6 +14,7 @@ import { unstable_batchedUpdates } from 'react-dom';
 import { custom, function_, is, object, optional, pipe, readonly, unknown, type InferInput } from 'valibot';
 
 import usePonyfill from '../../hooks/usePonyfill';
+import { countProviderMount } from '../internalDefaultMode';
 import DefaultDomainProviders from './DefaultDomainProviders';
 import DefaultSessionEffects from './DefaultSessionEffects';
 import createGraphStoreFromActivitiesStore from './private/createGraphStoreFromActivitiesStore';
@@ -64,8 +65,12 @@ function DefaultProviders(props: DefaultProvidersProps) {
     const notifications = createNotificationsCell({ notify, ponyfill });
     const connection = createConnectionService({ notifications, notify, ponyfill });
     const incoming = createIncomingService({ activitiesStore, connection, ponyfill });
+    const testHandle = Object.freeze({
+      getActivities: () => activitiesStore.getSnapshot().sortedActivities,
+      getConnectivityStatus: () => connection.connectivityStatus.get()
+    });
 
-    return Object.freeze({ activitiesStore, connection, incoming, notifications });
+    return Object.freeze({ activitiesStore, connection, incoming, notifications, testHandle });
   }, [activitiesStoreFromProps, ponyfill]);
 
   const graphStore = useMemo(
@@ -73,7 +78,10 @@ function DefaultProviders(props: DefaultProvidersProps) {
     [services.activitiesStore]
   );
 
-  useEffect(() => warnIncompleteOnce(), []);
+  useEffect(() => {
+    countProviderMount('default');
+    warnIncompleteOnce();
+  }, []);
 
   return (
     <SuggestedActionsComposer>
@@ -83,6 +91,7 @@ function DefaultProviders(props: DefaultProvidersProps) {
             <DefaultSessionEffects
               connection={services.connection}
               directLine={directLine}
+              testHandle={services.testHandle}
               userID={userID as string | undefined}
               username={username as string | undefined}
             >

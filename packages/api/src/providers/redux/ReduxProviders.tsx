@@ -1,11 +1,12 @@
 import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import { createStoreWithOptions } from 'botframework-webchat-core';
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 
 import usePonyfill from '../../hooks/usePonyfill';
 import { type WebChatReduxStore } from '../../hooks/internal/WebChatReduxContext';
 import WebChatReduxProvider from '../../hooks/internal/WebChatReduxProvider';
+import { countProviderMount } from '../internalDefaultMode';
 import ReduxActivitiesCrossCheck from './ReduxActivitiesCrossCheck';
 import ReduxDomainBridge from './ReduxDomainBridge';
 import ReduxSessionEffects, { type ReduxSessionEffectsProps } from './ReduxSessionEffects';
@@ -71,6 +72,9 @@ function ReduxProviders({
 
     return nextStore;
   }, [ponyfill, store]);
+
+  // For tests only: a test in default mode checks that this never mounted.
+  useEffect(() => countProviderMount('redux'), []);
 
   return (
     <WebChatReduxProvider store={memoizedStore}>

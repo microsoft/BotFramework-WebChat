@@ -27,7 +27,8 @@ import React, { memo, useEffect } from 'react';
 import * as redux from 'redux';
 import * as reduxSaga from 'redux-saga';
 
-import { setInternalDefaultModeEnabled } from '../providers/internalDefaultMode';
+import { getTestHandle } from '../providers/default/private/testHandles';
+import { getProviderMountCounts, setInternalDefaultModeEnabled } from '../providers/internalDefaultMode';
 import Composer from './Composer';
 import { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import useActivities from './useActivities';
@@ -243,6 +244,37 @@ describe('the provider set of <Composer>', () => {
 });
 
 describe('the connection of the default providers', () => {
+  test('should count the mounts of each provider set, and give a test handle while connected', async () => {
+    const calls: string[] = [];
+    const dl = createScriptedDirectLine('dl', calls);
+    const before = getProviderMountCounts();
+
+    setInternalDefaultModeEnabled(true);
+
+    const result = render(<Composer directLine={dl.directLine}>{() => null}</Composer>);
+
+    expect(getProviderMountCounts()).toEqual({ default: before.default + 1, redux: before.redux });
+
+    act(() => dl.emitStatus(2));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(getTestHandle(dl.directLine)?.getConnectivityStatus()).toBe('connected');
+    expect(getTestHandle()).toBe(getTestHandle(dl.directLine));
+    expect(getTestHandle(dl.directLine)?.getActivities()).toEqual([]);
+
+    result.unmount();
+    await Promise.resolve();
+
+    expect(getTestHandle(dl.directLine)).toBeUndefined();
+    expect(getTestHandle()).toBeUndefined();
+
+    setInternalDefaultModeEnabled(false);
+
+    render(<Composer directLine={createDirectLine()}>{() => null}</Composer>).unmount();
+
+    expect(getProviderMountCounts()).toEqual({ default: before.default + 1, redux: before.redux + 1 });
+  });
   async function flush() {
     for (let index = 0; index < 20; index++) {
       // eslint-disable-next-line no-await-in-loop
