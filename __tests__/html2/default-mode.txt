@@ -7,6 +7,9 @@
 # run, then reviewed: every exclusion below has its reason.
 # Stage 5: speech and speech-to-speech (speech/, speechToSpeech/, the speech hooks), and the pages of the setters that
 # throw on undefined (localization/, the send box, typing, locale and send timeout hooks).
+# Merge of main d124c26b6: main's new pages outside the globs below that pass in default mode (CSS modules, RTL, custom
+# element, strict mode). Not listed, as they dispatch to the Redux store: activity/deleteActivity.html,
+# toast/liveRegion.renderedOnly.html.
 
 accessibility/**/*.html
 activityGrouping/**/*.html
@@ -19,6 +22,10 @@ cardAction/**/*.html
 carousel/**/*.html
 chatHistory/**/*.html
 citation/**/*.html
+customElement/shadowRoot.interact.react18.html
+customElement/shadowRoot.interact.renderIntoNestedShadowRoot.html
+customElement/shadowRoot.interact.renderIntoShadowRoot.html
+customElement/shadowRoot.react16.throw.html
 feedbackForm/**/*.html
 feedbackStatus/**/*.html
 fluentTheme/**/*.html
@@ -38,6 +45,7 @@ hooks/useSendTypingIndicator.*.html
 hooks/useShouldSpeakIncomingActivity.*.html
 hooks/useStartDictate.html
 hooks/useStopDictate.html
+hooks/useStyles/cssModuleTheme.fluent.html
 hooks/useSubmitSendBox.html
 hooks/useTextBoxSubmit.*.html
 hooks/useTimeoutForSend.*.html
@@ -49,8 +57,13 @@ markdown/**/*.html
 middleware/cardAction/**/*.html
 offlineUI/**/*.html
 part-grouping/**/*.html
+react19/strictMode.adaptiveCard.submit.html
+react19/strictMode.esm.html
 replyToId/**/*.html
 richCard/**/*.html
+rtl/connectionStatus.connecting.html
+rtl/connectionStatus.slowConnection.html
+rtl/scrollToEndButton.html
 sendAttachmentOn/**/*.html
 sendBox/**/*.html
 sendBoxMiddleware/**/*.html
@@ -58,7 +71,11 @@ sendBoxToolbarMiddleware/**/*.html
 speech/**/*.html
 speechToSpeech/**/*.html
 storeMode/**/*.html
+strictMode/adaptiveCard.submit.html
 strictMode/directLine.html
+styleOptions/avatarBorderRadius.html
+styleOptions/connectivityStatus.html
+styleOptions/videoHeight.html
 suggestedActions/**/*.html
 transcript/**/*.html
 typing/**/*.html
