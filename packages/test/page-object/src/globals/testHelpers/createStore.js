@@ -1,3 +1,5 @@
+import getStoreMode, { ReduxOnlyTest } from './storeMode';
+
 let actionHistory;
 let activeStore;
 
@@ -21,6 +23,18 @@ function concatMiddleware(...middlewares) {
 }
 
 function createStoreWithOptions(options = {}, initialState = {}, ...middleware) {
+  if (getStoreMode() === 'default') {
+    if (Object.keys(initialState || {}).length || middleware.some(Boolean)) {
+      throw new ReduxOnlyTest('initial state and store middleware need a Redux store.');
+    }
+
+    actionHistory = undefined;
+    activeStore = undefined;
+
+    // Web Chat without a store runs on the default providers.
+    return undefined;
+  }
+
   return window.WebChat.createStoreWithOptions(
     options,
     initialState,
@@ -44,7 +58,15 @@ export default function createStore(initialState = {}, ...middleware) {
   return createStoreWithOptions({}, initialState, ...middleware);
 }
 
+function throwInDefaultMode(name) {
+  if (getStoreMode() === 'default') {
+    throw new ReduxOnlyTest(`${name}() needs a Redux store.`);
+  }
+}
+
 function dispatch(...args) {
+  throwInDefaultMode('dispatch');
+
   if (!activeStore) {
     throw new Error('WebChatTest: Please use "window.WebChatTest.createStore" when initializing Web Chat.');
   }
@@ -53,6 +75,8 @@ function dispatch(...args) {
 }
 
 function getActionHistory() {
+  throwInDefaultMode('getActionHistory');
+
   if (!actionHistory) {
     throw new Error('WebChatTest: Please use "window.WebChatTest.createStore" when initializing Web Chat.');
   }
@@ -61,6 +85,8 @@ function getActionHistory() {
 }
 
 function getState() {
+  throwInDefaultMode('getState');
+
   if (!activeStore) {
     throw new Error('WebChatTest: Please use "window.WebChatTest.createStore" when initializing Web Chat.');
   }

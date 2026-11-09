@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <!-- The provider set without Redux: internal, for tests only. -->
+    <meta name="webchat-test-store-mode" content="default" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <title>Default providers: Web Chat without a store renders without Redux</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-api/": "/__dist__/packages/bundle/static/botframework-webchat-api/",
+          "botframework-webchat-core": "/__dist__/packages/bundle/static/botframework-webchat-core.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { pageConditions, run, testHelpers } from '/assets/esm/test.js';
+
+      import { createStore, ReactWebChat } from 'botframework-webchat';
+      import { __INTERNAL_DO_NOT_USE__setDefaultModeEnabled } from 'botframework-webchat-api/internal.js';
+      import { createElement, version as reactVersion } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      function createDirectLine() {
+        const subscriptions = { activity$: 0, connectionStatus$: 0 };
+        const createObservable = name => ({
+          subscribe() {
+            subscriptions[name]++;
+
+            return { unsubscribe() {} };
+          }
+        });
+
+        return {
+          directLine: {
+            activity$: createObservable('activity$'),
+            connectionStatus$: createObservable('connectionStatus$'),
+            end() {},
+            postActivity() {
+              throw new Error('Not connected.');
+            }
+          },
+          subscriptions
+        };
+      }
+
+      run(async function () {
+        // GIVEN: The page declares the default providers, and applies it to Web Chat.
+        expect(testHelpers.getStoreMode()).toBe('default');
+
+        __INTERNAL_DO_NOT_USE__setDefaultModeEnabled(testHelpers.getStoreMode() === 'default');
+
+        // THEN: The helpers give no store, and refuse what needs one.
+        expect(testHelpers.createStore()).toBeUndefined();
+        expect(() => testHelpers.createStore({ sendBoxValue: 'Hello' })).toThrow(testHelpers.ReduxOnlyTest);
+        expect(() => pageObjects.getActivities()).toThrow(testHelpers.ReduxOnlyTest);
+        expect(() => testHelpers.createDirectLineEmulator()).toThrow(testHelpers.ReduxOnlyTest);
+
+        const warnings = [];
+        const { warn } = console;
+
+        console.warn = (...args) => {
+          warnings.push(args.join(' '));
+          warn.apply(console, args);
+        };
+
+        // WHEN: Web Chat renders without a store, on a root of React 18 or later.
+        expect(+reactVersion.split('.')[0]).toBeGreaterThanOrEqual(18);
+        const { directLine, subscriptions } = createDirectLine();
+        const root = createRoot(document.getElementById('webchat'));
+
+        root.render(createElement(ReactWebChat, { directLine }));
+
+        await pageConditions.became('the send box is rendered', () => !!pageElements.sendBoxTextBox(), 5000);
+
+        // THEN: It renders an empty transcript.
+        expect(pageElements.activities()).toHaveLength(0);
+        expect(pageElements.transcript()).toBeTruthy();
+
+        // THEN: It does not connect: the connection is not built in the default providers yet.
+        expect(subscriptions).toEqual({ activity$: 0, connectionStatus$: 0 });
+
+        // THEN: It warns once, in development, that the default providers are for tests only.
+        expect(warnings.filter(message => message.includes('The default providers are for tests only'))).toHaveLength(
+          1
+        );
+
+        // WHEN: The host passes a store.
+        root.render(createElement(ReactWebChat, { directLine, store: createStore() }));
+
+        // THEN: Web Chat remounts on the Redux providers, and connects.
+        await pageConditions.became(
+          'Web Chat connects through its Redux store',
+          () => subscriptions.activity$ > 0 && subscriptions.connectionStatus$ > 0,
+          5000
+        );
+
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+
+        console.warn = warn;
+        root.unmount();
+        __INTERNAL_DO_NOT_USE__setDefaultModeEnabled(false);
+      });
+    </script>
+  </body>
+</html>

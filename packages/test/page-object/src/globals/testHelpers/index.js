@@ -24,6 +24,7 @@ import preloadImages from './preloadImages';
 import shareObservable from './shareObservable';
 import sleep from './sleep';
 import stringToArrayBuffer from './stringToArrayBuffer';
+import getStoreMode, { ReduxOnlyTest } from './storeMode';
 
 export { default as hideKnownError } from './hideKnownError';
 
@@ -45,10 +46,12 @@ export {
   getAllTextContents,
   getFocusedAccessibilityNode,
   getRenderedColor,
+  getStoreMode,
   isCardInView,
   isFlipperHidden,
   iterateAsyncIterable,
   preloadImages,
+  ReduxOnlyTest,
   shareObservable,
   sleep,
   speech,

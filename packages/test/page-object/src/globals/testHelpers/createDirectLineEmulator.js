@@ -7,6 +7,7 @@ import createDeferredObservable from '../../utils/createDeferredObservable';
 import became from '../pageConditions/became';
 import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
+import getStoreMode, { ReduxOnlyTest } from './storeMode';
 
 function isNativeClock() {
   return ('' + setTimeout).endsWith('() { [native code] }');
@@ -17,6 +18,11 @@ function uniqueId() {
 }
 
 export default function createDirectLineEmulator({ autoConnect = true, initialState, ponyfill = {} } = {}) {
+  if (getStoreMode() === 'default') {
+    // It waits for activities in the Redux store; the default providers have no test handle yet.
+    throw new ReduxOnlyTest('createDirectLineEmulator() reads activities from the Redux store.');
+  }
+
   const { Date = window.Date } = ponyfill;
   const store = createStoreWithOptions({ ponyfill }, initialState);
 

@@ -13,6 +13,15 @@ const DEFAULT_OPTIONS = {
   webDriverURL: 'http://localhost:4445/wd/hub/'
 };
 
+// The provider set of Web Chat for every page: "redux" or "default" (no Redux, internal and for tests only).
+// Pages read it with `testHelpers.getStoreMode()`, from the "webchat-test-store-mode" parameter of the URL fragment.
+// (Not the search: the server redirects "page.html?search" to "page" without the search; the fragment is kept.)
+const STORE_MODE = process.env.WEBCHAT_TEST_STORE_MODE;
+
+if (STORE_MODE && !['default', 'redux'].includes(STORE_MODE)) {
+  throw new Error(`WEBCHAT_TEST_STORE_MODE must be "default" or "redux", not "${STORE_MODE}".`);
+}
+
 afterEach(async () => {
   try {
     // We must stop the bridge too, otherwise, it will cause timeout.
@@ -49,6 +58,8 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
   try {
     const absoluteURL = new URL(url, 'https://webchat2/__tests__/html2/');
+
+    STORE_MODE && (absoluteURL.hash = new URLSearchParams({ 'webchat-test-store-mode': STORE_MODE }).toString());
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
