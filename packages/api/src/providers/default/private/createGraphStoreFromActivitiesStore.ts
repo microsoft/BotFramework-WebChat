@@ -1,5 +1,5 @@
 import { type GraphProvider } from '@msinternal/botframework-webchat-api-graph';
-import { type ActivitiesStore } from 'botframework-webchat-core/activities.js';
+import { type ActivitiesStore } from 'botframework-webchat-core/internal.js';
 import { type ComponentProps } from 'react';
 
 type GraphProviderStore = ComponentProps<typeof GraphProvider>['store'];

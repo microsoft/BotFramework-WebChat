@@ -1,7 +1,7 @@
 import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { SuggestedActionsComposer } from '@msinternal/botframework-webchat-redux-store';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { createActivitiesStore, type ActivitiesStore } from 'botframework-webchat-core/activities.js';
+import { createActivitiesStore, type ActivitiesStore } from 'botframework-webchat-core/internal.js';
 import React, { memo, useEffect, useMemo } from 'react';
 import { custom, function_, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
 

@@ -1,7 +1,6 @@
 // The activities core (`@msinternal/botframework-webchat-core-activities`), for other Web Chat packages. Core bundles
 // it: importing it from here keeps one copy of the module (its caches are per module). Internal, not a stable API.
 export {
-  createActivitiesStore,
   createInitialState,
   deleteActivityById,
   getActivities,
@@ -38,7 +37,6 @@ export {
   SendStatusSchema,
   type ActivitiesCoreEnv,
   type ActivitiesCoreState,
-  type ActivitiesStore,
   type Activity,
   type ActivityEntry,
   type ActivityMap,

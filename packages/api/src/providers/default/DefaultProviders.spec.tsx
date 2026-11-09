@@ -6,7 +6,7 @@ import { GraphProvider, useOrderedActivities } from '@msinternal/botframework-we
 import { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
 import { act, render } from '@testing-library/react';
 import { createStoreWithOptions, type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
-import { createActivitiesStore, type ActivitiesStore } from 'botframework-webchat-core/activities.js';
+import { createActivitiesStore, type ActivitiesStore } from 'botframework-webchat-core/internal.js';
 import React, { memo, type ReactNode } from 'react';
 
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
