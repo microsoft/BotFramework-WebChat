@@ -11,6 +11,7 @@ import type { WebChatActivity } from '../types/WebChatActivity';
 import isVoiceActivity from '../utils/voiceActivity/isVoiceActivity';
 import isVoiceTranscriptActivity from '../utils/voiceActivity/isVoiceTranscriptActivity';
 import type { ConnectionService, ConnectionSession } from './createConnectionService';
+import createEmitter, { type Emitter } from './private/createEmitter';
 import patchIncomingActivity from './private/patchIncomingActivity';
 import pickSuggestedActions from './private/pickSuggestedActions';
 import subscribeQueue from './private/subscribeQueue';
@@ -21,6 +22,9 @@ type SuggestedActionsListener = (
   suggestedActions: readonly DirectLineCardAction[],
   originActivity: WebChatActivity | undefined
 ) => void;
+
+/** The suggested actions set or cleared, by the incoming activities and by the outgoing ones. */
+type SuggestedActionsEmitter = Emitter<Parameters<SuggestedActionsListener>>;
 
 /** Speech-to-speech, for the voice activities that are not transcripts. Without it, they are dropped (not recording). */
 type IncomingVoicePort = {
@@ -57,15 +61,17 @@ export default function createIncomingService({
   activitiesStore,
   connection,
   ponyfill,
+  suggestedActions: suggestedActionsEmitter = createEmitter(),
   voice
 }: {
   readonly activitiesStore: Pick<ActivitiesStore, 'getSnapshot' | 'receiveActivity'>;
   readonly connection: Pick<ConnectionService, 'fail' | 'onOnline'>;
   readonly ponyfill: Pick<GlobalScopePonyfill, 'clearTimeout' | 'setTimeout'>;
+  /** Where the suggested actions are emitted, shared with the services that clear them. */
+  readonly suggestedActions?: SuggestedActionsEmitter | undefined;
   readonly voice?: IncomingVoicePort | undefined;
 }): IncomingService {
-  const activityListeners = new Set<ActivityListener>();
-  const suggestedActionsListeners = new Set<SuggestedActionsListener>();
+  const activityEmitter = createEmitter<Parameters<ActivityListener>>();
 
   // The voice activities, as observeActivitySaga: only while recording.
   const handleVoiceActivity = (activity: WebChatActivity & { name: string; value: any }) => {
@@ -129,7 +135,7 @@ export default function createIncomingService({
           const next = releaseQueue.shift();
 
           activitiesStore.receiveActivity(next);
-          activityListeners.forEach(listener => listener(next));
+          activityEmitter.emit(next);
 
           // Every activity that reaches the transcript can release replies waiting for it.
           // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -140,7 +146,7 @@ export default function createIncomingService({
           if (suggestedActions) {
             const { originActivity, suggestedActions: actions = EMPTY_ARRAY } = suggestedActions;
 
-            suggestedActionsListeners.forEach(listener => listener(actions, originActivity));
+            suggestedActionsEmitter.emit(actions, originActivity);
           }
         }
       } catch (error) {
@@ -210,21 +216,9 @@ export default function createIncomingService({
   connection.onOnline(start);
 
   return Object.freeze({
-    onActivity: (listener: ActivityListener) => {
-      activityListeners.add(listener);
-
-      return () => {
-        activityListeners.delete(listener);
-      };
-    },
-    onSuggestedActions: (listener: SuggestedActionsListener) => {
-      suggestedActionsListeners.add(listener);
-
-      return () => {
-        suggestedActionsListeners.delete(listener);
-      };
-    }
+    onActivity: activityEmitter.subscribe,
+    onSuggestedActions: suggestedActionsEmitter.subscribe
   });
 }
 
-export type { ActivityListener, IncomingService, IncomingVoicePort, SuggestedActionsListener };
+export type { ActivityListener, IncomingService, IncomingVoicePort, SuggestedActionsEmitter, SuggestedActionsListener };
