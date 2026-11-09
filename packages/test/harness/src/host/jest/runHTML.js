@@ -59,15 +59,20 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
   try {
     const absoluteURL = new URL(url, 'https://webchat2/__tests__/html2/');
 
-    if (STORE_MODE) {
-      absoluteURL.hash = new URLSearchParams({ 'webchat-test-store-mode': STORE_MODE }).toString();
+    // The mode is also a cookie, kept when a page redirects to a URL with another fragment. Every test sets or deletes
+    // it before loading the page: jest-server reuses pooled sessions, which keep the cookies of the previous test.
+    global.__operation__ = 'setting the store mode cookie';
 
-      // Also as a cookie, kept when a page redirects to a URL with another fragment. A cookie needs a page of the site.
-      global.__operation__ = 'setting the store mode cookie';
+    await webDriver.sendDevToolsCommand(
+      ...(STORE_MODE
+        ? [
+            'Network.setCookie',
+            { name: 'webchat-test-store-mode', path: '/', url: absoluteURL.origin, value: STORE_MODE }
+          ]
+        : ['Network.deleteCookies', { name: 'webchat-test-store-mode', url: absoluteURL.origin }])
+    );
 
-      await webDriver.get(new URL('/assets/index.css', absoluteURL).toString());
-      await webDriver.manage().addCookie({ name: 'webchat-test-store-mode', path: '/', value: STORE_MODE });
-    }
+    STORE_MODE && (absoluteURL.hash = new URLSearchParams({ 'webchat-test-store-mode': STORE_MODE }).toString());
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 

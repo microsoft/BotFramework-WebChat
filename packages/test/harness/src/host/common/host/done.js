@@ -13,28 +13,34 @@ function isDeprecation(message) {
 // In default mode, a test passes only if Web Chat really ran without Redux: no mount of the Redux providers, at least one
 // of the default providers. A page that lost the mode, or Web Chat without the mount counts, fails.
 async function checkStoreMode(webDriver) {
-  const { counts, mode } = await webDriver.executeScript(() => {
+  const { cookie, counts, fragment, meta } = await webDriver.executeScript(() => {
     // This code will ship to browser VM where "document", "location" and "window" are available.
     /* eslint-disable no-undef */
     const cookie = document.cookie.split('; ').find(entry => entry.startsWith('webchat-test-store-mode='));
     const internal = window.__WEBCHAT_TEST_INTERNAL__ || (window.WebChat && window.WebChat.internal);
     const getProviderMountCounts = internal && internal.__INTERNAL_DO_NOT_USE__getProviderMountCounts;
+    const metaElement = document.querySelector('meta[name="webchat-test-store-mode"]');
 
     return {
+      cookie: cookie ? decodeURIComponent(cookie.split('=')[1]) : null,
       counts: typeof getProviderMountCounts === 'function' ? getProviderMountCounts() : null,
-      mode:
-        (document.querySelector('meta[name="webchat-test-store-mode"]') || { getAttribute: () => null }).getAttribute(
-          'content'
-        ) ||
-        new URLSearchParams(location.hash.replace(/^#/u, '')).get('webchat-test-store-mode') ||
-        (cookie && decodeURIComponent(cookie.split('=')[1])) ||
-        'redux'
+      fragment: new URLSearchParams(location.hash.replace(/^#/u, '')).get('webchat-test-store-mode'),
+      meta: metaElement ? metaElement.getAttribute('content') : null
     };
     /* eslint-enable no-undef */
   });
 
+  // As `testHelpers.getStoreMode()` of the page-object.
+  const mode = meta || fragment || cookie || 'redux';
+
   if (STORE_MODE === 'default' && mode !== 'default') {
     throw new Error(`WebChatTest: The run is in default mode, but the page ran in "${mode}" mode.`);
+  }
+
+  if (STORE_MODE !== 'default' && !meta && mode === 'default') {
+    throw new Error(
+      'WebChatTest: The page ran in default mode, but the run is not: a cookie or fragment of another run.'
+    );
   }
 
   if (mode === 'default' && !(counts && counts.redux === 0 && counts.default > 0)) {
