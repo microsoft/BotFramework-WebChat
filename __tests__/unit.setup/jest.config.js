@@ -73,6 +73,15 @@ module.exports = {
     '<rootDir>/playground/'
   ],
   transform: {
+    // The ES modules that the packages build (dist/*.mjs) are what hosts import: convert only their imports and exports
+    // for Jest, do not transpile them again. Down-leveled classes cannot construct the store's FrozenMap and FrozenSet:
+    // their prototypes set `constructor` to Map and Set, which Babel's class transform uses as `new.target`.
+    '/packages/(?:[^/]+/)+dist/[^/]+\\.mjs$': [
+      'babel-jest',
+      {
+        plugins: ['@babel/plugin-transform-modules-commonjs']
+      }
+    ],
     '\\.m?[jt]sx?$': [
       'babel-jest',
       {
