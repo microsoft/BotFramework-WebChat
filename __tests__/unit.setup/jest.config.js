@@ -70,7 +70,9 @@ module.exports = {
     '<rootDir>/bundle/__tests__/types/__typescript__/',
     '<rootDir>/core/__tests__/types/__typescript__/',
     '<rootDir>/directlinespeech/__tests__/utilities/',
-    '<rootDir>/playground/'
+    '<rootDir>/playground/',
+    // The store runs its tests with `node --test` (its `npm test`), not with Jest.
+    '<rootDir>/store/'
   ],
   transform: {
     // The ES modules that the packages build (dist/*.mjs) are what hosts import: convert only their imports and exports
