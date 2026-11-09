@@ -4,7 +4,7 @@
 // a host can observe, step by step: the calls to Direct Line and the activities posted, the values of connectivity
 // status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in order, and the
 // order of the changes across values), the suggested actions set or cleared, the calls to the voice handlers,
-// `console.warn/error`, and the timers.
+// `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers.
 import lolex from 'lolex';
 
 import createMockDirectLine, { type MockDirectLine, type MockDirectLineInit } from './createMockDirectLine';
@@ -127,6 +127,7 @@ type Driver = {
 type CreateDriver = (init: DriverInit) => Driver;
 
 type StepRecord = {
+  /** The calls to Direct Line, and `console.warn/error` (`console.error: ...`), in order. */
   readonly calls: readonly string[];
   readonly changes: Readonly<Partial<Record<ObservationKey, readonly unknown[]>>>;
   readonly console: readonly string[];
@@ -259,11 +260,17 @@ export default async function runParityScript(
   };
 
   const errorSpy = jest.spyOn(console, 'error').mockImplementation((...args) => {
-    consoleLog.push(`error: ${describeConsoleArgs(args)}`);
+    const message = `error: ${describeConsoleArgs(args)}`;
+
+    consoleLog.push(message);
+    calls.push(`console.${message}`);
   });
 
   const warnSpy = jest.spyOn(console, 'warn').mockImplementation((...args) => {
-    consoleLog.push(`warn: ${describeConsoleArgs(args)}`);
+    const message = `warn: ${describeConsoleArgs(args)}`;
+
+    consoleLog.push(message);
+    calls.push(`console.${message}`);
   });
 
   // The URLs of the attachments sent: numbered, in order.

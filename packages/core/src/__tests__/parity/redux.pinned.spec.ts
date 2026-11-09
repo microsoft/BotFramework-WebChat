@@ -100,7 +100,9 @@ describe('the sagas, pinned', () => {
           'dl1.end()',
           'dl1.connectionStatus$.unsubscribe#2',
           // observeActivitySaga
-          'dl1.activity$.unsubscribe#2'
+          'dl1.activity$.unsubscribe#2',
+          // redux-saga logs the error after every saga stopped
+          'console.error: Error(receive boom)'
         ],
         console: ['error: Error(receive boom)'],
         notifications: ['success/javascripterror'],
@@ -132,7 +134,8 @@ describe('the sagas, pinned', () => {
           'dl1.connectionStatus$.unsubscribe#3',
           'dl1.activity$.unsubscribe#1',
           'dl1.end()',
-          'dl1.connectionStatus$.unsubscribe#2'
+          'dl1.connectionStatus$.unsubscribe#2',
+          "console.error: Error(Cannot read properties of null (reading 'attachmentLayout'))"
         ],
         console: ["error: Error(Cannot read properties of null (reading 'attachmentLayout'))"],
         notifications: ['success/javascripterror'],
@@ -165,7 +168,8 @@ describe('the sagas, pinned', () => {
         calls: [
           'dl1.connectionStatus$.unsubscribe#1',
           'dl1.activity$.unsubscribe#1',
-          'dl1.connectionStatus$.unsubscribe#2'
+          'dl1.connectionStatus$.unsubscribe#2',
+          'console.error: Error(listener on connectingslow)'
         ],
         console: ['error: Error(listener on connectingslow)'],
         notifications: ['info/javascripterror'],
@@ -195,7 +199,8 @@ describe('the sagas, pinned', () => {
         'dl1.connectionStatus$.unsubscribe#2',
         'dl1.connectionStatus$.unsubscribe#3',
         'dl1.activity$.unsubscribe#2',
-        'dl1.connectionStatus$.unsubscribe#1'
+        'dl1.connectionStatus$.unsubscribe#1',
+        'console.error: Error(listener on notconnected)'
       ],
       console: ['error: Error(listener on notconnected)'],
       notifications: ['success/javascripterror'],
