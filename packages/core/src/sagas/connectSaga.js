@@ -1,13 +1,11 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 10] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0] }] */
 
 import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
-
-import { jwtDecode } from 'jwt-decode';
 
 import { CONNECT } from '../actions/connect';
 import createPromiseQueue from '../createPromiseQueue';
 import forkPut from './effects/forkPut';
-import uniqueID from '../utils/uniqueID';
+import rectifyUserID from '../services/private/rectifyUserID';
 import updateConnectionStatus, { UPDATE_CONNECTION_STATUS } from '../actions/updateConnectionStatus';
 
 import { DISCONNECT, DISCONNECT_PENDING, DISCONNECT_FULFILLED } from '../actions/disconnect';
@@ -17,10 +15,6 @@ import { RECONNECT } from '../actions/reconnect';
 const CONNECTING = 1;
 const ONLINE = 2;
 const UNINITIALIZED = 0;
-
-function randomUserID() {
-  return `r_${uniqueID().substring(0, 10)}`;
-}
 
 function* observeAndPutConnectionStatusUpdate(directLine) {
   const connectionStatusQueue = createPromiseQueue();
@@ -35,52 +29,6 @@ function* observeAndPutConnectionStatusUpdate(directLine) {
   } finally {
     connectionStatusSubscription.unsubscribe();
   }
-}
-
-// TODO: [P2] We should move this check and rectification to DirectLineJS.
-function rectifyUserID(directLine, userIDFromAction) {
-  const { token } = directLine;
-
-  let userIDFromToken;
-
-  // TODO: Add test to make sure "jwt-decode" work as expected.
-  try {
-    userIDFromToken = (jwtDecode(token) || {}).user;
-    // eslint-disable-next-line no-empty
-  } catch (err) {}
-
-  const result = {
-    fromAction: userIDFromAction,
-    fromToken: userIDFromToken
-  };
-
-  if (userIDFromToken) {
-    if (userIDFromAction && userIDFromAction !== userIDFromToken) {
-      console.warn(
-        'Web Chat: user ID is both specified in the Direct Line token and passed in, will use the user ID from the token.'
-      );
-    }
-
-    result.final = userIDFromToken;
-  } else if (userIDFromAction) {
-    if (typeof userIDFromAction !== 'string') {
-      console.warn('Web Chat: user ID must be a string.');
-
-      result.final = randomUserID();
-    } else if (/^dl_/u.test(userIDFromAction)) {
-      console.warn(
-        'Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.'
-      );
-
-      result.final = randomUserID();
-    } else {
-      result.final = userIDFromAction;
-    }
-  } else {
-    result.final = randomUserID();
-  }
-
-  return result;
 }
 
 // We could make this a Promise instead of saga (function generator) to make the code cleaner, if:

@@ -10,8 +10,7 @@ import { fork, put, select, take } from 'redux-saga/effects';
 import incomingActivity, { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
-import activityFromBot from '../definitions/activityFromBot';
-import { ofType as activitiesOfType } from '../selectors/activities';
+import pickSuggestedActions from '../services/private/pickSuggestedActions';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { ReduxState } from '../types/internal/ReduxState';
 import type { WebChatActivity } from '../types/WebChatActivity';
@@ -19,6 +18,7 @@ import whileConnected from './effects/whileConnected';
 
 // The transcript derived from the activities graph (William's store).
 const transcriptSelector = ({ groupedActivities }: ReduxState): State => groupedActivities;
+const activitiesSelector = ({ activities }: ReduxState): WebChatActivity[] => activities;
 
 function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: GlobalScopePonyfill) {
   let transcript: State = yield select(transcriptSelector);
@@ -73,21 +73,10 @@ function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: Global
 
       // Update suggested actions
       // TODO: [P3] We could put this logic inside reducer to minimize number of actions dispatched.
-      const messageActivities = yield select(activitiesOfType('message'));
-      const lastMessageActivity = messageActivities[messageActivities.length - 1];
+      const suggestedActions = pickSuggestedActions(yield select(activitiesSelector), userID);
 
-      if (activityFromBot(lastMessageActivity)) {
-        const { suggestedActions: { actions, to } = { actions: undefined, to: undefined } } = lastMessageActivity;
-
-        // If suggested actions is not destined to anyone, or is destined to the user, show it.
-        // In other words, if suggested actions is destined to someone else, don't show it.
-        const suggestedActions = to?.length && !to.includes(userID) ? null : actions;
-
-        if (suggestedActions) {
-          yield put(setSuggestedActions(suggestedActions, lastMessageActivity));
-        } else {
-          yield put(setSuggestedActions());
-        }
+      if (suggestedActions) {
+        yield put(setSuggestedActions(suggestedActions.suggestedActions, suggestedActions.originActivity));
       }
     }
   } finally {
