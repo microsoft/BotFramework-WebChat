@@ -2,7 +2,7 @@ import { literal, object, optional, parse, picklist, pipe, readonly, type InferI
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
-import type { Node } from './node/Node.ts';
+import type { Node, NodeInit } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
@@ -48,8 +48,10 @@ interface StoreTransaction {
    *   to mirror `hasPart`: children added to `hasPart` will have the parent added to their `isPartOf`, and vice versa
    * - If a child in `hasPart` is not in the graph yet, it must be upserted later in the same transaction, the parent
    *   will be added to its `isPartOf` when it is upserted
+   *
+   * Other than named properties (e.g. `@id`, `@type`), all property values must be an array, e.g. `text: ['Hello']`.
    */
-  upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
+  upsert<T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void;
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
@@ -380,7 +382,7 @@ class Store {
               }
             }
           },
-          upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
+          upsert: <T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void => {
             assertNotEnded();
 
             const safeId = parse(identifierSchema, id);
