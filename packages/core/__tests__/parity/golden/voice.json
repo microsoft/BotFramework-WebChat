@@ -1,0 +1,3931 @@
+{
+  "recording: start, mute, unmute, stop": [
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceState": ["listening"]
+      },
+      "console": [],
+      "label": "start",
+      "order": [
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_MUTE_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "microphoneMuted": [true]
+      },
+      "console": [],
+      "label": "mute",
+      "order": [
+        "microphoneMuted"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": true,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_MUTE_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "mute again",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": true,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_UNMUTE_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "microphoneMuted": [false]
+      },
+      "console": [],
+      "label": "unmute",
+      "order": [
+        "microphoneMuted"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_MUTE_RECORDING"},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_STOP_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "microphoneMuted": [true,false],
+        "voiceState": ["idle"]
+      },
+      "console": [],
+      "label": "mute, stop: one change of both",
+      "order": [
+        "microphoneMuted",
+        "microphoneMuted",
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_STOP_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "stop again",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "quirk: start when not idle warns, and starts; mute is reset by start and stop": [
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceState": ["listening"]
+      },
+      "console": [],
+      "label": "start",
+      "order": [
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_MUTE_RECORDING"},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [
+        "console.warn: botframework-webchat: Should not transit from \"listening\" to \"listening\""
+      ],
+      "changes": {
+        "microphoneMuted": [true,false]
+      },
+      "console": [
+        "warn: botframework-webchat: Should not transit from \"listening\" to \"listening\""
+      ],
+      "label": "mute, start again",
+      "order": [
+        "microphoneMuted",
+        "microphoneMuted"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_SET_STATE","payload":{"voiceState":"processing"}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [
+        "console.warn: botframework-webchat: Should not transit from \"processing\" to \"listening\""
+      ],
+      "changes": {
+        "voiceState": ["processing","listening"]
+      },
+      "console": [
+        "warn: botframework-webchat: Should not transit from \"processing\" to \"listening\""
+      ],
+      "label": "processing, start",
+      "order": [
+        "voiceState",
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_SET_STATE","payload":{"voiceState":"idle"}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_MUTE_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceState": ["idle"],
+        "microphoneMuted": [true]
+      },
+      "console": [],
+      "label": "set state idle, mute while idle",
+      "order": [
+        "voiceState",
+        "microphoneMuted"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": true,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_SET_STATE","payload":{"voiceState":"idle"}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "set state as is",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": true,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "microphoneMuted": [false],
+        "voiceState": ["listening"]
+      },
+      "console": [],
+      "label": "start while muted and idle",
+      "order": [
+        "microphoneMuted",
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "quirk: every register and unregister makes new handlers": [
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v1","voiceHandler":{"label":"h1","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1"]]
+      },
+      "console": [],
+      "label": "register h1",
+      "order": [
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v2","voiceHandler":{"label":"h2","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1","h2"]]
+      },
+      "console": [],
+      "label": "register h2",
+      "order": [
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v3","voiceHandler":{"label":"h1","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1","h2","h1"]]
+      },
+      "console": [],
+      "label": "register h1 again",
+      "order": [
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2","h1"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_UNREGISTER_HANDLER","payload":{"id":"v1"}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h2","h1"]]
+      },
+      "console": [],
+      "label": "unregister the first h1",
+      "order": [
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h2","h1"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_UNREGISTER_HANDLER","payload":{"id":"v1"}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h2","h1"]]
+      },
+      "console": [],
+      "label": "unregister it again",
+      "order": [
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h2","h1"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_UNREGISTER_HANDLER","payload":{"id":"v2"}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1"]]
+      },
+      "console": [],
+      "label": "unregister h2",
+      "order": [
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice activities: idle, listening, detected, processing": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v1","voiceHandler":{"label":"h1","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v2","voiceHandler":{"label":"h2","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1"],["h1","h2"]]
+      },
+      "console": [],
+      "label": "register h1, h2",
+      "order": [
+        "voiceHandlers",
+        "voiceHandlers"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "chunk while idle",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "detected while idle",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceState": ["listening"]
+      },
+      "console": [],
+      "label": "start",
+      "order": [
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "h1.queueAudio(BBBB)",
+        "h2.queueAudio(BBBB)"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "chunk",
+      "order": [
+        "h1.queueAudio(BBBB)",
+        "h2.queueAudio(BBBB)"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "chunk without content",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "chunk, empty content",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_SET_STATE","payload":{"voiceState":"user_speaking"}},"depth":1}
+      ],
+      "calls": [
+        "h1.stopAllAudio()",
+        "h2.stopAllAudio()"
+      ],
+      "changes": {
+        "voiceState": ["user_speaking"]
+      },
+      "console": [],
+      "label": "detected: audio stops, then user speaking",
+      "order": [
+        "h1.stopAllAudio()",
+        "h2.stopAllAudio()",
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "user_speaking"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_SET_STATE","payload":{"voiceState":"processing"}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceState": ["processing"]
+      },
+      "console": [],
+      "label": "processing",
+      "order": [
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "processing"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "another state",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "processing"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "another name",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "processing"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"from":{"id":"bot","role":"bot"},"id":"v10","name":"media.end","timestamp":"1970-01-01T00:00:03.000Z","type":"event","value":{"origin":"agent","transcription":"Hello"},"valueType":"azure.directline.audio.transcript"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"from":{"id":"bot","role":"bot"},"id":"v10","name":"media.end","timestamp":"1970-01-01T00:00:03.000Z","type":"event","value":{"origin":"agent","transcription":"Hello"},"valueType":"azure.directline.audio.transcript"}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "activities": [[{"from":{"id":"bot","role":"bot"},"id":"v10","name":"media.end","timestamp":"1970-01-01T00:00:03.000Z","type":"event","value":{"origin":"agent","transcription":"Hello"},"valueType":"azure.directline.audio.transcript","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000}}]]
+      },
+      "console": [],
+      "label": "a transcript is an activity",
+      "order": [
+        "activities"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [{"from":{"id":"bot","role":"bot"},"id":"v10","name":"media.end","timestamp":"1970-01-01T00:00:03.000Z","type":"event","value":{"origin":"agent","transcription":"Hello"},"valueType":"azure.directline.audio.transcript","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000}}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "processing"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_STOP_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceState": ["idle"]
+      },
+      "console": [],
+      "label": "stop",
+      "order": [
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [{"from":{"id":"bot","role":"bot"},"id":"v10","name":"media.end","timestamp":"1970-01-01T00:00:03.000Z","type":"event","value":{"origin":"agent","transcription":"Hello"},"valueType":"azure.directline.audio.transcript","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000}}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "chunk after stop",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [{"from":{"id":"bot","role":"bot"},"id":"v10","name":"media.end","timestamp":"1970-01-01T00:00:03.000Z","type":"event","value":{"origin":"agent","transcription":"Hello"},"valueType":"azure.directline.audio.transcript","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000}}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1","h2"],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice activities: a chunk and an update in one turn, with a message": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v1","voiceHandler":{"label":"h1","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1"]],
+        "voiceState": ["listening"]
+      },
+      "console": [],
+      "label": "register h1, start",
+      "order": [
+        "voiceHandlers",
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"from":{"id":"bot","role":"bot"},"id":"m1","text":"m1","timestamp":"1970-01-01T00:00:01.500Z","type":"message"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"from":{"id":"bot","role":"bot"},"id":"m1","text":"m1","timestamp":"1970-01-01T00:00:01.500Z","type":"message"}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_SET_STATE","payload":{"voiceState":"user_speaking"}},"depth":1}
+      ],
+      "calls": [
+        "h1.queueAudio(AAAA)",
+        "h1.stopAllAudio()",
+        "h1.queueAudio(BBBB)"
+      ],
+      "changes": {
+        "activities": [[{"from":{"id":"bot","role":"bot"},"id":"m1","text":"m1","timestamp":"1970-01-01T00:00:01.500Z","type":"message","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000}}]],
+        "voiceState": ["user_speaking"]
+      },
+      "console": [],
+      "label": "chunk, message, detected, chunk",
+      "order": [
+        "h1.queueAudio(AAAA)",
+        "activities",
+        "suggestedActions",
+        "h1.stopAllAudio()",
+        "voiceState",
+        "h1.queueAudio(BBBB)"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [{"from":{"id":"bot","role":"bot"},"id":"m1","text":"m1","timestamp":"1970-01-01T00:00:01.500Z","type":"message","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000}}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "user_speaking"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [
+        {"actions":[],"origin":"[undefined]"}
+      ],
+      "timers": []
+    }
+  ],
+  "voice activities while reconnecting are dropped": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_REGISTER_HANDLER","payload":{"id":"v1","voiceHandler":{"label":"h1","queueAudio":"[function]","stopAllAudio":"[function]"}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_START_RECORDING"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {
+        "voiceHandlers": [["h1"]],
+        "voiceState": ["listening"]
+      },
+      "console": [],
+      "label": "register h1, start",
+      "order": [
+        "voiceHandlers",
+        "voiceState"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":1}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/RECONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.unsubscribe#3",
+        "dl1.activity$.unsubscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "connectivityStatus": ["reconnecting"]
+      },
+      "console": [],
+      "label": "reconnecting",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnecting",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "chunk",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnecting",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/RECONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/RECONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#4",
+        "dl1.activity$.subscribe#3"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["reconnected"]
+      },
+      "console": [],
+      "label": "reconnected",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "h1.queueAudio(BBBB)"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "chunk after",
+      "order": [
+        "h1.queueAudio(BBBB)"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": ["h1"],
+        "voiceState": "listening"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice post: the fields, fire and forget": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_LANGUAGE","payload":{"language":"fr-FR"}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "locale",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "chunk",
+      "order": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"fr-FR","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#1.next(a1)",
+        "dl1.post#1.unsubscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "returns",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"from":{"id":"x","role":"bot"},"id":"m1","text":"hi","type":"message"}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "a message, with an ID and from",
+      "order": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "posted": [
+        {"from":{"id":"u-1","name":"User","role":"user"},"id":"m1","text":"hi","type":"message","channelId":"webchat","locale":"fr-FR","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#2.complete()",
+        "dl1.post#2.unsubscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "completes",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"e","type":"event"}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "an event without value",
+      "order": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "posted": [
+        {"name":"e","type":"event","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"fr-FR","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","value":"[undefined]"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#3.next(a3)",
+        "dl1.post#3.next(a3)",
+        "dl1.post#3.unsubscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "returns twice",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "fr-FR",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice post: an error is logged": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "chunk",
+      "order": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#1.error()",
+        "dl1.post#1.unsubscribe#1",
+        "console.error: botframework-webchat: Failed to post voice activity to chat adapter. Error(boom)"
+      ],
+      "changes": {},
+      "console": [
+        "error: botframework-webchat: Failed to post voice activity to chat adapter. Error(boom)"
+      ],
+      "label": "error",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice post: postActivity() throws": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "console.error: botframework-webchat: Failed to post voice activity to chat adapter. Error(postActivity#1 throws)"
+      ],
+      "changes": {},
+      "console": [
+        "error: botframework-webchat: Failed to post voice activity to chat adapter. Error(postActivity#1 throws)"
+      ],
+      "label": "throws",
+      "order": [
+        "dl1.postActivity#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "post after",
+      "order": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice post: returns when subscribed": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1",
+        "dl1.post#1.next(a1)",
+        "dl1.post#1.complete()",
+        "dl1.post#1.unsubscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "chunk",
+      "order": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1",
+        "dl1.post#2.next(a2)",
+        "dl1.post#2.complete()",
+        "dl1.post#2.unsubscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "chunk again",
+      "order": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "quirk: voice posts offline are dropped; in flight, unsubscribed silently": [
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "before connect",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"}}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"CCCC","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1",
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "2 in flight",
+      "order": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1",
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},
+        {"name":"media.chunk","type":"event","value":{"content":"CCCC","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#1.next(a1)",
+        "dl1.post#1.unsubscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "one returns",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":1}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/RECONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.unsubscribe#3",
+        "dl1.activity$.unsubscribe#2",
+        "dl1.post#2.unsubscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "connectivityStatus": ["reconnecting"]
+      },
+      "console": [],
+      "label": "reconnecting",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnecting",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"DDDD","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "while reconnecting",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnecting",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#2.error()"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "the other errors after",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnecting",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/RECONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/RECONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#4",
+        "dl1.activity$.subscribe#3"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["reconnected"]
+      },
+      "console": [],
+      "label": "reconnected",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"EEEE","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "posted",
+      "order": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"EEEE","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "reconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+      ],
+      "calls": [
+        "dl1.activity$.unsubscribe#1",
+        "dl1.end()",
+        "dl1.connectionStatus$.unsubscribe#2",
+        "dl1.connectionStatus$.unsubscribe#4",
+        "dl1.activity$.unsubscribe#3",
+        "dl1.post#3.unsubscribe#1"
+      ],
+      "changes": {
+        "connectivityStatus": ["notconnected"]
+      },
+      "console": [],
+      "label": "disconnect",
+      "order": [
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "notconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"FFFF","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "after disconnect",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "notconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "quirk: a voice post is not the first post": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "voice post",
+      "order": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"hello"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 1>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":2},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":2},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":2}
+      ],
+      "calls": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "changes": {
+        "activities": [[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}]]
+      },
+      "console": [],
+      "label": "a message",
+      "order": [
+        "activities",
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1",
+        "suggestedActions"
+      ],
+      "posted": [
+        {"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}
+      ],
+      "state": {
+        "activities": [{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [
+        {"actions":[],"origin":"[undefined]"}
+      ],
+      "timers": [
+        "setTimeout(20000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"}}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "another voice post",
+      "order": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "posted": [
+        {"name":"media.chunk","type":"event","value":{"content":"BBBB","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_FULFILLED","meta":{"clientActivityID":"<cid 1>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.post#1.next(a1)",
+        "dl1.post#2.next(a2)",
+        "dl1.post#3.next(a3)",
+        "dl1.post#1.unsubscribe#1",
+        "dl1.post#2.unsubscribe#1",
+        "dl1.post#3.unsubscribe#1"
+      ],
+      "changes": {
+        "activities": [[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}],[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"state":"sent","webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000,"webchat:send-status":"sent"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}]]
+      },
+      "console": [],
+      "label": "all return",
+      "order": [
+        "activities",
+        "activities"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"state":"sent","webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000,"webchat:send-status":"sent"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "voice post and a message post in flight, going offline": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"one"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 1>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":2},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":2},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":2},
+        {"action":{"type":"WEB_CHAT/VOICE_POST_ACTIVITY","payload":{"activity":{"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"}}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"two"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 2>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":2},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":2},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":2}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1",
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1",
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1"
+      ],
+      "changes": {
+        "activities": [[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}],[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"sending","webchat:internal:position":2000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}]]
+      },
+      "console": [],
+      "label": "message, voice, message",
+      "order": [
+        "activities",
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1",
+        "suggestedActions",
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1",
+        "activities",
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1",
+        "suggestedActions"
+      ],
+      "posted": [
+        {"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},
+        {"name":"media.chunk","type":"event","value":{"content":"AAAA","contentType":"audio/webm","timestamp":"t"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},
+        {"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "activities": [{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"sending","webchat:internal:position":2000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}],
+        "connectivityStatus": "connected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [
+        {"actions":[],"origin":"[undefined]"},
+        {"actions":[],"origin":"[undefined]"}
+      ],
+      "timers": [
+        "setTimeout(20000)",
+        "setTimeout(20000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_REJECTED","error":true,"meta":{"clientActivityID":"<cid 1>","method":"keyboard"},"payload":{"[Error]":"cancelled"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_REJECTED","error":true,"meta":{"clientActivityID":"<cid 2>","method":"keyboard"},"payload":{"[Error]":"cancelled"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+      ],
+      "calls": [
+        "dl1.activity$.unsubscribe#1",
+        "dl1.end()",
+        "dl1.connectionStatus$.unsubscribe#2",
+        "dl1.connectionStatus$.unsubscribe#3",
+        "dl1.activity$.unsubscribe#2",
+        "dl1.post#1.unsubscribe#1",
+        "dl1.post#3.unsubscribe#1",
+        "dl1.post#2.unsubscribe#1"
+      ],
+      "changes": {
+        "activities": [[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"send failed","webchat:internal:position":1000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"sending","webchat:internal:position":2000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}],[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"send failed","webchat:internal:position":1000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"send failed","webchat:internal:position":2000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}]],
+        "connectivityStatus": ["notconnected"]
+      },
+      "console": [],
+      "label": "disconnect",
+      "order": [
+        "activities",
+        "activities",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"send failed","webchat:internal:position":1000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"send failed","webchat:internal:position":2000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}],
+        "connectivityStatus": "notconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [],
+      "calls": [
+        "dl1.post#2.next(a2)"
+      ],
+      "changes": {},
+      "console": [],
+      "label": "late return",
+      "order": [],
+      "posted": [],
+      "state": {
+        "activities": [{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"send failed","webchat:internal:position":1000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]},{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"send failed","webchat:internal:position":2000,"webchat:send-status":"send failed"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}],
+        "connectivityStatus": "notconnected",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 2,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ]
+}
