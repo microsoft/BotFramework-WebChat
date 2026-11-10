@@ -8,6 +8,7 @@
     "./src/**/*"
   ],
   "main": "./lib/index.js",
+  "types": "./dist/botframework-directlinespeech-sdk.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -15,7 +16,7 @@
         "default": "./dist/botframework-directlinespeech-sdk.mjs"
       },
       "require": {
-        "types": "./lib/index.d.ts",
+        "types": "./dist/botframework-directlinespeech-sdk.d.ts",
         "default": "./lib/index.js"
       }
     }

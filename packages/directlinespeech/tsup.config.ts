@@ -4,6 +4,12 @@ import { applyConfig } from '../../tsup.base.config';
 
 const config = applyConfig(config => ({
   ...config,
+  // The entry point is JavaScript, its types are written by hand.
+  dts: {
+    entry: {
+      'botframework-directlinespeech-sdk': './src/index.d.ts'
+    }
+  },
   entry: {
     'botframework-directlinespeech-sdk': './src/index.js'
   },
