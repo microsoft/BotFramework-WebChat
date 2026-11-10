@@ -88,9 +88,10 @@ const createReduxDriver: CreateDriver = ({
   // Outermost: the actions as the first middleware of a host sees them, with how deep in other dispatches they are.
   const recorder: Middleware = () => next => action => {
     depth++;
-    onAction(action, depth);
 
     try {
+      onAction(action, depth);
+
       return next(action);
     } catch (error) {
       onActionThrew(action, depth, error);
