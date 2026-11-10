@@ -446,6 +446,9 @@ jobs:
 
           exit 1
 
+      - name: Run docker compose pull
+        run: docker compose -f docker-compose-wsl2.yml pull selenium-hub chrome
+
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
