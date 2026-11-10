@@ -76,7 +76,7 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - Rules
       - Plural form: unless specified, most property values must reside in an array and must have at least 1 item
       - Prohibited `@context` must not be defined, and is assumed "https://schema.org"
-      - Required `@id` must be a non-array string which is either an IRI of `https:` or starts with `_:` (blank node identifier)
+      - Required `@id` must be a non-array string which is either an IRI of `https:`/`urn:` or starts with `_:` (blank node identifier)
       - Required `@type` must be `Set<string>` with at least one value
          - Term (non-IRI node type) must be based on Schema.org
          - Non-Schema.org types must be absolute IRIs
