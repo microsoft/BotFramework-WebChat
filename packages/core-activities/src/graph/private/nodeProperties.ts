@@ -1,6 +1,6 @@
 import type { WebChatActivity } from '../../types/WebChatActivity';
 import type { GraphIdentifier, GraphNode } from '../types';
-import { DIRECT_LINE_ACTIVITY, IDENTIFIER } from '../vocabulary';
+import { DIRECT_LINE_ACTIVITY, ORIGINAL_ID } from '../vocabulary';
 
 // Reads trust the store: every node was validated by `upsert()` (William's `nodeSchema`), so property values are
 // arrays and these helpers only check the type of the first value. They run on every node of every action, so they
@@ -30,8 +30,8 @@ function getString(node: GraphNode | undefined, property: string): string | unde
 }
 
 /** The sender's ID of a HowTo grouping or a livestream session. */
-function getIdentifier(node: GraphNode | undefined): string | undefined {
-  return getString(node, IDENTIFIER);
+function getOriginalId(node: GraphNode | undefined): string | undefined {
+  return getString(node, ORIGINAL_ID);
 }
 
 /** The activity boxed in the node (JSON literal), as written by `toActivityNode()`. */
@@ -92,8 +92,8 @@ function withProperties(
 export {
   getBoolean,
   getBoxedActivity,
-  getIdentifier,
   getNumber,
+  getOriginalId,
   getParentId,
   getString,
   hasType,

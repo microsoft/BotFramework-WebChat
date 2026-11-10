@@ -15,7 +15,7 @@ import type {
 import { getActivity } from './activityNode';
 import { CONVERSATION_ID, type ActivitiesGraph } from './createActivitiesGraph';
 import getSortedMessages, { type GetParts } from './getSortedMessages';
-import { getBoolean, getIdentifier, getNumber, getParentId, hasType } from './private/nodeProperties';
+import { getBoolean, getNumber, getOriginalId, getParentId, hasType } from './private/nodeProperties';
 import { getKnownFlat } from './private/flatParts';
 import { getChangedConversationParts, getChangedRange, pushDisplayedMessages } from './private/displayedMessages';
 import mutateMap from './private/mutateMap';
@@ -60,11 +60,11 @@ function getActivityMapEntry(node: GraphNode, getKeptActivity: GetKeptActivity):
 }
 
 function getLivestreamSessionId(session: GraphNode): LivestreamSessionId {
-  return (getIdentifier(session) ?? session['@id']) satisfies string as LivestreamSessionId;
+  return (getOriginalId(session) ?? session['@id']) satisfies string as LivestreamSessionId;
 }
 
 function getHowToGroupingId(howTo: GraphNode): HowToGroupingId {
-  return (getIdentifier(howTo) ?? howTo['@id']) satisfies string as HowToGroupingId;
+  return (getOriginalId(howTo) ?? howTo['@id']) satisfies string as HowToGroupingId;
 }
 
 /** The entry of a part of the conversation: an activity, a livestream session or a HowTo. */

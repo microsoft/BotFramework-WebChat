@@ -1,5 +1,5 @@
 import type { GraphIdentifier, GraphNode } from '../types';
-import { HOW_TO_TYPE, IDENTIFIER, LOGICAL_TIMESTAMP, POSITION } from '../vocabulary';
+import { HOW_TO_TYPE, LOGICAL_TIMESTAMP, ORIGINAL_ID, POSITION } from '../vocabulary';
 import { getNumber, getParentId, hasType, toNumberValues, withProperties } from './nodeProperties';
 import { inheritFlat } from './flatParts';
 import { getSortKeys, setSortKeys, toSortKey, type SortKey } from './sortKeys';
@@ -192,18 +192,18 @@ function refreshHowToTimestamp(working: WorkingGraph, howToId: GraphIdentifier):
     working.setNode(withProperties(howTo, { [LOGICAL_TIMESTAMP]: toNumberValues(logicalTimestamp) }));
 }
 
-/** Creates the node if missing. `identifier` keeps the sender's ID of a grouping or session. */
+/** Creates the node if missing. `originalId` keeps the sender's ID of a grouping or session. */
 function ensureNode(
   working: WorkingGraph,
   id: GraphIdentifier,
   type: string,
-  identifier?: string | undefined
+  originalId?: string | undefined
 ): GraphNode {
   working.getNode(id) ||
     working.setNode(
       withProperties(
         { '@id': id, '@type': new Set([type]) },
-        { [IDENTIFIER]: typeof identifier === 'undefined' ? undefined : [identifier] }
+        { [ORIGINAL_ID]: typeof originalId === 'undefined' ? undefined : [originalId] }
       )
     );
 
