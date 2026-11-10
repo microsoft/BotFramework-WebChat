@@ -99,6 +99,21 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       spinnerAnimationWidth,
       subtle,
       timestampColor,
+      toastErrorBackgroundColor,
+      toastErrorColor,
+      toastFontSize,
+      toastIconWidth,
+      toastInfoBackgroundColor,
+      toastInfoColor,
+      toastSeparatorColor,
+      toastSuccessBackgroundColor,
+      toastSuccessColor,
+      toastTextPadding,
+      toastWarnBackgroundColor,
+      toastWarnColor,
+      toasterHeight,
+      toasterMaxHeight,
+      toasterSingularMaxHeight,
       transcriptActivityVisualKeyboardIndicatorColor,
       transcriptActivityVisualKeyboardIndicatorStyle,
       transcriptActivityVisualKeyboardIndicatorWidth,
@@ -147,6 +162,10 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
   ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
   ${CustomPropertyNames.BackgroundImageTypingAnimation}: ${typingAnimationBackgroundImage || `url('${getDefaultTypingAnimationImageURL()}')`};
+  ${CustomPropertyNames.BackgroundToastError}: ${toastErrorBackgroundColor};
+  ${CustomPropertyNames.BackgroundToastInfo}: ${toastInfoBackgroundColor};
+  ${CustomPropertyNames.BackgroundToastSuccess}: ${toastSuccessBackgroundColor};
+  ${CustomPropertyNames.BackgroundToastWarn}: ${toastWarnBackgroundColor};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButton}: ${transcriptOverlayButtonBackground};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonBackgroundOnDisabled};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonBackgroundOnFocus};
@@ -157,6 +176,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
   ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
   ${CustomPropertyNames.BorderColorBubbleUser}: ${bubbleFromUserBorderColor};
+  ${CustomPropertyNames.BorderColorToastSeparator}: ${toastSeparatorColor};
   ${CustomPropertyNames.BorderRadiusAvatar}: ${toLength(avatarBorderRadius)};
   ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusBubbleUser}: ${bubbleFromUserBorderRadius}px;
@@ -177,6 +197,10 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorNotificationText}: ${notificationText};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
+  ${CustomPropertyNames.ColorToastError}: ${toastErrorColor};
+  ${CustomPropertyNames.ColorToastInfo}: ${toastInfoColor};
+  ${CustomPropertyNames.ColorToastSuccess}: ${toastSuccessColor};
+  ${CustomPropertyNames.ColorToastWarn}: ${toastWarnColor};
   ${CustomPropertyNames.ColorTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.ColorTranscriptOverlayButton}: ${transcriptOverlayButtonColor};
   ${CustomPropertyNames.ColorTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonColorOnDisabled};
@@ -188,8 +212,10 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.FontPrimary}: ${primaryFont};
   ${CustomPropertyNames.FontSizeConnectivity}: ${toLength(connectivityTextSize)};
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
+  ${CustomPropertyNames.FontSizeToast}: ${toLength(toastFontSize)};
   ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
   ${CustomPropertyNames.HeightSpinnerAnimation}: ${toLength(spinnerAnimationHeight)};
+  ${CustomPropertyNames.HeightToaster}: ${toLength(toasterHeight)};
   ${CustomPropertyNames.HeightTypingAnimation}: ${toLength(typingAnimationHeight)};
   ${CustomPropertyNames.HeightVideo}: ${toLength(videoHeight)};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
@@ -198,12 +224,15 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.MarginSpinnerAnimation}: ${toLength(spinnerAnimationPadding)};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
   ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;
+  ${CustomPropertyNames.MaxHeightToaster}: ${toLength(toasterMaxHeight)};
+  ${CustomPropertyNames.MaxHeightToasterSingular}: ${toLength(toasterSingularMaxHeight)};
   ${CustomPropertyNames.MaxWidthAttachmentBubble}: ${bubbleAttachmentMaxWidth}px;
   ${CustomPropertyNames.MinWidthAttachmentBubble}: ${bubbleAttachmentMinWidth}px;
   ${CustomPropertyNames.MaxWidthMessageBubble}: ${bubbleMessageMaxWidth}px;
   ${CustomPropertyNames.MinWidthMessageBubble}: ${bubbleMessageMinWidth}px;
   ${CustomPropertyNames.MinHeightBubble}: ${bubbleMinHeight}px;
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
+  ${CustomPropertyNames.PaddingBlockToastText}: ${toLength(toastTextPadding)};
   ${CustomPropertyNames.PaddingConnectivityIcon}: ${toLength(connectivityIconPadding)};
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
@@ -214,6 +243,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
   ${CustomPropertyNames.TransitionEasing}: ${transitionEasing};
   ${CustomPropertyNames.WidthSpinnerAnimation}: ${toLength(spinnerAnimationWidth)};
+  ${CustomPropertyNames.WidthToastIcon}: ${toLength(toastIconWidth)};
   ${CustomPropertyNames.WidthTypingAnimation}: ${toLength(typingAnimationWidth)};
   ${CustomPropertyNames.WordBreakMessageActivity}: ${messageActivityWordBreak};
   /* From bundle */
