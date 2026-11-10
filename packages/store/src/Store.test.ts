@@ -541,6 +541,7 @@ scenario(
             transaction.upsert('_:m-1', () => ({
               '@id': '_:m-1',
               '@type': new Set(['Message']),
+              // @ts-expect-error Recursive value is not a valid JSON value.
               data: [{ '@type': '@json', '@value': value }]
             }))
           )
@@ -1052,7 +1053,31 @@ scenario(
       .when('a node with position of a single number is upserted', ({ controller }) =>
         catchError(() =>
           controller.edit(transaction =>
-            transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }) as unknown as Node)
+            // @ts-expect-error Other than named properties, property value must be an array.
+            transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }))
+          )
+        )
+      )
+      .then('should throw as any other property value must be an array', (_, error) =>
+        expect(error).toEqual(expect.any(Error))
+      )
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('an empty store', () => {
+        const { controller, store } = createStore();
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('a new node with text of a single string is upserted', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              // @ts-expect-error Other than named properties, property value must be an array.
+              text: 'Hello, World!'
+            }))
           )
         )
       )
@@ -2337,6 +2362,7 @@ scenario(
           transaction.upsert('_:m-1', () => ({
             '@id': '_:m-1',
             '@type': new Set(['Message']),
+            // @ts-expect-error Value which is not plain JSON (e.g. `Date`) is not a valid JSON value.
             encoding: [{ '@type': '@json', '@value': json }]
           }))
         );
