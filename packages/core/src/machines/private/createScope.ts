@@ -341,7 +341,7 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
             settle(effect) &&
             (onError
               ? run(() => onError(error))
-              : // As redux-saga, an error the scope does not catch fails it.
+              : // An error the scope does not catch fails it, as an uncaught error failed a saga.
                 fail(error))
           );
         }
