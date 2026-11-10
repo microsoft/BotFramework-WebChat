@@ -36,9 +36,7 @@ const nodeSchema = pipe(
       isPartOf: optional(pipe(set(nodeReferenceSchema), readonly()))
     },
     // The output of `propertyValueSchema` must be used as it is transformed, e.g. JSON literal as `JSON.stringify()`.
-    // Typed as `unknown` as named properties (e.g. `@id`, `@type`) are not `PropertyValue` and cannot satisfy an
-    // index signature of `PropertyValue`.
-    propertyValueSchema as BaseSchema<unknown, unknown, BaseIssue<unknown>>
+    propertyValueSchema
   ),
   readonly()
 );
