@@ -30,10 +30,11 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 - Every node can has multiple `@types` for extensibility reason
 - Able to iterate a sorted list of children based on `dateCreated`, can extend upto 3 hardcoded properties
 
-The store is a standard and opinionated JSON-LD graph implementation. The only custom parts are:
+The store is a standard, plain and opinionated JSON-LD graph implementation. The only custom parts are:
 
 - Consistency: a simple and friendly way to auto-inverse `hasPart`/`isPartOf`
 - High performance: able to iterate children sorted by `dateCreated`
+- Ease to use: alternate identifiers in `iedntifier` property for lookup only, not for linking such as `hasPart`/`isPartOf`
 
 We intended to keep custom parts minimal to reduce code complexity and learning curve.
 
