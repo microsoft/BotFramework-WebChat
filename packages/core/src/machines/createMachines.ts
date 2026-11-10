@@ -4,9 +4,30 @@ import connectMachine from './connection/connectMachine';
 import detectSlowConnectionMachine from './connection/detectSlowConnectionMachine';
 import observeActivityMachine from './incoming/observeActivityMachine';
 import queueIncomingActivityMachine from './incoming/queueIncomingActivityMachine';
+import clearSuggestedActionsOnPostActivityMachine from './outgoing/clearSuggestedActionsOnPostActivityMachine';
+import postActivityMachine from './outgoing/postActivityMachine';
+import postVoiceActivityMachine from './outgoing/postVoiceActivityMachine';
+import {
+  emitTypingIndicatorMachine,
+  sendEventMachine,
+  sendFilesMachine,
+  sendMessageBackMachine,
+  sendMessageMachine,
+  sendPostBackMachine
+} from './outgoing/sendToPostActivityMachines';
 import createChannel, { isPut } from './private/createChannel';
 import createScope from './private/createScope';
 import { asap, immediately } from './private/scheduler';
+import sendTypingIndicatorOnSetSendBoxMachine from './sendBox/sendTypingIndicatorOnSetSendBoxMachine';
+import submitSendBoxMachine from './sendBox/submitSendBoxMachine';
+import {
+  markAllAsSpokenOnStopSpeakActivityMachine,
+  speakActivityAndStartDictateOnIncomingActivityFromOthersMachine,
+  startDictateOnSpeakCompleteMachine,
+  startSpeakActivityOnPostActivityMachine,
+  stopDictateOnCardActionMachine,
+  stopSpeakingActivityOnInputMachine
+} from './speech/speechMachines';
 import type { Machine, MachineAction, MachineHost } from './types';
 
 type Machines = {
@@ -20,12 +41,29 @@ type Machines = {
 
 // In the order `createSagas()` forked the sagas: machines waiting for the same action are called in this order.
 const MACHINES: readonly Machine[] = Object.freeze([
+  clearSuggestedActionsOnPostActivityMachine,
   connectionStatusToNotificationMachine,
   connectionStatusUpdateMachine,
   connectMachine,
   detectSlowConnectionMachine,
+  emitTypingIndicatorMachine,
+  markAllAsSpokenOnStopSpeakActivityMachine,
   observeActivityMachine,
-  queueIncomingActivityMachine
+  postActivityMachine,
+  postVoiceActivityMachine,
+  queueIncomingActivityMachine,
+  sendEventMachine,
+  sendFilesMachine,
+  sendMessageBackMachine,
+  sendMessageMachine,
+  sendPostBackMachine,
+  sendTypingIndicatorOnSetSendBoxMachine,
+  speakActivityAndStartDictateOnIncomingActivityFromOthersMachine,
+  startDictateOnSpeakCompleteMachine,
+  startSpeakActivityOnPostActivityMachine,
+  stopDictateOnCardActionMachine,
+  stopSpeakingActivityOnInputMachine,
+  submitSendBoxMachine
 ]);
 
 /**

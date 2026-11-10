@@ -61,12 +61,15 @@ type Scope = {
   readonly finally: (fn: (cancelled: boolean) => void) => void;
   /** `fork()`: runs `body` in a child scope now; its puts run after the current task. */
   readonly fork: (body: (scope: Scope) => void) => Scope;
-  /** `observeOnce()`: the first value, the completion or the error; unsubscribes before calling back. */
+  /**
+   * `observeOnce()`: the first value, the completion or the error; unsubscribes before calling back. Returns the function
+   * that stops it (a lost `race()`).
+   */
   readonly observeOnce: <T>(
     observable: Subscribable<T>,
     then: (value: T | undefined) => void,
     onError?: ((error: unknown) => void) | undefined
-  ) => void;
+  ) => () => void;
   /** `observeEach()`: each value to `worker`, one at a time; the next one a microtask after `next()` is called. */
   readonly observeEach: <T>(observable: Subscribable<T>, worker: (value: T, next: () => void) => void) => void;
   /** `takeEvery()`: each action that matches to `worker`, in a child scope. */

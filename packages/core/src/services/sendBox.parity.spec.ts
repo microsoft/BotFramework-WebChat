@@ -1,10 +1,11 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// The send box service against the sagas: every script of the send box, submit and typing indicator runs on both, and
+// The send box service against Redux mode (on the sagas and on the machines): every script of the send box, submit and
+// typing indicator runs on both, and
 // after every step, the calls to Direct Line, the activities posted, every change of the send box and the activities
 // (and their order), the suggested actions cleared, the warnings and errors, and the timers set must be the same.
-import createReduxDriver from '../__tests__/parity/createReduxDriver';
+import { REDUX_DRIVERS } from '../__tests__/parity/createReduxDriver';
 import createServicesDriver from '../__tests__/parity/createServicesDriver';
 import runParityScript from '../__tests__/parity/runParityScript';
 import sendScripts from '../__tests__/parity/sendScripts';
@@ -14,7 +15,7 @@ const scripts = Object.fromEntries(
 );
 
 describe.each(Object.keys(scripts))('%s', name => {
-  test('the services do what the sagas do', async () => {
+  test.each(REDUX_DRIVERS)('the services do what Redux mode does, on the %s', async (_, createReduxDriver) => {
     // eslint-disable-next-line security/detect-object-injection
     const script = scripts[name];
     const sagas = await runParityScript(createReduxDriver, script);

@@ -1,10 +1,11 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// The dispatch() given to card action middleware without a Redux store, against the store's dispatch(): the raw send
+// The dispatch() given to card action middleware without a Redux store, against the store's dispatch() (on the sagas and
+// on the machines): the raw send
 // actions (and their faults) do the same on both, compared after every step as the other parity specs. Other actions
 // are ignored with a warning: Redux mode reduces them, so that part is checked on its own.
-import createReduxDriver from '../__tests__/parity/createReduxDriver';
+import { REDUX_DRIVERS } from '../__tests__/parity/createReduxDriver';
 import createServicesDriver from '../__tests__/parity/createServicesDriver';
 import runParityScript from '../__tests__/parity/runParityScript';
 import sendScripts from '../__tests__/parity/sendScripts';
@@ -13,7 +14,7 @@ import createCompatibilityDispatch from './createCompatibilityDispatch';
 const scripts = Object.fromEntries(Object.entries(sendScripts).filter(([name]) => /^dispatch\b/u.test(name)));
 
 describe.each(Object.keys(scripts))('%s', name => {
-  test('the services do what the sagas do', async () => {
+  test.each(REDUX_DRIVERS)('the services do what Redux mode does, on the %s', async (_, createReduxDriver) => {
     // eslint-disable-next-line security/detect-object-injection
     const script = scripts[name];
     const sagas = await runParityScript(createReduxDriver, script);

@@ -46,12 +46,7 @@ const DRIVERS = Object.freeze(
   WRITE ? { saga: createReduxDriver } : { machines: createMachinesDriver, saga: createReduxDriver }
 );
 
-// The families whose sagas are ported to machines so far.
-const PORTED: readonly string[] = Object.freeze(['connection', 'incoming']);
-
-const RUNS = Object.keys(DRIVERS)
-  .flatMap(engine => Object.keys(FAMILIES).map(family => [engine, family] as const))
-  .filter(([engine, family]) => engine === 'saga' || PORTED.includes(family));
+const RUNS = Object.keys(DRIVERS).flatMap(engine => Object.keys(FAMILIES).map(family => [engine, family] as const));
 
 const goldenPath = (family: string) => join(__dirname, '../../../__tests__/parity/golden', `${family}.json`);
 

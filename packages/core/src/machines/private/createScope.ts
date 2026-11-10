@@ -277,7 +277,7 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
       let subscription: { unsubscribe(): void } | undefined;
       const unsubscribe = () => subscription?.unsubscribe();
 
-      wait(
+      return wait(
         new Promise<T | undefined>((resolve, reject) => {
           subscription = observable.subscribe({ complete: () => resolve(undefined), error: reject, next: resolve });
         }),
