@@ -10,8 +10,8 @@ import testIds from '../testIds';
 const { useDirection, useLocalizer } = hooks;
 
 const TypingAnimation = () => {
-  const [direction] = useDirection();
   const classNames = useStyles(styles, webChatPrefixedClassName);
+  const [direction] = useDirection();
   const localize = useLocalizer();
 
   return (

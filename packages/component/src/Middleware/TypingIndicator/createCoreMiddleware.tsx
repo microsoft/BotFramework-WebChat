@@ -9,8 +9,8 @@ import styles from './TypingIndicator.module.css';
 const { useDirection, useLocalizer } = hooks;
 
 const DotIndicator = () => {
-  const [direction] = useDirection();
   const classNames = useStyles(styles, webChatPrefixedClassName);
+  const [direction] = useDirection();
   const localize = useLocalizer();
 
   return (
