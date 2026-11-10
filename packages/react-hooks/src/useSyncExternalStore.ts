@@ -14,14 +14,16 @@ const { useSyncExternalStore: nativeUseSyncExternalStore } = React as typeof Rea
   readonly useSyncExternalStore?: UseSyncExternalStore | undefined;
 };
 
-// React 16/17: subscribes in a layout effect, which runs again only when `subscribe` changes.
+// React 16/17, and React 18+ in the IIFE bundle without `window.ReactDOM`: subscribes in a layout effect, which runs
+// again only when `subscribe` changes.
 function useSyncExternalStoreFallback<T>(subscribe: Subscribe, getSnapshot: () => T): T {
   const [, forceRender] = useReducer(increment, 0);
   const value = getSnapshot();
   const latest = Object.freeze({ getSnapshot, value });
   const latestRef = useRef(latest);
 
-  // Legacy rendering of React 16/17 does not discard renders, so the ref is written while rendering.
+  // Written while rendering: legacy roots never discard a render, and under `createRoot` every render reads
+  // `getSnapshot()` itself, so a discarded render only leaves a newer value for the next change to compare with.
   latestRef.current = latest;
 
   useLayoutEffect(() => {
