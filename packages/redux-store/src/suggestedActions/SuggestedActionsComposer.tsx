@@ -6,7 +6,7 @@ import {
   type DirectLineCardAction
 } from 'botframework-webchat-core';
 import { setRawState } from 'botframework-webchat-core/internal.js';
-import { useSyncExternalStore } from '@msinternal/botframework-webchat-react-hooks';
+import { createKeyedStore, useKeyedStoreValue } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, type SetStateAction } from 'react';
 import { type Action } from 'redux';
@@ -37,28 +37,6 @@ const INITIAL_STATE: SuggestedActionsState = Object.freeze({
   suggestedActions: EMPTY_ARRAY
 });
 
-/** Creates a store of the suggested actions. Listeners may re-render: call `setState()` outside of rendering. */
-function createSuggestedActionsStore() {
-  const listeners = new Set<() => void>();
-  let state = INITIAL_STATE;
-
-  return Object.freeze({
-    getState: () => state,
-    setState: (nextState: SuggestedActionsState) => {
-      state = nextState;
-
-      listeners.forEach(listener => listener());
-    },
-    subscribe: (listener: () => void) => {
-      listeners.add(listener);
-
-      return () => {
-        listeners.delete(listener);
-      };
-    }
-  });
-}
-
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const {
     children,
@@ -67,20 +45,19 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
 
   // A store, not a state: the action sink runs while the store dispatches the activity, which re-renders at sync priority
   // on React 18 and later. A state would render later, the activity would show before its suggested actions.
-  const suggestedActionsStore = useMemo(createSuggestedActionsStore, []);
-  const { originActivity, suggestedActions } = useSyncExternalStore(
-    suggestedActionsStore.subscribe,
-    suggestedActionsStore.getState
-  );
+  const suggestedActionsStore = useMemo(() => createKeyedStore<SuggestedActionsState>(), []);
+  const [state] = useKeyedStoreValue(suggestedActionsStore, 'state');
+  const { originActivity, suggestedActions } = state ?? INITIAL_STATE;
 
   const setSuggestedActions = useCallback(
     (suggestedActions: SetStateAction<readonly DirectLineCardAction[]>) =>
-      suggestedActionsStore.setState(
+      suggestedActionsStore.set(
+        'state',
         Object.freeze({
           originActivity: undefined,
           suggestedActions:
             typeof suggestedActions === 'function'
-              ? suggestedActions(suggestedActionsStore.getState().suggestedActions)
+              ? suggestedActions((suggestedActionsStore.get('state') ?? INITIAL_STATE).suggestedActions)
               : suggestedActions
         })
       ),
@@ -91,7 +68,7 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const handleAction = useCallback(
     (action: Action) => {
       if (action.type === CLEAR_SUGGESTED_ACTIONS) {
-        suggestedActionsStore.setState(INITIAL_STATE);
+        suggestedActionsStore.set('state', INITIAL_STATE);
       } else if (action.type === SET_SUGGESTED_ACTIONS) {
         const result = safeParse(setSuggestedActionsActionSchema, action);
 
@@ -100,7 +77,8 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
             payload: { originActivity, suggestedActions }
           } = result.output;
 
-          suggestedActionsStore.setState(
+          suggestedActionsStore.set(
+            'state',
             Object.freeze({ originActivity, suggestedActions: Object.freeze(Array.from(suggestedActions)) })
           );
         }
