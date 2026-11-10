@@ -474,7 +474,7 @@ jobs:
             --runInBand \
             --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
             --silent
-        timeout-minutes: 10
+        timeout-minutes: 15 # Slowest shard takes up to about 9 minutes.
 
       - if: always()
         name: Print Docker logs
