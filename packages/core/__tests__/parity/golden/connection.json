@@ -62,27 +62,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -101,7 +84,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -112,27 +95,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -201,27 +167,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -239,7 +188,7 @@
         "dl1.connectionStatus$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["error"]
       },
       "console": [],
@@ -250,27 +199,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -350,7 +282,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["connected","error"]
       },
       "console": [],
@@ -363,27 +295,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -452,27 +367,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -498,27 +396,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -529,7 +410,7 @@
       ],
       "calls": [],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}]
       },
       "console": [],
       "label": "status 2 after disconnect",
@@ -538,27 +419,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -627,27 +491,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -666,7 +513,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -677,27 +524,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -725,27 +555,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "notconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"notconnected"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -756,7 +569,7 @@
       ],
       "calls": [],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}]
       },
       "console": [],
       "label": "status 1 after disconnect",
@@ -765,27 +578,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "notconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -854,27 +650,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -893,7 +672,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -904,27 +683,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -940,7 +702,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting"]
       },
       "console": [],
@@ -951,27 +713,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -992,7 +737,7 @@
         "dl1.activity$.subscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["reconnected"]
       },
       "console": [],
@@ -1003,27 +748,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1092,27 +820,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1131,7 +842,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -1142,27 +853,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -1186,7 +880,7 @@
         "dl1.connectionStatus$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["reconnecting","error"]
       },
       "console": [],
@@ -1199,27 +893,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -1290,27 +967,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1329,7 +989,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -1340,27 +1000,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -1376,7 +1019,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting"]
       },
       "console": [],
@@ -1387,27 +1030,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -1436,27 +1062,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1525,27 +1134,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1564,7 +1156,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -1575,27 +1167,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -1619,7 +1194,7 @@
         "dl1.activity$.subscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["reconnecting","reconnected"]
       },
       "console": [],
@@ -1632,27 +1207,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnected"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -1682,27 +1240,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "notconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"notconnected"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1751,7 +1292,7 @@
         "dl1.activity$.unsubscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["connected","reconnecting","reconnected","error"]
       },
       "console": [],
@@ -1861,27 +1402,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -1900,7 +1424,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -1911,27 +1435,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -1959,27 +1466,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2049,7 +1539,7 @@
         "dl1.connectionStatus$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["error"]
       },
       "console": [],
@@ -2060,27 +1550,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2188,7 +1661,7 @@
         "dl1.connectionStatus$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["error"]
       },
       "console": [],
@@ -2199,27 +1672,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2254,27 +1710,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -2287,7 +1726,7 @@
       ],
       "calls": [],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}]
       },
       "console": [],
       "label": "status 2",
@@ -2296,27 +1735,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2385,27 +1807,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2424,7 +1829,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -2435,27 +1840,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -2500,27 +1888,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -2541,27 +1912,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2630,27 +1984,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2664,27 +2001,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2704,27 +2024,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connectingslow",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connectingslow"}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2743,7 +2046,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected","timestamp":15000}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -2754,27 +2057,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected","timestamp":15000}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -2788,27 +2074,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2877,27 +2146,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -2916,7 +2168,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -2927,27 +2179,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -2963,7 +2198,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting"]
       },
       "console": [],
@@ -2974,27 +2209,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -3016,27 +2234,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connectingslow",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connectingslow"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3055,7 +2256,7 @@
         "dl1.activity$.subscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected","timestamp":15000}}}}],
         "connectivityStatus": ["reconnected"]
       },
       "console": [],
@@ -3066,27 +2267,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected","timestamp":15000}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3100,27 +2284,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3192,27 +2359,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connectingslow",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connectingslow"}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3230,7 +2380,7 @@
         "dl1.connectionStatus$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":15000}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect","timestamp":15000}}}}],
         "connectivityStatus": ["error"]
       },
       "console": [],
@@ -3241,27 +2391,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":15000}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect","timestamp":15000}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3330,27 +2463,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3369,7 +2485,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -3380,27 +2496,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -3416,7 +2515,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting"]
       },
       "console": [],
@@ -3427,27 +2526,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -3468,7 +2550,7 @@
         "dl1.activity$.subscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected","timestamp":15000}}}}],
         "connectivityStatus": ["reconnected"]
       },
       "console": [],
@@ -3479,27 +2561,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":15000}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected","timestamp":15000}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3886,27 +2951,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -3932,7 +2980,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["connected","error"]
       },
       "console": [],
@@ -3945,27 +2993,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4034,27 +3065,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4073,7 +3087,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -4084,27 +3098,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -4131,27 +3128,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4187,27 +3167,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -4278,27 +3241,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4317,7 +3263,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -4328,27 +3274,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -4367,7 +3296,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}],
         "connectivityStatus": ["error"]
       },
       "console": [],
@@ -4378,27 +3307,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"error","message":"failedtoconnect"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4467,27 +3379,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4506,7 +3401,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -4517,27 +3412,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -4553,7 +3431,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting"]
       },
       "console": [],
@@ -4564,27 +3442,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -4612,27 +3473,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4710,27 +3554,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4799,27 +3626,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -4838,7 +3648,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -4849,27 +3659,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -4898,7 +3691,7 @@
       ],
       "changes": {
         "connectivityStatus": ["notconnected","reconnecting"],
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"connecting"}}}}]
       },
       "console": [],
       "label": "disconnect, connect dl2",
@@ -4909,27 +3702,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"connecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -4952,7 +3728,7 @@
         "dl2.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -4963,27 +3739,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5052,27 +3811,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5091,7 +3833,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -5102,27 +3844,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -5137,7 +3862,7 @@
         "dl2.connectionStatus$.subscribe#1"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"connecting"}}}}]
       },
       "console": [],
       "label": "connect dl2",
@@ -5146,27 +3871,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"connecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5177,7 +3885,7 @@
       ],
       "calls": [],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}]
       },
       "console": [],
       "label": "dl2 status 2",
@@ -5186,27 +3894,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5230,27 +3921,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -5279,27 +3953,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5370,7 +4027,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"],
         "referenceGrammarID": ["g-1"]
       },
@@ -5383,27 +4040,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": "g-1",
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},"referenceGrammarID":"g-1"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -5426,27 +4066,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": "g-2",
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"referenceGrammarID":"g-2"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5470,7 +4093,7 @@
         "dl1.activity$.subscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["reconnecting","reconnected"],
         "referenceGrammarID": [null]
       },
@@ -5485,27 +4108,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnected","referenceGrammarID":null}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -5535,27 +4141,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "notconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"notconnected"}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5604,7 +4193,7 @@
         "dl1.activity$.subscribe#4"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected","reconnecting","reconnected","reconnecting","reconnected"]
       },
       "console": [],
@@ -5676,27 +4265,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "notconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"notconnected"}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5723,7 +4295,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -5773,7 +4345,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting"]
       },
       "console": [],
@@ -5784,27 +4356,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": [
@@ -5823,7 +4378,7 @@
         "dl1.activity$.subscribe#3"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["reconnected"]
       },
       "console": [],
@@ -5834,27 +4389,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5882,27 +4420,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "notconnected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"notconnected"}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -5971,27 +4492,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6014,7 +4518,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected","error"]
       },
       "console": [],
@@ -6026,27 +4530,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6057,7 +4544,7 @@
       ],
       "calls": [],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}]
       },
       "console": [],
       "label": "status 1",
@@ -6066,27 +4553,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6102,27 +4572,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6143,7 +4596,7 @@
       ],
       "changes": {
         "connectivityStatus": ["reconnecting"],
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"message":"connecting"}}}}]
       },
       "console": [],
       "label": "connect again",
@@ -6153,27 +4606,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "reconnecting",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"reconnecting","notifications":{"[~]":{"connectivitystatus":{"[~]":{"message":"connecting"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6242,27 +4678,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6281,7 +4700,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -6292,27 +4711,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -6334,7 +4736,7 @@
         "dl1.activity$.unsubscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}],
         "connectivityStatus": ["reconnecting","error"]
       },
       "console": [],
@@ -6346,27 +4748,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"reconnecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"error","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"info","message":"reconnecting"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6377,7 +4762,7 @@
       ],
       "calls": [],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}]
       },
       "console": [],
       "label": "status 2",
@@ -6386,27 +4771,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6422,27 +4790,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "error",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6515,7 +4866,7 @@
       ],
       "changes": {
         "connectivityStatus": ["connectingslow","sagaerror"],
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"javascripterror","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"message":"javascripterror"}}}}]
       },
       "console": [
         "error: Error(listener on connectingslow)"
@@ -6528,27 +4879,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"sagaerror","notifications":{"[~]":{"connectivitystatus":{"[~]":{"message":"javascripterror"}}}}}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6562,27 +4896,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6596,27 +4913,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6632,27 +4932,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6676,27 +4959,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6765,27 +5031,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "uninitialized",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 0,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6804,7 +5053,7 @@
         "dl1.activity$.subscribe#2"
       ],
       "changes": {
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}}],
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
         "connectivityStatus": ["connected"]
       },
       "console": [],
@@ -6815,27 +5064,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "connected",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {"readyState":2}
       },
       "suggestedActions": [],
       "timers": []
@@ -6859,7 +5091,7 @@
       ],
       "changes": {
         "connectivityStatus": ["notconnected","sagaerror"],
-        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}}]
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"message":"javascripterror"}}}}]
       },
       "console": [
         "error: Error(listener on notconnected)"
@@ -6872,27 +5104,10 @@
       ],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {"connectivityStatus":"sagaerror","notifications":{"[~]":{"connectivitystatus":{"[~]":{"message":"javascripterror"}}}}}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6906,27 +5121,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6942,27 +5140,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []
@@ -6976,27 +5157,10 @@
       "order": [],
       "posted": [],
       "state": {
-        "activities": [],
-        "connectivityStatus": "sagaerror",
-        "dictateInterims": [],
-        "dictateState": 0,
-        "language": "en-US",
-        "microphoneMuted": false,
-        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}},
-        "referenceGrammarID": null,
-        "sendBoxAttachments": [],
-        "sendBoxValue": "",
-        "sendTypingIndicator": false,
-        "shouldSpeakIncomingActivity": false,
-        "voiceHandlers": [],
-        "voiceState": "idle"
+        "[~]": {}
       },
       "store": {
-        "readyState": 2,
-        "sendTimeout": 20000,
-        "suggestedActions": [],
-        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
-        "typing": {}
+        "[~]": {}
       },
       "suggestedActions": [],
       "timers": []

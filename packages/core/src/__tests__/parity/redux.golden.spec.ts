@@ -6,6 +6,9 @@
 // their dispatch depth) and the rest of the store's state, on top of what the other parity specs record. The goldens
 // were written by redux-saga: once the sagas are gone, they are what Redux mode must still do.
 //
+// The goldens store each step's state as deltas (`deltaGolden.ts`); the spec rebuilds the whole records from them and
+// compares those, so the comparison is the same as with whole records.
+//
 // To write them again (only while the store runs the sagas):
 //   WRITE_PARITY_GOLDEN=true npx jest packages/core/src/__tests__/parity/redux.golden.spec.ts
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
@@ -13,6 +16,7 @@ import { dirname, join } from 'path';
 
 import connectionScripts from './connectionScripts';
 import createReduxDriver from './createReduxDriver';
+import { fromDeltas, toDeltas } from './deltaGolden';
 import encodeGolden from './encodeGolden';
 import hostScripts, { type HostScript } from './hostScripts';
 import incomingScripts from './incomingScripts';
@@ -82,10 +86,10 @@ describe.each(Object.keys(FAMILIES))('%s', family => {
 
     if (WRITE) {
       // eslint-disable-next-line security/detect-object-injection
-      written[name] = records;
+      written[name] = toDeltas(records);
     } else {
       // eslint-disable-next-line security/detect-object-injection
-      expect(golden[name]).toStrictEqual(records);
+      expect(records).toStrictEqual(fromDeltas(golden[name]));
     }
   });
 
