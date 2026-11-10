@@ -172,6 +172,33 @@ const hostScripts: Readonly<Record<string, HostScript>> = Object.freeze({
     }
   },
 
+  // A middleware that passes POST_ACTIVITY on after a microtask, as an asynchronous one does: the sagas take the action
+  // when it reaches them, not when it is dispatched.
+  'middleware: POST_ACTIVITY passed on after a microtask': {
+    host: {
+      middleware: () => next => (action: any) =>
+        action.type === POST_ACTIVITY ? queueMicrotask(() => next(action)) : next(action)
+    },
+    script: async context => {
+      const mock = await connectOnline(context);
+      const { ops } = context.driver;
+
+      await context.step('send a message (the sagas put POST_ACTIVITY)', () => ops.sendMessage('hello'));
+      await context.step('post an activity (POST_ACTIVITY from the host)', () =>
+        ops.postActivity({ text: 'posted', type: 'message' })
+      );
+      await context.step('two messages', () => {
+        ops.sendMessage('one');
+        ops.sendMessage('two');
+      });
+      await context.step('all return and echo', () => sendAll(mock));
+      await context.step('send a message, then disconnect', () => {
+        ops.sendMessage('last');
+        context.driver.disconnect();
+      });
+    }
+  },
+
   // A dispatch before passing a put on (SET_SEND_BOX before INCOMING_ACTIVITY), and one after (SEND_MESSAGE).
   'middleware: dispatch inside a put, before and after next()': {
     host: {

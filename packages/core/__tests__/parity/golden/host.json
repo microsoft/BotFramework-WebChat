@@ -1125,6 +1125,308 @@
       "timers": []
     }
   ],
+  "middleware: POST_ACTIVITY passed on after a microtask": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
+      },
+      "store": {
+        "[~]": {"readyState":2}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"hello"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 1>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1"
+      ],
+      "changes": {
+        "activities": [[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}]]
+      },
+      "console": [],
+      "label": "send a message (the sagas put POST_ACTIVITY)",
+      "order": [
+        "activities",
+        "dl1.postActivity#1",
+        "dl1.post#1.subscribe#1",
+        "suggestedActions"
+      ],
+      "posted": [
+        {"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}
+      ],
+      "state": {
+        "[~]": {"activities":[{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"sending","webchat:internal:position":1000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}]}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [
+        {"actions":[],"origin":"[undefined]"}
+      ],
+      "timers": [
+        "setTimeout(20000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"text":"posted","type":"message"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 2>","method":"keyboard"},"payload":{"activity":{"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[]}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1"
+      ],
+      "changes": {
+        "activities": [{"[~]":{"1":{"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"sending","webchat:internal:position":2000,"webchat:send-status":"sending"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[]},"length":2}}]
+      },
+      "console": [],
+      "label": "post an activity (POST_ACTIVITY from the host)",
+      "order": [
+        "activities",
+        "dl1.postActivity#2",
+        "dl1.post#2.subscribe#1",
+        "suggestedActions"
+      ],
+      "posted": [
+        {"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[]}
+      ],
+      "state": {
+        "[~]": {"activities":{"[~]":{"1":{"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","state":"sending","webchat:internal:position":2000,"webchat:send-status":"sending"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[]},"length":2}}}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [
+        {"actions":[],"origin":"[undefined]"}
+      ],
+      "timers": [
+        "setTimeout(20000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"one"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"two"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 3>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_PENDING","meta":{"clientActivityID":"<cid 4>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_SUGGESTED_ACTIONS","payload":{"originActivity":"[undefined]","suggestedActions":[]}},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_DICTATE"},"depth":1},
+        {"action":{"type":"WEB_CHAT/STOP_SPEAKING"},"depth":1}
+      ],
+      "calls": [
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1",
+        "dl1.postActivity#4",
+        "dl1.post#4.subscribe#1"
+      ],
+      "changes": {
+        "activities": [{"[~]":{"2":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 3>","state":"sending","webchat:internal:position":3000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},"length":3}},{"[~]":{"3":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 4>","state":"sending","webchat:internal:position":4000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},"length":4}}]
+      },
+      "console": [],
+      "label": "two messages",
+      "order": [
+        "activities",
+        "dl1.postActivity#3",
+        "dl1.post#3.subscribe#1",
+        "suggestedActions",
+        "activities",
+        "dl1.postActivity#4",
+        "dl1.post#4.subscribe#1",
+        "suggestedActions"
+      ],
+      "posted": [
+        {"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},
+        {"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"}
+      ],
+      "state": {
+        "[~]": {"activities":{"[~]":{"2":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 3>","state":"sending","webchat:internal:position":3000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},"3":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 4>","state":"sending","webchat:internal:position":4000,"webchat:send-status":"sending"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles"},"length":4}}}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [
+        {"actions":[],"origin":"[undefined]"},
+        {"actions":[],"origin":"[undefined]"}
+      ],
+      "timers": [
+        "setTimeout(20000)",
+        "setTimeout(20000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_FULFILLED","meta":{"clientActivityID":"<cid 1>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 1>"},"replyToId":"[undefined]","text":"hello","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_FULFILLED","meta":{"clientActivityID":"<cid 2>","method":"keyboard"},"payload":{"activity":{"text":"posted","type":"message","channelData":{"clientActivityID":"<cid 2>"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[],"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","id":"a3","timestamp":"1970-01-01T00:00:03.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","id":"a3","timestamp":"1970-01-01T00:00:03.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_FULFILLED","meta":{"clientActivityID":"<cid 3>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 3>"},"replyToId":"[undefined]","text":"one","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","id":"a3","timestamp":"1970-01-01T00:00:03.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/QUEUE_INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","id":"a4","timestamp":"1970-01-01T00:00:04.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/INCOMING_ACTIVITY","payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","id":"a4","timestamp":"1970-01-01T00:00:04.000Z"}}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY_FULFILLED","meta":{"clientActivityID":"<cid 4>","method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<cid 4>"},"replyToId":"[undefined]","text":"two","textFormat":"plain","type":"message","channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","id":"a4","timestamp":"1970-01-01T00:00:04.000Z"}}},"depth":1}
+      ],
+      "calls": [
+        "dl1.post#1.next(a1)",
+        "dl1.post#2.next(a2)",
+        "dl1.post#3.next(a3)",
+        "dl1.post#4.next(a4)",
+        "dl1.post#1.unsubscribe#1",
+        "dl1.post#2.unsubscribe#1",
+        "dl1.post#3.unsubscribe#1",
+        "dl1.post#4.unsubscribe#1"
+      ],
+      "changes": {
+        "activities": [{"[~]":{"0":{"[~]":{"replyToId":"[removed]","textFormat":"[removed]","entities":"[removed]","text":"posted","channelData":{"[~]":{"attachmentSizes":"[removed]","clientActivityID":"<cid 2>","webchat:internal:local-id":"<lid 2>","webchat:internal:position":2000}}}},"1":{"[~]":{"channelData":{"[~]":{"attachmentSizes":[],"clientActivityID":"<cid 3>","webchat:internal:local-id":"<lid 3>","webchat:internal:position":3000}},"replyToId":"[undefined]","text":"one","textFormat":"plain"}},"2":{"[~]":{"channelData":{"[~]":{"clientActivityID":"<cid 4>","webchat:internal:local-id":"<lid 4>","webchat:internal:position":4000}},"text":"two"}},"3":{"[~]":{"channelData":{"[~]":{"state":"[removed]","clientActivityID":"<cid 1>","webchat:internal:local-id":"<lid 1>","webchat:internal:position":5000}},"text":"hello","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}}}},{"[~]":{"3":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:send-status":"sent"}}}}}},{"[~]":{"0":{"[~]":{"channelData":{"[~]":{"attachmentSizes":[],"clientActivityID":"<cid 3>","webchat:internal:local-id":"<lid 3>","webchat:internal:position":3000}},"replyToId":"[undefined]","text":"one","textFormat":"plain"}},"1":{"[~]":{"channelData":{"[~]":{"clientActivityID":"<cid 4>","webchat:internal:local-id":"<lid 4>","webchat:internal:position":4000}},"text":"two"}},"2":{"[~]":{"channelData":{"[~]":{"clientActivityID":"<cid 1>","state":"sent","webchat:internal:local-id":"<lid 1>","webchat:internal:position":5000,"webchat:send-status":"sent"}},"text":"hello","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}},"3":{"[~]":{"replyToId":"[removed]","textFormat":"[removed]","entities":"[removed]","text":"posted","channelData":{"clientActivityID":"<cid 2>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","webchat:internal:position":6000,"webchat:send-status":"sending"},"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}}}},{"[~]":{"3":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:send-status":"sent"}}}}}},{"[~]":{"0":{"[~]":{"channelData":{"[~]":{"clientActivityID":"<cid 4>","webchat:internal:local-id":"<lid 4>","webchat:internal:position":4000}},"text":"two"}},"1":{"[~]":{"channelData":{"[~]":{"clientActivityID":"<cid 1>","state":"sent","webchat:internal:local-id":"<lid 1>","webchat:internal:position":5000,"webchat:send-status":"sent"}},"text":"hello","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}},"2":{"[~]":{"replyToId":"[removed]","textFormat":"[removed]","entities":"[removed]","text":"posted","channelData":{"[~]":{"attachmentSizes":"[removed]","clientActivityID":"<cid 2>","webchat:internal:local-id":"<lid 2>","webchat:internal:position":6000}},"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}},"3":{"[~]":{"channelData":{"[~]":{"state":"[removed]","attachmentSizes":[],"clientActivityID":"<cid 3>","webchat:internal:local-id":"<lid 3>","webchat:internal:position":7000,"webchat:send-status":"sending"}},"replyToId":"[undefined]","text":"one","textFormat":"plain","id":"a3","timestamp":"1970-01-01T00:00:03.000Z"}}}},{"[~]":{"3":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:send-status":"sent"}}}}}},{"[~]":{"0":{"[~]":{"channelData":{"[~]":{"clientActivityID":"<cid 1>","state":"sent","webchat:internal:local-id":"<lid 1>","webchat:internal:position":5000,"webchat:send-status":"sent"}},"text":"hello","entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}],"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}},"1":{"[~]":{"replyToId":"[removed]","textFormat":"[removed]","entities":"[removed]","text":"posted","channelData":{"[~]":{"attachmentSizes":"[removed]","clientActivityID":"<cid 2>","webchat:internal:local-id":"<lid 2>","webchat:internal:position":6000}},"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}},"2":{"[~]":{"channelData":{"[~]":{"attachmentSizes":[],"clientActivityID":"<cid 3>","webchat:internal:local-id":"<lid 3>","webchat:internal:position":7000}},"replyToId":"[undefined]","text":"one","textFormat":"plain","id":"a3","timestamp":"1970-01-01T00:00:03.000Z"}},"3":{"[~]":{"channelData":{"[~]":{"state":"[removed]","clientActivityID":"<cid 4>","webchat:internal:local-id":"<lid 4>","webchat:internal:position":8000,"webchat:send-status":"sending"}},"text":"two","id":"a4","timestamp":"1970-01-01T00:00:04.000Z"}}}},{"[~]":{"3":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:send-status":"sent"}}}}}}]
+      },
+      "console": [],
+      "label": "all return and echo",
+      "order": [
+        "activities",
+        "activities",
+        "activities",
+        "activities",
+        "activities",
+        "activities",
+        "activities",
+        "activities"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"activities":{"[~]":{"0":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:internal:position":5000,"webchat:send-status":"sent"}},"id":"a1","timestamp":"1970-01-01T00:00:01.000Z"}},"1":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:internal:position":6000,"webchat:send-status":"sent"}},"id":"a2","timestamp":"1970-01-01T00:00:02.000Z"}},"2":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:internal:position":7000,"webchat:send-status":"sent"}},"id":"a3","timestamp":"1970-01-01T00:00:03.000Z"}},"3":{"[~]":{"channelData":{"[~]":{"state":"sent","webchat:internal:position":8000,"webchat:send-status":"sent"}},"id":"a4","timestamp":"1970-01-01T00:00:04.000Z"}}}}}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SEND_MESSAGE","payload":{"attachments":"[undefined]","channelData":"[undefined]","replyToId":"[undefined]","method":"[undefined]","text":"last"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/POST_ACTIVITY","meta":{"method":"keyboard"},"payload":{"activity":{"attachments":[],"channelData":{"attachmentSizes":[]},"replyToId":"[undefined]","text":"last","textFormat":"plain","type":"message"}}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+      ],
+      "calls": [
+        "dl1.activity$.unsubscribe#1",
+        "dl1.end()",
+        "dl1.connectionStatus$.unsubscribe#2",
+        "dl1.connectionStatus$.unsubscribe#3",
+        "dl1.activity$.unsubscribe#2"
+      ],
+      "changes": {
+        "connectivityStatus": ["notconnected"]
+      },
+      "console": [],
+      "label": "send a message, then disconnect",
+      "order": [
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"connectivityStatus":"notconnected"}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
   "middleware: dispatch inside a put, before and after next()": [
     {
       "actions": [
