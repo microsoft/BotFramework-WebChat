@@ -8,6 +8,7 @@ import React, { forwardRef, memo, useMemo, type Ref } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 import CustomPropertyNames from './CustomPropertyNames';
 import getDefaultSpinnerAnimationImageURL from './private/getDefaultSpinnerAnimationImageURL';
+import getDefaultTypingAnimationImageURL from './private/getDefaultTypingAnimationImageURL';
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
 const customPropertiesContainerPropsSchema = pipe(
@@ -133,6 +134,9 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       transcriptVisualKeyboardIndicatorWidth,
       transitionDuration,
       transitionEasing,
+      typingAnimationBackgroundImage,
+      typingAnimationHeight,
+      typingAnimationWidth,
       userAvatarBackgroundColor,
       videoHeight
     } = styleOptions;
@@ -157,6 +161,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundBubble}: ${bubbleBackground};
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
   ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
+  ${CustomPropertyNames.BackgroundImageTypingAnimation}: ${typingAnimationBackgroundImage || `url('${getDefaultTypingAnimationImageURL()}')`};
   ${CustomPropertyNames.BackgroundToastError}: ${toastErrorBackgroundColor};
   ${CustomPropertyNames.BackgroundToastInfo}: ${toastInfoBackgroundColor};
   ${CustomPropertyNames.BackgroundToastSuccess}: ${toastSuccessBackgroundColor};
@@ -211,6 +216,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
   ${CustomPropertyNames.HeightSpinnerAnimation}: ${toLength(spinnerAnimationHeight)};
   ${CustomPropertyNames.HeightToaster}: ${toLength(toasterHeight)};
+  ${CustomPropertyNames.HeightTypingAnimation}: ${toLength(typingAnimationHeight)};
   ${CustomPropertyNames.HeightVideo}: ${toLength(videoHeight)};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MarginBlockConnectivity}: ${toLength(connectivityMarginTopBottom)};
@@ -238,6 +244,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.TransitionEasing}: ${transitionEasing};
   ${CustomPropertyNames.WidthSpinnerAnimation}: ${toLength(spinnerAnimationWidth)};
   ${CustomPropertyNames.WidthToastIcon}: ${toLength(toastIconWidth)};
+  ${CustomPropertyNames.WidthTypingAnimation}: ${toLength(typingAnimationWidth)};
   ${CustomPropertyNames.WordBreakMessageActivity}: ${messageActivityWordBreak};
   /* From bundle */
   ${bundleStyleProps}
