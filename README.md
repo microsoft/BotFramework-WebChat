@@ -283,7 +283,7 @@ To use Redux DevTools, use the `createStoreWithDevTools` function for creating a
 
 There are some limitations when using the Redux DevTools:
 
-- The Redux store runs side-effects outside of it (its business logic keeps state of its own). Time-traveling may break the UI.
+- Web Chat runs its side effects outside of the Redux store, and they keep some state of their own. Time-traveling may break the UI.
 - Many UI states are stored in React context and state. They are not exposed in the Redux store.
 - Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
 - Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) instead.
