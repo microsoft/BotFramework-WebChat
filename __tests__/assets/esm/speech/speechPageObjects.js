@@ -43,18 +43,24 @@ function createWebSpeechPonyfill() {
  */
 async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
   let lastUtterance;
+  let spoken;
 
-  spyOn(speechSynthesis, 'speak').mockImplementationOnce(async utterance => {
+  spyOn(speechSynthesis, 'speak').mockImplementationOnce(utterance => {
     lastUtterance = utterance;
 
-    utterance.dispatchEvent(new SpeechSynthesisEvent('start', { utterance }));
+    spoken = (async () => {
+      utterance.dispatchEvent(new SpeechSynthesisEvent('start', { utterance }));
 
-    await speakActor?.(utterance);
+      await speakActor?.(utterance);
 
-    utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
+      utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
+    })();
   });
 
   await actor();
+
+  // Rethrows an error from speakActor, if speak() was called.
+  await spoken;
 
   return lastUtterance;
 }
