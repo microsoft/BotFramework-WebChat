@@ -1,10 +1,18 @@
 import { parse } from 'valibot';
 import { blankNodeIdentifierSchema } from '../node/BlankNodeIdentifier.ts';
-import type { Node } from '../node/Node.ts';
 import Store, { type StoreController } from '../Store.ts';
+import type { JSONLiteral } from '../node/JSONLiteral.ts';
 
 type ActPostActivityResult = {
   resolveAll(): void;
+};
+
+type Activity = {
+  channelData?: { clientActivityID?: string | undefined } | undefined;
+  localTimestamp?: string | undefined;
+  id?: string | undefined;
+  text?: string | undefined;
+  type: string;
 };
 
 class DirectLineJSEmulatorStore extends Store {
@@ -26,30 +34,29 @@ class DirectLineJSEmulatorStore extends Store {
 
   #controller: StoreController;
 
-  actPostActivity(activity: {
-    channelData?: { clientActivityID?: string | undefined } | undefined;
-    text?: string | undefined;
-  }): Promise<ActPostActivityResult> {
+  actPostActivity(activity: (Activity & { id?: never }) | string): Promise<ActPostActivityResult> {
+    if (typeof activity === 'string') {
+      activity = {
+        text: activity,
+        type: 'message'
+      };
+    }
+
+    activity.localTimestamp ??= new Date().toISOString();
+
     const nodeId = parse(blankNodeIdentifierSchema, `_:${crypto.randomUUID()}`);
     const clientActivityId = activity.channelData?.clientActivityID ?? crypto.randomUUID();
+    const serverActivityId = activity.id ?? crypto.randomUUID();
 
     this.#controller.edit(transaction => {
-      transaction.upsert(
-        `_:${clientActivityId}`,
-        () =>
-          ({
-            '@id': nodeId,
-            '@type': new Set(['Message', `urn:microsoft:webchat:direct-line-activity`]),
-            creativeWorkStatus: ['Draft'],
-            text: [activity.text],
-            'https://botframework.com/': [
-              {
-                '@type': 'json',
-                '@value': activity
-              }
-            ]
-          }) satisfies Node
-      );
+      transaction.upsert(`_:${clientActivityId}`, () => ({
+        '@id': nodeId,
+        '@type': new Set(['Message', `urn:microsoft:webchat:direct-line-activity`]),
+        creativeWorkStatus: ['Draft'],
+        text: activity.text ? [activity.text] : [],
+        'urn:microsoft:webchat:direct-line-activity:raw-json': [{ '@type': '@json', '@value': activity }],
+        'urn:microsoft:webchat:direct-line-activity:type': ['message']
+      }));
     });
 
     return Promise.resolve({
@@ -60,9 +67,26 @@ class DirectLineJSEmulatorStore extends Store {
               throw new Error(`Message node "${nodeId}" is already deleted before resolveAll() could publish it`);
             }
 
+            const dateCreated = new Date().toISOString();
+
+            const activity = (
+              message['urn:microsoft:webchat:direct-line-activity:raw-json'] as JSONLiteral | undefined
+            )?.['@value'] as Activity;
+
             return {
               ...message,
-              creativeWorkStatus: ['Published']
+              creativeWorkStatus: ['Published'],
+              dateCreated,
+              'urn:microsoft:webchat:direct-line-activity:raw-json': [
+                {
+                  '@type': '@json',
+                  '@value': {
+                    ...activity,
+                    id: serverActivityId,
+                    timestamp: dateCreated
+                  }
+                }
+              ]
             };
           });
         });
