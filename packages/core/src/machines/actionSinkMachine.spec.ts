@@ -1,16 +1,17 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// The action sinks (the transport of `<ReduxSuggestedActionsMirror>`) on both engines: no parity script registers one.
+// The action sinks (the transport of `<ReduxSuggestedActionsMirror>`): no parity script registers one. Pinned on the
+// sagas, which the machine replaced.
 import registerActionSink from '../actions/registerActionSink';
 import setDictateState from '../actions/setDictateState';
 import unregisterActionSink from '../actions/unregisterActionSink';
 import { WILL_START } from '../constants/DictateState';
-import { createStoreWithEngine } from '../createStore';
+import createStore from '../createStore';
 
-function run(engine: 'machines' | 'saga'): string[] {
+test('each sink gets every action after it, put ones too, until unregistered', () => {
   const calls: string[] = [];
-  const store = createStoreWithEngine(engine, {});
+  const store = createStore();
   const createSink = (name: string) => (action: { type: string }) => calls.push(`${name}: ${action.type}`);
   const first = createSink('first');
   const second = createSink('second');
@@ -28,13 +29,7 @@ function run(engine: 'machines' | 'saga'): string[] {
   store.dispatch(unregisterActionSink(second));
   store.dispatch({ type: 'AFTER' });
 
-  return calls;
-}
-
-test('each sink gets every action after it, put ones too, until unregistered: the machines as the saga', () => {
-  const sagas = run('saga');
-
-  expect(sagas).toEqual([
+  expect(calls).toEqual([
     'first: A',
     // The sinks wait as takers: one that took an action waits again at the end, after the other sink.
     'first: WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK',
@@ -48,5 +43,4 @@ test('each sink gets every action after it, put ones too, until unregistered: th
     'second: WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK',
     'second: C'
   ]);
-  expect(run('machines')).toEqual(sagas);
 });

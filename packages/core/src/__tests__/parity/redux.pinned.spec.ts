@@ -1,12 +1,12 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// What the sagas do today, pinned before the services are written against them (Redux mode, unchanged), and the machines
-// that replace them do the same. The parity specs (`services/*.parity.spec.ts`) then compare the services with Redux
-// mode on every script; these pins make sure that its side of the comparison does not move unnoticed, especially on the
+// What Redux mode does, pinned: written on the sagas before the services were written against them, kept by the
+// machines that replaced them. The parity specs (`services/*.parity.spec.ts`) then compare the services with Redux mode
+// on every script; these pins make sure that its side of the comparison does not move unnoticed, especially on the
 // paths that look like bugs.
 import connectionScripts from './connectionScripts';
-import { REDUX_DRIVERS } from './createReduxDriver';
+import createReduxDriver from './createReduxDriver';
 import incomingScripts from './incomingScripts';
 import runParityScript, { type StepRecord } from './runParityScript';
 
@@ -44,7 +44,7 @@ const CONNECT = Object.freeze([
 
 const ONLINE = Object.freeze(['dl1.connectionStatus$.subscribe#3', 'dl1.activity$.subscribe#2']);
 
-describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriver) => {
+describe('Redux mode, pinned', () => {
   test('connect: notification subscription, status subscription, setUserId(), keep-alive activity$; online: reference grammar, then incoming', async () => {
     expect(summarize(await runParityScript(createReduxDriver, connectionScripts['connect successfully']))).toEqual({
       connect: { calls: CONNECT, notifications: ['info/connecting'] },
@@ -83,7 +83,7 @@ describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriv
     });
   });
 
-  test('fatal, during a write (receiving an activity throws): all sagas stop in fork order, the connect loop disconnects and stops', async () => {
+  test('fatal, during a write (receiving an activity throws): all machines stop in fork order, the connect loop disconnects and stops', async () => {
     expect(
       summarize(await runParityScript(createReduxDriver, incomingScripts['fatal: receiving an activity throws']))
     ).toEqual({
@@ -92,17 +92,17 @@ describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriv
       activity: {},
       'the activity that throws': {
         calls: [
-          // connectionStatusToNotificationSaga
+          // connectionStatusToNotificationMachine
           'dl1.connectionStatus$.unsubscribe#1',
-          // connectionStatusUpdateSaga
+          // connectionStatusUpdateMachine
           'dl1.connectionStatus$.unsubscribe#3',
-          // connectSaga: as on disconnect
+          // connectMachine: as on disconnect
           'dl1.activity$.unsubscribe#1',
           'dl1.end()',
           'dl1.connectionStatus$.unsubscribe#2',
-          // observeActivitySaga
+          // observeActivityMachine
           'dl1.activity$.unsubscribe#2',
-          // redux-saga logs the error after every saga stopped
+          // The store logs the error after every machine stopped
           'console.error: Error(receive boom)'
         ],
         console: ['error: Error(receive boom)'],
@@ -113,12 +113,12 @@ describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriv
       'activity after': {},
       reconnecting: {},
       disconnect: {},
-      // Every saga stopped, the connect loop too (native generators; down-leveled by regenerator, it looped again).
+      // Every machine stopped, the connect loop too (the sagas looped again only when compiled by regenerator).
       'connect again': {}
     });
   });
 
-  test('fatal, outside a write (an activity that is not an object): the failing saga first, "notconnected" before "sagaerror"', async () => {
+  test('fatal, outside a write (an activity that is not an object): the failing machine first, "notconnected" before "sagaerror"', async () => {
     expect(
       summarize(await runParityScript(createReduxDriver, incomingScripts['fatal: an activity that is not an object']))
     ).toEqual({
@@ -127,7 +127,7 @@ describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriv
       activity: {},
       null: {
         calls: [
-          // observeActivitySaga, which failed
+          // observeActivityMachine, which failed
           'dl1.activity$.unsubscribe#2',
           'dl1.connectionStatus$.unsubscribe#1',
           'dl1.connectionStatus$.unsubscribe#3',
@@ -240,7 +240,7 @@ describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriv
     });
   });
 
-  test('every script runs on the sagas without throwing', async () => {
+  test('every script runs on the machines without throwing', async () => {
     for (const script of Object.values({ ...connectionScripts, ...incomingScripts })) {
       // eslint-disable-next-line no-await-in-loop
       await expect(runParityScript(createReduxDriver, script)).resolves.toEqual(expect.any(Array));

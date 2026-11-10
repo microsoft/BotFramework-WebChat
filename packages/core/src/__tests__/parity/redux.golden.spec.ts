@@ -18,7 +18,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 
 import connectionScripts from './connectionScripts';
-import createReduxDriver, { createMachinesDriver } from './createReduxDriver';
+import createReduxDriver from './createReduxDriver';
 import { fromDeltas, toDeltas } from './deltaGolden';
 import encodeGolden, { takeEngineMessages } from './encodeGolden';
 import hostScripts, { type HostScript } from './hostScripts';
@@ -41,13 +41,6 @@ const FAMILIES: Readonly<Record<string, Readonly<Record<string, HostScript | Scr
 
 const WRITE = process.env.WRITE_PARITY_GOLDEN === 'true';
 
-// The goldens are written on the sagas only; both engines are compared to them.
-const DRIVERS = Object.freeze(
-  WRITE ? { saga: createReduxDriver } : { machines: createMachinesDriver, saga: createReduxDriver }
-);
-
-const RUNS = Object.keys(DRIVERS).flatMap(engine => Object.keys(FAMILIES).map(family => [engine, family] as const));
-
 const goldenPath = (family: string) => join(__dirname, '../../../__tests__/parity/golden', `${family}.json`);
 
 // Indented `depth` levels deep (script, step, field of the record, item of the field), each item below on one line: a
@@ -67,7 +60,7 @@ function stringify(value: unknown, depth: number, indent = ''): string {
   return Array.isArray(value) ? `[\n${lines.join(',\n')}\n${indent}]` : `{\n${lines.join(',\n')}\n${indent}}`;
 }
 
-describe.each(RUNS)('%s: %s', (engine, family) => {
+describe.each(Object.keys(FAMILIES))('%s', family => {
   // eslint-disable-next-line security/detect-object-injection
   const scripts = FAMILIES[family];
   const written: Record<string, unknown> = {};
@@ -95,10 +88,7 @@ describe.each(RUNS)('%s: %s', (engine, family) => {
 
     takeEngineMessages();
 
-    const records = encodeGolden(
-      // eslint-disable-next-line security/detect-object-injection
-      await runParityScript(DRIVERS[engine], script, { golden: true, host })
-    ) as any[];
+    const records = encodeGolden(await runParityScript(createReduxDriver, script, { golden: true, host })) as any[];
 
     if (WRITE) {
       // eslint-disable-next-line security/detect-object-injection

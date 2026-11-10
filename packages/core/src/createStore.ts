@@ -5,11 +5,9 @@ import {
   type Store,
   type StoreEnhancer
 } from 'redux';
-import createSagaMiddleware from 'redux-saga';
 
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
-import createSagas from './createSagas';
 import createMachinesMiddleware from './machines/createMachinesMiddleware';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
@@ -26,8 +24,8 @@ type CreateStoreOptions = {
   /**
    * True, to enable Redux development tools, otherwise, false.
    *
-   * Because Web Chat use sagas for business logics, some store state are keep at JavaScript heaps.
-   * Time-travelling and saving/restoring store state are not supported.
+   * Because Web Chat keeps some of its business logic state outside of the store (in its machines), time-travelling
+   * and saving/restoring store state are not supported.
    */
   devTools?: boolean;
 
@@ -43,36 +41,14 @@ type CreateStoreOptions = {
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
 
-function createEnhancerAndSagaMiddleware(getStore: () => any, ...middlewares: readonly Middleware[]) {
-  const sagaMiddleware = createSagaMiddleware({
-    onError: (...args) => {
-      const [err] = args;
-
-      console.error(err);
-
-      const store = getStore();
-
-      store && store.dispatch(sagaError());
-    }
-  });
-
-  return {
-    enhancer: applyMiddleware(...middlewares, sagaMiddleware),
-    sagaMiddleware
-  };
-}
-
-/** What runs the business logic: redux-saga (`saga`), or the machines that replace it (`machines`, internal). */
-type StoreEngine = 'machines' | 'saga';
-
 /**
- * `withOptions()` on the engine given. Internal: not exported by the package, for the tests of both engines until the
- * machines replace the sagas.
+ * Creates a Redux store internally used by Web Chat.
+ *
+ * This store is critical for Web Chat business logics to operate, please use with cautions.
  */
 // The complexity is introduced by the check of ponyfill.
 // eslint-disable-next-line complexity
-export function createStoreWithEngine(
-  engine: StoreEngine,
+export function withOptions(
   options: CreateStoreOptions,
   initialState?: any | undefined,
   ...middlewares: readonly Middleware[]
@@ -134,25 +110,17 @@ export function createStoreWithEngine(
 
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
-  // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
-  const { enhancer, startEngine } =
-    engine === 'machines'
-      ? (() => {
-          const machines = createMachinesMiddleware({
-            onError: error => {
-              console.error(error);
-              store && store.dispatch(sagaError());
-            },
-            ponyfill
-          });
+  // The machines run after every middleware of the host (the innermost), and start once the store exists.
+  const machines = createMachinesMiddleware({
+    // An error that no machine catches stops every machine.
+    onError: error => {
+      console.error(error);
+      store && store.dispatch(sagaError());
+    },
+    ponyfill
+  });
 
-          return { enhancer: applyMiddleware(...middlewares, machines.middleware), startEngine: machines.start };
-        })()
-      : (() => {
-          const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
-
-          return { enhancer, startEngine: () => sagaMiddleware.run(createSagas({ ponyfill })) };
-        })();
+  const enhancer = applyMiddleware(...middlewares, machines.middleware);
 
   const devToolsWindow: WindowWithReduxDevTools | undefined =
     options.devTools && typeof window !== 'undefined' ? window : undefined;
@@ -168,22 +136,9 @@ export function createStoreWithEngine(
   StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
-  startEngine();
+  machines.start();
 
   return store;
-}
-
-/**
- * Creates a Redux store internally used by Web Chat.
- *
- * This store is critical for Web Chat business logics to operate, please use with cautions.
- */
-export function withOptions(
-  options: CreateStoreOptions,
-  initialState?: any | undefined,
-  ...middlewares: readonly Middleware[]
-): Store {
-  return createStoreWithEngine('saga', options, initialState, ...middlewares);
 }
 
 /**
