@@ -26,7 +26,6 @@ const iifeConfig = {
   ...config,
   dts: false,
   format: 'iife',
-  globalName: 'DirectLineSpeech',
   outExtension() {
     return { js: '.js' };
   },
@@ -55,7 +54,7 @@ export default defineConfig([
   {
     ...iifeConfig,
     entry: {
-      'directlinespeech.development': './src/index.js'
+      'directlinespeech.development': './src/bundle.js'
     },
     env: {
       ...iifeConfig.env,
@@ -70,7 +69,7 @@ export default defineConfig([
   {
     ...iifeConfig,
     entry: {
-      'directlinespeech.production.min': './src/index.js'
+      'directlinespeech.production.min': './src/bundle.js'
     },
     env: {
       ...iifeConfig.env,
