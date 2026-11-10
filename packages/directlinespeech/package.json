@@ -24,6 +24,12 @@
   "engines": {
     "node": ">= 10.14.2"
   },
+  "tsd": {
+    "compilerOptions": {
+      "module": "NodeNext",
+      "strict": true
+    }
+  },
   "scripts": {
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
@@ -43,7 +49,8 @@
     "prettier": "prettier --check src/**/*.{js,ts}",
     "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\"",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "test:tsd": "tsd"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -98,6 +105,7 @@
     "prettier": "^3.8.3",
     "simple-update-in": "^2.2.0",
     "source-map-loader": "^5.0.0",
+    "tsd": "^0.33.0",
     "webpack": "^5.107.2",
     "webpack-cli": "^7.0.3",
     "webpack-stats-plugin": "^1.1.3"
