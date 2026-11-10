@@ -2454,15 +2454,9 @@
     },
     {
       "actions": [
-        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":1}},"depth":1}
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1}
       ],
-      "calls": [
-        "dl1.connectionStatus$.subscribe#4",
-        "dl1.setUserId(\"u-1\")",
-        "dl1.activity$.subscribe#3"
-      ],
+      "calls": [],
       "changes": {},
       "console": [],
       "label": "connect again",
@@ -2666,17 +2660,9 @@
     },
     {
       "actions": [
-        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1}
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1}
       ],
-      "calls": [
-        "dl1.connectionStatus$.subscribe#4",
-        "dl1.setUserId(\"u-1\")",
-        "dl1.activity$.subscribe#3"
-      ],
+      "calls": [],
       "changes": {},
       "console": [],
       "label": "connect again",
@@ -2692,9 +2678,7 @@
       "timers": []
     },
     {
-      "actions": [
-        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1}
-      ],
+      "actions": [],
       "calls": [],
       "changes": {},
       "console": [],
@@ -2729,15 +2713,9 @@
     },
     {
       "actions": [
-        {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":"[undefined]","payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+        {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1}
       ],
-      "calls": [
-        "dl1.activity$.unsubscribe#3",
-        "dl1.end()",
-        "dl1.connectionStatus$.unsubscribe#4"
-      ],
+      "calls": [],
       "changes": {},
       "console": [],
       "label": "disconnect again",

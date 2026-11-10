@@ -82,7 +82,7 @@ describe('the sagas, pinned', () => {
     });
   });
 
-  test('fatal, during a write (receiving an activity throws): all sagas stop in fork order, the connect loop disconnects and lives on', async () => {
+  test('fatal, during a write (receiving an activity throws): all sagas stop in fork order, the connect loop disconnects and stops', async () => {
     expect(
       summarize(await runParityScript(createReduxDriver, incomingScripts['fatal: receiving an activity throws']))
     ).toEqual({
@@ -112,10 +112,8 @@ describe('the sagas, pinned', () => {
       'activity after': {},
       reconnecting: {},
       disconnect: {},
-      // Only the connect loop is left: no notification, no slow timer, nothing while online.
-      'connect again': {
-        calls: ['dl1.connectionStatus$.subscribe#4', 'dl1.setUserId("u-1")', 'dl1.activity$.subscribe#3']
-      }
+      // Every saga stopped, the connect loop too (native generators; down-leveled by regenerator, it looped again).
+      'connect again': {}
     });
   });
 
@@ -143,14 +141,10 @@ describe('the sagas, pinned', () => {
       },
       'activity after': {},
       disconnect: {},
-      'connect again': {
-        calls: ['dl1.connectionStatus$.subscribe#4', 'dl1.setUserId("u-1")', 'dl1.activity$.subscribe#3']
-      },
+      'connect again': {},
       'online again': {},
       'activity when online again': {},
-      'disconnect again': {
-        calls: ['dl1.activity$.unsubscribe#3', 'dl1.end()', 'dl1.connectionStatus$.unsubscribe#4']
-      }
+      'disconnect again': {}
     });
   });
 
@@ -178,9 +172,7 @@ describe('the sagas, pinned', () => {
       'status 2': {},
       activity: {},
       disconnect: {},
-      'connect again': {
-        calls: ['dl1.connectionStatus$.subscribe#3', 'dl1.setUserId("u-1")', 'dl1.activity$.subscribe#2']
-      }
+      'connect again': {}
     });
   });
 

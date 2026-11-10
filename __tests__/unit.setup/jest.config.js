@@ -84,6 +84,17 @@ module.exports = {
         plugins: ['@babel/plugin-transform-modules-commonjs']
       }
     ],
+    // The sagas run on native generators, as in the bundles (es2019). Down-leveled by regenerator, a saga cancelled inside
+    // a `finally` that yields loops again (the connect loop outlived a saga error in Jest only).
+    '/packages/core/src/(?:sagas/[^/]+|createSagas)\\.[jt]s$': [
+      'babel-jest',
+      {
+        presets: [
+          ['@babel/preset-env', { modules: 'commonjs', targets: { node: 'current' } }],
+          '@babel/preset-typescript'
+        ]
+      }
+    ],
     '\\.m?[jt]sx?$': [
       'babel-jest',
       {

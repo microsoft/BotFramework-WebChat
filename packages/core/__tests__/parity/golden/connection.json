@@ -4942,17 +4942,9 @@
     },
     {
       "actions": [
-        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1}
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1}
       ],
-      "calls": [
-        "dl1.connectionStatus$.subscribe#3",
-        "dl1.setUserId(\"u-1\")",
-        "dl1.activity$.subscribe#2"
-      ],
+      "calls": [],
       "changes": {},
       "console": [],
       "label": "connect again",

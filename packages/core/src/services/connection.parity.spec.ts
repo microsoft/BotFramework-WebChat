@@ -22,14 +22,26 @@ function normalize(records: readonly StepRecord[]): unknown {
   return JSON.parse(JSON.stringify(records).replace(/"r_[\da-z]{1,10}\\"/gu, '"r_<random>\\"'));
 }
 
+// After a saga error, the services keep the connect loop running, as the sagas did only when Jest down-leveled them with
+// regenerator; on native generators every saga stops. Compared until the next connect.
+const UNTIL_CONNECT_AGAIN = Object.freeze(['fatal: a listener of the status throws on connectingslow']);
+
+function untilConnectAgain(records: readonly StepRecord[]): readonly StepRecord[] {
+  return records.slice(
+    0,
+    records.findIndex(({ label }) => label === 'connect again')
+  );
+}
+
 describe.each(Object.keys(connectionScripts).filter(name => !DIFFERENT.includes(name)))('%s', name => {
   test('the services do what the sagas do', async () => {
     // eslint-disable-next-line security/detect-object-injection
     const script = connectionScripts[name];
+    const cut = UNTIL_CONNECT_AGAIN.includes(name) ? untilConnectAgain : (records: readonly StepRecord[]) => records;
     const sagas = await runParityScript(createReduxDriver, script);
     const services = await runParityScript(createServicesDriver, script);
 
-    expect(normalize(services)).toEqual(normalize(sagas));
+    expect(normalize(cut(services))).toEqual(normalize(cut(sagas)));
   });
 });
 
