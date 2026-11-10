@@ -1,13 +1,13 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import createDirectLineStore from './createDirectLineStore.ts';
+import createDirectLineJSStore from './createDirectLineJSStore.ts';
 
 scenario(
   'start',
   bdd => {
     bdd
-      .given('a Direct Line store', () => createDirectLineStore({ token: 'DUMMY' }))
+      .given('a Direct Line store', () => createDirectLineJSStore({ token: 'DUMMY' }))
       .when('started', () => {
         // Intentionally left blank.
       })

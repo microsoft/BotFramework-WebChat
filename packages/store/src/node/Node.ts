@@ -1,9 +1,8 @@
 import {
-  custom,
-  integer,
-  is,
+  isoTimestamp,
+  type BaseIssue,
+  type BaseSchema,
   minSize,
-  number,
   objectWithRest,
   optional,
   pipe,
@@ -25,15 +24,21 @@ const nodeSchema = pipe(
       // OPINION: Each node can has a single ID only.
       '@id': identifierSchema,
       '@type': pipe(set(string()), minSize(1, 'Node must have at least one @type')),
+      // OPINION: dateCreated must be an ISO timestamp string with time zone and not in a set/array.
+      dateCreated: optional(
+        pipe(
+          string('"dateCreated" property value must be an ISO timestamp string'),
+          isoTimestamp('"dateCreated" property value must be an ISO timestamp string')
+        )
+      ),
       // OPINION: hasPart/isPartOf must reference to another node, not containing another node
       hasPart: optional(pipe(set(nodeReferenceSchema), readonly())),
-      isPartOf: optional(pipe(set(nodeReferenceSchema), readonly())),
-      // OPINION: position must be an integer and not in a set/array.
-      position: optional(
-        pipe(number('"position" property value must be integer'), integer('"position" property value must be integer'))
-      )
+      isPartOf: optional(pipe(set(nodeReferenceSchema), readonly()))
     },
-    custom(value => is(propertyValueSchema, value))
+    // The output of `propertyValueSchema` must be used as it is transformed, e.g. JSON literal as `JSON.stringify()`.
+    // Typed as `unknown` as named properties (e.g. `@id`, `@type`) are not `PropertyValue` and cannot satisfy an
+    // index signature of `PropertyValue`.
+    propertyValueSchema as BaseSchema<unknown, unknown, BaseIssue<unknown>>
   ),
   readonly()
 );
