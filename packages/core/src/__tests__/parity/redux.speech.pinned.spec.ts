@@ -1,5 +1,6 @@
 /**
- * @jest-environment @happy-dom/jest-environment
+ * @jest-environment <rootDir>/../__tests__/unit.setup/HappyDOMEnvironmentWithTimeZone.js
+ * @timezone America/Los_Angeles
  */
 // What the speech, dictation and voice sagas do today, pinned before the services are written against them (Redux
 // mode, unchanged): the order of their effects (redux-saga runs each `put()` after the current action, and a saga
