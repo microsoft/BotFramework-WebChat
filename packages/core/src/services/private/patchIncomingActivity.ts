@@ -72,7 +72,7 @@ function patchFromName(activity: DirectLineActivity) {
  * Normalizes an activity from Direct Line: `null` fields as `undefined`, `from.role` and the `from.name` of the bot.
  * Throws if the activity is not an object.
  *
- * Moved from `observeActivitySaga.ts`; both the saga and the incoming service use it.
+ * Moved from `observeActivitySaga.ts`; both its machine and the incoming service use it.
  */
 // TODO: [P2] #3953 Move the patching logic to a DirectLineJS wrapper, instead of too close to inners of Web Chat.
 export default function patchIncomingActivity(activity: DirectLineActivity, userID?: string): WebChatActivity {

@@ -12,7 +12,7 @@ type ConnectivityStatusNotification = {
  * The "connectivitystatus" notification for a Direct Line connection status, if any (none for 5, "expired token").
  * `reconnecting` is `true` after the connection was online or failed once (on the same subscription).
  *
- * Moved from `connectionStatusToNotificationSaga.js`; both the saga and the connection service use it.
+ * Moved from `connectionStatusToNotificationSaga.js`; both its machine and the connection service use it.
  */
 export default function getConnectivityStatusNotification(
   connectionStatus: unknown,

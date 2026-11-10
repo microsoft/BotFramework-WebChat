@@ -20,7 +20,7 @@ function randomUserID(): string {
  * The user ID to connect with: the one in the Direct Line token wins, then the one passed in if valid, else a random one.
  * Warns when the user ID passed in is ignored.
  *
- * Moved from `connectSaga.js`; both the saga and the connection service use it.
+ * Moved from `connectSaga.js`; both its machine and the connection service use it.
  */
 // TODO: [P2] We should move this check and rectification to DirectLineJS.
 export default function rectifyUserID(directLine: { token?: unknown }, userIDFromAction: unknown): RectifiedUserID {

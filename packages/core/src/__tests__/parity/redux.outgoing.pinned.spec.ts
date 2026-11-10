@@ -1,8 +1,9 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// What the outgoing, send box and typing sagas do today, pinned before the services are written against them (Redux
-// mode, unchanged): the order of the effects of a post and of a submit, the send timeouts, going offline, the typing
+// What the outgoing, send box and typing sagas did, pinned before the services were written against them, and kept by
+// the machines that replaced them (Redux mode): the order of the effects of a post and of a submit, the send timeouts,
+// going offline, the typing
 // throttle (`takeLatest()`), and the quirks. Also checks that the parity harness compares what it should: the random IDs
 // are normalized by rank, and a wrong link between IDs still fails.
 import createReduxDriver from './createReduxDriver';
@@ -98,7 +99,7 @@ describe('the parity harness', () => {
   });
 });
 
-describe('the sagas, pinned', () => {
+describe('Redux mode, pinned', () => {
   test('a post: sending, then Direct Line, then the suggested actions cleared; sent when echoed and returned', async () => {
     const summary = summarize(await run('echo before the post returns'));
 

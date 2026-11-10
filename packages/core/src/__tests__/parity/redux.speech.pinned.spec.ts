@@ -2,10 +2,10 @@
  * @jest-environment <rootDir>/../__tests__/unit.setup/HappyDOMEnvironmentWithTimeZone.js
  * @timezone America/Los_Angeles
  */
-// What the speech, dictation and voice sagas do today, pinned before the services are written against them (Redux
-// mode, unchanged): the order of their effects (redux-saga runs each `put()` after the current action, and a saga
-// resumes after its own `put()`), the order of the sagas taking the same action (a saga that took an action waits again
-// at the end of the list), what runs offline, and the quirks.
+// What the speech, dictation and voice sagas did, pinned before the services were written against them, and kept by the
+// machines that replaced them (Redux mode): the order of their effects (each `put()` runs after the current action, and
+// a machine goes on after its own `put()`), the order of the machines taking the same action (one that took an action
+// waits again at the end of the list), what runs offline, and the quirks.
 import createReduxDriver from './createReduxDriver';
 import outgoingScripts from './outgoingScripts';
 import runParityScript, { type StepRecord } from './runParityScript';
@@ -69,7 +69,7 @@ describe('the parity harness', () => {
   });
 });
 
-describe('the sagas, pinned', () => {
+describe('Redux mode, pinned', () => {
   test('a spoken bot message expecting input: marked, then its suggested actions (unmarked), then will start', async () => {
     const records = await run(
       'expecting input with suggested actions: marked, then suggested actions, then will start'

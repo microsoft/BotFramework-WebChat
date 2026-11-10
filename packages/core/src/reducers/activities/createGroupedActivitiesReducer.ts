@@ -52,7 +52,7 @@ function createGroupedActivitiesReducer(
   ponyfill: GlobalScopePonyfill,
   restrictedStoreDebugAPI: RestrictedStoreDebugAPI
 ): Reducer<GroupedActivitiesState, GroupedActivitiesAction> {
-  // One graph (William's store) per Redux store, created upfront so sagas can read it before the first activity.
+  // One graph (William's store) per Redux store, created upfront so machines can read it before the first activity.
   const defaultState: GroupedActivitiesState = createInitialState();
 
   return function activities(

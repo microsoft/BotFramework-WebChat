@@ -4,7 +4,7 @@ import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import createMachines, { type Machines } from './createMachines';
 
 /**
- * The machines in Redux mode, where the saga middleware was: the innermost middleware. Each action is reduced first,
+ * The machines in Redux mode, as the innermost middleware (where the saga middleware was). Each action is reduced first,
  * then goes to the machines; what they put goes through every middleware again.
  */
 export default function createMachinesMiddleware({

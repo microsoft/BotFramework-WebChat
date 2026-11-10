@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 /* eslint-disable no-magic-numbers */
-// Runs one script of the parity specs on a driver (the sagas through a Redux store, or the services) and records what
+// Runs one script of the parity specs on a driver (Redux mode: the machines through a Redux store; or the services) and
+// records what
 // a host can observe, step by step: the calls to Direct Line and the activities posted, the values of connectivity
 // status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in order, and the
 // order of the changes across values), the suggested actions set or cleared, the calls to the voice handlers,
@@ -114,7 +115,7 @@ type Operations = {
 type Host = {
   /** Called on every change of the store, after the listener of the recorder. */
   readonly listener?: ((getState: () => any) => void) | undefined;
-  /** Between the recorder (outermost) and the faults; the sagas are innermost. */
+  /** Between the recorder (outermost) and the faults; the machines are innermost. */
   readonly middleware?: Middleware | undefined;
 };
 
@@ -207,7 +208,7 @@ type RunOptions = {
 };
 
 async function flush(): Promise<void> {
-  // The sagas hand values over through promises: 20 turns are more than any chain in the scripts.
+  // The machines hand values over through promises: 20 turns are more than any chain in the scripts.
   for (let index = 0; index < 20; index++) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.resolve();

@@ -8,7 +8,7 @@ import type { WebChatActivity } from '../../types/WebChatActivity';
  * - otherwise its suggested actions and the message as their origin, or no actions (clear) if it has none or they are
  *   for someone else than the user.
  *
- * Moved from `queueIncomingActivitySaga.ts`; both the saga and the incoming service use it.
+ * Moved from `queueIncomingActivitySaga.ts`; both its machine and the incoming service use it.
  */
 export default function pickSuggestedActions(
   activities: readonly WebChatActivity[],

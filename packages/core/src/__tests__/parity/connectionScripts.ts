@@ -1,7 +1,7 @@
 /* eslint-disable no-magic-numbers, no-restricted-globals */
-// The scripts of the connection parity spec: the 9 scenarios of `__tests__/connectSaga.spec.js`, slow connections
-// (`__tests__/detectSlowConnectionSaga.spec.js`), user IDs, Direct Line swaps, reference grammar ID, the html2 emulator,
-// and the fatal path (an error in a saga stops all of them).
+// The scripts of the connection parity spec: the 9 scenarios of the former `__tests__/connectSaga.spec.js`, slow
+// connections (the former `__tests__/detectSlowConnectionSaga.spec.js`), user IDs, Direct Line swaps, reference grammar
+// ID, the html2 emulator, and the fatal path (an error in a machine stops all of them).
 import type { MockDirectLineInit } from './createMockDirectLine';
 import type { Script, ScriptContext } from './runParityScript';
 
