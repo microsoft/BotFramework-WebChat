@@ -3,7 +3,7 @@
 import type { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import type { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services';
 
-type Activity = { [key: string]: unknown; type?: string | undefined };
+type Activity = { [key: string]: any; type?: string | undefined };
 
 type Observer<T> = {
   complete?(): void;
@@ -52,7 +52,7 @@ type CreateAdaptersInit = {
   speechSynthesisOutputFormat?: string | undefined;
   /** Not supported yet, ignored with a warning. */
   textNormalization?: 'display' | 'itn' | 'lexical' | 'maskeditn' | undefined;
-  /** Not supported yet, ignored with a warning. */
+  /** Sent as the conversation's "from" ID, although a warning says custom user IDs are not supported. */
   userID?: string | undefined;
   /** Not supported yet, ignored with a warning. */
   username?: string | undefined;
@@ -68,7 +68,7 @@ type DirectLineSpeech = {
 
 /** Empty when the browser does not support Web Audio API. */
 type WebSpeechPonyfill = Partial<
-  ReturnType<typeof createSpeechRecognitionPonyfillFromRecognizer> & {
+  Pick<ReturnType<typeof createSpeechRecognitionPonyfillFromRecognizer>, 'SpeechGrammarList' | 'SpeechRecognition'> & {
     speechSynthesis: SpeechSynthesis;
     SpeechSynthesisUtterance: typeof SpeechSynthesisUtterance;
   }
