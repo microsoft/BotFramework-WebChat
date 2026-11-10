@@ -67,11 +67,11 @@
   padding-block-end: 0;
 }
 
-:global(.webchat) .send-box :global(.webchat__upload-button) {
+:global(.webchat) .send-box .upload-button {
   grid-area: upload-button;
 }
 
-:global(.webchat) .send-box :global(.webchat__send-button) {
+:global(.webchat) .send-box .send-button {
   grid-area: send-button;
 }
 
@@ -252,6 +252,173 @@
   top: 0;
   white-space: nowrap;
   width: 1px;
+}
+
+/* #endregion */
+
+/* #region Icon button */
+
+:global(.webchat) .icon-button {
+  --webchat__component-icon--size: 28px;
+
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  color: var(--webchat__color--send-box-button);
+  display: flex;
+  justify-content: center;
+  outline: 0;
+  padding: 0;
+  position: relative;
+  width: var(--webchat__min-height--send-box); /* Same as the send box height, so the button looks square. */
+}
+
+:global(.webchat) .icon-button:not(.icon-button--stretch) {
+  height: var(--webchat__min-height--send-box);
+}
+
+/* Order of style preferences (based on effort of user gesture): disabled > active > hover > focus.
+   Keyboard focus indicator styles applied by :focus-visible do not conflict with :active/:hover/:focus, so it is not included here.
+   A state option that is not set falls back to the base option. */
+:global(.webchat) .icon-button:disabled,
+:global(.webchat) .icon-button[aria-disabled='true'] {
+  color: var(--webchat__color--send-box-button-disabled, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat) .icon-button:disabled .icon-button__shade,
+:global(.webchat) .icon-button[aria-disabled='true'] .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-disabled,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):active {
+  color: var(--webchat__color--send-box-button-active, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):active .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-active,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):hover {
+  color: var(--webchat__color--send-box-button-hover, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):hover .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-hover,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):not(:hover):focus {
+  color: var(--webchat__color--send-box-button-focus, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat)
+  .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):not(:hover):focus
+  .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-focus,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+/* On unsupported browser, :focus-visible and :not(:focus-visible) is always false.
+   And it will turn the whole CSS selector ":unsupported, .truthy" to false, so the two rules stay separate. */
+:global(.webchat) .icon-button:not(:focus-visible) .icon-button__keyboard-focus-indicator {
+  display: none;
+}
+
+:global(.webchat) .icon-button:not(.icon-button--focus-visible) .icon-button__keyboard-focus-indicator {
+  display: none;
+}
+
+/* Make sure all contents are in the same stacking context. */
+:global(.webchat) .icon-button > * {
+  position: relative;
+}
+
+:global(.webchat) .icon-button .icon-button__shade {
+  background-color: var(--webchat__background--send-box-button-shade);
+  border-radius: var(--webchat__border-radius--send-box-button-shade);
+  inset: var(--webchat__inset--send-box-button-shade);
+  position: absolute;
+}
+
+:global(.webchat) .icon-button .icon-button__keyboard-focus-indicator {
+  border-color: var(--webchat__border-color--send-box-button-keyboard-focus-indicator);
+  border-radius: var(--webchat__border-radius--send-box-button-keyboard-focus-indicator);
+  border-style: var(--webchat__border-style--send-box-button-keyboard-focus-indicator);
+  border-width: var(--webchat__border-width--send-box-button-keyboard-focus-indicator);
+  inset: var(--webchat__inset--send-box-button-keyboard-focus-indicator);
+  position: absolute;
+}
+
+/* #endregion */
+
+/* #region Upload button */
+
+:global(.webchat) .upload-button {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  width: var(--webchat__min-height--send-box); /* Same as the send box height, so the button looks square. */
+}
+
+:global(.webchat) .upload-button .upload-button--file-input {
+  height: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+
+/* #endregion */
+
+/* #region Attachment icon */
+
+:global(.webchat) .attachment-icon {
+  display: grid;
+  position: relative;
+}
+
+:global(.webchat) .attachment-icon .attachment-icon__icon {
+  grid-area: body;
+}
+
+/* #endregion */
+
+/* #region Microphone button */
+
+:global(.webchat) .microphone-button {
+  display: flex;
+}
+
+/* Invisible, but read by assistive technologies. */
+:global(.webchat) .microphone-button > :global(.sr-only) {
+  color: transparent;
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  width: 1px;
+}
+
+:global(.webchat) .microphone-button.microphone-button--dictating .microphone-button__button .microphone-button__icon {
+  --webchat__component-icon--color: var(--webchat__color--microphone-button-dictating, currentColor);
+
+  @media (forced-colors: active) {
+    --webchat__component-icon--color: Highlight;
+  }
 }
 
 /* #endregion */
