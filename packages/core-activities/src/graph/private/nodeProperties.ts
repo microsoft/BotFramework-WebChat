@@ -65,6 +65,8 @@ function toNumberValues(value: number | undefined): readonly number[] | undefine
 /**
  * Returns a copy of the node with the properties set. `undefined` and empty values remove the property, as the store
  * treats them as removed. The store validates the node on `upsert()`.
+ *
+ * Every property of `node` is copied. The type requires only `@id` and `@type`, so a new node can start from just those.
  */
 function withProperties(
   node: Pick<GraphNode, '@id' | '@type'>,
