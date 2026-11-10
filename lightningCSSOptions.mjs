@@ -46,4 +46,4 @@ function removePreserveReason(code, filename) {
     : code;
 }
 
-export { lightningCSSPluginOptions, PRESERVE_REASON_PROPERTY, removePreserveReason };
+export { lightningCSSPluginOptions, removePreserveReason };
