@@ -1,22 +1,8 @@
-import Store from '../Store.ts';
+import DirectLineJSStore, { type DirectLineJSStoreInit } from './DirectLineJSStore.ts';
 
-type DirectLineJSStoreInit = {
-  token: string;
-};
-
-function createDirectLineStore(_init: DirectLineJSStoreInit): Store {
-  return new Store({
-    start(controller) {
-      controller.edit(transaction => {
-        transaction.upsert('_:a-00001', () => ({
-          '@id': '_:a-00001',
-          '@type': new Set(['Message']),
-          text: ['Hello, World!']
-        }));
-      });
-    }
-  });
+function createDirectLineJSStore(init: DirectLineJSStoreInit): DirectLineJSStore {
+  return new DirectLineJSStore(init);
 }
 
-export default createDirectLineStore;
+export default createDirectLineJSStore;
 export { type DirectLineJSStoreInit };
