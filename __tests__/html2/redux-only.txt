@@ -1,9 +1,9 @@
-# html2 tests that never run in default mode (WEBCHAT_TEST_STORE_MODE=default: Web Chat without Redux). They run in Redux
-# mode only, as every other test. Globs relative to __tests__/html2/, "#" comments. The runner reads this file in default
-# mode only, after default-mode.txt.
+# html2 tests that never run in default mode (WEBCHAT_TEST_STORE_MODE=default: Web Chat without Redux), as they need the
+# Redux store of the host. They run in Redux mode only, as every other test. Globs relative to __tests__/html2/, "#"
+# comments. The runner reads this file in default mode only, after default-mode.txt.
 
-# Needs the Redux store of the host: what the test checks is the store itself, or it changes Web Chat through the store
-# in a way a host without a store cannot.
+# What the test checks is the store itself, or it changes Web Chat through the store in a way a host without a store
+# cannot.
 
 # DELETE_ACTIVITY dispatched to the store.
 activity/deleteActivity.html
@@ -25,14 +25,3 @@ store/**/*.html
 # Store middleware that sets a notification when connected.
 toast/accessibility.html
 toast/layout.html
-
-# Does not render Web Chat (<Composer>): nothing runs without Redux, and the runner would fail it in default mode (the
-# default providers never mount).
-boot/bundle*.html
-boot/deprecation/*.html
-boot/metaTag.directLine.*.html
-hooks/useInjectStylesElements/*.html
-markdown/vnext/streamingRenderer.html
-speech/mockSetup.html
-styleOptions/createAdaptiveCardsStyleSet.html
-withEmoji/**/*.html

@@ -1,0 +1,13 @@
+# html2 tests that do not render Web Chat (<Composer>): e.g. the bundle's exports, deprecation warnings, withEmoji() on a
+# plain input, a style element injector. They run in both modes and must pass, but in default mode
+# (WEBCHAT_TEST_STORE_MODE=default) the runner does not check the provider mount counts for them: there are no providers
+# to mount. It still checks that the page ran in the mode of the run. Globs relative to __tests__/html2/, "#" comments.
+
+boot/bundle*.html
+boot/deprecation/*.html
+boot/metaTag.directLine.*.html
+hooks/useInjectStylesElements/*.html
+markdown/vnext/streamingRenderer.html
+speech/mockSetup.html
+styleOptions/createAdaptiveCardsStyleSet.html
+withEmoji/**/*.html

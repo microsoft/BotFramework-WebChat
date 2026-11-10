@@ -6,6 +6,8 @@ const { join } = require('path');
 // In default mode (`WEBCHAT_TEST_STORE_MODE=default`, Web Chat without Redux, for tests only), the tests listed in
 // `../html2/default-mode.txt` run, except those listed in `../html2/redux-only.txt`, which need the Redux store (they run
 // in Redux mode only). Lines are globs relative to `__tests__/html2/`, `!` excludes (in default-mode.txt), `#` comments.
+// The tests listed in `../html2/no-composer.txt` do not render Web Chat: in default mode, they run without the check of
+// the provider mount counts (see `done.js` of the harness).
 function readList(name) {
   // eslint-disable-next-line security/detect-non-literal-fs-filename
   return readFileSync(join(__dirname, '../html2', name), 'utf8')
@@ -42,7 +44,11 @@ const defaultModeList = defaultMode
 
 module.exports = {
   displayName: { color: 'cyan', name: 'html2' },
-  globals: { npm_package_version: '0.0.0-0.jest' },
+  globals: {
+    npm_package_version: '0.0.0-0.jest',
+    // Path patterns of the tests that do not render Web Chat, for `done.js` of the harness (default mode only).
+    webchatTestNoComposerPatterns: defaultMode ? readList('no-composer.txt').map(globToPathPattern) : []
+  },
   moduleFileExtensions: ['html', 'js'], // Will cause fail validation error if 'js' is not included.
   rootDir: '../html2/',
   setupFilesAfterEnv: [
