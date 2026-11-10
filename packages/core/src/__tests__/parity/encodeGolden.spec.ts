@@ -29,6 +29,11 @@ test('a TypeError of the engine is recorded without its message', () => {
   expect(encodeGolden(errors)).toEqual([{ '[TypeError]': '[engine message]' }, { '[TypeError]': '[engine message]' }]);
   // The original messages, for the diagnosis (their wording is the engine's).
   expect(takeEngineMessages()).toHaveLength(2);
+
+  // V8's wording when the machines (untranspiled) destructure null; built by hand, as this spec is transpiled.
+  expect(encodeGolden(new TypeError("Cannot destructure property 'connectionStatus' of '{}' as it is null."))).toEqual({
+    '[TypeError]': '[engine message]'
+  });
 });
 
 test('a value of an unknown type throws', () => {

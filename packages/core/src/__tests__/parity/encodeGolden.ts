@@ -8,6 +8,7 @@
 // of Web Chat (e.g. `Cannot modify a readonly Map` of the store): a new message of the engine fails, rather than hide one
 // of Web Chat.
 const ENGINE_MESSAGES: readonly RegExp[] = Object.freeze([
+  /^Cannot destructure /u,
   /^Cannot read properties of (?:null|undefined) \(reading '[^']*'\)$/u,
   / is not a function$/u
 ]);

@@ -2692,8 +2692,8 @@
     {
       "actions": [
         {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":null},"depth":1},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"Cannot destructure property 'connectionStatus' of '{}' as it is null."}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"Cannot destructure property 'connectionStatus' of '{}' as it is null."}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
       ],
       "calls": [
         "dl1.activity$.unsubscribe#1",
