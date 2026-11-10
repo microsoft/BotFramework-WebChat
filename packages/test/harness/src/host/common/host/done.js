@@ -11,8 +11,8 @@ function isDeprecation(message) {
 }
 
 // In default mode, a test passes only if Web Chat really ran without Redux: no mount of the Redux providers, at least one
-// of the default providers. A page that lost the mode, or Web Chat without the mount counts, fails. Except the mount
-// counts for the pages that do not render Web Chat (`__tests__/html2/no-composer.txt`, given by the Jest config).
+// of the default providers. A page that lost the mode, or Web Chat without the mount counts, fails. The pages that do
+// not render Web Chat (`__tests__/html2/no-composer.txt`, given by the Jest config) must mount neither.
 function isNoComposerTest() {
   const { testPath } = expect.getState();
   const patterns = global.webchatTestNoComposerPatterns || [];
@@ -52,7 +52,14 @@ async function checkStoreMode(webDriver) {
     );
   }
 
-  if (mode === 'default' && !isNoComposerTest() && !(counts && counts.redux === 0 && counts.default > 0)) {
+  if (mode === 'default' && isNoComposerTest()) {
+    // A listed page must not render Web Chat; if it does, it belongs to the normal check.
+    if (counts && (counts.default > 0 || counts.redux > 0)) {
+      throw new Error(
+        `WebChatTest: The page is in no-composer.txt but mounted Web Chat, remove it from the list, mount counts: ${JSON.stringify(counts)}.`
+      );
+    }
+  } else if (mode === 'default' && !(counts && counts.redux === 0 && counts.default > 0)) {
     throw new Error(
       `WebChatTest: In default mode, Web Chat must mount the default providers and never the Redux providers, mount counts: ${JSON.stringify(counts)}.`
     );
