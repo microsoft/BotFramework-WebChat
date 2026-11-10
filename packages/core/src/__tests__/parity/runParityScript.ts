@@ -4,10 +4,13 @@
 // a host can observe, step by step: the calls to Direct Line and the activities posted, the values of connectivity
 // status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in order, and the
 // order of the changes across values), the suggested actions set or cleared, the calls to the voice handlers,
-// `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers.
+// `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers. With `RunOptions.actions`
+// (Redux mode), also every action as the host's middleware sees it, and the rest of the store's state.
 import lolex from 'lolex';
+import type { Middleware } from 'redux';
 
 import createMockDirectLine, { type MockDirectLine, type MockDirectLineInit } from './createMockDirectLine';
+import encodeGolden from './encodeGolden';
 
 type Observation = {
   readonly activities: readonly unknown[];
@@ -107,8 +110,24 @@ type Operations = {
   readonly submitSendBox: (method?: string | undefined, init?: { channelData?: any }) => void;
 };
 
+/** What a host adds to the store in Redux mode (`createStore(initialState, ...middlewares)`, `store.subscribe()`). */
+type Host = {
+  /** Called on every change of the store, after the listener of the recorder. */
+  readonly listener?: ((getState: () => any) => void) | undefined;
+  /** Between the recorder (outermost) and the faults; the sagas are innermost. */
+  readonly middleware?: Middleware | undefined;
+};
+
 type DriverInit = {
   readonly faults: Faults;
+  readonly host: Host;
+  /**
+   * Redux mode: called by the outermost middleware with each action dispatched, before the other middleware, and its
+   * depth (1 when not dispatched inside another dispatch).
+   */
+  readonly onAction: (action: any, depth: number) => void;
+  /** Redux mode: called when dispatching the action of `onAction()` threw. */
+  readonly onActionThrew: (action: any, depth: number, error: unknown) => void;
   /** Called on every change of an observed value, in order. */
   readonly onChange: (key: ObservationKey, value: unknown) => void;
   /** Called with the suggested actions set by the incoming activities, and their origin; `[]` when cleared. */
@@ -121,6 +140,11 @@ type Driver = {
   readonly disconnect: () => void;
   readonly dispose: () => void;
   readonly observe: () => Observation;
+  /**
+   * Redux mode: the rest of the store's state (keys that `observe()` does not cover), without the graph of the
+   * activities (`activities` is its sorted list) and the ponyfill (`internal`).
+   */
+  readonly observeStore?: (() => Readonly<Record<string, unknown>>) | undefined;
   readonly ops: Operations;
   /** The `dispatch()` given to card action middleware: the store's in Redux mode. */
   readonly rawDispatch: (action: any) => unknown;
@@ -128,7 +152,14 @@ type Driver = {
 
 type CreateDriver = (init: DriverInit) => Driver;
 
+/** An action as the host's middleware saw it (encoded), or the end of one that threw (`threw`). */
+type ActionRecord =
+  | { readonly action: unknown; readonly depth: number }
+  | { readonly depth: number; readonly threw: string; readonly type: unknown };
+
 type StepRecord = {
+  /** With `RunOptions.actions`: the actions dispatched during the step, in order. */
+  readonly actions?: readonly ActionRecord[];
   /** The calls to Direct Line, and `console.warn/error` (`console.error: ...`), in order. */
   readonly calls: readonly string[];
   readonly changes: Readonly<Partial<Record<ObservationKey, readonly unknown[]>>>;
@@ -142,6 +173,8 @@ type StepRecord = {
   /** The activities posted to Direct Line. */
   readonly posted: readonly unknown[];
   readonly state: Observation;
+  /** With `RunOptions.actions`: `Driver.observeStore()` after the step (encoded). */
+  readonly store?: unknown;
   readonly suggestedActions: readonly unknown[];
   readonly timers: readonly string[];
 };
@@ -160,6 +193,10 @@ type ScriptContext = {
 type Script = (context: ScriptContext) => Promise<void>;
 
 type RunOptions = {
+  /** Records the actions dispatched and `Driver.observeStore()` (Redux mode): `false` by default. */
+  readonly actions?: boolean | undefined;
+  /** The host's middleware and listener (Redux mode). */
+  readonly host?: Host | undefined;
   /** Keeps the random IDs (client activity IDs, local IDs), to check that the normalization is needed. */
   readonly raw?: boolean | undefined;
   /** Also records the values of speech and voice (`SPEECH_KEYS`): `true` by default. */
@@ -228,15 +265,18 @@ function describeConsoleArgs(args: unknown[]): string {
 export default async function runParityScript(
   createDriver: CreateDriver,
   script: Script,
-  { raw, speech = true }: RunOptions = {}
+  { actions: recordActions = false, host = {}, raw, speech = true }: RunOptions = {}
 ): Promise<StepRecord[]> {
   const isRecorded = (key: ObservationKey) => speech || !SPEECH_KEYS.includes(key);
+  const actions: ActionRecord[] = [];
   const clock = lolex.createClock();
   const calls: string[] = [];
   const changes: Partial<Record<ObservationKey, unknown[]>> = {};
   const consoleLog: string[] = [];
   const directLines: MockDirectLine[] = [];
   const faults: Faults = {};
+  // The Direct Line objects, named in the actions recorded (e.g. the payload of `connect()`).
+  const labels = new WeakMap<object, string>();
   const order: string[] = [];
   const records: StepRecord[] = [];
   const suggestedActions: unknown[] = [];
@@ -288,6 +328,16 @@ export default async function runParityScript(
   try {
     driver = createDriver({
       faults,
+      host,
+      // Encoded at once: what the action was when dispatched, even if changed later.
+      onAction: (action, depth) => recordActions && actions.push({ action: encodeGolden(action, labels), depth }),
+      onActionThrew: (action, depth, error) =>
+        recordActions &&
+        actions.push({
+          depth,
+          threw: error instanceof Error ? `${error.name}(${error.message})` : String(error),
+          type: encodeGolden(action?.type, labels)
+        }),
       onChange: (key, value) => {
         if (isRecorded(key)) {
           // eslint-disable-next-line security/detect-object-injection
@@ -315,6 +365,7 @@ export default async function runParityScript(
         const mock = createMockDirectLine({ push: log }, init);
 
         directLines.push(mock);
+        labels.set(mock.directLine, `[Direct Line ${mock.name}]`);
 
         return mock;
       },
@@ -338,6 +389,7 @@ export default async function runParityScript(
         await flush();
 
         records.push({
+          ...(recordActions ? { actions: actions.splice(0) } : {}),
           calls: calls.splice(0),
           changes: Object.fromEntries(Object.entries(changes).map(([key, values]) => [key, values.splice(0)])),
           console: consoleLog.splice(0),
@@ -347,6 +399,7 @@ export default async function runParityScript(
           state: Object.fromEntries(
             Object.entries(driver.observe()).filter(([key]) => isRecorded(key as ObservationKey))
           ) as Observation,
+          ...(recordActions ? { store: encodeGolden(driver.observeStore?.(), labels) } : {}),
           suggestedActions: suggestedActions.splice(0),
           timers: timers.splice(0)
         });
@@ -380,10 +433,12 @@ export default async function runParityScript(
 export { describeVoiceHandlers, normalizeRandomIDs, SPEECH_KEYS };
 
 export type {
+  ActionRecord,
   CreateDriver,
   Driver,
   DriverInit,
   Faults,
+  Host,
   Observation,
   ObservationKey,
   Operations,

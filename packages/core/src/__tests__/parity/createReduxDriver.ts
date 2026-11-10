@@ -34,6 +34,7 @@ import submitSendBox from '../../actions/submitSendBox';
 import unmuteVoiceRecording from '../../actions/unmuteVoiceRecording';
 import unregisterVoiceHandler from '../../actions/unregisterVoiceHandler';
 import { withOptions } from '../../createStore';
+import type { Middleware } from 'redux';
 import { describeVoiceHandlers, type CreateDriver, type Observation, type Operations } from './runParityScript';
 
 const KEYS = Object.freeze([
@@ -54,8 +55,53 @@ const KEYS = Object.freeze([
 
 type RawObservation = Omit<Observation, 'voiceHandlers'> & { readonly voiceHandlers: ReadonlyMap<string, unknown> };
 
-const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions, ponyfill }) => {
-  const store = withOptions({ ponyfill }, undefined, () => next => (action: any) => {
+// The keys of the store that `observe()` reads (`voice` is `microphoneMuted`, `voiceHandlers` and `voiceState`), or
+// not recorded: the graph of the activities (`activities` is its sorted list) and the ponyfill (`internal`).
+const OBSERVED_STORE_KEYS: readonly string[] = Object.freeze([
+  'activities',
+  'connectivityStatus',
+  'dictateInterims',
+  'dictateState',
+  'groupedActivities',
+  'internal',
+  'language',
+  'notifications',
+  'referenceGrammarID',
+  'sendBoxAttachments',
+  'sendBoxValue',
+  'sendTypingIndicator',
+  'shouldSpeakIncomingActivity',
+  'voice'
+]);
+
+const createReduxDriver: CreateDriver = ({
+  faults,
+  host,
+  onAction,
+  onActionThrew,
+  onChange,
+  onSuggestedActions,
+  ponyfill
+}) => {
+  let depth = 0;
+
+  // Outermost: the actions as the first middleware of a host sees them, with how deep in other dispatches they are.
+  const recorder: Middleware = () => next => action => {
+    depth++;
+    onAction(action, depth);
+
+    try {
+      return next(action);
+    } catch (error) {
+      onActionThrew(action, depth, error);
+
+      throw error;
+    } finally {
+      depth--;
+    }
+  };
+
+  const faulty: Middleware = () => next => (action: any) => {
     if (
       action.type === INCOMING_ACTIVITY &&
       faults.receiveThrowsFor &&
@@ -85,7 +131,13 @@ const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions,
     action.type === CLEAR_SUGGESTED_ACTIONS && onSuggestedActions([], undefined);
 
     return result;
-  });
+  };
+
+  const store = withOptions(
+    { ponyfill },
+    undefined,
+    ...[recorder, host.middleware, faulty].filter((middleware): middleware is Middleware => !!middleware)
+  );
 
   const observeRaw = (): RawObservation => {
     const {
@@ -157,6 +209,8 @@ const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions,
     }
   });
 
+  const unsubscribeHost = host.listener ? store.subscribe(() => host.listener(store.getState)) : () => undefined;
+
   const { dispatch } = store;
   let numVoiceHandlers = 0;
 
@@ -205,10 +259,13 @@ const createReduxDriver: CreateDriver = ({ faults, onChange, onSuggestedActions,
       dispatch(disconnect());
     },
     dispose: () => {
+      unsubscribeHost();
       unsubscribeFault();
       unsubscribeRecorder();
     },
     observe,
+    observeStore: () =>
+      Object.fromEntries(Object.entries(store.getState()).filter(([key]) => !OBSERVED_STORE_KEYS.includes(key))),
     ops,
     rawDispatch: action => dispatch(action)
   });
