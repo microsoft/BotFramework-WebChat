@@ -84,10 +84,9 @@ module.exports = {
         plugins: ['@babel/plugin-transform-modules-commonjs']
       }
     ],
-    // The sagas run on native generators, as every shipped build does (es2019 and later). Compiled by regenerator, they
-    // kept the connect loop running after a saga error cancelled it (in Jest only; the mechanism is not isolated in a
-    // minimal case). The machines that replace them too, so that the errors of both have the same messages.
-    '/packages/core/src/(?:machines/.+|sagas/[^/]+|createSagas)\\.[jt]s$': [
+    // The machines run untranspiled, as every shipped build runs them (es2019 and later): their errors keep the engine's
+    // own messages, which the goldens pin (they were written on the sagas, run the same way).
+    '/packages/core/src/machines/.+\\.[jt]s$': [
       'babel-jest',
       {
         presets: [

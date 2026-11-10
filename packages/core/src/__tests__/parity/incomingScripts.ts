@@ -1,6 +1,6 @@
 /* eslint-disable no-magic-numbers, no-restricted-globals */
 // The scripts of the incoming parity spec: activities from Direct Line to the transcript (patches, voice), the reply hold
-// (`sagas/queueIncomingActivitySaga.spec.ts`), suggested actions, and the fatal path.
+// (`machines/incoming/queueIncomingActivityMachine.spec.ts`), suggested actions, and the fatal path.
 import type { MockDirectLine, MockDirectLineInit } from './createMockDirectLine';
 import type { Script, ScriptContext } from './runParityScript';
 
@@ -133,7 +133,7 @@ const incomingScripts: Readonly<Record<string, Script>> = Object.freeze({
     );
   },
 
-  // sagas/queueIncomingActivitySaga.spec.ts
+  // machines/incoming/queueIncomingActivityMachine.spec.ts
   'reply hold, timeout': async context => {
     const mock = await connectOnline(context);
 

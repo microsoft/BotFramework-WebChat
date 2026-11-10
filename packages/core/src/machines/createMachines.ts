@@ -40,7 +40,7 @@ type Machines = {
   readonly stop: () => void;
 };
 
-// In the order `createSagas()` forked the sagas: machines waiting for the same action are called in this order.
+// In the order redux-saga forked the sagas they replaced: machines waiting for the same action are called in this order.
 const MACHINES: readonly Machine[] = Object.freeze([
   actionSinkMachine,
   clearSuggestedActionsOnPostActivityMachine,

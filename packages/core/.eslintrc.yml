@@ -33,8 +33,6 @@ overrides:
                 - redux-saga/*
                 - '**/actions/*'
                 - '**/createReducer'
-                - '**/createSagas'
                 - '**/createStore'
                 - '**/reducers/*'
-                - '**/sagas/*'
-              message: The services do not use Redux, its actions, reducers or sagas.
+              message: The services do not use Redux, its actions or reducers.
