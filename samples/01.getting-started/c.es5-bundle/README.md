@@ -1,23 +1,16 @@
-# Sample - Getting Started with Web Chat CDN with ES5 Polyfills
+# Sample - Getting Started with Web Chat CDN with Polyfills
 
-> This is a great sample for first-time Web Chat users developing bots that must work on Internet Explorer 11.
+> This sample uses `webchat-es5.js`. Despite its name, it does not run on Internet Explorer 11. Starting from 4.16.0, Internet Explorer is no longer supported. 4.15.9 is the last version which supports Internet Explorer 11 in limited fashion.
 
 A simple web page with a maximized and full-featured Web Chat embed from a CDN. This includes Adaptive Cards, Cognitive Services, and Markdown-It dependencies. This sample makes changes that are based off of the [full-bundle CDN sample][1].
 
-## Why use this bundle?
+## What is in this bundle?
 
-If you know that many of your Web Chat users will be using Internet Explorer 11, we strongly recommend that you use this bundle instead of the `full-bundle`. Otherwise, your bot may not function as expected in IE11.
-
-Please note:
-
--  Web Chat does not support Internet Explorer older than version 11
--  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Microsoft Edge.
--  Web Chat has no plan to support samples for IE11 (ES5).
-   -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+`webchat-es5.js` is the full bundle plus polyfills for some newer built-ins, such as `fetch` and `Promise`. It is built for the same JavaScript version as `webchat.js` and supports the same browsers: the latest 2 versions of modern browsers like Chrome, Microsoft Edge, and Firefox.
 
 ## What are polyfills?
 
-Polyfills are important for browsers that do not have native technology that is expected in modern browsers. By using a polyfill, you as the developer can ensure that your app works, in this case, on Internet Explorer 11.
+Polyfills are important for browsers that do not have native technology that is expected in modern browsers. By using a polyfill, you as the developer can ensure that your app works on those browsers.
 
 # Test out the hosted sample
 
@@ -46,15 +39,15 @@ Polyfills are important for browsers that do not have native technology that is 
 
 ### Goals of this bot
 
-This code features the minimal scripting the bot needs to host a full-featured Web Chat, with IE11 backwards compatibility. We will simply be modifying our dependencies in the `script` tag on our `index.html`, based off of the [full-bundle CDN sample][1].
+This code features the minimal scripting the bot needs to host a full-featured Web Chat, with polyfills. We will simply be modifying our dependencies in the `script` tag on our `index.html`, based off of the [full-bundle CDN sample][1].
 The `index.html` page has two main goals.
 
 -  To import the Web Chat full bundle CDN script
--  To render Web Chat in Internet Explorer 11
+-  To render Web Chat
 
 We'll start by using the [full-bundle CDN sample][1] as our Web Chat template.
 
-Simply modify the CDN from the full-bundle Web Chat to full es5-polyfill Web Chat.
+Simply modify the CDN from the full-bundle Web Chat to the full bundle with polyfills.
 
 ```diff
   …
@@ -74,7 +67,7 @@ Here is the finished `index.html`:
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
+    <title>Web Chat: Full-featured bundle with polyfills</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script
       crossorigin="anonymous"
