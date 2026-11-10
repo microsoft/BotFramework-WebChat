@@ -1,7 +1,7 @@
-import { useSyncExternalStore } from '@msinternal/botframework-webchat-react-hooks';
 import { useCallback, useMemo } from 'react';
 
 import { type ReadonlyKeyedStore } from './createKeyedStore';
+import useSyncExternalStore from './useSyncExternalStore';
 
 /**
  * Returns the value of the key in the store, and re-renders when it changes.

@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 
 import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
-import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { createKeyedStore, useKeyedStoreValue, useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import {
@@ -37,10 +37,8 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
-import createKeyedStore from './hooks/internal/createKeyedStore';
 import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import UITracker from './hooks/internal/UITracker';
-import useKeyedStoreValue from './hooks/internal/useKeyedStoreValue';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
