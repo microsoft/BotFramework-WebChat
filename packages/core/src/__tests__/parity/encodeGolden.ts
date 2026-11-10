@@ -2,30 +2,42 @@
 // Encodes what a parity script recorded as plain JSON, for the golden files: compared with `toStrictEqual`, the encoded
 // value of a run equals the parsed golden only if the records are the same. JSON has no `undefined` (a key set to
 // `undefined` is not a missing key), no functions and no class instances, so these become marker strings and objects.
-// The messages of the errors that the JavaScript engine throws change with its version, so only their names are kept.
+// A value of any other type throws: add it here, rather than have it encoded by guesswork.
 
-/** What replaces the message of an error thrown by the JavaScript engine. */
-const ENGINE_MESSAGE = '[engine message]';
-
-// Web Chat throws `Error` and its own subclasses; the engine throws direct instances of these (e.g. `x.y is not a function`).
-const ENGINE_ERRORS: readonly ErrorConstructor[] = Object.freeze([
-  EvalError,
-  RangeError,
-  ReferenceError,
-  SyntaxError,
-  TypeError,
-  URIError
+// The messages of the errors thrown by the JavaScript engine change with its version, so they are replaced by
+// "[engine message]". These are the messages of V8 in the goldens. Any other message is kept, including the `TypeError`s
+// of Web Chat (e.g. `Cannot modify a readonly Map` of the store): a new message of the engine fails, rather than hide one
+// of Web Chat.
+const ENGINE_MESSAGES: readonly RegExp[] = Object.freeze([
+  /^Cannot read properties of (?:null|undefined) \(reading '[^']*'\)$/u,
+  / is not a function$/u
 ]);
 
+// The messages replaced since the last `takeEngineMessages()`: not compared, but the spec prints them when a golden
+// differs.
+const engineMessages: string[] = [];
+
 function describeMessage(error: Error): string {
-  return ENGINE_ERRORS.some(engineError => Object.getPrototypeOf(error) === engineError.prototype)
-    ? ENGINE_MESSAGE
-    : error.message;
+  if (
+    Object.getPrototypeOf(error) === TypeError.prototype &&
+    ENGINE_MESSAGES.some(pattern => pattern.test(error.message))
+  ) {
+    engineMessages.push(`${error.name}: ${error.message}`);
+
+    return '[engine message]';
+  }
+
+  return error.message;
 }
 
 /** An error as text: `TypeError([engine message])`, `Error(message of Web Chat)`. */
 function describeError(error: unknown): string {
   return error instanceof Error ? `${error.name}(${describeMessage(error)})` : String(error);
+}
+
+/** The original messages of the engine errors described since the last call, in order. */
+function takeEngineMessages(): readonly string[] {
+  return Object.freeze(engineMessages.splice(0));
 }
 
 /**
@@ -43,18 +55,16 @@ export default function encodeGolden(value: unknown, labels?: WeakMap<object, st
       return Number.isFinite(item) ? (Object.is(item, -0) ? '[-0]' : item) : `[${item}]`;
     } else if (typeof item === 'function') {
       return '[function]';
-    } else if (typeof item === 'symbol' || typeof item === 'bigint') {
-      return `[${typeof item} ${String(item)}]`;
-    } else if (!item || typeof item !== 'object') {
+    } else if (item === null || typeof item === 'boolean' || typeof item === 'string') {
       return item;
+    } else if (typeof item !== 'object') {
+      throw new Error(`encodeGolden: cannot encode a ${typeof item}`);
     } else if (labels?.has(item)) {
       return labels.get(item);
     } else if (ancestors.has(item)) {
       throw new Error('encodeGolden: circular reference');
     }
 
-    const entries = (object: object) =>
-      Object.fromEntries(Object.entries(object).map(([key, child]) => [key, walk(child)]));
     const prototype = Object.getPrototypeOf(item);
 
     ancestors.add(item);
@@ -63,28 +73,17 @@ export default function encodeGolden(value: unknown, labels?: WeakMap<object, st
       if (Array.isArray(item)) {
         return Array.from(item, child => walk(child));
       } else if (prototype === Object.prototype || prototype === null) {
-        return entries(item);
-      }
-
-      // A class instance: a marker object with its constructor name, and its content.
-      if (item instanceof Error) {
+        return Object.fromEntries(Object.entries(item).map(([key, child]) => [key, walk(child)]));
+      } else if (item instanceof Error) {
         return { [`[${item.name}]`]: describeMessage(item) };
-      } else if (item instanceof Date) {
-        return { '[Date]': Number.isNaN(item.getTime()) ? 'Invalid Date' : item.toISOString() };
-      } else if (item instanceof Map) {
-        return { '[Map]': Array.from(item, ([key, child]) => [walk(key), walk(child)]) };
-      } else if (item instanceof Set) {
-        return { '[Set]': Array.from(item, child => walk(child)) };
       } else if (typeof File !== 'undefined' && item instanceof File) {
         // Not `lastModified`: the time the file was created, different on every run.
         return { '[File]': { name: item.name, size: item.size, type: item.type } };
       } else if (typeof Blob !== 'undefined' && item instanceof Blob) {
         return { '[Blob]': { size: item.size, type: item.type } };
-      } else if (item instanceof URL) {
-        return { '[URL]': item.href };
       }
 
-      return { [`[${prototype?.constructor?.name || 'Object'}]`]: entries(item) };
+      throw new Error(`encodeGolden: cannot encode an instance of ${prototype?.constructor?.name || 'a class'}`);
     } finally {
       ancestors.delete(item);
     }
@@ -93,4 +92,4 @@ export default function encodeGolden(value: unknown, labels?: WeakMap<object, st
   return walk(value);
 }
 
-export { describeError, ENGINE_MESSAGE };
+export { describeError, takeEngineMessages };
