@@ -57,7 +57,7 @@ describe.each(Object.keys(FAMILIES))('%s', family => {
   // eslint-disable-next-line security/detect-object-injection
   const scripts = FAMILIES[family];
   const written: Record<string, unknown> = {};
-  let golden: Record<string, unknown>;
+  let golden: Record<string, any[]>;
 
   beforeAll(() => {
     // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -78,14 +78,14 @@ describe.each(Object.keys(FAMILIES))('%s', family => {
     // eslint-disable-next-line security/detect-object-injection
     const entry = scripts[name];
     const { host, script } = typeof entry === 'function' ? { host: undefined, script: entry } : entry;
-    const records = encodeGolden(await runParityScript(createReduxDriver, script, { actions: true, host }));
+    const records = encodeGolden(await runParityScript(createReduxDriver, script, { golden: true, host })) as any[];
 
     if (WRITE) {
       // eslint-disable-next-line security/detect-object-injection
       written[name] = records;
     } else {
       // eslint-disable-next-line security/detect-object-injection
-      expect(records).toStrictEqual(golden[name]);
+      expect(golden[name]).toStrictEqual(records);
     }
   });
 

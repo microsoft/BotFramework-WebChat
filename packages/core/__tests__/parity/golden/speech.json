@@ -5980,7 +5980,7 @@
         "dl1.end()",
         "dl1.connectionStatus$.unsubscribe#2",
         "dl1.activity$.unsubscribe#2",
-        "console.error: Error(Cannot read properties of null (reading 'speak'))"
+        "console.error: TypeError([engine message])"
       ],
       "changes": {
         "activities": [[{"from":{"id":"bot","role":"bot"},"id":"b1","text":"b1","timestamp":"1970-01-01T00:00:01.000Z","type":"message","inputHint":"expectingInput","channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","webchat:internal:position":1000,"speak":true}},{"from":{"id":"bot","role":"bot"},"id":"b2","text":"","timestamp":"1970-01-01T00:00:02.000Z","type":"message","attachments":[{"content":null}],"channelData":{"webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 2>","webchat:internal:position":2000}}]],
@@ -5988,7 +5988,7 @@
         "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}}]
       },
       "console": [
-        "error: Error(Cannot read properties of null (reading 'speak'))"
+        "error: TypeError([engine message])"
       ],
       "label": "attachment with content null",
       "order": [

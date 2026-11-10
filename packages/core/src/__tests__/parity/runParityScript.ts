@@ -4,13 +4,13 @@
 // a host can observe, step by step: the calls to Direct Line and the activities posted, the values of connectivity
 // status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in order, and the
 // order of the changes across values), the suggested actions set or cleared, the calls to the voice handlers,
-// `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers. With `RunOptions.actions`
+// `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers. With `RunOptions.golden`
 // (Redux mode), also every action as the host's middleware sees it, and the rest of the store's state.
 import lolex from 'lolex';
 import type { Middleware } from 'redux';
 
 import createMockDirectLine, { type MockDirectLine, type MockDirectLineInit } from './createMockDirectLine';
-import encodeGolden from './encodeGolden';
+import encodeGolden, { describeError } from './encodeGolden';
 
 type Observation = {
   readonly activities: readonly unknown[];
@@ -158,7 +158,7 @@ type ActionRecord =
   | { readonly depth: number; readonly threw: string; readonly type: unknown };
 
 type StepRecord = {
-  /** With `RunOptions.actions`: the actions dispatched during the step, in order. */
+  /** With `RunOptions.golden`: the actions dispatched during the step, in order. */
   readonly actions?: readonly ActionRecord[];
   /** The calls to Direct Line, and `console.warn/error` (`console.error: ...`), in order. */
   readonly calls: readonly string[];
@@ -173,7 +173,7 @@ type StepRecord = {
   /** The activities posted to Direct Line. */
   readonly posted: readonly unknown[];
   readonly state: Observation;
-  /** With `RunOptions.actions`: `Driver.observeStore()` after the step (encoded). */
+  /** With `RunOptions.golden`: `Driver.observeStore()` after the step (encoded). */
   readonly store?: unknown;
   readonly suggestedActions: readonly unknown[];
   readonly timers: readonly string[];
@@ -193,8 +193,11 @@ type ScriptContext = {
 type Script = (context: ScriptContext) => Promise<void>;
 
 type RunOptions = {
-  /** Records the actions dispatched and `Driver.observeStore()` (Redux mode): `false` by default. */
-  readonly actions?: boolean | undefined;
+  /**
+   * For the golden records (Redux mode): also records the actions dispatched and `Driver.observeStore()`, and gives the
+   * errors in the console with their names, without the messages of the engine. `false` by default.
+   */
+  readonly golden?: boolean | undefined;
   /** The host's middleware and listener (Redux mode). */
   readonly host?: Host | undefined;
   /** Keeps the random IDs (client activity IDs, local IDs), to check that the normalization is needed. */
@@ -256,18 +259,19 @@ function normalizeRandomIDs<T>(records: T): T {
   return walk(records) as T;
 }
 
-function describeConsoleArgs(args: unknown[]): string {
+function describeConsoleArgs(args: unknown[], describeError: (error: Error) => string): string {
   return args
-    .map(arg => (arg instanceof Error ? `Error(${arg.message})` : typeof arg === 'string' ? arg : `[${typeof arg}]`))
+    .map(arg => (arg instanceof Error ? describeError(arg) : typeof arg === 'string' ? arg : `[${typeof arg}]`))
     .join(' ');
 }
 
 export default async function runParityScript(
   createDriver: CreateDriver,
   script: Script,
-  { actions: recordActions = false, host = {}, raw, speech = true }: RunOptions = {}
+  { golden = false, host = {}, raw, speech = true }: RunOptions = {}
 ): Promise<StepRecord[]> {
   const isRecorded = (key: ObservationKey) => speech || !SPEECH_KEYS.includes(key);
+  const describeConsoleError = golden ? describeError : (error: Error) => `Error(${error.message})`;
   const actions: ActionRecord[] = [];
   const clock = lolex.createClock();
   const calls: string[] = [];
@@ -302,14 +306,14 @@ export default async function runParityScript(
   };
 
   const errorSpy = jest.spyOn(console, 'error').mockImplementation((...args) => {
-    const message = `error: ${describeConsoleArgs(args)}`;
+    const message = `error: ${describeConsoleArgs(args, describeConsoleError)}`;
 
     consoleLog.push(message);
     calls.push(`console.${message}`);
   });
 
   const warnSpy = jest.spyOn(console, 'warn').mockImplementation((...args) => {
-    const message = `warn: ${describeConsoleArgs(args)}`;
+    const message = `warn: ${describeConsoleArgs(args, describeConsoleError)}`;
 
     consoleLog.push(message);
     calls.push(`console.${message}`);
@@ -330,14 +334,9 @@ export default async function runParityScript(
       faults,
       host,
       // Encoded at once: what the action was when dispatched, even if changed later.
-      onAction: (action, depth) => recordActions && actions.push({ action: encodeGolden(action, labels), depth }),
+      onAction: (action, depth) => golden && actions.push({ action: encodeGolden(action, labels), depth }),
       onActionThrew: (action, depth, error) =>
-        recordActions &&
-        actions.push({
-          depth,
-          threw: error instanceof Error ? `${error.name}(${error.message})` : String(error),
-          type: encodeGolden(action?.type, labels)
-        }),
+        golden && actions.push({ depth, threw: describeError(error), type: encodeGolden(action?.type, labels) }),
       onChange: (key, value) => {
         if (isRecorded(key)) {
           // eslint-disable-next-line security/detect-object-injection
@@ -389,7 +388,7 @@ export default async function runParityScript(
         await flush();
 
         records.push({
-          ...(recordActions ? { actions: actions.splice(0) } : {}),
+          ...(golden ? { actions: actions.splice(0) } : {}),
           calls: calls.splice(0),
           changes: Object.fromEntries(Object.entries(changes).map(([key, values]) => [key, values.splice(0)])),
           console: consoleLog.splice(0),
@@ -399,7 +398,7 @@ export default async function runParityScript(
           state: Object.fromEntries(
             Object.entries(driver.observe()).filter(([key]) => isRecorded(key as ObservationKey))
           ) as Observation,
-          ...(recordActions ? { store: encodeGolden(driver.observeStore?.(), labels) } : {}),
+          ...(golden ? { store: encodeGolden(driver.observeStore?.(), labels) } : {}),
           suggestedActions: suggestedActions.splice(0),
           timers: timers.splice(0)
         });

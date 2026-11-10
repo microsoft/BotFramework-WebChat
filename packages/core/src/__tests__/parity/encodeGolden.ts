@@ -2,6 +2,31 @@
 // Encodes what a parity script recorded as plain JSON, for the golden files: compared with `toStrictEqual`, the encoded
 // value of a run equals the parsed golden only if the records are the same. JSON has no `undefined` (a key set to
 // `undefined` is not a missing key), no functions and no class instances, so these become marker strings and objects.
+// The messages of the errors that the JavaScript engine throws change with its version, so only their names are kept.
+
+/** What replaces the message of an error thrown by the JavaScript engine. */
+const ENGINE_MESSAGE = '[engine message]';
+
+// Web Chat throws `Error` and its own subclasses; the engine throws direct instances of these (e.g. `x.y is not a function`).
+const ENGINE_ERRORS: readonly ErrorConstructor[] = Object.freeze([
+  EvalError,
+  RangeError,
+  ReferenceError,
+  SyntaxError,
+  TypeError,
+  URIError
+]);
+
+function describeMessage(error: Error): string {
+  return ENGINE_ERRORS.some(engineError => Object.getPrototypeOf(error) === engineError.prototype)
+    ? ENGINE_MESSAGE
+    : error.message;
+}
+
+/** An error as text: `TypeError([engine message])`, `Error(message of Web Chat)`. */
+function describeError(error: unknown): string {
+  return error instanceof Error ? `${error.name}(${describeMessage(error)})` : String(error);
+}
 
 /**
  * Encodes `value` as plain JSON. `labels` names objects by identity (e.g. the Direct Line given to `connect()`) instead
@@ -43,7 +68,7 @@ export default function encodeGolden(value: unknown, labels?: WeakMap<object, st
 
       // A class instance: a marker object with its constructor name, and its content.
       if (item instanceof Error) {
-        return { [`[${item.name}]`]: item.message };
+        return { [`[${item.name}]`]: describeMessage(item) };
       } else if (item instanceof Date) {
         return { '[Date]': Number.isNaN(item.getTime()) ? 'Invalid Date' : item.toISOString() };
       } else if (item instanceof Map) {
@@ -67,3 +92,5 @@ export default function encodeGolden(value: unknown, labels?: WeakMap<object, st
 
   return walk(value);
 }
+
+export { describeError, ENGINE_MESSAGE };

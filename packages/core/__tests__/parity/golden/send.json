@@ -6010,14 +6010,14 @@
         "dl1.end()",
         "dl1.connectionStatus$.unsubscribe#2",
         "dl1.activity$.unsubscribe#2",
-        "console.error: Error(Invalid type: Expected (Blob | File) but received \"not a blob\")"
+        "console.error: ValiError(Invalid type: Expected (Blob | File) but received \"not a blob\")"
       ],
       "changes": {
         "connectivityStatus": ["sagaerror"],
         "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}}]
       },
       "console": [
-        "error: Error(Invalid type: Expected (Blob | File) but received \"not a blob\")"
+        "error: ValiError(Invalid type: Expected (Blob | File) but received \"not a blob\")"
       ],
       "label": "submit",
       "order": [
@@ -12244,14 +12244,14 @@
         "dl1.end()",
         "dl1.connectionStatus$.unsubscribe#2",
         "dl1.activity$.unsubscribe#2",
-        "console.error: Error(Cannot read properties of undefined (reading 'method'))"
+        "console.error: TypeError([engine message])"
       ],
       "changes": {
         "connectivityStatus": ["sagaerror"],
         "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}}]
       },
       "console": [
-        "error: Error(Cannot read properties of undefined (reading 'method'))"
+        "error: TypeError([engine message])"
       ],
       "label": "POST_ACTIVITY without meta",
       "order": [
@@ -12471,14 +12471,14 @@
         "dl1.end()",
         "dl1.connectionStatus$.unsubscribe#2",
         "dl1.activity$.unsubscribe#2",
-        "console.error: Error(attachments.map is not a function)"
+        "console.error: TypeError([engine message])"
       ],
       "changes": {
         "connectivityStatus": ["sagaerror"],
         "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}}]
       },
       "console": [
-        "error: Error(attachments.map is not a function)"
+        "error: TypeError([engine message])"
       ],
       "label": "SEND_MESSAGE, attachments not an array",
       "order": [

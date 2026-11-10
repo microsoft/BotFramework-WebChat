@@ -4112,8 +4112,8 @@
     {
       "actions": [
         {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"directLine.end is not a function"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"directLine.end is not a function"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
       ],
       "calls": [
         "dl1.activity$.unsubscribe#1",
@@ -4357,8 +4357,8 @@
       "actions": [
         {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"error","message":"failedtoconnect"}},"depth":1},
         {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":4}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"directLine.end is not a function"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"directLine.end is not a function"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1}
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1}
       ],
       "calls": [
         "dl1.activity$.unsubscribe#1",
@@ -4595,8 +4595,8 @@
       "actions": [
         {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1},
         {"action":{"type":"DIRECT_LINE/RECONNECT_REJECTED","error":true,"meta":{"userID":"u-1","username":"User"},"payload":{"[Error]":"disconnected"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"directLine.end is not a function"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
-        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"directLine.end is not a function"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
       ],
       "calls": [
         "dl1.activity$.unsubscribe#1",

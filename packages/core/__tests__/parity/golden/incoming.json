@@ -3742,14 +3742,14 @@
         "dl1.activity$.unsubscribe#1",
         "dl1.end()",
         "dl1.connectionStatus$.unsubscribe#2",
-        "console.error: Error(Cannot read properties of null (reading 'attachmentLayout'))"
+        "console.error: TypeError([engine message])"
       ],
       "changes": {
         "connectivityStatus": ["notconnected","sagaerror"],
         "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"javascripterror","timestamp":0}}]
       },
       "console": [
-        "error: Error(Cannot read properties of null (reading 'attachmentLayout'))"
+        "error: TypeError([engine message])"
       ],
       "label": "null",
       "order": [

@@ -13094,7 +13094,7 @@
         "dl1.end()",
         "dl1.connectionStatus$.unsubscribe#2",
         "dl1.activity$.unsubscribe#2",
-        "console.error: Error(Cannot read properties of null (reading 'type'))"
+        "console.error: TypeError([engine message])"
       ],
       "changes": {
         "connectivityStatus": ["sagaerror"],
@@ -13102,7 +13102,7 @@
         "activities": [[{"text":"first","type":"message","channelData":{"clientActivityID":"<cid 1>","webchat:internal:received-at":0,"webchat:internal:local-id":"<lid 1>","state":"send failed","webchat:internal:position":1000,"webchat:send-status":"send failed"},"channelId":"webchat","from":{"id":"u-1","name":"User","role":"user"},"locale":"en-US","localTimestamp":"1969-12-31T16:00:00.000-08:00","localTimezone":"America/Los_Angeles","attachments":[],"entities":[{"requiresBotState":true,"supportsListening":true,"supportsTts":true,"type":"ClientCapabilities"}]}]]
       },
       "console": [
-        "error: Error(Cannot read properties of null (reading 'type'))"
+        "error: TypeError([engine message])"
       ],
       "label": "post null",
       "order": [
