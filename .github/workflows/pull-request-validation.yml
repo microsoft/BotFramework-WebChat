@@ -420,43 +420,31 @@ jobs:
 
       - run: rm docker.zip
 
-      - name: Run npm clean-install, docker compose build and docker compose pull
+      - name: Run npm clean-install --strict-peer-deps
         run: |
-          # Retry on transient registry errors, such as 502 Bad Gateway from npm and 503 Service Unavailable from mcr.microsoft.com.
-          retry() {
-            for attempt in 1 2 3
-            do
-              "$@" && return 0
+          # Retry on transient registry errors, such as 502 Bad Gateway and ECONNRESET.
+          for attempt in 1 2 3
+          do
+            npm clean-install --strict-peer-deps && exit 0
 
-              echo "::warning::$* failed, attempt $attempt of 3."
-              sleep 15
-            done
+            echo "::warning::npm clean-install failed, attempt $attempt of 3."
+            sleep 15
+          done
 
-            return 1
-          }
+          exit 1
 
-          # The Docker images do not need node_modules, build and pull them while npm installs.
-          retry docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com &> "$RUNNER_TEMP/docker-build.log" &
-          build=$!
+      - name: Run docker compose build
+        run: |
+          # Retry on transient registry errors, such as 503 Service Unavailable from mcr.microsoft.com.
+          for attempt in 1 2 3
+          do
+            docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com && exit 0
 
-          retry docker compose -f docker-compose-wsl2.yml pull selenium-hub chrome &> "$RUNNER_TEMP/docker-pull.log" &
-          pull=$!
+            echo "::warning::docker compose build failed, attempt $attempt of 3."
+            sleep 15
+          done
 
-          failed=0
-
-          retry npm clean-install --strict-peer-deps || failed=1
-
-          wait $build || { echo '::error::docker compose build failed, see its log below.'; failed=1; }
-          echo '::group::docker compose build'
-          cat "$RUNNER_TEMP/docker-build.log"
-          echo '::endgroup::'
-
-          wait $pull || { echo '::error::docker compose pull failed, see its log below.'; failed=1; }
-          echo '::group::docker compose pull'
-          cat "$RUNNER_TEMP/docker-pull.log"
-          echo '::endgroup::'
-
-          exit $failed
+          exit 1
 
       - name: Run docker compose up
         run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
