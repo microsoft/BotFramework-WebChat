@@ -34,6 +34,8 @@ The store is a standard and opinionated JSON-LD graph implementation. The only c
 - Consistency: a simple and friendly way to auto-inverse `hasPart`/`isPartOf`
 - High performance: able to iterate children sorted by `dateCreated`
 
+We intended to keep custom parts minimal to reduce code complexity and learning curve.
+
 ## Implementation
 
 - CAP theorem: always consistent and high availability, no partitioning
