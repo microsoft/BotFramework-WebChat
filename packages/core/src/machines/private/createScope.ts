@@ -73,17 +73,24 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
     pending.forEach(({ cancel }) => cancel());
   };
 
-  const stopChildren = () => {
-    for (const child of children.splice(0)) {
-      child.stop();
-    }
+  // Cancels what the scope waits for, runs its `finally()` callbacks (`cancelled`), then stops its children in the order
+  // they were forked. A child forked by a `finally()` callback is not stopped, as in redux-saga (the puts of a cleanup).
+  const cancelAll = () => {
+    const running = children.splice(0);
+
+    cancelEffects();
+    runFinallies(true);
+    running.forEach(child => child.stop());
   };
 
   // eslint-disable-next-line prefer-const
   let node: Node;
 
+  // Not done while one of its callbacks runs: it may wait for something again before returning.
+  let busy = 0;
+
   const checkDone = () => {
-    if (state === 'running' && !effects.size) {
+    if (state === 'running' && !busy && !effects.size) {
       runFinallies(false);
 
       if (!children.length) {
@@ -102,9 +109,10 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
     }
 
     state = 'failed';
+    // As a saga that throws: its `finally` blocks run first; then its children stop, also those they forked.
     cancelEffects();
     runFinallies(false);
-    stopChildren();
+    children.splice(0).forEach(child => child.stop());
 
     if (parent) {
       parent.childFailed(node, error);
@@ -117,14 +125,18 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
   // forks runs before it goes on, and what they put runs once it waits again.
   const run = (fn: () => void) => {
     if (state === 'running') {
+      busy++;
+
       try {
         immediately(fn);
       } catch (error) {
+        busy--;
         fail(error);
 
         return;
       }
 
+      busy--;
       checkDone();
     }
   };
@@ -182,6 +194,65 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
   };
 
   const scope: Scope = Object.freeze({
+    call: <T>(
+      body: (scope: Scope, returns: (value: T) => void) => void,
+      then: (value: T) => void,
+      onError?: ((error: unknown) => void) | undefined
+    ) => {
+      let result: T;
+      // eslint-disable-next-line prefer-const
+      let effect: Effect;
+
+      const child = createScope(env, {
+        childEnded: () => settle(effect) && run(() => then(result)),
+        childFailed: (_, error) =>
+          settle(effect) &&
+          run(() => {
+            if (!onError) {
+              throw error;
+            }
+
+            onError(error);
+          })
+      });
+
+      effect = addEffect(() => child.stop());
+      child.start(callee =>
+        body(callee, value => {
+          result = value;
+        })
+      );
+
+      return () => {
+        settle(effect) && child.stop();
+      };
+    },
+    channel: <T>() => {
+      const buffer: T[] = [];
+      let taker: { readonly effect: Effect; readonly then: (value: T) => void } | undefined;
+
+      return Object.freeze({
+        put: (value: T) => {
+          const current = taker;
+
+          taker = undefined;
+
+          current ? settle(current.effect) && run(() => current.then(value)) : buffer.push(value);
+        },
+        take: (then: (value: T) => void) => {
+          if (buffer.length) {
+            then(buffer.shift());
+          } else {
+            taker = {
+              effect: addEffect(() => {
+                taker = undefined;
+              }),
+              then
+            };
+          }
+        }
+      });
+    },
     finally: (fn: (cancelled: boolean) => void) => {
       finallies.push(fn);
     },
@@ -324,9 +395,7 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
   const stop = () => {
     if (state === 'running') {
       state = 'stopped';
-      cancelEffects();
-      runFinallies(true);
-      stopChildren();
+      cancelAll();
       parent?.childEnded(node);
     }
   };
@@ -345,9 +414,7 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
 
       if (state === 'running') {
         state = 'failed';
-        cancelEffects();
-        runFinallies(true);
-        stopChildren();
+        cancelAll();
 
         if (parent) {
           parent.childFailed(node, error);

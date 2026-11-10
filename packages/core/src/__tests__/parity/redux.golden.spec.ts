@@ -47,7 +47,7 @@ const DRIVERS = Object.freeze(
 );
 
 // The families whose sagas are ported to machines so far.
-const PORTED: readonly string[] = Object.freeze([]);
+const PORTED: readonly string[] = Object.freeze(['connection', 'incoming']);
 
 const RUNS = Object.keys(DRIVERS)
   .flatMap(engine => Object.keys(FAMILIES).map(family => [engine, family] as const))

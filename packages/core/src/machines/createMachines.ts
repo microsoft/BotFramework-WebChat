@@ -1,3 +1,9 @@
+import connectionStatusToNotificationMachine from './connection/connectionStatusToNotificationMachine';
+import connectionStatusUpdateMachine from './connection/connectionStatusUpdateMachine';
+import connectMachine from './connection/connectMachine';
+import detectSlowConnectionMachine from './connection/detectSlowConnectionMachine';
+import observeActivityMachine from './incoming/observeActivityMachine';
+import queueIncomingActivityMachine from './incoming/queueIncomingActivityMachine';
 import createChannel, { isPut } from './private/createChannel';
 import createScope from './private/createScope';
 import { asap, immediately } from './private/scheduler';
@@ -13,7 +19,14 @@ type Machines = {
 };
 
 // In the order `createSagas()` forked the sagas: machines waiting for the same action are called in this order.
-const MACHINES: readonly Machine[] = Object.freeze([]);
+const MACHINES: readonly Machine[] = Object.freeze([
+  connectionStatusToNotificationMachine,
+  connectionStatusUpdateMachine,
+  connectMachine,
+  detectSlowConnectionMachine,
+  observeActivityMachine,
+  queueIncomingActivityMachine
+]);
 
 /**
  * What the sagas did, without redux-saga: each machine takes the actions, selects the state and puts actions through

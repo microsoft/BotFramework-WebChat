@@ -1,11 +1,12 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// What the sagas do today, pinned before the services are written against them (Redux mode, unchanged). The parity
-// specs (`services/*.parity.spec.ts`) then compare the services with the sagas on every script; these pins make sure
-// that the sagas' side of the comparison does not move unnoticed, especially on the paths that look like bugs.
+// What the sagas do today, pinned before the services are written against them (Redux mode, unchanged), and the machines
+// that replace them do the same. The parity specs (`services/*.parity.spec.ts`) then compare the services with Redux
+// mode on every script; these pins make sure that its side of the comparison does not move unnoticed, especially on the
+// paths that look like bugs.
 import connectionScripts from './connectionScripts';
-import createReduxDriver from './createReduxDriver';
+import { REDUX_DRIVERS } from './createReduxDriver';
 import incomingScripts from './incomingScripts';
 import runParityScript, { type StepRecord } from './runParityScript';
 
@@ -43,7 +44,7 @@ const CONNECT = Object.freeze([
 
 const ONLINE = Object.freeze(['dl1.connectionStatus$.subscribe#3', 'dl1.activity$.subscribe#2']);
 
-describe('the sagas, pinned', () => {
+describe.each(REDUX_DRIVERS)('Redux mode on the %s, pinned', (_, createReduxDriver) => {
   test('connect: notification subscription, status subscription, setUserId(), keep-alive activity$; online: reference grammar, then incoming', async () => {
     expect(summarize(await runParityScript(createReduxDriver, connectionScripts['connect successfully']))).toEqual({
       connect: { calls: CONNECT, notifications: ['info/connecting'] },

@@ -273,4 +273,10 @@ const createReduxDriver: CreateDriver = init => createDriverOnEngine('saga', ini
 /** Redux mode on the machines instead of the sagas. */
 export const createMachinesDriver: CreateDriver = init => createDriverOnEngine('machines', init);
 
+/** Redux mode on each engine, for the specs that compare the services with both. */
+export const REDUX_DRIVERS: readonly (readonly [string, CreateDriver])[] = Object.freeze([
+  ['sagas', createReduxDriver],
+  ['machines', createMachinesDriver]
+] as const);
+
 export default createReduxDriver;

@@ -39,6 +39,24 @@ type Subscribable<T> = {
  * Each method is the effect of the same name in redux-saga, with the same timing.
  */
 type Scope = {
+  /**
+   * `call()` of a generator: runs `body` in a child scope, then calls `then` with what it `returns()` once it ended (its
+   * forks too), or `onError` if it failed (the scope fails without it). Returns the function that stops it (a lost
+   * `race()`).
+   */
+  readonly call: <T>(
+    body: (scope: Scope, returns: (value: T) => void) => void,
+    then: (value: T) => void,
+    onError?: ((error: unknown) => void) | undefined
+  ) => () => void;
+  /**
+   * `channel(buffers.expanding())`: values put while no one takes are kept; a `take()` gets the first one now, or waits
+   * for the next one (as what the scope waits for).
+   */
+  readonly channel: <T>() => {
+    readonly put: (value: T) => void;
+    readonly take: (then: (value: T) => void) => void;
+  };
   /** Calls `fn` when the scope ends: `true` if it was stopped, as `yield cancelled()` in a `finally` block. LIFO. */
   readonly finally: (fn: (cancelled: boolean) => void) => void;
   /** `fork()`: runs `body` in a child scope now; its puts run after the current task. */

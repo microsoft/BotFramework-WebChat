@@ -1,11 +1,12 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// The connection service and the notifications cell against the sagas: every script of the connection parity spec runs
-// on both, and after every step, the calls to Direct Line, the values of connectivity status, reference grammar ID,
-// notifications and activities, the warnings and errors, and the timers set must be the same.
+// The connection service and the notifications cell against Redux mode, on the sagas and on the machines: every script
+// of the connection parity spec runs on both, and after every step, the calls to Direct Line, the values of connectivity
+// status, reference grammar ID, notifications and activities, the warnings and errors, and the timers set must be the
+// same.
 import connectionScripts from '../__tests__/parity/connectionScripts';
-import createReduxDriver from '../__tests__/parity/createReduxDriver';
+import { REDUX_DRIVERS } from '../__tests__/parity/createReduxDriver';
 import createServicesDriver from '../__tests__/parity/createServicesDriver';
 import runParityScript, { type StepRecord } from '../__tests__/parity/runParityScript';
 
@@ -34,7 +35,7 @@ function untilConnectAgain(records: readonly StepRecord[]): readonly StepRecord[
 }
 
 describe.each(Object.keys(connectionScripts).filter(name => !DIFFERENT.includes(name)))('%s', name => {
-  test('the services do what the sagas do', async () => {
+  test.each(REDUX_DRIVERS)('the services do what Redux mode does, on the %s', async (_, createReduxDriver) => {
     // eslint-disable-next-line security/detect-object-injection
     const script = connectionScripts[name];
     const cut = UNTIL_CONNECT_AGAIN.includes(name) ? untilConnectAgain : (records: readonly StepRecord[]) => records;
