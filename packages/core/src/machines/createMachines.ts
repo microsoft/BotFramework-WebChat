@@ -1,3 +1,4 @@
+import actionSinkMachine from './actionSinkMachine';
 import connectionStatusToNotificationMachine from './connection/connectionStatusToNotificationMachine';
 import connectionStatusUpdateMachine from './connection/connectionStatusUpdateMachine';
 import connectMachine from './connection/connectMachine';
@@ -41,6 +42,7 @@ type Machines = {
 
 // In the order `createSagas()` forked the sagas: machines waiting for the same action are called in this order.
 const MACHINES: readonly Machine[] = Object.freeze([
+  actionSinkMachine,
   clearSuggestedActionsOnPostActivityMachine,
   connectionStatusToNotificationMachine,
   connectionStatusUpdateMachine,
