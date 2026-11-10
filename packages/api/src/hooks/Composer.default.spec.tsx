@@ -2,8 +2,8 @@
 /// <reference types="jest" />
 /* eslint-disable no-restricted-globals */
 
-// "No Redux in default mode": when <Composer> mounts the default providers, nothing of `redux` or `redux-saga` is
-// called. Every function they export is wrapped in a mock, which core (its dist) calls through `require()`.
+// "No Redux in default mode": when <Composer> mounts the default providers, nothing of `redux` is called. Every function
+// it exports is wrapped in a mock, which core (its dist) calls through `require()`.
 function mockFunctionsOf(moduleName: string): Record<string, unknown> {
   const actual: Record<string, unknown> = jest.requireActual(moduleName);
 
@@ -19,7 +19,6 @@ function mockFunctionsOf(moduleName: string): Record<string, unknown> {
 }
 
 jest.mock('redux', () => mockFunctionsOf('redux'));
-jest.mock('redux-saga', () => mockFunctionsOf('redux-saga'));
 
 // No microphone in the tests: speech-to-speech records nothing (both modes).
 jest.mock('../providers/SpeechToSpeech/private/useRecorder', () => ({
@@ -31,7 +30,6 @@ import { createStore as createWebChatStore, type WebChatActivity } from 'botfram
 import lolex from 'lolex';
 import React, { memo, useEffect } from 'react';
 import * as redux from 'redux';
-import * as reduxSaga from 'redux-saga';
 
 import { getTestHandle } from '../providers/default/private/testHandles';
 import { getProviderMountCounts, setInternalDefaultModeEnabled } from '../providers/internalDefaultMode';
@@ -111,12 +109,10 @@ function createDirectLine() {
   };
 }
 
-// The functions of `redux` and `redux-saga` that were called, by name.
+// The functions of `redux` that were called, by name.
 function getReduxCalls(): string[] {
-  return [
-    ...Object.entries(redux).map(([name, value]) => [`redux.${name}`, value] as const),
-    ...Object.entries(reduxSaga).map(([name, value]) => [`redux-saga.${name}`, value] as const)
-  ]
+  return Object.entries(redux)
+    .map(([name, value]) => [`redux.${name}`, value] as const)
     .filter(([, value]) => jest.isMockFunction(value) && value.mock.calls.length)
     .map(([name]) => name);
 }
@@ -168,7 +164,7 @@ afterEach(() => {
 });
 
 describe('<Composer> without a store', () => {
-  test('should call nothing of redux and redux-saga with the default providers', () => {
+  test('should call nothing of redux with the default providers', () => {
     const directLine = createDirectLine();
     const { children, contexts, renders } = createProbe();
 
@@ -198,8 +194,8 @@ describe('<Composer> without a store', () => {
 
     expect(renders.length).toBeGreaterThan(0);
 
-    // The spies work: core created its Redux store and saga middleware.
-    expect(getReduxCalls()).toEqual(expect.arrayContaining(['redux.createStore', 'redux-saga.default']));
+    // The spies work: core created its Redux store, with its middleware (the machines).
+    expect(getReduxCalls()).toEqual(expect.arrayContaining(['redux.applyMiddleware', 'redux.createStore']));
     expect(redux.createStore).toHaveBeenCalledTimes(1);
 
     result.unmount();
