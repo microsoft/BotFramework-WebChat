@@ -10,6 +10,7 @@ import sendEvent from '../../actions/sendEvent';
 import sendMessage from '../../actions/sendMessage';
 import setSendBox, { SET_SEND_BOX } from '../../actions/setSendBox';
 import { SET_SUGGESTED_ACTIONS } from '../../actions/setSuggestedActions';
+import { UPDATE_CONNECTION_STATUS } from '../../actions/updateConnectionStatus';
 import type { MockDirectLine } from './createMockDirectLine';
 import type { Host, Script, ScriptContext } from './runParityScript';
 
@@ -318,6 +319,39 @@ const hostScripts: Readonly<Record<string, HostScript>> = Object.freeze({
       await context.step('disconnect', () => context.driver.disconnect());
       await context.step('QUEUE_INCOMING_ACTIVITY after disconnect', () =>
         rawDispatch(queueIncomingActivity(botMessage('q5', 5_000)))
+      );
+    }
+  },
+
+  // A host dispatches UPDATE_CONNECTION_STATUS without payload while connecting: the connection fails, and `activity$`
+  // is unsubscribed (the saga reads the action inside its `try`).
+  'dispatch: UPDATE_CONNECTION_STATUS without payload while connecting': {
+    host: {},
+    script: async ({ createDirectLine, driver, step }) => {
+      const mock = createDirectLine({ name: 'dl1', replayStatus: true });
+
+      await step('connect', () => driver.connect({ directLine: mock.directLine, userID: 'u-1', username: 'User' }));
+      await step('connecting', () => mock.emitStatus(1));
+      await step('UPDATE_CONNECTION_STATUS without payload', () =>
+        driver.rawDispatch({ type: UPDATE_CONNECTION_STATUS } as any)
+      );
+      await step('disconnect', () => driver.disconnect());
+    }
+  },
+
+  // A host dispatches UPDATE_CONNECTION_STATUS with `payload: null` while online: the connection ends with the error,
+  // and the store keeps working.
+  'dispatch: UPDATE_CONNECTION_STATUS with payload null while online': {
+    host: {},
+    script: async context => {
+      const mock = await connectOnline(context);
+      const { driver, step } = context;
+
+      await step('UPDATE_CONNECTION_STATUS with payload null', () =>
+        driver.rawDispatch({ type: UPDATE_CONNECTION_STATUS, payload: null } as any)
+      );
+      await step('connect again', () =>
+        driver.connect({ directLine: mock.directLine, userID: 'u-1', username: 'User' })
       );
     }
   },

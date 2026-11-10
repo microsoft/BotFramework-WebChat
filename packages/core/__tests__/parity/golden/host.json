@@ -2485,6 +2485,283 @@
       "timers": []
     }
   ],
+  "dispatch: UPDATE_CONNECTION_STATUS without payload while connecting": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":1}},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "connecting",
+      "order": [],
+      "posted": [],
+      "state": {
+        "[~]": {}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS"},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_REJECTED","error":true,"meta":{"userID":"u-1","username":"User"},"payload":{"[TypeError]":"[engine message]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"[engine message]"}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+      ],
+      "calls": [
+        "dl1.activity$.unsubscribe#1",
+        "dl1.connectionStatus$.unsubscribe#2"
+      ],
+      "changes": {
+        "connectivityStatus": ["error"]
+      },
+      "console": [],
+      "label": "UPDATE_CONNECTION_STATUS without payload",
+      "order": [
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"connectivityStatus":"error"}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/DISCONNECT"},"depth":1}
+      ],
+      "calls": [],
+      "changes": {},
+      "console": [],
+      "label": "disconnect",
+      "order": [],
+      "posted": [],
+      "state": {
+        "[~]": {}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    }
+  ],
+  "dispatch: UPDATE_CONNECTION_STATUS with payload null while online": [
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":0}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#1",
+        "dl1.connectionStatus$.subscribe#2",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#1"
+      ],
+      "changes": {
+        "notifications": [{"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}}]
+      },
+      "console": [],
+      "label": "connect",
+      "order": [
+        "notifications"
+      ],
+      "posted": [],
+      "state": {
+        "activities": [],
+        "connectivityStatus": "uninitialized",
+        "dictateInterims": [],
+        "dictateState": 0,
+        "language": "en-US",
+        "microphoneMuted": false,
+        "notifications": {"connectivitystatus":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"info","message":"connecting","timestamp":0}},
+        "referenceGrammarID": null,
+        "sendBoxAttachments": [],
+        "sendBoxValue": "",
+        "sendTypingIndicator": false,
+        "shouldSpeakIncomingActivity": false,
+        "voiceHandlers": [],
+        "voiceState": "idle"
+      },
+      "store": {
+        "readyState": 0,
+        "sendTimeout": 20000,
+        "suggestedActions": [],
+        "suggestedActionsOriginActivity": {"activity":"[undefined]"},
+        "typing": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    },
+    {
+      "actions": [
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.subscribe#3",
+        "dl1.activity$.subscribe#2"
+      ],
+      "changes": {
+        "notifications": [{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}],
+        "connectivityStatus": ["connected"]
+      },
+      "console": [],
+      "label": "online",
+      "order": [
+        "notifications",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"connectivityStatus":"connected","notifications":{"[~]":{"connectivitystatus":{"[~]":{"level":"success","message":"connected"}}}}}
+      },
+      "store": {
+        "[~]": {"readyState":2}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":null},"depth":1},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_PENDING","meta":{"error":{"[TypeError]":"Cannot destructure property 'connectionStatus' of '{}' as it is null."}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"DIRECT_LINE/DISCONNECT_FULFILLED","meta":{"error":{"[TypeError]":"Cannot destructure property 'connectionStatus' of '{}' as it is null."}},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2}
+      ],
+      "calls": [
+        "dl1.activity$.unsubscribe#1",
+        "dl1.end()",
+        "dl1.connectionStatus$.unsubscribe#2",
+        "dl1.connectionStatus$.unsubscribe#3",
+        "dl1.activity$.unsubscribe#2"
+      ],
+      "changes": {
+        "connectivityStatus": ["error"]
+      },
+      "console": [],
+      "label": "UPDATE_CONNECTION_STATUS with payload null",
+      "order": [
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"connectivityStatus":"error"}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": []
+    },
+    {
+      "actions": [
+        {"action":{"type":"DIRECT_LINE/CONNECT","payload":{"directLine":"[Direct Line dl1]","userID":"u-1","username":"User"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_PENDING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":2},
+        {"action":{"type":"WEB_CHAT/SET_NOTIFICATION","payload":{"alt":"[undefined]","data":"[undefined]","id":"connectivitystatus","level":"success","message":"connected"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/UPDATE_CONNECTION_STATUS","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLING","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECT_FULFILLED","meta":{"userID":"u-1","username":"User"},"payload":{"directLine":"[Direct Line dl1]"}},"depth":1},
+        {"action":{"type":"DIRECT_LINE/CONNECTION_STATUS_UPDATE","payload":{"connectionStatus":2}},"depth":1},
+        {"action":{"type":"WEB_CHAT/SET_REFERENCE_GRAMMAR_ID","payload":{"referenceGrammarID":"[undefined]"}},"depth":1}
+      ],
+      "calls": [
+        "dl1.connectionStatus$.unsubscribe#1",
+        "dl1.connectionStatus$.subscribe#4",
+        "dl1.connectionStatus$.subscribe#5",
+        "dl1.setUserId(\"u-1\")",
+        "dl1.activity$.subscribe#3",
+        "dl1.connectionStatus$.subscribe#6",
+        "dl1.activity$.subscribe#4"
+      ],
+      "changes": {
+        "connectivityStatus": ["reconnecting","connected"]
+      },
+      "console": [],
+      "label": "connect again",
+      "order": [
+        "connectivityStatus",
+        "connectivityStatus"
+      ],
+      "posted": [],
+      "state": {
+        "[~]": {"connectivityStatus":"connected"}
+      },
+      "store": {
+        "[~]": {}
+      },
+      "suggestedActions": [],
+      "timers": [
+        "setTimeout(15000)"
+      ]
+    }
+  ],
   "listener: throws on an external action": [
     {
       "actions": [

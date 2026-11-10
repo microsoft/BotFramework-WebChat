@@ -76,23 +76,23 @@ function connectDirectLine(scope: Scope, directLine: any, returns: (endDirectLin
   const activitySubscription = directLine.activity$.subscribe({ next: () => 0 });
   const unsubscribeActivity = activitySubscription.unsubscribe.bind(activitySubscription);
 
-  // Unsubscribed only if it failed or was cancelled: once online, Direct Line relies on the subscription.
-  scope.finally(cancelled => cancelled && unsubscribeActivity());
+  let online = false;
+
+  // Unsubscribed if it failed (any error, as the saga's `catch`) or was cancelled: once online, Direct Line relies on
+  // the subscription.
+  scope.finally(() => online || unsubscribeActivity());
 
   const loop = () =>
     scope.take(is(UPDATE_CONNECTION_STATUS), ({ payload: { connectionStatus } }) => {
       if (connectionStatus === ONLINE) {
+        online = true;
         // DirectLineJS does not end the connection when unsubscribed: `end()` is called too.
         returns(() => {
           unsubscribeActivity();
           directLine.end();
         });
       } else if (connectionStatus !== UNINITIALIZED && connectionStatus !== CONNECTING) {
-        const error = new Error(`Failed to connect, DirectLineJS returned ${connectionStatus}.`);
-
-        unsubscribeActivity();
-
-        throw error;
+        throw new Error(`Failed to connect, DirectLineJS returned ${connectionStatus}.`);
       } else {
         loop();
       }
@@ -177,8 +177,17 @@ function connection(
       end();
     });
 
-    stopTakingStatus = scope.take(is(UPDATE_CONNECTION_STATUS), ({ payload: { connectionStatus } = {} as any }) => {
+    stopTakingStatus = scope.take(is(UPDATE_CONNECTION_STATUS), action => {
       stopTakingDisconnect();
+
+      let connectionStatus: number | undefined;
+
+      // As in the saga's `try`: an action that cannot be read is an error of the connection, not of the store.
+      try {
+        ({ payload: { connectionStatus } = {} as any } = action);
+      } catch (error) {
+        return end({ error });
+      }
 
       if (connectionStatus === CONNECTING) {
         // DirectLineJS went back to connecting: a reconnection.
