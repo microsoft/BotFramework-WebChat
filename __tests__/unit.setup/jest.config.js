@@ -85,8 +85,9 @@ module.exports = {
       }
     ],
     // The sagas run on native generators, as in the bundles (es2019). Down-leveled by regenerator, a saga cancelled inside
-    // a `finally` that yields loops again (the connect loop outlived a saga error in Jest only).
-    '/packages/core/src/(?:sagas/[^/]+|createSagas)\\.[jt]s$': [
+    // a `finally` that yields loops again (the connect loop outlived a saga error in Jest only). The machines that replace
+    // them too, so that the errors of both have the same messages.
+    '/packages/core/src/(?:machines/.+|sagas/[^/]+|createSagas)\\.[jt]s$': [
       'babel-jest',
       {
         presets: [

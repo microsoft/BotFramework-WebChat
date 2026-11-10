@@ -1,5 +1,5 @@
-// The sagas, as Web Chat runs them: core's Redux store (`createStoreWithOptions()`), with all its sagas, on the clock of
-// the script.
+// Redux mode, as Web Chat runs it: core's Redux store (`createStoreWithOptions()`), with all its sagas, or the machines
+// that replace them (`createMachinesDriver`), on the clock of the script.
 import clearSuggestedActions, { CLEAR_SUGGESTED_ACTIONS } from '../../actions/clearSuggestedActions';
 import connect from '../../actions/connect';
 import disconnect from '../../actions/disconnect';
@@ -33,7 +33,7 @@ import stopVoiceRecording from '../../actions/stopVoiceRecording';
 import submitSendBox from '../../actions/submitSendBox';
 import unmuteVoiceRecording from '../../actions/unmuteVoiceRecording';
 import unregisterVoiceHandler from '../../actions/unregisterVoiceHandler';
-import { withOptions } from '../../createStore';
+import { createStoreWithEngine } from '../../createStore';
 import type { Middleware } from 'redux';
 import { describeVoiceHandlers, type CreateDriver, type Observation, type Operations } from './runParityScript';
 
@@ -74,15 +74,10 @@ const OBSERVED_STORE_KEYS: readonly string[] = Object.freeze([
   'voice'
 ]);
 
-const createReduxDriver: CreateDriver = ({
-  faults,
-  host,
-  onAction,
-  onActionThrew,
-  onChange,
-  onSuggestedActions,
-  ponyfill
-}) => {
+function createDriverOnEngine(
+  engine: 'machines' | 'saga',
+  { faults, host, onAction, onActionThrew, onChange, onSuggestedActions, ponyfill }: Parameters<CreateDriver>[0]
+): ReturnType<CreateDriver> {
   let depth = 0;
 
   // Outermost: the actions as the first middleware of a host sees them, with how deep in other dispatches they are.
@@ -134,7 +129,8 @@ const createReduxDriver: CreateDriver = ({
     return result;
   };
 
-  const store = withOptions(
+  const store = createStoreWithEngine(
+    engine,
     { ponyfill },
     undefined,
     ...[recorder, host.middleware, faulty].filter((middleware): middleware is Middleware => !!middleware)
@@ -270,6 +266,11 @@ const createReduxDriver: CreateDriver = ({
     ops,
     rawDispatch: action => dispatch(action)
   });
-};
+}
+
+const createReduxDriver: CreateDriver = init => createDriverOnEngine('saga', init);
+
+/** Redux mode on the machines instead of the sagas. */
+export const createMachinesDriver: CreateDriver = init => createDriverOnEngine('machines', init);
 
 export default createReduxDriver;

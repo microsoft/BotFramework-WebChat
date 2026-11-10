@@ -10,6 +10,7 @@ import createSagaMiddleware from 'redux-saga';
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
 import createSagas from './createSagas';
+import createMachinesMiddleware from './machines/createMachinesMiddleware';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
@@ -61,15 +62,17 @@ function createEnhancerAndSagaMiddleware(getStore: () => any, ...middlewares: re
   };
 }
 
-/**
- * Creates a Redux store internally used by Web Chat.
- *
- * This store is critical for Web Chat business logics to operate, please use with cautions.
- */
+/** What runs the business logic: redux-saga (`saga`), or the machines that replace it (`machines`, internal). */
+type StoreEngine = 'machines' | 'saga';
 
+/**
+ * `withOptions()` on the engine given. Internal: not exported by the package, for the tests of both engines until the
+ * machines replace the sagas.
+ */
 // The complexity is introduced by the check of ponyfill.
 // eslint-disable-next-line complexity
-export function withOptions(
+export function createStoreWithEngine(
+  engine: StoreEngine,
   options: CreateStoreOptions,
   initialState?: any | undefined,
   ...middlewares: readonly Middleware[]
@@ -132,7 +135,24 @@ export function withOptions(
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
-  const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
+  const { enhancer, startEngine } =
+    engine === 'machines'
+      ? (() => {
+          const machines = createMachinesMiddleware({
+            onError: error => {
+              console.error(error);
+              store && store.dispatch(sagaError());
+            },
+            ponyfill
+          });
+
+          return { enhancer: applyMiddleware(...middlewares, machines.middleware), startEngine: machines.start };
+        })()
+      : (() => {
+          const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
+
+          return { enhancer, startEngine: () => sagaMiddleware.run(createSagas({ ponyfill })) };
+        })();
 
   const devToolsWindow: WindowWithReduxDevTools | undefined =
     options.devTools && typeof window !== 'undefined' ? window : undefined;
@@ -148,9 +168,22 @@ export function withOptions(
   StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
-  sagaMiddleware.run(createSagas({ ponyfill }));
+  startEngine();
 
   return store;
+}
+
+/**
+ * Creates a Redux store internally used by Web Chat.
+ *
+ * This store is critical for Web Chat business logics to operate, please use with cautions.
+ */
+export function withOptions(
+  options: CreateStoreOptions,
+  initialState?: any | undefined,
+  ...middlewares: readonly Middleware[]
+): Store {
+  return createStoreWithEngine('saga', options, initialState, ...middlewares);
 }
 
 /**
