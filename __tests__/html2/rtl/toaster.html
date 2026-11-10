@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat in Hebrew (right-to-left).
+        renderWebChat(
+          { directLine, locale: 'he-IL', store, styleOptions: { hideSendBox: true } },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: 2 notifications are shown, one after another, and the toaster is expanded.
+        store.dispatch({
+          payload: { id: 'info', level: 'info', message: 'הודעת מידע.' }, // "Information message."
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toastShown(1);
+
+        store.dispatch({
+          payload: { id: 'error', level: 'error', message: 'הודעת שגיאה.' }, // "Error message."
+          type: 'WEB_CHAT/SET_NOTIFICATION'
+        });
+
+        await pageConditions.toasterExpandable();
+        await pageObjects.clickToasterHeader();
+        await pageConditions.toasterExpanded();
+        await pageConditions.toastShown(2);
+
+        expect(pageElements.toasterHeader().matches(':dir(rtl)')).toBe(true);
+
+        // THEN: The header and the toasts should be mirrored: level icons and text on the right, the expand and dismiss buttons on the left.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

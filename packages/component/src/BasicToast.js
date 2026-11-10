@@ -2,8 +2,9 @@
 /* eslint react/no-danger: "off" */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { useCallback, useMemo } from 'react';
 import { object, optional, pipe, readonly, string } from 'valibot';
 
@@ -11,19 +12,11 @@ import ScreenReaderText from './ScreenReaderText';
 import DismissIcon from './Toast/DismissIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
-import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
-import useStyleSet from './hooks/useStyleSet';
 import renderMarkdownInline from './private/renderMarkdownInline';
 
+import styles from './Toast/Toast.module.css';
+
 const { useDismissNotification, useLocalizer } = hooks;
-
-const ROOT_STYLE = {
-  display: 'flex',
-
-  '& .webchat__toast__text': {
-    flex: 1
-  }
-};
 
 const basicToastPropsSchema = pipe(
   object({
@@ -46,11 +39,11 @@ const BasicToast = props => {
     notification: { alt, id, level, message = '' }
   } = validateProps(basicToastPropsSchema, props);
 
-  const [{ toast: toastStyleSet }] = useStyleSet();
+  // Keeps the "webchat__toast" class names.
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const contentId = useMemo(() => `webchat__toast__${randomId()}`, []);
   const localize = useLocalizer();
   const dismissNotification = useDismissNotification();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleDismiss = useCallback(() => dismissNotification(id), [dismissNotification, id]);
   const html = useMemo(() => ({ __html: renderMarkdownInline(message) }), [message]);
@@ -59,31 +52,26 @@ const BasicToast = props => {
     <div
       aria-describedby={contentId}
       aria-label={localize('TOAST_TITLE_ALT')}
-      className={classNames(
-        'webchat__toast',
-        {
-          'webchat__toast--error': level === 'error',
-          'webchat__toast--info': level === 'info',
-          'webchat__toast--success': level === 'success',
-          'webchat__toast--warn': level === 'warn'
-        },
-        rootClassName,
-        toastStyleSet + ''
-      )}
+      className={cx(classNames['toast'], {
+        [classNames['toast--error']]: level === 'error',
+        [classNames['toast--info']]: level === 'info',
+        [classNames['toast--success']]: level === 'success',
+        [classNames['toast--warn']]: level === 'warn'
+      })}
       role="dialog"
     >
-      <div className="webchat__toast__iconBox">
+      <div className={classNames['toast__iconBox']}>
         <NotificationIcon className="webchat__toast__icon" level={level} />
       </div>
       {!!alt && <ScreenReaderText text={alt} />}
-      <div aria-hidden={!!alt} className="webchat__toast__text" dangerouslySetInnerHTML={html} id={contentId} />
+      <div aria-hidden={!!alt} className={classNames['toast__text']} dangerouslySetInnerHTML={html} id={contentId} />
       <button
         aria-label={localize('TOAST_DISMISS_BUTTON')}
-        className="webchat__toast__dismissButton"
+        className={classNames['toast__dismissButton']}
         onClick={handleDismiss}
         type="button"
       >
-        <div aria-hidden={true} className="webchat__toast__dismissButtonFocus">
+        <div aria-hidden={true} className={classNames['toast__dismissButtonFocus']}>
           <DismissIcon />
         </div>
       </button>
