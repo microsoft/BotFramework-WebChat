@@ -87,7 +87,8 @@
           )
         );
       } else {
-        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        // React 18 in `window.React` needs React DOM 18, the bundled React DOM is 16.
+        renderWebChat({ directLine, store }, createRoot(document.getElementById('webchat')));
       }
 
       await pageConditions.uiConnected();
