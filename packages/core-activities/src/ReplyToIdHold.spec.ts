@@ -206,7 +206,7 @@ scenario('closing the hold', bdd => {
 
       return harness;
     })
-    // Same as before: on disconnect, the saga holding the reply is cancelled and the reply is dropped.
+    // Same as before: on disconnect, the machine holding the reply stops and the reply is dropped.
     .then('should drop the held reply', (_, harness) => {
       expect(harness.texts()).toEqual(['Welcome']);
       expect(harness.hold.size).toBe(0);

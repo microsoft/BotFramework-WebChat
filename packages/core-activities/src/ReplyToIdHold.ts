@@ -13,7 +13,8 @@ import {
   string
 } from 'valibot';
 
-// Moved from `packages/store` (phase 3); replaces the `race()`/`waitForActivityId()` of `queueIncomingActivitySaga.ts`.
+// Moved from `packages/store` (phase 3); core's `queueIncomingActivityMachine.ts` holds replies with it, instead of the
+// saga's `race()`/`waitForActivityId()`.
 //
 // Buffering in the source: a held activity is not in the graph until it is released, so it cannot change the order or
 // the positions of other messages (as before: it was not in the Redux state until released).
@@ -43,7 +44,7 @@ const replyToIdHoldInitSchema = pipe(
      * first bot activity usually replies to an activity that is never shown.
      */
     isHoldEnabled: function_(),
-    /** Called once per activity, in release order, e.g. a saga channel that dispatches `INCOMING_ACTIVITY`. */
+    /** Called once per activity, in release order, e.g. a machine's channel that dispatches `INCOMING_ACTIVITY`. */
     release: function_(),
     timeout: optional(pipe(number(), finite(), minValue(0)), DEFAULT_TIMEOUT)
   }),
@@ -104,7 +105,7 @@ class ReplyToIdHold<T> {
   /**
    * Releases held activities whose target is now in the transcript, in arrival order, until none is left.
    *
-   * Call it after a released activity reached the transcript, when `release` is asynchronous (e.g. a saga `put`).
+   * Call it after a released activity reached the transcript, when `release` is asynchronous (e.g. a machine's `put`).
    */
   recheck(): void {
     for (;;) {
@@ -128,7 +129,7 @@ class ReplyToIdHold<T> {
       return;
     }
 
-    // Same message as `queueIncomingActivitySaga.ts` had.
+    // The message core printed before this class.
     console.warn(
       `botframework-webchat: Timed out while waiting for activity "${replyToId}" which activity "${is(activityIdSchema, activity) ? activity.id : undefined}" is replying to.`,
       { activity, replyToId }
@@ -144,7 +145,7 @@ class ReplyToIdHold<T> {
     return this.#heldEntries.length;
   }
 
-  /** Drops held activities and stops their timers, e.g. on disconnect (core cancels the saga). */
+  /** Drops held activities and stops their timers, e.g. on disconnect (core's machine stops). */
   close(): void {
     this.#closed = true;
 

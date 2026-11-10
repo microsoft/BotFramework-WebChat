@@ -52,7 +52,7 @@ export default function prepareIncomingActivity(
   //
   // 1. Service restore chat history, including activities sent from the user. These activities has the following characteristics:
   //    - They do not have `channelData['webchat:send-status']`;
-  //    - They do not have an ongoing `postActivitySaga`;
+  //    - They do not have an ongoing post in `postActivityMachine`;
   //    - They should not previously appear in the chat history.
   // 2. We need to mark these activities as "sent".
   //
