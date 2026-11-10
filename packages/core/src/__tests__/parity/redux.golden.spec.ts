@@ -11,6 +11,10 @@
 //
 // The goldens store each step's state as deltas (`deltaGolden.ts`); the spec rebuilds the whole records from them and
 // compares those, so the comparison is the same as with whole records.
+//
+// The writer is gone. To change a golden on purpose, edit its JSON by hand (`fromDeltas()` also reads whole values),
+// or restore `redux.golden.spec.ts` and `deltaGolden.ts` from `3e4fc26a6` (the last commit with the writer), run with
+// `WRITE_PARITY_GOLDEN=true`, and review the diff of the goldens.
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
