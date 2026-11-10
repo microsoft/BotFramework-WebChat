@@ -88,7 +88,8 @@ jobs:
           retention-days: 3 # "Re-run failed jobs" needs it after 24 hours.
 
       - name: Pack all packages
-        run: npm exec --workspaces -- npm pack
+        # In parallel, each tarball stays in its workspace folder.
+        run: npm query .workspace | jq -r '.[].location' | xargs -I {} -P "$(nproc)" npm pack --workspace {} --pack-destination {}
 
       - name: Tar all tarballs
         run: find . -type f -name '*.tgz' -not -path '*/node_modules/*' -print0 | tar --null -cvf tarballs.tar --files-from=-
