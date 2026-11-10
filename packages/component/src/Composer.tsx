@@ -37,8 +37,10 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import createKeyedStore from './hooks/internal/createKeyedStore';
 import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import UITracker from './hooks/internal/UITracker';
+import useKeyedStoreValue from './hooks/internal/useKeyedStoreValue';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
@@ -196,7 +198,14 @@ const ComposerCore = (props: ComposerCoreProps) => {
     webSpeechPonyfillFactory
   } = props;
 
-  const [dictateAbortable, setDictateAbortable] = useState();
+  // A store, not a state: the store updates of the same dictation progress (e.g. dictate state) re-render at sync priority
+  // on React 18 and later, and a state would render later, with the microphone button disabled in between.
+  const dictateAbortableStore = useMemo(() => createKeyedStore<boolean>(), []);
+  const [dictateAbortable] = useKeyedStoreValue(dictateAbortableStore, 'abortable');
+  const setDictateAbortable = useCallback(
+    (abortable: boolean) => dictateAbortableStore.set('abortable', abortable),
+    [dictateAbortableStore]
+  );
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
   const focusTranscriptCallbacksRef = useRef<((init: FocusTranscriptInit) => Promise<void>)[]>([]);
