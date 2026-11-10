@@ -53,6 +53,4 @@ overrides:
                 - '**/WebChatReduxProvider.*'
                 - '**/providers/redux/**'
                 - redux
-                - redux-saga
-                - redux-saga/*
               message: The default providers never use Redux.

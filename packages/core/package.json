@@ -199,7 +199,6 @@
     "math-random": "2.0.1",
     "mime": "4.1.0",
     "redux": "5.0.1",
-    "redux-saga": "1.5.0",
     "simple-update-in": "2.2.0",
     "uuid": "14.0.1",
     "valibot": "1.4.2"

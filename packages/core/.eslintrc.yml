@@ -29,8 +29,6 @@ overrides:
               message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'
             - group:
                 - redux
-                - redux-saga
-                - redux-saga/*
                 - '**/actions/*'
                 - '**/createReducer'
                 - '**/createStore'

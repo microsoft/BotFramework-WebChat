@@ -23,12 +23,7 @@ rules:
           message: The activities core must not import core (core bundles it).
         - name: redux
           message: The activities core is Redux-free.
-        - name: redux-saga
-          message: The activities core is Redux-free.
       patterns:
         - group:
             - botframework-webchat-core/*
           message: The activities core must not import core (core bundles it).
-        - group:
-            - redux-saga/*
-          message: The activities core is Redux-free.
