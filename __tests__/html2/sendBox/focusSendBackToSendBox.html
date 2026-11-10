@@ -2,6 +2,12 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* Shows where the focus is. */
+      #webchat .webchat__send-box-text-box__input:focus {
+        background-color: Yellow;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -18,7 +24,7 @@
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
 
-      import { createStoreWithOptions, createStyleSet, renderWebChat, testIds } from 'botframework-webchat';
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
 
       const {
         testHelpers: { createDirectLineEmulator }
@@ -30,22 +36,7 @@
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
 
-        const styleSet = createStyleSet({});
-
-        renderWebChat(
-          {
-            directLine,
-            store,
-            styleSet: Object.assign({}, styleSet, {
-              sendBoxTextBox: Object.assign({}, styleSet.sendBoxTextBox, {
-                '& .webchat__send-box-text-box__input:focus': {
-                  backgroundColor: 'Yellow'
-                }
-              })
-            })
-          },
-          document.getElementById('webchat')
-        );
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -58,6 +49,9 @@
         await directLine.emulateIncomingActivity('Unknown command: `Hello, World!`.\n\nType `help` to learn more.');
 
         await pageConditions.minNumActivitiesShown(2);
+
+        // THEN: The focus is back on the send box, which is yellow.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
 
         await host.snapshot('local');
       });
