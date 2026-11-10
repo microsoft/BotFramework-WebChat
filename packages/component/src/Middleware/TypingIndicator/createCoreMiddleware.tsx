@@ -1,19 +1,24 @@
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks, TypingIndicatorMiddleware } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React from 'react';
 
 import TypingAnimation from '../../Assets/TypingAnimation';
-import useStyleSet from '../../hooks/useStyleSet';
+import styles from './TypingIndicator.module.css';
 
 const { useDirection, useLocalizer } = hooks;
 
 const DotIndicator = () => {
-  const [{ typingIndicator: typingIndicatorStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [direction] = useDirection();
   const localize = useLocalizer();
 
   return (
-    <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' && 'webchat__typing-indicator--rtl')}>
+    <div
+      className={cx(classNames['typing-indicator-container'], {
+        [classNames['typing-indicator--rtl']]: direction === 'rtl'
+      })}
+    >
       <TypingAnimation aria-label={localize('TYPING_INDICATOR_ALT')} />
     </div>
   );
