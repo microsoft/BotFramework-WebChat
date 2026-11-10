@@ -1,12 +1,12 @@
 /// <reference types="jest" />
 /* eslint-disable no-magic-numbers */
 // Runs one script of the parity specs on a driver (Redux mode: the machines through a Redux store; or the services) and
-// records what
-// a host can observe, step by step: the calls to Direct Line and the activities posted, the values of connectivity
-// status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in order, and the
-// order of the changes across values), the suggested actions set or cleared, the calls to the voice handlers,
-// `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers. With `RunOptions.golden`
-// (Redux mode), also every action as the host's middleware sees it, and the rest of the store's state.
+// records what a host can observe, step by step: the calls to Direct Line and the activities posted, the values of
+// connectivity status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in
+// order, and the order of the changes across values), the suggested actions set or cleared, the calls to the voice
+// handlers, `console.warn/error` (also in the calls to Direct Line, to pin their order), and the timers. With
+// `RunOptions.golden` (Redux mode), also every action as the host's middleware sees it, and the rest of the store's
+// state.
 import lolex from 'lolex';
 import type { Middleware } from 'redux';
 
