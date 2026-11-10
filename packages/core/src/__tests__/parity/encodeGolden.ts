@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 // Encodes what a parity script recorded as plain JSON, for the golden files: compared with `toStrictEqual`, the encoded
 // value of a run equals the parsed golden only if the records are the same. JSON has no `undefined` (a key set to
 // `undefined` is not a missing key), no functions and no class instances, so these become marker strings and objects.
