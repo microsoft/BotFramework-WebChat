@@ -100,20 +100,19 @@ This section lists verification steps to validate the implementation against the
       -  No instrumentation code (smaller than test builds)
 -  Direct Line Speech SDK
    -  This is tested separately as Direct Line Speech SDK is designed not to live in our monorepo structure
+   -  One `tsup` build produces every output in `dist/`
+      -  `import` loads `botframework-directlinespeech-sdk.mjs`, `require()` loads `botframework-directlinespeech-sdk.js`, with types in `.d.mts` and `.d.ts`
+      -  `<script>` loads `directlinespeech.development.js` or `directlinespeech.production.min.js`, which set `window.DirectLineSpeech`
    -  Development build
       -  Run `npm start` and wait until stabilized
-      -  Verify only `dist/directlinespeech.development.js` is on disk and is about 4 MB in size
+      -  Verify `dist/directlinespeech.development.js` is not minified and is about 1.3 MB in size
    -  Test build
       -  Set `node_env` to `test`
-      -  Run `npm build` and wait until finished
-         -  Verify `packages/directlinespeech/dist/directlinespeech.production.min.js` is built
-            -  Minified
-            -  Contains instrumentation code but no source maps
+      -  Run `npm run build` and wait until finished
+         -  Verify `dist/directlinespeech.production.min.js` is minified and contains instrumentation code (about 580 KB)
       -  Run `npm test -- --ci --coverage false --maxWorkers=4 --no-watch`
-         -  Verify code coverage is collected and correct (`directlinespeech.production.min.js` is about 500 KB)
+         -  Verify code coverage is collected and correct
    -  Production build
       -  Set `node_env` to `production`
-      -  Run `npm build` and wait until finished
-         -  Verify both `dist/directlinespeech.development.js` and `dist/directlinespeech.production.min.js` are on disk
-            -  `dist/directlinespeech.development.js` is about 3 MB
-            -  `dist/directlinespeech.production.min.js` is about 400 KB
+      -  Run `npm run build` and wait until finished
+         -  Verify `dist/directlinespeech.production.min.js` is minified and about 500 KB
