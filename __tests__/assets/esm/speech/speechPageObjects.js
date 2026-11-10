@@ -83,9 +83,8 @@ async function actSpeak({ speechSynthesis }, actor, speakActor) {
   return Object.freeze(utterances);
 }
 
-function actRecognizeOnce(ponyfill, actor, recognizeActor) {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async resolve => {
+async function actRecognizeOnce(ponyfill, actor, recognizeActor) {
+  const recognized = new Promise((resolve, reject) => {
     const OriginalSpeechRecognition = ponyfill.SpeechRecognition;
 
     spyOn(ponyfill, 'SpeechRecognition').mockImplementationOnce(() => {
@@ -169,7 +168,7 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
         end();
       });
 
-      spyOn(speechRecognition, 'start').mockImplementationOnce(async () => {
+      const recognize = async () => {
         if (typeof recognizeActor === 'string') {
           start();
           audioStart();
@@ -195,15 +194,18 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
             finalizedResult
           });
         }
+      };
 
-        resolve();
+      spyOn(speechRecognition, 'start').mockImplementationOnce(() => {
+        recognize().then(resolve, reject);
       });
 
       return speechRecognition;
     });
-
-    await actor();
   });
+
+  // Waits for both actors, so an error thrown by either one rejects.
+  await Promise.all([actor(), recognized]);
 }
 
 async function sendMessageViaMicrophone(speechPonyfill, text) {
