@@ -26,6 +26,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 - Always plural: singular value is stored in single-item array
 - `hasPart` and `isPartOf` must be always inverse of other, validate on commit, offer helper to fix them
 - Every node must have a single and unique `@id`, no multiple `@id`
+- Every node can has zero-to-many alternate identifiers in `identifier`, for lookup only
 - Every node can has multiple `@types` for extensibility reason
 - Able to iterate a sorted list of children based on `dateCreated`, can extend upto 3 hardcoded properties
 
@@ -79,6 +80,11 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
          - Term (non-IRI node type) must be based on Schema.org
          - Non-Schema.org types must be absolute IRIs
       - Optional `dateCreated` must be a non-array `string` in ISO format
+      - Optional `identifier` must be `Set<string>` of alternate identifiers, each is either an IRI of `https:` or starts with `_:`
+         - Must not contain `@id` of the node
+         - Every identifier (either `@id` or alternate identifier) must identify at most one node in the graph
+         - Can be changed by upsert, while `@id` is immutable throughout the life of the node
+         - Only used by `queryByIdentifier()`, it does not participate in `hasPart`/`isPartOf` nor node references
       - Optional `hasPart` and `isPartOf` must be `Set<Exact<{ '@id': string }>>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
          - Appear in multiple membership: `isPartOf` can contains more than one reference
@@ -103,7 +109,10 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
 - Read
    - Read is always clean and consistent
    - Query a single node by ID
+   - Query a single node by either `@id` or one of its alternate identifiers via `queryByIdentifier()`, `O(1)`
+   - Listeners are notified with `@id` of affected nodes (including deleted nodes), plus their alternate identifiers before and after the change
    - Iterate multiple nodes in the same membership by the ID of the member list node, sorted by `dateCreated` in either ascending or descending order
 - Performance characteristics
    - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
+   - Changing `identifier` is `O(k)` where `k` is the number of alternate identifiers of the node, an index from alternate identifier to `@id` is updated incrementally
    - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership, where it use skip list to find insertion point

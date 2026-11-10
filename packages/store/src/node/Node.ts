@@ -30,6 +30,9 @@ const namedPropertiesSchema = object({
   ),
   // OPINION: hasPart/isPartOf must reference to another node, not containing another node
   hasPart: optional(pipe(set(nodeReferenceSchema), readonly())),
+  // OPINION: Alternate (secondary) identifiers, zero-to-many, must not contain the primary `@id`.
+  //          They are only used by `queryByIdentifier()`, they do not participate in `hasPart`/`isPartOf`.
+  identifier: optional(pipe(set(identifierSchema), readonly())),
   isPartOf: optional(pipe(set(nodeReferenceSchema), readonly()))
 });
 
