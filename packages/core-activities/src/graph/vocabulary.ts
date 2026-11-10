@@ -7,12 +7,6 @@ const DIRECT_LINE_ACTIVITY = 'urn:microsoft:webchat:direct-line-activity:raw-jso
 /** `true` when the livestream session received its final revision. Later revisions are dropped. */
 const FINALIZED = 'urn:microsoft:webchat:sort:finalized';
 
-/**
- * The ID of a HowTo grouping or a livestream session as the sender wrote it. Not schema.org `identifier`: the store
- * reserves it for alternate node IDs (`_:` or `https:`, unique across nodes).
- */
-const ORIGINAL_ID = 'urn:microsoft:webchat:original-id';
-
 /** Fallback sort key (milliseconds) used only between two messages without logical timestamps. */
 const LOCAL_TIMESTAMP = 'urn:microsoft:webchat:sort:local-timestamp';
 
@@ -23,6 +17,12 @@ const LOCAL_TIMESTAMP = 'urn:microsoft:webchat:sort:local-timestamp';
  * On a HowTo: the latest of its parts.
  */
 const LOGICAL_TIMESTAMP = 'urn:microsoft:webchat:sort:logical-timestamp';
+
+/**
+ * The ID of a HowTo grouping or a livestream session as the sender wrote it. Not schema.org `identifier`: the store
+ * reserves it for alternate node IDs (`_:` or `https:`, unique across nodes).
+ */
+const ORIGINAL_ID = 'urn:microsoft:webchat:original-id';
 
 /** Position declared by the sender inside its HowTo (schema.org `Message.position`). Can be missing or duplicated. */
 const PART_POSITION = 'urn:microsoft:webchat:sort:part-position';
