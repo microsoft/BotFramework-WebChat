@@ -2,7 +2,7 @@
  * @jest-environment @happy-dom/jest-environment
  */
 /* eslint-disable no-restricted-globals */
-// End-to-end through core's own Redux store and sagas: `POST_ACTIVITY` → `postActivitySaga` (send timeout) →
+// End-to-end through core's own Redux store and machines: `POST_ACTIVITY` → `postActivityMachine` (send timeout) →
 // `POST_ACTIVITY_*` → the activities graph (William's store). The send status is kept on the message node
 // (`urn:microsoft:webchat:send-status`, pending William) and in `channelData['webchat:send-status']` as before.
 //
@@ -11,7 +11,7 @@
 import { scenario } from '@testduet/given-when-then';
 import Observable from 'core-js/features/observable';
 import lolex from 'lolex';
-import { withOptions } from '../createStore';
+import { withOptions } from '../../createStore';
 
 async function flush() {
   for (let index = 0; index < 20; index++) {

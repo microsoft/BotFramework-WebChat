@@ -2,18 +2,18 @@
  * @jest-environment @happy-dom/jest-environment
  */
 /* eslint-disable no-restricted-globals */
-// End-to-end through core's own Redux store and sagas: Direct Line `activity$` → `observeActivitySaga` →
-// `queueIncomingActivitySaga` (the reply hold) → `INCOMING_ACTIVITY` → the activities graph (William's store) →
+// End-to-end through core's own Redux store and machines: Direct Line `activity$` → `observeActivityMachine` →
+// `queueIncomingActivityMachine` (the reply hold) → `INCOMING_ACTIVITY` → the activities graph (William's store) →
 // `state.activities`. Same activities and clock ticks as html2 `__tests__/html2/replyToId/subsequentSetOfActivities.html`.
 import { scenario } from '@testduet/given-when-then';
 import Observable from 'core-js/features/observable';
 import lolex from 'lolex';
-import { withOptions } from '../createStore';
+import { withOptions } from '../../createStore';
 
 const BOT = { id: 'bot', role: 'bot' };
 
 async function flush() {
-  // `observeActivitySaga` queues activities through promises.
+  // `observeActivityMachine` queues activities through promises.
   for (let index = 0; index < 20; index++) {
     // eslint-disable-next-line no-await-in-loop
     await Promise.resolve();
@@ -55,7 +55,7 @@ function createHarness() {
   };
 }
 
-scenario('replies held through the sagas, on the activities graph', bdd => {
+scenario('replies held through the machines, on the activities graph', bdd => {
   bdd
     .given('Web Chat connected, with a bot activity in the transcript', async () => {
       const harness = createHarness();
@@ -127,7 +127,7 @@ scenario('replies held through the sagas, on the activities graph', bdd => {
     );
 });
 
-scenario('a reply released by the activity it replies to, through the sagas', bdd => {
+scenario('a reply released by the activity it replies to, through the machines', bdd => {
   bdd
     .given('Web Chat connected, with a bot activity in the transcript', async () => {
       const harness = createHarness();
