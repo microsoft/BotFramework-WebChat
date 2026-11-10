@@ -4,14 +4,35 @@ State machine design was reactive (event-driven) and linear (array).
 
 The new design is transactional (consistent without locking) and hyperlinking (graph).
 
-## Design
+## Design direction
 
+- CAP theorem: C and A, but not P
 - High-performance: most operations are `O(1)` and some are `O(log n)` regardless of graph or membership size
 - Embrace open standard: Schema.org and subset of JSON-LD
 - Simple to use: deliberate design choice to minimize work on consumer side
-- Minimalist: expose minimal set of API
+- Minimalist: expose minimal set of API and minimal behaviors
 - Hyperlinking: objects are referenced by ID and can be cyclic
 - Extensibility: new properties and types can be added at anytime
+
+## Design choice
+
+- CAP theorem
+  - Consistency: transactional (clean read), all nodes are always validated
+  - High availability: all nodes must be in the graph
+- Flattened JSON-LD graph for JSON serializability
+- Assume Schema.org but not strictly validated
+   - Schema.org is huge spec, we prefer "assume validated by writer" and "assume reader will validate and drop invalid"
+- Synchronous transactional edit and one session at a time
+- Always plural: singular value is stored in single-item array
+- `hasPart` and `isPartOf` must be always inverse of other, validate on commit, offer helper to fix them
+- Every node must have a single and unique `@id`, no multiple `@id`
+- Every node can has multiple `@types` for extensibility reason
+- Able to iterate a sorted list of children based on `dateCreated`, can extend upto 3 hardcoded properties
+
+The store is a standard and opinionated JSON-LD graph implementation. The only custom parts are:
+
+- Consistency: a simple and friendly way to auto-inverse `hasPart`/`isPartOf`
+- High performance: able to iterate children sorted by `dateCreated`
 
 ## Implementation
 
