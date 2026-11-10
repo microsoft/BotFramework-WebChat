@@ -30,10 +30,11 @@ const partSchema = looseObject({
 
 const positionSchema = union([number(), string()]);
 
+// Array must be tested first, as `looseObject()` also accepts arrays.
 const selfMessageSchema = looseObject({
   abstract: optional(unknown()),
-  isPartOf: optional(union([partSchema, array(partSchema)])),
-  position: optional(union([positionSchema, array(positionSchema)]))
+  isPartOf: optional(union([array(partSchema), partSchema])),
+  position: optional(union([array(positionSchema), positionSchema]))
 });
 
 type SelfMessage = {

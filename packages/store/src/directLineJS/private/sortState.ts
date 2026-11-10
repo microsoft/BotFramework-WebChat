@@ -108,10 +108,7 @@ function compareSequenceNumber(
   return x - y;
 }
 
-function comparePosition(
-  { position: x }: HowToGroupingPartEntry,
-  { position: y }: HowToGroupingPartEntry
-): number {
+function comparePosition({ position: x }: HowToGroupingPartEntry, { position: y }: HowToGroupingPartEntry): number {
   // eslint-disable-next-line no-magic-numbers
   return typeof x === 'undefined' || typeof y === 'undefined' ? -1 : x - y;
 }
@@ -325,7 +322,12 @@ function upsertSortedActivity(state: SortState, id: Identifier, activity: Sortab
         insertSorted<LivestreamSessionActivityEntry>(
           // Remove the previous entry of a re-sent revision, otherwise it is shown twice.
           session ? session.activities.filter(entry => entry.id !== id) : [],
-          Object.freeze({ id, logicalTimestamp, sequenceNumber: livestreamingMetadata.sequenceNumber, type: 'activity' }),
+          Object.freeze({
+            id,
+            logicalTimestamp,
+            sequenceNumber: livestreamingMetadata.sequenceNumber,
+            type: 'activity'
+          }),
           compareSequenceNumber
         )
       ),

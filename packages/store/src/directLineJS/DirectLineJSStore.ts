@@ -1,5 +1,17 @@
 import { v4 } from 'uuid';
-import { custom, function_, is, looseObject, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
+import {
+  custom,
+  function_,
+  is,
+  looseObject,
+  object,
+  optional,
+  parse,
+  pipe,
+  readonly,
+  string,
+  type InferInput
+} from 'valibot';
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import Store, { type StoreController } from '../Store.ts';
 import { getActivityIdentifier, getClientActivityIdentifier } from './private/activityIdentifier.ts';
@@ -226,10 +238,7 @@ class DirectLineJSStore extends Store {
       // Also release pending activities with the same `replyToId`, as we already waited long enough for the missing
       // activity to show up.
       for (const pendingActivity of this.#pendingActivities) {
-        if (
-          pendingActivity.replyToId === nextActivity.id ||
-          pendingActivity.replyToId === nextActivity.replyToId
-        ) {
+        if (pendingActivity.replyToId === nextActivity.id || pendingActivity.replyToId === nextActivity.replyToId) {
           this.#pendingActivities.delete(pendingActivity);
           this.#ponyfill.clearTimeout(pendingActivity.timeout);
           queue.push(pendingActivity.activity);
@@ -267,10 +276,13 @@ class DirectLineJSStore extends Store {
       if (activity.from.role !== 'user' && !activity.id) {
         const id = v4();
 
-        console.warn('botframework-webchat: Incoming activity must have "id" field set, assigning a random value as ID', {
-          activity,
-          newActivityId: id
-        });
+        console.warn(
+          'botframework-webchat: Incoming activity must have "id" field set, assigning a random value as ID',
+          {
+            activity,
+            newActivityId: id
+          }
+        );
 
         activity = Object.freeze({ ...activity, id });
       }

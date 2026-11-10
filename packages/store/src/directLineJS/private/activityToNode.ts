@@ -48,7 +48,9 @@ function activityToNode(activity: DirectLineActivity, init: ActivityToNodeInit) 
     creativeWorkStatus: [creativeWorkStatus],
     ...(dateCreated ? { dateCreated, isPartOf: new Set([{ '@id': conversationId }]) } : {}),
     ...(isMessage
-      ? { encodingFormat: [typeof textFormat === 'string' && textFormat !== 'markdown' ? 'text/plain' : 'text/markdown'] }
+      ? {
+          encodingFormat: [typeof textFormat === 'string' && textFormat !== 'markdown' ? 'text/plain' : 'text/markdown']
+        }
       : {}),
     ...(identifier.size ? { identifier } : {}),
     sender: [{ '@id': getAudienceId(role === 'bot' ? 'others' : role === 'user' ? 'self' : 'channel') }],
