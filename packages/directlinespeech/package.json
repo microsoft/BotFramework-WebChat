@@ -4,7 +4,10 @@
   "description": "Direct Line Speech SDK",
   "files": [
     "./dist/**/*",
-    "./src/**/*"
+    "./src/**/*",
+    "!dist/metafile-*.json",
+    "!src/**/*.spec.*",
+    "!src/**/__tests__/**"
   ],
   "main": "./dist/botframework-directlinespeech-sdk.js",
   "types": "./dist/botframework-directlinespeech-sdk.d.ts",
