@@ -110,7 +110,7 @@ function upsertChildren(
   return Object.freeze({ controller, duration: performance.now() - start, store });
 }
 
-function createMessage(index: number, isPartOf?: Node['isPartOf']): Node {
+function createMessage(index: number, isPartOf?: Node['isPartOf']) {
   const id = `_:m-${index}` as const;
 
   return {

@@ -40,13 +40,18 @@ function createNode(value: unknown): UnfrozenNode {
     Object.fromEntries(
       Object.entries(safeNode)
         .filter(([key]) => !isDangerousKey(key))
-        .map(([key, safeValue]) => [
-          key,
-          (key === 'hasPart' || key === 'isPartOf') && safeValue instanceof Set
-            ? // `value` is an object as it passed validation.
-              toFrozenNodeSet(Reflect.get(value as object, key), safeValue)
-            : deepFreeze(Reflect.get(value as object, key), safeValue)
-        ])
+        .map(([key, safeValue]) => {
+          const safePartValue =
+            key === 'hasPart' ? safeNode.hasPart : key === 'isPartOf' ? safeNode.isPartOf : undefined;
+
+          return [
+            key,
+            safePartValue
+              ? // `value` is an object as it passed validation.
+                toFrozenNodeSet(Reflect.get(value as object, key), safePartValue)
+              : deepFreeze(Reflect.get(value as object, key), safeValue)
+          ];
+        })
     ),
     parseDateCreatedTime(safeNode.dateCreated)
   ) satisfies object as UnfrozenNode;
