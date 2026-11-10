@@ -57,8 +57,13 @@ function loadReact18(): Environment {
   let environment!: Environment;
 
   jest.isolateModules(() => {
-    // The same copy of React as React DOM 18 requires.
+    // The same copy of React as React DOM 18 requires: the only React 18 in the repository, the root pins React 16.8.6.
     const React = jest.requireActual<typeof import('react')>('../../repack/react-dom/node_modules/react');
+
+    // Fails loudly if a change of npm hoisting moves this copy, instead of testing another version of React.
+    if (!React.version.startsWith('18.')) {
+      throw new Error(`Expected React 18 in packages/repack/react-dom/node_modules, found ${React.version}.`);
+    }
 
     jest.doMock('react', () => React);
 
