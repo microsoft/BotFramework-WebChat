@@ -2,12 +2,13 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
 import computeDateCreated from './computeDateCreated.ts';
+import type { SortedActivity } from './sortState.ts';
 
 scenario(
   'computeDateCreated()',
   bdd => {
     bdd
-      .given('activities with increasing timestamp', () => [
+      .given('activities with increasing timestamp', (): readonly SortedActivity[] => [
         { id: '_:a1', logicalTimestamp: 1_000 },
         { id: '_:a2', logicalTimestamp: 2_000 }
       ])
@@ -20,7 +21,7 @@ scenario(
       });
 
     bdd
-      .given('activities with same or decreasing timestamp', () => [
+      .given('activities with same or decreasing timestamp', (): readonly SortedActivity[] => [
         { id: '_:a1', logicalTimestamp: 1_000 },
         { id: '_:a2', logicalTimestamp: 1_000 },
         { id: '_:a3', logicalTimestamp: 500 },
@@ -37,7 +38,7 @@ scenario(
       });
 
     bdd
-      .given('activities without timestamp', () => [
+      .given('activities without timestamp', (): readonly SortedActivity[] => [
         { id: '_:a1', logicalTimestamp: undefined },
         { id: '_:a2', logicalTimestamp: 1_000 },
         { id: '_:a3', logicalTimestamp: undefined }
@@ -52,7 +53,7 @@ scenario(
       });
 
     bdd
-      .given('activities with fractional and out-of-range timestamp', () => [
+      .given('activities with fractional and out-of-range timestamp', (): readonly SortedActivity[] => [
         { id: '_:a1', logicalTimestamp: 1_000.1 },
         { id: '_:a2', logicalTimestamp: -1 },
         { id: '_:a3', logicalTimestamp: Number.MAX_SAFE_INTEGER },
@@ -69,7 +70,7 @@ scenario(
       });
 
     bdd
-      .given('no activities', () => [])
+      .given('no activities', (): readonly SortedActivity[] => [])
       .when('computed', activities => computeDateCreated(activities))
       .then('should return an empty frozen map', (_, result) => {
         expect(result.size).toBe(0);

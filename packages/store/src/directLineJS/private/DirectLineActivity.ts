@@ -97,17 +97,19 @@ function parseDirectLineActivity(value: unknown, userId: string | undefined): Di
     Object.entries(value).filter(([key, fieldValue]) => !(fieldValue === null && NULLABLE_FIELD_NAMES.has(key)))
   );
 
-  const from = isObject(activity['from']) ? activity['from'] : {};
+  const { from: rawFrom } = activity;
+  const from = isObject(rawFrom) ? rawFrom : {};
   const fromId: unknown = Reflect.get(from, 'id');
 
-  activity['from'] = {
-    ...from,
-    role:
-      Reflect.get(from, 'role') ||
-      (typeof fromId === 'string' && fromId ? (fromId === userId ? 'user' : 'bot') : 'channel')
-  };
-
-  return parse(directLineActivitySchema, activity);
+  return parse(directLineActivitySchema, {
+    ...activity,
+    from: {
+      ...from,
+      role:
+        Reflect.get(from, 'role') ||
+        (typeof fromId === 'string' && fromId ? (fromId === userId ? 'user' : 'bot') : 'channel')
+    }
+  });
 }
 
 export { directLineActivitySchema, parseDirectLineActivity, type DirectLineActivity };

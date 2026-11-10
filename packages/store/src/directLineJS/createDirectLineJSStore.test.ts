@@ -21,19 +21,13 @@ function getSortedParts(store: DirectLineJSStore): readonly Node[] {
 }
 
 function silenceConsole(method: 'error' | 'warn') {
-  // eslint-disable-next-line no-console
-  const original = console[method];
-  const calls: unknown[][] = [];
-
-  // eslint-disable-next-line no-console
-  console[method] = (...args: unknown[]) => calls.push(args);
+  const { mock } = NodeTest.mock.method(console, method, () => undefined);
 
   return Object.freeze({
-    calls,
-    restore: () => {
-      // eslint-disable-next-line no-console
-      console[method] = original;
-    }
+    get calls() {
+      return mock.calls;
+    },
+    restore: () => mock.restore()
   });
 }
 
@@ -159,7 +153,7 @@ scenario(
         expect(node).not.toHaveProperty('text');
       })
       .and('should patch "from.role" as "bot"', (_, node) => {
-        expect(node?.sender).toEqual([{ '@id': '_:audience/others' }]);
+        expect(node).toHaveProperty('sender', [{ '@id': '_:audience/others' }]);
       })
       .and('should be part of the conversation', ({ store }, node) => {
         expect(getSortedParts(store)).toEqual([node]);
@@ -179,7 +173,7 @@ scenario(
         return store.queryByIdentifier(getActivityIdentifier('a-00001'));
       })
       .then('should have "encodingFormat" of "text/plain"', (_, node) => {
-        expect(node?.encodingFormat).toEqual(['text/plain']);
+        expect(node).toHaveProperty('encodingFormat', ['text/plain']);
       });
   },
   NodeTest
@@ -196,13 +190,14 @@ scenario(
         return store.queryByIdentifier(getActivityIdentifier('a-00001'));
       })
       .then('should patch "from.role" as "channel"', (_, node) => {
-        expect(node?.sender).toEqual([{ '@id': '_:audience/channel' }]);
+        expect(node).toHaveProperty('sender', [{ '@id': '_:audience/channel' }]);
       })
       .and('should remove null "text" but keep null "value"', (_, node) => {
         expect(node).not.toHaveProperty('text');
-        expect(node?.[RAW_JSON]).toEqual([
-          { '@type': '@json', '@value': { from: { role: 'channel' }, id: 'a-00001', type: 'message', value: null } }
-        ]);
+        expect(node).toHaveProperty(
+          [RAW_JSON],
+          [{ '@type': '@json', '@value': { from: { role: 'channel' }, id: 'a-00001', type: 'message', value: null } }]
+        );
       });
   },
   NodeTest
@@ -226,13 +221,13 @@ scenario(
         return store.queryByIdentifier(getClientActivityIdentifier('c-00001'));
       })
       .then('should patch "from.role" as "user"', (_, node) => {
-        expect(node?.sender).toEqual([{ '@id': '_:audience/self' }]);
+        expect(node).toHaveProperty('sender', [{ '@id': '_:audience/self' }]);
       })
       .and('should have both server and client activity ID in "identifier"', (_, node) => {
         expect(node?.identifier).toEqual(new Set(['_:activity:a-00001', '_:client-activity:c-00001']));
       })
       .and('should be "Published"', (_, node) => {
-        expect(node?.creativeWorkStatus).toEqual(['Published']);
+        expect(node).toHaveProperty('creativeWorkStatus', ['Published']);
       })
       .and('should be queryable by server activity ID', ({ store }, node) => {
         expect(store.queryByIdentifier(getActivityIdentifier('a-00001'))).toBe(node);
@@ -253,7 +248,7 @@ scenario(
         const parts = getSortedParts(store);
 
         expect(parts).toHaveLength(1);
-        expect(parts[0]?.text).toEqual(['Aloha']);
+        expect(parts[0]).toHaveProperty('text', ['Aloha']);
       });
   },
   NodeTest
@@ -370,7 +365,7 @@ scenario(
       })
       .then('should update the node as a message', ({ store }, node) => {
         expect(getSortedParts(store)).toEqual([node]);
-        expect(node?.text).toEqual(['Aloha']);
+        expect(node).toHaveProperty('text', ['Aloha']);
         expect(node?.['urn:microsoft:webchat:direct-line-activity:type']).toEqual(['message']);
       });
   },

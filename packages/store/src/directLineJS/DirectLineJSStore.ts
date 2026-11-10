@@ -74,10 +74,14 @@ type PendingActivity = {
   readonly timeout: ReturnType<typeof setTimeout>;
 };
 
-function incrementCount<T>(map: Map<T, number>, key: T, delta: number): void {
-  const count = (map.get(key) ?? 0) + delta;
+function incrementCount<T>(map: Map<T, number>, key: T): void {
+  map.set(key, (map.get(key) ?? 0) + 1);
+}
 
-  count ? map.set(key, count) : map.delete(key);
+function decrementCount<T>(map: Map<T, number>, key: T): void {
+  const count = (map.get(key) ?? 0) - 1;
+
+  count > 0 ? map.set(key, count) : map.delete(key);
 }
 
 /**
@@ -148,7 +152,8 @@ class DirectLineJSStore extends Store {
   #dateCreatedMap: ReadonlyMap<Identifier, string> = new Map();
   #numBotActivity = 0;
   /** Activities which are replying to an activity not arrived yet, in arrival order. */
-  #pendingActivities = new Set<PendingActivity>();
+  // Key is the pending activity.
+  #pendingActivities = new Map<DirectLineActivity, PendingActivity>();
   #ponyfill: DirectLineJSStorePonyfill;
   /** Key is `replyToId` of activities in the store, value is number of activities with the same `replyToId`. */
   #replyToIdCounts = new Map<string, number>();
@@ -182,12 +187,12 @@ class DirectLineJSStore extends Store {
 
       if (prevActivity) {
         prevActivity.from.role === 'bot' && nextNumBotActivity--;
-        prevActivity.replyToId && incrementCount(nextReplyToIdCounts, prevActivity.replyToId, -1);
+        prevActivity.replyToId && decrementCount(nextReplyToIdCounts, prevActivity.replyToId);
       }
 
       if (activity) {
         activity.from.role === 'bot' && nextNumBotActivity++;
-        activity.replyToId && incrementCount(nextReplyToIdCounts, activity.replyToId, 1);
+        activity.replyToId && incrementCount(nextReplyToIdCounts, activity.replyToId);
         nextActivities.set(id, activity);
       } else {
         nextActivities.delete(id);
@@ -237,9 +242,9 @@ class DirectLineJSStore extends Store {
 
       // Also release pending activities with the same `replyToId`, as we already waited long enough for the missing
       // activity to show up.
-      for (const pendingActivity of this.#pendingActivities) {
+      for (const pendingActivity of this.#pendingActivities.values()) {
         if (pendingActivity.replyToId === nextActivity.id || pendingActivity.replyToId === nextActivity.replyToId) {
-          this.#pendingActivities.delete(pendingActivity);
+          this.#pendingActivities.delete(pendingActivity.activity);
           this.#ponyfill.clearTimeout(pendingActivity.timeout);
           queue.push(pendingActivity.activity);
         }
@@ -249,9 +254,9 @@ class DirectLineJSStore extends Store {
 
   #deleteActivity(activityId: string): void {
     // Activity being held is not in the store yet.
-    for (const pendingActivity of this.#pendingActivities) {
+    for (const pendingActivity of this.#pendingActivities.values()) {
       if (pendingActivity.activity.id === activityId) {
-        this.#pendingActivities.delete(pendingActivity);
+        this.#pendingActivities.delete(pendingActivity.activity);
         this.#ponyfill.clearTimeout(pendingActivity.timeout);
       }
     }
@@ -300,7 +305,7 @@ class DirectLineJSStore extends Store {
       ) {
         // Either the activity replied to is in the store or after timeout.
         const timeout = this.#ponyfill.setTimeout(() => {
-          if (this.#pendingActivities.delete(pendingActivity)) {
+          if (this.#pendingActivities.delete(activity)) {
             console.warn(
               `botframework-webchat: Timed out while waiting for activity "${replyToId}" which activity "${activity.id}" is replying to.`,
               { activity, replyToId }
@@ -310,9 +315,7 @@ class DirectLineJSStore extends Store {
           }
         }, REPLY_TIMEOUT);
 
-        const pendingActivity: PendingActivity = Object.freeze({ activity, replyToId, timeout });
-
-        this.#pendingActivities.add(pendingActivity);
+        this.#pendingActivities.set(activity, Object.freeze({ activity, replyToId, timeout }));
       } else {
         this.#commitActivity(activity);
       }
