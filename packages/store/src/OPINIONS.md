@@ -4,14 +4,39 @@ State machine design was reactive (event-driven) and linear (array).
 
 The new design is transactional (consistent without locking) and hyperlinking (graph).
 
-## Design
+## Design direction
 
+- CAP theorem: C and A, but not P
 - High-performance: most operations are `O(1)` and some are `O(log n)` regardless of graph or membership size
 - Embrace open standard: Schema.org and subset of JSON-LD
 - Simple to use: deliberate design choice to minimize work on consumer side
-- Minimalist: expose minimal set of API
+- Minimalist: expose minimal set of API and minimal behaviors
 - Hyperlinking: objects are referenced by ID and can be cyclic
 - Extensibility: new properties and types can be added at anytime
+
+## Design choice
+
+- CAP theorem
+  - Consistency: transactional (clean read), all nodes are always validated
+  - High availability: all nodes must be in the graph
+- Flattened JSON-LD graph for JSON serializability
+- Assume Schema.org but not strictly validated
+   - Schema.org is huge spec, we prefer "assume validated by writer" and "assume reader will validate and drop invalid"
+- Synchronous transactional edit and one session at a time
+- Always plural: singular value is stored in single-item array
+- `hasPart` and `isPartOf` must be always inverse of other, validate on commit, offer helper to fix them
+- Every node must have a single and unique `@id`, no multiple `@id`
+- Every node can has zero-to-many alternate identifiers in `identifier`, for lookup only
+- Every node can has multiple `@types` for extensibility reason
+- Able to iterate a sorted list of children based on `dateCreated`, can extend upto 3 hardcoded properties
+
+The store is a standard, plain and opinionated JSON-LD graph implementation. The only custom parts are:
+
+- Consistency: a simple and friendly way to auto-inverse `hasPart`/`isPartOf`
+- High performance: able to iterate children sorted by `dateCreated`
+- Ease to use: alternate identifiers in `iedntifier` property for lookup only, not for linking such as `hasPart`/`isPartOf`
+
+We intended to keep custom parts minimal to reduce code complexity and learning curve.
 
 ## Implementation
 
@@ -56,6 +81,11 @@ The new design is transactional (consistent without locking) and hyperlinking (g
          - Term (non-IRI node type) must be based on Schema.org
          - Non-Schema.org types must be absolute IRIs
       - Optional `dateCreated` must be a non-array `string` in ISO format
+      - Optional `identifier` must be `Set<string>` of alternate identifiers, each is either an IRI of `https:` or starts with `_:`
+         - Must not contain `@id` of the node
+         - Every identifier (either `@id` or alternate identifier) must identify at most one node in the graph
+         - Can be changed by upsert, while `@id` is immutable throughout the life of the node
+         - Only used by `queryByIdentifier()`, it does not participate in `hasPart`/`isPartOf` nor node references
       - Optional `hasPart` and `isPartOf` must be `Set<Exact<{ '@id': string }>>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
          - Appear in multiple membership: `isPartOf` can contains more than one reference
@@ -80,7 +110,10 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 - Read
    - Read is always clean and consistent
    - Query a single node by ID
+   - Query a single node by either `@id` or one of its alternate identifiers via `queryByIdentifier()`, `O(1)`
+   - Listeners are notified with `@id` of affected nodes (including deleted nodes), plus their alternate identifiers before and after the change
    - Iterate multiple nodes in the same membership by the ID of the member list node, sorted by `dateCreated` in either ascending or descending order
 - Performance characteristics
    - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
+   - Changing `identifier` is `O(k)` where `k` is the number of alternate identifiers of the node, an index from alternate identifier to `@id` is updated incrementally
    - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership, where it use skip list to find insertion point

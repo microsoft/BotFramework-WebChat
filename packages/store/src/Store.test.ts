@@ -541,6 +541,7 @@ scenario(
             transaction.upsert('_:m-1', () => ({
               '@id': '_:m-1',
               '@type': new Set(['Message']),
+              // @ts-expect-error Recursive value is not a valid JSON value.
               data: [{ '@type': '@json', '@value': value }]
             }))
           )
@@ -1052,7 +1053,31 @@ scenario(
       .when('a node with position of a single number is upserted', ({ controller }) =>
         catchError(() =>
           controller.edit(transaction =>
-            transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }) as unknown as Node)
+            // @ts-expect-error Other than named properties, property value must be an array.
+            transaction.upsert('_:m-1', node => ({ ...node!, position: 1 }))
+          )
+        )
+      )
+      .then('should throw as any other property value must be an array', (_, error) =>
+        expect(error).toEqual(expect.any(Error))
+      )
+      .and('should not change the snapshot', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot));
+
+    bdd
+      .given('an empty store', () => {
+        const { controller, store } = createStore();
+
+        return { controller, snapshot: store.getSnapshot(), store };
+      })
+      .when('a new node with text of a single string is upserted', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              // @ts-expect-error Other than named properties, property value must be an array.
+              text: 'Hello, World!'
+            }))
           )
         )
       )
@@ -2337,6 +2362,7 @@ scenario(
           transaction.upsert('_:m-1', () => ({
             '@id': '_:m-1',
             '@type': new Set(['Message']),
+            // @ts-expect-error Value which is not plain JSON (e.g. `Date`) is not a valid JSON value.
             encoding: [{ '@type': '@json', '@value': json }]
           }))
         );
@@ -2355,6 +2381,262 @@ scenario(
           nan: null
         })
       );
+  },
+  NodeTest
+);
+
+function createStoreWithIdentifiers() {
+  const { controller, store } = createStore();
+  const calls: string[][] = [];
+
+  controller.edit(transaction => {
+    transaction.upsert('_:m-1', () => ({
+      '@id': '_:m-1',
+      '@type': new Set(['Message']),
+      identifier: new Set(['https://example.com/m-1', '_:client-1'] as const)
+    }));
+
+    transaction.upsert('_:m-2', () => ({
+      '@id': '_:m-2',
+      '@type': new Set(['Message']),
+      identifier: new Set(['_:client-2'] as const)
+    }));
+  });
+
+  store.subscribe(affectedIds => calls.push(Array.from(affectedIds).sort()));
+
+  return { calls, controller, store };
+}
+
+scenario(
+  'identifier',
+  bdd => {
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('queryByIdentifier() is called with @id, alternate identifiers, and an unknown identifier', ({ store }) =>
+        (['_:m-1', 'https://example.com/m-1', '_:client-1', '_:client-2', '_:unknown'] as const).map(identifier =>
+          store.queryByIdentifier(identifier)
+        )
+      )
+      .then('should return the node matching either @id or alternate identifier', ({ store }, nodes) =>
+        expect(nodes).toEqual([
+          store.getSnapshot().get('_:m-1'),
+          store.getSnapshot().get('_:m-1'),
+          store.getSnapshot().get('_:m-1'),
+          store.getSnapshot().get('_:m-2'),
+          undefined
+        ])
+      )
+      .and('should return the same node object as the snapshot', ({ store }, nodes) =>
+        expect(nodes[1]).toBe(store.getSnapshot().get('_:m-1'))
+      )
+      .and('should store identifier as an immutable Set', ({ store }) => {
+        const identifier = store.getSnapshot().get('_:m-1')?.identifier;
+
+        expect(identifier).toEqual(new Set(['https://example.com/m-1', '_:client-1']));
+        expect(() => Set.prototype.clear.call(identifier)).toThrow(TypeError);
+      });
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('identifier of a node is changed by upsert', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', node => ({
+            ...node!,
+            identifier: new Set(['_:client-1', '_:server-1'] as const)
+          }))
+        )
+      )
+      .then('should find the node by the new identifier', ({ store }) =>
+        expect(store.queryByIdentifier('_:server-1')).toBe(store.getSnapshot().get('_:m-1'))
+      )
+      .and('should find the node by the unchanged identifier', ({ store }) =>
+        expect(store.queryByIdentifier('_:client-1')).toBe(store.getSnapshot().get('_:m-1'))
+      )
+      .and('should not find the node by the removed identifier', ({ store }) =>
+        expect(store.queryByIdentifier('https://example.com/m-1')).toBeUndefined()
+      )
+      .and('should notify with @id and identifiers before and after the change', ({ calls }) =>
+        expect(calls).toEqual([['_:client-1', '_:m-1', '_:server-1', 'https://example.com/m-1']])
+      );
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('identifier of a node is removed by upsert', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:m-2', node => {
+            const { identifier: _, ...rest } = node!;
+
+            return rest;
+          })
+        )
+      )
+      .then('should not find the node by the removed identifier', ({ store }) =>
+        expect(store.queryByIdentifier('_:client-2')).toBeUndefined()
+      )
+      .and('should still find the node by @id', ({ store }) =>
+        expect(store.queryByIdentifier('_:m-2')).toBe(store.getSnapshot().get('_:m-2'))
+      )
+      .and('should notify with @id and the removed identifier', ({ calls }) =>
+        expect(calls).toEqual([['_:client-2', '_:m-2']])
+      );
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('a node is upserted without changing identifier', ({ controller }) =>
+        controller.edit(transaction => transaction.upsert('_:m-2', node => ({ ...node!, text: ['Aloha'] })))
+      )
+      .then('should notify with @id and identifiers of the node', ({ calls }) =>
+        expect(calls).toEqual([['_:client-2', '_:m-2']])
+      );
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('a node is deleted', ({ controller }) => controller.edit(transaction => transaction.delete('_:m-1')))
+      .then('should notify with @id and identifiers of the deleted node', ({ calls }) =>
+        expect(calls).toEqual([['_:client-1', '_:m-1', 'https://example.com/m-1']])
+      )
+      .and('should not find the deleted node by @id or identifier', ({ store }) => {
+        expect(store.queryByIdentifier('_:m-1')).toBeUndefined();
+        expect(store.queryByIdentifier('_:client-1')).toBeUndefined();
+        expect(store.queryByIdentifier('https://example.com/m-1')).toBeUndefined();
+      });
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when(
+        'a node is deleted and its identifier is reused by another node in the same transaction',
+        ({ controller }) =>
+          controller.edit(transaction => {
+            transaction.upsert('_:m-2', node => ({ ...node!, identifier: new Set(['_:client-1'] as const) }));
+            transaction.delete('_:m-1');
+          })
+      )
+      .then('should find the other node by the reused identifier', ({ store }) =>
+        expect(store.queryByIdentifier('_:client-1')).toBe(store.getSnapshot().get('_:m-2'))
+      )
+      .and('should not find the other node by its removed identifier', ({ store }) =>
+        expect(store.queryByIdentifier('_:client-2')).toBeUndefined()
+      );
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('identifiers of two nodes are swapped in the same transaction', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:m-1', node => ({ ...node!, identifier: new Set(['_:client-2'] as const) }));
+          transaction.upsert('_:m-2', node => ({ ...node!, identifier: new Set(['_:client-1'] as const) }));
+        })
+      )
+      .then('should find the nodes by swapped identifiers', ({ store }) => {
+        expect(store.queryByIdentifier('_:client-1')).toBe(store.getSnapshot().get('_:m-2'));
+        expect(store.queryByIdentifier('_:client-2')).toBe(store.getSnapshot().get('_:m-1'));
+      });
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when.oneOf([
+        [
+          'identifier contains @id of the node',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => ({ ...node!, identifier: new Set(['_:m-1'] as const) }))
+              )
+            )
+        ],
+        [
+          'identifier is an alternate identifier of another node',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => ({ ...node!, identifier: new Set(['_:client-2'] as const) }))
+              )
+            )
+        ],
+        [
+          'identifier is @id of another node',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => ({ ...node!, identifier: new Set(['_:m-2'] as const) }))
+              )
+            )
+        ],
+        [
+          'a new node has @id which is an alternate identifier of another node',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:client-2', () => ({ '@id': '_:client-2', '@type': new Set(['Message']) }))
+              )
+            )
+        ],
+        [
+          'two new nodes have the same alternate identifier',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction => {
+                transaction.upsert('_:m-3', () => ({
+                  '@id': '_:m-3',
+                  '@type': new Set(['Message']),
+                  identifier: new Set(['_:client-3'] as const)
+                }));
+                transaction.upsert('_:m-4', () => ({
+                  '@id': '_:m-4',
+                  '@type': new Set(['Message']),
+                  identifier: new Set(['_:client-3'] as const)
+                }));
+              })
+            )
+        ],
+        [
+          'identifier is not a valid identifier',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => ({
+                  ...node!,
+                  // @ts-expect-error Identifier must be an IRI or blank node identifier.
+                  identifier: new Set(['client-1'])
+                }))
+              )
+            )
+        ]
+      ])
+      .then('should throw', (_, error) => expect(error).toBeInstanceOf(Error))
+      .and('should not change the store', ({ store }) => {
+        expect(store.queryByIdentifier('_:client-1')).toBe(store.getSnapshot().get('_:m-1'));
+        expect(store.queryByIdentifier('_:client-2')).toBe(store.getSnapshot().get('_:m-2'));
+        expect(store.queryByIdentifier('_:client-3')).toBeUndefined();
+        expect(store.getSnapshot().size).toBe(2);
+      })
+      .and('should not notify', ({ calls }) => expect(calls).toEqual([]));
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('a node references another node by its alternate identifier in isPartOf', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-3', () => ({
+              '@id': '_:m-3',
+              '@type': new Set(['Message']),
+              isPartOf: new Set([{ '@id': '_:client-1' }])
+            }))
+          )
+        )
+      )
+      .then('should throw as alternate identifier does not participate in part membership', (_, error) =>
+        expect(error).toEqual(
+          expect.objectContaining({ message: 'Node "_:m-3" references node "_:client-1" which is not in the graph' })
+        )
+      );
+
+    bdd
+      .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
+      .when('queryByIdentifier() is called with an invalid identifier', ({ store }) =>
+        catchError(() => store.queryByIdentifier('m-1' as Identifier))
+      )
+      .then('should throw', (_, error) => expect(error).toBeInstanceOf(Error));
   },
   NodeTest
 );

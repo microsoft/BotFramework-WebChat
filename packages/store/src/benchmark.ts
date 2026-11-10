@@ -18,6 +18,10 @@
  *   same transaction
  * - Delete parent: after append, the parent is deleted, `isPartOf` of every child is updated
  * - Iterate: iterating `getSortedParts()` after append
+ * - Append with identifier: same as append, every child has an alternate identifier (`identifier`)
+ * - Change identifier: after append with identifier, alternate identifier of every child is changed, one transaction
+ *   per child
+ * - Query by identifier: after append with identifier, every child is queried by its alternate identifier
  * - Memory: heap used after append, requires `--expose-gc`
  */
 import type { Node } from './node/Node.ts';
@@ -88,7 +92,8 @@ function createIndices(numNodes: number, order: Order): number[] {
  */
 function upsertChildren(
   numNodes: number,
-  order: Order
+  order: Order,
+  withIdentifier: boolean = false
 ): { readonly controller: StoreController; readonly duration: number; readonly store: Store } {
   const { controller, store } = createStore();
   const indices = createIndices(numNodes, order);
@@ -102,7 +107,8 @@ function upsertChildren(
         '@id': id,
         '@type': new Set(['Message']),
         dateCreated: new Date(START_TIME + index * 1_000).toISOString(),
-        isPartOf: new Set([{ '@id': '_:c-1' }])
+        isPartOf: new Set([{ '@id': '_:c-1' }]),
+        ...(withIdentifier ? { identifier: new Set([`_:client-${index}`] as const) } : {})
       }))
     );
   }
@@ -110,7 +116,7 @@ function upsertChildren(
   return Object.freeze({ controller, duration: performance.now() - start, store });
 }
 
-function createMessage(index: number, isPartOf?: Node['isPartOf']): Node {
+function createMessage(index: number, isPartOf?: Node['isPartOf']) {
   const id = `_:m-${index}` as const;
 
   return {
@@ -165,6 +171,37 @@ function deleteParent(numNodes: number): number {
   const start = performance.now();
 
   controller.edit(transaction => transaction.delete('_:c-1'));
+
+  return performance.now() - start;
+}
+
+/** Appends children with alternate identifier, then measures changing the alternate identifier of every child. */
+function changeIdentifier(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append', true);
+  const start = performance.now();
+
+  for (let index = 0; index < numNodes; index++) {
+    controller.edit(transaction =>
+      transaction.upsert(`_:m-${index}`, node => ({
+        ...node!,
+        identifier: new Set([`_:server-${index}`] as const)
+      }))
+    );
+  }
+
+  return performance.now() - start;
+}
+
+/** Appends children with alternate identifier, then measures querying every child by its alternate identifier. */
+function queryByIdentifier(numNodes: number): number {
+  const { store } = upsertChildren(numNodes, 'append', true);
+  const start = performance.now();
+
+  for (let index = 0; index < numNodes; index++) {
+    if (store.queryByIdentifier(`_:client-${index}`)?.['@id'] !== `_:m-${index}`) {
+      throw new Error(`ASSERTION: Should find "_:m-${index}" by "_:client-${index}"`);
+    }
+  }
 
   return performance.now() - start;
 }
@@ -275,6 +312,27 @@ const BENCHMARKS: readonly Benchmark[] = Object.freeze([
     fractionDigits: 3,
     name: 'Iterate',
     run: (numNodes: number) => iterate(upsertChildren(numNodes, 'append').store, numNodes),
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Append with identifier',
+    run: (numNodes: number) => upsertChildren(numNodes, 'append', true).duration,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Change identifier',
+    run: changeIdentifier,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 3,
+    name: 'Query by identifier',
+    run: queryByIdentifier,
     scale: 1_000,
     unit: 'µs/node'
   },

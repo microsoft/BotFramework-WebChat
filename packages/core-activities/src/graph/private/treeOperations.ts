@@ -200,11 +200,12 @@ function ensureNode(
   identifier?: string | undefined
 ): GraphNode {
   working.getNode(id) ||
-    working.setNode({
-      '@id': id,
-      '@type': new Set([type]),
-      ...(typeof identifier === 'undefined' ? {} : { [IDENTIFIER]: [identifier] })
-    });
+    working.setNode(
+      withProperties(
+        { '@id': id, '@type': new Set([type]) },
+        { [IDENTIFIER]: typeof identifier === 'undefined' ? undefined : [identifier] }
+      )
+    );
 
   return getRequiredNode(working, id);
 }

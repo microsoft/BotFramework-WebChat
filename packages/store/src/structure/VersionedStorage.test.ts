@@ -27,6 +27,43 @@ scenario(
       });
 
     bdd
+      .given('a storage', () => new VersionedStorage(new Map([['one', 1]])))
+      .when('committed without changes', storage => storage.mutate().commit())
+      .then('should return the same version', (storage, next) => expect(next).toBe(storage));
+
+    bdd
+      .given('an overlay with changes', () => {
+        const overlay = new VersionedStorage(
+          new Map([
+            ['one', 1],
+            ['two', 2]
+          ])
+        ).mutate();
+
+        overlay.set('one', 100);
+        overlay.delete('two');
+        overlay.set('three', 3);
+
+        return overlay;
+      })
+      .when('committed', overlay => overlay.commit())
+      .then('should read the committed content from the overlay', overlay => {
+        expect(Array.from(overlay.toMap())).toEqual([
+          ['one', 100],
+          ['three', 3]
+        ]);
+        expect(overlay.get('one')).toBe(100);
+        expect(overlay.has('two')).toBe(false);
+        expect(overlay.size).toBe(2);
+      })
+      .and('should return a version with the changes', (_, next) =>
+        expect(Array.from(next.toMap())).toEqual([
+          ['one', 100],
+          ['three', 3]
+        ])
+      );
+
+    bdd
       .given('an overlay', () => new VersionedStorage(new Map([['one', 1]])).mutate())
       .when('modified', overlay => {
         overlay.set('two', 2);

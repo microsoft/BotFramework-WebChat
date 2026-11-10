@@ -1,8 +1,9 @@
 import { literal, object, optional, parse, picklist, pipe, readonly, type InferInput } from 'valibot';
+import assertIdentifierNotId from './assertion/assertIdentifierNotId.ts';
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
-import type { Node } from './node/Node.ts';
+import type { Node, NodeInit } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
@@ -11,6 +12,7 @@ import type { InternalNode } from './private/InternalNode.ts';
 import { getDateCreatedTime } from './private/dateCreatedTime.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
 import getPartIds from './private/getPartIds.ts';
+import { updateIdentifierIndex } from './private/identifierIndex.ts';
 import ReadWriteNode from './private/ReadWriteNode.ts';
 import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
 
@@ -48,8 +50,14 @@ interface StoreTransaction {
    *   to mirror `hasPart`: children added to `hasPart` will have the parent added to their `isPartOf`, and vice versa
    * - If a child in `hasPart` is not in the graph yet, it must be upserted later in the same transaction, the parent
    *   will be added to its `isPartOf` when it is upserted
+   *
+   * Alternate identifiers: `identifier` is a set of alternate identifiers of the node, it can be changed by upsert, while
+   * `@id` cannot be changed. It must not contain `@id` of the node, and every identifier (either `@id` or alternate
+   * identifier) must identify at most one node in the graph. It is only used by `queryByIdentifier()`.
+   *
+   * Other than named properties (e.g. `@id`, `@type`), all property values must be an array, e.g. `text: ['Hello']`.
    */
-  upsert(id: Identifier, updater: (node: Node | undefined) => Node): void;
+  upsert<T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void;
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
@@ -245,6 +253,8 @@ class Store {
   #childIds: ReferenceIds = new FrozenMap([]);
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
   #forwardReferenceIds: ReferenceIds = new FrozenMap([]);
+  /** Key is an alternate identifier (in `identifier` property), value is `@id` of the node which has it. */
+  #identifierIndex: FrozenMap<Identifier, Identifier> = new FrozenMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
   #state: FrozenMap<string, InternalNode> = new FrozenMap([]);
 
@@ -254,7 +264,8 @@ class Store {
    * Multiple nodes can be added at once and they could cross reference each other. All nodes are added at once, part
    * relationships are mirrored, then the graph integrity is verified.
    *
-   * @returns IDs of nodes which are added, updated, or deleted, or `undefined` if nothing is changed.
+   * @returns IDs of nodes which are added, updated, or deleted, plus their alternate identifiers before and after the
+   *          change, or `undefined` if nothing is changed.
    */
   #commit(transactor: (transaction: StoreTransaction) => void): ReadonlySet<Identifier> | undefined {
     const affectedNodeIds = new Set<Identifier>();
@@ -380,7 +391,7 @@ class Store {
               }
             }
           },
-          upsert: (id: Identifier, updater: (node: Node | undefined) => Node): void => {
+          upsert: <T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void => {
             assertNotEnded();
 
             const safeId = parse(identifierSchema, id);
@@ -395,6 +406,7 @@ class Store {
               throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
             }
 
+            assertIdentifierNotId(safeNode);
             assertNotSelfPart(safeNode);
 
             // Read before the draft takes ownership of the node, `hasPart` is regenerated on commit.
@@ -474,14 +486,18 @@ class Store {
 
     assertNoPendingParts(pendingParentIds);
 
+    const nextIdentifierIndex = this.#identifierIndex.mutate();
+    const affectedIdentifiers = updateIdentifierIndex(this.#state, nextState, nextIdentifierIndex, affectedNodeIds);
+
     // THINK: Upsert/delete called twice with same node ID in the same transaction?
 
     this.#backwardReferenceIds = commitBackwardReferenceIds(nextBackwardReferenceIds);
     this.#childIds = committedChildIds;
     this.#forwardReferenceIds = nextForwardReferenceIds.commit();
+    this.#identifierIndex = nextIdentifierIndex.commit();
     this.#state = nextState.commit();
 
-    return new FrozenSet(affectedNodeIds);
+    return new FrozenSet(affectedIdentifiers);
   }
 
   #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
@@ -531,8 +547,24 @@ class Store {
   }
 
   /**
+   * Gets the node from the latest snapshot which `@id` or one of its alternate identifiers (`identifier` property)
+   * matches the specified identifier, or `undefined` if not found.
+   *
+   * This is O(1) regardless of the size of the graph.
+   */
+  queryByIdentifier(identifier: Identifier): Node | undefined {
+    const safeIdentifier = parse(identifierSchema, identifier);
+
+    const state = this.#state;
+    const id = state.has(safeIdentifier) ? safeIdentifier : this.#identifierIndex.get(safeIdentifier);
+
+    return id && state.get(id);
+  }
+
+  /**
    * Subscribes to changes. On every successful commit, the listener will be called with a read-only `Set` of IDs of
-   * nodes which are added, updated, or deleted.
+   * nodes which are added, updated, or deleted, plus their alternate identifiers (`identifier` property) before and
+   * after the change.
    */
   subscribe(listener: StoreListener): () => void {
     if (typeof listener !== 'function') {

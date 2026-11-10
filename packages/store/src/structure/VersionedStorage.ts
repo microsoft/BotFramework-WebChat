@@ -2,6 +2,9 @@ const DELETED: unique symbol = Symbol('deleted');
 
 type Changes<K, V> = Map<K, V | typeof DELETED>;
 
+// Shared by committed overlays, it is never modified as committed overlays cannot be modified.
+const EMPTY_CHANGES: Changes<never, never> = new Map<never, never>();
+
 type HeadState<K, V> = {
   readonly changes: undefined;
   readonly map: Map<K, V>;
@@ -47,10 +50,7 @@ function mergeChanges<K, V>(base: ReadonlyMap<K, V>, changes: ReadonlyMap<K, V |
 }
 
 // "Friend" access for `Overlay` to commit into the base version, it is not exposed outside of this module.
-let commitChanges: <K, V>(
-  base: VersionedStorage<K, V>,
-  changes: ReadonlyMap<K, V | typeof DELETED>
-) => VersionedStorage<K, V>;
+let commitChanges: <K, V>(base: VersionedStorage<K, V>, changes: Changes<K, V>) => VersionedStorage<K, V>;
 
 /**
  * A persistent (immutable) key-value storage. A new version can be committed in O(number of changes) without copying.
@@ -95,11 +95,15 @@ class VersionedStorage<K, V> {
 
   /**
    * Commits changes on top of this version and returns the new version.
+   *
+   * Takes ownership of `changes`: when committing on the head, it is reused as the undo log to save allocations.
    */
-  #commit(changes: ReadonlyMap<K, V | typeof DELETED>): VersionedStorage<K, V> {
+  #commit(changes: Changes<K, V>): VersionedStorage<K, V> {
     const { map } = this.#state;
 
-    if (!map) {
+    if (!changes.size) {
+      return this;
+    } else if (!map) {
       // This version is not the head (branching), copy it.
       const nextMap = new Map(this.toMap());
 
@@ -108,17 +112,18 @@ class VersionedStorage<K, V> {
       return new VersionedStorage(nextMap);
     }
 
-    const undo: Changes<K, V> = new Map();
+    // Swap in place: apply each change to the map, and replace it with the previous value to become the undo log.
+    // Overwriting an existing key while iterating does not reorder or revisit entries.
+    for (const [key, value] of changes) {
+      const previous = map.has(key) ? (map.get(key) satisfies V | undefined as V) : DELETED;
 
-    for (const key of changes.keys()) {
-      undo.set(key, map.has(key) ? (map.get(key) satisfies V | undefined as V) : DELETED);
+      value === DELETED ? map.delete(key) : map.set(key, value);
+      changes.set(key, previous);
     }
-
-    applyChanges(map, changes);
 
     const head = new VersionedStorage(map);
 
-    this.#state = Object.freeze({ changes: undo, map: undefined, next: head });
+    this.#state = Object.freeze({ changes, map: undefined, next: head });
 
     return head;
   }
@@ -219,8 +224,8 @@ class Overlay<K, V> {
     this.#size = base.size;
   }
 
-  readonly #base: VersionedStorage<K, V>;
-  readonly #changes: Changes<K, V> = new Map();
+  #base: VersionedStorage<K, V>;
+  #changes: Changes<K, V> = new Map();
   #committed = false;
   #size: number;
 
@@ -284,7 +289,11 @@ class Overlay<K, V> {
 
     this.#committed = true;
 
-    return commitChanges(this.#base, this.#changes);
+    // `commitChanges` takes ownership of the changes, after commit, reads go to the committed version.
+    this.#base = commitChanges(this.#base, this.#changes);
+    this.#changes = EMPTY_CHANGES;
+
+    return this.#base;
   }
 
   /**

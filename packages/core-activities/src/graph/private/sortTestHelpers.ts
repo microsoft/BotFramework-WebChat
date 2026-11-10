@@ -4,7 +4,7 @@ import type { SortFacts } from '../SortFacts';
 import type { GraphIdentifier, GraphNode } from '../types';
 import upsertSortedMessage from '../upsertSortedMessage';
 import { POSITION } from '../vocabulary';
-import { getNumber, getParentId } from './nodeProperties';
+import { getNumber, getParentId, withProperties } from './nodeProperties';
 import WorkingGraph, { type PartIndex } from './WorkingGraph';
 
 const CONVERSATION_ID = '_:conversation';
@@ -20,7 +20,7 @@ function buildMessage({ id, text, ...sortFacts }: MessageInit): TestMessage {
   const nodeId: `_:${string}` = `_:${id}`;
 
   return Object.freeze({
-    node: { '@id': nodeId, '@type': new Set(['Message']), text: [text] },
+    node: withProperties({ '@id': nodeId, '@type': new Set(['Message']) }, { text: [text] }),
     sortFacts: Object.freeze(sortFacts)
   });
 }

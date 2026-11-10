@@ -66,7 +66,10 @@ function toNumberValues(value: number | undefined): readonly number[] | undefine
  * Returns a copy of the node with the properties set. `undefined` and empty values remove the property, as the store
  * treats them as removed. The store validates the node on `upsert()`.
  */
-function withProperties(node: GraphNode, properties: Readonly<Record<string, unknown>>): GraphNode {
+function withProperties(
+  node: Pick<GraphNode, '@id' | '@type'>,
+  properties: Readonly<Record<string, unknown>>
+): GraphNode {
   const nextNode: Record<string, unknown> = { ...node };
 
   for (const [key, value] of Object.entries(properties)) {
