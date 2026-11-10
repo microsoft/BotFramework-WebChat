@@ -177,7 +177,17 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
     suggestedAction: createSuggestedActionStyle(strictStyleOptions),
     suggestedActions: createSuggestedActionsStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Toast/Toast.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     toast: createToastStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Toast/Toast.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     toaster: createToasterStyle(strictStyleOptions),
     typingAnimation: createTypingAnimationStyle(strictStyleOptions),
     typingIndicator: createTypingIndicatorStyle(strictStyleOptions),
