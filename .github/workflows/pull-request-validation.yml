@@ -406,11 +406,6 @@ jobs:
     timeout-minutes: 30 # Slowest shard takes about 11 minutes.
 
     steps:
-      - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: ${{ env.node-version }}
-
       - name: Download Docker artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -419,6 +414,13 @@ jobs:
       - run: unzip docker.zip
 
       - run: rm docker.zip
+
+      # After unzip, the npm cache is keyed by package-lock.json from the Docker artifact.
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
 
       - name: Run npm clean-install --strict-peer-deps
         run: |
