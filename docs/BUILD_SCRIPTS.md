@@ -107,12 +107,12 @@ This section lists verification steps to validate the implementation against the
       -  Run `npm start` and wait until stabilized
       -  Verify `dist/directlinespeech.development.js` is not minified and is about 1.3 MB in size
    -  Test build
-      -  Set `node_env` to `test`
+      -  Set `NODE_ENV` to `test`
       -  Run `npm run build` and wait until finished
          -  Verify `dist/directlinespeech.production.min.js` is minified and contains instrumentation code (about 580 KB)
       -  Run `npm test -- --ci --coverage false --maxWorkers=4 --no-watch`
          -  Verify code coverage is collected and correct
    -  Production build
-      -  Set `node_env` to `production`
+      -  Set `NODE_ENV` to `production`
       -  Run `npm run build` and wait until finished
          -  Verify `dist/directlinespeech.production.min.js` is minified and about 500 KB
