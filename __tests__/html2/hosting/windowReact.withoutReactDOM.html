@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "/__dist__/packages/test/test-assets/out/jest-mock.js",
+          "react": "https://esm.sh/react@18.3.1"
+        }
+      }
+    </script>
+    <script type="module">
+      import { spyOn } from 'jest-mock';
+      import React from 'react';
+
+      // GIVEN: The host sets `window.React` to React 18 but not `window.ReactDOM`, Web Chat renders with its bundled React DOM 16.
+      window.React = React;
+      window.useSyncExternalStoreSpy = spyOn(React, 'useSyncExternalStore');
+    </script>
+    <script defer crossorigin="anonymous" src="/test-harness.js"></script>
+    <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script defer type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { createElement, useEffect, useState, version } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: { renderWebChat }
+        } = window;
+
+        expect(version).toMatch(/^18\./u);
+        expect(window.ReactDOM).toBeUndefined();
+
+        // A component of the host, with hooks of `window.React`.
+        const HostDecoration = ({ children }) => {
+          const [mounted, setMounted] = useState(false);
+
+          useEffect(() => setMounted(true), []);
+
+          return createElement('div', { className: 'host-decoration', 'data-mounted': mounted }, children);
+        };
+
+        const activityMiddleware =
+          () =>
+          next =>
+          (...setupArgs) => {
+            const render = next(...setupArgs);
+
+            return render && ((...renderArgs) => createElement(HostDecoration, {}, render(...renderArgs)));
+          };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        // WHEN: Web Chat is rendered into an element.
+        renderWebChat({ activityMiddleware, directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a message.
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        // THEN: The message should show inside the host component, whose hooks should work.
+        await waitFor(() =>
+          expect(document.querySelector('.host-decoration[data-mounted="true"]')?.textContent).toContain(
+            'Hello, World!'
+          )
+        );
+
+        // THEN: Web Chat should not call React's useSyncExternalStore(), which needs React DOM 18 or later.
+        expect(window.useSyncExternalStoreSpy).not.toHaveBeenCalled();
+
+        // THEN: Should show the message.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

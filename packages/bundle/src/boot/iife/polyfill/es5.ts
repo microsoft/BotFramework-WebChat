@@ -1,4 +1,4 @@
-// Polyfills for IE11 and other ES5 browsers
+// Polyfills for some newer built-ins, not for IE11/ES5: the bundle is ES2019
 // To maintain quality, we prefer polyfills without additives
 // For example, we prefer Promise implementation from "core-js" than "bluebird"
 

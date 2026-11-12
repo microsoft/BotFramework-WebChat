@@ -1,5 +1,7 @@
-import { useSelector } from './internal/WebChatReduxContext';
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
+
+const selectConnectivityStatus = ({ connectivityStatus }) => connectivityStatus;
 
 export default function useConnectivityStatus(): [string] {
-  return [useSelector(({ connectivityStatus }) => connectivityStatus)];
+  return [useSelector(selectConnectivityStatus)];
 }
