@@ -1,4 +1,5 @@
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, {
   ChangeEventHandler,
   FocusEventHandler,
@@ -10,7 +11,7 @@ import React, {
 
 import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
-import useStyleSet from '../hooks/useStyleSet';
+import styles from './SendBox.module.css';
 
 type AutoResizeTextAreaProps = Readonly<{
   'aria-errormessage'?: string | undefined;
@@ -61,20 +62,20 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
     },
     ref
   ) => {
-    const [{ autoResizeTextArea: autoResizeTextAreaStyleSet }] = useStyleSet();
+    const classNames = useStyles(styles, webChatPrefixedClassName);
 
     useEnterKeyHint(ref, enterKeyHint);
 
     return (
-      <div className={classNames('webchat__auto-resize-textarea', autoResizeTextAreaStyleSet + '', className)}>
+      <div className={cx(classNames['auto-resize-textarea'], className)}>
         {/* We need to add a space here, so blank lines will be counted in the doppelganger. */}
-        <div aria-hidden={true} className="webchat__auto-resize-textarea__doppelganger">
+        <div aria-hidden={true} className={classNames['auto-resize-textarea__doppelganger']}>
           {value}&nbsp;
         </div>
         <AccessibleTextArea
           aria-errormessage={ariaErrorMessage}
           aria-label={ariaLabel}
-          className={classNames('webchat__auto-resize-textarea__textarea', textAreaClassName)}
+          className={cx(classNames['auto-resize-textarea__textarea'], textAreaClassName)}
           data-id={dataId}
           data-testid={dataTestId}
           disabled={disabled}
