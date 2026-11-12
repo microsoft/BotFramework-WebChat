@@ -8,7 +8,7 @@ import { createStore } from 'botframework-webchat-core';
 import React, { Fragment, StrictMode } from 'react';
 
 import useActivities from '../useActivities';
-import ReduxGraphProvider from './ReduxGraphProvider';
+import ReduxStoreProvider from './ReduxStoreProvider';
 import WebChatReduxProvider from './WebChatReduxProvider';
 
 function Activities() {
@@ -18,7 +18,7 @@ function Activities() {
 }
 
 scenario(
-  '<ReduxGraphProvider>',
+  '<ReduxStoreProvider>',
   bdd => {
     bdd.given
       .oneOf([
@@ -48,9 +48,9 @@ scenario(
         render(
           <Wrapper>
             <WebChatReduxProvider store={store}>
-              <ReduxGraphProvider>
+              <ReduxStoreProvider>
                 <Activities />
-              </ReduxGraphProvider>
+              </ReduxStoreProvider>
             </WebChatReduxProvider>
           </Wrapper>
         )

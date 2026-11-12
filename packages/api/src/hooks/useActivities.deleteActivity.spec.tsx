@@ -18,7 +18,7 @@ function renderActivities() {
   let modules: {
     readonly act: typeof import('@testing-library/react/pure').act;
     readonly React: typeof import('react');
-    readonly ReduxGraphProvider: typeof import('./internal/ReduxGraphProvider').default;
+    readonly ReduxStoreProvider: typeof import('./internal/ReduxStoreProvider').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
     readonly WebChatReduxProvider: typeof import('./internal/WebChatReduxProvider').default;
@@ -30,14 +30,14 @@ function renderActivities() {
     modules = {
       act,
       React: require('react'),
-      ReduxGraphProvider: require('./internal/ReduxGraphProvider').default,
+      ReduxStoreProvider: require('./internal/ReduxStoreProvider').default,
       render,
       useActivities: require('./useActivities').default,
       WebChatReduxProvider: require('./internal/WebChatReduxProvider').default
     };
   });
 
-  const { act, React, ReduxGraphProvider, render, useActivities, WebChatReduxProvider } = modules;
+  const { act, React, ReduxStoreProvider, render, useActivities, WebChatReduxProvider } = modules;
   const errors: unknown[] = [];
   const renders: (readonly string[])[] = [];
   const store = createStore();
@@ -75,9 +75,9 @@ function renderActivities() {
   const { unmount } = render(
     <ErrorBoundary>
       <WebChatReduxProvider store={store}>
-        <ReduxGraphProvider>
+        <ReduxStoreProvider>
           <Activities />
-        </ReduxGraphProvider>
+        </ReduxStoreProvider>
       </WebChatReduxProvider>
     </ErrorBoundary>
   );

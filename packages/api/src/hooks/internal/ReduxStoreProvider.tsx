@@ -5,22 +5,22 @@ import { object, optional, pipe, readonly } from 'valibot';
 
 import { useWebChatReduxContext } from './WebChatReduxContext';
 
-const reduxGraphProviderPropsSchema = pipe(
+const reduxStoreProviderPropsSchema = pipe(
   object({
     children: optional(reactNode())
   }),
   readonly()
 );
 
-type ReduxGraphProviderProps = InferReactProps<typeof reduxGraphProviderPropsSchema>;
+type ReduxStoreProviderProps = InferReactProps<typeof reduxStoreProviderPropsSchema>;
 
 /**
- * `<GraphProvider>` for the store of `<WebChatReduxProvider>`, following it through the subscription of `useSelector()`.
+ * Renders the graph package's `<GraphProvider>` with the store of `<WebChatReduxProvider>`, following it through the subscription of `useSelector()`.
  *
  * React 16/17 then re-render `<GraphProvider>` in the same batch as the selectors, after the graph has the change.
  */
-function ReduxGraphProvider(props: ReduxGraphProviderProps) {
-  const { children } = validateProps(reduxGraphProviderPropsSchema, props);
+function ReduxStoreProvider(props: ReduxStoreProviderProps) {
+  const { children } = validateProps(reduxStoreProviderPropsSchema, props);
   const { store, subscribe } = useWebChatReduxContext();
 
   const graphStore = useMemo(() => Object.freeze({ ...store, subscribe }), [store, subscribe]);
@@ -28,7 +28,7 @@ function ReduxGraphProvider(props: ReduxGraphProviderProps) {
   return <GraphProvider store={graphStore}>{children}</GraphProvider>;
 }
 
-ReduxGraphProvider.displayName = 'ReduxGraphProvider';
+ReduxStoreProvider.displayName = 'ReduxStoreProvider';
 
-export default memo(ReduxGraphProvider);
-export { reduxGraphProviderPropsSchema, type ReduxGraphProviderProps };
+export default memo(ReduxStoreProvider);
+export { reduxStoreProviderPropsSchema, type ReduxStoreProviderProps };

@@ -95,7 +95,7 @@ import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
-import ReduxGraphProvider from './internal/ReduxGraphProvider';
+import ReduxStoreProvider from './internal/ReduxStoreProvider';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import { useDispatch } from './internal/WebChatReduxContext';
@@ -847,13 +847,13 @@ const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
   return (
     <WebChatReduxProvider store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
-        <ReduxGraphProvider>
+        <ReduxStoreProvider>
           <ActivityKeyerComposer>
             <ActivityAcknowledgementComposer>
               <ComposerCore onTelemetry={onTelemetry} {...props} />
             </ActivityAcknowledgementComposer>
           </ActivityKeyerComposer>
-        </ReduxGraphProvider>
+        </ReduxStoreProvider>
       </ReduxStoreComposer>
     </WebChatReduxProvider>
   );
