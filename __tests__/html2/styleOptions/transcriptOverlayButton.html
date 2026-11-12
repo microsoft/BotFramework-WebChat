@@ -84,7 +84,7 @@
 
         await waitFor(() => expect(pageElements.scrollToEndButton().matches(':focus:hover')).toBe(true));
 
-        // THEN: The button is still purple with aqua text: focus wins over hover.
+        // THEN: No change, still purple with aqua text: focus wins over hover.
         await host.snapshot('local');
 
         // WHEN: The hovered button loses focus.

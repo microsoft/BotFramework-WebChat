@@ -89,7 +89,7 @@
 
         expect(pageElements.scrollToEndButton().matches(':hover')).toBe(true);
 
-        // THEN: The button is green with yellow text: the undefined hover color falls back to the base color.
+        // THEN: Still green with yellow text: the undefined hover color also falls back to the base color.
         await host.snapshot('local');
       });
     </script>
