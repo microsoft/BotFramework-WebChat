@@ -1,10 +1,11 @@
 import type { ActivitiesStore } from '@msinternal/botframework-webchat-core-activities';
 
 import sagaError from '../actions/sagaError';
-import createMachines from '../machines/createMachines';
+import createMachines, { type Machines } from '../machines/createMachines';
 import type { MachineAction } from '../machines/types';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import applyActivitiesAction from './applyActivitiesAction';
+import validateAction from './validateAction';
 
 /** A reducer group holding its state: `useEagerReducer()` in the api, or a plain object outside React. */
 type ReducerGroup = {
@@ -12,14 +13,19 @@ type ReducerGroup = {
   readonly getState: () => object;
 };
 
+type Dispatch = (action: unknown) => MachineAction;
+
 type DefaultEngine = {
-  /** As `dispatch()` of the Redux store: the reducers, then the machines. Returns the action. */
-  readonly dispatch: (action: MachineAction) => MachineAction;
+  /**
+   * As `dispatch()` of the Redux store: checks the action as Redux does, reduces it, then gives it to the machines.
+   * Returns the action.
+   */
+  readonly dispatch: Dispatch;
   /** As `getState()` of the Redux store, with the keys that default mode has (what the machines select). */
   readonly getState: () => Readonly<Record<string, unknown>>;
-  /** Starts the machines, as the Redux store does when it is created. */
+  /** Starts the machines, as the Redux store does when it is created. Does nothing if they run, or stopped on an error. */
   readonly start: () => void;
-  /** Stops the machines. */
+  /** Stops the machines; `start()` starts new ones. */
   readonly stop: () => void;
 };
 
@@ -46,12 +52,10 @@ export default function createDefaultEngine({
   readonly groups: readonly ReducerGroup[];
   readonly ponyfill: GlobalScopePonyfill;
   /**
-   * For tests only: wraps `dispatch()`, for the actions of the caller and those the machines put, as the outermost
-   * middleware of a Redux store.
+   * Test-only (the parity driver): wraps `dispatch()`, for the actions of the caller and those the machines put, as the
+   * outermost middleware of a Redux store.
    */
-  readonly wrapDispatch?:
-    | ((dispatch: (action: MachineAction) => MachineAction) => (action: MachineAction) => MachineAction)
-    | undefined;
+  readonly wrapDispatch?: ((dispatch: Dispatch) => Dispatch) | undefined;
 }): DefaultEngine {
   let lastParts: readonly unknown[] = [];
   let lastState: Readonly<Record<string, unknown>> = Object.freeze({});
@@ -74,11 +78,12 @@ export default function createDefaultEngine({
     return lastState;
   };
 
-  // `machines` is set before anything can dispatch: the machines take actions after `start()`.
-  // eslint-disable-next-line prefer-const
-  let machines: ReturnType<typeof createMachines>;
+  // Until `start()`, and after `stop()`, the actions go to no machine.
+  let machines: Machines | undefined;
 
-  const reduceThenTake = (action: MachineAction): MachineAction => {
+  const reduceThenTake: Dispatch = action => {
+    validateAction(action);
+
     batch(() => {
       applyActivitiesAction(activitiesStore, action);
 
@@ -87,25 +92,39 @@ export default function createDefaultEngine({
       }
     });
 
-    machines.afterReduce(action);
+    machines?.afterReduce(action);
 
     return action;
   };
 
   const dispatch = wrapDispatch ? wrapDispatch(reduceThenTake) : reduceThenTake;
 
-  machines = createMachines({
+  return Object.freeze({
     dispatch,
     getState,
-    // As the Redux store: an error that no machine catches stops every machine.
-    onError: error => {
-      console.error(error);
-      dispatch(sagaError());
-    },
-    ponyfill
-  });
+    start: () => {
+      if (!machines) {
+        machines = createMachines({
+          dispatch,
+          getState,
+          // As the Redux store: an error that no machine catches stops every machine.
+          onError: error => {
+            console.error(error);
+            dispatch(sagaError());
+          },
+          ponyfill
+        });
 
-  return Object.freeze({ dispatch, getState, start: machines.start, stop: machines.stop });
+        machines.start();
+      }
+    },
+    stop: () => {
+      const stopping = machines;
+
+      machines = undefined;
+      stopping?.stop();
+    }
+  });
 }
 
 export type { DefaultEngine, ReducerGroup };

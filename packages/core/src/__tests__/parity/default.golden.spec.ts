@@ -7,7 +7,7 @@
 // middleware of a Redux store would see them. The records must be those of Redux mode, except:
 //
 // - `store`: the rest of the Redux store's state (`readyState`, `typing`, the suggested actions mirror) does not exist
-//   in default mode;
+//   in default mode, except `sendTimeout`, which is compared;
 // - the scripts of a host with a middleware or a store listener: default mode has no store to add them to.
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -36,7 +36,11 @@ const FAMILIES: Readonly<Record<string, Readonly<Record<string, HostScript | Scr
 
 const goldenPath = (family: string) => join(__dirname, '../../../__tests__/parity/golden', `${family}.json`);
 
-const withoutStore = (records: readonly any[]) => records.map(({ store: _store, ...record }) => record);
+const withoutStore = (records: readonly any[]) =>
+  records.map(({ store, ...record }) =>
+    // Of the rest of the Redux store's state, default mode has `sendTimeout` (its outgoing group).
+    store ? { ...record, store: { sendTimeout: store.sendTimeout } } : record
+  );
 
 describe.each(Object.keys(FAMILIES))('%s', family => {
   // eslint-disable-next-line security/detect-object-injection

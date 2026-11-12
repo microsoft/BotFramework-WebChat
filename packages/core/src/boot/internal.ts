@@ -6,6 +6,23 @@ export {
 } from '../internal/actions/setRawState';
 
 export { type StoreDebugAPI } from '../types/StoreDebugAPI';
+
+// Default mode (no Redux), for the default providers of the api: the reducer groups and the engine that drives the
+// machines with them, and the actions that only the providers dispatch.
+export { default as incomingActivity } from '../actions/incomingActivity';
+export { default as registerActionSink } from '../actions/registerActionSink';
+export { default as unregisterActionSink } from '../actions/unregisterActionSink';
+export {
+  default as createDefaultEngine,
+  type DefaultEngine,
+  type ReducerGroup
+} from '../defaultMode/createDefaultEngine';
+export {
+  default as createDefaultModeReducers,
+  getInitialState,
+  type DefaultModeReducers
+} from '../defaultMode/createDefaultModeReducers';
+export { default as createReducerGroup } from '../defaultMode/createReducerGroup';
 export { default as isPresentational } from '../utils/isPresentational';
 export { default as StoreDebugAPIRegistry } from '../internal/StoreDebugAPIRegistry';
 

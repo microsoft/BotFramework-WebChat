@@ -249,6 +249,7 @@ const createDefaultDriver: CreateDriver = ({
       return { ...raw, voiceHandlers: describeVoiceHandlers(raw.voiceHandlers) };
     },
     ops,
+    observeStore: () => ({ sendTimeout: engine.getState().sendTimeout }),
     rawDispatch: action => dispatch(action)
   });
 };
