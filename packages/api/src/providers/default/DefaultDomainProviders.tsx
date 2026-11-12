@@ -41,6 +41,7 @@ import ChatOperationsContext, {
 import ConnectionSlices from '../../hooks/internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from '../../hooks/internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
+import SendBoxSlices from '../../hooks/internal/domains/SendBoxSlices';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
 import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
@@ -147,16 +148,18 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
   const sendBoxContext = useMemo<SendBoxContextType>(
     () =>
       Object.freeze({
-        attachments: sendBox.attachments,
         emitTypingIndicator: operation(emitTypingIndicator, () => outgoing.emitTypingIndicator()),
-        sendTypingIndicator: sendBox.sendTypingIndicator,
         setAttachments: operation(setSendBoxAttachments, ({ payload }) => sendBox.setAttachments(payload.attachments)),
         setValue: operation(setSendBox, ({ payload }) => sendBox.setValue(payload.text)),
-        submit: operation(submitSendBox, ({ payload }) => sendBox.submit(payload)),
-        value: sendBox.value
+        submit: operation(submitSendBox, ({ payload }) => sendBox.submit(payload))
       }) as unknown as SendBoxContextType,
     [outgoing, sendBox]
   );
+
+  // The slices of the send box group, from the sources of the send box service, until it becomes a reducer group.
+  const sendBoxAttachments = useSourceValue(sendBox.attachments);
+  const sendBoxValue = useSourceValue(sendBox.value);
+  const sendTypingIndicator = useSourceValue(sendBox.sendTypingIndicator);
 
   const speechContext = useMemo<SpeechContextType>(
     () =>
@@ -204,7 +207,13 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
                 notifications={notificationsValue}
                 referenceGrammarID={referenceGrammarID}
               >
-                {children}
+                <SendBoxSlices
+                  sendBoxAttachments={sendBoxAttachments}
+                  sendBoxValue={sendBoxValue}
+                  sendTypingIndicator={sendTypingIndicator}
+                >
+                  {children}
+                </SendBoxSlices>
               </ConnectionSlices>
             </VoiceContext.Provider>
           </SpeechContext.Provider>

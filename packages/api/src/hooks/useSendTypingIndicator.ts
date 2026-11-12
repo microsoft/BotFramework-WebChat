@@ -1,6 +1,5 @@
-import { useSendBoxContext } from './internal/domains/SendBoxContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useSendTypingIndicatorSlice } from './internal/domains/SendBoxSlices';
 
 export default function useSendTypingIndicator(): [boolean] {
-  return [useSourceValue(useSendBoxContext().sendTypingIndicator)];
+  return [useSendTypingIndicatorSlice()];
 }

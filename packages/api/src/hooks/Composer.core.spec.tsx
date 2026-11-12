@@ -16,6 +16,7 @@ import ChatOperationsContext, { type ChatOperationsContextType } from './interna
 import ConnectionSlices from './internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from './internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from './internal/domains/SendBoxContext';
+import SendBoxSlices from './internal/domains/SendBoxSlices';
 import { type Source } from './internal/domains/Source';
 import SpeechContext, { type SpeechContextType } from './internal/domains/SpeechContext';
 import VoiceContext, { type VoiceContextType } from './internal/domains/VoiceContext';
@@ -48,13 +49,10 @@ function createStubs() {
   });
 
   const sendBox: SendBoxContextType = Object.freeze({
-    attachments: constant(Object.freeze([])),
     emitTypingIndicator: jest.fn(),
-    sendTypingIndicator: constant(false),
     setAttachments: jest.fn(),
     setValue: jest.fn(),
-    submit: jest.fn(),
-    value: constant('Hello')
+    submit: jest.fn()
   });
 
   const speech: SpeechContextType = Object.freeze({
@@ -105,19 +103,21 @@ function renderComposerCore(
         <GraphProvider store={activities as any}>
           <ChatOperationsContext.Provider value={stubs.chatOperations}>
             <ConnectionSlices connectivityStatus="connected" notifications={[]} referenceGrammarID="grammar">
-              <NotificationsContext.Provider value={stubs.notifications}>
-                <SendBoxContext.Provider value={stubs.sendBox}>
-                  <SpeechContext.Provider value={stubs.speech}>
-                    <VoiceContext.Provider value={stubs.voice}>
-                      <ActivityKeyerComposer>
-                        <ActivityAcknowledgementComposer>
-                          <ComposerCore directLine={directLine as any}>{children}</ComposerCore>
-                        </ActivityAcknowledgementComposer>
-                      </ActivityKeyerComposer>
-                    </VoiceContext.Provider>
-                  </SpeechContext.Provider>
-                </SendBoxContext.Provider>
-              </NotificationsContext.Provider>
+              <SendBoxSlices sendBoxAttachments={[]} sendBoxValue="Hello" sendTypingIndicator={false}>
+                <NotificationsContext.Provider value={stubs.notifications}>
+                  <SendBoxContext.Provider value={stubs.sendBox}>
+                    <SpeechContext.Provider value={stubs.speech}>
+                      <VoiceContext.Provider value={stubs.voice}>
+                        <ActivityKeyerComposer>
+                          <ActivityAcknowledgementComposer>
+                            <ComposerCore directLine={directLine as any}>{children}</ComposerCore>
+                          </ActivityAcknowledgementComposer>
+                        </ActivityKeyerComposer>
+                      </VoiceContext.Provider>
+                    </SpeechContext.Provider>
+                  </SendBoxContext.Provider>
+                </NotificationsContext.Provider>
+              </SendBoxSlices>
             </ConnectionSlices>
           </ChatOperationsContext.Provider>
         </GraphProvider>

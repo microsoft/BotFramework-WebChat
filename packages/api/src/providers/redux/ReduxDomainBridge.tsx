@@ -43,6 +43,7 @@ import ChatOperationsContext, {
 import ConnectionSlices from '../../hooks/internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from '../../hooks/internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
+import SendBoxSlices from '../../hooks/internal/domains/SendBoxSlices';
 import { type Source } from '../../hooks/internal/domains/Source';
 import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
@@ -122,15 +123,12 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const sendBox = useMemo<SendBoxContextType>(
     () =>
       Object.freeze({
-        attachments: createSource(store, subscribe, ({ sendBoxAttachments }) => sendBoxAttachments),
         emitTypingIndicator: bindDispatch(dispatch, emitTypingIndicator),
-        sendTypingIndicator: createSource(store, subscribe, ({ sendTypingIndicator }) => sendTypingIndicator),
         setAttachments: bindDispatch(dispatch, setSendBoxAttachments),
         setValue: bindDispatch(dispatch, setSendBox),
-        submit: bindDispatch(dispatch, submitSendBox),
-        value: createSource(store, subscribe, ({ sendBoxValue }) => sendBoxValue)
+        submit: bindDispatch(dispatch, submitSendBox)
       }),
-    [dispatch, store, subscribe]
+    [dispatch]
   );
 
   const speech = useMemo<SpeechContextType>(
@@ -196,7 +194,13 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
                 notifications={state.notifications}
                 referenceGrammarID={state.referenceGrammarID}
               >
-                {children}
+                <SendBoxSlices
+                  sendBoxAttachments={state.sendBoxAttachments}
+                  sendBoxValue={state.sendBoxValue}
+                  sendTypingIndicator={state.sendTypingIndicator}
+                >
+                  {children}
+                </SendBoxSlices>
               </ConnectionSlices>
             </VoiceContext.Provider>
           </SpeechContext.Provider>

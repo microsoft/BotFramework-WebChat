@@ -1,8 +1,7 @@
 import type { SendBoxAttachment } from 'botframework-webchat-core';
 import { useMemo } from 'react';
 
-import { useSendBoxContext } from './internal/domains/SendBoxContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useSendBoxAttachmentsSlice } from './internal/domains/SendBoxSlices';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useSendBoxAttachments(): readonly [
@@ -11,7 +10,7 @@ export default function useSendBoxAttachments(): readonly [
   //       When we move out of Redux, we should change it.
   (attachments: readonly SendBoxAttachment[]) => void
 ] {
-  const sendBoxAttachments = useSourceValue(useSendBoxContext().attachments);
+  const sendBoxAttachments = useSendBoxAttachmentsSlice();
   const { setSendBoxAttachments } = useWebChatAPIContext();
 
   return useMemo(

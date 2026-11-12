@@ -1,7 +1,6 @@
-import { useSendBoxContext } from './internal/domains/SendBoxContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useSendBoxValueSlice } from './internal/domains/SendBoxSlices';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useSendBoxValue(): [string, (value: string) => void] {
-  return [useSourceValue(useSendBoxContext().value), useWebChatAPIContext().setSendBox];
+  return [useSendBoxValueSlice(), useWebChatAPIContext().setSendBox];
 }
