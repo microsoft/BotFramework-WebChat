@@ -3,10 +3,10 @@ import { type DirectLineJSBotConnection } from 'botframework-webchat-core';
 /**
  * A connection kept for a moment after its providers unmounted.
  *
- * - `owner`: what connects (the `dispatch` of a Redux store, or a connection service).
+ * - `owner`: what connects (the `dispatch` of a Redux store, or the engine of the default providers).
  * - `disconnect`: disconnects it.
  * - `release`: after a disconnect, releases the owner if it is not used anymore (nothing for a Redux store, which the
- *   host or `<Composer>` owns; `dispose()` for a connection service).
+ *   host or `<Composer>` owns; stops the machines of the engine).
  */
 type DeferredDisconnect = {
   readonly directLine: DirectLineJSBotConnection;

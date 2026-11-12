@@ -1,10 +1,9 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// What Redux mode does, pinned: written on the sagas before the services were written against them, kept by the
-// machines that replaced them. The parity specs (`services/*.parity.spec.ts`) then compare the services with Redux mode
-// on every script; these pins make sure that its side of the comparison does not move unnoticed, especially on the
-// paths that look like bugs.
+// What Redux mode does, pinned: written on the sagas, kept by the machines that replaced them. The goldens then compare
+// both engines with the recorded output of every script; these pins make sure that Redux mode does not move unnoticed,
+// especially on the paths that look like bugs.
 import connectionScripts from './connectionScripts';
 import createReduxDriver from './createReduxDriver';
 import incomingScripts from './incomingScripts';

@@ -1,7 +1,7 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// What the outgoing, send box and typing sagas did, pinned before the services were written against them, and kept by
+// What the outgoing, send box and typing sagas did, pinned on the sagas, and kept by
 // the machines that replaced them (Redux mode): the order of the effects of a post and of a submit, the send timeouts,
 // going offline, the typing
 // throttle (`takeLatest()`), and the quirks. Also checks that the parity harness compares what it should: the random IDs

@@ -2,7 +2,7 @@
  * @jest-environment <rootDir>/../__tests__/unit.setup/HappyDOMEnvironmentWithTimeZone.js
  * @timezone America/Los_Angeles
  */
-// What the speech, dictation and voice sagas did, pinned before the services were written against them, and kept by the
+// What the speech, dictation and voice sagas did, pinned on the sagas, and kept by the
 // machines that replaced them (Redux mode): the order of their effects (each `put()` runs after the current action, and
 // a machine goes on after its own `put()`), the order of the machines taking the same action (one that took an action
 // waits again at the end of the list), what runs offline, and the quirks.

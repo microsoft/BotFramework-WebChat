@@ -1,6 +1,6 @@
 /// <reference types="jest" />
 /* eslint-disable no-magic-numbers */
-// Runs one script of the parity specs on a driver (Redux mode: the machines through a Redux store; or the services) and
+// Runs one script of the parity specs on a driver (Redux mode: the machines through a Redux store; or default mode) and
 // records what a host can observe, step by step: the calls to Direct Line and the activities posted, the values of
 // connectivity status, reference grammar ID, notifications, activities, send box, speech and voice (each change, in
 // order, and the order of the changes across values), the suggested actions set or cleared, the calls to the voice
@@ -18,7 +18,7 @@ type Observation = {
   readonly connectivityStatus: string;
   readonly dictateInterims: readonly string[];
   readonly dictateState: number;
-  /** Not a change: only in the state after each step (the services have no event for it). */
+  /** Not a change: only in the state after each step (default mode has no event for it). */
   readonly language: string;
   readonly microphoneMuted: boolean;
   readonly notifications: Readonly<Record<string, unknown>>;

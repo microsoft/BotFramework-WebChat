@@ -177,7 +177,7 @@ describe('<Composer> without a store', () => {
     expect(typeof contexts.at(-1)?.sendMessage).toBe('function');
     expect(renders.at(-1)).toEqual({ activities: [], connectivityStatus: 'uninitialized' });
 
-    // Connected by the connection service, without Redux.
+    // Connected by the machines of the default providers, without Redux.
     expect(directLine.activity$.subscribe).toHaveBeenCalledTimes(1);
 
     act(() => contexts.at(-1)?.sendMessage('Hello', 'keyboard'));

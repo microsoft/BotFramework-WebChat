@@ -1,4 +1,4 @@
-// A scripted Direct Line for the parity specs of the services: it logs every call made to it, in order
+// A scripted Direct Line for the parity specs: it logs every call made to it, in order
 // (subscribe/unsubscribe per observable and per subscription, `setUserId()`, `end()`, `postActivity()`), and lets the
 // script answer each `postActivity()` call (value, complete, error) and echo the posted activity back on `activity$`.
 
