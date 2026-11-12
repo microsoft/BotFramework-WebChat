@@ -5,7 +5,10 @@
 id: css-inject-placeholder
 language: JavaScript
 rule:
-  kind: string
+  # Also template literals: an unminified build keeps them as written, and some minifiers (oxc) print strings as them.
+  any:
+    - kind: string
+    - kind: template_string
   regex: "\\@\\-\\-[A-Z\\-]+\\-\\-\\@"
 
 description: "Ensure CSS placeholders are replaced during bundling"

@@ -15,7 +15,7 @@ const listCSSModules = (packageName: string): readonly string[] =>
     .filter(path => path.endsWith('.module.css') && !path.includes('__tests__'))
     .map(path => join(PACKAGES_PATH, packageName, 'src', path));
 
-// Local names as the build exports them (Lightning CSS with the CSS modules options of esbuildPlugins.mjs).
+// Local names as the build exports them (Lightning CSS with the CSS modules options of lightningCSSOptions.mjs).
 const getLocalNames = (path: string): readonly string[] =>
   Object.keys(
     transform({

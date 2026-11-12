@@ -92,6 +92,16 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       paddingRegular,
       primaryFont,
       sendBoxAttachmentBarMaxHeight,
+      sendBoxBackground,
+      sendBoxBorderBottom,
+      sendBoxBorderLeft,
+      sendBoxBorderRight,
+      sendBoxBorderTop,
+      sendBoxDisabledTextColor,
+      sendBoxHeight,
+      sendBoxMaxHeight,
+      sendBoxPlaceholderColor,
+      sendBoxTextColor,
       slowConnectivity,
       spinnerAnimationBackgroundImage,
       spinnerAnimationHeight,
@@ -162,6 +172,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
   ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
   ${CustomPropertyNames.BackgroundImageTypingAnimation}: ${typingAnimationBackgroundImage || `url('${getDefaultTypingAnimationImageURL()}')`};
+  ${CustomPropertyNames.BackgroundSendBox}: ${sendBoxBackground};
   ${CustomPropertyNames.BackgroundToastError}: ${toastErrorBackgroundColor};
   ${CustomPropertyNames.BackgroundToastInfo}: ${toastInfoBackgroundColor};
   ${CustomPropertyNames.BackgroundToastSuccess}: ${toastSuccessBackgroundColor};
@@ -174,17 +185,21 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
+  ${CustomPropertyNames.BorderBottomSendBox}: ${toLength(sendBoxBorderBottom)};
   ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
   ${CustomPropertyNames.BorderColorBubbleUser}: ${bubbleFromUserBorderColor};
   ${CustomPropertyNames.BorderColorToastSeparator}: ${toastSeparatorColor};
+  ${CustomPropertyNames.BorderLeftSendBox}: ${toLength(sendBoxBorderLeft)};
   ${CustomPropertyNames.BorderRadiusAvatar}: ${toLength(avatarBorderRadius)};
   ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusBubbleUser}: ${bubbleFromUserBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusTranscriptTerminator}: ${transcriptTerminatorBorderRadius}px;
+  ${CustomPropertyNames.BorderRightSendBox}: ${toLength(sendBoxBorderRight)};
   ${CustomPropertyNames.BorderStyleBubble}: ${bubbleBorderStyle};
   ${CustomPropertyNames.BorderStyleBubbleUser}: ${bubbleFromUserBorderStyle};
   ${CustomPropertyNames.BorderStyleTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorStyle};
   ${CustomPropertyNames.BorderStyleTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorStyle};
+  ${CustomPropertyNames.BorderTopSendBox}: ${toLength(sendBoxBorderTop)};
   ${CustomPropertyNames.BorderWidthBubble}: ${bubbleBorderWidth}px;
   ${CustomPropertyNames.BorderWidthBubbleUser}: ${bubbleFromUserBorderWidth}px;
   ${CustomPropertyNames.BorderWidthTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorWidth}px;
@@ -195,6 +210,9 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorConnectivityFailed}: ${failedConnectivity};
   ${CustomPropertyNames.ColorConnectivitySlow}: ${slowConnectivity};
   ${CustomPropertyNames.ColorNotificationText}: ${notificationText};
+  ${CustomPropertyNames.ColorSendBox}: ${sendBoxTextColor};
+  ${CustomPropertyNames.ColorSendBoxDisabled}: ${sendBoxDisabledTextColor || subtle};
+  ${CustomPropertyNames.ColorSendBoxPlaceholder}: ${sendBoxPlaceholderColor || subtle};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
   ${CustomPropertyNames.ColorToastError}: ${toastErrorColor};
@@ -223,6 +241,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.MarginInlineConnectivity}: ${toLength(connectivityMarginLeftRight)};
   ${CustomPropertyNames.MarginSpinnerAnimation}: ${toLength(spinnerAnimationPadding)};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
+  ${CustomPropertyNames.MaxHeightSendBox}: ${toLength(sendBoxMaxHeight)};
   ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;
   ${CustomPropertyNames.MaxHeightToaster}: ${toLength(toasterMaxHeight)};
   ${CustomPropertyNames.MaxHeightToasterSingular}: ${toLength(toasterSingularMaxHeight)};
@@ -232,6 +251,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.MinWidthMessageBubble}: ${bubbleMessageMinWidth}px;
   ${CustomPropertyNames.MinHeightBubble}: ${bubbleMinHeight}px;
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
+  ${CustomPropertyNames.MinHeightSendBox}: ${toLength(sendBoxHeight)};
   ${CustomPropertyNames.PaddingBlockToastText}: ${toLength(toastTextPadding)};
   ${CustomPropertyNames.PaddingConnectivityIcon}: ${toLength(connectivityIconPadding)};
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;

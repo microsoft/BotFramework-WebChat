@@ -53,7 +53,7 @@
             .map(value => value.trim().split('='))
         );
 
-        expect(buildInfo).toHaveProperty('build-tool', 'tsup');
+        expect(buildInfo).toHaveProperty('build-tool', expect.stringMatching(/^(tsup|tsdown)$/u));
         expect(buildInfo).toHaveProperty('module-format', 'global');
         expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
 
