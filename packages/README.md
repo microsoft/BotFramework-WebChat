@@ -34,7 +34,8 @@ This package serves two purposes.
 It includes 3 different bundles:
 
 -  `webchat.js` is the full bundle, contains Adaptive Cards, Cognitive Services, Direct Line Speech, Markdown, etc.
--  `webchat-es5.js` is built on top of full bundle, and contains polyfills required by ES5 browsers. For example, Internet Explorer 11.
+-  `webchat-es5.js` is built on top of full bundle, and contains polyfills for some newer built-ins, such as `fetch` and `Promise`
+   -  Despite its name, it is built like `webchat.js` and does not run on ES5 browsers such as Internet Explorer 11
 -  `webchat-minimal.js` is the minimal bundle. It does not contain Adaptive Cards, etc.
    -  Minimal bundle is roughly 50% the size of full bundle
 

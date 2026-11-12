@@ -1,8 +1,8 @@
+import { createKeyedStore } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createElement, memo, useCallback, useMemo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import createKeyedStore from '../../hooks/internal/createKeyedStore';
 import ActivityLogicalGroupingContext, {
   type ActivityLogicalGroupingContextType,
   type LogicalGrouping

@@ -1,4 +1,3 @@
-import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
 import {
   type LegacyActivityMiddleware,
@@ -7,7 +6,7 @@ import {
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
+import { ReduxProvider, ReduxStoreComposer, useDispatch } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -96,10 +95,9 @@ import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
+import ReduxStoreProvider from './internal/ReduxStoreProvider';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
-import { useDispatch } from './internal/WebChatReduxContext';
-import WebChatReduxProvider from './internal/WebChatReduxProvider';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import useVoiceHandlers from './internal/useVoiceHandlers';
 import activityFallbackPolymiddleware from './middleware/activityFallbackPolymiddleware';
@@ -845,17 +843,17 @@ const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
   }, [ponyfill, store]);
 
   return (
-    <WebChatReduxProvider store={memoizedStore}>
+    <ReduxProvider store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
-        <GraphProvider store={memoizedStore}>
+        <ReduxStoreProvider>
           <ActivityKeyerComposer>
             <ActivityAcknowledgementComposer>
               <ComposerCore onTelemetry={onTelemetry} {...props} />
             </ActivityAcknowledgementComposer>
           </ActivityKeyerComposer>
-        </GraphProvider>
+        </ReduxStoreProvider>
       </ReduxStoreComposer>
-    </WebChatReduxProvider>
+    </ReduxProvider>
   );
 };
 

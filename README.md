@@ -324,14 +324,10 @@ View the [API documentation](https://github.com/microsoft/BotFramework-WebChat/t
 ## Browser compatibility
 
 Web Chat supports the latest 2 versions of modern browsers like Chrome, Microsoft Edge, and FireFox.
-If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle).
 
-Please note, however:
+Starting from 4.16.0, Internet Explorer is no longer supported. 4.15.9 is the last version which supports Internet Explorer 11 in limited fashion.
 
-- Web Chat does not support Internet Explorer older than version 11
-- Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Microsoft Edge.
-- Web Chat has no plan to support samples for IE11 (ES5).
-   - For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+Despite its name, `webchat-es5.js` is not ES5 and does not run on Internet Explorer 11. It is the full bundle plus polyfills for some newer built-ins, such as `fetch` and `Promise`. It is built for the same JavaScript version as `webchat.js` and supports the same browsers.
 
 ## Accessibility
 
