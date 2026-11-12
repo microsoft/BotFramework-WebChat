@@ -83,9 +83,8 @@ scenario('createGraphFromStore()', bdd => {
 
       return outcome;
     })
-    .then('the graph should not follow the store anymore', ({ subscriptions }, { graph, subscriber1 }) => {
+    .then('the graph should not follow the store anymore', ({ subscriptions }, { subscriber1 }) => {
       expect(subscriptions.size).toBe(0);
-      expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2']);
       expect(subscriber1).toHaveBeenCalledTimes(1);
     })
     .when('a subscriber subscribes again', (_, { graph }) => {
@@ -102,5 +101,43 @@ scenario('createGraphFromStore()', bdd => {
         expect(subscriber).toHaveBeenCalledTimes(1);
         expect(subscriptions.size).toBe(1);
       }
+    );
+
+  // E.g. a hidden <Activity> (React 19.2+) runs the cleanup of effects, then renders before subscribing again.
+  bdd
+    .given('a graph from a store, which counts its subscriptions', () => {
+      const store = createStore();
+      const { subscribe } = store;
+      const subscriptions = new Set<() => void>();
+
+      store.subscribe = listener => {
+        const unsubscribe = subscribe(listener);
+        const subscription = () => {
+          subscriptions.delete(subscription);
+          unsubscribe();
+        };
+
+        subscriptions.add(subscription);
+
+        return subscription;
+      };
+
+      store.dispatch(incoming('a-1'));
+
+      const graph = createGraphFromStore(store);
+
+      graph.subscribe(jest.fn())();
+
+      return { graph, store, subscriptions };
+    })
+    .when('an activity is received while the graph has no subscribers', ({ store }) => {
+      store.dispatch(incoming('a-2'));
+    })
+    .then('reading the graph should catch up with the store, without subscribing to it', ({ graph, subscriptions }) => {
+      expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2']);
+      expect(subscriptions.size).toBe(0);
+    })
+    .and('reading the graph again should return the same state', ({ graph }) =>
+      expect(graph.getState()).toBe(graph.getState())
     );
 });
