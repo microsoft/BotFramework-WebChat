@@ -26,15 +26,8 @@
   .fileContent__downloadIcon {
     color: var(--webchat__color--accent);
     font-size: 33px;
+    margin-inline-start: var(--webchat__padding--regular);
     padding: var(--webchat__padding--regular);
-
-    &:not(.fileContent__downloadIcon--rtl) {
-      margin-left: var(--webchat__padding--regular);
-    }
-
-    &.fileContent__downloadIcon--rtl {
-      margin-right: var(--webchat__padding--regular);
-    }
   }
 
   .fileContent__fileName {

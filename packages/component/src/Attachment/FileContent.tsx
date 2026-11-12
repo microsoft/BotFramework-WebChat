@@ -9,7 +9,7 @@ import { ComponentIcon } from '../Icon';
 
 import styles from './FileContent.module.css';
 
-const { useByteFormatter, useDirection, useLocalizer } = hooks;
+const { useByteFormatter, useLocalizer } = hooks;
 
 // TODO: Consider using `useSanitizeHrefCallback`, which underlying use `sanitize-html` or whatever in HTML content transformer.
 const ALLOWED_PROTOCOLS = ['blob:', 'data:', 'http:', 'https:'];
@@ -38,7 +38,6 @@ const FileContentBadge = (props: FileContentBadgeProps) => {
 
   // Keeps the "webchat__fileContent" class names.
   const classNames = useStyles(styles, webChatPrefixedClassName);
-  const [direction] = useDirection();
   const formatByte = useByteFormatter();
 
   const localizedSize = typeof size === 'number' && formatByte(size);
@@ -50,13 +49,7 @@ const FileContentBadge = (props: FileContentBadgeProps) => {
         {!!localizedSize && <div className={classNames['fileContent__size']}>{localizedSize}</div>}
       </div>
       {downloadIcon && (
-        <ComponentIcon
-          appearance="text"
-          className={cx(classNames['fileContent__downloadIcon'], {
-            [classNames['fileContent__downloadIcon--rtl']]: direction === 'rtl'
-          })}
-          icon="download"
-        />
+        <ComponentIcon appearance="text" className={classNames['fileContent__downloadIcon']} icon="download" />
       )}
     </Fragment>
   );
