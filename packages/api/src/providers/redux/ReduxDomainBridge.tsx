@@ -63,6 +63,31 @@ type ReduxDomainBridgeProps = InferInput<typeof reduxDomainBridgePropsSchema>;
 
 type ReduxState = ReturnType<WebChatReduxStore['getState']>;
 
+// The slices of the slice contexts.
+function selectSlices(state: ReduxState) {
+  return {
+    connectivityStatus: state.connectivityStatus,
+    dictateInterims: state.dictateInterims,
+    dictateState: state.dictateState,
+    microphoneMuted: state.voice.microphoneMuted,
+    notifications: state.notifications,
+    referenceGrammarID: state.referenceGrammarID,
+    sendBoxAttachments: state.sendBoxAttachments,
+    sendBoxValue: state.sendBoxValue,
+    sendTypingIndicator: state.sendTypingIndicator,
+    shouldSpeakIncomingActivity: state.shouldSpeakIncomingActivity,
+    voiceHandlers: state.voice.voiceHandlers,
+    voiceState: state.voice.voiceState
+  };
+}
+
+type Slices = ReturnType<typeof selectSlices>;
+
+function shallowEqual(x: Slices, y: Slices): boolean {
+  // eslint-disable-next-line security/detect-object-injection
+  return (Object.keys(x) as (keyof Slices)[]).every(key => Object.is(x[key], y[key]));
+}
+
 // Same as the dispatchers <Composer> hoisted from action creators: passes every argument, returns what `dispatch()` returns.
 function bindDispatch<TArgs extends unknown[]>(
   dispatch: WebChatReduxStore['dispatch'],
@@ -98,10 +123,15 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
     [dispatch]
   );
 
-  // One subscription for the slices: the bridge re-renders on every change of the store, and each slice context
-  // propagates only when its slice changed.
+  // One subscription for the slices: the bridge re-renders only when one of them changed (as `useSelector()` of each
+  // slice did), so an action that changes another part of the store (e.g. the suggested actions mirrored during render)
+  // does not re-render it. Each slice context then propagates only when its slice changed.
   const state = useSourceValue(
-    useMemo<Source<ReduxState>>(() => Object.freeze({ get: () => store.getState(), subscribe }), [store, subscribe])
+    useMemo<Source<Slices>>(
+      () => Object.freeze({ get: () => selectSlices(store.getState()), subscribe }),
+      [store, subscribe]
+    ),
+    shallowEqual
   );
 
   const notifications = useMemo<NotificationsContextType>(
@@ -188,9 +218,9 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
                     shouldSpeakIncomingActivity={state.shouldSpeakIncomingActivity}
                   >
                     <VoiceSlices
-                      microphoneMuted={state.voice.microphoneMuted}
-                      voiceHandlers={state.voice.voiceHandlers}
-                      voiceState={state.voice.voiceState}
+                      microphoneMuted={state.microphoneMuted}
+                      voiceHandlers={state.voiceHandlers}
+                      voiceState={state.voiceState}
                     >
                       {children}
                     </VoiceSlices>

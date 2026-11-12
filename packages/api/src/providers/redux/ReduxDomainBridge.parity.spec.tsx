@@ -870,3 +870,32 @@ describe('useSuggestedActionsHooks().useSuggestedActions()', () => {
     expect((renders[1] as SuggestedActionsState)[2]).toEqual({ activity: ORIGIN_ACTIVITY });
   });
 });
+
+test('the bridge should not re-render on a change of the store that no slice context reads', () => {
+  // React 16.8 exports the profiler as `unstable_Profiler`, React 16.9 and later as `Profiler`.
+  const Profiler = (React as any).Profiler || (React as any).unstable_Profiler;
+  const onRender = jest.fn();
+  const store = createTestStore();
+
+  render(
+    <Profiler id="bridge" onRender={onRender}>
+      <Providers store={store} />
+    </Profiler>
+  );
+
+  onRender.mockClear();
+
+  // As the suggested actions mirrored to the store during the render of another component: React 18 warns when the
+  // bridge re-renders then ("Cannot update a component while rendering a different component").
+  act(() => {
+    store.dispatch(set({ other: 1 }));
+  });
+
+  expect(onRender).not.toHaveBeenCalled();
+
+  act(() => {
+    store.dispatch(set({ sendBoxValue: 'Hello' }));
+  });
+
+  expect(onRender).toHaveBeenCalledTimes(1);
+});
