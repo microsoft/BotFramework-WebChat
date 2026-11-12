@@ -19,6 +19,7 @@ import SendBoxContext, { type SendBoxContextType } from './internal/domains/Send
 import SendBoxSlices from './internal/domains/SendBoxSlices';
 import { type Source } from './internal/domains/Source';
 import SpeechContext, { type SpeechContextType } from './internal/domains/SpeechContext';
+import SpeechSlices from './internal/domains/SpeechSlices';
 import VoiceContext, { type VoiceContextType } from './internal/domains/VoiceContext';
 import useConnectivityStatus from './useConnectivityStatus';
 import useSendBoxValue from './useSendBoxValue';
@@ -56,11 +57,8 @@ function createStubs() {
   });
 
   const speech: SpeechContextType = Object.freeze({
-    dictateInterims: constant(undefined),
-    dictateState: constant(0),
     setDictateInterims: jest.fn(),
     setDictateState: jest.fn(),
-    shouldSpeakIncomingActivity: constant(false),
     startDictate: jest.fn(),
     startSpeakingActivity: jest.fn(),
     stopDictate: jest.fn(),
@@ -104,19 +102,21 @@ function renderComposerCore(
           <ChatOperationsContext.Provider value={stubs.chatOperations}>
             <ConnectionSlices connectivityStatus="connected" notifications={[]} referenceGrammarID="grammar">
               <SendBoxSlices sendBoxAttachments={[]} sendBoxValue="Hello" sendTypingIndicator={false}>
-                <NotificationsContext.Provider value={stubs.notifications}>
-                  <SendBoxContext.Provider value={stubs.sendBox}>
-                    <SpeechContext.Provider value={stubs.speech}>
-                      <VoiceContext.Provider value={stubs.voice}>
-                        <ActivityKeyerComposer>
-                          <ActivityAcknowledgementComposer>
-                            <ComposerCore directLine={directLine as any}>{children}</ComposerCore>
-                          </ActivityAcknowledgementComposer>
-                        </ActivityKeyerComposer>
-                      </VoiceContext.Provider>
-                    </SpeechContext.Provider>
-                  </SendBoxContext.Provider>
-                </NotificationsContext.Provider>
+                <SpeechSlices dictateInterims={undefined} dictateState={0} shouldSpeakIncomingActivity={false}>
+                  <NotificationsContext.Provider value={stubs.notifications}>
+                    <SendBoxContext.Provider value={stubs.sendBox}>
+                      <SpeechContext.Provider value={stubs.speech}>
+                        <VoiceContext.Provider value={stubs.voice}>
+                          <ActivityKeyerComposer>
+                            <ActivityAcknowledgementComposer>
+                              <ComposerCore directLine={directLine as any}>{children}</ComposerCore>
+                            </ActivityAcknowledgementComposer>
+                          </ActivityKeyerComposer>
+                        </VoiceContext.Provider>
+                      </SpeechContext.Provider>
+                    </SendBoxContext.Provider>
+                  </NotificationsContext.Provider>
+                </SpeechSlices>
               </SendBoxSlices>
             </ConnectionSlices>
           </ChatOperationsContext.Provider>

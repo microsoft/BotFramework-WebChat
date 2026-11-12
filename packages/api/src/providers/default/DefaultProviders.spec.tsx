@@ -11,6 +11,11 @@ import React, { memo, type ReactNode } from 'react';
 
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
 import { useSpeechContext } from '../../hooks/internal/domains/SpeechContext';
+import {
+  useDictateInterimsSlice,
+  useDictateStateSlice,
+  useShouldSpeakIncomingActivitySlice
+} from '../../hooks/internal/domains/SpeechSlices';
 import { useVoiceContext } from '../../hooks/internal/domains/VoiceContext';
 import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import useActivities from '../../hooks/useActivities';
@@ -402,12 +407,12 @@ describe('<DefaultProviders>', () => {
 
       renders.push({
         connectivityStatus: useConnectivityStatus()[0],
-        dictateInterims: useSourceValue(speech.dictateInterims),
-        dictateState: useSourceValue(speech.dictateState),
+        dictateInterims: useDictateInterimsSlice(),
+        dictateState: useDictateStateSlice(),
         microphoneMuted: useSourceValue(voice.microphoneMuted),
         notifications: useNotifications()[0],
         sendBoxValue: useSendBoxValue()[0],
-        shouldSpeakIncomingActivity: useSourceValue(speech.shouldSpeakIncomingActivity),
+        shouldSpeakIncomingActivity: useShouldSpeakIncomingActivitySlice(),
         speech,
         voice,
         voiceHandlers: useSourceValue(voice.voiceHandlers),

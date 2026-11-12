@@ -47,6 +47,7 @@ import SendBoxSlices from '../../hooks/internal/domains/SendBoxSlices';
 import { type Source } from '../../hooks/internal/domains/Source';
 import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
+import SpeechSlices from '../../hooks/internal/domains/SpeechSlices';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
 import randomId from '../../utils/randomId';
 
@@ -134,21 +135,14 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const speech = useMemo<SpeechContextType>(
     () =>
       Object.freeze({
-        dictateInterims: createSource(store, subscribe, ({ dictateInterims }) => dictateInterims),
-        dictateState: createSource(store, subscribe, ({ dictateState }) => dictateState),
         setDictateInterims: bindDispatch(dispatch, setDictateInterims),
         setDictateState: bindDispatch(dispatch, setDictateState),
-        shouldSpeakIncomingActivity: createSource(
-          store,
-          subscribe,
-          ({ shouldSpeakIncomingActivity }) => shouldSpeakIncomingActivity
-        ),
         startDictate: bindDispatch(dispatch, startDictate),
         startSpeakingActivity: bindDispatch(dispatch, startSpeakingActivity),
         stopDictate: bindDispatch(dispatch, stopDictate),
         stopSpeakingActivity: bindDispatch(dispatch, stopSpeakingActivity)
       }),
-    [dispatch, store, subscribe]
+    [dispatch]
   );
 
   const voice = useMemo<VoiceContextType>(
@@ -199,7 +193,13 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
                   sendBoxValue={state.sendBoxValue}
                   sendTypingIndicator={state.sendTypingIndicator}
                 >
-                  {children}
+                  <SpeechSlices
+                    dictateInterims={state.dictateInterims}
+                    dictateState={state.dictateState}
+                    shouldSpeakIncomingActivity={state.shouldSpeakIncomingActivity}
+                  >
+                    {children}
+                  </SpeechSlices>
                 </SendBoxSlices>
               </ConnectionSlices>
             </VoiceContext.Provider>

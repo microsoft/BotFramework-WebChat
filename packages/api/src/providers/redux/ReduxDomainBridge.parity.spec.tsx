@@ -236,14 +236,17 @@ const SLICE_CONTEXT_HOOKS: ReadonlySet<string> = new Set([
   'useReferenceGrammarID',
   'useSendBoxAttachments',
   'useSendBoxValue',
-  'useSendTypingIndicator'
+  'useSendTypingIndicator',
+  'useDictateInterims',
+  'useDictateState',
+  'useShouldSpeakIncomingActivity'
 ]);
 
 // Renders of each hook in `runActions()`, pinned so a change on both sides is noticed too.
 const NUM_RENDERS: Readonly<Record<keyof typeof LEGACY_HOOKS, number>> = {
   useConnectivityStatus: 4,
   useDictateInterims: 5,
-  useDictateState: 4,
+  useDictateState: 3,
   useNotifications: 4,
   usePostVoiceActivity: 2,
   useReferenceGrammarID: 4,
@@ -251,7 +254,7 @@ const NUM_RENDERS: Readonly<Record<keyof typeof LEGACY_HOOKS, number>> = {
   useSendBoxAttachments: 4,
   useSendBoxValue: 5,
   useSendTypingIndicator: 3,
-  useShouldSpeakIncomingActivity: 4,
+  useShouldSpeakIncomingActivity: 3,
   useVoiceHandlers: 4,
   useVoiceRecordingMuted: 4,
   useVoiceStateWritable: 4

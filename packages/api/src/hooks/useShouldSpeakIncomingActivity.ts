@@ -1,14 +1,13 @@
 import { useCallback } from 'react';
 
-import { useSpeechContext } from './internal/domains/SpeechContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useShouldSpeakIncomingActivitySlice } from './internal/domains/SpeechSlices';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useShouldSpeakIncomingActivity(): [boolean, (value: boolean) => void] {
   const { startSpeakingActivity, stopSpeakingActivity } = useWebChatAPIContext();
 
   return [
-    useSourceValue(useSpeechContext().shouldSpeakIncomingActivity),
+    useShouldSpeakIncomingActivitySlice(),
     useCallback(
       value => {
         value ? startSpeakingActivity() : stopSpeakingActivity();

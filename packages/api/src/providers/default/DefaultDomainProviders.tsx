@@ -43,6 +43,7 @@ import NotificationsContext, { type NotificationsContextType } from '../../hooks
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
 import SendBoxSlices from '../../hooks/internal/domains/SendBoxSlices';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
+import SpeechSlices from '../../hooks/internal/domains/SpeechSlices';
 import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
 import randomId from '../../utils/randomId';
@@ -164,13 +165,10 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
   const speechContext = useMemo<SpeechContextType>(
     () =>
       Object.freeze({
-        dictateInterims: speech.dictateInterims as SpeechContextType['dictateInterims'],
-        dictateState: speech.dictateState,
         setDictateInterims: operation(setDictateInterims, ({ payload }) =>
           speech.setDictateInterims(payload.dictateInterims)
         ),
         setDictateState: operation(setDictateState, ({ payload }) => speech.setDictateState(payload.dictateState)),
-        shouldSpeakIncomingActivity: speech.shouldSpeakIncomingActivity,
         startDictate: operation(startDictate, () => speech.startDictate()),
         startSpeakingActivity: operation(startSpeakingActivity, () => speech.startSpeakingActivity()),
         stopDictate: operation(stopDictate, () => speech.stopDictate()),
@@ -178,6 +176,11 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
       }) as unknown as SpeechContextType,
     [speech]
   );
+
+  // The slices of the speech group, from the sources of the speech service, until it becomes a reducer group.
+  const dictateInterims = useSourceValue(speech.dictateInterims) as string[] | undefined;
+  const dictateState = useSourceValue(speech.dictateState);
+  const shouldSpeakIncomingActivity = useSourceValue(speech.shouldSpeakIncomingActivity);
 
   const voiceContext = useMemo<VoiceContextType>(
     () =>
@@ -212,7 +215,13 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
                   sendBoxValue={sendBoxValue}
                   sendTypingIndicator={sendTypingIndicator}
                 >
-                  {children}
+                  <SpeechSlices
+                    dictateInterims={dictateInterims}
+                    dictateState={dictateState}
+                    shouldSpeakIncomingActivity={shouldSpeakIncomingActivity}
+                  >
+                    {children}
+                  </SpeechSlices>
                 </SendBoxSlices>
               </ConnectionSlices>
             </VoiceContext.Provider>

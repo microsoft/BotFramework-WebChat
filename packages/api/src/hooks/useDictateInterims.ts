@@ -1,7 +1,6 @@
-import { useSpeechContext } from './internal/domains/SpeechContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useDictateInterimsSlice } from './internal/domains/SpeechSlices';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useDictateInterims(): [string[], (interims: string[]) => void] {
-  return [useSourceValue(useSpeechContext().dictateInterims) || [], useWebChatAPIContext().setDictateInterims];
+  return [useDictateInterimsSlice() || [], useWebChatAPIContext().setDictateInterims];
 }
