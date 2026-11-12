@@ -90,9 +90,7 @@ scenario('createGraphFromStore()', bdd => {
     .when('a subscriber subscribes again', (_, { graph }) => {
       const subscriber = jest.fn();
 
-      graph.subscribe(subscriber);
-
-      return { graph, subscriber };
+      return { graph, subscriber, unsubscribe: graph.subscribe(subscriber) };
     })
     .then(
       'the graph should catch up with the store and notify the subscriber',
@@ -101,43 +99,24 @@ scenario('createGraphFromStore()', bdd => {
         expect(subscriber).toHaveBeenCalledTimes(1);
         expect(subscriptions.size).toBe(1);
       }
-    );
+    )
+    // A hidden <Activity> (React 19.2+) runs the cleanup of effects, so the graph has no subscribers. When the host shows
+    // Web Chat again with a new element, it renders and reads the graph before its effects subscribe again.
+    .when('the subscriber unsubscribes, then an activity is received', ({ store }, outcome) => {
+      outcome.unsubscribe();
+      store.dispatch(incoming('a-4'));
 
-  // E.g. a hidden <Activity> (React 19.2+) runs the cleanup of effects, then renders before subscribing again.
-  bdd
-    .given('a graph from a store, which counts its subscriptions', () => {
-      const store = createStore();
-      const { subscribe } = store;
-      const subscriptions = new Set<() => void>();
-
-      store.subscribe = listener => {
-        const unsubscribe = subscribe(listener);
-        const subscription = () => {
-          subscriptions.delete(subscription);
-          unsubscribe();
-        };
-
-        subscriptions.add(subscription);
-
-        return subscription;
-      };
-
-      store.dispatch(incoming('a-1'));
-
-      const graph = createGraphFromStore(store);
-
-      graph.subscribe(jest.fn())();
-
-      return { graph, store, subscriptions };
+      return outcome;
     })
-    .when('an activity is received while the graph has no subscribers', ({ store }) => {
-      store.dispatch(incoming('a-2'));
-    })
-    .then('reading the graph should catch up with the store, without subscribing to it', ({ graph, subscriptions }) => {
-      expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2']);
-      expect(subscriptions.size).toBe(0);
-    })
-    .and('reading the graph again should return the same state', ({ graph }) =>
+    .then(
+      'reading the graph should catch up with the store, without subscribing to it',
+      ({ subscriptions }, { graph, subscriber }) => {
+        expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2', 'a-3', 'a-4']);
+        expect(subscriptions.size).toBe(0);
+        expect(subscriber).toHaveBeenCalledTimes(1);
+      }
+    )
+    .and('reading the graph again should return the same state', (_, { graph }) =>
       expect(graph.getState()).toBe(graph.getState())
     );
 });
