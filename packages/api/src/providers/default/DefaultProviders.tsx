@@ -164,8 +164,9 @@ function DefaultProviders(props: DefaultProvidersProps) {
       ponyfill
     });
 
-    // As the Redux store, the machines run from its creation: they take the actions dispatched before the connection
-    // (e.g. the action sink of the suggested actions). Starting only registers what they wait for.
+    // As the Redux store, the machines run from its creation: the mount effects of the host's children run before the
+    // effects of these providers, and what they dispatch must reach the machines. Starting only registers what they wait
+    // for.
     engine.start();
 
     const { getLastSuggestedActions, subscribeSuggestedActions } = createSuggestedActionsSubscription(engine.dispatch);
