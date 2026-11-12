@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        // GIVEN: A high contrast theme is active before Web Chat renders.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'forced-colors', value: 'active' }]
+        });
+
+        expect(window.matchMedia('(forced-colors: active)').matches).toBe(true);
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              hideSendBox: true,
+              scrollToEndButtonBehavior: 'any' // Shows the button whenever the transcript is not at the end.
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: Enough messages to scroll the transcript.
+        for (let index = 1; index <= 20; index++) {
+          // eslint-disable-next-line no-await-in-loop
+          await directLine.emulateIncomingActivity({
+            from: { role: 'bot' },
+            text: `Message ${index}`,
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(20);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: The user scrolls to the top.
+        await pageObjects.scrollToTop();
+        await pageConditions.scrollToEndButtonShown();
+        await pageConditions.scrollStabilized(0);
+
+        // THEN: The "More messages" button has a border in the system button text color.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
