@@ -6,8 +6,9 @@ import {
   type DirectLineCardAction
 } from 'botframework-webchat-core';
 import { setRawState } from 'botframework-webchat-core/internal.js';
+import { createKeyedStore, useKeyedStoreValue } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, type SetStateAction } from 'react';
 import { type Action } from 'redux';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
@@ -26,28 +27,48 @@ type SuggestedActionsComposerProps = InferInput<typeof suggestedActionsComposerP
 
 const EMPTY_ARRAY = Object.freeze([]);
 
+type SuggestedActionsState = Readonly<{
+  originActivity: WebChatActivity | undefined;
+  suggestedActions: readonly DirectLineCardAction[];
+}>;
+
+const INITIAL_STATE: SuggestedActionsState = Object.freeze({
+  originActivity: undefined,
+  suggestedActions: EMPTY_ARRAY
+});
+
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const {
     children,
     store: { dispatch }
   } = validateProps(suggestedActionsComposerPropsSchema, props);
 
-  const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
-  const [suggestedActions, setSuggestedActionsRaw] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
-  const setSuggestedActions = useCallback<typeof setSuggestedActionsRaw>(
-    suggestedActions => {
-      setOriginActivity(undefined);
-      setSuggestedActionsRaw(suggestedActions);
-    },
-    [setSuggestedActionsRaw]
+  // A store, not a state: the action sink runs while the store dispatches the activity, which re-renders at sync priority
+  // on React 18 and later. A state would render later, the activity would show before its suggested actions.
+  const suggestedActionsStore = useMemo(() => createKeyedStore<SuggestedActionsState>(), []);
+  const [state] = useKeyedStoreValue(suggestedActionsStore, 'state');
+  const { originActivity, suggestedActions } = state ?? INITIAL_STATE;
+
+  const setSuggestedActions = useCallback(
+    (suggestedActions: SetStateAction<readonly DirectLineCardAction[]>) =>
+      suggestedActionsStore.set(
+        'state',
+        Object.freeze({
+          originActivity: undefined,
+          suggestedActions:
+            typeof suggestedActions === 'function'
+              ? suggestedActions((suggestedActionsStore.get('state') ?? INITIAL_STATE).suggestedActions)
+              : suggestedActions
+        })
+      ),
+    [suggestedActionsStore]
   );
 
   // #region Replicate to Redux store
   const handleAction = useCallback(
     (action: Action) => {
       if (action.type === CLEAR_SUGGESTED_ACTIONS) {
-        setOriginActivity(undefined);
-        setSuggestedActionsRaw(EMPTY_ARRAY);
+        suggestedActionsStore.set('state', INITIAL_STATE);
       } else if (action.type === SET_SUGGESTED_ACTIONS) {
         const result = safeParse(setSuggestedActionsActionSchema, action);
 
@@ -56,19 +77,23 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
             payload: { originActivity, suggestedActions }
           } = result.output;
 
-          setOriginActivity(originActivity);
-          setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+          suggestedActionsStore.set(
+            'state',
+            Object.freeze({ originActivity, suggestedActions: Object.freeze(Array.from(suggestedActions)) })
+          );
         }
       }
     },
-    [setOriginActivity, setSuggestedActionsRaw]
+    [suggestedActionsStore]
   );
 
-  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
-  useMemo(
-    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
-    [dispatch, originActivity]
-  );
+  // Layout effects: the store has them by the time they show.
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActions', suggestedActions));
+  }, [dispatch, suggestedActions]);
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity }));
+  }, [dispatch, originActivity]);
 
   useEffect(() => {
     dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });

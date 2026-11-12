@@ -1,5 +1,7 @@
-import { useSelector } from './internal/WebChatReduxContext';
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
+
+const selectSendTypingIndicator = ({ sendTypingIndicator }) => sendTypingIndicator;
 
 export default function useSendTypingIndicator(): [boolean] {
-  return [useSelector(({ sendTypingIndicator }) => sendTypingIndicator)];
+  return [useSelector(selectSendTypingIndicator)];
 }
