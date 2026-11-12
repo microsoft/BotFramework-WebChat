@@ -13,7 +13,7 @@ import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer
 import { ComposerCore } from './Composer';
 import { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import ChatOperationsContext, { type ChatOperationsContextType } from './internal/domains/ChatOperationsContext';
-import ConnectivityContext, { type ConnectivityContextType } from './internal/domains/ConnectivityContext';
+import ConnectionSlices from './internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from './internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from './internal/domains/SendBoxContext';
 import { type Source } from './internal/domains/Source';
@@ -42,14 +42,8 @@ function createStubs() {
     setSendTimeout: jest.fn()
   });
 
-  const connectivity: ConnectivityContextType = Object.freeze({
-    connectivityStatus: constant('connected'),
-    referenceGrammarID: constant('grammar')
-  });
-
   const notifications: NotificationsContextType = Object.freeze({
     dismissNotification: jest.fn(),
-    notifications: constant([]),
     setNotification: jest.fn()
   });
 
@@ -89,7 +83,7 @@ function createStubs() {
     voiceState: constant('idle' as const)
   });
 
-  return { chatOperations, connectivity, notifications, sendBox, speech, stopAllAudio, voice };
+  return { chatOperations, notifications, sendBox, speech, stopAllAudio, voice };
 }
 
 function renderComposerCore(
@@ -110,7 +104,7 @@ function renderComposerCore(
       <StyleOptionsComposer>
         <GraphProvider store={activities as any}>
           <ChatOperationsContext.Provider value={stubs.chatOperations}>
-            <ConnectivityContext.Provider value={stubs.connectivity}>
+            <ConnectionSlices connectivityStatus="connected" notifications={[]} referenceGrammarID="grammar">
               <NotificationsContext.Provider value={stubs.notifications}>
                 <SendBoxContext.Provider value={stubs.sendBox}>
                   <SpeechContext.Provider value={stubs.speech}>
@@ -124,7 +118,7 @@ function renderComposerCore(
                   </SpeechContext.Provider>
                 </SendBoxContext.Provider>
               </NotificationsContext.Provider>
-            </ConnectivityContext.Provider>
+            </ConnectionSlices>
           </ChatOperationsContext.Provider>
         </GraphProvider>
       </StyleOptionsComposer>

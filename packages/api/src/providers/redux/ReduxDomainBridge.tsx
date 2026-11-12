@@ -40,10 +40,11 @@ import { useWebChatReduxContext, type WebChatReduxStore } from '../../hooks/inte
 import ChatOperationsContext, {
   type ChatOperationsContextType
 } from '../../hooks/internal/domains/ChatOperationsContext';
-import ConnectivityContext, { type ConnectivityContextType } from '../../hooks/internal/domains/ConnectivityContext';
+import ConnectionSlices from '../../hooks/internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from '../../hooks/internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
 import { type Source } from '../../hooks/internal/domains/Source';
+import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
 import randomId from '../../utils/randomId';
@@ -78,7 +79,8 @@ function bindDispatch<TArgs extends unknown[]>(
 }
 
 /**
- * Provides the domain contexts over the Redux store: each source reads one slice, each setter dispatches an action.
+ * Provides the domain contexts over the Redux store: the slice contexts from one subscription to the store, the other
+ * domain contexts with one source per slice; each setter dispatches an action.
  */
 function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const { children } = validateProps(reduxDomainBridgePropsSchema, props);
@@ -102,23 +104,19 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
     [dispatch]
   );
 
-  const connectivity = useMemo<ConnectivityContextType>(
-    () =>
-      Object.freeze({
-        connectivityStatus: createSource(store, subscribe, ({ connectivityStatus }) => connectivityStatus),
-        referenceGrammarID: createSource(store, subscribe, ({ referenceGrammarID }) => referenceGrammarID)
-      }),
-    [store, subscribe]
+  // One subscription for the slices: the bridge re-renders on every change of the store, and each slice context
+  // propagates only when its slice changed.
+  const state = useSourceValue(
+    useMemo<Source<ReduxState>>(() => Object.freeze({ get: () => store.getState(), subscribe }), [store, subscribe])
   );
 
   const notifications = useMemo<NotificationsContextType>(
     () =>
       Object.freeze({
         dismissNotification: bindDispatch(dispatch, dismissNotification),
-        notifications: createSource(store, subscribe, ({ notifications }) => notifications),
         setNotification: bindDispatch(dispatch, setNotification)
       }),
-    [dispatch, store, subscribe]
+    [dispatch]
   );
 
   const sendBox = useMemo<SendBoxContextType>(
@@ -189,15 +187,21 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
 
   return (
     <ChatOperationsContext.Provider value={chatOperations}>
-      <ConnectivityContext.Provider value={connectivity}>
-        <NotificationsContext.Provider value={notifications}>
-          <SendBoxContext.Provider value={sendBox}>
-            <SpeechContext.Provider value={speech}>
-              <VoiceContext.Provider value={voice}>{children}</VoiceContext.Provider>
-            </SpeechContext.Provider>
-          </SendBoxContext.Provider>
-        </NotificationsContext.Provider>
-      </ConnectivityContext.Provider>
+      <NotificationsContext.Provider value={notifications}>
+        <SendBoxContext.Provider value={sendBox}>
+          <SpeechContext.Provider value={speech}>
+            <VoiceContext.Provider value={voice}>
+              <ConnectionSlices
+                connectivityStatus={state.connectivityStatus}
+                notifications={state.notifications}
+                referenceGrammarID={state.referenceGrammarID}
+              >
+                {children}
+              </ConnectionSlices>
+            </VoiceContext.Provider>
+          </SpeechContext.Provider>
+        </SendBoxContext.Provider>
+      </NotificationsContext.Provider>
     </ChatOperationsContext.Provider>
   );
 }

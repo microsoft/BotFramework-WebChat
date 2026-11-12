@@ -1,7 +1,6 @@
 import { type Notification } from '../types/Notification';
-import { useNotificationsContext } from './internal/domains/NotificationsContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useNotificationsSlice } from './internal/domains/ConnectionSlices';
 
 export default function useNotifications(): [Notification[]] {
-  return [useSourceValue(useNotificationsContext().notifications)];
+  return [useNotificationsSlice()];
 }

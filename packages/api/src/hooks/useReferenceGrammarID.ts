@@ -1,6 +1,5 @@
-import { useConnectivityContext } from './internal/domains/ConnectivityContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useReferenceGrammarIDSlice } from './internal/domains/ConnectionSlices';
 
 export default function useReferenceGrammarID(): [string] {
-  return [useSourceValue(useConnectivityContext().referenceGrammarID)];
+  return [useReferenceGrammarIDSlice()];
 }

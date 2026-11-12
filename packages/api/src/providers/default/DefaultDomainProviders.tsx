@@ -38,12 +38,14 @@ import { custom, function_, is, object, optional, pipe, readonly, type InferInpu
 import ChatOperationsContext, {
   type ChatOperationsContextType
 } from '../../hooks/internal/domains/ChatOperationsContext';
-import ConnectivityContext, { type ConnectivityContextType } from '../../hooks/internal/domains/ConnectivityContext';
+import ConnectionSlices from '../../hooks/internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from '../../hooks/internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from '../../hooks/internal/domains/SendBoxContext';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
+import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
 import randomId from '../../utils/randomId';
+import { type Notification } from '../../types/Notification';
 
 const defaultDomainProvidersPropsSchema = pipe(
   object({
@@ -126,22 +128,17 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
     [outgoing, speech, suggestedActions]
   );
 
-  const connectivityContext = useMemo<ConnectivityContextType>(
-    () =>
-      Object.freeze({
-        connectivityStatus: connection.connectivityStatus,
-        // As the Redux store: `null` until Direct Line has a reference grammar ID.
-        referenceGrammarID: connection.referenceGrammarID as ConnectivityContextType['referenceGrammarID']
-      }),
-    [connection]
-  );
+  // The slices of the connection group, from the sources of the services, until the services become reducer groups.
+  const connectivityStatus = useSourceValue(connection.connectivityStatus);
+  // Keyed by ID, as the `notifications` slice of the Redux store.
+  const notificationsValue = useSourceValue(notifications.notifications) as unknown as Notification[];
+  // As the Redux store: `null` until Direct Line has a reference grammar ID.
+  const referenceGrammarID = useSourceValue(connection.referenceGrammarID) as string;
 
   const notificationsContext = useMemo<NotificationsContextType>(
     () =>
       Object.freeze({
         dismissNotification: notifications.dismissNotification,
-        // Keyed by ID, as the `notifications` slice of the Redux store.
-        notifications: notifications.notifications as unknown as NotificationsContextType['notifications'],
         setNotification: notifications.setNotification
       }),
     [notifications]
@@ -198,15 +195,21 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
 
   return (
     <ChatOperationsContext.Provider value={chatOperationsContext}>
-      <ConnectivityContext.Provider value={connectivityContext}>
-        <NotificationsContext.Provider value={notificationsContext}>
-          <SendBoxContext.Provider value={sendBoxContext}>
-            <SpeechContext.Provider value={speechContext}>
-              <VoiceContext.Provider value={voiceContext}>{children}</VoiceContext.Provider>
-            </SpeechContext.Provider>
-          </SendBoxContext.Provider>
-        </NotificationsContext.Provider>
-      </ConnectivityContext.Provider>
+      <NotificationsContext.Provider value={notificationsContext}>
+        <SendBoxContext.Provider value={sendBoxContext}>
+          <SpeechContext.Provider value={speechContext}>
+            <VoiceContext.Provider value={voiceContext}>
+              <ConnectionSlices
+                connectivityStatus={connectivityStatus}
+                notifications={notificationsValue}
+                referenceGrammarID={referenceGrammarID}
+              >
+                {children}
+              </ConnectionSlices>
+            </VoiceContext.Provider>
+          </SpeechContext.Provider>
+        </SendBoxContext.Provider>
+      </NotificationsContext.Provider>
     </ChatOperationsContext.Provider>
   );
 }

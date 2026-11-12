@@ -1,6 +1,5 @@
-import { useConnectivityContext } from './internal/domains/ConnectivityContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useConnectivityStatusSlice } from './internal/domains/ConnectionSlices';
 
 export default function useConnectivityStatus(): [string] {
-  return [useSourceValue(useConnectivityContext().connectivityStatus)];
+  return [useConnectivityStatusSlice()];
 }

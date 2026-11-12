@@ -1,11 +1,9 @@
-import { type Notification } from '../../../types/Notification';
 import { type WebChatAPIContextType } from '../WebChatAPIContext';
-import { type Source } from './Source';
 import createDomainContext from './private/createDomainContext';
 
+/** The setters of the notifications. The notifications are a slice: `useNotificationsSlice()`. */
 type NotificationsContextType = {
   readonly dismissNotification: WebChatAPIContextType['dismissNotification'];
-  readonly notifications: Source<Notification[]>;
   readonly setNotification: WebChatAPIContextType['setNotification'];
 };
 

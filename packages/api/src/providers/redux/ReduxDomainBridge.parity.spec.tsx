@@ -229,9 +229,16 @@ const HOOKS: Readonly<Record<keyof typeof LEGACY_HOOKS, () => unknown>> = {
   useVoiceStateWritable
 };
 
+// The hooks that read a slice context (`createSliceContext()`), filled by the bridge from one subscription.
+const SLICE_CONTEXT_HOOKS: ReadonlySet<string> = new Set([
+  'useConnectivityStatus',
+  'useNotifications',
+  'useReferenceGrammarID'
+]);
+
 // Renders of each hook in `runActions()`, pinned so a change on both sides is noticed too.
 const NUM_RENDERS: Readonly<Record<keyof typeof LEGACY_HOOKS, number>> = {
-  useConnectivityStatus: 5,
+  useConnectivityStatus: 4,
   useDictateInterims: 5,
   useDictateState: 4,
   useNotifications: 4,
@@ -442,7 +449,21 @@ describe.each(Object.keys(HOOKS))('%s()', name => {
   const useLegacyHook = LEGACY_HOOKS[name];
   const useHook = HOOKS[name];
 
-  function expectSameRenders(legacyRenders: Renders, renders: Renders) {
+  function expectSameRenders(allLegacyRenders: Renders, renders: Renders) {
+    // The hooks of the slice contexts read the value of their slice only: when the store is swapped and their slice keeps
+    // its value, they do not re-render, where the implementation before re-rendered with the same result (it read the
+    // store from a context). Those renders of the implementation before are not expected.
+    const legacyRenders = SLICE_CONTEXT_HOOKS.has(name)
+      ? allLegacyRenders.filter(
+          (result, index) =>
+            !index ||
+            !Array.isArray(result) ||
+            !result.every((element, elementIndex) =>
+              Object.is(element, (allLegacyRenders[index - 1] as unknown[])[+elementIndex])
+            )
+        )
+      : allLegacyRenders;
+
     expect(renders).toHaveLength(legacyRenders.length);
     expect(describeRenders(renders)).toEqual(describeRenders(legacyRenders));
 
