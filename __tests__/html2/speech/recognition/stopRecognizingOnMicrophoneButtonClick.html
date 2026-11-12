@@ -68,9 +68,9 @@
           }
         );
 
-        const microphoneButton = pageElements.microphoneButton();
+        const microphoneButtonComponent = pageElements.microphoneButton().parentElement;
 
-        expect(microphoneButton.classList.contains('webchat__microphone-button--dictating')).toBe(false);
+        expect(microphoneButtonComponent.classList.contains('webchat__microphone-button--dictating')).toBe(false);
         expect(pageElements.sendBoxTextBox()).toHaveProperty('value', 'Hello');
       });
     </script>

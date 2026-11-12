@@ -1,7 +1,7 @@
+import { useDispatch } from '@msinternal/botframework-webchat-redux-store';
 import { registerVoiceHandler, unregisterVoiceHandler, type VoiceHandler } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 import randomId from '../../utils/randomId';
-import { useDispatch } from './WebChatReduxContext';
 
 /**
  * Internal hook to register a voice handler for audio playback.
