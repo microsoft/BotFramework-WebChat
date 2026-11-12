@@ -1,7 +1,7 @@
-import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { custom, function_, is, object, optional, pipe, readonly } from 'valibot';
+import { custom, function_, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import WebChatReduxContext, { type WebChatReduxContextType, type WebChatReduxStore } from './WebChatReduxContext';
 
@@ -15,7 +15,8 @@ const webChatReduxProviderPropsSchema = pipe(
   readonly()
 );
 
-type WebChatReduxProviderProps = InferReactProps<typeof webChatReduxProviderPropsSchema>;
+// Not `InferReactProps`: its `type-fest` import leaves a global-augmentation-only chunk in api's d.ts, which `tsd` rejects.
+type WebChatReduxProviderProps = InferInput<typeof webChatReduxProviderPropsSchema>;
 
 function createBatchedSubscribe(store: WebChatReduxStore): WebChatReduxContextType['subscribe'] {
   const listeners = new Set<() => void>();
