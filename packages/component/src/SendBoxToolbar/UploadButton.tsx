@@ -1,37 +1,20 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import random from 'math-random';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { object, pipe, readonly, string, type InferInput } from 'valibot';
 
 import IconButton from '../SendBox/IconButton';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import styles from '../SendBox/SendBox.module.css';
 import useFocus from '../hooks/useFocus';
 import useMakeThumbnail from '../hooks/useMakeThumbnail';
-import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
 const { useSendBoxAttachments, useLocalizer, useStyleOptions, useUIState } = hooks;
-
-const ROOT_STYLE = {
-  '&.webchat__upload-button': {
-    display: 'flex',
-    overflow: 'hidden',
-    position: 'relative',
-
-    '& .webchat__upload-button--file-input': {
-      height: 0,
-      width: 0,
-      opacity: 0,
-      position: 'absolute',
-      left: 0,
-      top: 0
-    }
-  }
-};
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
@@ -48,7 +31,7 @@ function UploadButton(props: UploadButtonProps) {
   const { className } = validateProps(uploadButtonPropsSchema, props);
 
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
-  const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [inputKey, setInputKey] = useState<number>(0);
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
   const [uiState] = useUIState();
@@ -56,7 +39,6 @@ function UploadButton(props: UploadButtonProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const localize = useLocalizer();
   const makeThumbnail = useMakeThumbnail();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const submit = useSubmit();
 
   const disabled = uiState === 'disabled';
@@ -102,13 +84,13 @@ function UploadButton(props: UploadButtonProps) {
   );
 
   return (
-    <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>
+    <div className={cx(classNames['upload-button'], className)}>
       <input
         accept={uploadAccept}
         aria-disabled={disabled || undefined}
         aria-hidden="true"
         aria-label={uploadFileString}
-        className="webchat__upload-button--file-input"
+        className={classNames['upload-button--file-input']}
         // Recreates the <input> element after every upload to prevent issues in WebDriver.
         // Otherwise, on second upload, WebDriver will resend files from first upload as new Blob/File instance and it will cause duplicates.
         key={inputKey}

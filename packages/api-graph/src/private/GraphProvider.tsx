@@ -1,22 +1,14 @@
 import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
+import { useSyncExternalStore } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
-import {
-  createGraphFromStore,
-  isOfType,
-  type GraphSubscriber,
-  type Identifier
-} from 'botframework-webchat-core/graph.js';
-import React, { memo, useLayoutEffect, useMemo, useReducer, useState } from 'react';
+import { createGraphFromStore, isOfType, type SlantGraph } from 'botframework-webchat-core/graph.js';
+import React, { memo, useCallback, useMemo } from 'react';
 import { custom, function_, is, object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import GraphContext, { graphContextSchema, GraphContextType } from './GraphContext';
 
-const EMPTY_ARRAY = Object.freeze([]);
-
-function increment(value: number): number {
-  return value + 1;
-}
+const EMPTY_ARRAY: readonly WebChatActivity[] = Object.freeze([]);
 
 const graphProviderPropsSchema = pipe(
   object({
@@ -30,117 +22,72 @@ const graphProviderPropsSchema = pipe(
 
 type GraphProviderProps = InferInput<typeof graphProviderPropsSchema>;
 
+// Activities in the order of the graph, without the ones no longer in Redux: the graph does not delete nodes
+// (e.g. DIRECT_LINE/DELETE_ACTIVITY or pruned livestream revisions). Returns the same array until either changes.
+function createGetOrderedActivities(
+  graph: SlantGraph,
+  store: GraphProviderProps['store']
+): () => readonly WebChatActivity[] {
+  let prevGraphState: ReturnType<SlantGraph['getState']> | undefined;
+  let prevStoreActivities: readonly WebChatActivity[] | undefined;
+  let orderedActivities = EMPTY_ARRAY;
+
+  return () => {
+    const graphState = graph.getState();
+    const { activities: storeActivities }: { activities: readonly WebChatActivity[] } = store.getState();
+
+    if (graphState !== prevGraphState || storeActivities !== prevStoreActivities) {
+      const storeActivitySet = new Set(storeActivities);
+
+      prevGraphState = graphState;
+      prevStoreActivities = storeActivities;
+
+      // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
+      orderedActivities = Object.freeze(
+        Array.from(graphState.values())
+          .filter((node): node is DirectLineActivityNode =>
+            isOfType(node, 'urn:microsoft:webchat:direct-line-activity')
+          )
+          .sort((x, y) => x.position[0] - y.position[0])
+          .map(node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity)
+          .filter(activity => storeActivitySet.has(activity))
+      );
+    }
+
+    return orderedActivities;
+  };
+}
+
 function GraphProvider(props: GraphProviderProps) {
   const { children, store } = validateProps(graphProviderPropsSchema, props);
 
-  const [, forceRender] = useReducer(increment, 0);
+  const graph = useMemo(() => createGraphFromStore(store), [store]);
 
-  const [graph, subscribeToActivities] = useMemo(() => {
-    const graph = createGraphFromStore(store);
-    const listeners = new Set<() => void>();
-    let { activities } = store.getState();
+  // Follows the graph for new and updated activities, and Redux for deleted activities.
+  const subscribe = useCallback(
+    (listener: () => void) => {
+      const unsubscribeGraph = graph.subscribe(listener);
+      const unsubscribeStore = store.subscribe(listener);
 
-    // The graph does not delete nodes (e.g. DIRECT_LINE/DELETE_ACTIVITY), so re-render to filter them out when Redux activities change.
-    // Subscribes while rendering, after the graph: a layout effect would be notified after the components below, which read Redux activities.
-    // Remove when the graph supports deleting nodes.
-    store.subscribe(() => {
-      const { activities: nextActivities } = store.getState();
+      return () => {
+        unsubscribeGraph();
+        unsubscribeStore();
+      };
+    },
+    [graph, store]
+  );
 
-      if (!Object.is(activities, nextActivities)) {
-        activities = nextActivities;
-        listeners.forEach(listener => listener());
-      }
-    });
-
-    return Object.freeze([
-      graph,
-      (listener: () => void) => {
-        listeners.add(listener);
-
-        return () => {
-          listeners.delete(listener);
-        };
-      }
-    ] as const);
-  }, [store]);
-
-  useLayoutEffect(() => subscribeToActivities(forceRender), [forceRender, subscribeToActivities]);
-
-  const [orderedActivityNodes, setOrderedActivityNodes] = useState<readonly DirectLineActivityNode[]>(EMPTY_ARRAY);
-
-  // Layout effect: activities already in the store (e.g. rehydrated) must be in this state before the re-render of any other layout effect.
-  // Otherwise, that re-render would see activities in Redux which are not in the graph yet.
-  useLayoutEffect(() => {
-    // Sync between graph and `orderedActivities`.
-    const handleChange: GraphSubscriber = record => {
-      const state = graph.getState();
-
-      setOrderedActivityNodes(prevOrderedMessages => {
-        let nextOrderedMessageMap: Map<Identifier, DirectLineActivityNode> | undefined;
-
-        for (const id of record.upsertedNodeIdentifiers) {
-          const node = state.get(id);
-
-          if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
-            const activityNode = node as DirectLineActivityNode;
-
-            if (!nextOrderedMessageMap) {
-              nextOrderedMessageMap = new Map(prevOrderedMessages.map(node => [node['@id'], node]));
-            }
-
-            const permanentId = activityNode['@id'];
-
-            nextOrderedMessageMap.delete(permanentId);
-            nextOrderedMessageMap.set(permanentId, activityNode);
-          }
-        }
-
-        if (nextOrderedMessageMap) {
-          // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
-          return Object.freeze(
-            Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0])
-          );
-        }
-
-        return prevOrderedMessages;
-      });
-    };
-
-    const unsubscribe = graph.subscribe(handleChange);
-
-    // Triggers initial sync.
-    // Activities queued before Web Chat mounted should be synchronized.
-    handleChange({ upsertedNodeIdentifiers: new Set(graph.getState().keys()) });
-
-    return () => {
-      unsubscribe();
-      setOrderedActivityNodes(EMPTY_ARRAY);
-    };
-  }, [graph, setOrderedActivityNodes]);
-
-  const { activities: storeActivities } = store.getState();
-
-  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(() => {
-    // Filter out stale graph nodes for activities no longer in Redux (e.g. pruned livestream revisions).
-    // The graph does not support deletion, so stale nodes linger after computeSortedActivities prunes them.
-    const validActivitySet = new Set<WebChatActivity>(storeActivities);
-    const activities: WebChatActivity[] = [];
-
-    for (const node of orderedActivityNodes) {
-      const activity = node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity;
-
-      validActivitySet.has(activity) && activities.push(activity);
-    }
-
-    return Object.freeze([Object.freeze(activities)] as const);
-  }, [orderedActivityNodes, storeActivities]);
+  const orderedActivities = useSyncExternalStore(
+    subscribe,
+    useMemo(() => createGetOrderedActivities(graph, store), [graph, store])
+  );
 
   const context = useMemo<GraphContextType>(
     () =>
       parse(graphContextSchema, {
-        orderedActivitiesState
+        orderedActivitiesState: Object.freeze([orderedActivities] as const)
       }),
-    [orderedActivitiesState]
+    [orderedActivities]
   );
 
   return <GraphContext.Provider value={context}>{children}</GraphContext.Provider>;

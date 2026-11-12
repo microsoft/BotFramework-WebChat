@@ -170,6 +170,10 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
       });
 
       spyOn(speechRecognition, 'start').mockImplementationOnce(async () => {
+        // Like a browser, events come after start() returned and "starting" is painted: start() is called from an effect,
+        // events inside it would render "starting" and "dictating" in the same frame on React 18 and later.
+        await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+
         if (typeof recognizeActor === 'string') {
           start();
           audioStart();

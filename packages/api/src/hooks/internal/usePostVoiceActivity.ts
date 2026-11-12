@@ -1,6 +1,6 @@
+import { useDispatch } from '@msinternal/botframework-webchat-redux-store';
 import { postVoiceActivity, type WebChatActivity } from 'botframework-webchat-core';
 import { useCallback } from 'react';
-import { useDispatch } from './WebChatReduxContext';
 
 /**
  * Hook to post voice activities (fire-and-forget, no echo back).
