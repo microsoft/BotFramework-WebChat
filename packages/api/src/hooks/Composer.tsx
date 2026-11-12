@@ -6,7 +6,7 @@ import {
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
+import { ReduxStoreComposer, useDispatch, WebChatReduxProvider } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -98,8 +98,6 @@ import normalizeLanguage from '../utils/normalizeLanguage';
 import ReduxStoreProvider from './internal/ReduxStoreProvider';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
-import { useDispatch } from './internal/WebChatReduxContext';
-import WebChatReduxProvider from './internal/WebChatReduxProvider';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import useVoiceHandlers from './internal/useVoiceHandlers';
 import activityFallbackPolymiddleware from './middleware/activityFallbackPolymiddleware';

@@ -1,5 +1,6 @@
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
+
 import { type Notification } from '../types/Notification';
-import { useSelector } from './internal/WebChatReduxContext';
 
 const selectNotifications = ({ notifications }) => notifications;
 

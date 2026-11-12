@@ -21,7 +21,7 @@ function renderActivities() {
     readonly ReduxStoreProvider: typeof import('./internal/ReduxStoreProvider').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
-    readonly WebChatReduxProvider: typeof import('./internal/WebChatReduxProvider').default;
+    readonly WebChatReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider;
   };
 
   jest.isolateModules(() => {
@@ -33,7 +33,7 @@ function renderActivities() {
       ReduxStoreProvider: require('./internal/ReduxStoreProvider').default,
       render,
       useActivities: require('./useActivities').default,
-      WebChatReduxProvider: require('./internal/WebChatReduxProvider').default
+      WebChatReduxProvider: require('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider
     };
   });
 

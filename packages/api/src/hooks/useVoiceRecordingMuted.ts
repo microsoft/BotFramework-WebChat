@@ -1,6 +1,6 @@
+import { useDispatch, useSelector } from '@msinternal/botframework-webchat-redux-store';
 import { muteVoiceRecording, unmuteVoiceRecording } from 'botframework-webchat-core';
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from './internal/WebChatReduxContext';
 
 const selectMicrophoneMuted = ({ voice }) => voice.microphoneMuted;
 

@@ -53,6 +53,10 @@
     "react": [
       "16.8.6",
       "using react@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-dom": [
+      "16.8.6",
+      "using react-dom@16.8.6 to make sure this is the minimum supported version"
     ]
   },
   "localDependencies": {
@@ -74,6 +78,7 @@
     "valibot": "1.4.2"
   },
   "peerDependencies": {
-    "react": ">= 16.8.6"
+    "react": ">= 16.8.6",
+    "react-dom": ">= 16.8.6"
   }
 }
