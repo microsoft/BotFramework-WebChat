@@ -5,6 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
  *
  * - `getState()` returns the state of the last dispatch before React renders it, as `getState()` of a Redux store, so
  *   code outside render (e.g. a submit right after setting the value) reads what was just dispatched;
+ * - a render reads the state of the last dispatch, as `useSelector()` reads the Redux store: a render that React runs
+ *   before the one of the dispatch (e.g. a dispatch from an effect, then a render of the parent at another priority)
+ *   still shows it;
  * - Strict Mode does not call the reducer twice, so a reducer that reads the clock or warns does it once;
  * - an action that returns the same state (`Object.is()`) does not re-render.
  *
@@ -18,7 +21,8 @@ export default function useEagerReducer<S, A>(
   const mountedRef = useRef(true);
   const reducerRef = useRef(reducer);
   const stateRef = useRef(initialState);
-  const [state, setState] = useState<S>(initialState);
+  // Only to re-render: the render reads the state of the last dispatch (below).
+  const [, setState] = useState<S>(initialState);
 
   useEffect(() => {
     // Set here, not only by `useRef(true)`: Strict Mode (React 18 and later) runs the cleanup, then the effect again, on
@@ -49,6 +53,10 @@ export default function useEagerReducer<S, A>(
   );
 
   const getState = useCallback(() => stateRef.current, [stateRef]);
+
+  // As `useSelector()` reads the store during render (Redux mode): the state of the last dispatch, even if React has not
+  // processed the re-render of that dispatch yet (`hooks/useDictateInterims.getter.html`, default mode).
+  const state = stateRef.current;
 
   return useMemo(() => Object.freeze([state, dispatch, getState] as const), [dispatch, getState, state]);
 }
