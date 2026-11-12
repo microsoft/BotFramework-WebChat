@@ -36,8 +36,9 @@
         expect(version).toBe('19.3.1');
 
         const root = createRoot(document.getElementById('webchat'));
-        const render = mode =>
-          root.render(createElement(Activity, { mode }, createElement(ReactWebChat, { directLine, store })));
+        // The same element each time: showing Web Chat again does not re-render it, only its effects run again.
+        const webChat = createElement(ReactWebChat, { directLine, store });
+        const render = mode => root.render(createElement(Activity, { mode }, webChat));
 
         render('visible');
 
