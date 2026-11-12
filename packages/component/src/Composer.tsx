@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 
 import { singleToArray } from '@msinternal/botframework-webchat-base/utils';
-import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
+import { createKeyedStore, useKeyedStoreValue, useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import {
@@ -196,7 +196,14 @@ const ComposerCore = (props: ComposerCoreProps) => {
     webSpeechPonyfillFactory
   } = props;
 
-  const [dictateAbortable, setDictateAbortable] = useState();
+  // A store, not a state: the store updates of the same dictation progress (e.g. dictate state) re-render at sync priority
+  // on React 18 and later, and a state would render later, with the microphone button disabled in between.
+  const dictateAbortableStore = useMemo(() => createKeyedStore<boolean>(), []);
+  const [dictateAbortable] = useKeyedStoreValue(dictateAbortableStore, 'abortable');
+  const setDictateAbortable = useCallback(
+    (abortable: boolean) => dictateAbortableStore.set('abortable', abortable),
+    [dictateAbortableStore]
+  );
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
   const focusTranscriptCallbacksRef = useRef<((init: FocusTranscriptInit) => Promise<void>)[]>([]);
