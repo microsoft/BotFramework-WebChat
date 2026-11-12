@@ -65,7 +65,7 @@
         await pageConditions.scrollToEndButtonShown();
         await pageConditions.scrollStabilized(0);
 
-        // THEN: The "More messages" button has a border in the system button text color.
+        // THEN: The "More messages" button has an outset border in the system button text color.
         await host.snapshot('local');
       });
     </script>
