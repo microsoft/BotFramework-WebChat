@@ -1,24 +1,24 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { custom, function_, is, object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { type Store } from 'redux';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import WebChatReduxContext, { type WebChatReduxContextType, type WebChatReduxStore } from './WebChatReduxContext';
+import reduxStoreSchema from './private/reduxStoreSchema';
+import ReduxContext, { type ReduxContextType } from './ReduxContext';
 
-const webChatReduxProviderPropsSchema = pipe(
+const reduxProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    store: custom<WebChatReduxStore>(value =>
-      is(object({ dispatch: function_(), getState: function_(), subscribe: function_() }), value)
-    )
+    store: reduxStoreSchema
   }),
   readonly()
 );
 
 // Not `InferReactProps`: its `type-fest` import leaves a global-augmentation-only chunk in api's d.ts, which `tsd` rejects.
-type WebChatReduxProviderProps = InferInput<typeof webChatReduxProviderPropsSchema>;
+type ReduxProviderProps = InferInput<typeof reduxProviderPropsSchema>;
 
-function createBatchedSubscribe(store: WebChatReduxStore): WebChatReduxContextType['subscribe'] {
+function createBatchedSubscribe(store: Store): ReduxContextType['subscribe'] {
   const listeners = new Set<() => void>();
   let unsubscribeStore: (() => void) | undefined;
 
@@ -42,18 +42,18 @@ function createBatchedSubscribe(store: WebChatReduxStore): WebChatReduxContextTy
   };
 }
 
-function WebChatReduxProvider(props: WebChatReduxProviderProps) {
-  const { children, store } = validateProps(webChatReduxProviderPropsSchema, props);
+function ReduxProvider(props: ReduxProviderProps) {
+  const { children, store } = validateProps(reduxProviderPropsSchema, props);
 
-  const context = useMemo<WebChatReduxContextType>(
+  const context = useMemo<ReduxContextType>(
     () => Object.freeze({ store, subscribe: createBatchedSubscribe(store) }),
     [store]
   );
 
-  return <WebChatReduxContext.Provider value={context}>{children}</WebChatReduxContext.Provider>;
+  return <ReduxContext.Provider value={context}>{children}</ReduxContext.Provider>;
 }
 
-WebChatReduxProvider.displayName = 'WebChatReduxProvider';
+ReduxProvider.displayName = 'ReduxProvider';
 
-export default memo(WebChatReduxProvider);
-export { webChatReduxProviderPropsSchema, type WebChatReduxProviderProps };
+export default memo(ReduxProvider);
+export { reduxProviderPropsSchema, type ReduxProviderProps };

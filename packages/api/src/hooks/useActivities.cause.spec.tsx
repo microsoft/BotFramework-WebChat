@@ -15,9 +15,9 @@ const incoming = (id: string, text: string = id) => ({
 function renderActivities({ graphIsEmpty = false }: { readonly graphIsEmpty?: boolean } = {}) {
   let modules: {
     readonly React: typeof import('react');
+    readonly ReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').ReduxProvider;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
-    readonly WebChatReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider;
   };
 
   const store = createStore();
@@ -36,13 +36,13 @@ function renderActivities({ graphIsEmpty = false }: { readonly graphIsEmpty?: bo
 
     modules = {
       React: require('react'),
+      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider,
       render: require('@testing-library/react/pure').render,
-      useActivities: require('./useActivities').default,
-      WebChatReduxProvider: require('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider
+      useActivities: require('./useActivities').default
     };
   });
 
-  const { React, render, useActivities, WebChatReduxProvider } = modules;
+  const { React, ReduxProvider, render, useActivities } = modules;
   const errors: unknown[] = [];
   // React 16 in development also rethrows the error caught by the error boundary.
   const catchError = (fn: () => void) => {
@@ -85,9 +85,9 @@ function renderActivities({ graphIsEmpty = false }: { readonly graphIsEmpty?: bo
   catchError(() => {
     ({ unmount } = render(
       <ErrorBoundary>
-        <WebChatReduxProvider store={store}>
+        <ReduxProvider store={store}>
           <Activities />
-        </WebChatReduxProvider>
+        </ReduxProvider>
       </ErrorBoundary>
     ));
   });

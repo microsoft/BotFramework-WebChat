@@ -18,10 +18,10 @@ function renderActivities() {
   let modules: {
     readonly act: typeof import('@testing-library/react/pure').act;
     readonly React: typeof import('react');
+    readonly ReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').ReduxProvider;
     readonly ReduxStoreProvider: typeof import('./internal/ReduxStoreProvider').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
-    readonly WebChatReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider;
   };
 
   jest.isolateModules(() => {
@@ -30,14 +30,14 @@ function renderActivities() {
     modules = {
       act,
       React: require('react'),
+      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider,
       ReduxStoreProvider: require('./internal/ReduxStoreProvider').default,
       render,
-      useActivities: require('./useActivities').default,
-      WebChatReduxProvider: require('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider
+      useActivities: require('./useActivities').default
     };
   });
 
-  const { act, React, ReduxStoreProvider, render, useActivities, WebChatReduxProvider } = modules;
+  const { act, React, ReduxProvider, ReduxStoreProvider, render, useActivities } = modules;
   const errors: unknown[] = [];
   const renders: (readonly string[])[] = [];
   const store = createStore();
@@ -74,11 +74,11 @@ function renderActivities() {
 
   const { unmount } = render(
     <ErrorBoundary>
-      <WebChatReduxProvider store={store}>
+      <ReduxProvider store={store}>
         <ReduxStoreProvider>
           <Activities />
         </ReduxStoreProvider>
-      </WebChatReduxProvider>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 

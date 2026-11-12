@@ -2,7 +2,7 @@
 /// <reference types="jest" />
 
 import * as JestGlobals from '@jest/globals';
-import { WebChatReduxProvider } from '@msinternal/botframework-webchat-redux-store';
+import { ReduxProvider } from '@msinternal/botframework-webchat-redux-store';
 import { render } from '@testing-library/react';
 import { scenario } from '@testduet/given-when-then';
 import { createStore } from 'botframework-webchat-core';
@@ -47,11 +47,11 @@ scenario(
       .when('rendered with a component using useActivities()', ({ store, Wrapper }) =>
         render(
           <Wrapper>
-            <WebChatReduxProvider store={store}>
+            <ReduxProvider store={store}>
               <ReduxStoreProvider>
                 <Activities />
               </ReduxStoreProvider>
-            </WebChatReduxProvider>
+            </ReduxProvider>
           </Wrapper>
         )
       )

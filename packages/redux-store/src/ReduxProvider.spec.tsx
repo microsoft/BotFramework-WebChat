@@ -7,8 +7,8 @@ import { scenario } from '@testduet/given-when-then';
 import React, { memo } from 'react';
 import { legacy_createStore as createStore } from 'redux';
 
-import { useSelector } from './WebChatReduxContext';
-import WebChatReduxProvider from './WebChatReduxProvider';
+import { useSelector } from './ReduxContext';
+import ReduxProvider from './ReduxProvider';
 
 type State = { readonly count: number; readonly other: number };
 
@@ -28,7 +28,7 @@ function reducer(
 }
 
 scenario(
-  'useSelector() under <WebChatReduxProvider>',
+  'useSelector() under <ReduxProvider>',
   bdd => {
     bdd
       .given('a parent and a child selecting the same value, the parent passing it down as a prop', () => {
@@ -47,9 +47,9 @@ scenario(
         const store = createStore(reducer);
 
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Parent />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { renders, store };
@@ -81,9 +81,9 @@ scenario(
         const store = createStore(reducer);
 
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { renders, store };
@@ -119,9 +119,9 @@ scenario(
       })
       .when('rendered', ({ Counter, renders, store }) => {
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return renders;
