@@ -1,12 +1,13 @@
 import { hooks } from 'botframework-webchat-api';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo, useRef, type MouseEventHandler } from 'react';
 import { boolean, custom, function_, is, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useFocusVisible from '../hooks/internal/useFocusVisible';
-import useStyleSet from '../hooks/useStyleSet';
 import AccessibleButton from '../Utils/AccessibleButton';
+import styles from './SendBox.module.css';
 
 const { useStyleOptions } = hooks;
 
@@ -34,7 +35,7 @@ function IconButton(props: IconButtonProps) {
     onClick
   } = validateProps(iconButtonPropsSchema, props);
 
-  const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const buttonRef = useRef<HTMLButtonElement>();
 
@@ -43,12 +44,11 @@ function IconButton(props: IconButtonProps) {
   return (
     <AccessibleButton
       aria-label={alt}
-      className={classNames(
-        sendBoxButtonStyleSet + '',
-        'webchat__icon-button',
+      className={cx(
+        classNames['icon-button'],
         {
-          'webchat__icon-button--focus-visible': focusVisible,
-          'webchat__icon-button--stretch': sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top'
+          [classNames['icon-button--focus-visible']]: focusVisible,
+          [classNames['icon-button--stretch']]: sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top'
         },
         className
       )}
@@ -59,9 +59,9 @@ function IconButton(props: IconButtonProps) {
       title={alt}
       type="button"
     >
-      <div className="webchat__icon-button__shade" />
+      <div className={classNames['icon-button__shade']} />
       {children}
-      <div className="webchat__icon-button__keyboard-focus-indicator" />
+      <div className={classNames['icon-button__keyboard-focus-indicator']} />
     </AccessibleButton>
   );
 }
