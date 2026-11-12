@@ -6,7 +6,7 @@ import {
 import { isPlainObject, singleToArray, type OneOrMany } from '@msinternal/botframework-webchat-base/utils';
 import { useMemoIterable } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { ReduxStoreComposer, useDispatch, WebChatReduxProvider } from '@msinternal/botframework-webchat-redux-store';
+import { ReduxProvider, ReduxStoreComposer, useDispatch } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -843,7 +843,7 @@ const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
   }, [ponyfill, store]);
 
   return (
-    <WebChatReduxProvider store={memoizedStore}>
+    <ReduxProvider store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
         <ReduxStoreProvider>
           <ActivityKeyerComposer>
@@ -853,7 +853,7 @@ const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
           </ActivityKeyerComposer>
         </ReduxStoreProvider>
       </ReduxStoreComposer>
-    </WebChatReduxProvider>
+    </ReduxProvider>
   );
 };
 

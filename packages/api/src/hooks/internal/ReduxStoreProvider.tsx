@@ -1,6 +1,6 @@
 import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useWebChatReduxContext } from '@msinternal/botframework-webchat-redux-store';
+import { useReduxContext } from '@msinternal/botframework-webchat-redux-store';
 import React, { memo, useMemo } from 'react';
 import { object, optional, pipe, readonly } from 'valibot';
 
@@ -14,13 +14,13 @@ const reduxStoreProviderPropsSchema = pipe(
 type ReduxStoreProviderProps = InferReactProps<typeof reduxStoreProviderPropsSchema>;
 
 /**
- * Renders the graph package's `<GraphProvider>` with the store of `<WebChatReduxProvider>`, following it through the subscription of `useSelector()`.
+ * Renders the graph package's `<GraphProvider>` with the store of `<ReduxProvider>`, following it through the subscription of `useSelector()`.
  *
  * React 16/17 then re-render `<GraphProvider>` in the same batch as the selectors, after the graph has the change.
  */
 function ReduxStoreProvider(props: ReduxStoreProviderProps) {
   const { children } = validateProps(reduxStoreProviderPropsSchema, props);
-  const { store, subscribe } = useWebChatReduxContext();
+  const { store, subscribe } = useReduxContext();
 
   const graphStore = useMemo(() => Object.freeze({ ...store, subscribe }), [store, subscribe]);
 
