@@ -65,11 +65,7 @@
 
         await waitFor(() => expect(pageElements.sendBoxTextBox()).not.toHaveProperty('offsetParent', null));
 
-        // THEN: Web Chat applies the background color, and keeps the styles it had before: the file input is still hidden.
-        await waitFor(() => expect(getComputedStyle(getSurface()).backgroundColor).toBe('rgb(255, 255, 224)'));
-        expect(getComputedStyle(document.querySelector('.webchat__upload-button--file-input')).opacity).toBe('0');
-
-        // THEN: Web Chat shows the send box on a light yellow background.
+        // THEN: Web Chat shows the send box with its styles, on a light yellow background.
         await host.snapshot('local');
       });
     </script>

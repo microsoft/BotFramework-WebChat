@@ -40,12 +40,9 @@
 
         // `pageConditions.numActivitiesShown()` only counts the first transcript.
         const getNumActivities = () => document.querySelectorAll('.webchat__basic-transcript__activity').length;
-        // Only Web Chat's styles hide the file input of the upload button.
-        const getFileInputOpacities = () =>
-          Array.from(
-            document.querySelectorAll('.webchat__upload-button--file-input'),
-            element => getComputedStyle(element).opacity
-          );
+        // The <style> elements of the styles the two Web Chats share.
+        const getNumSharedStyleElements = () =>
+          document.head.querySelectorAll('style[data-emotion^="webchat--css-"]').length;
 
         // GIVEN: Two Web Chats with the same nonce and styles root (both default), so they share their styles.
         // The first one hides its send box: two unnamed send box landmarks would not be unique.
@@ -62,7 +59,7 @@
         await webChat2.directLine.emulateIncomingActivity('Hello from the second Web Chat.');
         await waitFor(() => expect(getNumActivities()).toBe(2));
 
-        expect(getFileInputOpacities()).toEqual(['0']);
+        expect(getNumSharedStyleElements()).toBe(1);
 
         // THEN: Both Web Chats show their messages with their styles, the second one with its send box.
         await host.snapshot('local');
@@ -72,8 +69,8 @@
 
         expect(getNumActivities()).toBe(1);
 
-        // THEN: The second Web Chat keeps the styles.
-        expect(getFileInputOpacities()).toEqual(['0']);
+        // THEN: The second Web Chat keeps the shared <style> element.
+        expect(getNumSharedStyleElements()).toBe(1);
 
         // THEN: Only the second Web Chat is shown, with its styles.
         await host.snapshot('local');

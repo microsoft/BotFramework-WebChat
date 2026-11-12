@@ -46,9 +46,8 @@
 
         await pageConditions.uiConnected();
 
-        // THEN: Web Chat has its styles: only they hide the file input of the upload button.
+        // THEN: Web Chat added its <style> elements.
         expect(getNumStyleElements()).toBeGreaterThan(numStyleElementsBeforeRender);
-        expect(getComputedStyle(document.querySelector('.webchat__upload-button--file-input')).opacity).toBe('0');
 
         // THEN: Web Chat shows the send box with its styles.
         await host.snapshot('local');

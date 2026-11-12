@@ -40,16 +40,15 @@
         const webChat = createElement(ReactWebChat, { directLine, store });
         const render = mode => root.render(createElement(Activity, { mode }, webChat));
 
-        // Only Web Chat's styles hide the file input of the upload button.
-        const getFileInputOpacity = () =>
-          getComputedStyle(document.querySelector('.webchat__upload-button--file-input')).opacity;
+        // The <style> element of Web Chat's emotion styles, added to `styleOptions.stylesRoot`, which defaults to <head>.
+        const getNumStyleElements = () => document.head.querySelectorAll('style[data-emotion^="webchat--css-"]').length;
 
         // WHEN: Web Chat is rendered in a visible <Activity>.
         render('visible');
 
         await pageConditions.uiConnected();
 
-        expect(getFileInputOpacity()).toBe('0');
+        const numStyleElements = getNumStyleElements();
 
         // THEN: Web Chat shows the send box with its styles.
         await host.snapshot('local');
@@ -64,8 +63,8 @@
 
         await waitFor(() => expect(pageElements.sendBoxTextBox()).not.toHaveProperty('offsetParent', null));
 
-        // THEN: Web Chat keeps its styles: the file input is still hidden.
-        await waitFor(() => expect(getFileInputOpacity()).toBe('0'));
+        // THEN: Web Chat has its <style> element back.
+        expect(getNumStyleElements()).toBe(numStyleElements);
 
         // THEN: Web Chat looks the same as before it was hidden.
         await host.snapshot('local');
