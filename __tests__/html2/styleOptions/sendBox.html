@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions, renderWebChat, testIds } from 'botframework-webchat';
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+
+      // TODO: Should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Every send box style option of the layout and the text box set to a value other than its default.
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              sendBoxBackground: 'LightYellow',
+              sendBoxBorderBottom: 'dotted 4px Blue',
+              sendBoxBorderLeft: 'solid 4px Red',
+              sendBoxBorderRight: 'dashed 4px Green',
+              sendBoxBorderTop: 'solid 4px Purple',
+              sendBoxHeight: 80, // Numbers are in pixels.
+              sendBoxMaxHeight: '60px',
+              sendBoxPlaceholderColor: 'Crimson',
+              sendBoxTextColor: 'DarkGreen',
+              sendBoxTextWrap: true // The maximum height applies to the multi-line text box.
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // THEN: An 80 pixels tall, light yellow send box with a purple top, green dashed right, blue dotted bottom and red left border, and a crimson placeholder.
+        await host.snapshot('local');
+
+        // WHEN: The send box has 6 lines of text.
+        store.dispatch({ type: 'WEB_CHAT/SET_SEND_BOX', payload: { text: 'One\nTwo\nThree\nFour\nFive\nSix' } });
+
+        await waitFor(() => expect(pageElements.sendBoxTextBox().value).toBe('One\nTwo\nThree\nFour\nFive\nSix'));
+
+        // THEN: The text is dark green and the text box stops growing at 60 pixels, showing a scroll bar.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

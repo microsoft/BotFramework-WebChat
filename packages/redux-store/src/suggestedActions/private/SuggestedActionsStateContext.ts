@@ -1,14 +1,18 @@
 import { type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
-import { createContext, type Dispatch, type SetStateAction } from 'react';
+import { createContext } from 'react';
+
+type SuggestedActionsState = Readonly<{
+  originActivity: WebChatActivity | undefined;
+  suggestedActions: readonly DirectLineCardAction[];
+}>;
 
 /**
- * The state of `<SuggestedActionsComposer>` and its raw setters, for `<ReduxSuggestedActionsMirror>` only.
+ * The state of `<SuggestedActionsComposer>` and its raw setter, for `<ReduxSuggestedActionsMirror>` and
+ * `<SuggestedActionsSubscriber>` only.
  */
-type SuggestedActionsStateContextType = {
-  readonly originActivity: WebChatActivity | undefined;
-  readonly setOriginActivity: Dispatch<SetStateAction<WebChatActivity | undefined>>;
-  readonly setSuggestedActionsRaw: Dispatch<SetStateAction<readonly DirectLineCardAction[]>>;
-  readonly suggestedActions: readonly DirectLineCardAction[];
+type SuggestedActionsStateContextType = SuggestedActionsState & {
+  /** Sets both values in one change, so their readers re-render once. */
+  readonly setState: (state: SuggestedActionsState) => void;
 };
 
 const SuggestedActionsStateContext = createContext<SuggestedActionsStateContextType>(
@@ -20,4 +24,4 @@ const SuggestedActionsStateContext = createContext<SuggestedActionsStateContextT
 );
 
 export default SuggestedActionsStateContext;
-export { type SuggestedActionsStateContextType };
+export { type SuggestedActionsState, type SuggestedActionsStateContextType };

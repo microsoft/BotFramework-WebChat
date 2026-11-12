@@ -28,21 +28,22 @@ type SuggestedActionsSubscriberProps = InferInput<typeof suggestedActionsSubscri
  */
 function SuggestedActionsSubscriber(props: SuggestedActionsSubscriberProps) {
   const { children, subscribe } = validateProps(suggestedActionsSubscriberPropsSchema, props);
-  const { setOriginActivity, setSuggestedActionsRaw } = useContext(SuggestedActionsStateContext);
+  const { setState } = useContext(SuggestedActionsStateContext);
 
   useEffect(
     () =>
       subscribe((suggestedActions, originActivity) => {
-        setOriginActivity(originActivity);
         // A clear keeps its array (as `<ReduxSuggestedActionsMirror>` on `CLEAR_SUGGESTED_ACTIONS`): no re-render when
         // already cleared. Any other set is a new array, as on `SET_SUGGESTED_ACTIONS`.
-        setSuggestedActionsRaw(
-          suggestedActions === CLEARED_SUGGESTED_ACTIONS
-            ? CLEARED_SUGGESTED_ACTIONS
-            : Object.freeze(Array.from(suggestedActions))
-        );
+        setState({
+          originActivity,
+          suggestedActions:
+            suggestedActions === CLEARED_SUGGESTED_ACTIONS
+              ? CLEARED_SUGGESTED_ACTIONS
+              : Object.freeze(Array.from(suggestedActions))
+        });
       }),
-    [setOriginActivity, setSuggestedActionsRaw, subscribe]
+    [setState, subscribe]
   );
 
   return <Fragment>{children}</Fragment>;

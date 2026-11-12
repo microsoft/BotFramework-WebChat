@@ -2,13 +2,12 @@
 /// <reference types="jest" />
 
 import * as JestGlobals from '@jest/globals';
+import { ReduxProvider, useReduxContext } from '@msinternal/botframework-webchat-redux-store';
 import { render } from '@testing-library/react';
 import { scenario } from '@testduet/given-when-then';
-import React, { memo, useContext, useMemo } from 'react';
-import { legacy_createStore as createStore } from 'redux';
+import React, { memo, useMemo } from 'react';
+import { legacy_createStore as createStore, type Store } from 'redux';
 
-import WebChatReduxContext from '../WebChatReduxContext';
-import WebChatReduxProvider from '../WebChatReduxProvider';
 import { type Source } from './Source';
 import useSourceValue from './useSourceValue';
 
@@ -27,15 +26,15 @@ function reducer(
         : state;
 }
 
-// Same as the sources of the Redux bridge: one slice, through the batched subscription of <WebChatReduxProvider>.
+// Same as the sources of the Redux bridge: one slice, through the batched subscription of <ReduxProvider>.
 function useCountSource(): Source<number> {
-  const { store, subscribe } = useContext(WebChatReduxContext);
+  const { store, subscribe } = useReduxContext<Store<State>>();
 
   return useMemo(() => Object.freeze({ get: () => store.getState().count, subscribe }), [store, subscribe]);
 }
 
 scenario(
-  'useSourceValue() with sources over <WebChatReduxProvider>',
+  'useSourceValue() with sources over <ReduxProvider>',
   bdd => {
     bdd
       .given('a parent and a child reading the same source, the parent passing it down as a prop', () => {
@@ -54,9 +53,9 @@ scenario(
         const store = createStore(reducer);
 
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Parent />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { renders, store };
@@ -80,7 +79,7 @@ scenario(
         const renders: (readonly number[])[] = [];
 
         function Counter() {
-          const { store, subscribe } = useContext(WebChatReduxContext);
+          const { store, subscribe } = useReduxContext<Store<State>>();
 
           renders.push(
             useSourceValue(
@@ -95,9 +94,9 @@ scenario(
         const store = createStore(reducer);
 
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { renders, store };
@@ -133,9 +132,9 @@ scenario(
       })
       .when('rendered', ({ Counter, renders, store }) => {
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return renders;
@@ -157,18 +156,18 @@ scenario(
         }
 
         const result = render(
-          <WebChatReduxProvider store={store1}>
+          <ReduxProvider store={store1}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { Counter, renders, result, store1, store2 };
       })
       .when('the store is swapped, then both stores change', ({ Counter, renders, result, store1, store2 }) => {
         result.rerender(
-          <WebChatReduxProvider store={store2}>
+          <ReduxProvider store={store2}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         store1.dispatch({ type: 'INCREMENT_COUNT' });

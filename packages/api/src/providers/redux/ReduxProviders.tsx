@@ -1,11 +1,9 @@
-import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
-import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
-import { createStoreWithOptions } from 'botframework-webchat-core';
+import { ReduxProvider, ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
+import { createStoreWithOptions, type createStore } from 'botframework-webchat-core';
 import React, { memo, useEffect, useMemo } from 'react';
 
 import usePonyfill from '../../hooks/usePonyfill';
-import { type WebChatReduxStore } from '../../hooks/internal/WebChatReduxContext';
-import WebChatReduxProvider from '../../hooks/internal/WebChatReduxProvider';
+import ReduxStoreProvider from '../../hooks/internal/ReduxStoreProvider';
 import { countProviderMount } from '../internalDefaultMode';
 import ReduxActivitiesCrossCheck from './ReduxActivitiesCrossCheck';
 import ReduxDomainBridge from './ReduxDomainBridge';
@@ -19,7 +17,7 @@ declare const process: {
 
 type ReduxProvidersProps = ReduxSessionEffectsProps & {
   /** The store of the host. Without it, a store is created. */
-  readonly store?: WebChatReduxStore | undefined;
+  readonly store?: ReturnType<typeof createStore> | undefined;
 };
 
 /**
@@ -77,9 +75,9 @@ function ReduxProviders({
   useEffect(() => countProviderMount('redux'), []);
 
   return (
-    <WebChatReduxProvider store={memoizedStore}>
+    <ReduxProvider store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
-        <GraphProvider store={memoizedStore}>
+        <ReduxStoreProvider>
           <ReduxDomainBridge>
             <ReduxSessionEffects
               directLine={directLine}
@@ -92,9 +90,9 @@ function ReduxProviders({
               {children}
             </ReduxSessionEffects>
           </ReduxDomainBridge>
-        </GraphProvider>
+        </ReduxStoreProvider>
       </ReduxStoreComposer>
-    </WebChatReduxProvider>
+    </ReduxProvider>
   );
 }
 

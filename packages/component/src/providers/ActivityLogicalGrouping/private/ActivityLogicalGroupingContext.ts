@@ -1,4 +1,5 @@
-import { type ReadonlyKeyedStore } from '../../../hooks/internal/createKeyedStore';
+import { type ReadonlyKeyedStore } from '@msinternal/botframework-webchat-react-hooks';
+
 import createContextAndHook from '../../createContextAndHook';
 
 type LogicalGrouping = {

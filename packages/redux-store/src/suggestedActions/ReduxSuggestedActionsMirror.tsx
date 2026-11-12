@@ -5,7 +5,7 @@ import {
 } from 'botframework-webchat-core';
 import { setRawState } from 'botframework-webchat-core/internal.js';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { Fragment, memo, useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { Fragment, memo, useCallback, useContext, useEffect, useLayoutEffect } from 'react';
 import { type Action } from 'redux';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
@@ -27,8 +27,8 @@ type ReduxSuggestedActionsMirrorProps = InferInput<typeof reduxSuggestedActionsM
  * Mirrors the suggested actions of `<SuggestedActionsComposer>` to the Redux store, and applies the set and clear
  * suggested actions actions dispatched to the store.
  *
- * Wrap the children of `<SuggestedActionsComposer>` with it: it writes to the store before its children render, and
- * registers the action sink after their effects, as `<SuggestedActionsComposer>` did when it held the store.
+ * Wrap the children of `<SuggestedActionsComposer>` with it: it registers the action sink after their effects, as
+ * `<SuggestedActionsComposer>` did when it held the store.
  */
 function ReduxSuggestedActionsMirror(props: ReduxSuggestedActionsMirrorProps) {
   const {
@@ -36,14 +36,12 @@ function ReduxSuggestedActionsMirror(props: ReduxSuggestedActionsMirrorProps) {
     store: { dispatch }
   } = validateProps(reduxSuggestedActionsMirrorPropsSchema, props);
 
-  const { originActivity, setOriginActivity, setSuggestedActionsRaw, suggestedActions } =
-    useContext(SuggestedActionsStateContext);
+  const { originActivity, setState, suggestedActions } = useContext(SuggestedActionsStateContext);
 
   const handleAction = useCallback(
     (action: Action) => {
       if (action.type === CLEAR_SUGGESTED_ACTIONS) {
-        setOriginActivity(undefined);
-        setSuggestedActionsRaw(CLEARED_SUGGESTED_ACTIONS);
+        setState({ originActivity: undefined, suggestedActions: CLEARED_SUGGESTED_ACTIONS });
       } else if (action.type === SET_SUGGESTED_ACTIONS) {
         const result = safeParse(setSuggestedActionsActionSchema, action);
 
@@ -52,19 +50,21 @@ function ReduxSuggestedActionsMirror(props: ReduxSuggestedActionsMirrorProps) {
             payload: { originActivity, suggestedActions }
           } = result.output;
 
-          setOriginActivity(originActivity);
-          setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+          setState({ originActivity, suggestedActions: Object.freeze(Array.from(suggestedActions)) });
         }
       }
     },
-    [setOriginActivity, setSuggestedActionsRaw]
+    [setState]
   );
 
-  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
-  useMemo(
-    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
-    [dispatch, originActivity]
-  );
+  // Layout effects, not while rendering (a dispatch there would update other components while this one renders): the
+  // store has them by the time they show.
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActions', suggestedActions));
+  }, [dispatch, suggestedActions]);
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity }));
+  }, [dispatch, originActivity]);
 
   useEffect(() => {
     dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });

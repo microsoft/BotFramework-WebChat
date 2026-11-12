@@ -21,7 +21,7 @@ function load() {
     readonly React: typeof import('react');
     readonly ReduxActivitiesCrossCheck: typeof import('./ReduxActivitiesCrossCheck').default;
     readonly render: typeof import('@testing-library/react/pure').render;
-    readonly WebChatReduxProvider: typeof import('../../hooks/internal/WebChatReduxProvider').default;
+    readonly ReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').ReduxProvider;
   };
 
   jest.isolateModules(() => {
@@ -33,7 +33,7 @@ function load() {
       React: require('react'),
       ReduxActivitiesCrossCheck: require('./ReduxActivitiesCrossCheck').default,
       render,
-      WebChatReduxProvider: require('../../hooks/internal/WebChatReduxProvider').default
+      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider
     };
   });
 
@@ -42,7 +42,7 @@ function load() {
 
 // Redux and the graph can read different stores here, to make them disagree.
 function renderCrossCheck({ graphStore, reduxStore }: { readonly graphStore: Store; readonly reduxStore: Store }) {
-  const { act, GraphProvider, React, ReduxActivitiesCrossCheck, render, WebChatReduxProvider } = load();
+  const { act, GraphProvider, React, ReduxActivitiesCrossCheck, ReduxProvider, render } = load();
   const errors: Error[] = [];
 
   class ErrorBoundary extends React.Component<{ readonly children?: ReactNode }, { readonly error: unknown }> {
@@ -68,11 +68,11 @@ function renderCrossCheck({ graphStore, reduxStore }: { readonly graphStore: Sto
 
   const renderTree = ({ graphStore, reduxStore }: { readonly graphStore: Store; readonly reduxStore: Store }) => (
     <ErrorBoundary>
-      <WebChatReduxProvider store={reduxStore}>
+      <ReduxProvider store={reduxStore}>
         <GraphProvider store={graphStore}>
           <ReduxActivitiesCrossCheck />
         </GraphProvider>
-      </WebChatReduxProvider>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 
@@ -155,7 +155,8 @@ describe('<ReduxActivitiesCrossCheck>', () => {
     unmount();
   });
 
-  test('should skip one check after the store is swapped, while the graph catches up', () => {
+  // <GraphProvider> reads the new store while rendering, as the check does: no render behind, no check skipped.
+  test('should not throw after the store is swapped', () => {
     const store1 = createStore();
     const store2 = createStore();
 

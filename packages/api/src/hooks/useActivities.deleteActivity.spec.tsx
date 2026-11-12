@@ -22,13 +22,13 @@ function renderActivities(mode: StoreMode) {
     readonly act: typeof import('@testing-library/react/pure').act;
     readonly createActivitiesStore: typeof import('botframework-webchat-core/internal.js').createActivitiesStore;
     readonly DefaultProviders: typeof import('../providers/default/DefaultProviders').default;
-    readonly GraphProvider: typeof import('@msinternal/botframework-webchat-api-graph').GraphProvider;
     readonly PonyfillComposer: typeof import('../providers/Ponyfill/PonyfillComposer').default;
     readonly React: typeof import('react');
     readonly ReduxActivitiesCrossCheck: typeof import('../providers/redux/ReduxActivitiesCrossCheck').default;
+    readonly ReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').ReduxProvider;
+    readonly ReduxStoreProvider: typeof import('./internal/ReduxStoreProvider').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
-    readonly WebChatReduxProvider: typeof import('./internal/WebChatReduxProvider').default;
   };
 
   jest.isolateModules(() => {
@@ -38,13 +38,13 @@ function renderActivities(mode: StoreMode) {
       act,
       createActivitiesStore: require('botframework-webchat-core/internal.js').createActivitiesStore,
       DefaultProviders: require('../providers/default/DefaultProviders').default,
-      GraphProvider: require('@msinternal/botframework-webchat-api-graph').GraphProvider,
       PonyfillComposer: require('../providers/Ponyfill/PonyfillComposer').default,
       React: require('react'),
       ReduxActivitiesCrossCheck: require('../providers/redux/ReduxActivitiesCrossCheck').default,
+      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider,
+      ReduxStoreProvider: require('./internal/ReduxStoreProvider').default,
       render,
-      useActivities: require('./useActivities').default,
-      WebChatReduxProvider: require('./internal/WebChatReduxProvider').default
+      useActivities: require('./useActivities').default
     };
   });
 
@@ -52,13 +52,13 @@ function renderActivities(mode: StoreMode) {
     act,
     createActivitiesStore,
     DefaultProviders,
-    GraphProvider,
     PonyfillComposer,
     React,
     ReduxActivitiesCrossCheck,
+    ReduxProvider,
+    ReduxStoreProvider,
     render,
-    useActivities,
-    WebChatReduxProvider
+    useActivities
   } = modules;
   const errors: unknown[] = [];
   const renders: (readonly string[])[] = [];
@@ -104,12 +104,12 @@ function renderActivities(mode: StoreMode) {
     // differ (the check that useActivities() did before), and it renders before the children.
     ({ unmount } = render(
       <ErrorBoundary>
-        <WebChatReduxProvider store={store}>
-          <GraphProvider store={store}>
+        <ReduxProvider store={store}>
+          <ReduxStoreProvider>
             <ReduxActivitiesCrossCheck />
             <Activities />
-          </GraphProvider>
-        </WebChatReduxProvider>
+          </ReduxStoreProvider>
+        </ReduxProvider>
       </ErrorBoundary>
     ));
   } else {

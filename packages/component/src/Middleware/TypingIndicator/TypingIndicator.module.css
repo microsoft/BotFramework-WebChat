@@ -1,0 +1,30 @@
+/* #region Typing indicator */
+
+:global(.webchat) .typing-indicator-container {
+  padding-bottom: var(--webchat__padding--regular);
+
+  &:not(.typing-indicator--rtl) {
+    padding-left: var(--webchat__padding--regular);
+  }
+
+  &.typing-indicator--rtl {
+    padding-right: var(--webchat__padding--regular);
+  }
+}
+
+/* #endregion */
+
+/* #region Typing animation */
+
+:global(.webchat) .typing-indicator {
+  background-image: var(--webchat__background-image--typing-animation);
+  background-repeat: no-repeat;
+  height: var(--webchat__height--typing-animation);
+  width: var(--webchat__width--typing-animation);
+
+  &.typing-indicator--rtl {
+    transform: scale(-1, 1);
+  }
+}
+
+/* #endregion */

@@ -337,6 +337,10 @@ jobs:
         run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
+      - name: Run tsd under packages/directlinespeech
+        run: ../../node_modules/.bin/tsd
+        working-directory: ./packages/directlinespeech
+
       # The steps above use @types/react@16 (our baseline), check with the types of the latest React too.
       # In every workspace: packages that declare @types/react@16 would otherwise keep their own copy.
       - name: Install @types/react@19 and @types/react-dom@19
@@ -480,7 +484,7 @@ jobs:
             --runInBand \
             --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
             --silent
-        timeout-minutes: 10
+        timeout-minutes: 15 # Slowest shard takes up to about 9 minutes.
 
       - if: always()
         name: Print Docker logs

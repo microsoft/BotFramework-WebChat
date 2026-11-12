@@ -2,9 +2,9 @@
 
 ## Description
 
-A simple web page with a maximized Web Chat that connects to the Direct Line Speech channel and works in Internet Explorer 11.
+A simple web page with a maximized Web Chat that connects to the Direct Line Speech channel, using `webchat-es5.js`, the full bundle with polyfills. Despite its name, `webchat-es5.js` does not run on Internet Explorer 11.
 
-Although the web page works in Internet Explorer 11, the speech recognition and synthesis will be disabled when running in IE11. When running the web page under a browser with required media capabilities, speech recognition and synthesis will be enabled
+When running the web page under a browser with required media capabilities, speech recognition and synthesis will be enabled.
 
 # Test out the hosted sample
 
@@ -33,7 +33,7 @@ Although the web page works in Internet Explorer 11, the speech recognition and 
 
 ### Goals of this bot
 
-This code features the minimal scripting the bot needs to host a full-featured Web Chat and Direct Line Speech channel, with IE11 backwards compatibility.
+This code features the minimal scripting the bot needs to host a full-featured Web Chat and Direct Line Speech channel, with polyfills.
 
 This sample starts with the [ES5 bundle CDN sample](../c.es5-bundle/README.md) as the base template.
 
@@ -88,7 +88,7 @@ Here is the finished `index.html`:
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat: Full-featured bundle with ES5 polyfills and Direct Line Speech channel</title>
+    <title>Web Chat: Full-featured bundle with polyfills and Direct Line Speech channel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js"></script>
     <style>
@@ -139,7 +139,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Getting Started with Web Chat CDN with ES5 Polyfills](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/d.es5-direct-line-speech) | [(Getting Started with Web Chat CDN with ES5 Polyfills source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/d.es5-direct-line-speech/)
+-  [Getting Started with Web Chat CDN with Polyfills](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/d.es5-direct-line-speech) | [(Getting Started with Web Chat CDN with Polyfills source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/d.es5-direct-line-speech/)
 
 ## Full list of Web Chat hosted samples
 

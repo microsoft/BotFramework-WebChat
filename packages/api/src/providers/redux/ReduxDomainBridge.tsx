@@ -1,8 +1,9 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useReduxContext } from '@msinternal/botframework-webchat-redux-store';
+import { type createStore } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import { useWebChatReduxContext, type WebChatReduxStore } from '../../hooks/internal/WebChatReduxContext';
 import ConnectionSlices from '../../hooks/internal/domains/ConnectionSlices';
 import DomainOperations from '../../hooks/internal/domains/DomainOperations';
 import SendBoxSlices from '../../hooks/internal/domains/SendBoxSlices';
@@ -20,7 +21,7 @@ const reduxDomainBridgePropsSchema = pipe(
 
 type ReduxDomainBridgeProps = InferInput<typeof reduxDomainBridgePropsSchema>;
 
-type ReduxState = ReturnType<WebChatReduxStore['getState']>;
+type ReduxState = ReturnType<ReturnType<typeof createStore>['getState']>;
 
 // The slices of the slice contexts.
 function selectSlices(state: ReduxState) {
@@ -49,11 +50,11 @@ function shallowEqual(x: Slices, y: Slices): boolean {
 
 /**
  * Provides the domain contexts over the Redux store: the slice contexts from one subscription to the store (through
- * the batched subscription of `<WebChatReduxProvider>`); each setter dispatches an action to the store.
+ * the batched subscription of `<ReduxProvider>`); each setter dispatches an action to the store.
  */
 function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const { children } = validateProps(reduxDomainBridgePropsSchema, props);
-  const { store, subscribe } = useWebChatReduxContext();
+  const { store, subscribe } = useReduxContext<ReturnType<typeof createStore>>();
 
   // One subscription for the slices: the bridge re-renders only when one of them changed (as `useSelector()` of each
   // slice did), so an action that changes another part of the store (e.g. the suggested actions mirrored during render)

@@ -4,7 +4,7 @@ import {
   getLocalIdFromActivity,
   getPositionFromActivity
 } from '@msinternal/botframework-webchat-core-activities/property';
-import { SlantGraph, SlantNodeSchema } from '@msinternal/botframework-webchat-core-graph';
+import { SlantGraph, SlantNodeSchema, type GraphSubscriber } from '@msinternal/botframework-webchat-core-graph';
 import { parse } from 'valibot';
 import type createStore from '../createStore';
 
@@ -118,10 +118,34 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
     prevActivities = activities;
   };
 
-  store.subscribe(handleStoreChange);
-
-  // Activities already in the store (e.g. rehydrated) are added now, not on the next dispatch.
+  // Activities already in the store (e.g. rehydrated) are added now, not on the first subscription.
   handleStoreChange();
+
+  // Follows the store only while the graph has subscribers: a graph nobody subscribes to (e.g. after unmount, or from a
+  // render that never committed) does not stay subscribed to the store.
+  const subscribeToGraph = graph.subscribe.bind(graph);
+  const subscribers = new Set<GraphSubscriber>();
+  let unsubscribeFromStore: (() => void) | undefined;
+
+  graph.subscribe = subscriber => {
+    const unsubscribe = subscribeToGraph(subscriber);
+
+    subscribers.add(subscriber);
+    unsubscribeFromStore ||= store.subscribe(handleStoreChange);
+
+    // Catches up with changes made while the graph had no subscribers.
+    handleStoreChange();
+
+    return () => {
+      unsubscribe();
+      subscribers.delete(subscriber);
+
+      if (!subscribers.size) {
+        unsubscribeFromStore?.();
+        unsubscribeFromStore = undefined;
+      }
+    };
+  };
 
   return graph;
 }

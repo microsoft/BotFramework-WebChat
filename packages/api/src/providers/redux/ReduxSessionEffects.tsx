@@ -7,7 +7,7 @@ import {
 } from 'botframework-webchat-core';
 import React, { Fragment, memo, useEffect, type ReactNode } from 'react';
 
-import { useDispatch } from '../../hooks/internal/WebChatReduxContext';
+import { useDispatch } from '@msinternal/botframework-webchat-redux-store';
 import connectWithDeferredDisconnect from '../private/connectWithDeferredDisconnect';
 
 function noop() {

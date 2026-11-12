@@ -3,7 +3,13 @@
 /* eslint-disable security/detect-object-injection */
 
 import { act, render } from '@testing-library/react';
-import { ReduxStoreComposer, useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
+import {
+  ReduxProvider,
+  ReduxStoreComposer,
+  useDispatch,
+  useReduxContext,
+  useSuggestedActionsHooks
+} from '@msinternal/botframework-webchat-redux-store';
 import {
   CLEAR_SUGGESTED_ACTIONS,
   clearSuggestedActions,
@@ -43,8 +49,6 @@ import { applyMiddleware, legacy_createStore as createStore, type Action, type S
 import { safeParse } from 'valibot';
 
 import WebChatAPIContext, { type WebChatAPIContextType } from '../../hooks/internal/WebChatAPIContext';
-import { useDispatch, useWebChatReduxContext } from '../../hooks/internal/WebChatReduxContext';
-import WebChatReduxProvider from '../../hooks/internal/WebChatReduxProvider';
 import usePostVoiceActivity from '../../hooks/internal/usePostVoiceActivity';
 import useRegisterVoiceHandler from '../../hooks/internal/useRegisterVoiceHandler';
 import useVoiceHandlers from '../../hooks/internal/useVoiceHandlers';
@@ -79,7 +83,7 @@ function refEquality<T>(x: T, y: T): boolean {
 
 // `useSelector()` of `WebChatReduxContext.ts` at 25d812243.
 function useSelector<T>(selector: (state: any) => T, equalityFn: (x: T, y: T) => boolean = refEquality): T {
-  const { store, subscribe } = useWebChatReduxContext();
+  const { store, subscribe } = useReduxContext();
   const [, forceRender] = useReducer(increment, 0);
   const latestRef = useRef<
     | {
@@ -356,11 +360,11 @@ const Probe = memo(RenderRecorder);
 
 function Providers({ children, store }: { readonly children?: ReactNode; readonly store: Store }) {
   return (
-    <WebChatReduxProvider store={store}>
+    <ReduxProvider store={store}>
       <ReduxDomainBridge>
         <WebChatAPIContext.Provider value={API_CONTEXT}>{children}</WebChatAPIContext.Provider>
       </ReduxDomainBridge>
-    </WebChatReduxProvider>
+    </ReduxProvider>
   );
 }
 
@@ -506,7 +510,7 @@ describe.each(Object.keys(HOOKS))('%s()', name => {
   });
 
   test('should re-render in the same batch as the implementation before', () => {
-    // A child reads the hook and receives the value of its parent as a prop, as in the spec of <WebChatReduxProvider>.
+    // A child reads the hook and receives the value of its parent as a prop, as in the spec of <ReduxProvider>.
     // Mixing both implementations must render the child as often, and with the same values, as with the one before.
     function runParentChild(useParentHook: () => unknown, useChildHook: () => unknown): Renders {
       const renders: Renders = [];

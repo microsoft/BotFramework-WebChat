@@ -3,7 +3,7 @@ import { createContext, useContext, type Context } from 'react';
 /**
  * Creates the context of a domain and a hook to read it.
  *
- * Like `WebChatReduxContext`, reading it outside of `<Composer>` throws.
+ * Like `useReduxContext()`, reading it outside of `<Composer>` throws.
  */
 export default function createDomainContext<T>(displayName: string): readonly [Context<T | undefined>, () => T] {
   const context = createContext<T | undefined>(undefined);

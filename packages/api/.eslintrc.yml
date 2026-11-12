@@ -10,18 +10,25 @@ rules:
   # Only the Redux providers read the Redux store: hooks read domain contexts, which the providers fill.
   no-restricted-imports:
     - error
-    - patterns:
+    - paths:
+        - importNames:
+            - ReduxProvider
+            - useDispatch
+            - useReduxContext
+            - useSelector
+            - useStore
+          message: Only the Redux providers (src/providers/redux/) use the Redux store. Hooks read domain contexts (src/hooks/internal/domains/).
+          name: '@msinternal/botframework-webchat-redux-store'
+      patterns:
         - group:
-            - '**/WebChatReduxContext'
-            - '**/WebChatReduxContext.*'
-            - '**/WebChatReduxProvider'
-            - '**/WebChatReduxProvider.*'
+            - '**/ReduxStoreProvider'
+            - '**/ReduxStoreProvider.*'
           message: Only the Redux providers (src/providers/redux/) use the Redux store. Hooks read domain contexts (src/hooks/internal/domains/).
 
 overrides:
   - files:
       - '**/*.spec.*'
-      - src/hooks/internal/WebChatReduxProvider.tsx
+      - src/hooks/internal/ReduxStoreProvider.tsx
       - src/providers/redux/**
     rules:
       no-restricted-imports: off
@@ -42,15 +49,18 @@ overrides:
               message: The default providers never create a Redux store.
               name: botframework-webchat-core
             - importNames:
+                - ReduxProvider
                 - ReduxStoreComposer
+                - useDispatch
+                - useReduxContext
+                - useSelector
+                - useStore
               message: The default providers never use Redux.
               name: '@msinternal/botframework-webchat-redux-store'
           patterns:
             - group:
-                - '**/WebChatReduxContext'
-                - '**/WebChatReduxContext.*'
-                - '**/WebChatReduxProvider'
-                - '**/WebChatReduxProvider.*'
+                - '**/ReduxStoreProvider'
+                - '**/ReduxStoreProvider.*'
                 - '**/providers/redux/**'
                 - redux
               message: The default providers never use Redux.
