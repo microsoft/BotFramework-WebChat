@@ -209,8 +209,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundToastWarn}: ${toastWarnBackgroundColor};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButton}: ${transcriptOverlayButtonBackground};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonBackgroundOnDisabled};
-  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonBackgroundOnFocus || 'unset'};
-  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonHover}: ${transcriptOverlayButtonBackgroundOnHover || 'unset'};
+  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonFocus}: ${orUnset(transcriptOverlayButtonBackgroundOnFocus)};
+  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonHover}: ${orUnset(transcriptOverlayButtonBackgroundOnHover)};
   ${CustomPropertyNames.BackgroundTranscriptTerminator}: ${transcriptTerminatorBackgroundColor};
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
