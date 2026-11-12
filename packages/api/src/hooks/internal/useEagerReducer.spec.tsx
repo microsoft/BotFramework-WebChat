@@ -2,7 +2,7 @@
 /// <reference types="jest" />
 
 import { act, render } from '@testing-library/react';
-import React, { StrictMode, useCallback, useReducer, useRef } from 'react';
+import React, { StrictMode, useCallback, useLayoutEffect, useReducer, useRef } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
 
 import useEagerReducer from './useEagerReducer';
@@ -193,6 +193,30 @@ test('dispatch(), getState() and the returned array keep their identity until th
   expect(results[2][1]).toBe(results[0][1]);
   expect(results[2][2]).toBe(results[0][2]);
   expect(Object.isFrozen(results[2])).toBe(true);
+});
+
+test('a dispatch before the subscription (a child effect on mount) renders', () => {
+  const { reducer } = createReducer();
+  const rendered: string[] = [];
+
+  function Child({ dispatch }: { readonly dispatch: (action: Action) => void }) {
+    // Children's effects run before the effects of their parent, which subscribe.
+    useLayoutEffect(() => dispatch({ text: 'early', type: 'APPEND' }), [dispatch]);
+
+    return null;
+  }
+
+  function Reader() {
+    const [state, dispatch] = useEagerReducer(reducer, '');
+
+    rendered.push(state);
+
+    return <Child dispatch={dispatch} />;
+  }
+
+  render(<Reader />);
+
+  expect(rendered.at(-1)).toBe('early');
 });
 
 test('after unmount, dispatch() still reduces for getState(), without setting the state', () => {
