@@ -2,25 +2,20 @@
 
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { Constants } from 'botframework-webchat-core';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
-import useStyleSet from '../hooks/useStyleSet';
 import testIds from '../testIds';
+import styles from './SendBox.module.css';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
 } = Constants;
 
 const { useDictateInterims, useDictateState, useLocalizer } = hooks;
-
-const ROOT_STYLE = {
-  alignItems: 'center',
-  display: 'flex'
-};
 
 const dictationInterimsPropsSchema = pipe(
   object({
@@ -34,24 +29,20 @@ type DictationInterimsProps = InferInput<typeof dictationInterimsPropsSchema>;
 function DictationInterims(props: DictationInterimsProps) {
   const { className } = validateProps(dictationInterimsPropsSchema, props);
 
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
-  const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
   const localize = useLocalizer();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return dictateState === STARTING || dictateState === STOPPING ? (
-    <p
-      className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'status')}
-      data-testid={testIds.sendBoxSpeechBox}
-    >
+    <p className={cx(classNames['dictation-interims'], className, 'status')} data-testid={testIds.sendBoxSpeechBox}>
       {dictateState === STARTING && localize('SPEECH_INPUT_STARTING')}
     </p>
   ) : (
     dictateState === DICTATING &&
       (dictateInterims.length ? (
         <p
-          className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'dictating')}
+          className={cx(classNames['dictation-interims'], className, 'dictating')}
           data-testid={testIds.sendBoxSpeechBox}
         >
           {dictateInterims.map((interim, index) => (
@@ -62,10 +53,7 @@ function DictationInterims(props: DictationInterimsProps) {
           ))}
         </p>
       ) : (
-        <p
-          className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'status')}
-          data-testid={testIds.sendBoxSpeechBox}
-        >
+        <p className={cx(classNames['dictation-interims'], className, 'status')} data-testid={testIds.sendBoxSpeechBox}>
           {localize('SPEECH_INPUT_LISTENING')}
         </p>
       ))

@@ -1,14 +1,13 @@
 import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { Constants } from 'botframework-webchat-core';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo, useCallback, type ClipboardEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useMakeThumbnail from '../hooks/useMakeThumbnail';
-import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
@@ -16,6 +15,7 @@ import { AttachmentBar } from './AttachmentBar/index';
 import DictationInterims from './DictationInterims';
 import DropZone from './DropZone';
 import MicrophoneButton from './MicrophoneButton';
+import styles from './SendBox.module.css';
 import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
 import TextBox from './TextBox';
@@ -25,34 +25,6 @@ const {
 } = Constants;
 
 const { useDirection, useDictateState, useSendBoxAttachments, useStyleOptions, useUIState } = hooks;
-
-const ROOT_STYLE = {
-  '&.webchat__send-box': {
-    display: 'grid',
-    gridTemplateAreas: '"suggested-actions" "content"',
-    gridTemplateRows: 'auto 1fr',
-
-    '& .webchat__suggested-actions': {
-      gridArea: 'suggested-actions',
-      minWidth: '0'
-    },
-
-    '& .webchat__send-box__main': {
-      gridArea: 'content',
-      minWidth: '0'
-    },
-
-    '& .webchat__drop-zone': {
-      gridArea: 'content',
-      minWidth: '0'
-    },
-
-    '& .webchat__send-box__button': { flexShrink: 0 },
-    '& .webchat__send-box__dictation-interims': { flex: 10000 },
-    '& .webchat__send-box__microphone-button': { flex: 1 },
-    '& .webchat__send-box__text-box': { flex: 10000 }
-  }
-};
 
 function useSendBoxSpeechInterimsVisible(): [boolean] {
   const [dictateState] = useDictateState();
@@ -73,7 +45,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
   const { className } = validateProps(basicSendBoxPropsSchema, props);
 
   const [{ disableFileUpload, sendAttachmentOn, sendBoxButtonAlignment }] = useStyleOptions();
-  const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
   const [errorMessageId] = useErrorMessageId();
@@ -81,10 +53,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
   const [uiState] = useUIState();
   const makeThumbnail = useMakeThumbnail();
-  const styleToEmotionObject = useStyleToEmotionObject();
   const submit = useSubmit();
-
-  const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
 
   const disabled = uiState === 'disabled';
   const sendAttachmentOnRef = useRefFrom(sendAttachmentOn);
@@ -127,10 +96,11 @@ function BasicSendBox(props: BasicSendBoxProps) {
     [disabled, disableFileUpload, handleAddFiles]
   );
 
-  const buttonClassName = classNames('webchat__send-box__button', {
-    'webchat__send-box__button--align-bottom': sendBoxButtonAlignment === 'bottom',
-    'webchat__send-box__button--align-stretch': sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top',
-    'webchat__send-box__button--align-top': sendBoxButtonAlignment === 'top'
+  const buttonClassName = cx(classNames['send-box__button'], {
+    [classNames['send-box__button--align-bottom']]: sendBoxButtonAlignment === 'bottom',
+    [classNames['send-box__button--align-stretch']]:
+      sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top',
+    [classNames['send-box__button--align-top']]: sendBoxButtonAlignment === 'top'
   });
 
   return (
@@ -138,24 +108,24 @@ function BasicSendBox(props: BasicSendBoxProps) {
       aria-describedby={errorMessageId}
       aria-errormessage={errorMessageId}
       aria-invalid={!!errorMessageId || undefined}
-      className={classNames('webchat__send-box', sendBoxStyleSet + '', rootClassName + '', (className || '') + '')}
+      className={cx(classNames['send-box'], className)}
       dir={direction}
       onPaste={handlePaste}
       role="form"
     >
       <SuggestedActions />
-      <div className="webchat__send-box__main">
-        <AttachmentBar className="webchat__send-box__attachment-bar" />
+      <div className={classNames['send-box__main']}>
+        <AttachmentBar className={classNames['send-box__attachment-bar']} />
         <SendBoxToolbarMiddlewareProxy className={buttonClassName} request={undefined} />
-        <div className="webchat__send-box__editable">
+        <div className={classNames['send-box__editable']}>
           {speechInterimsVisible ? (
-            <DictationInterims className="webchat__send-box__dictation-interims" />
+            <DictationInterims className={classNames['send-box__dictation-interims']} />
           ) : (
-            <TextBox className="webchat__send-box__text-box" />
+            <TextBox className={classNames['send-box__text-box']} />
           )}
         </div>
         {supportSpeechRecognition ? (
-          <MicrophoneButton className={classNames(buttonClassName, 'webchat__send-box__microphone-button')} />
+          <MicrophoneButton className={cx(buttonClassName, classNames['send-box__microphone-button'])} />
         ) : (
           <SendButton className={buttonClassName} />
         )}

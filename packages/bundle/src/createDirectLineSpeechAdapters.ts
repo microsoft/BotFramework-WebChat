@@ -1,5 +1,5 @@
 import { createAdapters } from 'botframework-directlinespeech-sdk';
-import { WebSpeechPonyfill } from 'botframework-webchat-api';
+import { WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import type { DirectLineJSBotConnection } from 'botframework-webchat-core';
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 
@@ -41,7 +41,7 @@ export default function createDirectLineSpeechAdapters({
   username?: string;
 }): Promise<{
   directLine: DirectLineJSBotConnection;
-  webSpeechPonyfill: WebSpeechPonyfill;
+  webSpeechPonyfillFactory: WebSpeechPonyfillFactory;
 }> {
   if (audioConfig) {
     audioInputDeviceId &&
@@ -81,6 +81,6 @@ export default function createDirectLineSpeechAdapters({
     textNormalization,
     userID,
     username
-    // TODO: [P1] Need to port Direct Line Speech SDK to TypeScript to remove this any.
+    // TODO: Remove "as any" when web-speech-cognitive-services types its ponyfill as "typeof SpeechRecognition".
   }) as any;
 }
