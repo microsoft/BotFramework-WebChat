@@ -1,4 +1,4 @@
-import React, { memo, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import createSliceContext from './private/createSliceContext';
 
@@ -42,7 +42,6 @@ function SpeechSlicesProvider({
 
 SpeechSlicesProvider.displayName = 'SpeechSlicesProvider';
 
-const SpeechSlices = memo(SpeechSlicesProvider);
-
-export default SpeechSlices;
+// Not memoized: its children are the next slices, a new element on every render of the parent.
+export default SpeechSlicesProvider;
 export { useDictateInterimsSlice, useDictateStateSlice, useShouldSpeakIncomingActivitySlice, type SpeechSlicesProps };

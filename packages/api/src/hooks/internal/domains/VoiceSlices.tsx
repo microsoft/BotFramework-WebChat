@@ -34,6 +34,7 @@ function VoiceSlicesProvider({ children, microphoneMuted, voiceHandlers, voiceSt
 
 VoiceSlicesProvider.displayName = 'VoiceSlicesProvider';
 
+// Memoized: it is the innermost slices, its children keep their identity, so it skips a render when no voice slice changed.
 const VoiceSlices = memo(VoiceSlicesProvider);
 
 export default VoiceSlices;

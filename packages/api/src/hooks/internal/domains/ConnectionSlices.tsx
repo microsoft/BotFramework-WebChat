@@ -1,4 +1,4 @@
-import React, { memo, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { type Notification } from '../../../types/Notification';
 import createSliceContext from './private/createSliceContext';
@@ -45,7 +45,6 @@ function ConnectionSlicesProvider({
 
 ConnectionSlicesProvider.displayName = 'ConnectionSlicesProvider';
 
-const ConnectionSlices = memo(ConnectionSlicesProvider);
-
-export default ConnectionSlices;
+// Not memoized: its children are the next slices, a new element on every render of the parent.
+export default ConnectionSlicesProvider;
 export { useConnectivityStatusSlice, useNotificationsSlice, useReferenceGrammarIDSlice, type ConnectionSlicesProps };

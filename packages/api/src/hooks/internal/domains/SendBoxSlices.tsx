@@ -1,5 +1,5 @@
 import { type SendBoxAttachment } from 'botframework-webchat-core';
-import React, { memo, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import createSliceContext from './private/createSliceContext';
 
@@ -43,7 +43,6 @@ function SendBoxSlicesProvider({
 
 SendBoxSlicesProvider.displayName = 'SendBoxSlicesProvider';
 
-const SendBoxSlices = memo(SendBoxSlicesProvider);
-
-export default SendBoxSlices;
+// Not memoized: its children are the next slices, a new element on every render of the parent.
+export default SendBoxSlicesProvider;
 export { useSendBoxAttachmentsSlice, useSendBoxValueSlice, useSendTypingIndicatorSlice, type SendBoxSlicesProps };
