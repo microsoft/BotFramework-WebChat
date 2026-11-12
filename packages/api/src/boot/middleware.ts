@@ -29,7 +29,7 @@ export {
 
 export {
   default as AvatarPolymiddlewareProxy,
-  AvatarPolymiddlewareProxyProps
+  type AvatarPolymiddlewareProxyProps
 } from '../middleware/AvatarPolymiddlewareProxy';
 
 export { default as useBuildRenderAvatarCallback } from '../middleware/useBuildRenderAvatarCallback';
