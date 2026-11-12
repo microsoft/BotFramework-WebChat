@@ -1,6 +1,6 @@
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
 import { useCallback } from 'react';
 
-import { useSelector } from './internal/WebChatReduxContext';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 const selectShouldSpeakIncomingActivity = ({ shouldSpeakIncomingActivity }) => shouldSpeakIncomingActivity;

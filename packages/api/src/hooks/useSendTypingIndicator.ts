@@ -1,4 +1,4 @@
-import { useSelector } from './internal/WebChatReduxContext';
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
 
 const selectSendTypingIndicator = ({ sendTypingIndicator }) => sendTypingIndicator;
 

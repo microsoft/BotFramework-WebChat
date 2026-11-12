@@ -1,9 +1,8 @@
 import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import { reactNode, validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useWebChatReduxContext } from '@msinternal/botframework-webchat-redux-store';
 import React, { memo, useMemo } from 'react';
 import { object, optional, pipe, readonly } from 'valibot';
-
-import { useWebChatReduxContext } from './WebChatReduxContext';
 
 const reduxStoreProviderPropsSchema = pipe(
   object({

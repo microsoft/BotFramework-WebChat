@@ -17,7 +17,7 @@ function renderActivities({ graphIsEmpty = false }: { readonly graphIsEmpty?: bo
     readonly React: typeof import('react');
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
-    readonly WebChatReduxProvider: typeof import('./internal/WebChatReduxProvider').default;
+    readonly WebChatReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider;
   };
 
   const store = createStore();
@@ -38,7 +38,7 @@ function renderActivities({ graphIsEmpty = false }: { readonly graphIsEmpty?: bo
       React: require('react'),
       render: require('@testing-library/react/pure').render,
       useActivities: require('./useActivities').default,
-      WebChatReduxProvider: require('./internal/WebChatReduxProvider').default
+      WebChatReduxProvider: require('@msinternal/botframework-webchat-redux-store').WebChatReduxProvider
     };
   });
 

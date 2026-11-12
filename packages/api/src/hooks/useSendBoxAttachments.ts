@@ -1,7 +1,7 @@
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
 import type { SendBoxAttachment } from 'botframework-webchat-core';
 import { useMemo } from 'react';
 
-import { useSelector } from './internal/WebChatReduxContext';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 // TODO: We should use the selector from "core" package.

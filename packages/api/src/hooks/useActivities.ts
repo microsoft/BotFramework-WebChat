@@ -1,8 +1,7 @@
 import { useOrderedActivities } from '@msinternal/botframework-webchat-api-graph';
+import { useSelector } from '@msinternal/botframework-webchat-redux-store';
 import type { WebChatActivity } from 'botframework-webchat-core';
 import { useEffect, useRef } from 'react';
-
-import { useSelector } from './internal/WebChatReduxContext';
 
 declare const process: {
   env: {

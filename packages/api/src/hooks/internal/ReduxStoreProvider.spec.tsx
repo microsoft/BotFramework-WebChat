@@ -2,6 +2,7 @@
 /// <reference types="jest" />
 
 import * as JestGlobals from '@jest/globals';
+import { WebChatReduxProvider } from '@msinternal/botframework-webchat-redux-store';
 import { render } from '@testing-library/react';
 import { scenario } from '@testduet/given-when-then';
 import { createStore } from 'botframework-webchat-core';
@@ -9,7 +10,6 @@ import React, { Fragment, StrictMode } from 'react';
 
 import useActivities from '../useActivities';
 import ReduxStoreProvider from './ReduxStoreProvider';
-import WebChatReduxProvider from './WebChatReduxProvider';
 
 function Activities() {
   useActivities();

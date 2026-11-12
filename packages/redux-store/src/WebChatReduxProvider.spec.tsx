@@ -23,7 +23,7 @@ function reducer(
     : type === 'INCREMENT_OTHER'
       ? { ...state, other: state.other + 1 }
       : type === 'SET_COUNT'
-        ? { ...state, count: payload }
+        ? { ...state, count: payload ?? state.count }
         : state;
 }
 

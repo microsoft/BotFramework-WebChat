@@ -1,6 +1,6 @@
+import { useDispatch, useSelector } from '@msinternal/botframework-webchat-redux-store';
 import { setVoiceState, type VoiceState } from 'botframework-webchat-core';
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from './WebChatReduxContext';
 
 const selectVoiceState = ({ voice }) => voice.voiceState;
 
