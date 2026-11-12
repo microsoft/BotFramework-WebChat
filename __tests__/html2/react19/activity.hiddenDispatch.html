@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: shows what was dispatched while Web Chat was hidden in an Activity</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { Activity, createElement, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps them.
+        expect(version).toBe('19.3.1');
+
+        const root = createRoot(document.getElementById('webchat'));
+        const render = mode =>
+          root.render(createElement(Activity, { mode }, createElement(ReactWebChat, { directLine, store })));
+
+        render('visible');
+
+        await pageConditions.uiConnected();
+
+        // As a host would: the store in Redux mode, the dispatch of the default providers in default mode.
+        const { dispatch } = store || testHelpers.getTestHandle(directLine);
+
+        const getTextArea = () => document.querySelector('[data-testid="send box text area"]');
+
+        // WHEN: Web Chat is hidden, then the send box is set.
+        render('hidden');
+
+        await waitFor(() => expect(getTextArea()).toHaveProperty('offsetParent', null));
+
+        dispatch({ payload: { text: 'Set while hidden' }, type: 'WEB_CHAT/SET_SEND_BOX' });
+
+        // WHEN: Web Chat is shown again.
+        render('visible');
+
+        // THEN: The send box should show the text set while hidden.
+        await waitFor(() => expect(getTextArea()).toHaveProperty('value', 'Set while hidden'));
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
