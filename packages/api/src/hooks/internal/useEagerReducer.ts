@@ -21,12 +21,18 @@ export default function useEagerReducer<S, A>(
   const [state, setState] = useState<S>(initialState);
 
   useEffect(() => {
+    // Set here, not only by `useRef(true)`: Strict Mode (React 18 and later) runs the cleanup, then the effect again, on
+    // the same component. Without it, the component would stop rendering its dispatches.
     mountedRef.current = true;
+
+    // Renders what was dispatched while the effects were torn down without an unmount (e.g. inside a hidden
+    // `<Activity>` of React 19.2): those dispatches updated `getState()` only. Bails out when the state is the same.
+    setState(() => stateRef.current);
 
     return () => {
       mountedRef.current = false;
     };
-  }, [mountedRef]);
+  }, [mountedRef, setState, stateRef]);
 
   const dispatch = useCallback(
     (action: A) => {
