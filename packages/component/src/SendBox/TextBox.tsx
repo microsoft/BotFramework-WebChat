@@ -1,18 +1,18 @@
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { usePonyfill } from 'botframework-webchat-api/hook.js';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { useCallback, useMemo, useRef } from 'react';
 
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
-import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
 import AutoResizeTextArea from './AutoResizeTextArea';
+import styles from './SendBox.module.css';
 
 import type { MutableRefObject } from 'react';
 import testIds from '../testIds';
@@ -20,16 +20,6 @@ import testIds from '../testIds';
 const { useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
 
 const DEFAULT_INPUT_MODE = 'text';
-
-const ROOT_STYLE = {
-  '&.webchat__send-box-text-box': {
-    display: 'flex',
-
-    '& .webchat__send-box-text-box__input, & .webchat__send-box-text-box__text-area': {
-      flex: 1
-    }
-  }
-};
 
 /**
  * Submits the text box and optionally set the focus after send.
@@ -83,12 +73,11 @@ const MultiLineTextBox = withEmoji(AutoResizeTextArea);
 
 const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }>) => {
   const [value, setValue] = useSendBoxValue();
-  const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
   const [uiState] = useUIState();
   const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
   const localize = useLocalizer();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const scrollDown = useScrollDown();
   const scrollUp = useScrollUp();
   const submitTextBox = useTextBoxSubmit();
@@ -220,18 +209,13 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   return (
     <form
       aria-disabled={disabled || undefined}
-      className={classNames(
-        'webchat__send-box-text-box',
-        rootClassName,
-        sendBoxTextBoxStyleSet + '',
-        (className || '') + ''
-      )}
+      className={cx(classNames['send-box-text-box'], className)}
       onSubmit={disabled ? PREVENT_DEFAULT_HANDLER : handleSubmit}
     >
       {!sendBoxTextWrap ? (
         <SingleLineTextBox
           aria-label={sendBoxString}
-          className="webchat__send-box-text-box__input"
+          className={classNames['send-box-text-box__input']}
           data-id="webchat-sendbox-input"
           data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
@@ -251,7 +235,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
       ) : (
         <MultiLineTextBox
           aria-label={sendBoxString}
-          className="webchat__send-box-text-box__text-area"
+          className={classNames['send-box-text-box__text-area']}
           data-id="webchat-sendbox-input"
           data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
@@ -266,11 +250,11 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           readOnly={disabled}
           ref={inputElementRef}
           rows={1}
-          textAreaClassName="webchat__send-box-text-box__html-text-area"
+          textAreaClassName={classNames['send-box-text-box__html-text-area']}
           value={value}
         />
       )}
-      {disabled && <div className="webchat__send-box-text-box__glass" />}
+      {disabled && <div className={classNames['send-box-text-box__glass']} />}
     </form>
   );
 };
