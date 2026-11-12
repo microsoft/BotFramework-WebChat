@@ -5,7 +5,6 @@ import cx from 'classnames';
 import React, { Fragment, memo } from 'react';
 import { boolean, number, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
 import { ComponentIcon } from '../Icon';
 
 import styles from './FileContent.module.css';
@@ -53,11 +52,9 @@ const FileContentBadge = (props: FileContentBadgeProps) => {
       {downloadIcon && (
         <ComponentIcon
           appearance="text"
-          className={cx(
-            classNames['fileContent__downloadIcon'],
-            // The "fileContent" style set entry, which applies the style options, selects this modifier.
-            direction === 'rtl' && 'webchat__fileContent__downloadIcon--rtl'
-          )}
+          className={cx(classNames['fileContent__downloadIcon'], {
+            [classNames['fileContent__downloadIcon--rtl']]: direction === 'rtl'
+          })}
           icon="download"
         />
       )}
@@ -82,7 +79,6 @@ function FileContent(props: FileContentProps) {
 
   // Keeps the "webchat__fileContent" class names.
   const classNames = useStyles(styles, webChatPrefixedClassName);
-  const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const localizeBytes = useByteFormatter();
 
@@ -103,7 +99,7 @@ function FileContent(props: FileContentProps) {
   );
 
   return (
-    <div className={cx(classNames['fileContent'], fileContentStyleSet + '', className)}>
+    <div className={cx(classNames['fileContent'], className)}>
       {sanitizedHref ? (
         // URL is sanitized.
         // eslint-disable-next-line react/forbid-elements

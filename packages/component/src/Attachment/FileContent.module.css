@@ -1,20 +1,46 @@
-/* Style options apply through the "fileContent" style set entry, which selects the "webchat__fileContent" class names. */
 :global(.webchat) .fileContent {
+  color: var(--webchat__color--bubble);
   display: flex;
-
-  .fileContent__buttonLink {
-    display: flex;
-    flex: 1;
-  }
+  font-family: var(--webchat__font--primary);
+  padding: var(--webchat__padding--regular);
 
   .fileContent__badge {
     display: flex;
     flex: 1;
     flex-direction: column;
+    justify-content: center;
   }
 
-  .fileContent__downloadIcon,
-  .fileContent__fileName,
+  .fileContent__buttonLink {
+    align-items: center;
+    color: var(--webchat__color--bubble);
+    display: flex;
+    flex: 1;
+    text-decoration: none;
+
+    &:focus {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .fileContent__downloadIcon {
+    color: var(--webchat__color--accent);
+    font-size: 33px;
+    padding: var(--webchat__padding--regular);
+
+    &:not(.fileContent__downloadIcon--rtl) {
+      margin-left: var(--webchat__padding--regular);
+    }
+
+    &.fileContent__downloadIcon--rtl {
+      margin-right: var(--webchat__padding--regular);
+    }
+  }
+
+  .fileContent__fileName {
+    color: var(--webchat__color--accent);
+  }
+
   .fileContent__size {
     --webchat-preserve-reason: target-class;
   }

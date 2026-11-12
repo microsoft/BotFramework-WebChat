@@ -61,6 +61,7 @@ const CustomPropertyNames = Object.freeze({
   FontPrimary: '--webchat__font--primary',
   FontMonospace: '--webchat__font--monospace',
   FontSizeConnectivity: '--webchat__font-size--connectivity',
+  FontSizeScrollToEndButton: '--webchat__font-size--scroll-to-end-button',
   FontSizeSmall: '--webchat__font-size--small',
   FontSizeToast: '--webchat__font-size--toast',
   FontSizeTranscriptTerminator: '--webchat__font-size--transcript-terminator',
