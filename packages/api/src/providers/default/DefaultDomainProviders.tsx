@@ -46,6 +46,7 @@ import SpeechContext, { type SpeechContextType } from '../../hooks/internal/doma
 import SpeechSlices from '../../hooks/internal/domains/SpeechSlices';
 import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
+import VoiceSlices from '../../hooks/internal/domains/VoiceSlices';
 import randomId from '../../utils/randomId';
 import { type Notification } from '../../types/Notification';
 
@@ -185,19 +186,21 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
   const voiceContext = useMemo<VoiceContextType>(
     () =>
       Object.freeze({
-        microphoneMuted: voice.microphoneMuted,
         postVoiceActivity: outgoing.postVoiceActivity,
         // A new ID for each handler, as in Redux mode.
         registerVoiceHandler: (voiceHandler: VoiceHandler) => voice.registerVoiceHandler(randomId(), voiceHandler),
         setMuted: voice.setMuted,
         setVoiceState: voice.setVoiceState,
         startVoice: voice.startVoice,
-        stopVoice: voice.stopVoice,
-        voiceHandlers: voice.voiceHandlers,
-        voiceState: voice.voiceState
+        stopVoice: voice.stopVoice
       }),
     [outgoing, voice]
   );
+
+  // The slices of the voice group, from the sources of the voice service, until it becomes a reducer group.
+  const microphoneMuted = useSourceValue(voice.microphoneMuted);
+  const voiceHandlers = useSourceValue(voice.voiceHandlers);
+  const voiceState = useSourceValue(voice.voiceState);
 
   return (
     <ChatOperationsContext.Provider value={chatOperationsContext}>
@@ -220,7 +223,13 @@ function DefaultDomainProviders(props: DefaultDomainProvidersProps) {
                     dictateState={dictateState}
                     shouldSpeakIncomingActivity={shouldSpeakIncomingActivity}
                   >
-                    {children}
+                    <VoiceSlices
+                      microphoneMuted={microphoneMuted}
+                      voiceHandlers={voiceHandlers}
+                      voiceState={voiceState}
+                    >
+                      {children}
+                    </VoiceSlices>
                   </SpeechSlices>
                 </SendBoxSlices>
               </ConnectionSlices>

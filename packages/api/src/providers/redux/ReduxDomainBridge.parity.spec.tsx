@@ -239,7 +239,10 @@ const SLICE_CONTEXT_HOOKS: ReadonlySet<string> = new Set([
   'useSendTypingIndicator',
   'useDictateInterims',
   'useDictateState',
-  'useShouldSpeakIncomingActivity'
+  'useShouldSpeakIncomingActivity',
+  'useVoiceHandlers',
+  'useVoiceRecordingMuted',
+  'useVoiceStateWritable'
 ]);
 
 // Renders of each hook in `runActions()`, pinned so a change on both sides is noticed too.

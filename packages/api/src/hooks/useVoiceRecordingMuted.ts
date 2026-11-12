@@ -1,5 +1,5 @@
 import { useVoiceContext } from './internal/domains/VoiceContext';
-import useSourceValue from './internal/domains/useSourceValue';
+import { useMicrophoneMutedSlice } from './internal/domains/VoiceSlices';
 
 /**
  * Hook to get and set voice recording mute state in speech-to-speech mode.
@@ -9,7 +9,7 @@ import useSourceValue from './internal/domains/useSourceValue';
  * Mute resets to false when recording stops.
  */
 export default function useVoiceRecordingMuted(): readonly [boolean, (muted: boolean) => void] {
-  const { microphoneMuted, setMuted } = useVoiceContext();
+  const { setMuted } = useVoiceContext();
 
-  return Object.freeze([useSourceValue(microphoneMuted), setMuted]);
+  return Object.freeze([useMicrophoneMutedSlice(), setMuted]);
 }

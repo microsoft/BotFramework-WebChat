@@ -1,13 +1,13 @@
 import { type VoiceState } from 'botframework-webchat-core';
 
 import { useVoiceContext } from './domains/VoiceContext';
-import useSourceValue from './domains/useSourceValue';
+import { useVoiceStateSlice } from './domains/VoiceSlices';
 
 /**
  * Internal hook to set the voice state.
  */
 export default function useVoiceStateWritable(): readonly [VoiceState, (state: VoiceState) => void] {
-  const { setVoiceState, voiceState } = useVoiceContext();
+  const { setVoiceState } = useVoiceContext();
 
-  return Object.freeze([useSourceValue(voiceState), setVoiceState]);
+  return Object.freeze([useVoiceStateSlice(), setVoiceState]);
 }

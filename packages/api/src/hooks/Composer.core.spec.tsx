@@ -17,18 +17,16 @@ import ConnectionSlices from './internal/domains/ConnectionSlices';
 import NotificationsContext, { type NotificationsContextType } from './internal/domains/NotificationsContext';
 import SendBoxContext, { type SendBoxContextType } from './internal/domains/SendBoxContext';
 import SendBoxSlices from './internal/domains/SendBoxSlices';
-import { type Source } from './internal/domains/Source';
 import SpeechContext, { type SpeechContextType } from './internal/domains/SpeechContext';
 import SpeechSlices from './internal/domains/SpeechSlices';
 import VoiceContext, { type VoiceContextType } from './internal/domains/VoiceContext';
+import VoiceSlices from './internal/domains/VoiceSlices';
 import useConnectivityStatus from './useConnectivityStatus';
 import useSendBoxValue from './useSendBoxValue';
 
 // <ComposerCore> under stub domain contexts and no Redux store: it reads the contexts only.
 
 const unsubscribe = () => undefined;
-
-const constant = <T,>(value: T): Source<T> => Object.freeze({ get: () => value, subscribe: () => unsubscribe });
 
 function createStubs() {
   const chatOperations: ChatOperationsContextType = Object.freeze({
@@ -68,18 +66,17 @@ function createStubs() {
   const stopAllAudio = jest.fn();
 
   const voice: VoiceContextType = Object.freeze({
-    microphoneMuted: constant(false),
     postVoiceActivity: jest.fn(),
     registerVoiceHandler: jest.fn(),
     setMuted: jest.fn(),
     setVoiceState: jest.fn(),
     startVoice: jest.fn(),
-    stopVoice: jest.fn(),
-    voiceHandlers: constant(new Map([['h-1', { queueAudio: jest.fn(), stopAllAudio } as any]])),
-    voiceState: constant('idle' as const)
+    stopVoice: jest.fn()
   });
 
-  return { chatOperations, notifications, sendBox, speech, stopAllAudio, voice };
+  const voiceHandlers = new Map([['h-1', { queueAudio: jest.fn(), stopAllAudio } as any]]);
+
+  return { chatOperations, notifications, sendBox, speech, stopAllAudio, voice, voiceHandlers };
 }
 
 function renderComposerCore(
@@ -103,19 +100,21 @@ function renderComposerCore(
             <ConnectionSlices connectivityStatus="connected" notifications={[]} referenceGrammarID="grammar">
               <SendBoxSlices sendBoxAttachments={[]} sendBoxValue="Hello" sendTypingIndicator={false}>
                 <SpeechSlices dictateInterims={undefined} dictateState={0} shouldSpeakIncomingActivity={false}>
-                  <NotificationsContext.Provider value={stubs.notifications}>
-                    <SendBoxContext.Provider value={stubs.sendBox}>
-                      <SpeechContext.Provider value={stubs.speech}>
-                        <VoiceContext.Provider value={stubs.voice}>
-                          <ActivityKeyerComposer>
-                            <ActivityAcknowledgementComposer>
-                              <ComposerCore directLine={directLine as any}>{children}</ComposerCore>
-                            </ActivityAcknowledgementComposer>
-                          </ActivityKeyerComposer>
-                        </VoiceContext.Provider>
-                      </SpeechContext.Provider>
-                    </SendBoxContext.Provider>
-                  </NotificationsContext.Provider>
+                  <VoiceSlices microphoneMuted={false} voiceHandlers={stubs.voiceHandlers} voiceState="idle">
+                    <NotificationsContext.Provider value={stubs.notifications}>
+                      <SendBoxContext.Provider value={stubs.sendBox}>
+                        <SpeechContext.Provider value={stubs.speech}>
+                          <VoiceContext.Provider value={stubs.voice}>
+                            <ActivityKeyerComposer>
+                              <ActivityAcknowledgementComposer>
+                                <ComposerCore directLine={directLine as any}>{children}</ComposerCore>
+                              </ActivityAcknowledgementComposer>
+                            </ActivityKeyerComposer>
+                          </VoiceContext.Provider>
+                        </SpeechContext.Provider>
+                      </SendBoxContext.Provider>
+                    </NotificationsContext.Provider>
+                  </VoiceSlices>
                 </SpeechSlices>
               </SendBoxSlices>
             </ConnectionSlices>

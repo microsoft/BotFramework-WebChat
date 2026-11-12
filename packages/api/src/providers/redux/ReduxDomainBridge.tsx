@@ -49,6 +49,7 @@ import useSourceValue from '../../hooks/internal/domains/useSourceValue';
 import SpeechContext, { type SpeechContextType } from '../../hooks/internal/domains/SpeechContext';
 import SpeechSlices from '../../hooks/internal/domains/SpeechSlices';
 import VoiceContext, { type VoiceContextType } from '../../hooks/internal/domains/VoiceContext';
+import VoiceSlices from '../../hooks/internal/domains/VoiceSlices';
 import randomId from '../../utils/randomId';
 
 const reduxDomainBridgePropsSchema = pipe(
@@ -62,15 +63,6 @@ type ReduxDomainBridgeProps = InferInput<typeof reduxDomainBridgePropsSchema>;
 
 type ReduxState = ReturnType<WebChatReduxStore['getState']>;
 
-// One slice of the store, through the batched subscription of <WebChatReduxProvider>.
-function createSource<T>(
-  store: WebChatReduxStore,
-  subscribe: Source<T>['subscribe'],
-  select: (state: ReduxState) => T
-): Source<T> {
-  return Object.freeze({ get: () => select(store.getState()), subscribe });
-}
-
 // Same as the dispatchers <Composer> hoisted from action creators: passes every argument, returns what `dispatch()` returns.
 function bindDispatch<TArgs extends unknown[]>(
   dispatch: WebChatReduxStore['dispatch'],
@@ -81,8 +73,8 @@ function bindDispatch<TArgs extends unknown[]>(
 }
 
 /**
- * Provides the domain contexts over the Redux store: the slice contexts from one subscription to the store, the other
- * domain contexts with one source per slice; each setter dispatches an action.
+ * Provides the domain contexts over the Redux store: the slice contexts from one subscription to the store (through
+ * the batched subscription of `<WebChatReduxProvider>`); each setter dispatches an action.
  */
 function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const { children } = validateProps(reduxDomainBridgePropsSchema, props);
@@ -148,7 +140,6 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const voice = useMemo<VoiceContextType>(
     () =>
       Object.freeze({
-        microphoneMuted: createSource(store, subscribe, ({ voice }) => voice.microphoneMuted),
         postVoiceActivity: (activity: WebChatActivity) => {
           dispatch(postVoiceActivity(activity));
         },
@@ -170,11 +161,9 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
         },
         stopVoice: () => {
           dispatch(stopVoiceRecording());
-        },
-        voiceHandlers: createSource(store, subscribe, ({ voice }) => voice.voiceHandlers),
-        voiceState: createSource(store, subscribe, ({ voice }) => voice.voiceState)
+        }
       }),
-    [dispatch, store, subscribe]
+    [dispatch]
   );
 
   return (
@@ -198,7 +187,13 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
                     dictateState={state.dictateState}
                     shouldSpeakIncomingActivity={state.shouldSpeakIncomingActivity}
                   >
-                    {children}
+                    <VoiceSlices
+                      microphoneMuted={state.voice.microphoneMuted}
+                      voiceHandlers={state.voice.voiceHandlers}
+                      voiceState={state.voice.voiceState}
+                    >
+                      {children}
+                    </VoiceSlices>
                   </SpeechSlices>
                 </SendBoxSlices>
               </ConnectionSlices>

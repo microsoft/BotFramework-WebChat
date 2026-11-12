@@ -17,7 +17,11 @@ import {
   useShouldSpeakIncomingActivitySlice
 } from '../../hooks/internal/domains/SpeechSlices';
 import { useVoiceContext } from '../../hooks/internal/domains/VoiceContext';
-import useSourceValue from '../../hooks/internal/domains/useSourceValue';
+import {
+  useMicrophoneMutedSlice,
+  useVoiceHandlersSlice,
+  useVoiceStateSlice
+} from '../../hooks/internal/domains/VoiceSlices';
 import useActivities from '../../hooks/useActivities';
 import useConnectivityStatus from '../../hooks/useConnectivityStatus';
 import useNotifications from '../../hooks/useNotifications';
@@ -409,14 +413,14 @@ describe('<DefaultProviders>', () => {
         connectivityStatus: useConnectivityStatus()[0],
         dictateInterims: useDictateInterimsSlice(),
         dictateState: useDictateStateSlice(),
-        microphoneMuted: useSourceValue(voice.microphoneMuted),
+        microphoneMuted: useMicrophoneMutedSlice(),
         notifications: useNotifications()[0],
         sendBoxValue: useSendBoxValue()[0],
         shouldSpeakIncomingActivity: useShouldSpeakIncomingActivitySlice(),
         speech,
         voice,
-        voiceHandlers: useSourceValue(voice.voiceHandlers),
-        voiceState: useSourceValue(voice.voiceState)
+        voiceHandlers: useVoiceHandlersSlice(),
+        voiceState: useVoiceStateSlice()
       });
 
       return null;
