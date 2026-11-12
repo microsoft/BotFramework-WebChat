@@ -84,6 +84,7 @@ scenario('createGraphFromStore()', bdd => {
       return outcome;
     })
     .then('the graph should not follow the store anymore', ({ subscriptions }, { subscriber1 }) => {
+      // Does not read the graph: a read would catch up with the store, before the subscription below does.
       expect(subscriptions.size).toBe(0);
       expect(subscriber1).toHaveBeenCalledTimes(1);
     })
