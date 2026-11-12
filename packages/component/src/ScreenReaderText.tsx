@@ -1,26 +1,11 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import React, { forwardRef, memo } from 'react';
-
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
-import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 
-const ROOT_STYLE = {
-  // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
-  color: 'transparent',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  // We need to set top: 0, otherwise, it will repro:
-  // - Run NVDA
-  // - Make the transcript long enough to show the scrollbar
-  // - Press SHIFT-TAB, focus on upload button
-  // - Press up arrow multiple times
-  top: 0,
-  whiteSpace: 'nowrap',
-  width: 1
-};
+import styles from './ScreenReaderText.module.css';
 
 const screenReaderTextPropsSchema = pipe(
   object({
@@ -37,7 +22,7 @@ type ScreenReaderTextProps = InferInput<typeof screenReaderTextPropsSchema>;
 const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(function ScreenReaderText(props, ref) {
   const { 'aria-hidden': ariaHidden, id, text } = validateProps(screenReaderTextPropsSchema, props);
 
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const classNames = useStyles(styles, webChatPrefixedClassName);
 
   if (ariaHidden && !id) {
     console.warn(
@@ -46,7 +31,7 @@ const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(funct
   }
 
   return (
-    <div aria-hidden={ariaHidden} className={rootClassName} id={id} ref={ref}>
+    <div aria-hidden={ariaHidden} className={classNames['screen-reader-text']} id={id} ref={ref}>
       {text}
     </div>
   );
