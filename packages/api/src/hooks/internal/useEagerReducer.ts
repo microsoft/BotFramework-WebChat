@@ -34,8 +34,8 @@ function createEagerStore<S, A>(
 
 /**
  * `useReducer()`, with the reducer called once per action, when the action is dispatched, instead of during render. The
- * state is a small store read with `useSourceValue()`, as the Redux bridge reads the Redux store, so both modes render
- * at the same priority (`useSyncExternalStore()` would render at a higher one on React 18 and later):
+ * state is a small store read with `useSourceValue()` (the `useSyncExternalStore()` ponyfill), as the Redux bridge and
+ * `<GraphProvider>` read their stores, so every reader renders a change in the same commit, at the same priority:
  *
  * - `getState()` returns the state of the last dispatch before React renders it, as `getState()` of a Redux store, so
  *   code outside render (e.g. a submit right after setting the value) reads what was just dispatched;
