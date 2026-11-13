@@ -43,7 +43,13 @@ function createWebSpeechPonyfill() {
  */
 async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
   let lastUtterance;
+  let rejectSpeak;
   let spoken;
+
+  // Rejects as soon as speakActor throws, so an actor waiting for the utterance's "end" event does not hang.
+  const speakFailed = new Promise((_, reject) => {
+    rejectSpeak = reject;
+  });
 
   spyOn(speechSynthesis, 'speak').mockImplementationOnce(utterance => {
     lastUtterance = utterance;
@@ -55,11 +61,13 @@ async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
 
       utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
     })();
+
+    spoken.catch(rejectSpeak);
   });
 
-  await actor();
+  await Promise.race([actor(), speakFailed]);
 
-  // Rethrows an error from speakActor, if speak() was called.
+  // Waits for speakActor, if speak() was called.
   await spoken;
 
   return lastUtterance;
