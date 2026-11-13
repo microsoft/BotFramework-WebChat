@@ -43,18 +43,32 @@ function createWebSpeechPonyfill() {
  */
 async function actSpeakOnce({ speechSynthesis }, actor, speakActor) {
   let lastUtterance;
+  let rejectSpeak;
+  let spoken;
 
-  spyOn(speechSynthesis, 'speak').mockImplementationOnce(async utterance => {
-    lastUtterance = utterance;
-
-    utterance.dispatchEvent(new SpeechSynthesisEvent('start', { utterance }));
-
-    await speakActor?.(utterance);
-
-    utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
+  // Rejects as soon as speakActor throws, so an actor waiting for the utterance's "end" event does not hang.
+  const speakFailed = new Promise((_, reject) => {
+    rejectSpeak = reject;
   });
 
-  await actor();
+  spyOn(speechSynthesis, 'speak').mockImplementationOnce(utterance => {
+    lastUtterance = utterance;
+
+    spoken = (async () => {
+      utterance.dispatchEvent(new SpeechSynthesisEvent('start', { utterance }));
+
+      await speakActor?.(utterance);
+
+      utterance.dispatchEvent(new SpeechSynthesisEvent('end', { utterance }));
+    })();
+
+    spoken.catch(rejectSpeak);
+  });
+
+  await Promise.race([actor(), speakFailed]);
+
+  // Waits for speakActor, if speak() was called.
+  await spoken;
 
   return lastUtterance;
 }
@@ -83,9 +97,8 @@ async function actSpeak({ speechSynthesis }, actor, speakActor) {
   return Object.freeze(utterances);
 }
 
-function actRecognizeOnce(ponyfill, actor, recognizeActor) {
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async resolve => {
+async function actRecognizeOnce(ponyfill, actor, recognizeActor) {
+  const recognized = new Promise((resolve, reject) => {
     const OriginalSpeechRecognition = ponyfill.SpeechRecognition;
 
     spyOn(ponyfill, 'SpeechRecognition').mockImplementationOnce(() => {
@@ -169,7 +182,7 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
         end();
       });
 
-      spyOn(speechRecognition, 'start').mockImplementationOnce(async () => {
+      const recognize = async () => {
         // Like a browser, events come after start() returned and "starting" is painted: start() is called from an effect,
         // events inside it would render "starting" and "dictating" in the same frame on React 18 and later.
         await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
@@ -199,15 +212,18 @@ function actRecognizeOnce(ponyfill, actor, recognizeActor) {
             finalizedResult
           });
         }
+      };
 
-        resolve();
+      spyOn(speechRecognition, 'start').mockImplementationOnce(() => {
+        recognize().then(resolve, reject);
       });
 
       return speechRecognition;
     });
-
-    await actor();
   });
+
+  // Waits for both actors, so an error thrown by either one rejects.
+  await Promise.all([actor(), recognized]);
 }
 
 async function sendMessageViaMicrophone(speechPonyfill, text) {
