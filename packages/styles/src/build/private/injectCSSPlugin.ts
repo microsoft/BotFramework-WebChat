@@ -232,5 +232,3 @@ export default function injectCSSPlugin({ ignoreCSSEntries, stylesPlaceholder }:
     }
   };
 }
-
-export { mapOutputsToRootOutputs, updateMappings, type Metafile };

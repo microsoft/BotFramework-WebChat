@@ -5,7 +5,6 @@
   "files": [
     "./dist/**/*",
     "./src/**/*",
-    "!dist/metafile-*.json",
     "!src/**/*.spec.*",
     "!src/**/__tests__/**"
   ],

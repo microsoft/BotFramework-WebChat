@@ -1,6 +1,6 @@
 import { type UserConfig } from 'tsdown';
 
-import { cssPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
+import { istanbulPlugin } from './rolldownPlugins.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
@@ -19,8 +19,6 @@ type Config = UserConfig & {
 // Port of tsup.base.config.ts.
 function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config): Config {
   return overrideOptions({
-    // CSS modules are compiled by our cssPlugin (rolldownPlugins.mjs), not by @tsdown/css.
-    css: false,
     define: {
       // TSD does not support define, thus we need to use `globalThis.*` instead.
       'globalThis.WEB_CHAT_BUILD_INFO_BUILD_TOOL': '"tsdown"',
@@ -47,9 +45,8 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
     ignoreWatch: ['./dist/'],
     inputOptions: (options, format) => ({
       ...options,
-      // unplugin-lightningcss exports dashed class names as `export { _x as "a-b" }`: rolldown warns for each of them.
-      // rolldown also warns when JavaScript plugins (Lightning CSS, istanbul) take most of the build time.
-      checks: { ...options.checks, pluginTimings: false, toleratedTransform: false },
+      // rolldown warns when JavaScript plugins (istanbul) take most of the build time.
+      checks: { ...options.checks, pluginTimings: false },
       // tsdown builds CommonJS for Node.js, ours is for browsers too (uses the "browser" conditions of dependencies).
       ...(format === 'cjs' ? { platform: 'browser' } : {})
     }),
@@ -65,7 +62,7 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       strict: true
     }),
     platform: 'browser',
-    plugins: [...(env === 'test' ? [istanbulPlugin()] : []), cssPlugin({ minify, target: TARGET })],
+    plugins: env === 'test' ? [istanbulPlugin()] : [],
     report: false,
     sourcemap: true,
     target: [...TARGET],
