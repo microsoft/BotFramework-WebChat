@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions, testIds };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const root = createRoot(document.getElementById('webchat'));
+
+        // GIVEN: The state style options of the send box buttons are undefined, except hover.
+        const render = ({ disabled }) =>
+          root.render(
+            createElement(ReactWebChat, {
+              directLine,
+              disabled,
+              store,
+              styleOptions: {
+                sendBoxButtonAlignment: 'top', // Not stretched, so the button height comes from `sendBoxHeight`.
+                sendBoxButtonColor: 'Red',
+                sendBoxButtonColorOnActive: undefined,
+                sendBoxButtonColorOnDisabled: undefined,
+                sendBoxButtonColorOnFocus: undefined,
+                sendBoxButtonColorOnHover: 'Blue', // Set, to tell the other states apart from hover.
+                sendBoxButtonKeyboardFocusIndicatorBorderRadius: '50%',
+                sendBoxButtonKeyboardFocusIndicatorBorderWidth: undefined, // The browser default, "medium".
+                sendBoxButtonShadeColor: 'rgba(255, 0, 0, 0.2)',
+                sendBoxButtonShadeColorOnActive: undefined,
+                sendBoxButtonShadeColorOnDisabled: undefined,
+                sendBoxButtonShadeColorOnFocus: undefined,
+                sendBoxButtonShadeColorOnHover: 'rgba(0, 0, 255, 0.2)',
+                sendBoxHeight: '3em' // Strings are used as is.
+              }
+            })
+          );
+
+        // WHEN: Web Chat is disabled.
+        render({ disabled: true });
+
+        await pageConditions.uiConnected();
+        await waitFor(() => expect(pageElements.sendButton().getAttribute('aria-disabled')).toBe('true'));
+
+        // THEN: The disabled buttons are red with a light red shade, 3em square, aligned to the top.
+        await host.snapshot('local');
+
+        // WHEN: Web Chat is enabled and TAB is pressed from the send box.
+        render({ disabled: false });
+
+        await waitFor(() => expect(pageElements.sendButton().getAttribute('aria-disabled')).toBeNull());
+
+        pageObjects.focusSendBoxTextBox();
+
+        await host.sendTab();
+
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.sendButton()));
+
+        // THEN: The focused send button is red with a light red shade and a round keyboard focus indicator.
+        await host.snapshot('local');
+
+        // WHEN: Hovering the upload button.
+        await host.hover(document.querySelector('.webchat__upload-button .webchat__icon-button'));
+
+        // THEN: The upload button is blue with a light blue shade.
+        await host.snapshot('local');
+
+        // WHEN: Hovering the send button.
+        await host.hover(pageElements.sendButton());
+
+        // THEN: The send button is blue with a light blue shade, the upload button is back to red.
+        await host.snapshot('local');
+
+        // WHEN: Press-and-hold the send button.
+        await host.pressAndHold(pageElements.sendButton());
+
+        // THEN: The pressed send button is red with a light red shade, not the hover colors.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

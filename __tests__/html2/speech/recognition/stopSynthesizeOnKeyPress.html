@@ -90,9 +90,9 @@
 
         expect(ponyfill.speechSynthesis.cancel).toHaveBeenCalledTimes(1);
 
-        const microphoneButton = pageElements.microphoneButton();
+        const microphoneButtonComponent = pageElements.microphoneButton().parentElement;
 
-        expect(microphoneButton.classList.contains('webchat__microphone-button--dictating')).toBe(false);
+        expect(microphoneButtonComponent.classList.contains('webchat__microphone-button--dictating')).toBe(false);
       });
     </script>
   </body>

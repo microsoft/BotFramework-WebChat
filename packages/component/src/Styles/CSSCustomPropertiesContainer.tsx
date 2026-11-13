@@ -35,6 +35,12 @@ function toLength(value: number | string | undefined): string {
   return typeof value === 'number' ? `${value}px` : value || 'unset';
 }
 
+// `unset` when the option is not set: a `var()` with a fallback then uses the fallback, one without takes the initial
+// value of the property, as emotion did when it left the declaration out.
+function orUnset(value: string | undefined): string {
+  return value || 'unset';
+}
+
 function hasBundleStyleOptions(styleOptions: StrictStyleOptions): styleOptions is StrictStyleOptions & {
   cardPushButtonBackgroundColor?: string;
   cardPushButtonTextColor?: string;
@@ -87,11 +93,39 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       fontSizeSmall,
       markdownExternalLinkIconImage,
       messageActivityWordBreak,
+      microphoneButtonColorOnDictate,
       monospaceFont,
       notificationText,
       paddingRegular,
       primaryFont,
       sendBoxAttachmentBarMaxHeight,
+      sendBoxBackground,
+      sendBoxBorderBottom,
+      sendBoxBorderLeft,
+      sendBoxBorderRight,
+      sendBoxBorderTop,
+      sendBoxButtonColor,
+      sendBoxButtonColorOnActive,
+      sendBoxButtonColorOnDisabled,
+      sendBoxButtonColorOnFocus,
+      sendBoxButtonColorOnHover,
+      sendBoxButtonKeyboardFocusIndicatorBorderColor,
+      sendBoxButtonKeyboardFocusIndicatorBorderRadius,
+      sendBoxButtonKeyboardFocusIndicatorBorderStyle,
+      sendBoxButtonKeyboardFocusIndicatorBorderWidth,
+      sendBoxButtonKeyboardFocusIndicatorInset,
+      sendBoxButtonShadeBorderRadius,
+      sendBoxButtonShadeColor,
+      sendBoxButtonShadeColorOnActive,
+      sendBoxButtonShadeColorOnDisabled,
+      sendBoxButtonShadeColorOnFocus,
+      sendBoxButtonShadeColorOnHover,
+      sendBoxButtonShadeInset,
+      sendBoxDisabledTextColor,
+      sendBoxHeight,
+      sendBoxMaxHeight,
+      sendBoxPlaceholderColor,
+      sendBoxTextColor,
       slowConnectivity,
       spinnerAnimationBackgroundImage,
       spinnerAnimationHeight,
@@ -162,6 +196,12 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
   ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
   ${CustomPropertyNames.BackgroundImageTypingAnimation}: ${typingAnimationBackgroundImage || `url('${getDefaultTypingAnimationImageURL()}')`};
+  ${CustomPropertyNames.BackgroundSendBox}: ${sendBoxBackground};
+  ${CustomPropertyNames.BackgroundSendBoxButtonShade}: ${orUnset(sendBoxButtonShadeColor)};
+  ${CustomPropertyNames.BackgroundSendBoxButtonShadeActive}: ${orUnset(sendBoxButtonShadeColorOnActive)};
+  ${CustomPropertyNames.BackgroundSendBoxButtonShadeDisabled}: ${orUnset(sendBoxButtonShadeColorOnDisabled)};
+  ${CustomPropertyNames.BackgroundSendBoxButtonShadeFocus}: ${orUnset(sendBoxButtonShadeColorOnFocus)};
+  ${CustomPropertyNames.BackgroundSendBoxButtonShadeHover}: ${orUnset(sendBoxButtonShadeColorOnHover)};
   ${CustomPropertyNames.BackgroundToastError}: ${toastErrorBackgroundColor};
   ${CustomPropertyNames.BackgroundToastInfo}: ${toastInfoBackgroundColor};
   ${CustomPropertyNames.BackgroundToastSuccess}: ${toastSuccessBackgroundColor};
@@ -174,19 +214,28 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
+  ${CustomPropertyNames.BorderBottomSendBox}: ${toLength(sendBoxBorderBottom)};
   ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
   ${CustomPropertyNames.BorderColorBubbleUser}: ${bubbleFromUserBorderColor};
+  ${CustomPropertyNames.BorderColorSendBoxButtonKeyboardFocusIndicator}: ${orUnset(sendBoxButtonKeyboardFocusIndicatorBorderColor)};
   ${CustomPropertyNames.BorderColorToastSeparator}: ${toastSeparatorColor};
+  ${CustomPropertyNames.BorderLeftSendBox}: ${toLength(sendBoxBorderLeft)};
   ${CustomPropertyNames.BorderRadiusAvatar}: ${toLength(avatarBorderRadius)};
   ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
   ${CustomPropertyNames.BorderRadiusBubbleUser}: ${bubbleFromUserBorderRadius}px;
+  ${CustomPropertyNames.BorderRadiusSendBoxButtonKeyboardFocusIndicator}: ${toLength(sendBoxButtonKeyboardFocusIndicatorBorderRadius)};
+  ${CustomPropertyNames.BorderRadiusSendBoxButtonShade}: ${toLength(sendBoxButtonShadeBorderRadius)};
   ${CustomPropertyNames.BorderRadiusTranscriptTerminator}: ${transcriptTerminatorBorderRadius}px;
+  ${CustomPropertyNames.BorderRightSendBox}: ${toLength(sendBoxBorderRight)};
   ${CustomPropertyNames.BorderStyleBubble}: ${bubbleBorderStyle};
   ${CustomPropertyNames.BorderStyleBubbleUser}: ${bubbleFromUserBorderStyle};
+  ${CustomPropertyNames.BorderStyleSendBoxButtonKeyboardFocusIndicator}: ${orUnset(sendBoxButtonKeyboardFocusIndicatorBorderStyle)};
   ${CustomPropertyNames.BorderStyleTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorStyle};
   ${CustomPropertyNames.BorderStyleTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorStyle};
+  ${CustomPropertyNames.BorderTopSendBox}: ${toLength(sendBoxBorderTop)};
   ${CustomPropertyNames.BorderWidthBubble}: ${bubbleBorderWidth}px;
   ${CustomPropertyNames.BorderWidthBubbleUser}: ${bubbleFromUserBorderWidth}px;
+  ${CustomPropertyNames.BorderWidthSendBoxButtonKeyboardFocusIndicator}: ${toLength(sendBoxButtonKeyboardFocusIndicatorBorderWidth)};
   ${CustomPropertyNames.BorderWidthTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorWidth}px;
   ${CustomPropertyNames.BorderWidthTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorWidth}px;
   ${CustomPropertyNames.ColorAccent}: ${accent};
@@ -194,7 +243,16 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorBubbleUser}: ${bubbleFromUserTextColor};
   ${CustomPropertyNames.ColorConnectivityFailed}: ${failedConnectivity};
   ${CustomPropertyNames.ColorConnectivitySlow}: ${slowConnectivity};
+  ${CustomPropertyNames.ColorMicrophoneButtonDictating}: ${orUnset(microphoneButtonColorOnDictate)};
   ${CustomPropertyNames.ColorNotificationText}: ${notificationText};
+  ${CustomPropertyNames.ColorSendBox}: ${sendBoxTextColor};
+  ${CustomPropertyNames.ColorSendBoxButton}: ${sendBoxButtonColor || subtle};
+  ${CustomPropertyNames.ColorSendBoxButtonActive}: ${orUnset(sendBoxButtonColorOnActive)};
+  ${CustomPropertyNames.ColorSendBoxButtonDisabled}: ${orUnset(sendBoxButtonColorOnDisabled)};
+  ${CustomPropertyNames.ColorSendBoxButtonFocus}: ${orUnset(sendBoxButtonColorOnFocus)};
+  ${CustomPropertyNames.ColorSendBoxButtonHover}: ${orUnset(sendBoxButtonColorOnHover)};
+  ${CustomPropertyNames.ColorSendBoxDisabled}: ${sendBoxDisabledTextColor || subtle};
+  ${CustomPropertyNames.ColorSendBoxPlaceholder}: ${sendBoxPlaceholderColor || subtle};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
   ${CustomPropertyNames.ColorToastError}: ${toastErrorColor};
@@ -204,8 +262,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.ColorTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.ColorTranscriptOverlayButton}: ${transcriptOverlayButtonColor};
   ${CustomPropertyNames.ColorTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonColorOnDisabled};
-  ${CustomPropertyNames.ColorTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonColorOnFocus || 'unset'};
-  ${CustomPropertyNames.ColorTranscriptOverlayButtonHover}: ${transcriptOverlayButtonColorOnHover || 'unset'};
+  ${CustomPropertyNames.ColorTranscriptOverlayButtonFocus}: ${orUnset(transcriptOverlayButtonColorOnFocus)};
+  ${CustomPropertyNames.ColorTranscriptOverlayButtonHover}: ${orUnset(transcriptOverlayButtonColorOnHover)};
   ${CustomPropertyNames.ColorTranscriptTerminator}: ${transcriptTerminatorColor};
   ${CustomPropertyNames.ColorTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.FontMonospace}: ${monospaceFont};
@@ -219,10 +277,13 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.HeightTypingAnimation}: ${toLength(typingAnimationHeight)};
   ${CustomPropertyNames.HeightVideo}: ${toLength(videoHeight)};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
+  ${CustomPropertyNames.InsetSendBoxButtonKeyboardFocusIndicator}: ${toLength(sendBoxButtonKeyboardFocusIndicatorInset)};
+  ${CustomPropertyNames.InsetSendBoxButtonShade}: ${toLength(sendBoxButtonShadeInset)};
   ${CustomPropertyNames.MarginBlockConnectivity}: ${toLength(connectivityMarginTopBottom)};
   ${CustomPropertyNames.MarginInlineConnectivity}: ${toLength(connectivityMarginLeftRight)};
   ${CustomPropertyNames.MarginSpinnerAnimation}: ${toLength(spinnerAnimationPadding)};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
+  ${CustomPropertyNames.MaxHeightSendBox}: ${toLength(sendBoxMaxHeight)};
   ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;
   ${CustomPropertyNames.MaxHeightToaster}: ${toLength(toasterMaxHeight)};
   ${CustomPropertyNames.MaxHeightToasterSingular}: ${toLength(toasterSingularMaxHeight)};
@@ -232,6 +293,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.MinWidthMessageBubble}: ${bubbleMessageMinWidth}px;
   ${CustomPropertyNames.MinHeightBubble}: ${bubbleMinHeight}px;
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
+  ${CustomPropertyNames.MinHeightSendBox}: ${toLength(sendBoxHeight)};
   ${CustomPropertyNames.PaddingBlockToastText}: ${toLength(toastTextPadding)};
   ${CustomPropertyNames.PaddingConnectivityIcon}: ${toLength(connectivityIconPadding)};
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;

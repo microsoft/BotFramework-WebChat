@@ -7,10 +7,12 @@ import { scenario } from '@testduet/given-when-then';
 import React, { memo } from 'react';
 import { legacy_createStore as createStore } from 'redux';
 
-import { useSelector } from './WebChatReduxContext';
-import WebChatReduxProvider from './WebChatReduxProvider';
+import { useSelector } from './ReduxContext';
+import ReduxProvider from './ReduxProvider';
 
 type State = { readonly count: number; readonly other: number };
+
+const selectCount = ({ count }: State) => count;
 
 function reducer(
   state: State = { count: 0, other: 0 },
@@ -21,33 +23,33 @@ function reducer(
     : type === 'INCREMENT_OTHER'
       ? { ...state, other: state.other + 1 }
       : type === 'SET_COUNT'
-        ? { ...state, count: payload }
+        ? { ...state, count: payload ?? state.count }
         : state;
 }
 
 scenario(
-  'useSelector() under <WebChatReduxProvider>',
+  'useSelector() under <ReduxProvider>',
   bdd => {
     bdd
       .given('a parent and a child selecting the same value, the parent passing it down as a prop', () => {
         const renders: (readonly [number, number])[] = [];
 
         const Child = memo(({ countFromParent }: { readonly countFromParent: number }) => {
-          renders.push([countFromParent, useSelector(({ count }: State) => count)]);
+          renders.push([countFromParent, useSelector(selectCount)]);
 
           return null;
         });
 
         function Parent() {
-          return <Child countFromParent={useSelector(({ count }: State) => count)} />;
+          return <Child countFromParent={useSelector(selectCount)} />;
         }
 
         const store = createStore(reducer);
 
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Parent />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { renders, store };
@@ -67,16 +69,11 @@ scenario(
       );
 
     bdd
-      .given('a component selecting a new array on every call, compared by its content', () => {
-        const renders: (readonly number[])[] = [];
+      .given('a component selecting one value of the state', () => {
+        const renders: number[] = [];
 
         function Counter() {
-          renders.push(
-            useSelector(
-              ({ count }: State) => [count],
-              ([x], [y]) => x === y
-            )
-          );
+          renders.push(useSelector(selectCount));
 
           return null;
         }
@@ -84,9 +81,9 @@ scenario(
         const store = createStore(reducer);
 
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return { renders, store };
@@ -96,13 +93,13 @@ scenario(
 
         return renders;
       })
-      .then('should not re-render', (_, renders) => expect(renders).toEqual([[0]]))
+      .then('should not re-render', (_, renders) => expect(renders).toEqual([0]))
       .when('dispatching an action that changes the selected value', ({ renders, store }) => {
         store.dispatch({ type: 'INCREMENT_COUNT' });
 
         return renders;
       })
-      .then('should re-render once', (_, renders) => expect(renders).toEqual([[0], [1]]));
+      .then('should re-render once', (_, renders) => expect(renders).toEqual([0, 1]));
 
     bdd
       .given('a component dispatching while rendering', () => {
@@ -110,7 +107,7 @@ scenario(
         const store = createStore(reducer);
 
         function Counter() {
-          renders.push(useSelector(({ count }: State) => count));
+          renders.push(useSelector(selectCount));
 
           // Dispatches on every render, like calling the setter of `useSendBoxValue()` in render.
           store.dispatch({ payload: 1, type: 'SET_COUNT' });
@@ -122,9 +119,9 @@ scenario(
       })
       .when('rendered', ({ Counter, renders, store }) => {
         render(
-          <WebChatReduxProvider store={store}>
+          <ReduxProvider store={store}>
             <Counter />
-          </WebChatReduxProvider>
+          </ReduxProvider>
         );
 
         return renders;

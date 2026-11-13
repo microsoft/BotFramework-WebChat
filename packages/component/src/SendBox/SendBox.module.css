@@ -1,0 +1,424 @@
+/* #region Send box */
+
+:global(.webchat) .send-box {
+  display: grid;
+  font-family: var(--webchat__font--primary);
+  grid-template-areas: 'suggested-actions' 'content';
+  grid-template-rows: auto 1fr;
+}
+
+:global(.webchat) .send-box .send-box__button--align-bottom {
+  align-self: flex-end;
+}
+
+:global(.webchat) .send-box .send-box__button--align-stretch {
+  align-self: stretch;
+}
+
+:global(.webchat) .send-box .send-box__button--align-top {
+  align-self: flex-start;
+}
+
+:global(.webchat) .send-box :global(.webchat__suggested-actions) {
+  grid-area: suggested-actions;
+  min-width: 0;
+}
+
+:global(.webchat) .send-box .send-box__main {
+  align-items: stretch;
+  background-color: var(--webchat__background--send-box);
+  border-bottom: var(--webchat__border-bottom--send-box);
+  border-left: var(--webchat__border-left--send-box);
+  border-right: var(--webchat__border-right--send-box);
+  border-top: var(--webchat__border-top--send-box);
+  display: grid;
+  grid-area: content;
+  grid-template-areas: 'upload-button text-box send-button';
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
+  min-height: var(--webchat__min-height--send-box);
+  min-width: 0;
+}
+
+/* For unknown reason, if the attachment bar does not exist, the second row is still occupying about 1px, we need to hide it. */
+:global(.webchat) .send-box .send-box__main:has(.send-box__attachment-bar) {
+  grid-template-areas: 'attachment-bar attachment-bar attachment-bar' 'upload-button text-box send-button';
+  grid-template-rows: auto auto;
+}
+
+:global(.webchat) .send-box .drop-zone {
+  grid-area: content;
+  min-width: 0;
+}
+
+:global(.webchat) .send-box .send-box__editable {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--webchat__padding--regular) / 2);
+  grid-area: text-box;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--webchat__padding--regular) / 2);
+  padding-top: calc(var(--webchat__padding--regular) / 2);
+  width: 100%;
+}
+
+:global(.webchat) .send-box .send-box__attachment-bar {
+  padding: var(--webchat__padding--regular);
+  padding-block-end: 0;
+}
+
+:global(.webchat) .send-box .upload-button {
+  grid-area: upload-button;
+}
+
+:global(.webchat) .send-box .send-button {
+  grid-area: send-button;
+}
+
+:global(.webchat) .send-box .send-box__button {
+  flex-shrink: 0;
+}
+
+:global(.webchat) .send-box .send-box__dictation-interims {
+  flex: 10000;
+}
+
+:global(.webchat) .send-box .send-box__microphone-button {
+  flex: 1;
+}
+
+:global(.webchat) .send-box .send-box__text-box {
+  flex: 10000;
+}
+
+/* #endregion */
+
+/* #region Text box */
+
+:global(.webchat) .send-box-text-box {
+  align-items: center;
+  display: flex;
+  font-family: var(--webchat__font--primary);
+  padding: calc(var(--webchat__padding--regular) / 2) var(--webchat__padding--regular);
+  position: relative;
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__input {
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  height: 100%;
+  outline: 0;
+  padding: 0;
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__input,
+:global(.webchat) .send-box-text-box .send-box-text-box__html-text-area {
+  /* Transparent, because the send box already has the "sendBoxBackground" color. */
+  background-color: transparent;
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__input:not(:disabled):not([aria-disabled='true']),
+:global(.webchat) .send-box-text-box .send-box-text-box__html-text-area:not(:disabled):not([aria-disabled='true']) {
+  color: var(--webchat__color--send-box);
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__input:disabled,
+:global(.webchat) .send-box-text-box .send-box-text-box__input[aria-disabled='true'],
+:global(.webchat) .send-box-text-box .send-box-text-box__html-text-area:disabled,
+:global(.webchat) .send-box-text-box .send-box-text-box__html-text-area[aria-disabled='true'] {
+  color: var(--webchat__color--send-box-disabled);
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__input::placeholder,
+:global(.webchat) .send-box-text-box .send-box-text-box__html-text-area::placeholder {
+  color: var(--webchat__color--send-box-placeholder);
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__input,
+:global(.webchat) .send-box-text-box .send-box-text-box__text-area {
+  flex: 1;
+  max-height: var(--webchat__max-height--send-box);
+}
+
+:global(.webchat) .send-box-text-box .send-box-text-box__glass {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+/* #endregion */
+
+/* #region Auto-resize text area */
+
+:global(.webchat) .auto-resize-textarea {
+  font-family: var(--webchat__font--primary);
+  overflow: hidden;
+  position: relative;
+}
+
+:global(.webchat) .auto-resize-textarea .auto-resize-textarea__doppelganger {
+  color: transparent;
+  height: 100%;
+  overflow-y: auto;
+  user-select: none;
+  white-space: pre-wrap;
+  width: inherit;
+  word-break: break-word;
+}
+
+:global(.webchat) .auto-resize-textarea .auto-resize-textarea__textarea {
+  appearance: none; /* Prevent browser styling */
+  background-color: transparent;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  height: 100%;
+  left: 0;
+  margin: 0;
+  outline: 0;
+  overflow-y: auto;
+  padding: 0;
+  position: absolute;
+  resize: none; /* Hides the textarea resizing handle (on lower-right hand corner) */
+  top: 0;
+  width: 100%;
+  word-break: break-word;
+}
+
+/* #endregion */
+
+/* #region Dictation interims */
+
+:global(.webchat) .dictation-interims {
+  align-items: center;
+  display: flex;
+  font-family: var(--webchat__font--primary);
+  margin: 0;
+  padding: 0 var(--webchat__padding--regular);
+}
+
+:global(.webchat) .dictation-interims:global(.dictating) > span:not(:first-child),
+:global(.webchat) .dictation-interims:global(.status) {
+  opacity: 0.5;
+}
+
+/* #endregion */
+
+/* #region Drop zone */
+
+:global(.webchat) .drop-zone {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.08);
+  border: 2px dashed #999;
+  border-radius: 4px;
+  cursor: copy;
+  display: grid;
+  gap: 8px;
+  place-content: center;
+  place-items: center;
+  transition: background-color 0.2s ease;
+}
+
+:global(.webchat) .drop-zone.drop-zone--droppable {
+  background-color: rgba(0, 120, 212, 0.15);
+  border-color: #0078d4;
+}
+
+:global(.webchat) .drop-zone__text {
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* #endregion */
+
+/* #region Submit error message */
+
+/* Invisible, but read by assistive technologies (like `.sr-only`). */
+:global(.webchat) .submit-error-message {
+  color: transparent;
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  /* We need to set top: 0, otherwise, it will repro:
+     - Run NVDA
+     - Make the transcript long enough to show the scrollbar
+     - Press SHIFT-TAB, focus on upload button
+     - Press up arrow multiple times */
+  top: 0;
+  white-space: nowrap;
+  width: 1px;
+}
+
+/* #endregion */
+
+/* #region Icon button */
+
+:global(.webchat) .icon-button {
+  --webchat__component-icon--size: 28px;
+
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  color: var(--webchat__color--send-box-button);
+  display: flex;
+  justify-content: center;
+  outline: 0;
+  padding: 0;
+  position: relative;
+  width: var(--webchat__min-height--send-box); /* Same as the send box height, so the button looks square. */
+}
+
+:global(.webchat) .icon-button:not(.icon-button--stretch) {
+  height: var(--webchat__min-height--send-box);
+}
+
+/* Order of style preferences (based on effort of user gesture): disabled > active > hover > focus.
+   Keyboard focus indicator styles applied by :focus-visible do not conflict with :active/:hover/:focus, so it is not included here.
+   A state option that is not set falls back to the base option. */
+:global(.webchat) .icon-button:disabled,
+:global(.webchat) .icon-button[aria-disabled='true'] {
+  color: var(--webchat__color--send-box-button-disabled, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat) .icon-button:disabled .icon-button__shade,
+:global(.webchat) .icon-button[aria-disabled='true'] .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-disabled,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):active {
+  color: var(--webchat__color--send-box-button-active, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):active .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-active,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):hover {
+  color: var(--webchat__color--send-box-button-hover, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):hover .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-hover,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+:global(.webchat) .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):not(:hover):focus {
+  color: var(--webchat__color--send-box-button-focus, var(--webchat__color--send-box-button));
+}
+
+:global(.webchat)
+  .icon-button:not(:disabled):not([aria-disabled='true']):not(:active):not(:hover):focus
+  .icon-button__shade {
+  background-color: var(
+    --webchat__background--send-box-button-shade-focus,
+    var(--webchat__background--send-box-button-shade)
+  );
+}
+
+/* On unsupported browser, :focus-visible and :not(:focus-visible) is always false.
+   And it will turn the whole CSS selector ":unsupported, .truthy" to false, so the two rules stay separate. */
+:global(.webchat) .icon-button:not(:focus-visible) .icon-button__keyboard-focus-indicator {
+  display: none;
+}
+
+:global(.webchat) .icon-button:not(.icon-button--focus-visible) .icon-button__keyboard-focus-indicator {
+  display: none;
+}
+
+/* Make sure all contents are in the same stacking context. */
+:global(.webchat) .icon-button > * {
+  position: relative;
+}
+
+:global(.webchat) .icon-button .icon-button__shade {
+  background-color: var(--webchat__background--send-box-button-shade);
+  border-radius: var(--webchat__border-radius--send-box-button-shade);
+  inset: var(--webchat__inset--send-box-button-shade);
+  position: absolute;
+}
+
+:global(.webchat) .icon-button .icon-button__keyboard-focus-indicator {
+  border-color: var(--webchat__border-color--send-box-button-keyboard-focus-indicator);
+  border-radius: var(--webchat__border-radius--send-box-button-keyboard-focus-indicator);
+  border-style: var(--webchat__border-style--send-box-button-keyboard-focus-indicator);
+  border-width: var(--webchat__border-width--send-box-button-keyboard-focus-indicator);
+  inset: var(--webchat__inset--send-box-button-keyboard-focus-indicator);
+  position: absolute;
+}
+
+/* #endregion */
+
+/* #region Upload button */
+
+:global(.webchat) .upload-button {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  width: var(--webchat__min-height--send-box); /* Same as the send box height, so the button looks square. */
+}
+
+:global(.webchat) .upload-button .upload-button--file-input {
+  height: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+
+/* #endregion */
+
+/* #region Attachment icon */
+
+:global(.webchat) .attachment-icon {
+  display: grid;
+  position: relative;
+}
+
+:global(.webchat) .attachment-icon .attachment-icon__icon {
+  grid-area: body;
+}
+
+/* #endregion */
+
+/* #region Microphone button */
+
+:global(.webchat) .microphone-button {
+  display: flex;
+}
+
+/* Invisible, but read by assistive technologies. */
+:global(.webchat) .microphone-button > :global(.sr-only) {
+  color: transparent;
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  width: 1px;
+}
+
+:global(.webchat) .microphone-button.microphone-button--dictating .microphone-button__button .microphone-button__icon {
+  --webchat__component-icon--color: var(--webchat__color--microphone-button-dictating, currentColor);
+
+  @media (forced-colors: active) {
+    --webchat__component-icon--color: Highlight;
+  }
+}
+
+/* #endregion */

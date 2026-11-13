@@ -6,7 +6,7 @@ type ReadonlyKeyedStore<T> = {
 
 type KeyedStore<T> = ReadonlyKeyedStore<T> & {
   readonly delete: (key: string) => void;
-  /** Notifies the listeners of the key if the value changed. Listeners may re-render: call it after commit, e.g. from an effect. */
+  /** Notifies the listeners of the key if the value changed. Listeners may re-render: never call it while rendering. */
   readonly set: (key: string, value: T | undefined) => void;
 };
 

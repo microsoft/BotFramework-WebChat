@@ -87,6 +87,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     audioContent: createAudioContentStyle(),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     autoResizeTextArea: createAutoResizeTextAreaStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
@@ -130,6 +135,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
@@ -156,12 +166,32 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     sendBox: createSendBoxStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
@@ -201,6 +231,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     typingIndicator: createTypingIndicatorStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     uploadButton: createUploadButtonStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
