@@ -73,11 +73,11 @@
         await pageConditions.toastShown(3);
 
         // WHEN: The send box has 4 lines of text.
-        store.dispatch({ type: 'WEB_CHAT/SET_SEND_BOX', payload: { text: 'One\nTwo\nThree\nFour' } });
+        store.dispatch({ payload: { text: 'One\nTwo\nThree\nFour' }, type: 'WEB_CHAT/SET_SEND_BOX' });
 
         await waitFor(() => expect(pageElements.sendBoxTextBox().value).toBe('One\nTwo\nThree\nFour'));
 
-        // THEN: The toaster and the send box keep their full height and overflow the root, and the transcript shrinks to nothing.
+        // THEN: The toaster and the send box keep their full height, and the transcript shrinks to nothing.
         await host.snapshot('local');
       });
     </script>

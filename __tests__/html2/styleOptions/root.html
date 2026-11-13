@@ -4,6 +4,8 @@
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
       #webchat {
+        /* Not white, so a transparent root shows. */
+        background-color: Gainsboro;
         /* The root is a flex item, so its z-index applies. */
         display: flex;
         flex-direction: column;
@@ -70,13 +72,15 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity('Hello, World!');
-        await pageConditions.numActivitiesShown(1);
-
         // THEN: Custom values: a light yellow Web Chat, 480 pixels tall and 75% wide, painted over the tomato band.
         // THEN: Defaults: a white Web Chat filling the page, under the tomato band.
-        // THEN: `undefined`: a transparent Web Chat as tall as its content, under the tomato band.
+        // THEN: `undefined`: a transparent Web Chat (gray page shows) as tall as the send box, under the tomato band.
         await host.snapshot('local');
+
+        // THEN: The root z-index is 2, 0 or `auto`: the band covers both 0 and `auto`, so the picture cannot tell them apart.
+        expect(getComputedStyle(document.querySelector('.webchat__surface')).zIndex).toBe(
+          searchParams.has('default') ? '0' : searchParams.has('undefined') ? 'auto' : '2'
+        );
       });
     </script>
   </body>
