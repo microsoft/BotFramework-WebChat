@@ -7,7 +7,20 @@ import type { Activity } from '../reducers/activities/sort/types';
 
 function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph {
   const graph = new SlantGraph();
+  const actOnGraph = graph.act.bind(graph);
   let prevActivities: readonly Activity[] | undefined;
+  let transacting = false;
+
+  // act() is not re-entrant: reads inside a transaction (e.g. by middleware) must not catch up with the store.
+  const transact: typeof graph.act = fn => {
+    transacting = true;
+
+    try {
+      actOnGraph(fn);
+    } finally {
+      transacting = false;
+    }
+  };
 
   // TODO: [P0] Except channel audience, we should be specific about all audience, e.g. name.
   const channelAudience = parse(SlantNodeSchema, {
@@ -46,10 +59,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
     // TODO: [P*] Supports deleting node from the graph.
     const addedActivities = activitySet.difference(prevActivitySet);
 
-    // Before act(): its middleware reads getState(), which catches up while the graph has no subscribers.
-    prevActivities = activities;
-
-    graph.act(graph => {
+    transact(graph => {
       for (const activity of addedActivities) {
         const {
           from: { role }
@@ -114,6 +124,8 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
         }
       }
     });
+
+    prevActivities = activities;
   };
 
   // Activities already in the store (e.g. rehydrated) are added now, not on the first subscription.
@@ -129,9 +141,15 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
   // Catches up with changes made while the graph has no subscribers, e.g. when a hidden <Activity> (React 19.2+) ran the
   // cleanup of effects and renders before subscribing again. Returns the same state until the store activities change.
   graph.getState = () => {
-    unsubscribeFromStore || handleStoreChange();
+    unsubscribeFromStore || transacting || handleStoreChange();
 
     return getGraphState();
+  };
+
+  // Catches up before a transaction, so its middleware sees the activities, e.g. to link nodes to them.
+  graph.act = fn => {
+    unsubscribeFromStore || handleStoreChange();
+    transact(fn);
   };
 
   graph.subscribe = subscriber => {
