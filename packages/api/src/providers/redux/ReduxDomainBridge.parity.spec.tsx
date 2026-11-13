@@ -3,6 +3,7 @@
 /* eslint-disable security/detect-object-injection */
 
 import { act, render } from '@testing-library/react';
+import { createKeyedStore, useKeyedStoreValue } from '@msinternal/botframework-webchat-react-hooks';
 import {
   ReduxProvider,
   ReduxStoreComposer,
@@ -39,7 +40,6 @@ import React, {
   useMemo,
   useReducer,
   useRef,
-  useState,
   type Dispatch,
   type ReactElement,
   type ReactNode,
@@ -606,9 +606,20 @@ describe.each(Object.keys(SETTER_CALLS))('setters of %s()', name => {
   });
 });
 
-// #region <SuggestedActionsComposer> at 25d812243, verbatim (without prop validation): the context held a hook.
+// #region <SuggestedActionsComposer> of main at e690d12c6 (#6040), verbatim (without prop validation): the context
+// held a hook; the state is in a keyed store, written to Redux from layout effects.
 
 const EMPTY_ARRAY = Object.freeze([]);
+
+type LegacySuggestedActionsState = Readonly<{
+  originActivity: WebChatActivity | undefined;
+  suggestedActions: readonly DirectLineCardAction[];
+}>;
+
+const LEGACY_INITIAL_STATE: LegacySuggestedActionsState = Object.freeze({
+  originActivity: undefined,
+  suggestedActions: EMPTY_ARRAY
+});
 
 type LegacySuggestedActionsContextType = Readonly<{
   useSuggestedActions: () => readonly [
@@ -633,22 +644,30 @@ function LegacySuggestedActionsComposerImpl({
   readonly children: ReactNode;
   readonly store: Store;
 }) {
-  const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
-  const [suggestedActions, setSuggestedActionsRaw] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
-  const setSuggestedActions = useCallback<typeof setSuggestedActionsRaw>(
-    suggestedActions => {
-      setOriginActivity(undefined);
-      setSuggestedActionsRaw(suggestedActions);
-    },
-    [setSuggestedActionsRaw]
+  const suggestedActionsStore = useMemo(() => createKeyedStore<LegacySuggestedActionsState>(), []);
+  const [state] = useKeyedStoreValue(suggestedActionsStore, 'state');
+  const { originActivity, suggestedActions } = state ?? LEGACY_INITIAL_STATE;
+
+  const setSuggestedActions = useCallback(
+    (suggestedActions: SetStateAction<readonly DirectLineCardAction[]>) =>
+      suggestedActionsStore.set(
+        'state',
+        Object.freeze({
+          originActivity: undefined,
+          suggestedActions:
+            typeof suggestedActions === 'function'
+              ? suggestedActions((suggestedActionsStore.get('state') ?? LEGACY_INITIAL_STATE).suggestedActions)
+              : suggestedActions
+        })
+      ),
+    [suggestedActionsStore]
   );
 
   // #region Replicate to Redux store
   const handleAction = useCallback(
     (action: Action) => {
       if (action.type === CLEAR_SUGGESTED_ACTIONS) {
-        setOriginActivity(undefined);
-        setSuggestedActionsRaw(EMPTY_ARRAY);
+        suggestedActionsStore.set('state', LEGACY_INITIAL_STATE);
       } else if (action.type === SET_SUGGESTED_ACTIONS) {
         const result = safeParse(setSuggestedActionsActionSchema, action);
 
@@ -657,19 +676,23 @@ function LegacySuggestedActionsComposerImpl({
             payload: { originActivity, suggestedActions }
           } = result.output;
 
-          setOriginActivity(originActivity);
-          setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+          suggestedActionsStore.set(
+            'state',
+            Object.freeze({ originActivity, suggestedActions: Object.freeze(Array.from(suggestedActions)) })
+          );
         }
       }
     },
-    [setOriginActivity, setSuggestedActionsRaw]
+    [suggestedActionsStore]
   );
 
-  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
-  useMemo(
-    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
-    [dispatch, originActivity]
-  );
+  // Layout effects: the store has them by the time they show.
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActions', suggestedActions));
+  }, [dispatch, suggestedActions]);
+  useLayoutEffect(() => {
+    dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity }));
+  }, [dispatch, originActivity]);
 
   useEffect(() => {
     dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
@@ -831,7 +854,8 @@ describe('useSuggestedActionsHooks().useSuggestedActions()', () => {
   );
 
   test.each([
-    ['outside of act()', false, 10],
+    // 7 both ways since #6040: the origin and the actions are 1 update, batched or not.
+    ['outside of act()', false, 7],
     ['each step in act()', true, 7]
   ])(
     'should render, write to the store and dispatch as the implementation before, %s',

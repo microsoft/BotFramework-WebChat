@@ -689,13 +689,13 @@ describe('sending with the default providers', () => {
     expect(defaultMode).toEqual(redux);
     expect(getReduxCalls()).toEqual([]);
 
-    // What it shows, to read the comparison: a clear re-renders once, then not again (the origin and the actions of a
-    // set are 2 updates, outside a batch, in both modes).
+    // What it shows, to read the comparison: a clear re-renders once, then not again (a set is 1 update of the origin and
+    // the actions together, in both modes, since #6040).
     expect(defaultMode.map(({ label, renders }: any) => [label, renders])).toEqual([
       ['mount, online', expect.any(Number)],
       ['clear with nothing to clear', 1],
       ['clear again', 0],
-      ['bot message with suggested actions', 2],
+      ['bot message with suggested actions', 1],
       ['clear', 1],
       ['clear again, nothing to clear', 0],
       ['clear a third time', 0],
@@ -954,8 +954,8 @@ describe('speech and voice with the default providers', () => {
       ).toEqual([
         ['mount, online', 2, [0]],
         ['speak incoming', 1, [0]],
-        // Received, marked, suggested actions (actions, origin), then "will start".
-        ['bot expecting input, with suggested actions', 5, [0, 0, 0, 0, 1]],
+        // Received, marked, suggested actions (actions and origin in 1 update), then "will start".
+        ['bot expecting input, with suggested actions', 4, [0, 0, 0, 1]],
         ['speech ends', 1, [2]],
         ['dictating', 1, [3]],
         ['recognized', 1, [3]],

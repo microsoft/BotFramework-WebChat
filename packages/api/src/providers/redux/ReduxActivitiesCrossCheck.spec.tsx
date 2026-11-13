@@ -22,6 +22,7 @@ function load() {
     readonly ReduxActivitiesCrossCheck: typeof import('./ReduxActivitiesCrossCheck').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly ReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').ReduxProvider;
+    readonly ReduxStoreProvider: typeof import('../../hooks/internal/ReduxStoreProvider').default;
   };
 
   jest.isolateModules(() => {
@@ -33,7 +34,8 @@ function load() {
       React: require('react'),
       ReduxActivitiesCrossCheck: require('./ReduxActivitiesCrossCheck').default,
       render,
-      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider
+      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider,
+      ReduxStoreProvider: require('../../hooks/internal/ReduxStoreProvider').default
     };
   });
 
@@ -42,7 +44,7 @@ function load() {
 
 // Redux and the graph can read different stores here, to make them disagree.
 function renderCrossCheck({ graphStore, reduxStore }: { readonly graphStore: Store; readonly reduxStore: Store }) {
-  const { act, GraphProvider, React, ReduxActivitiesCrossCheck, ReduxProvider, render } = load();
+  const { act, GraphProvider, React, ReduxActivitiesCrossCheck, ReduxProvider, ReduxStoreProvider, render } = load();
   const errors: Error[] = [];
 
   class ErrorBoundary extends React.Component<{ readonly children?: ReactNode }, { readonly error: unknown }> {
@@ -66,12 +68,19 @@ function renderCrossCheck({ graphStore, reduxStore }: { readonly graphStore: Sto
     }
   }
 
+  // On one store, as <ReduxProviders>: the graph follows the batched subscription of <ReduxProvider>.
   const renderTree = ({ graphStore, reduxStore }: { readonly graphStore: Store; readonly reduxStore: Store }) => (
     <ErrorBoundary>
       <ReduxProvider store={reduxStore}>
-        <GraphProvider store={graphStore}>
-          <ReduxActivitiesCrossCheck />
-        </GraphProvider>
+        {graphStore === reduxStore ? (
+          <ReduxStoreProvider>
+            <ReduxActivitiesCrossCheck />
+          </ReduxStoreProvider>
+        ) : (
+          <GraphProvider store={graphStore}>
+            <ReduxActivitiesCrossCheck />
+          </GraphProvider>
+        )}
       </ReduxProvider>
     </ErrorBoundary>
   );
