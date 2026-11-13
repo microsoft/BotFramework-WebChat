@@ -82,7 +82,13 @@ function createDualFormatConfigs(
         ...config,
         entry,
         format,
-        ...(format === 'esm' ? { onSuccess: 'touch ./package.json' } : { target: [...config.target, 'es2019'] })
+        ...(format === 'esm'
+          ? { onSuccess: 'touch ./package.json' }
+          : {
+              // Compressed re-exports (`enumerable: !0`) are invisible to cjs-module-lexer: Node.js would not see their names.
+              minify: config.minify && { compress: false },
+              target: [...config.target, 'es2019']
+            })
       };
 
       return { ...formatConfig, ...overrides[format]?.(formatConfig) };
