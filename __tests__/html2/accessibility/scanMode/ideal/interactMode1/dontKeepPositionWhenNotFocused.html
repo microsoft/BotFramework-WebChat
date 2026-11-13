@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from 'https://esm.sh/@testduet/wait-for';
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render();
+
+          // WHEN: The chat history is focused.
+          await systemUnderTest.focusChatHistory();
+
+          // WHEN: Up arrow key is pressed.
+          await host.sendKeys('ARROW_UP');
+
+          // THEN: Should focus on the second message.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[1]);
+
+          // WHEN: Focus on send box, leaving the chat history.
+          systemUnderTest.sendBoxTextBox.focus();
+
+          // WHEN: New message is added.
+          window.dispatchEvent(new CustomEvent('addmessage'));
+          await waitFor(() => expect(systemUnderTest.chatMessages).toHaveLength(4));
+
+          // WHEN: Focus on the chat history.
+          await systemUnderTest.focusChatHistory();
+
+          // THEN: Then focused message should be the last one.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[3]);
+
+          // WHEN: Up arrow key is pressed.
+          await host.sendKeys('ARROW_UP');
+
+          // THEN: Then focus message should be the second last one.
+          expect(document.activeElement).toBe(systemUnderTest.chatMessages[2]);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
