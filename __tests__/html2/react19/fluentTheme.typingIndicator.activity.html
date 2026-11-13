@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19 &lt;Activity&gt;: the Fluent typing indicator shows its image after hide and show</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react/jsx-runtime": "https://esm.sh/react@19.3.1/jsx-runtime?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { Activity, createElement, useEffect, useState, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        // The reduced-motion image stops on its first frame, for a stable snapshot.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        let numMounts = 0;
+        let numUnmounts = 0;
+        let setVisible;
+
+        const MountCounter = () => {
+          useEffect(() => {
+            numMounts++;
+
+            return () => {
+              numUnmounts++;
+            };
+          }, []);
+
+          return null;
+        };
+
+        const App = () => {
+          const [visible, setVisibleState] = useState(true);
+
+          setVisible = setVisibleState;
+
+          return createElement(
+            Activity,
+            { mode: visible ? 'visible' : 'hidden' },
+            createElement(MountCounter),
+            createElement(
+              FluentThemeProvider,
+              {},
+              createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+            )
+          );
+        };
+
+        const emulateTyping = id =>
+          directLine.emulateIncomingActivity({ from: { id: 'u-00001', name: 'Bot', role: 'bot' }, id, type: 'typing' });
+
+        // A revoked `blob:` URL completes with a width of 0.
+        const expectTypingIndicatorImageLoaded = async () => {
+          await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+          const image = pageElements.typingIndicator().querySelector('img');
+
+          await waitFor(() => expect(image.complete).toBe(true));
+          expect(image.naturalWidth).toBeGreaterThan(0);
+        };
+
+        // GIVEN: React 19.2 or later, which has <Activity>.
+        expect(version).toBe('19.3.1');
+
+        createRoot(document.getElementById('webchat')).render(createElement(App));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot is typing.
+        await emulateTyping('a-00001');
+
+        // THEN: The typing indicator image should load.
+        await expectTypingIndicatorImageLoaded();
+
+        // THEN: The typing indicator shows the sliding dots.
+        await host.snapshot('local');
+
+        // WHEN: The bot stops typing.
+        await directLine.emulateIncomingActivity({
+          channelData: { webChat: { styleOptions: { typingAnimationDuration: 0 } } },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          type: 'typing'
+        });
+
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // WHEN: Web Chat is hidden and shown with <Activity>, which runs effect cleanups and effects again without rendering.
+        setVisible(false);
+        await waitFor(() => expect(numUnmounts).toBe(1));
+
+        setVisible(true);
+        await waitFor(() => expect(numMounts).toBe(2));
+
+        // WHEN: The bot is typing again.
+        await emulateTyping('a-00002');
+
+        // THEN: The new typing indicator image should load.
+        await expectTypingIndicatorImageLoaded();
+
+        // THEN: The typing indicator shows the sliding dots.
+        // They are at the top: the transcript loses its emotion styles after hide and show, a separate issue.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

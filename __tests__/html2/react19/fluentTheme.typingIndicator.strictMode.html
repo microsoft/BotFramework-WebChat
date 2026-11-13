@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19 in Strict Mode: the Fluent typing indicator shows its image</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react/jsx-runtime": "https://esm.sh/react@19.3.1/jsx-runtime?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement, StrictMode, useEffect, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        // The reduced-motion image stops on its first frame, for a stable snapshot.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        let numMounts = 0;
+
+        const MountCounter = () => {
+          useEffect(() => {
+            numMounts++;
+          }, []);
+
+          return null;
+        };
+
+        // GIVEN: The development build of React 19, which runs the checks of Strict Mode.
+        expect(version).toBe('19.3.1');
+
+        // WHEN: Web Chat with the Fluent theme is rendered in Strict Mode.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            StrictMode,
+            {},
+            createElement(MountCounter),
+            createElement(
+              FluentThemeProvider,
+              {},
+              createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+            )
+          )
+        );
+
+        // THEN: Strict Mode should mount, unmount, and mount again, which runs effect cleanups without rendering again.
+        await waitFor(() => expect(numMounts).toBe(2));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot is typing.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          type: 'typing'
+        });
+
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        const image = pageElements.typingIndicator().querySelector('img');
+
+        // THEN: The typing indicator image should load: a revoked `blob:` URL completes with a width of 0.
+        await waitFor(() => expect(image.complete).toBe(true));
+        expect(image.naturalWidth).toBeGreaterThan(0);
+
+        // THEN: The typing indicator shows the sliding dots.
+        // They are at the top: in Strict Mode, the transcript loses its emotion styles, a separate issue.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
