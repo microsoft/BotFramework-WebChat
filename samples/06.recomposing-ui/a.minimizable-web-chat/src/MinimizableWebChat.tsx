@@ -38,6 +38,8 @@ function MinimizableWebChat() {
     []
   );
 
+  const styleOptions = useMemo(() => ({ backgroundColor: 'Transparent' }), []);
+
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
 
@@ -92,7 +94,13 @@ function MinimizableWebChat() {
               <span className="ms-Icon ms-Icon--ChromeMinimize" />
             </button>
           </header>
-          <WebChat className="react-web-chat" onFetchToken={handleFetchToken} store={store} token={token} />
+          <WebChat
+            className="react-web-chat"
+            onFetchToken={handleFetchToken}
+            store={store}
+            styleOptions={styleOptions}
+            token={token}
+          />
         </div>
       )}
     </div>
