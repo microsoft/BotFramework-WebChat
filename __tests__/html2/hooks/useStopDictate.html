@@ -51,7 +51,7 @@
 
         await pageConditions.uiConnected();
 
-        actRecognizeOnce(
+        await actRecognizeOnce(
           ponyfill,
           async () => {
             await host.click(document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`));
