@@ -1,6 +1,6 @@
 import { type UserConfig } from 'tsdown';
 
-import { istanbulPlugin } from './rolldownPlugins.mjs';
+import { cssPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
@@ -19,6 +19,8 @@ type Config = UserConfig & {
 // Port of tsup.base.config.ts.
 function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config): Config {
   return overrideOptions({
+    // CSS modules are compiled by our cssPlugin (rolldownPlugins.mjs), not by @tsdown/css.
+    css: false,
     define: {
       // TSD does not support define, thus we need to use `globalThis.*` instead.
       'globalThis.WEB_CHAT_BUILD_INFO_BUILD_TOOL': '"tsdown"',
@@ -42,11 +44,19 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       ...(npm_package_version ? { npm_package_version } : {})
     },
     format: 'esm',
+    hooks: {
+      // One cssPlugin per build, with the build's own `minify` and `target`: configs change them after applyConfig(),
+      // and configs that spread another config would share the plugins in `plugins`.
+      'build:before': ({ buildOptions, options: { minify, target = [] } }) => {
+        buildOptions.plugins = [buildOptions.plugins, cssPlugin({ minify: !!minify && minify !== 'dce-only', target })];
+      }
+    },
     ignoreWatch: ['./dist/'],
     inputOptions: (options, format) => ({
       ...options,
-      // rolldown warns when JavaScript plugins (istanbul) take most of the build time.
-      checks: { ...options.checks, pluginTimings: false },
+      // unplugin-lightningcss exports dashed class names as `export { _x as "a-b" }`: rolldown warns for each of them.
+      // rolldown also warns when JavaScript plugins (Lightning CSS, istanbul) take most of the build time.
+      checks: { ...options.checks, pluginTimings: false, toleratedTransform: false },
       // tsdown builds CommonJS for Node.js, ours is for browsers too (uses the "browser" conditions of dependencies).
       ...(format === 'cjs' ? { platform: 'browser' } : {})
     }),
