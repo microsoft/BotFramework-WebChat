@@ -17,11 +17,11 @@ const deleteActivity = (activityID: string) => ({ payload: { activityID }, type:
 function renderActivities() {
   let modules: {
     readonly act: typeof import('@testing-library/react/pure').act;
-    readonly GraphProvider: typeof import('@msinternal/botframework-webchat-api-graph').GraphProvider;
     readonly React: typeof import('react');
+    readonly ReduxProvider: typeof import('@msinternal/botframework-webchat-redux-store').ReduxProvider;
+    readonly ReduxStoreProvider: typeof import('./internal/ReduxStoreProvider').default;
     readonly render: typeof import('@testing-library/react/pure').render;
     readonly useActivities: typeof import('./useActivities').default;
-    readonly WebChatReduxProvider: typeof import('./internal/WebChatReduxProvider').default;
   };
 
   jest.isolateModules(() => {
@@ -29,15 +29,15 @@ function renderActivities() {
 
     modules = {
       act,
-      GraphProvider: require('@msinternal/botframework-webchat-api-graph').GraphProvider,
       React: require('react'),
+      ReduxProvider: require('@msinternal/botframework-webchat-redux-store').ReduxProvider,
+      ReduxStoreProvider: require('./internal/ReduxStoreProvider').default,
       render,
-      useActivities: require('./useActivities').default,
-      WebChatReduxProvider: require('./internal/WebChatReduxProvider').default
+      useActivities: require('./useActivities').default
     };
   });
 
-  const { act, GraphProvider, React, render, useActivities, WebChatReduxProvider } = modules;
+  const { act, React, ReduxProvider, ReduxStoreProvider, render, useActivities } = modules;
   const errors: unknown[] = [];
   const renders: (readonly string[])[] = [];
   const store = createStore();
@@ -74,11 +74,11 @@ function renderActivities() {
 
   const { unmount } = render(
     <ErrorBoundary>
-      <WebChatReduxProvider store={store}>
-        <GraphProvider store={store}>
+      <ReduxProvider store={store}>
+        <ReduxStoreProvider>
           <Activities />
-        </GraphProvider>
-      </WebChatReduxProvider>
+        </ReduxStoreProvider>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 

@@ -2,6 +2,11 @@ import { StrictStyleOptions } from 'botframework-webchat-api';
 
 import { FORCED_COLORS_SELECTOR } from './Constants';
 
+/**
+ * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+ * The live styles are in `packages/component/src/SendBox/SendBox.module.css`.
+ * This style set will be removed on or after 2028-10-16.
+ */
 export default function createMicrophoneButtonStyle({ microphoneButtonColorOnDictate }: StrictStyleOptions) {
   return {
     '&.webchat__microphone-button': {

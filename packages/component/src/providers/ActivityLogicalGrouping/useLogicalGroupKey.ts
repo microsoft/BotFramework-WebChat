@@ -1,4 +1,5 @@
-import useKeyedStoreValue from '../../hooks/internal/useKeyedStoreValue';
+import { useKeyedStoreValue } from '@msinternal/botframework-webchat-react-hooks';
+
 import { useActivityLogicalGroupingContext } from './private/ActivityLogicalGroupingContext';
 
 /** Returns the key of the logical group of the activity, or `undefined`. Re-renders only when it changes. */

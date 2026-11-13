@@ -1,12 +1,14 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { useCallback } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { ComponentIcon } from '../Icon';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import IconButton from './IconButton';
+import styles from './SendBox.module.css';
 
 const { useDirection, useLocalizer, useUIState } = hooks;
 
@@ -20,6 +22,7 @@ const sendButtonPropsSchema = pipe(
 type SendButtonProps = InferInput<typeof sendButtonPropsSchema>;
 
 function SendButton(props: SendButtonProps) {
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [direction] = useDirection();
   const { className } = validateProps(sendButtonPropsSchema, props);
 
@@ -32,7 +35,7 @@ function SendButton(props: SendButtonProps) {
   return (
     <IconButton
       alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
-      className={classNames('webchat__send-button', className)}
+      className={cx(classNames['send-button'], className)}
       disabled={uiState === 'disabled'}
       onClick={handleClick}
     >
