@@ -15,7 +15,7 @@ const incoming = (id: string) => ({
 
 type RawJSON = readonly { readonly '@value': { readonly id: string } }[] | undefined;
 
-function activityIdsOf(graph: ReturnType<typeof createGraphFromStore>): readonly string[] {
+function activityIdsOf(graph: Pick<ReturnType<typeof createGraphFromStore>, 'getState'>): readonly string[] {
   return Array.from(graph.getState().values()).flatMap(
     node =>
       (node['urn:microsoft:webchat:direct-line-activity:raw-json'] as RawJSON)?.map(({ '@value': { id } }) => id) ?? []
@@ -83,17 +83,15 @@ scenario('createGraphFromStore()', bdd => {
 
       return outcome;
     })
-    .then('the graph should not follow the store anymore', ({ subscriptions }, { graph, subscriber1 }) => {
+    .then('the graph should not follow the store anymore', ({ subscriptions }, { subscriber1 }) => {
+      // Does not read the graph: a read would catch up with the store, before the subscription below does.
       expect(subscriptions.size).toBe(0);
-      expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2']);
       expect(subscriber1).toHaveBeenCalledTimes(1);
     })
     .when('a subscriber subscribes again', (_, { graph }) => {
       const subscriber = jest.fn();
 
-      graph.subscribe(subscriber);
-
-      return { graph, subscriber };
+      return { graph, subscriber, unsubscribe: graph.subscribe(subscriber) };
     })
     .then(
       'the graph should catch up with the store and notify the subscriber',
@@ -102,5 +100,53 @@ scenario('createGraphFromStore()', bdd => {
         expect(subscriber).toHaveBeenCalledTimes(1);
         expect(subscriptions.size).toBe(1);
       }
+    )
+    // A hidden <Activity> (React 19.2+) runs the cleanup of effects, so the graph has no subscribers. When the host shows
+    // Web Chat again with a new element, it renders and reads the graph before its effects subscribe again.
+    .when('the subscriber unsubscribes, then an activity is received', ({ store }, outcome) => {
+      outcome.unsubscribe();
+      store.dispatch(incoming('a-4'));
+
+      return outcome;
+    })
+    .then(
+      'reading the graph should catch up with the store, without subscribing to it',
+      ({ subscriptions }, { graph, subscriber }) => {
+        expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2', 'a-3', 'a-4']);
+        expect(subscriptions.size).toBe(0);
+        expect(subscriber).toHaveBeenCalledTimes(1);
+      }
+    )
+    .and('reading the graph again should return the same state', (_, { graph }) =>
+      expect(graph.getState()).toBe(graph.getState())
     );
+
+  bdd
+    .given('a graph without subscribers, created from a store with an activity', () => {
+      const store = createStore();
+
+      store.dispatch(incoming('a-1'));
+
+      return { graph: createGraphFromStore(store), store };
+    })
+    .when('an activity is received, then a transaction is made on the graph', ({ graph, store }) => {
+      let activityIdsInTransaction: readonly string[] = [];
+
+      store.dispatch(incoming('a-2'));
+
+      // The transaction reads the graph (auto-inversion) before the graph caught up with the store.
+      graph.act(graph => {
+        activityIdsInTransaction = activityIdsOf(graph);
+        graph.upsert({ '@id': '_:m1', '@type': 'MessageLike', text: 'Hello, World!' });
+      });
+
+      return { activityIdsInTransaction, graph };
+    })
+    .then('the transaction should see both activities', (_, { activityIdsInTransaction }) =>
+      expect(activityIdsInTransaction).toEqual(['a-1', 'a-2'])
+    )
+    .and('the graph should have both activities and the node', (_, { graph }) => {
+      expect(activityIdsOf(graph)).toEqual(['a-1', 'a-2']);
+      expect(graph.getState().has('_:m1')).toBe(true);
+    });
 });
