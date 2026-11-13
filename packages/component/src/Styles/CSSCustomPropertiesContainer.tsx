@@ -58,6 +58,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       accent,
       avatarBorderRadius,
       avatarSize,
+      backgroundColor,
       borderAnimationColor1,
       borderAnimationColor2,
       borderAnimationColor3,
@@ -98,6 +99,9 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       notificationText,
       paddingRegular,
       primaryFont,
+      rootHeight,
+      rootWidth,
+      rootZIndex,
       sendBoxAttachmentBarMaxHeight,
       sendBoxBackground,
       sendBoxBorderBottom,
@@ -196,6 +200,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundBubbleUser}: ${bubbleFromUserBackground};
   ${CustomPropertyNames.BackgroundImageSpinnerAnimation}: ${spinnerAnimationBackgroundImage || `url('${getDefaultSpinnerAnimationImageURL()}')`};
   ${CustomPropertyNames.BackgroundImageTypingAnimation}: ${typingAnimationBackgroundImage || `url('${getDefaultTypingAnimationImageURL()}')`};
+  ${CustomPropertyNames.BackgroundRoot}: ${orUnset(backgroundColor)};
   ${CustomPropertyNames.BackgroundSendBox}: ${sendBoxBackground};
   ${CustomPropertyNames.BackgroundSendBoxButtonShade}: ${orUnset(sendBoxButtonShadeColor)};
   ${CustomPropertyNames.BackgroundSendBoxButtonShadeActive}: ${orUnset(sendBoxButtonShadeColorOnActive)};
@@ -272,6 +277,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.FontSizeToast}: ${toLength(toastFontSize)};
   ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
+  ${CustomPropertyNames.HeightRoot}: ${toLength(rootHeight)};
   ${CustomPropertyNames.HeightSpinnerAnimation}: ${toLength(spinnerAnimationHeight)};
   ${CustomPropertyNames.HeightToaster}: ${toLength(toasterHeight)};
   ${CustomPropertyNames.HeightTypingAnimation}: ${toLength(typingAnimationHeight)};
@@ -304,10 +310,12 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.SpaceBubbleNubUser}: ${bubbleFromUserNubOffset}px;
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
   ${CustomPropertyNames.TransitionEasing}: ${transitionEasing};
+  ${CustomPropertyNames.WidthRoot}: ${toLength(rootWidth)};
   ${CustomPropertyNames.WidthSpinnerAnimation}: ${toLength(spinnerAnimationWidth)};
   ${CustomPropertyNames.WidthToastIcon}: ${toLength(toastIconWidth)};
   ${CustomPropertyNames.WidthTypingAnimation}: ${toLength(typingAnimationWidth)};
   ${CustomPropertyNames.WordBreakMessageActivity}: ${messageActivityWordBreak};
+  ${CustomPropertyNames.ZIndexRoot}: ${rootZIndex ?? 'unset'}; /* Not orUnset(): 0 stays 0. */
   /* From bundle */
   ${bundleStyleProps}
 }

@@ -173,6 +173,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      */
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/BasicWebChat.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),
     /**

@@ -11,31 +11,11 @@ import { object, optional, pipe, readonly, string, type InferInput } from 'valib
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
-import useStyleSet from './hooks/useStyleSet';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
 import styles from './BasicWebChat.module.css';
 
 const { useStyleOptions } = hooks;
-
-const CONNECTIVITY_STATUS_STYLE = {
-  flexShrink: 0
-};
-
-const SEND_BOX_CSS = {
-  flexShrink: 0
-};
-
-const TOASTER_STYLE = {
-  flexShrink: 0
-};
-
-const TRANSCRIPT_STYLE = {
-  '.webchat__basic-transcript': {
-    flex: 1
-  }
-};
 
 const basicWebChatPropsSchema = pipe(
   object({
@@ -53,25 +33,18 @@ function BasicWebChat(props: BasicWebChatProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   // Keeps the "webchat__surface" class name.
   const basicWebChatClassNames = useStyles(styles, webChatPrefixedClassName);
-  const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
-  const styleToEmotionObject = useStyleToEmotionObject();
-
-  const connectivityStatusClassName = styleToEmotionObject(CONNECTIVITY_STATUS_STYLE) + '';
-  const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
-  const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
-  const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
 
   return (
     <AccessKeySinkSurface
-      className={classNames(basicWebChatClassNames['surface'], rootStyleSet + '', className)}
+      className={classNames(basicWebChatClassNames['surface'], className)}
       ref={rootRef}
       role={role}
     >
-      {!options.hideToaster && <BasicToaster className={toasterClassName} />}
-      <BasicTranscript className={transcriptClassName} />
-      <BasicConnectivityStatus className={connectivityStatusClassName} />
-      <SendBoxMiddlewareProxy className={sendBoxClassName} request={undefined} />
+      {!options.hideToaster && <BasicToaster className={basicWebChatClassNames['surface__toaster']} />}
+      <BasicTranscript className={basicWebChatClassNames['surface__transcript']} />
+      <BasicConnectivityStatus className={basicWebChatClassNames['surface__connectivity-status']} />
+      <SendBoxMiddlewareProxy className={basicWebChatClassNames['surface__send-box']} request={undefined} />
     </AccessKeySinkSurface>
   );
 }
