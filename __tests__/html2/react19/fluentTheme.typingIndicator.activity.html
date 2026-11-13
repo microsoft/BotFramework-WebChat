@@ -126,7 +126,7 @@
         await expectTypingIndicatorImageLoaded();
 
         // THEN: The typing indicator shows the sliding dots.
-        // They are at the top: the transcript loses its emotion styles after hide and show, a separate issue.
+        // They are at the top: react-scroll-to-bottom loses its styles after hide and show, a separate issue.
         await host.snapshot('local');
       });
     </script>

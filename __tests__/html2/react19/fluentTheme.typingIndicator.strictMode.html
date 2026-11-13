@@ -88,7 +88,7 @@
         expect(image.naturalWidth).toBeGreaterThan(0);
 
         // THEN: The typing indicator shows the sliding dots.
-        // They are at the top: in Strict Mode, the transcript loses its emotion styles, a separate issue.
+        // They are at the top: in Strict Mode, react-scroll-to-bottom loses its styles, a separate issue.
         await host.snapshot('local');
       });
     </script>
