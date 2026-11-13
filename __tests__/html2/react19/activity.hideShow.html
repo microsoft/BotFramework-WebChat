@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: Web Chat keeps its styles when an &lt;Activity&gt; hides and shows it</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { Activity, createElement, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps them.
+        expect(version).toBe('19.3.1');
+
+        const root = createRoot(document.getElementById('webchat'));
+        // The same element each time: showing Web Chat again does not re-render it, only its effects run again.
+        const webChat = createElement(ReactWebChat, { directLine, store });
+        const render = mode => root.render(createElement(Activity, { mode }, webChat));
+
+        // The <style> element of Web Chat's emotion styles, added to `styleOptions.stylesRoot`, which defaults to <head>.
+        const getNumStyleElements = () => document.head.querySelectorAll('style[data-emotion^="webchat--css-"]').length;
+
+        // WHEN: Web Chat is rendered in a visible <Activity>.
+        render('visible');
+
+        await pageConditions.uiConnected();
+
+        const numStyleElements = getNumStyleElements();
+
+        // THEN: Web Chat shows the send box with its styles.
+        await host.snapshot('local');
+
+        // WHEN: The <Activity> hides Web Chat.
+        render('hidden');
+
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('offsetParent', null));
+
+        // WHEN: The <Activity> shows Web Chat again.
+        render('visible');
+
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).not.toHaveProperty('offsetParent', null));
+
+        // THEN: Web Chat has its <style> element back.
+        expect(getNumStyleElements()).toBe(numStyleElements);
+
+        // THEN: Web Chat looks the same as before it was hidden.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

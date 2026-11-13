@@ -55,7 +55,7 @@
           `[data-testid="${testIds.sendBoxMicrophoneButton}"]`
         )?.parentElement;
 
-        actRecognizeOnce(
+        await actRecognizeOnce(
           ponyfill,
           async () => {
             startDictate();

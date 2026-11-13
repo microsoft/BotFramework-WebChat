@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: Web Chat shown again by an &lt;Activity&gt; keeps its shared styles when the other unmounts</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      #webchat > div {
+        height: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat">
+      <div id="webchat-1"></div>
+      <div id="webchat-2"></div>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, ReactWebChat, testIds } from 'botframework-webchat';
+      import { Activity, createElement, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        // The <style> elements of the styles the two Web Chats share.
+        const getNumSharedStyleElements = () =>
+          document.head.querySelectorAll('style[data-emotion^="webchat--css-"]').length;
+
+        // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps them.
+        expect(version).toBe('19.3.1');
+
+        // GIVEN: Two Web Chats with the same nonce and styles root (both default), so they share their styles.
+        // The second one hides its send box: two unnamed send box landmarks would not be unique.
+        const root1 = createRoot(document.getElementById('webchat-1'));
+        const root2 = createRoot(document.getElementById('webchat-2'));
+        const webChat1 = createElement(ReactWebChat, testHelpers.createDirectLineEmulator());
+        const webChat2 = testHelpers.createDirectLineEmulator();
+        const render1 = mode => root1.render(createElement(Activity, { mode }, webChat1));
+
+        render1('visible');
+        root2.render(createElement(ReactWebChat, { ...webChat2, styleOptions: { hideSendBox: true } }));
+
+        await pageConditions.uiConnected();
+
+        await webChat2.directLine.emulateIncomingActivity('Hello from the second Web Chat.');
+        await waitFor(() => expect(document.querySelectorAll('.webchat__basic-transcript__activity')).toHaveLength(1));
+
+        expect(getNumSharedStyleElements()).toBe(1);
+
+        // WHEN: An <Activity> hides the first Web Chat, then shows it again.
+        render1('hidden');
+
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('offsetParent', null));
+
+        render1('visible');
+
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).not.toHaveProperty('offsetParent', null));
+
+        // THEN: The first Web Chat shows its send box, the second one its message, both with their styles.
+        await host.snapshot('local');
+
+        // WHEN: The second Web Chat is unmounted.
+        root2.unmount();
+
+        await waitFor(() => expect(document.querySelectorAll('.webchat__basic-transcript__activity')).toHaveLength(0));
+
+        // THEN: The first Web Chat keeps the shared <style> element.
+        expect(getNumSharedStyleElements()).toBe(1);
+
+        // THEN: Only the first Web Chat is shown, with its styles.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
