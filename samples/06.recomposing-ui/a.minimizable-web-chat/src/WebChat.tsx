@@ -7,11 +7,10 @@ type Props = Readonly<{
   className?: string | undefined;
   onFetchToken?: (() => void) | undefined;
   store: ReturnType<typeof createStore>;
-  styleSet: any;
   token: string;
 }>;
 
-function WebChat({ className, onFetchToken, store, styleSet, token }: Props) {
+function WebChat({ className, onFetchToken, store, token }: Props) {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
   useEffect(() => {
@@ -19,7 +18,14 @@ function WebChat({ className, onFetchToken, store, styleSet, token }: Props) {
   }, [onFetchToken]);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleSet={styleSet} />
+    <ReactWebChat
+      className={`${className || ''} web-chat`}
+      directLine={directLine}
+      store={store}
+      styleOptions={{
+        backgroundColor: 'Transparent'
+      }}
+    />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">
