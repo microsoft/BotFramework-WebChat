@@ -57,8 +57,9 @@ function ReduxDomainBridge(props: ReduxDomainBridgeProps) {
   const { store, subscribe } = useReduxContext<ReturnType<typeof createStore>>();
 
   // One subscription for the slices: the bridge re-renders only when one of them changed (as `useSelector()` of each
-  // slice did), so an action that changes another part of the store (e.g. the suggested actions mirrored during render)
-  // does not re-render it. Each slice context then propagates only when its slice changed.
+  // slice did), so an action that changes another part of the store (e.g. the suggested actions that
+  // `<ReduxSuggestedActionsMirror>` writes from layout effects) does not re-render it. Each slice context then propagates
+  // only when its slice changed.
   const state = useSourceValue(
     useMemo<Source<Slices>>(
       () => Object.freeze({ get: () => selectSlices(store.getState()), subscribe }),
