@@ -537,18 +537,19 @@ jobs:
       - name: Install lcov
         run: sudo apt install -y lcov
 
+      # lcov 2.4 (Ubuntu 26.04) rejects duplicate function names, which Istanbul writes for an inner function named like its outer one.
       - name: Merge lcov-*.info
-        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs lcov --rc lcov_branch_coverage=1 --output-file lcov.info
+        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs lcov --rc branch_coverage=1 --ignore-errors inconsistent,inconsistent --output-file lcov.info
 
       - if: always()
         name: Print coverage list
-        run: lcov --rc lcov_branch_coverage=1 --list lcov.info
+        run: lcov --rc branch_coverage=1 --ignore-errors inconsistent,inconsistent --list lcov.info
 
       - if: always()
         name: Print coverage summary
         run: |
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
-          lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
+          lcov --rc branch_coverage=1 --ignore-errors inconsistent,inconsistent --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
 
   merge-test-snapshots:
