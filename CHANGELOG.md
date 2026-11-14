@@ -19,7 +19,7 @@ Legends:
 
 ## [Unreleased]
 
-Built from [`424847d`](https://github.com/microsoft/BotFramework-WebChat/commit/424847d57678bfdf2c9b19eb674a96c4cd2a2031).
+Built from [`2b0a11f`](https://github.com/microsoft/BotFramework-WebChat/commit/2b0a11fb0602de6c5004b1303b10c7c1c273fc76).
 
 [Show most recent changelog](https://github.com/microsoft/BotFramework-WebChat/blob/changelog-unreleased/CHANGELOG.md#unreleased) for the full changelog as last rebuilt from `main`.
 
@@ -33,6 +33,9 @@ Built from [`424847d`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - 🧪 Added `styleOptions.assistiveTechnologyAnnouncementTransport` to announce via `ariaNotify()` instead of the live region, in PR [#5962](https://github.com/microsoft/BotFramework-WebChat/pull/5962), by [@OEvgeny](https://github.com/OEvgeny)
 - 👷🏻 Pull request validation: added rendering Web Chat bundled by esbuild, Vite, webpack 4 and 5 with React 16, 18 and 19, in PR [#5977](https://github.com/microsoft/BotFramework-WebChat/pull/5977), by [@OEvgeny](https://github.com/OEvgeny)
 - Docs: added [workarounds for webpack 4](./docs/HOSTING.md#bundling-with-webpack-4), in PR [#5977](https://github.com/microsoft/BotFramework-WebChat/pull/5977), by [@OEvgeny](https://github.com/OEvgeny)
+- Added [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552) and [#5850](https://github.com/microsoft/BotFramework-WebChat/issues/5850), support for React 19, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Pull request validation: added type definitions tests with `@types/react@19`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Pull request validation fails on package versions published less than 7 days ago, and `.npmrc` sets `min-release-age=7`, in PR [#6006](https://github.com/microsoft/BotFramework-WebChat/pull/6006), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
@@ -55,6 +58,26 @@ Built from [`424847d`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - Bumped [`@babel/runtime@7.29.7`](https://npmjs.com/package/@babel/runtime/v/7.29.7) in embed, in PR [#5990](https://github.com/microsoft/BotFramework-WebChat/pull/5990), by [@OEvgeny](https://github.com/OEvgeny)
 - Bumped [`katex@0.19.1`](https://npmjs.com/package/katex/v/0.19.1) and [`sanitize-html@2.18.1`](https://npmjs.com/package/sanitize-html/v/2.18.1), now bundled for webpack 4 and Jest, in PR [#5987](https://github.com/microsoft/BotFramework-WebChat/pull/5987), by [@OEvgeny](https://github.com/OEvgeny)
 - Bumped [`uuid@14.0.1`](https://npmjs.com/package/uuid/v/14.0.1) and [`valibot@1.4.2`](https://npmjs.com/package/valibot/v/1.4.2), in PR [#6001](https://github.com/microsoft/BotFramework-WebChat/pull/6001), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the tooltip, modal dialog, file attachment and transcript root classes to CSS Modules, keeping their `webchat__` class names, so Fluent styles them through the CSS module theme, in PR [#5997](https://github.com/microsoft/BotFramework-WebChat/pull/5997), by [@OEvgeny](https://github.com/OEvgeny)
+- Components: replaced the remaining `propTypes` with Valibot schemas and dropped the `prop-types` dependency, React 19 ignores `propTypes`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- Bumped [`microsoft-cognitiveservices-speech-sdk@1.53.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk/v/1.53.0) in Direct Line Speech (from 1.17.0) and Web Chat (from 1.50.0), clearing `@angular/*` security alerts, in PR [#6018](https://github.com/microsoft/BotFramework-WebChat/pull/6018), by [@OEvgeny](https://github.com/OEvgeny)
+- 🏫 Samples: bumped [`botframework-webchat@4.19.3-main.20261105.058fca6`](https://npmjs.com/package/botframework-webchat/v/4.19.3-main.20261105.058fca6), clearing `sanitize-html`, `valibot` and `katex` security alerts, in PR [#6019](https://github.com/microsoft/BotFramework-WebChat/pull/6019), by [@OEvgeny](https://github.com/OEvgeny)
+- Bumped [`tsup@9.0.0`](https://npmjs.com/package/tsup/v/9.0.0) and `esbuild@0.28.2`; building Web Chat needs Node.js 22.18, 24.11 or later, in PR [#6023](https://github.com/microsoft/BotFramework-WebChat/pull/6023), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the chat history box, image avatar, error box, transcript list and media attachments to CSS Modules with `webchat__` class names, and `videoHeight` to `--webchat__height--video`, in PR [#6024](https://github.com/microsoft/BotFramework-WebChat/pull/6024), by [@OEvgeny](https://github.com/OEvgeny)
+- 🏫 Samples: removed lockfiles of archived `k.direct-line-token`, and skipped it in `npm run bump`, in PR [#6025](https://github.com/microsoft/BotFramework-WebChat/pull/6025), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Test servers: bumped [`body-parser@2.4.0`](https://npmjs.com/package/body-parser/v/2.4.0), clearing 2 security alerts, in PR [#6026](https://github.com/microsoft/BotFramework-WebChat/pull/6026), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the default and initials avatars to CSS Modules with `webchat__` class names; `avatarBorderRadius`, `botAvatarBackgroundColor` and `userAvatarBackgroundColor` are now custom properties, in PR [#6028](https://github.com/microsoft/BotFramework-WebChat/pull/6028), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the connectivity status to CSS Modules with `webchat__` class names and its style options to custom properties, in PR [#6030](https://github.com/microsoft/BotFramework-WebChat/pull/6030), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the toasts to CSS Modules with `webchat__` class names and their style options to custom properties, in PR [#6031](https://github.com/microsoft/BotFramework-WebChat/pull/6031), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the typing indicator to CSS Modules with `webchat__` class names and its style options to custom properties, in PR [#6032](https://github.com/microsoft/BotFramework-WebChat/pull/6032), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Pull request validation allows 15 minutes for the tests of each HTML test shard, in PR [#6033](https://github.com/microsoft/BotFramework-WebChat/pull/6033), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Build checks and tests accept tsdown output as well as tsup, and the CSS placeholder check also finds template literals, in PR [#6039](https://github.com/microsoft/BotFramework-WebChat/pull/6039), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the send box layout and text box to CSS Modules with `webchat__` class names and their style options to custom properties, in PR [#6036](https://github.com/microsoft/BotFramework-WebChat/pull/6036), by [@OEvgeny](https://github.com/OEvgeny)
+- Docs and samples: `webchat-es5.js` is no longer described as ES5 or supporting Internet Explorer 11, in PR [#6043](https://github.com/microsoft/BotFramework-WebChat/pull/6043), by [@OEvgeny](https://github.com/OEvgeny)
+- Hooks: read the store with `useSyncExternalStore()`, at sync priority on React 18 and later (with the IIFE bundle, when `window.ReactDOM` is set too), in PR [#6040](https://github.com/microsoft/BotFramework-WebChat/pull/6040), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the send box buttons to CSS Modules with `webchat__` class names and their style options to custom properties, in PR [#6044](https://github.com/microsoft/BotFramework-WebChat/pull/6044), by [@OEvgeny](https://github.com/OEvgeny)
+- Built `botframework-directlinespeech-sdk` with tsup only, replacing Babel and webpack, in PR [#6045](https://github.com/microsoft/BotFramework-WebChat/pull/6045), by [@OEvgeny](https://github.com/OEvgeny)
+- Converted the scroll to end button and the file attachment to CSS Modules with `webchat__` class names and their style options to custom properties, in PR [#6050](https://github.com/microsoft/BotFramework-WebChat/pull/6050), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 
@@ -63,6 +86,16 @@ Built from [`424847d`](https://github.com/microsoft/BotFramework-WebChat/commit/
    - Full bundle: `adaptiveCardRenderer`, `animationCardAttachment`, and `audioCardAttachment`
    - Customizing these entries has no effect, please use style options instead
 - 💥 Function components: removed `ReactWebChat.propTypes` and `Composer.propTypes`, fixing type errors with `@types/react@19`, related to [#5552](https://github.com/microsoft/BotFramework-WebChat/issues/5552), in PR [#5973](https://github.com/microsoft/BotFramework-WebChat/pull/5973), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `modalDialog` and `tooltip` style set entries, which no longer affect rendering, in PR [#5997](https://github.com/microsoft/BotFramework-WebChat/pull/5997), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `activities`, `audioAttachment`, `audioContent`, `chatHistoryBox`, `errorBox`, `imageAvatar`, `videoAttachment`, `videoContent`, `vimeoContent` and `youTubeContent` style set entries, which no longer affect rendering, and removed the unused `webchat__chat-history-box__toolbar--rtl` class, in PR [#6024](https://github.com/microsoft/BotFramework-WebChat/pull/6024), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `avatar` and `initialsAvatar` style set entries, which no longer affect rendering, in PR [#6028](https://github.com/microsoft/BotFramework-WebChat/pull/6028), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `connectivityNotification`, `errorNotification`, `spinnerAnimation` and `warningNotification` style set entries, which no longer affect rendering, and removed 3 `--rtl` classes, in PR [#6030](https://github.com/microsoft/BotFramework-WebChat/pull/6030), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `toast` and `toaster` style set entries, which no longer affect rendering, in PR [#6031](https://github.com/microsoft/BotFramework-WebChat/pull/6031), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `typingAnimation` and `typingIndicator` style set entries, which no longer affect rendering, in PR [#6032](https://github.com/microsoft/BotFramework-WebChat/pull/6032), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `autoResizeTextArea`, `dictationInterims`, `sendBox` and `sendBoxTextBox` style set entries, which no longer affect rendering, in PR [#6036](https://github.com/microsoft/BotFramework-WebChat/pull/6036), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `microphoneButton`, `sendBoxButton` and `uploadButton` style set entries, which no longer affect rendering, in PR [#6044](https://github.com/microsoft/BotFramework-WebChat/pull/6044), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 `botframework-directlinespeech-sdk` no longer ships Babel's `lib/` folder: deep imports from `lib/` stop working where `exports` is ignored (webpack 4), in PR [#6045](https://github.com/microsoft/BotFramework-WebChat/pull/6045), by [@OEvgeny](https://github.com/OEvgeny)
+- 💥 Deprecated the `fileContent` and `scrollToEndButton` style set entries, which no longer affect rendering, and removed the `webchat__fileContent__downloadIcon--rtl` class, in PR [#6050](https://github.com/microsoft/BotFramework-WebChat/pull/6050), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
@@ -132,6 +165,32 @@ Built from [`424847d`](https://github.com/microsoft/BotFramework-WebChat/commit/
 - Fixed screen readers missing messages queued just as the live region faded out, in PR [#5995](https://github.com/microsoft/BotFramework-WebChat/pull/5995), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed source maps of minified builds pointing to the wrong column for code after the embedded CSS, in PR [#5999](https://github.com/microsoft/BotFramework-WebChat/pull/5999), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed the React 16 warning about the Fluent send box text area missing an `onChange` handler, in PR [#6000](https://github.com/microsoft/BotFramework-WebChat/pull/6000), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed Adaptive Cards submitting empty inputs in Strict Mode on React 19, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed `Composer` of the full bundle not calling a `children` function with `extraStyleSet`, in PR [#5955](https://github.com/microsoft/BotFramework-WebChat/pull/5955), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed file attachments without `name` throwing in development or labeled "Download file 'false'", in PR [#6007](https://github.com/microsoft/BotFramework-WebChat/pull/6007), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5700](https://github.com/microsoft/BotFramework-WebChat/issues/5700), screen readers not announcing that a message is still being sent, in PR [#6009](https://github.com/microsoft/BotFramework-WebChat/pull/6009), by [@isherstneva](https://github.com/isherstneva), [@compulim](https://github.com/compulim), and [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed flaky `scrollToEndButton.withEventActivities.html` test when the transcript scrolled back down after scrolling up, in PR [#6010](https://github.com/microsoft/BotFramework-WebChat/pull/6010), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed flaky `hideKeyboard.html` test checking focus before the send box was focused, in PR [#6011](https://github.com/microsoft/BotFramework-WebChat/pull/6011), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed the microphone staying on when speech-to-speech is muted or stopped during start-up, in PR [#6012](https://github.com/microsoft/BotFramework-WebChat/pull/6012), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed more flaky HTML tests that depend on the live bot, in PR [#6014](https://github.com/microsoft/BotFramework-WebChat/pull/6014), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed suggested action images without `imageAltText` failing accessibility checks, in PR [#6017](https://github.com/microsoft/BotFramework-WebChat/pull/6017), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed flaky HTML tests timing out while loading `jest-mock` from esm.sh, in PR [#6015](https://github.com/microsoft/BotFramework-WebChat/pull/6015), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed screen readers announcing "connecting" when Web Chat starts, in PR [#6016](https://github.com/microsoft/BotFramework-WebChat/pull/6016), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#4020](https://github.com/microsoft/BotFramework-WebChat/issues/4020), screen readers' primary action on a message not moving focus into it, in PR [#6020](https://github.com/microsoft/BotFramework-WebChat/pull/6020), by [@ahonamatata](https://github.com/ahonamatata) and [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5613](https://github.com/microsoft/BotFramework-WebChat/issues/5613), Adaptive Card input errors read as part of the input's name, in PR [#6021](https://github.com/microsoft/BotFramework-WebChat/pull/6021), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed screen reader primary action tests: removed the NVDA test, which clicked an element no screen reader can reach, and explained the emulated action, in PR [#6022](https://github.com/microsoft/BotFramework-WebChat/pull/6022), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed activities deleted by `DIRECT_LINE/DELETE_ACTIVITY` staying in the transcript, and throwing in development, in PR [#6029](https://github.com/microsoft/BotFramework-WebChat/pull/6029), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed the connectivity status spinner and "slow connection" icon touching their text in right-to-left, in PR [#6030](https://github.com/microsoft/BotFramework-WebChat/pull/6030), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed the toaster not mirroring in right-to-left languages, in PR [#6031](https://github.com/microsoft/BotFramework-WebChat/pull/6031), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed flaky HTML tests timing out while loading Fluent UI from esm.sh, in PR [#6035](https://github.com/microsoft/BotFramework-WebChat/pull/6035), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed speech recognition tests checking the dictating class on the wrong element, in PR [#6042](https://github.com/microsoft/BotFramework-WebChat/pull/6042), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed `botframework-directlinespeech-sdk` shipping JavaScript as type declarations, and the `createDirectLineSpeechAdapters` return type naming `webSpeechPonyfill` instead of `webSpeechPonyfillFactory`, in PR [#6037](https://github.com/microsoft/BotFramework-WebChat/pull/6037), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed store subscriptions left behind after unmount and by `<StrictMode>`: `createGraphFromStore()` now subscribes to the store only while its graph has subscribers, in PR [#6040](https://github.com/microsoft/BotFramework-WebChat/pull/6040), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed the "Merge test results" check failing on Ubuntu 26.04 runners (lcov 2.4), in PR [#6046](https://github.com/microsoft/BotFramework-WebChat/pull/6046), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed styles lost after a React 19.2 `<Activity>` hides and shows Web Chat, in PR [#6047](https://github.com/microsoft/BotFramework-WebChat/pull/6047), by [@OEvgeny](https://github.com/OEvgeny)
+- 👷🏻 Fixed speech test helpers not failing the test when its callback throws, in PR [#6048](https://github.com/microsoft/BotFramework-WebChat/pull/6048), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed development builds throwing when a React 19.2 `<Activity>` shows Web Chat again, in PR [#6049](https://github.com/microsoft/BotFramework-WebChat/pull/6049), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed Fluent typing indicator image broken with React 19 Strict Mode or `<Activity>`, in PR [#6051](https://github.com/microsoft/BotFramework-WebChat/pull/6051), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.19.2] - 2026-10-08
 
