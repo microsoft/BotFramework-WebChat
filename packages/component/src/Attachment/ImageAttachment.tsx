@@ -43,9 +43,8 @@ const ImageAttachment = memo(function ImageAttachment(props: ImageAttachmentProp
   const blob = useMemo(() => readDataURIToBlob(imageURL), [imageURL]);
   const [blobURL, setBlobURL] = useState<string | undefined>();
 
-  // Create and revoke the blob: URL in the same effect: a hidden <Activity> (React 19.2+) and Strict Mode run the
-  // cleanup, then the effect again, without rendering again.
-  // Layout effect: the image gets its URL before paint.
+  // Create and revoke in one effect: a hidden <Activity> and Strict Mode re-run it without rendering.
+  // Layout effect: no paint without the image.
   useLayoutEffect(() => {
     if (blob) {
       // Only allow image/* for image, otherwise, treat it as binary.
