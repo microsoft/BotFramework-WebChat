@@ -3,74 +3,74 @@
   <head>
     <title>React 19: Web Chat follows a change of capabilities made while an &lt;Activity&gt; hid it</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
-    <main id="webchat"></main>
     <script type="importmap">
       {
         "imports": {
           "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
-          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
           "react": "https://esm.sh/react@19.3.1?dev",
           "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
           "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
         }
       }
     </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script type="module">
-      import '/test-harness.mjs';
-      import '/test-page-object.mjs';
+      // React 19 has no UMD build: the IIFE builds of Web Chat and the Fluent theme use `window.React` and `window.ReactDOM`.
+      import React from 'react';
+      import ReactDOM from 'react-dom';
 
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
       import { waitFor } from '@testduet/wait-for';
-      import { createStoreWithOptions, testIds } from 'botframework-webchat';
-      import { Composer } from 'botframework-webchat/component.js';
-      import { useCapabilities } from 'botframework-webchat/hook.js';
       import { Activity, createElement, version } from 'react';
       import { createRoot } from 'react-dom/client';
 
       run(async function () {
-        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
-        window.WebChat = { createStoreWithOptions, testIds };
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
 
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
-
-        const SampleRate = () => {
-          const voiceConfiguration = useCapabilities(({ voiceConfiguration }) => voiceConfiguration);
-
-          return createElement('p', { id: 'sample-rate' }, `Sample rate: ${voiceConfiguration?.sampleRate}`);
-        };
-
-        const getSampleRateElement = () => document.getElementById('sample-rate');
+        const getMicrophoneButton = () =>
+          document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
 
         // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps their state.
         expect(version).toBe('19.3.1');
 
-        // GIVEN: The adapter has a voice configuration before Web Chat mounts.
-        directLine.setCapability(
-          'getVoiceConfiguration',
-          { chunkIntervalMs: 100, sampleRate: 16000 },
-          { emitEvent: false }
-        );
+        // GIVEN: The adapter has no voice configuration: the Fluent send box shows no microphone button.
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const root = createRoot(document.getElementById('webchat'));
         // A new element each time, as JSX does: showing Web Chat again renders it before its effects run again.
         const render = mode =>
           root.render(
-            createElement(Activity, { mode }, createElement(Composer, { directLine, store }, createElement(SampleRate)))
+            createElement(
+              Activity,
+              { mode },
+              createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine, store }))
+            )
           );
 
-        // WHEN: Web Chat is rendered in a visible <Activity>.
+        // WHEN: Web Chat with the Fluent theme is rendered in a visible <Activity>.
         render('visible');
 
-        // THEN: Web Chat shows the sample rate from the adapter.
-        await waitFor(() => expect(getSampleRateElement()).toHaveProperty('textContent', 'Sample rate: 16000'));
+        await pageConditions.uiConnected();
+
+        // THEN: The send box shows the send button, without a microphone button.
+        expect(getMicrophoneButton()).toBeNull();
         await host.snapshot('local');
 
-        // WHEN: The <Activity> hides Web Chat, and the adapter changes the sample rate while it is hidden.
+        // WHEN: The <Activity> hides Web Chat, and the adapter gets a voice configuration while it is hidden.
         render('hidden');
 
-        await waitFor(() => expect(getSampleRateElement()).toHaveProperty('offsetParent', null));
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('offsetParent', null));
 
         // Dispatches "capabilitieschanged", which Web Chat misses: it does not listen while hidden.
         directLine.setCapability('getVoiceConfiguration', { chunkIntervalMs: 100, sampleRate: 24000 });
@@ -78,10 +78,10 @@
         // WHEN: The <Activity> shows Web Chat again.
         render('visible');
 
-        await waitFor(() => expect(getSampleRateElement()).not.toHaveProperty('offsetParent', null));
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).not.toHaveProperty('offsetParent', null));
 
-        // THEN: Web Chat reads the current capabilities when it listens again, without waiting for the next event.
-        await waitFor(() => expect(getSampleRateElement()).toHaveProperty('textContent', 'Sample rate: 24000'));
+        // THEN: Web Chat reads the current capabilities when it listens again: the microphone button replaces the send button.
+        await waitFor(() => expect(getMicrophoneButton()).toBeTruthy());
         await host.snapshot('local');
       });
     </script>
