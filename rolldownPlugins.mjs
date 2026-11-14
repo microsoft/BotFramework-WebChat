@@ -7,7 +7,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import lightningCssPlugin from 'unplugin-lightningcss/rolldown';
 
-import { lightningCSSPluginOptions, removePreserveReason } from './lightningCSSOptions.mjs';
+import { lightningCSSPluginOptions, removePreserveReason, sortClassMap } from './lightningCSSOptions.mjs';
 
 const BUILT_CSS_PATTERN = /\.module_built\.css$/u;
 const CSS_MODULE_ID_PATTERN = /(?:\.module\.css\?css_module|\.module_built\.css)$/u;
@@ -126,7 +126,8 @@ function cssPlugin({ minify, target }) {
           this.addWatchFile(id.replace(CSS_MODULE_ID_PATTERN, '.module.css'));
 
           if (!BUILT_CSS_PATTERN.test(id)) {
-            return;
+            // No source map: the class map is generated code (its own source would be this code, with an absolute path).
+            return { code: sortClassMap(code, id) };
           }
 
           const result = transform({
