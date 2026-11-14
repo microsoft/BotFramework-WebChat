@@ -38,8 +38,7 @@
           WebChat: { FluentThemeProvider, ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
-        const getMicrophoneButton = () =>
-          document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
+        const getMicrophoneButton = () => document.querySelector(`[data-testid="${testIds.sendBoxMicrophoneButton}"]`);
 
         // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps their state.
         expect(version).toBe('19.3.1');
