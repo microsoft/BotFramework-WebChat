@@ -1,6 +1,6 @@
 import { type UserConfig } from 'tsdown';
 
-import { cssPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
+import { cssPlugin, inputSourceMapPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
@@ -72,7 +72,7 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       strict: true
     }),
     platform: 'browser',
-    plugins: env === 'test' ? [istanbulPlugin()] : [],
+    plugins: [inputSourceMapPlugin(), ...(env === 'test' ? [istanbulPlugin()] : [])],
     report: false,
     sourcemap: true,
     target: [...TARGET],
