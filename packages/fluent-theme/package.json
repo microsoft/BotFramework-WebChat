@@ -51,7 +51,7 @@
     "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
     "build:pre:watch": "../../scripts/npm/build-watch.sh",
     "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:*\"",
-    "build:run:static": "node ./esbuild.static.mjs",
+    "build:run:static": "node ./rolldown.static.mjs",
     "build:run:tsdown": "tsdown",
     "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
     "eslint": "npm run precommit",
@@ -84,6 +84,7 @@
     "@types/node": "^25.9.1",
     "@types/react": "^16.14.70",
     "concurrently": "^10.0.6",
+    "rolldown": "^1.3.0",
     "tsdown": "^0.23.7",
     "typescript": "^6.0.3"
   },
