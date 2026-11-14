@@ -127,8 +127,9 @@ function cssPlugin({ minify, target }) {
           this.addWatchFile(id.replace(CSS_MODULE_ID_PATTERN, '.module.css'));
 
           if (!BUILT_CSS_PATTERN.test(id)) {
-            // No source map: the class map is generated code (its own source would be this code, with an absolute path).
-            return { code: sortClassMap(code, id) };
+            // The class map is generated code: an empty source map maps it to no source (rolldown warns SOURCEMAP_BROKEN
+            // without one; `map: null` would keep the mappings of the code before sorting).
+            return { code: sortClassMap(code, id), map: { mappings: '' } };
           }
 
           const result = transform({
