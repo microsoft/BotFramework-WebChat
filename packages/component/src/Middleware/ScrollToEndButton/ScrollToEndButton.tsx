@@ -1,11 +1,12 @@
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
 import React, { useRef } from 'react';
 
 import useFocusAccessKeyEffect from '../../Utils/AccessKeySink/useFocusAccessKeyEffect';
 import useLocalizeAccessKey from '../../hooks/internal/useLocalizeAccessKey';
-import useStyleSet from '../../hooks/useStyleSet';
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
+
+import styles from './ScrollToEndButton.module.css';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -15,7 +16,8 @@ const newMessagesAccessKey = 'U u Ü ü';
 
 const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
   const focusRef = useRef(null);
-  const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
+  // Keeps the "webchat__scroll-to-end-button" class name.
+  const classNames = useStyles(styles, webChatPrefixedClassName);
   const [{ scrollToEndButtonBehavior }] = useStyleOptions();
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey('accessible name');
@@ -41,7 +43,7 @@ const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
     <button
       aria-keyshortcuts={shouldShowNewMessagesButton ? localizeAccessKey(newMessagesAccessKey) : undefined}
       aria-label={text}
-      className={classNames('webchat__scroll-to-end-button', scrollToEndButtonStyleSet + '')}
+      className={classNames['scroll-to-end-button']}
       onClick={onClick}
       ref={focusRef}
       tabIndex={0}
