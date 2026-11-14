@@ -1,0 +1,22 @@
+:global(.webchat) .fixed-width-image {
+  display: flex;
+  justify-content: center;
+  max-height: var(--webchat__max-height--image-bubble);
+  min-height: var(--webchat__min-height--image-bubble);
+  overflow: hidden;
+  position: relative;
+
+  .fixed-width-image__filler {
+    visibility: hidden;
+    width: 100%;
+  }
+
+  .fixed-width-image__image {
+    left: 50%;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+  }
+}
