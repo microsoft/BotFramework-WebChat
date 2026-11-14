@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, type ReactNode } from 'react';
+import React, { memo, type ReactNode } from 'react';
 
 import { type AssetName } from './AssetName';
 import Context, { type ContextType } from './private/Context';
@@ -15,37 +15,31 @@ const SLIDING_DOTS_REDUCED_MOTION_SVG_STRING = SLIDING_DOTS_SVG_STRING.replaceAl
   'repeatCount="0.01" fill="freeze"'
 );
 
-const AssetComposer = memo(({ children }: AssetComposerProps) => {
-  const slidingDotsURL = useMemo(
-    // Content is hardcoded.
-    // eslint-disable-next-line no-restricted-properties
-    () => URL.createObjectURL(new Blob([SLIDING_DOTS_SVG_STRING], { type: 'image/svg+xml' })),
-    []
-  );
+function createSVGURLState(svg: string): readonly [URL] {
+  // Content is hardcoded.
+  // eslint-disable-next-line no-restricted-properties
+  return Object.freeze([new URL(URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })))]);
+}
 
-  const slidingDotsReducedMotionURL = useMemo(
-    // Content is hardcoded.
-    // eslint-disable-next-line no-restricted-properties
-    () => URL.createObjectURL(new Blob([SLIDING_DOTS_REDUCED_MOTION_SVG_STRING], { type: 'image/svg+xml' })),
-    []
-  );
+// Created on first use and never revoked, shared by every instance: the images are small and constant.
+// Revoking in an effect cleanup broke them, as React 19 <StrictMode> and <Activity> run cleanups and effects again without rendering.
+let context: ContextType | undefined;
 
-  useEffect(() => () => URL.revokeObjectURL(slidingDotsURL), [slidingDotsURL]);
-  useEffect(() => () => URL.revokeObjectURL(slidingDotsReducedMotionURL), [slidingDotsReducedMotionURL]);
+function getContext(): ContextType {
+  context ||
+    (context = Object.freeze({
+      urlStateMap: new Map<AssetName, readonly [URL]>([
+        ['sliding dots', createSVGURLState(SLIDING_DOTS_SVG_STRING)],
+        ['sliding dots reduced-motion', createSVGURLState(SLIDING_DOTS_REDUCED_MOTION_SVG_STRING)]
+      ])
+    }));
 
-  const context = useMemo<ContextType>(
-    () =>
-      Object.freeze({
-        urlStateMap: new Map<AssetName, readonly [URL]>([
-          ['sliding dots', Object.freeze([new URL(slidingDotsURL)])],
-          ['sliding dots reduced-motion', Object.freeze([new URL(slidingDotsReducedMotionURL)])]
-        ])
-      }),
-    [slidingDotsURL, slidingDotsReducedMotionURL]
-  );
+  return context;
+}
 
-  return <Context.Provider value={context}>{children}</Context.Provider>;
-});
+const AssetComposer = memo(({ children }: AssetComposerProps) => (
+  <Context.Provider value={getContext()}>{children}</Context.Provider>
+));
 
 AssetComposer.displayName = 'AssetComposer';
 
