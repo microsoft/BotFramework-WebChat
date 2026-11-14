@@ -51,7 +51,9 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
         buildOptions.plugins = [buildOptions.plugins, cssPlugin({ minify: !!minify && minify !== 'dce-only', target })];
       }
     },
-    ignoreWatch: ['./dist/'],
+    // onSuccess touches package.json for `npm start` (notify-build.sh) of dependent packages: `tsdown --watch` would
+    // reload its config on every touch.
+    ignoreWatch: ['./dist/', './package.json'],
     inputOptions: (options, format) => ({
       ...options,
       // unplugin-lightningcss exports dashed class names as `export { _x as "a-b" }`: rolldown warns for each of them.
