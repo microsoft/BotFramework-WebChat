@@ -21,87 +21,8 @@ function updateMappings(encoded: string, line: number, column: number, offset: n
   return encode(mappings);
 }
 
-type Metafile = {
-  outputs: Record<
-    string,
-    {
-      entryPoint?: string;
-      imports?: Array<{ path: string; kind?: string; external?: boolean }>;
-    }
-  >;
-};
-
-function mapOutputsToRootOutputs(metafile: Metafile) {
-  const outputs = metafile.outputs || {};
-  const allFiles = new Set(Object.keys(outputs));
-
-  const roots: string[] = [];
-  const graph = new Map<string, string[]>();
-
-  for (const [file, meta] of Object.entries(outputs)) {
-    if (meta.entryPoint) {
-      roots.push(file);
-    }
-
-    const edges: string[] = [];
-    const imports = meta.imports || [];
-
-    for (const imp of imports) {
-      if (imp.external) {
-        continue;
-      }
-
-      if (allFiles.has(imp.path)) {
-        edges.push(imp.path);
-      } else {
-        const resolved = path.posix.normalize(path.posix.resolve(path.posix.dirname(file), imp.path));
-        if (allFiles.has(resolved)) {
-          edges.push(resolved);
-        }
-      }
-    }
-    graph.set(file, edges);
-  }
-
-  roots.sort();
-
-  const outputToRoots = new Map<string, Set<string>>();
-
-  for (const file of allFiles) {
-    outputToRoots.set(file, new Set());
-  }
-
-  for (const root of roots) {
-    const stack = [root];
-    const visited = new Set<string>();
-
-    while (stack.length > 0) {
-      const node = stack.pop()!;
-
-      if (visited.has(node)) {
-        continue;
-      }
-      visited.add(node);
-
-      outputToRoots.get(node)?.add(root);
-
-      const children = graph.get(node);
-      if (children) {
-        stack.push(...children);
-      }
-    }
-  }
-
-  const result = new Map<string, readonly string[]>();
-  for (const [file, rootSet] of outputToRoots) {
-    result.set(file, Object.freeze([...rootSet].sort()));
-  }
-
-  return { roots, outputToRoots: result };
-}
-
 // Embeds the CSS of an entry (`<entry>.css`, emitted by cssPlugin in /rolldownPlugins.mjs) into the string placeholder
-// of its chunk. The entry that owns a chunk is found in an esbuild-like metafile built from `chunk.imports`.
+// of its chunk. The entries that own a chunk are the entry chunks that import it, directly or through other chunks.
 export default function injectCSSRolldownPlugin({
   ignoreCSSEntries,
   stylesPlaceholder
@@ -120,24 +41,28 @@ export default function injectCSSRolldownPlugin({
       // After cssPlugin emitted the CSS files.
       order: 'post',
       handler({ dir = 'dist' }, bundle) {
-        // Same keys as esbuild's metafile (e.g. "dist/botframework-webchat-component.css"), for the same ignoreCSSEntries.
+        // Keys as in ignoreCSSEntries, relative to the package: "dist/botframework-webchat-component.css".
         const toKey = (fileName: string) =>
           path.posix.join(path.relative(process.cwd(), dir).replaceAll('\\', '/'), fileName);
         const chunks = Object.values(bundle).filter((file): file is Rolldown.OutputChunk => file.type === 'chunk');
+        const chunksByFileName = new Map(chunks.map(chunk => [chunk.fileName, chunk]));
+        // File names of the entry chunks that load each chunk.
+        const ownersByFileName = new Map<string, Set<string>>();
 
-        const metafile: Metafile = {
-          outputs: Object.fromEntries(
-            chunks.map(chunk => [
-              toKey(chunk.fileName),
-              {
-                ...(chunk.isEntry && chunk.facadeModuleId ? { entryPoint: chunk.facadeModuleId } : {}),
-                imports: chunk.imports.map(fileName => ({ path: toKey(fileName) }))
-              }
-            ])
-          )
-        };
+        for (const { fileName: entryFileName } of chunks.filter(chunk => chunk.isEntry)) {
+          const stack = [entryFileName];
 
-        const { outputToRoots } = mapOutputsToRootOutputs(metafile);
+          while (stack.length) {
+            const fileName = stack.pop()!;
+            const owners = ownersByFileName.get(fileName) ?? new Set<string>();
+            const imported = chunksByFileName.get(fileName);
+
+            if (imported && !owners.has(entryFileName)) {
+              ownersByFileName.set(fileName, owners.add(entryFileName));
+              stack.push(...imported.imports);
+            }
+          }
+        }
 
         for (const chunk of chunks) {
           const jsText = chunk.code;
@@ -149,11 +74,10 @@ export default function injectCSSRolldownPlugin({
 
           const outKey = toKey(chunk.fileName);
           const cssFilesMap = new Map(
-            (outputToRoots.get(outKey) || []).flatMap(owner => {
-              const cssKey = owner.replace(/\.[cm]?js$/u, '.css');
-              const cssFile = bundle[path.posix.relative(toKey(''), cssKey)];
+            [...(ownersByFileName.get(chunk.fileName) ?? [])].sort().flatMap(owner => {
+              const cssFile = bundle[owner.replace(/\.[cm]?js$/u, '.css')];
 
-              return cssFile?.type === 'asset' ? [[cssKey, cssFile] as const] : [];
+              return cssFile?.type === 'asset' ? [[toKey(cssFile.fileName), cssFile] as const] : [];
             })
           );
 
