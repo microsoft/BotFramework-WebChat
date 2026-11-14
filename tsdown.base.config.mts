@@ -123,6 +123,7 @@ function iifeOptions(config: Config): Partial<Config> {
       entryFileNames: '[name].js',
       // `exports` does not exist in a classic script.
       esModule: false,
+      // rolldown drops the "use strict" of each CommonJS module, so the whole script is strict.
       strict: true
     }),
     target: [...config.target, 'es2019']
