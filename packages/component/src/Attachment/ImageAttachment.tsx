@@ -1,5 +1,5 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo } from 'react';
+import React, { memo, useLayoutEffect, useMemo, useState } from 'react';
 import { custom, is, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import readDataURIToBlob from '../Utils/readDataURIToBlob';
@@ -36,23 +36,35 @@ type ImageAttachmentProps = InferInput<typeof imageAttachmentPropsSchema>;
 const ImageAttachment = memo(function ImageAttachment(props: ImageAttachmentProps) {
   const { attachment } = validateProps(imageAttachmentPropsSchema, props);
 
-  let imageURL = attachment.thumbnailUrl || attachment.contentUrl;
+  const imageURL = attachment.thumbnailUrl || attachment.contentUrl;
 
   // To support Content Security Policy, data URI cannot be used.
   // We need to parse the data URI into a blob: URL.
-  const blob = readDataURIToBlob(imageURL);
+  const blob = useMemo(() => readDataURIToBlob(imageURL), [imageURL]);
+  const [blobURL, setBlobURL] = useState<string | undefined>();
 
-  if (blob) {
-    // Only allow image/* for image, otherwise, treat it as binary.
-    // eslint-disable-next-line no-restricted-properties
-    imageURL = URL.createObjectURL(
-      new Blob([blob], {
-        type: blob.type.startsWith('image/') ? blob.type : 'application/octet-stream'
-      })
-    );
-  }
+  // Create and revoke the blob: URL in the same effect: a hidden <Activity> (React 19.2+) and Strict Mode run the
+  // cleanup, then the effect again, without rendering again.
+  // Layout effect: the image gets its URL before paint.
+  useLayoutEffect(() => {
+    if (blob) {
+      // Only allow image/* for image, otherwise, treat it as binary.
+      // eslint-disable-next-line no-restricted-properties
+      const url = URL.createObjectURL(
+        new Blob([blob], {
+          type: blob.type.startsWith('image/') ? blob.type : 'application/octet-stream'
+        })
+      );
 
-  return <ImageContent alt={attachment.name} src={imageURL} />;
+      setBlobURL(url);
+
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [blob]);
+
+  const src = blob ? blobURL : imageURL;
+
+  return src ? <ImageContent alt={attachment.name} src={src} /> : null;
 });
 
 export default ImageAttachment;
