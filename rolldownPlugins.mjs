@@ -1,4 +1,4 @@
-// Rolldown flavor of esbuildPlugins.mjs and esbuildBabelPluginIstanbul.ts, for tsdown.base.config.mts.
+// Rolldown plugins of tsdown.base.config.mts and the static builds (packages/*/rolldown.static.mjs).
 import { transformAsync } from '@babel/core';
 import { decode, encode } from '@jridgewell/sourcemap-codec';
 import { Features, transform } from 'lightningcss';
@@ -177,7 +177,7 @@ function cssPlugin({ minify, target }) {
 }
 
 /**
- * Adds istanbul coverage counters to our sources (`NODE_ENV=test`), like esbuildBabelPluginIstanbul.ts.
+ * Adds istanbul coverage counters to our sources (`NODE_ENV=test`).
  *
  * @returns {import('rolldown').Plugin}
  */
@@ -196,7 +196,7 @@ function istanbulPlugin() {
       order: 'pre',
       async handler(code, id) {
         const result = await transformAsync(code, {
-          configFile: join(fileURLToPath(import.meta.url), '../esbuildBabelPluginIstanbul.babel.config.json'),
+          configFile: join(fileURLToPath(import.meta.url), '../babelPluginIstanbul.config.json'),
           filename: id,
           rootMode: 'root',
           sourceFileName: id,

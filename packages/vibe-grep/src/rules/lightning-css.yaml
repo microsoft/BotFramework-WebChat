@@ -22,7 +22,7 @@ args: [dist/*.css]
 ---
 # This rule checks that the Lightning CSS plugin removed every "--webchat-preserve-reason" declaration.
 # The declaration keeps the class name of a rule without styles of its own (e.g. a class for themes) in the class map,
-# and esbuildPlugins.mjs removes it once the class map is built, so it must not appear in the output CSS.
+# and rolldownPlugins.mjs removes it once the class map is built, so it must not appear in the output CSS.
 
 id: no-preserve-reason-lightning-css
 language: Css
@@ -31,6 +31,6 @@ rule:
   regex: "^--webchat-preserve-reason$"
 
 description: "Check that CSS compiled by Lightning CSS plugin has no --webchat-preserve-reason declarations"
-message: "Output CSS has a --webchat-preserve-reason declaration. Check that esbuildPlugins.mjs removes it after the class map is built."
+message: "Output CSS has a --webchat-preserve-reason declaration. Check that rolldownPlugins.mjs removes it after the class map is built."
 severity: error
 args: [dist/*.css]

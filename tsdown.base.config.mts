@@ -16,7 +16,7 @@ type Config = UserConfig & {
   target: string[];
 };
 
-// Port of tsup.base.config.ts.
+// Shared options of every tsdown build.
 function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config): Config {
   return overrideOptions({
     // CSS modules are compiled by our cssPlugin (rolldownPlugins.mjs), not by @tsdown/css.

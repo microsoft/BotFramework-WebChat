@@ -1,10 +1,107 @@
+import { decode, encode } from '@jridgewell/sourcemap-codec';
 import path from 'node:path';
 import type { Rolldown } from 'tsdown';
 
-import { mapOutputsToRootOutputs, updateMappings, type InjectCSSPluginOptions, type Metafile } from './injectCSSPlugin';
+export interface InjectCSSPluginOptions {
+  ignoreCSSEntries?: string[];
+  stylesPlaceholder: string;
+}
 
-// Rolldown flavor of injectCSSPlugin (esbuild), with the same options and logic. rolldown has no metafile: the same graph
-// is built from `chunk.imports`. It expects `<entry>.css` in the bundle, emitted by cssPlugin (/rolldownPlugins.mjs).
+// Shifts the generated columns after the placeholder on its line, by how much longer the embedded string is.
+// Other lines do not move: JSON.stringify() escapes line breaks.
+function updateMappings(encoded: string, line: number, column: number, offset: number) {
+  const mappings = decode(encoded);
+
+  for (const segment of mappings[+line] || []) {
+    if (segment[0] > column) {
+      segment[0] += offset;
+    }
+  }
+
+  return encode(mappings);
+}
+
+type Metafile = {
+  outputs: Record<
+    string,
+    {
+      entryPoint?: string;
+      imports?: Array<{ path: string; kind?: string; external?: boolean }>;
+    }
+  >;
+};
+
+function mapOutputsToRootOutputs(metafile: Metafile) {
+  const outputs = metafile.outputs || {};
+  const allFiles = new Set(Object.keys(outputs));
+
+  const roots: string[] = [];
+  const graph = new Map<string, string[]>();
+
+  for (const [file, meta] of Object.entries(outputs)) {
+    if (meta.entryPoint) {
+      roots.push(file);
+    }
+
+    const edges: string[] = [];
+    const imports = meta.imports || [];
+
+    for (const imp of imports) {
+      if (imp.external) {
+        continue;
+      }
+
+      if (allFiles.has(imp.path)) {
+        edges.push(imp.path);
+      } else {
+        const resolved = path.posix.normalize(path.posix.resolve(path.posix.dirname(file), imp.path));
+        if (allFiles.has(resolved)) {
+          edges.push(resolved);
+        }
+      }
+    }
+    graph.set(file, edges);
+  }
+
+  roots.sort();
+
+  const outputToRoots = new Map<string, Set<string>>();
+
+  for (const file of allFiles) {
+    outputToRoots.set(file, new Set());
+  }
+
+  for (const root of roots) {
+    const stack = [root];
+    const visited = new Set<string>();
+
+    while (stack.length > 0) {
+      const node = stack.pop()!;
+
+      if (visited.has(node)) {
+        continue;
+      }
+      visited.add(node);
+
+      outputToRoots.get(node)?.add(root);
+
+      const children = graph.get(node);
+      if (children) {
+        stack.push(...children);
+      }
+    }
+  }
+
+  const result = new Map<string, readonly string[]>();
+  for (const [file, rootSet] of outputToRoots) {
+    result.set(file, Object.freeze([...rootSet].sort()));
+  }
+
+  return { roots, outputToRoots: result };
+}
+
+// Embeds the CSS of an entry (`<entry>.css`, emitted by cssPlugin in /rolldownPlugins.mjs) into the string placeholder
+// of its chunk. The entry that owns a chunk is found in an esbuild-like metafile built from `chunk.imports`.
 export default function injectCSSRolldownPlugin({
   ignoreCSSEntries,
   stylesPlaceholder
