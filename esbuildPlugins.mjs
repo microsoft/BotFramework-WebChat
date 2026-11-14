@@ -1,6 +1,6 @@
 import lightningCssPlugin from 'unplugin-lightningcss/esbuild';
 
-import { lightningCSSPluginOptions, removePreserveReason } from './lightningCSSOptions.mjs';
+import { lightningCSSPluginOptions, removePreserveReason, sortClassMap } from './lightningCSSOptions.mjs';
 
 // Due to a bug in unplugin, we cannot use the Lightning CSS unplugin directly.
 // https://github.com/unjs/unplugin/issues/546
@@ -18,9 +18,14 @@ const cssPlugin = {
         build.onLoad({ filter: /(\.module_built\.css|\?css_module)$/ }, async args => {
           const result = await fn(args);
 
-          // Only the CSS of a CSS module, not its JavaScript class map.
-          return args.path.endsWith('.module_built.css') && typeof result?.contents === 'string'
-            ? { ...result, contents: removePreserveReason(result.contents, args.path) }
+          // The CSS of a CSS module, or its JavaScript class map.
+          return typeof result?.contents === 'string'
+            ? {
+                ...result,
+                contents: args.path.endsWith('.module_built.css')
+                  ? removePreserveReason(result.contents, args.path)
+                  : sortClassMap(result.contents, args.path)
+              }
             : result;
         })
     });
