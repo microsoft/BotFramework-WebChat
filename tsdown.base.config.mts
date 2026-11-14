@@ -68,7 +68,7 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       // Like esbuild: `__esModule` in every CommonJS entry (rolldown adds it only with a default export).
       esModule: true,
       exports: 'named',
-      // Like esbuild: CommonJS and IIFE output start with "use strict".
+      // Like esbuild: CommonJS output starts with "use strict".
       strict: true
     }),
     platform: 'browser',
@@ -121,8 +121,6 @@ function iifeOptions(config: Config): Partial<Config> {
       comments: options.minify ? MINIFIED_COMMENTS : { annotation: false, jsdoc: true, legal: true },
       // tsdown names it `<name>.iife.js`.
       entryFileNames: '[name].js',
-      // `exports` does not exist in a classic script.
-      esModule: false,
       // rolldown drops the "use strict" of each CommonJS module, so the whole script is strict.
       strict: true
     }),
