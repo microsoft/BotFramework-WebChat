@@ -102,7 +102,7 @@ function deepFreezeArray(
     const originalItem = getDataPropertyValue(originalObject, `${index}`);
     const item = deepFreezeItem(originalItem, value[+index], memo);
 
-    reusable &&= item === originalItem;
+    reusable &&= Object.is(item, originalItem);
     frozenValue.push(item);
   }
 
@@ -137,7 +137,7 @@ function deepFreezeObject(originalObject: object | undefined, value: object, mem
     const originalItem = getDataPropertyValue(originalObject, key);
     const item = deepFreezeItem(originalItem, Reflect.get(value, key), memo);
 
-    reusable &&= item === originalItem;
+    reusable &&= Object.is(item, originalItem);
 
     // eslint-disable-next-line security/detect-object-injection
     frozenValue[key] = item;
@@ -172,7 +172,7 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
     const frozenValue =
       isFrozenSet(originalValue) &&
       originalItems.length === items.length &&
-      items.every((item, index) => item === originalItems[+index])
+      items.every((item, index) => Object.is(item, originalItems[+index]))
         ? originalValue
         : new FrozenSet(items);
 
