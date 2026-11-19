@@ -6,18 +6,38 @@ import deepFreeze, { isDangerousKey } from './deepFreeze.ts';
 import FrozenNodeSet, { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import type { UnfrozenNode } from './UnfrozenNode.ts';
 
+function isSameIds(ids: ReadonlySet<string>, value: ReadonlySet<NodeReference>): boolean {
+  if (ids.size !== value.size) {
+    return false;
+  }
+
+  for (const { '@id': id } of value) {
+    if (!ids.has(id)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 /**
  * Returns a `FrozenNodeSet` of the node references.
  *
- * - If the original value is a `FrozenNodeSet`, it is immutable and returned as-is, i.e. unchanged parts are reused
- * - Otherwise, IDs are copied via an iterator without creating an intermediate array
+ * - If the original property is an own data property holding a `FrozenNodeSet` with the same IDs as the validated
+ *   value, it is immutable and returned as-is, i.e. unchanged parts are reused
+ * - Otherwise, IDs are copied from the validated value, as an accessor property could return a different value on
+ *   every read
  *
- * @param originalValue Value before validation. It is validated, but validation always returns a new `Set`.
- * @param value Value after validation.
+ * @param target Object before validation, it is an object as it passed validation.
+ * @param key Name of the property.
+ * @param value Value after validation, validation always returns a new `Set`.
  */
-function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReference>): FrozenNodeSet {
-  return getNodeSetIds(originalValue)
-    ? (originalValue satisfies unknown as FrozenNodeSet)
+function toFrozenNodeSet(target: object, key: string, value: ReadonlySet<NodeReference>): FrozenNodeSet {
+  const descriptor = Object.getOwnPropertyDescriptor(target, key);
+  const ids = descriptor && 'value' in descriptor ? getNodeSetIds(descriptor.value) : undefined;
+
+  return ids && isSameIds(ids, value)
+    ? (descriptor?.value satisfies unknown as FrozenNodeSet)
     : new FrozenNodeSet(Array.from(value, ({ '@id': id }) => id));
 }
 
@@ -48,7 +68,7 @@ function createNode(value: unknown): UnfrozenNode {
             key,
             safePartValue
               ? // `value` is an object as it passed validation.
-                toFrozenNodeSet(Reflect.get(value as object, key), safePartValue)
+                toFrozenNodeSet(value as object, key, safePartValue)
               : deepFreeze(Reflect.get(value as object, key), safeValue)
           ];
         })

@@ -212,7 +212,8 @@ class FrozenSkipList<T> extends SkipListView<T> implements SkipListReader<T> {
 
     this.#storage = storage
       ? (storage satisfies VersionedStorage<unknown, unknown> as VersionedStorage<Key<T>, Entry<T>>)
-      : new VersionedStorage(new Map());
+      : // Links are never iterated, skip keeping the order of older versions.
+        new VersionedStorage(new Map(), { ordered: false });
 
     Object.freeze(this);
   }

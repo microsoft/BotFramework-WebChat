@@ -211,8 +211,8 @@ scenario(
           ])
         );
       })
-      .and('original map should keep the order of entries which are not deleted later', map =>
-        expect(Array.from(map.keys())).toEqual(['b', 'c', 'a'])
+      .and('original map should keep the order of entries, including entries deleted later', map =>
+        expect(Array.from(map.keys())).toEqual(['a', 'b', 'c'])
       )
       .and('overlay should not be modifiable after commit', (_, { readWriteMap }) => {
         expect(() => readWriteMap.set('e', 5)).toThrow('already committed');
