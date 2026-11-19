@@ -45,10 +45,10 @@ class FrozenNodeSet extends SetView<NodeReference> {
     return !!value && typeof value === 'object' && this.#ids.has(value['@id']);
   }
 
-  keys(): SetIterator<NodeReference> {
-    return this.#ids
-      .values()
-      .map(toNodeReference) satisfies IteratorObject<NodeReference> as SetIterator<NodeReference>;
+  *keys(): SetIterator<NodeReference> {
+    for (const id of this.#ids) {
+      yield toNodeReference(id);
+    }
   }
 }
 
