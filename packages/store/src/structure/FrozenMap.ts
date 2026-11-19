@@ -123,7 +123,7 @@ class FrozenMap<K, V> extends MapView<K, V> {
   }
 
   entries(): MapIterator<[K, V]> {
-    return this.#storage.toMap().entries();
+    return this.#storage.entries();
   }
 
   get(key: K): V | undefined {
@@ -135,7 +135,7 @@ class FrozenMap<K, V> extends MapView<K, V> {
   }
 
   keys(): MapIterator<K> {
-    return this.#storage.toMap().keys();
+    return this.#storage.keys();
   }
 
   /**
@@ -149,7 +149,7 @@ class FrozenMap<K, V> extends MapView<K, V> {
   }
 
   values(): MapIterator<V> {
-    return this.#storage.toMap().values();
+    return this.#storage.values();
   }
 }
 

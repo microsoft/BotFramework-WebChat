@@ -86,3 +86,53 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'FrozenNodeSet Set methods should compare node references by ID',
+  bdd => {
+    bdd
+      .given('two FrozenNodeSet with overlapping IDs', () => ({
+        nodeSet: new FrozenNodeSet(['_:m-1', '_:m-2', '_:m-3']),
+        other: new FrozenNodeSet(['_:m-2', '_:m-3'])
+      }))
+      .when('Set methods are called', ({ nodeSet, other }) => ({
+        difference: nodeSet.difference(other),
+        intersection: nodeSet.intersection(other),
+        isDisjointFrom: nodeSet.isDisjointFrom(other),
+        isSubsetOf: nodeSet.isSubsetOf(other),
+        isSupersetOf: nodeSet.isSupersetOf(other),
+        isSupersetOfItself: nodeSet.isSupersetOf(nodeSet),
+        symmetricDifference: nodeSet.symmetricDifference(other),
+        union: nodeSet.union(other),
+        unionWithItself: nodeSet.union(nodeSet)
+      }))
+      .then('difference() should compare by ID', (_, result) =>
+        expect(Array.from(result.difference, ({ '@id': id }) => id)).toEqual(['_:m-1'])
+      )
+      .and('intersection() should compare by ID', (_, result) =>
+        expect(Array.from(result.intersection, ({ '@id': id }) => id)).toEqual(['_:m-2', '_:m-3'])
+      )
+      .and('isDisjointFrom() should compare by ID', (_, result) => expect(result.isDisjointFrom).toBe(false))
+      .and('isSubsetOf() should compare by ID', (_, result) => expect(result.isSubsetOf).toBe(false))
+      .and('isSupersetOf() should compare by ID', (_, result) => expect(result.isSupersetOf).toBe(true))
+      .and('isSupersetOf() itself should be true', (_, result) => expect(result.isSupersetOfItself).toBe(true))
+      .and('symmetricDifference() should compare by ID', (_, result) =>
+        expect(Array.from(result.symmetricDifference, ({ '@id': id }) => id)).toEqual(['_:m-1'])
+      )
+      .and('union() should not duplicate references with the same ID', (_, result) =>
+        expect(Array.from(result.union, ({ '@id': id }) => id)).toEqual(['_:m-1', '_:m-2', '_:m-3'])
+      )
+      .and('union() with itself should not duplicate references', (_, result) =>
+        expect(Array.from(result.unionWithItself, ({ '@id': id }) => id)).toEqual(['_:m-1', '_:m-2', '_:m-3'])
+      );
+
+    bdd
+      .given('a FrozenNodeSet and a Set of node references with the same IDs', () => ({
+        nodeSet: new FrozenNodeSet(['_:m-1', '_:m-2']),
+        other: new Set([{ '@id': '_:m-1' }, { '@id': '_:m-2' }])
+      }))
+      .when('isSupersetOf() is called', ({ nodeSet, other }) => nodeSet.isSupersetOf(other))
+      .then('should be true', (_, result) => expect(result).toBe(true));
+  },
+  NodeTest
+);

@@ -3,6 +3,7 @@ import { expect } from 'expect';
 import NodeTest from 'node:test';
 import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
+import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
 import createNode from './createNode.ts';
 import { getDateCreatedTime } from './dateCreatedTime.ts';
 import freezeNode from './freezeNode.ts';
@@ -345,6 +346,46 @@ scenario(
         expect(json).toHaveProperty('undefined', undefined);
         expect(json.a).toEqual([undefined]);
       });
+  },
+  NodeTest
+);
+
+scenario(
+  'createNode with accessors on hasPart/isPartOf',
+  bdd => {
+    bdd
+      .given('a node with a hasPart getter returning a different FrozenNodeSet after the first read', () => {
+        let numCalls = 0;
+
+        return {
+          '@id': '_:thread',
+          '@type': new Set(['Thread']),
+          get hasPart() {
+            return numCalls++ ? new FrozenNodeSet(['_:unvalidated']) : new Set([{ '@id': '_:m-1' }]);
+          }
+        };
+      })
+      .when('createNode() is called', value => createNode(value))
+      .then('should store the validated hasPart', (_, node) =>
+        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1'])
+      );
+
+    bdd
+      .given('a node with an isPartOf getter returning a different FrozenNodeSet after the first read', () => {
+        let numCalls = 0;
+
+        return {
+          '@id': '_:m-1',
+          '@type': new Set(['Message']),
+          get isPartOf() {
+            return numCalls++ ? new FrozenNodeSet(['_:unvalidated']) : new Set([{ '@id': '_:thread' }]);
+          }
+        };
+      })
+      .when('createNode() is called', value => createNode(value))
+      .then('should store the validated isPartOf', (_, node) =>
+        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:thread'])
+      );
   },
   NodeTest
 );

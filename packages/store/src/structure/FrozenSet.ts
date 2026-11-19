@@ -131,7 +131,7 @@ class FrozenSet<T> extends SetView<T> {
   }
 
   keys(): SetIterator<T> {
-    return this.#storage.toMap().keys();
+    return this.#storage.keys();
   }
 
   /**
