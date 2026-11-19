@@ -122,6 +122,24 @@ scenario(
         expect(result).toEqual(JSON.parse(JSON.stringify(target)))
       );
 
+    bdd.given
+      .oneOf<unknown>([
+        ['a function with toJSON()', () => Object.assign(() => 1, { toJSON: () => 'Hello' })],
+        [
+          'a function with toJSON() nested in an object',
+          () => ({ one: Object.assign(() => 1, { toJSON: () => 'Hello' }) })
+        ],
+        ['a function with toJSON() nested in an array', () => [Object.assign(() => 1, { toJSON: () => 'Hello' })]],
+        [
+          'a function with toJSON() receiving the key',
+          () => ({ one: Object.assign(() => 1, { toJSON: (key: string) => key }) })
+        ]
+      ])
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should call toJSON() as JSON.parse(JSON.stringify())', (target, result) =>
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)))
+      );
+
     bdd
       .given('an object with a getter', () => {
         let numCalls = 0;
