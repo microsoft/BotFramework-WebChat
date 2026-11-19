@@ -18,7 +18,7 @@ import type { UnfrozenNode } from './UnfrozenNode.ts';
 function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReference>): FrozenNodeSet {
   return getNodeSetIds(originalValue)
     ? (originalValue satisfies unknown as FrozenNodeSet)
-    : new FrozenNodeSet(value.values().map(({ '@id': id }) => id));
+    : new FrozenNodeSet(Array.from(value, ({ '@id': id }) => id));
 }
 
 /**

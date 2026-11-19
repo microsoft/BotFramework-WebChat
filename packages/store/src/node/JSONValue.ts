@@ -26,9 +26,11 @@ function unbox(value: object): unknown {
     ? Number(value)
     : value instanceof String
       ? String(value)
-      : value instanceof Boolean || value instanceof BigInt
-        ? value.valueOf()
-        : value;
+      : value instanceof Boolean
+        ? Boolean.prototype.valueOf.call(value)
+        : value instanceof BigInt
+          ? BigInt.prototype.valueOf.call(value)
+          : value;
 }
 
 /**
