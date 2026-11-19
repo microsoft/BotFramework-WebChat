@@ -389,3 +389,75 @@ scenario(
   },
   NodeTest
 );
+
+/** Defines an enumerable getter which returns the value on first read and throws on subsequent reads. */
+function defineReadOnceGetter<T extends object>(target: T, key: string, value: unknown): { readonly numRead: number } {
+  const counter = { numRead: 0 };
+
+  Object.defineProperty(target, key, {
+    enumerable: true,
+    get() {
+      if (counter.numRead++) {
+        throw new Error(`"${key}" must only be read once`);
+      }
+
+      return value;
+    }
+  });
+
+  return counter;
+}
+
+scenario(
+  'createNode with accessor properties',
+  bdd => {
+    bdd
+      .given('a node with a "text" getter which only returns a valid value once', () => {
+        const value = { '@id': '_:m-1', '@type': new Set(['Message']) };
+
+        return { counter: defineReadOnceGetter(value, 'text', ['Hello, World!']), value };
+      })
+      .when('createNode() is called', ({ value }) => createNode(value))
+      .then('should create the node with the validated value', (_, node) =>
+        expect(getProperty(node, 'text')).toEqual(['Hello, World!'])
+      )
+      .and('should read the getter once', ({ counter }) => expect(counter.numRead).toBe(1));
+
+    bdd
+      .given('a node with a "@type" getter which only returns a valid value once', () => {
+        const value = { '@id': '_:m-1' };
+
+        return { counter: defineReadOnceGetter(value, '@type', new Set(['Message'])), value };
+      })
+      .when('createNode() is called', ({ value }) => createNode(value))
+      .then('should create the node with the validated value', (_, node) =>
+        expect(node['@type']).toEqual(new Set(['Message']))
+      )
+      .and('should read the getter once', ({ counter }) => expect(counter.numRead).toBe(1));
+  },
+  NodeTest
+);
+
+scenario(
+  'createNode with null-prototype JSON literal',
+  bdd => {
+    bdd
+      .given('a node with a JSON literal of a frozen null-prototype object', () => ({
+        '@id': '_:m-1',
+        '@type': new Set(['Message']),
+        text: Object.freeze([
+          Object.freeze({
+            '@type': '@json',
+            '@value': Object.freeze(Object.assign(Object.create(null) as Record<string, unknown>, { one: 1 }))
+          })
+        ])
+      }))
+      .when('createNode() is called', value => createNode(value))
+      .then('@value should be a plain object as JSON.parse(JSON.stringify()) does', (_, node) => {
+        const [literal] = getProperty(node, 'text') as readonly { readonly '@value': object }[];
+
+        expect(Object.getPrototypeOf(literal?.['@value'])).toBe(Object.prototype);
+      });
+  },
+  NodeTest
+);

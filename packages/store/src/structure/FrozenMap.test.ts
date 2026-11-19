@@ -352,3 +352,138 @@ scenario(
   },
   NodeTest
 );
+
+/** Visits all keys by `forEach()`, the callback can modify the map while iterating. */
+function forEachKey<K, V>(map: ReadonlyMap<K, V>, callbackfn: (key: K) => void): K[] {
+  const keys: K[] = [];
+
+  map.forEach((_, key) => {
+    keys.push(key);
+    callbackfn(key);
+  });
+
+  return keys;
+}
+
+scenario(
+  'ReadWriteMap live iteration',
+  bdd => {
+    bdd
+      .given('a writable overlay of [a, b, c] and a native Map of the same', () => ({
+        map: new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]),
+        overlay: new FrozenMap([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]).mutate()
+      }))
+      .when('a not-yet-visited key is deleted during forEach()', ({ map, overlay }) => ({
+        expected: forEachKey(map, key => key === 'a' && map.delete('c')),
+        actual: forEachKey(overlay, key => key === 'a' && overlay.delete('c'))
+      }))
+      .then('should not visit the deleted key, as Map does', (_, { actual, expected }) => {
+        expect(expected).toEqual(['a', 'b']);
+        expect(actual).toEqual(expected);
+      });
+
+    bdd
+      .given('a writable overlay of [a, b, c] and a native Map of the same', () => ({
+        map: new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]),
+        overlay: new FrozenMap([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]).mutate()
+      }))
+      .when('a key is added during forEach()', ({ map, overlay }) => ({
+        expected: forEachKey(map, key => key === 'a' && map.set('d', 4)),
+        actual: forEachKey(overlay, key => key === 'a' && overlay.set('d', 4))
+      }))
+      .then('should visit the added key, as Map does', (_, { actual, expected }) => {
+        expect(expected).toEqual(['a', 'b', 'c', 'd']);
+        expect(actual).toEqual(expected);
+      });
+
+    bdd
+      .given('a writable overlay of [a, b, c]', () =>
+        new FrozenMap([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]).mutate()
+      )
+      .when('a not-yet-visited key is deleted and a key is added while iterating keys()', overlay => {
+        const iterator = overlay.keys();
+        const keys = [iterator.next().value];
+
+        overlay.delete('b');
+        overlay.set('d', 4);
+
+        for (let result = iterator.next(); !result.done; result = iterator.next()) {
+          keys.push(result.value);
+        }
+
+        return keys;
+      })
+      .then('should observe the changes, as Map does', (_, keys) => expect(keys).toEqual(['a', 'c', 'd']));
+
+    bdd
+      .given('a writable overlay of [a, b, c]', () =>
+        new FrozenMap([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]).mutate()
+      )
+      .when('a not-yet-visited value is changed while iterating entries()', overlay => {
+        const iterator = overlay.entries();
+        const entries = [iterator.next().value];
+
+        overlay.set('c', 30);
+
+        for (let result = iterator.next(); !result.done; result = iterator.next()) {
+          entries.push(result.value);
+        }
+
+        return entries;
+      })
+      .then('should observe the new value, as Map does', (_, entries) =>
+        expect(entries).toEqual([
+          ['a', 1],
+          ['b', 2],
+          ['c', 30]
+        ])
+      );
+
+    bdd
+      .given('a writable overlay of [a, b, c]', () =>
+        new FrozenMap([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]).mutate()
+      )
+      .when('a not-yet-visited key is deleted while iterating values()', overlay => {
+        const iterator = overlay.values();
+        const values = [iterator.next().value];
+
+        overlay.delete('c');
+
+        for (let result = iterator.next(); !result.done; result = iterator.next()) {
+          values.push(result.value);
+        }
+
+        return values;
+      })
+      .then('should not visit the deleted value, as Map does', (_, values) => expect(values).toEqual([1, 2]));
+  },
+  NodeTest
+);

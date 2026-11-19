@@ -2697,3 +2697,51 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'getSortedParts with sub-millisecond dateCreated',
+  bdd => {
+    bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with dateCreated within the same millisecond are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0009000Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
+        })
+      )
+      .then('should sort by dateCreated, not by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a'])
+      );
+
+    bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with nanosecond precision dateCreated are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.000000002Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.000000001Z');
+        })
+      )
+      .then('should sort by dateCreated, not by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a'])
+      );
+
+    bdd
+      .given('a store with 2 children within the same millisecond', () => {
+        const { controller, store } = createStoreWithConversations();
+
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0005000Z');
+        });
+
+        return { controller, store };
+      })
+      .when('dateCreated of a child is changed within the same millisecond', ({ controller }) =>
+        controller.edit(transaction =>
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0009000Z')
+        )
+      )
+      .then('should re-sort', ({ store }) => expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a']));
+  },
+  NodeTest
+);

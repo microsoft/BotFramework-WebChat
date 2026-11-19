@@ -213,3 +213,35 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'deepFreeze with null-prototype object',
+  bdd => {
+    bdd
+      .given('a frozen null-prototype object and a validated plain object', () => ({
+        original: Object.freeze(Object.assign(Object.create(null) as Record<string, unknown>, { one: 1 })),
+        value: { one: 1 }
+      }))
+      .when('deepFreeze() is called', ({ original, value }) => deepFreeze(original, value))
+      .then('should not reuse the null-prototype object', ({ original }, result) => expect(result).not.toBe(original))
+      .and('should return a plain object', (_, result) => expect(Object.getPrototypeOf(result)).toBe(Object.prototype))
+      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+
+    bdd
+      .given('a frozen nested null-prototype object and a validated plain object', () => ({
+        original: Object.freeze({
+          items: Object.freeze([
+            Object.freeze(Object.assign(Object.create(null) as Record<string, unknown>, { two: 2 }))
+          ])
+        }),
+        value: { items: [{ two: 2 }] }
+      }))
+      .when('deepFreeze() is called', ({ original, value }) => deepFreeze(original, value))
+      .then('should return plain objects as JSON.parse(JSON.stringify()) does', (_, result) => {
+        expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+        expect(Object.getPrototypeOf(result.items[0])).toBe(Object.prototype);
+        expect(`${result.items[0]}`).toBe('[object Object]');
+      });
+  },
+  NodeTest
+);

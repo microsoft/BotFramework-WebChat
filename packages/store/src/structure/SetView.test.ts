@@ -73,3 +73,80 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'SetView with invalid set-like size',
+  bdd => {
+    for (const name of SET_METHOD_NAMES) {
+      bdd
+        .given('a FrozenSet and a set-like object with negative size', () => ({
+          other: { has: () => false, keys: () => [].values(), size: -1 },
+          set: new FrozenSet([1])
+        }))
+        .when(`${name}() is called`, ({ other, set }) => {
+          try {
+            // `name` is from a constant list of Set method names.
+            // eslint-disable-next-line security/detect-object-injection
+            return set[name](other);
+          } catch (error) {
+            return error;
+          }
+        })
+        .then('should throw RangeError, as native Set does', (_, result) => expect(result).toBeInstanceOf(RangeError));
+    }
+
+    bdd
+      .given('a FrozenSet and a set-like object with size of -0.5', () => ({
+        other: { has: () => false, keys: () => [].values(), size: -0.5 },
+        set: new FrozenSet([1])
+      }))
+      .when('union() is called', ({ other, set }) => set.union(other))
+      .then('should not throw as ToIntegerOrInfinity(-0.5) is 0', (_, result) =>
+        expect(Array.from(result)).toEqual([1])
+      );
+  },
+  NodeTest
+);
+
+/** Gets IDs of node references, including duplicates. */
+function toIds(set: Iterable<{ readonly '@id': string }>): string[] {
+  return Array.from(set, ({ '@id': id }) => id);
+}
+
+scenario(
+  'FrozenNodeSet set methods with other set of node references',
+  bdd => {
+    bdd
+      .given('a FrozenNodeSet of _:a and a Set of 2 different node references to _:b', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:b' }, { '@id': '_:b' }])
+      }))
+      .when('union() is called', ({ nodeSet, other }) => nodeSet.union(other))
+      .then('should not duplicate _:b', (_, result) => expect(toIds(result)).toEqual(['_:a', '_:b']));
+
+    bdd
+      .given('a FrozenNodeSet of _:a and a Set of 2 different node references to _:b', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:b' }, { '@id': '_:b' }])
+      }))
+      .when('symmetricDifference() is called', ({ nodeSet, other }) => nodeSet.symmetricDifference(other))
+      .then('should not duplicate _:b', (_, result) => expect(toIds(result)).toEqual(['_:a', '_:b']));
+
+    bdd
+      .given('a FrozenNodeSet of _:a, _:b, _:c and a Set of 2 different node references to _:a', () => ({
+        nodeSet: new FrozenNodeSet(['_:a', '_:b', '_:c']),
+        other: new Set([{ '@id': '_:a' }, { '@id': '_:a' }])
+      }))
+      .when('intersection() is called', ({ nodeSet, other }) => nodeSet.intersection(other))
+      .then('should not duplicate _:a', (_, result) => expect(toIds(result)).toEqual(['_:a']));
+
+    bdd
+      .given('a FrozenNodeSet of _:a and a Set of 2 different node references to _:a', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:a' }, { '@id': '_:a' }])
+      }))
+      .when('isSupersetOf() is called', ({ nodeSet, other }) => nodeSet.isSupersetOf(other))
+      .then('should be true', (_, result) => expect(result).toBe(true));
+  },
+  NodeTest
+);

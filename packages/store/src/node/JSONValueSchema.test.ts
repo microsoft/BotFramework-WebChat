@@ -1,6 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
+import { runInNewContext } from 'node:vm';
 import { parse } from 'valibot';
 import { jsonValueSchema } from './JSONValue.ts';
 
@@ -294,6 +295,69 @@ scenario(
       .given('a JSON array with value of undefined', () => [1, undefined, 3])
       .when('stringified then parsed', target => JSON.parse(JSON.stringify(target)))
       .then('should transform undefined into null', (_, result) => expect(result).toEqual([1, null, 3]));
+  },
+  NodeTest
+);
+
+scenario(
+  'jsonValueSchema with boxed primitives',
+  bdd => {
+    bdd
+      .given('a boxed Number from another realm', (): unknown => runInNewContext('new Number(42)'))
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should unbox as JSON.stringify() does', (target, result) => {
+        expect(result).toBe(42);
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
+      });
+
+    bdd
+      .given('a boxed String from another realm', (): unknown => runInNewContext('new String("Hello")'))
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should unbox as JSON.stringify() does', (target, result) => {
+        expect(result).toBe('Hello');
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
+      });
+
+    bdd
+      .given('a boxed Boolean from another realm', (): unknown => runInNewContext('new Boolean(false)'))
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should unbox as JSON.stringify() does', (target, result) => {
+        expect(result).toBe(false);
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
+      });
+
+    bdd
+      .given('a boxed BigInt from another realm', (): unknown => runInNewContext('Object(1n)'))
+      .when('JSON.stringify() is called', target => {
+        try {
+          return JSON.stringify(target);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('JSON.stringify() should throw', (_, result) => expect(result).toBeInstanceOf(TypeError))
+      .and('parse() should throw as JSON.stringify() does', target =>
+        expect(() => parse(jsonValueSchema, target)).toThrow()
+      );
+
+    bdd
+      .given('an object with Number.prototype but without [[NumberData]]', (): unknown =>
+        Object.create(Number.prototype)
+      )
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should become an empty object as JSON.stringify() does', (target, result) => {
+        expect(result).toEqual({});
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
+      });
+
+    bdd
+      .given('an object with String.prototype but without [[StringData]]', (): unknown =>
+        Object.create(String.prototype)
+      )
+      .when('parsed', target => parse(jsonValueSchema, target))
+      .then('should become an empty object as JSON.stringify() does', (target, result) =>
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)))
+      );
   },
   NodeTest
 );
