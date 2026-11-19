@@ -6,27 +6,20 @@ type Changes<K, V> = Map<K, V | typeof DELETED>;
 const EMPTY_CHANGES: Changes<never, never> = new Map<never, never>();
 const EMPTY_MAP: Map<never, never> = new Map<never, never>();
 const EMPTY_MOVED_KEYS: Set<never> = new Set<never>();
-const EMPTY_POSITIONS: readonly never[] = Object.freeze([]);
 
-const ORDERED: VersionedStorageInit = Object.freeze({ ordered: true });
-const UNORDERED: VersionedStorageInit = Object.freeze({ ordered: false });
-
-/** Compacts the underlying `Map` of the head when there are more tombstones than this and more than live entries. */
+/** Moves the head to a new `Map` when there are more tombstones than this and more than live entries. */
 const MIN_NUM_TOMBSTONES_TO_COMPACT = 32;
 
 /**
- * A version which owns an underlying `Map`. Keys deleted from the head are kept as tombstones (`DELETED`) in place, so
- * older versions can reconstruct their iteration order without searching for deleted keys.
+ * A version which owns an underlying `Map`. Deleted keys are kept as tombstones (`DELETED`) in place. Keys are never
+ * reordered in a `Map` once it is shared, so every version sharing it has the same order.
  */
 type OwnerState<K, V> = {
   readonly changes?: undefined;
   readonly isHead: boolean;
   readonly map: Map<K, V | typeof DELETED>;
   readonly next?: undefined;
-  readonly numPhysicalKeys?: undefined;
   readonly numTombstones: number;
-  readonly orderNext?: undefined;
-  readonly positions?: undefined;
 
   /** Content without tombstones, only kept for versions other than the head as they never change. */
   readonly view?: ReadonlyMap<K, V> | undefined;
@@ -38,58 +31,15 @@ type OlderState<K, V> = {
   readonly isHead: false;
   readonly map?: undefined;
   readonly next: VersionedStorage<K, V>;
-
-  /** Number of keys in the underlying `Map` of this version, including tombstones. */
-  readonly numPhysicalKeys: number;
   readonly numTombstones?: undefined;
 
-  /** The version committed on top of this version, unlike `next`, it is never compressed. */
-  readonly orderNext: VersionedStorage<K, V>;
-
-  /**
-   * Keys moved to the end by the commit on top of this version, with their positions in the underlying `Map` of this
-   * version, sorted by position.
-   */
-  readonly positions: readonly (readonly [number, K])[];
-  readonly view?: undefined;
+  /** Content of this version, kept after the first iteration as it never changes. */
+  readonly view?: ReadonlyMap<K, V> | undefined;
 };
 
 type State<K, V> = OlderState<K, V> | OwnerState<K, V>;
 
-type VersionedStorageInit = {
-  /**
-   * Keeps the iteration order of older versions, defaults to `true`.
-   *
-   * When `false`, deleted keys are removed from the underlying `Map` instead of kept as tombstones, and moving keys
-   * skips recording their positions. Older versions still have the same content, but their iteration order is
-   * unspecified.
-   */
-  readonly ordered?: boolean | undefined;
-};
-
-/**
- * Applies changes to the map in place, moved keys are deleted and set again so they are moved to the end.
- */
-function applyChanges<K, V>(
-  map: Map<K, V>,
-  changes: ReadonlyMap<K, V | typeof DELETED>,
-  movedKeys: ReadonlySet<K>
-): void {
-  for (const [key, value] of changes) {
-    if (value === DELETED) {
-      map.delete(key);
-    } else {
-      movedKeys.has(key) && map.delete(key);
-      map.set(key, value);
-    }
-  }
-}
-
-/**
- * Returns a new `Map` with changes applied on top of the base, tombstones in the base are skipped.
- *
- * Keys changed in place keep their position, new keys and moved keys are appended.
- */
+/** Returns a new `Map` of the base with changes applied, tombstones are removed and moved keys are moved to the end. */
 function mergeChanges<K, V>(
   base: ReadonlyMap<K, V | typeof DELETED>,
   changes: ReadonlyMap<K, V | typeof DELETED>,
@@ -98,63 +48,15 @@ function mergeChanges<K, V>(
   const map = new Map<K, V>();
 
   for (const [key, value] of base) {
-    const change = changes.has(key) ? changes.get(key) : value;
-
-    change === DELETED || (changes.has(key) && movedKeys.has(key)) || map.set(key, change satisfies V | undefined as V);
+    value === DELETED || map.set(key, value);
   }
 
-  for (const [key, change] of changes) {
-    change === DELETED || (!movedKeys.has(key) && base.has(key) && base.get(key) !== DELETED) || map.set(key, change);
+  for (const [key, value] of changes) {
+    (value === DELETED || movedKeys.has(key)) && map.delete(key);
+    value === DELETED || map.set(key, value);
   }
 
   return map;
-}
-
-/**
- * Returns keys which will be moved to the end of the underlying `Map`: keys set again after deleted in the same overlay,
- * or deleted in an earlier commit (tombstones).
- */
-function getPhysicallyMovedKeys<K, V>(
-  map: ReadonlyMap<K, V | typeof DELETED>,
-  changes: ReadonlyMap<K, V | typeof DELETED>,
-  movedKeys: ReadonlySet<K>
-): ReadonlySet<K> {
-  let physicallyMovedKeys: Set<K> | undefined;
-
-  for (const [key, value] of changes) {
-    value === DELETED ||
-      ((movedKeys.has(key) || (map.has(key) && map.get(key) === DELETED)) &&
-        (physicallyMovedKeys ??= new Set()).add(key));
-  }
-
-  return physicallyMovedKeys ?? EMPTY_MOVED_KEYS;
-}
-
-/** Finds positions of the keys in the map, O(size). Returns them sorted by position. */
-function findPositions<K>(map: ReadonlyMap<K, unknown>, keys: ReadonlySet<K>): readonly (readonly [number, K])[] {
-  if (!keys.size) {
-    return EMPTY_POSITIONS;
-  }
-
-  const positions: (readonly [number, K])[] = [];
-  let position = 0;
-
-  for (const key of map.keys()) {
-    keys.has(key) && positions.push(Object.freeze([position, key] as const));
-
-    if (positions.length === keys.size) {
-      break;
-    }
-
-    position++;
-  }
-
-  return Object.freeze(positions);
-}
-
-/** Returns a new `Map` without tombstones. */
-function withoutTombstones<K, V>(map: ReadonlyMap<K, V | typeof DELETED>): Map<K, V> {
-  return mergeChanges(map, EMPTY_CHANGES, EMPTY_MOVED_KEYS);
 }
 
 // "Friend" access for `Overlay` to commit into the base version, it is not exposed outside of this module.
@@ -163,10 +65,6 @@ let commitChanges: <K, V>(
   changes: Changes<K, V>,
   movedKeys: ReadonlySet<K>
 ) => VersionedStorage<K, V>;
-
-// Size and state handed to the next `VersionedStorage` constructor, only set by `#fromState()` during construction.
-let nextSize: number = 0;
-let nextState: OwnerState<unknown, unknown> | undefined;
 
 /**
  * A persistent (immutable) key-value storage. A new version can be committed in O(number of changes) without copying.
@@ -177,9 +75,10 @@ let nextState: OwnerState<unknown, unknown> | undefined;
  *
  * - Reading the head is O(1)
  * - Reading an older version walks the undo logs towards the head, the walk is compressed for subsequent reads
- * - Committing on top of an older version (branching) copies the whole storage, O(size)
- * - Committing on top of the head is O(number of changes), plus O(size) when moving keys to the end, i.e. setting a key
- *   which is deleted in the same overlay or in an earlier commit, unless `ordered` is `false`
+ * - Iterating an older version is O(size of the underlying `Map`) once, the content is kept for subsequent iterations
+ * - Committing on top of the head is O(number of changes)
+ * - Copying, O(size): committing on top of an older version (branching), moving a key to the end (setting a key which
+ *   is deleted earlier), or when there are more tombstones than live entries (amortized to O(1) per deletion)
  *
  * Why undo log: a read-only version must never change after it is handed out, e.g. `Store.getSnapshot()` returns it
  * directly, and callers (such as `useSyncExternalStore()` or diffing previous/next snapshots) could still read it after
@@ -190,60 +89,25 @@ let nextState: OwnerState<unknown, unknown> | undefined;
  *    walks the chain and gets slower on every commit, needs periodic flattening
  * 3. Undo log (this): commit writes into the shared `Map`, the older version keeps the overwritten values
  *
- * The undo log keeps the hot path cheap (reading the head in O(1) and committing in O(number of changes)), and moves the
- * cost to the rare path (reading or branching from an older version).
- *
  * Iteration order follows `Map`: keys changed in place keep their position, new keys are appended, and deleted keys
- * which are set again are moved to the end. Older versions keep their order after later commits, iterators are not
+ * which are set again are moved to the end. To keep the order of older versions, a shared `Map` is never reordered:
+ * deleted keys are kept as tombstones in place, and moving a key copies to a new `Map` for the head. Iterators are not
  * affected by later commits.
- *
- * To keep the order of older versions, deleted keys are kept as tombstones in the underlying `Map` of the head. When
- * there are more tombstones than live entries, the head moves to a new `Map` without tombstones, O(size) amortized to
- * O(1) per deletion.
  *
  * Usage: `storage.mutate()` returns a writable `Overlay`, `overlay.commit()` returns a new read-only version. An overlay
  * cannot be used to create another overlay.
  */
 class VersionedStorage<K, V> {
-  constructor(map: Map<K, V>, init?: VersionedStorageInit | undefined) {
-    const state = nextState;
-
-    nextState = undefined;
-
-    this.#ordered = init?.ordered ?? true;
-
-    if (state) {
-      this.#size = nextSize;
-      this.#state = state satisfies OwnerState<unknown, unknown> as OwnerState<K, V>;
-    } else {
-      this.#size = map.size;
-      this.#state = Object.freeze({
-        isHead: true,
-        map,
-        numTombstones: 0
-      });
-    }
+  constructor(map: Map<K, V>) {
+    this.#size = map.size;
+    this.#state = Object.freeze({ isHead: true, map, numTombstones: 0 });
   }
 
-  readonly #ordered: boolean;
-  readonly #size: number;
+  #size: number;
   #state: State<K, V>;
 
   static {
     commitChanges = (base, changes, movedKeys) => base.#commit(changes, movedKeys);
-  }
-
-  /** Creates a version which owns the underlying `Map` of the state. */
-  #fromState(size: number, state: OwnerState<K, V>): VersionedStorage<K, V> {
-    nextSize = size;
-    nextState = Object.freeze(state);
-
-    try {
-      // The map is ignored when the size and state are handed over.
-      return new VersionedStorage(EMPTY_MAP, this.#ordered ? ORDERED : UNORDERED);
-    } finally {
-      nextState = undefined;
-    }
   }
 
   /**
@@ -256,76 +120,59 @@ class VersionedStorage<K, V> {
 
     if (!changes.size) {
       return this;
-    } else if (!state.isHead) {
-      // This version is not the head (branching), copy it.
-      const nextMap = new Map(this.toMap());
+    } else if (!state.isHead || !this.#canWriteInPlace(state, changes, movedKeys)) {
+      // Copy, this version keeps its underlying `Map` (if any) untouched.
+      state.isHead && (this.#state = Object.freeze({ ...state, isHead: false }));
 
-      applyChanges(nextMap, changes, movedKeys);
-
-      return new VersionedStorage(nextMap, this.#ordered ? ORDERED : UNORDERED);
+      return new VersionedStorage(mergeChanges(state.map ?? this.toMap(), changes, movedKeys));
     }
 
     const { map } = state;
-    const numPhysicalKeys = map.size;
-    const physicallyMovedKeys = getPhysicallyMovedKeys(map, changes, movedKeys);
-    // Before modifying the map, find positions of keys which will be moved, so `toMap()` of this version can put them
-    // back to their original positions.
-    const positions = this.#ordered ? findPositions(map, physicallyMovedKeys) : EMPTY_POSITIONS;
     let { numTombstones } = state;
 
     // Swap in place: apply each change to the map, and replace it with the previous value to become the undo log.
-    // Overwriting an existing key while iterating does not reorder or revisit entries.
+    // Keys are only overwritten in place, the order of the map is not changed.
     for (const [key, value] of changes) {
-      const previous = map.has(key)
-        ? (map.get(key) satisfies V | typeof DELETED | undefined as V | typeof DELETED)
-        : DELETED;
-
-      if (value !== DELETED) {
-        if (physicallyMovedKeys.has(key)) {
-          previous === DELETED && numTombstones--;
-          map.delete(key);
-        }
-
-        map.set(key, value);
-      } else if (this.#ordered) {
-        // Keeps the deleted key as a tombstone, so older versions can reconstruct their order.
-        map.set(key, DELETED);
-        numTombstones++;
-      } else {
-        map.delete(key);
-      }
-
-      changes.set(key, previous);
+      changes.set(key, map.has(key) ? (map.get(key) satisfies V | typeof DELETED | undefined as V) : DELETED);
+      map.set(key, value);
+      value === DELETED && numTombstones++;
     }
 
-    const size = map.size - numTombstones;
-    // Too many tombstones, the head moves to a new `Map`. The current `Map` is kept by a version with the same content as
-    // the head, so older versions can still reconstruct their order from it.
-    const shouldCompact = numTombstones > MIN_NUM_TOMBSTONES_TO_COMPACT && numTombstones > size;
-    const next = this.#fromState(size, { isHead: !shouldCompact, map, numTombstones });
-    const head = shouldCompact
-      ? this.#fromState(size, { isHead: true, map: withoutTombstones(map), numTombstones: 0 })
-      : next;
+    const next = new VersionedStorage<K, V>(EMPTY_MAP);
 
-    this.#state = Object.freeze({
-      changes,
-      isHead: false,
-      next,
-      numPhysicalKeys,
-      orderNext: next,
-      positions
-    });
+    next.#size = map.size - numTombstones;
+    next.#state = Object.freeze({ isHead: true, map, numTombstones });
+    this.#state = Object.freeze({ changes, isHead: false, next });
 
-    return head;
+    return next;
+  }
+
+  /** Returns `true` if changes can be written into the underlying `Map` of the head without reordering it. */
+  #canWriteInPlace(state: OwnerState<K, V>, changes: Changes<K, V>, movedKeys: ReadonlySet<K>): boolean {
+    const { map, numTombstones } = state;
+
+    if (movedKeys.size || (numTombstones > MIN_NUM_TOMBSTONES_TO_COMPACT && numTombstones > this.#size)) {
+      return false;
+    } else if (!numTombstones) {
+      // No tombstones to set.
+      return true;
+    }
+
+    for (const [key, value] of changes) {
+      // Setting a tombstone moves the key to the end.
+      if (value !== DELETED && map.get(key) === DELETED) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   get size(): number {
     return this.#size;
   }
 
-  /**
-   * Compresses the undo logs of an older version, so it points to a version which owns a `Map` directly.
-   */
+  /** Compresses the undo logs of an older version, so it points to a version which owns a `Map` directly. */
   #compress(state: OlderState<K, V>): OlderState<K, V> {
     if (state.next.#state.map) {
       return state;
@@ -353,6 +200,8 @@ class VersionedStorage<K, V> {
       const value = state.map.get(key);
 
       return value === DELETED ? undefined : value;
+    } else if (state.view) {
+      return state.view.get(key);
     }
 
     const { changes, next } = this.#compress(state);
@@ -371,6 +220,8 @@ class VersionedStorage<K, V> {
 
     if (state.map) {
       return state.map.has(key) && state.map.get(key) !== DELETED;
+    } else if (state.view) {
+      return state.view.has(key);
     }
 
     const { changes, next } = this.#compress(state);
@@ -387,10 +238,8 @@ class VersionedStorage<K, V> {
   #iterate<T>(iterate: (map: ReadonlyMap<K, V>) => MapIterator<T>, project: (key: K, value: V) => T): MapIterator<T> {
     const state = this.#state;
 
-    // Only the head is modified in place, other versions never change. An empty map never changes.
-    return state.isHead && this.#size
-      ? this.#iterateHead(state.map, iterate, project)
-      : iterate(this.#size ? this.toMap() : EMPTY_MAP);
+    // Only the head is modified in place, other versions never change.
+    return state.isHead ? this.#iterateHead(state.map, iterate, project) : iterate(this.toMap());
   }
 
   *#iterateHead<T>(
@@ -398,9 +247,9 @@ class VersionedStorage<K, V> {
     iterate: (map: ReadonlyMap<K, V>) => MapIterator<T>,
     project: (key: K, value: V) => T
   ): Generator<T, undefined, unknown> {
-    const iterator = map.entries();
+    let index = 0;
 
-    for (let index = 0; ; ) {
+    for (const [key, value] of map) {
       if (!this.#state.isHead) {
         // The underlying `Map` was modified by a later commit, continue on the content of this version.
         const rest = iterate(this.toMap());
@@ -413,14 +262,6 @@ class VersionedStorage<K, V> {
 
         return;
       }
-
-      const result = iterator.next();
-
-      if (result.done) {
-        return;
-      }
-
-      const [key, value] = result.value;
 
       // Tombstones are skipped.
       if (value !== DELETED) {
@@ -467,120 +308,39 @@ class VersionedStorage<K, V> {
    * For the head, returns the underlying `Map` in O(1) if there are no tombstones, otherwise, a copy in O(size). The
    * underlying `Map` is modified by later commits, use `entries()`, `keys()`, or `values()` for iteration instead.
    *
-   * For an older version, the content is reconstructed once in O(size × number of commits moving keys) and kept,
-   * subsequent calls are O(1).
+   * For other versions, the content is reconstructed once in O(size of the underlying `Map`) and kept, subsequent calls
+   * are O(1).
    */
   toMap(): ReadonlyMap<K, V> {
     const state = this.#state;
 
+    if (state.view) {
+      return state.view;
+    } else if (state.isHead && !state.numTombstones) {
+      return state.map satisfies ReadonlyMap<K, V | typeof DELETED> as ReadonlyMap<K, V>;
+    } else if (state.isHead) {
+      return mergeChanges(state.map, EMPTY_CHANGES, EMPTY_MOVED_KEYS);
+    }
+
+    let view: Map<K, V>;
+
     if (state.map) {
-      if (!state.numTombstones) {
-        return state.map satisfies ReadonlyMap<K, V | typeof DELETED> as ReadonlyMap<K, V>;
-      } else if (state.isHead) {
-        return withoutTombstones(state.map);
-      }
+      view = mergeChanges(state.map, EMPTY_CHANGES, EMPTY_MOVED_KEYS);
+    } else {
+      // The underlying `Map` is never reordered, the order of this version is the same, without keys absent here.
+      const compressed = this.#compress(state);
 
-      // Older versions never change, keep the content.
-      const view = state.view ?? withoutTombstones(state.map);
+      view = new Map();
 
-      this.#state = Object.freeze({ ...state, view });
-
-      return view;
-    }
-
-    if (!this.#ordered) {
-      const { changes, next } = this.#compress(state);
-      const map = mergeChanges(next.#physicalMap(), changes, EMPTY_MOVED_KEYS);
-
-      this.#materialize(map, 0, map);
-
-      return map;
-    }
-
-    // Walk the order logs towards the nearest version which owns a `Map`.
-    const olderStates: OlderState<K, V>[] = [state];
-    let baseMap: ReadonlyMap<K, V | typeof DELETED>;
-
-    for (let version = state.orderNext; ; ) {
-      const versionState = version.#state;
-
-      if (versionState.map) {
-        baseMap = versionState.map;
-
-        break;
-      }
-
-      olderStates.push(versionState);
-      version = versionState.orderNext;
-    }
-
-    // Walk back towards this version to reconstruct keys of the underlying `Map` of every version: moved keys are put
-    // back to their original positions, keys appended later are removed.
-    let keys: readonly K[] = Array.from(baseMap.keys());
-
-    for (const { numPhysicalKeys, positions } of olderStates.reverse()) {
-      const remainingKeys = keys.slice(0, numPhysicalKeys - positions.length);
-
-      if (positions.length) {
-        const nextKeys: K[] = [];
-        let remainingIndex = 0;
-
-        for (const [position, key] of positions) {
-          while (nextKeys.length < position) {
-            nextKeys.push(remainingKeys[remainingIndex++] satisfies K | undefined as K);
-          }
-
-          nextKeys.push(key);
-        }
-
-        keys = [...nextKeys, ...remainingKeys.slice(remainingIndex)];
-      } else {
-        keys = remainingKeys;
+      for (const key of (compressed.next.#state.map satisfies Map<K, unknown> | undefined as Map<K, unknown>).keys()) {
+        this.has(key) && view.set(key, this.get(key) satisfies V | undefined as V);
       }
     }
 
-    // Keeps the underlying `Map` of this version with tombstones, as order logs of older versions refer to its keys.
-    const physicalMap = new Map<K, V | typeof DELETED>();
-    const view = new Map<K, V>();
-
-    for (const key of keys) {
-      if (this.has(key)) {
-        const value = this.get(key) satisfies V | undefined as V;
-
-        physicalMap.set(key, value);
-        view.set(key, value);
-      } else {
-        physicalMap.set(key, DELETED);
-      }
-    }
-
-    this.#materialize(physicalMap, physicalMap.size - view.size, view);
+    // Keeps the content, older versions never change. The undo logs are kept for older versions referring to this one.
+    this.#state = Object.freeze({ ...this.#state, view });
 
     return view;
-  }
-
-  /** Returns the underlying `Map` of a version which owns it, including tombstones. */
-  #physicalMap(): ReadonlyMap<K, V | typeof DELETED> {
-    const { map } = this.#state;
-
-    if (!map) {
-      throw new Error('This version does not own a map');
-    }
-
-    return map;
-  }
-
-  /**
-   * Keeps the content of this older version, so subsequent reads are O(1) and later versions can be released. Older
-   * versions never change.
-   */
-  #materialize(map: Map<K, V | typeof DELETED>, numTombstones: number, view: ReadonlyMap<K, V>): void {
-    this.#state = Object.freeze({
-      isHead: false,
-      map,
-      numTombstones,
-      view
-    });
   }
 }
 
@@ -683,9 +443,7 @@ class Overlay<K, V> {
    * Returns the content as a new `Map`, O(size).
    */
   toMap(): ReadonlyMap<K, V> {
-    return this.#changes.size
-      ? mergeChanges(this.#base.toMap(), this.#changes, this.#movedKeys)
-      : new Map(this.#base.toMap());
+    return mergeChanges(this.#base.toMap(), this.#changes, this.#movedKeys);
   }
 }
 
@@ -694,4 +452,4 @@ Object.freeze(Overlay);
 Object.freeze(VersionedStorage.prototype);
 Object.freeze(VersionedStorage);
 
-export { VersionedStorage, type Overlay, type VersionedStorageInit };
+export { VersionedStorage, type Overlay };
