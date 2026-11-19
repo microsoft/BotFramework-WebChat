@@ -156,3 +156,97 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'VersionedStorage iteration order',
+  bdd => {
+    bdd
+      .given(
+        'a storage',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2]
+            ])
+          )
+      )
+      .when('a key is deleted and committed', storage => {
+        const overlay = storage.mutate();
+
+        overlay.delete('a');
+
+        return overlay.commit();
+      })
+      .then('the base version should keep its original order', storage =>
+        expect(Array.from(storage.toMap())).toEqual([
+          ['a', 1],
+          ['b', 2]
+        ])
+      );
+
+    bdd
+      .given(
+        'a storage',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2],
+              ['c', 3]
+            ])
+          )
+      )
+      .when('keys are deleted across multiple commits', storage => {
+        const overlay1 = storage.mutate();
+
+        overlay1.delete('a');
+
+        const overlay2 = overlay1.commit().mutate();
+
+        overlay2.delete('b');
+
+        return overlay2.commit();
+      })
+      .then('the base version should keep its original order', storage =>
+        expect(Array.from(storage.toMap())).toEqual([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ])
+      );
+
+    bdd
+      .given(
+        'an overlay',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2]
+            ])
+          )
+      )
+      .when('a base key is deleted then set again in the same overlay', storage => {
+        const overlay = storage.mutate();
+
+        overlay.delete('a');
+        overlay.set('a', 100);
+
+        return overlay;
+      })
+      .then('the overlay should move the key to the end', (_, overlay) =>
+        expect(Array.from(overlay.toMap())).toEqual([
+          ['b', 2],
+          ['a', 100]
+        ])
+      )
+      .and('the committed version should move the key to the end', (_, overlay) =>
+        expect(Array.from(overlay.commit().toMap())).toEqual([
+          ['b', 2],
+          ['a', 100]
+        ])
+      );
+  },
+  NodeTest
+);

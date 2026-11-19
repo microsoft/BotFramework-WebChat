@@ -282,3 +282,55 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'FrozenSet iteration order',
+  bdd => {
+    bdd
+      .given('a readonly set', () => new FrozenSet(['a', 'b']))
+      .when('a value is deleted in a later commit', set => {
+        const nextSet = set.mutate();
+
+        nextSet.delete('a');
+
+        return nextSet.commit();
+      })
+      .then('the original set should keep its order', set => expect(Array.from(set)).toEqual(['a', 'b']));
+
+    bdd
+      .given('a readonly set with an iterator obtained before a later commit', () => {
+        const set = new FrozenSet(['a', 'b']);
+
+        return { set, values: set.values() };
+      })
+      .when('a value is added and another value is deleted in a later commit', ({ set }) => {
+        const nextSet = set.mutate();
+
+        nextSet.delete('b');
+        nextSet.add('c');
+
+        return nextSet.commit();
+      })
+      .then('the iterator should not observe the later commit', ({ values }) =>
+        expect(Array.from(values)).toEqual(['a', 'b'])
+      );
+
+    bdd
+      .given('a readonly set', () => new FrozenSet(['a', 'b']))
+      .when('a value is deleted then added again in the same overlay', set => {
+        const nextSet = set.mutate();
+
+        nextSet.delete('a');
+        nextSet.add('a');
+
+        return nextSet;
+      })
+      .then('the overlay should move the value to the end', (_, nextSet) =>
+        expect(Array.from(nextSet)).toEqual(['b', 'a'])
+      )
+      .and('the committed set should move the value to the end', (_, nextSet) =>
+        expect(Array.from(nextSet.commit())).toEqual(['b', 'a'])
+      );
+  },
+  NodeTest
+);
