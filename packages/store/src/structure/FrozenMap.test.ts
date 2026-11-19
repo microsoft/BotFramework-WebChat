@@ -211,8 +211,8 @@ scenario(
           ])
         );
       })
-      .and('original map should keep the order of entries which are not deleted later', map =>
-        expect(Array.from(map.keys())).toEqual(['b', 'c', 'a'])
+      .and('original map should keep the order of entries, including entries deleted later', map =>
+        expect(Array.from(map.keys())).toEqual(['a', 'b', 'c'])
       )
       .and('overlay should not be modifiable after commit', (_, { readWriteMap }) => {
         expect(() => readWriteMap.set('e', 5)).toThrow('already committed');
@@ -259,6 +259,96 @@ scenario(
         ]);
       })
       .and('original map should not be modified', map => expect(Array.from(map)).toEqual([['a', 1]]));
+  },
+  NodeTest
+);
+
+scenario(
+  'FrozenMap iteration order',
+  bdd => {
+    bdd
+      .given(
+        'a readonly map',
+        () =>
+          new FrozenMap([
+            ['a', 1],
+            ['b', 2]
+          ])
+      )
+      .when('a key is deleted in a later commit', map => {
+        const nextMap = map.mutate();
+
+        nextMap.delete('a');
+
+        return nextMap.commit();
+      })
+      .then('the original map should keep its order', map => {
+        expect(Array.from(map.keys())).toEqual(['a', 'b']);
+        expect(Array.from(map)).toEqual([
+          ['a', 1],
+          ['b', 2]
+        ]);
+      });
+
+    bdd
+      .given('a readonly map with an iterator obtained before a later commit', () => {
+        const map = new FrozenMap([
+          ['a', 1],
+          ['b', 2]
+        ]);
+
+        return { entries: map.entries(), keys: map.keys(), map, values: map.values() };
+      })
+      .when('a key is added and another key is deleted in a later commit', ({ map }) => {
+        const nextMap = map.mutate();
+
+        nextMap.delete('b');
+        nextMap.set('c', 3);
+
+        return nextMap.commit();
+      })
+      .then('keys() iterator should not observe the later commit', ({ keys }) =>
+        expect(Array.from(keys)).toEqual(['a', 'b'])
+      )
+      .and('values() iterator should not observe the later commit', ({ values }) =>
+        expect(Array.from(values)).toEqual([1, 2])
+      )
+      .and('entries() iterator should not observe the later commit', ({ entries }) =>
+        expect(Array.from(entries)).toEqual([
+          ['a', 1],
+          ['b', 2]
+        ])
+      );
+
+    bdd
+      .given(
+        'a readonly map',
+        () =>
+          new FrozenMap([
+            ['a', 1],
+            ['b', 2]
+          ])
+      )
+      .when('a key is deleted then set again in the same overlay', map => {
+        const nextMap = map.mutate();
+
+        nextMap.delete('a');
+        nextMap.set('a', 100);
+
+        return nextMap;
+      })
+      .then('the overlay should move the key to the end', (_, nextMap) =>
+        expect(Array.from(nextMap)).toEqual([
+          ['b', 2],
+          ['a', 100]
+        ])
+      )
+      .and('the committed map should move the key to the end', (_, nextMap) =>
+        expect(Array.from(nextMap.commit())).toEqual([
+          ['b', 2],
+          ['a', 100]
+        ])
+      );
   },
   NodeTest
 );
