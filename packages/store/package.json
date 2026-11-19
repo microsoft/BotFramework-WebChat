@@ -42,11 +42,11 @@
     "build:run": "tsup",
     "test": "node --test"
   },
+  "dependencies": {
+    "valibot": "1.2.0"
+  },
   "devDependencies": {
     "@types/node": "^25.9.1",
     "type-fest": "^5.6.0"
-  },
-  "dependencies": {
-    "valibot": "1.2.0"
   }
 }
