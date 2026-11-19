@@ -70,8 +70,10 @@ abstract class SetView<T> implements ReadonlySet<T> {
     return result;
   }
 
-  entries(): SetIterator<[T, T]> {
-    return new Set(this.keys()).entries();
+  *entries(): SetIterator<[T, T]> {
+    for (const value of this.keys()) {
+      yield [value, value];
+    }
   }
 
   forEach(callbackfn: (value: T, value2: T, set: ReadonlySet<T>) => void, thisArg?: unknown): void {
