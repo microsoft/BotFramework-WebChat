@@ -14,7 +14,6 @@ interface ReadWriteSet<T> extends ReadonlySet<T> {
    * This is O(number of changes) if the underlying set is the latest version (i.e. no other overlay on top of the same
    * set has been committed), otherwise, O(size) as the set is copied.
    */
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   commit(): FrozenSet<T>;
   delete(value: T): boolean;
 }
