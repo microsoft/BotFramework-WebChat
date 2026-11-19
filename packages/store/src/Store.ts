@@ -78,7 +78,7 @@ interface StoreTransaction {
 
 const EMPTY_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
 
-const thenableSchema = looseObject({ then: function_() });
+const isThenable = is.bind(null, looseObject({ then: function_() }));
 
 const getSortedPartsInitSchema = pipe(
   object({
@@ -474,7 +474,7 @@ class Store {
       // The transactor must be synchronous. If a then-able (e.g. Promise) is returned, the synchronous part of the
       // Promise could succeed while the asynchronous part would fail, the caller will not be very aware of what's going
       // on. Throwing here discards all changes made in the synchronous part.
-      if (is(thenableSchema, result)) {
+      if (isThenable(result)) {
         throw new TypeError('transactor must not return a then-able (e.g. Promise), it must be synchronous');
       }
     } finally {
