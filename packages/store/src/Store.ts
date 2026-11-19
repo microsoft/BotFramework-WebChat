@@ -502,7 +502,13 @@ class Store {
 
   #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
     for (const listener of this.#listeners) {
-      listener(affectedNodeIds);
+      try {
+        listener(affectedNodeIds);
+      } catch (error) {
+        queueMicrotask(() => {
+          throw error;
+        });
+      }
     }
   }
 
