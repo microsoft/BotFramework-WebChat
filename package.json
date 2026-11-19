@@ -184,9 +184,7 @@
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
-    "test": "npm run test:jest && npm run test:node",
-    "test:jest": "jest",
-    "test:node": "npm run test:node --if-present --workspaces",
+    "test": "jest",
     "vg": "vg"
   },
   "pinDependencies": {
