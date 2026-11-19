@@ -37,7 +37,7 @@ function unbox(value: object): unknown {
  * Calls `toJSON()` if any, then unwraps boxed primitives, as `JSON.stringify()` does.
  */
 function preprocess(key: string, value: unknown): unknown {
-  if ((value && typeof value === 'object') || typeof value === 'bigint') {
+  if ((value && typeof value === 'object') || typeof value === 'bigint' || typeof value === 'function') {
     const { toJSON } = value as { readonly toJSON?: unknown };
 
     typeof toJSON === 'function' && (value = toJSON.call(value, key));
