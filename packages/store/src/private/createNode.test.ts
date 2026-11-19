@@ -408,32 +408,76 @@ function defineReadOnceGetter<T extends object>(target: T, key: string, value: u
   return counter;
 }
 
+/** Calls the function and returns its result, or the error if it throws. */
+function tryCall<T>(fn: () => T): { readonly error: unknown } | { readonly value: T } {
+  try {
+    return { value: fn() };
+  } catch (error) {
+    return { error };
+  }
+}
+
+/** Runs the function on a fresh value, returns the result (or error) and how many times the getter was read. */
+function runWithFreshValue(
+  createValue: () => { readonly counter: { readonly numRead: number }; readonly value: object },
+  fn: (value: object) => unknown
+) {
+  const { counter, value } = createValue();
+  const result = tryCall(() => fn(value));
+
+  return { numRead: counter.numRead, result };
+}
+
+/**
+ * Runs `JSON.parse(JSON.stringify())` and `createNode()` side-by-side on fresh values, so their results and how many
+ * times the getter was read can be compared.
+ */
+function runBoth(createValue: () => { readonly counter: { readonly numRead: number }; readonly value: object }) {
+  return {
+    actual: runWithFreshValue(createValue, createNode),
+    expected: runWithFreshValue(createValue, value => JSON.parse(JSON.stringify(value)))
+  };
+}
+
 scenario(
   'createNode with accessor properties',
   bdd => {
     bdd
-      .given('a node with a "text" getter which only returns a valid value once', () => {
+      .given('a node with a "text" getter which only returns a valid value once', () => () => {
         const value = { '@id': '_:m-1', '@type': new Set(['Message']) };
 
         return { counter: defineReadOnceGetter(value, 'text', ['Hello, World!']), value };
       })
-      .when('createNode() is called', ({ value }) => createNode(value))
-      .then('should create the node with the validated value', (_, node) =>
-        expect(getProperty(node, 'text')).toEqual(['Hello, World!'])
+      .when('processed by both JSON.parse(JSON.stringify()) and createNode()', createValue => runBoth(createValue))
+      .then('JSON.parse(JSON.stringify()) should read the getter once and succeed', (_, { expected }) =>
+        expect(expected).toEqual({
+          numRead: 1,
+          result: { value: expect.objectContaining({ text: ['Hello, World!'] }) }
+        })
       )
-      .and('should read the getter once', ({ counter }) => expect(counter.numRead).toBe(1));
+      .and('createNode() should read the getter once as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
+        expect(actual.numRead).toBe(expected.numRead)
+      )
+      .and('createNode() should succeed as JSON.parse(JSON.stringify()) does', (_, { actual }) =>
+        expect(actual.result).toEqual({ value: expect.objectContaining({ text: ['Hello, World!'] }) })
+      );
 
     bdd
-      .given('a node with a "@type" getter which only returns a valid value once', () => {
+      .given('a node with a "@type" getter which only returns a valid value once', () => () => {
         const value = { '@id': '_:m-1' };
 
         return { counter: defineReadOnceGetter(value, '@type', new Set(['Message'])), value };
       })
-      .when('createNode() is called', ({ value }) => createNode(value))
-      .then('should create the node with the validated value', (_, node) =>
-        expect(node['@type']).toEqual(new Set(['Message']))
+      .when('processed by both JSON.parse(JSON.stringify()) and createNode()', createValue => runBoth(createValue))
+      .then('JSON.parse(JSON.stringify()) should read the getter once and succeed', (_, { expected }) =>
+        expect(expected).toEqual({ numRead: 1, result: { value: expect.objectContaining({ '@id': '_:m-1' }) } })
       )
-      .and('should read the getter once', ({ counter }) => expect(counter.numRead).toBe(1));
+      .and('createNode() should read the getter once as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
+        expect(actual.numRead).toBe(expected.numRead)
+      )
+      .and('createNode() should succeed as JSON.parse(JSON.stringify()) does', (_, { actual }) =>
+        expect(actual.result).toEqual({ value: expect.objectContaining({ '@type': new Set(['Message']) }) })
+      );
   },
   NodeTest
 );
@@ -452,12 +496,22 @@ scenario(
           })
         ])
       }))
-      .when('createNode() is called', value => createNode(value))
-      .then('@value should be a plain object as JSON.parse(JSON.stringify()) does', (_, node) => {
-        const [literal] = getProperty(node, 'text') as readonly { readonly '@value': object }[];
+      .when('@value is processed by both JSON.parse(JSON.stringify()) and createNode()', value => {
+        const [literal] = getProperty(createNode(value), 'text') as readonly { readonly '@value': object }[];
+        const [originalLiteral] = value.text;
 
-        expect(Object.getPrototypeOf(literal?.['@value'])).toBe(Object.prototype);
-      });
+        return {
+          actual: Object.getPrototypeOf(literal?.['@value']),
+          expected: Object.getPrototypeOf(JSON.parse(JSON.stringify(originalLiteral?.['@value'])))
+        };
+      })
+      .then('JSON.parse(JSON.stringify()) should return a plain object', (_, { expected }) =>
+        expect(expected).toBe(Object.prototype)
+      )
+      .and(
+        'createNode() should return a plain object as JSON.parse(JSON.stringify()) does',
+        (_, { actual, expected }) => expect(actual).toBe(expected)
+      );
   },
   NodeTest
 );

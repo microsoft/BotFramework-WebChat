@@ -299,64 +299,90 @@ scenario(
   NodeTest
 );
 
+/** Calls the function and returns its result, or the error if it throws. */
+function tryCall(fn: () => unknown): { readonly error: unknown } | { readonly value: unknown } {
+  try {
+    return { value: fn() };
+  } catch (error) {
+    return { error };
+  }
+}
+
+/** Runs `JSON.parse(JSON.stringify())` and `parse(jsonValueSchema)` side-by-side, so their results can be compared. */
+function parseBoth(target: unknown) {
+  return {
+    actual: tryCall(() => parse(jsonValueSchema, target)),
+    expected: tryCall(() => JSON.parse(JSON.stringify(target)))
+  };
+}
+
 scenario(
   'jsonValueSchema with boxed primitives',
   bdd => {
     bdd
       .given('a boxed Number from another realm', (): unknown => runInNewContext('new Number(42)'))
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should unbox as JSON.stringify() does', (target, result) => {
-        expect(result).toBe(42);
-        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
-      });
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should unbox it', (_, { expected }) =>
+        expect(expected).toEqual({ value: 42 })
+      )
+      .and('jsonValueSchema should unbox it as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
+        expect(actual).toEqual(expected)
+      );
 
     bdd
       .given('a boxed String from another realm', (): unknown => runInNewContext('new String("Hello")'))
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should unbox as JSON.stringify() does', (target, result) => {
-        expect(result).toBe('Hello');
-        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
-      });
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should unbox it', (_, { expected }) =>
+        expect(expected).toEqual({ value: 'Hello' })
+      )
+      .and('jsonValueSchema should unbox it as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
+        expect(actual).toEqual(expected)
+      );
 
     bdd
       .given('a boxed Boolean from another realm', (): unknown => runInNewContext('new Boolean(false)'))
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should unbox as JSON.stringify() does', (target, result) => {
-        expect(result).toBe(false);
-        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
-      });
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should unbox it', (_, { expected }) =>
+        expect(expected).toEqual({ value: false })
+      )
+      .and('jsonValueSchema should unbox it as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
+        expect(actual).toEqual(expected)
+      );
 
     bdd
       .given('a boxed BigInt from another realm', (): unknown => runInNewContext('Object(1n)'))
-      .when('JSON.stringify() is called', target => {
-        try {
-          return JSON.stringify(target);
-        } catch (error) {
-          return error;
-        }
-      })
-      .then('JSON.stringify() should throw', (_, result) => expect(result).toBeInstanceOf(TypeError))
-      .and('parse() should throw as JSON.stringify() does', target =>
-        expect(() => parse(jsonValueSchema, target)).toThrow()
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should throw', (_, { expected }) =>
+        expect(expected).toEqual({ error: expect.any(TypeError) })
+      )
+      .and('jsonValueSchema should throw as JSON.parse(JSON.stringify()) does', (_, { actual }) =>
+        expect(actual).toEqual({ error: expect.anything() })
       );
 
     bdd
       .given('an object with Number.prototype but without [[NumberData]]', (): unknown =>
         Object.create(Number.prototype)
       )
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should become an empty object as JSON.stringify() does', (target, result) => {
-        expect(result).toEqual({});
-        expect(result).toEqual(JSON.parse(JSON.stringify(target)));
-      });
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should return an empty object', (_, { expected }) =>
+        expect(expected).toEqual({ value: {} })
+      )
+      .and(
+        'jsonValueSchema should return an empty object as JSON.parse(JSON.stringify()) does',
+        (_, { actual, expected }) => expect(actual).toEqual(expected)
+      );
 
     bdd
       .given('an object with String.prototype but without [[StringData]]', (): unknown =>
         Object.create(String.prototype)
       )
-      .when('parsed', target => parse(jsonValueSchema, target))
-      .then('should become an empty object as JSON.stringify() does', (target, result) =>
-        expect(result).toEqual(JSON.parse(JSON.stringify(target)))
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should return an empty object', (_, { expected }) =>
+        expect(expected).toEqual({ value: {} })
+      )
+      .and(
+        'jsonValueSchema should return an empty object as JSON.parse(JSON.stringify()) does',
+        (_, { actual, expected }) => expect(actual).toEqual(expected)
       );
   },
   NodeTest

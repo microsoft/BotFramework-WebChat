@@ -222,10 +222,21 @@ scenario(
         original: Object.freeze(Object.assign(Object.create(null) as Record<string, unknown>, { one: 1 })),
         value: { one: 1 }
       }))
-      .when('deepFreeze() is called', ({ original, value }) => deepFreeze(original, value))
-      .then('should not reuse the null-prototype object', ({ original }, result) => expect(result).not.toBe(original))
-      .and('should return a plain object', (_, result) => expect(Object.getPrototypeOf(result)).toBe(Object.prototype))
-      .and('should be frozen', (_, result) => expect(Object.isFrozen(result)).toBe(true));
+      .when('processed by both JSON.parse(JSON.stringify()) and deepFreeze()', ({ original, value }) => ({
+        actual: deepFreeze(original, value),
+        expected: JSON.parse(JSON.stringify(original))
+      }))
+      .then('JSON.parse(JSON.stringify()) should return a plain object', (_, { expected }) =>
+        expect(Object.getPrototypeOf(expected)).toBe(Object.prototype)
+      )
+      .and('deepFreeze() should not reuse the null-prototype object', ({ original }, { actual }) =>
+        expect(actual).not.toBe(original)
+      )
+      .and(
+        'deepFreeze() should return a plain object as JSON.parse(JSON.stringify()) does',
+        (_, { actual, expected }) => expect(Object.getPrototypeOf(actual)).toBe(Object.getPrototypeOf(expected))
+      )
+      .and('deepFreeze() should return a frozen object', (_, { actual }) => expect(Object.isFrozen(actual)).toBe(true));
 
     bdd
       .given('a frozen nested null-prototype object and a validated plain object', () => ({
@@ -236,12 +247,23 @@ scenario(
         }),
         value: { items: [{ two: 2 }] }
       }))
-      .when('deepFreeze() is called', ({ original, value }) => deepFreeze(original, value))
-      .then('should return plain objects as JSON.parse(JSON.stringify()) does', (_, result) => {
-        expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
-        expect(Object.getPrototypeOf(result.items[0])).toBe(Object.prototype);
-        expect(`${result.items[0]}`).toBe('[object Object]');
-      });
+      .when('processed by both JSON.parse(JSON.stringify()) and deepFreeze()', ({ original, value }) => ({
+        actual: deepFreeze(original, value),
+        expected: JSON.parse(JSON.stringify(original)) as typeof value
+      }))
+      .then('JSON.parse(JSON.stringify()) should return plain objects', (_, { expected }) => {
+        expect(Object.getPrototypeOf(expected)).toBe(Object.prototype);
+        expect(Object.getPrototypeOf(expected.items[0])).toBe(Object.prototype);
+        expect(`${expected.items[0]}`).toBe('[object Object]');
+      })
+      .and(
+        'deepFreeze() should return plain objects as JSON.parse(JSON.stringify()) does',
+        (_, { actual, expected }) => {
+          expect(Object.getPrototypeOf(actual)).toBe(Object.getPrototypeOf(expected));
+          expect(Object.getPrototypeOf(actual.items[0])).toBe(Object.getPrototypeOf(expected.items[0]));
+          expect(`${actual.items[0]}`).toBe(`${expected.items[0]}`);
+        }
+      );
   },
   NodeTest
 );
