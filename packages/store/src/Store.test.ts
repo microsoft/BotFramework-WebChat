@@ -1427,6 +1427,63 @@ scenario(
       .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
 
     bdd
+      .given('a store with a message and a listener', () => {
+        const { controller, store } = createStore();
+        const numCalls = { value: 0 };
+
+        controller.edit(transaction => upsertMessage(transaction, '_:m-1'));
+        store.subscribe(() => numCalls.value++);
+
+        return { controller, numCalls, snapshot: store.getSnapshot(), store };
+      })
+      .when.oneOf<{ readonly error: unknown; readonly pending: Promise<unknown> | undefined }>([
+        [
+          'edit is called with an async transactor',
+          ({ controller }) => {
+            let pending: Promise<unknown> | undefined;
+
+            const error = catchError(() =>
+              controller.edit(
+                transaction =>
+                  (pending = (async () => {
+                    upsertMessage(transaction, '_:m-2');
+
+                    await undefined;
+
+                    upsertMessage(transaction, '_:m-3');
+                  })().catch(error => error)) as unknown as void
+              )
+            );
+
+            return { error, pending };
+          }
+        ],
+        [
+          'edit is called with a transactor which returns a then-able',
+          ({ controller }) => ({
+            error: catchError(() =>
+              controller.edit(transaction => {
+                upsertMessage(transaction, '_:m-2');
+
+                return { then: () => undefined } as unknown as void;
+              })
+            ),
+            pending: undefined
+          })
+        ]
+      ])
+      .then('should throw', (_, { error }) =>
+        expect(error).toEqual(expect.objectContaining({ message: expect.stringContaining('then-able') }))
+      )
+      .and('should throw TypeError', (_, { error }) => expect(error).toEqual(expect.any(TypeError)))
+      .and('should not change the store', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot))
+      .and('should not notify', ({ numCalls }) => expect(numCalls.value).toBe(0))
+      .and('should fail the asynchronous part', async (_, { pending }) => {
+        pending &&
+          expect(await pending).toEqual(expect.objectContaining({ message: expect.stringContaining('has ended') }));
+      });
+
+    bdd
       .given('an empty store', () => createStore())
       .when('the transaction is used after edit() returns', ({ controller }) => {
         let leakedTransaction: StoreTransaction | undefined;
