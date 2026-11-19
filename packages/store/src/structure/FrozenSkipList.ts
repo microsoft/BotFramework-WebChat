@@ -33,7 +33,6 @@ interface ReadWriteSkipList<T> extends SkipListReader<T> {
    * This is O(number of changes) if the underlying list is the latest version (i.e. no other overlay on top of the
    * same list has been committed), otherwise, O(size) as the list is copied.
    */
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   commit(): FrozenSkipList<T>;
 
   /**

@@ -1,0 +1,6 @@
+extends:
+  - ../../.eslintrc.production.yml
+
+# This package is compatible with web browser.
+env:
+  browser: true

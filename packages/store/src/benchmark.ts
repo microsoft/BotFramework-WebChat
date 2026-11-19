@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-magic-numbers */
+/* eslint-disable no-restricted-globals */
 
 /**
  * Benchmarks the store and prints average per node as a Markdown table, one row per benchmark, one column per number
