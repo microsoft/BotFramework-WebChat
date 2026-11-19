@@ -1,4 +1,16 @@
-import { literal, object, optional, parse, picklist, pipe, readonly, type InferInput } from 'valibot';
+import {
+  function_,
+  is,
+  literal,
+  looseObject,
+  object,
+  optional,
+  parse,
+  picklist,
+  pipe,
+  readonly,
+  type InferInput
+} from 'valibot';
 import assertIdentifierNotId from './assertion/assertIdentifierNotId.ts';
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
@@ -29,6 +41,10 @@ interface StoreController {
    *
    * `edit()` cannot be called inside another `edit()`, i.e. inside the transactor or the updater. Listeners are called
    * after the edit has ended, they can call `edit()`.
+   *
+   * The transactor must be synchronous. If it returns a then-able (e.g. Promise), the edit throws and all changes are
+   * discarded. The synchronous part of the Promise could succeed while the asynchronous part would fail, the caller
+   * will not be very aware of what's going on.
    */
   edit(transactor: (transaction: StoreTransaction) => void): void;
 }
@@ -61,6 +77,8 @@ interface StoreTransaction {
 }
 
 const EMPTY_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
+
+const thenableSchema = looseObject({ then: function_() });
 
 const getSortedPartsInitSchema = pipe(
   object({
@@ -348,7 +366,7 @@ class Store {
     };
 
     try {
-      transactor(
+      const result: unknown = transactor(
         Object.freeze({
           delete: (id: Identifier): void => {
             assertNotEnded();
@@ -452,6 +470,13 @@ class Store {
           }
         })
       );
+
+      // The transactor must be synchronous. If a then-able (e.g. Promise) is returned, the synchronous part of the
+      // Promise could succeed while the asynchronous part would fail, the caller will not be very aware of what's going
+      // on. Throwing here discards all changes made in the synchronous part.
+      if (is(thenableSchema, result)) {
+        throw new TypeError('transactor must not return a then-able (e.g. Promise), it must be synchronous');
+      }
     } finally {
       ended = true;
     }
