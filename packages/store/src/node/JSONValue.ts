@@ -17,18 +17,34 @@ const OMITTED: unique symbol = Symbol('omitted');
 class JSONValueError extends TypeError {}
 
 /**
+ * Checks if the value has the internal slot, by calling a built-in `valueOf()` which throws if it does not.
+ *
+ * Unlike `instanceof`, works across realms (e.g. `<iframe>`) and rejects objects that only inherit the prototype, e.g.
+ * `Object.create(Number.prototype)`.
+ */
+function hasInternalSlot(valueOf: (this: unknown) => unknown, value: object): boolean {
+  try {
+    valueOf.call(value);
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Unwraps boxed primitives, e.g. `new Number(1)`, as `JSON.stringify()` does.
  *
  * @see {@link https://tc39.es/ecma262/#sec-serializejsonproperty ECMAScript: SerializeJSONProperty}
  */
 function unbox(value: object): unknown {
-  return value instanceof Number
+  return hasInternalSlot(Number.prototype.valueOf, value)
     ? Number(value)
-    : value instanceof String
+    : hasInternalSlot(String.prototype.valueOf, value)
       ? String(value)
-      : value instanceof Boolean
+      : hasInternalSlot(Boolean.prototype.valueOf, value)
         ? Boolean.prototype.valueOf.call(value)
-        : value instanceof BigInt
+        : hasInternalSlot(BigInt.prototype.valueOf, value)
           ? BigInt.prototype.valueOf.call(value)
           : value;
 }

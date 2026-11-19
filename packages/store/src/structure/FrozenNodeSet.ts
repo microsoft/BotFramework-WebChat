@@ -11,6 +11,11 @@ function toNodeReference(id: Identifier): NodeReference {
   return Object.freeze({ '@id': id });
 }
 
+/** Node references are compared by ID. */
+function getEqualityKey(value: unknown): unknown {
+  return value && typeof value === 'object' && '@id' in value ? value['@id'] : value;
+}
+
 /**
  * An immutable `Set` of node references, e.g. `hasPart` and `isPartOf`.
  *
@@ -24,7 +29,7 @@ function toNodeReference(id: Identifier): NodeReference {
  */
 class FrozenNodeSet extends SetView<NodeReference> {
   constructor(ids: Iterable<Identifier>) {
-    super();
+    super(getEqualityKey);
 
     this.#ids = isFrozenSet(ids) ? (ids satisfies ReadonlySet<unknown> as ReadonlySet<Identifier>) : new FrozenSet(ids);
 

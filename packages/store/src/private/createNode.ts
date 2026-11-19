@@ -23,22 +23,31 @@ function isSameIds(ids: ReadonlySet<string>, value: ReadonlySet<NodeReference>):
 /**
  * Returns a `FrozenNodeSet` of the node references.
  *
- * - If the original property is an own data property holding a `FrozenNodeSet` with the same IDs as the validated
- *   value, it is immutable and returned as-is, i.e. unchanged parts are reused
- * - Otherwise, IDs are copied from the validated value, as an accessor property could return a different value on
- *   every read
+ * - If the original value is a `FrozenNodeSet` with the same IDs as the validated value, it is immutable and returned
+ *   as-is, i.e. unchanged parts are reused
+ * - Otherwise, IDs are copied from the validated value
  *
- * @param target Object before validation, it is an object as it passed validation.
- * @param key Name of the property.
+ * @param originalValue Value of the own data property before validation, `undefined` for accessor property.
  * @param value Value after validation, validation always returns a new `Set`.
  */
-function toFrozenNodeSet(target: object, key: string, value: ReadonlySet<NodeReference>): FrozenNodeSet {
-  const descriptor = Object.getOwnPropertyDescriptor(target, key);
-  const ids = descriptor && 'value' in descriptor ? getNodeSetIds(descriptor.value) : undefined;
+function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReference>): FrozenNodeSet {
+  const ids = getNodeSetIds(originalValue);
 
   return ids && isSameIds(ids, value)
-    ? (descriptor?.value satisfies unknown as FrozenNodeSet)
+    ? (originalValue satisfies unknown as FrozenNodeSet)
     : new FrozenNodeSet(Array.from(value, ({ '@id': id }) => id));
+}
+
+/**
+ * Gets the value of an own data property without calling getters, as they could have side effects or return a
+ * different value on every read. Returns `undefined` for accessor properties, so the validated value is copied.
+ *
+ * @param target Object before validation, it is an object as it passed validation.
+ */
+function getOwnDataPropertyValue(target: object, key: string): unknown {
+  const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
+
+  return descriptor && 'value' in descriptor ? descriptor.value : undefined;
 }
 
 /**
@@ -49,7 +58,7 @@ function toFrozenNodeSet(target: object, key: string, value: ReadonlySet<NodeRef
  * - Property values are deeply frozen, values which are already deeply immutable are reused as-is, see `deepFreeze()`
  * - The node object itself is not frozen, so it can be modified in place before `freezeNode()` without copying
  * - `hasPart` and `isPartOf` are stored as `FrozenNodeSet`, so `getPartIds()` can get the IDs in O(1)
- * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getDateCreatedTime()`
+ * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getPreciseDateCreatedTime()`
  *
  * All nodes stored in the graph must be created by this function, the returned node is branded as `UnfrozenNode`.
  */
@@ -63,13 +72,12 @@ function createNode(value: unknown): UnfrozenNode {
         .map(([key, safeValue]) => {
           const safePartValue =
             key === 'hasPart' ? safeNode.hasPart : key === 'isPartOf' ? safeNode.isPartOf : undefined;
+          // `value` is an object as it passed validation.
+          const originalValue = getOwnDataPropertyValue(value as object, key);
 
           return [
             key,
-            safePartValue
-              ? // `value` is an object as it passed validation.
-                toFrozenNodeSet(value as object, key, safePartValue)
-              : deepFreeze(Reflect.get(value as object, key), safeValue)
+            safePartValue ? toFrozenNodeSet(originalValue, safePartValue) : deepFreeze(originalValue, safeValue)
           ];
         })
     ),

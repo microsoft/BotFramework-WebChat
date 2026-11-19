@@ -54,7 +54,7 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
   }
 
   entries(): MapIterator<[K, V]> {
-    return this.#overlay.toMap().entries();
+    return this.#overlay.entries();
   }
 
   get(key: K): V | undefined {
@@ -66,7 +66,7 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
   }
 
   keys(): MapIterator<K> {
-    return this.#overlay.toMap().keys();
+    return this.#overlay.keys();
   }
 
   set(key: K, value: V): this {
@@ -76,7 +76,7 @@ class ReadWriteMapImpl<K, V> extends MapView<K, V> implements ReadWriteMap<K, V>
   }
 
   values(): MapIterator<V> {
-    return this.#overlay.toMap().values();
+    return this.#overlay.values();
   }
 }
 

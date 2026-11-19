@@ -18,7 +18,10 @@ function* iterateSetLike<T>(setLike: ReadonlySetLike<T>): Generator<T, void, unk
 }
 
 /**
- * Validates a set-like object as `Set` methods do, i.e. `size` is a number, `has()` and `keys()` are functions.
+ * Validates a set-like object as `Set` methods do, i.e. `size` is a non-negative number, `has()` and `keys()` are
+ * functions.
+ *
+ * @see {@link https://tc39.es/ecma262/#sec-getsetrecord ECMAScript: GetSetRecord}
  */
 function validateSetLike<T>(setLike: ReadonlySetLike<T>): ReadonlySetLike<T> {
   if (
@@ -29,6 +32,9 @@ function validateSetLike<T>(setLike: ReadonlySetLike<T>): ReadonlySetLike<T> {
     typeof setLike.keys !== 'function'
   ) {
     throw new TypeError('The argument must be a set-like object');
+  } else if (Math.trunc(Number(setLike.size)) < 0) {
+    // As `ToIntegerOrInfinity()`, `-0.5` is truncated to `0`.
+    throw new RangeError('The size of the set-like object must not be negative');
   }
 
   return setLike;
@@ -48,6 +54,9 @@ function hasValue(set: ReadonlySet<unknown>, value: unknown): boolean {
  * supported browsers. Values in this set are checked by `this.has()` and values in the other set are checked by
  * `other.has()`, so subclasses with custom equality (e.g. `FrozenNodeSet` compares by ID) are respected.
  *
+ * Values from the other set are deduplicated by the equality key passed to the constructor, as the other set could contain values which are
+ * different by SameValueZero but equal in this set, e.g. 2 different node references with the same ID.
+ *
  * `core-js-pure` (e.g. `core-js-pure/features/set/union.js`) is intentionally not used:
  *
  * - It returns its own wrapper `Set` instead of the native `Set`, thus, `instanceof Set` is `false`
@@ -58,6 +67,35 @@ abstract class SetView<T> implements ReadonlySet<T> {
   abstract get size(): number;
   abstract has(value: T): boolean;
   abstract keys(): SetIterator<T>;
+
+  /**
+   * @param getEqualityKey Gets the key used to compare values for equality, values with the same key are the same value
+   *                       in this set. Subclasses with custom equality must pass it, e.g. `FrozenNodeSet` returns the ID
+   *                       of a node reference. Defaults to the value itself.
+   */
+  constructor(getEqualityKey: (value: unknown) => unknown = value => value) {
+    this.#getEqualityKey = getEqualityKey;
+  }
+
+  readonly #getEqualityKey: (value: unknown) => unknown;
+
+  /**
+   * Iterates values of the other set which are not in this set, values with the same equality key are only yielded
+   * once.
+   */
+  *#iterateOtherValuesNotInThis<U>(other: ReadonlySetLike<U>): Generator<U, void, unknown> {
+    const seenKeys = new Set<unknown>();
+
+    for (const value of iterateSetLike(other)) {
+      const key = this.#getEqualityKey(value);
+
+      if (!hasValue(this, value) && !seenKeys.has(key)) {
+        seenKeys.add(key);
+
+        yield value;
+      }
+    }
+  }
 
   difference(other: ReadonlySetLike<unknown>): Set<T> {
     const safeOther = validateSetLike(other);
@@ -93,8 +131,15 @@ abstract class SetView<T> implements ReadonlySet<T> {
         otherSetLike.has(value) && result.add(value satisfies T as T & U);
       }
     } else {
+      const seenKeys = new Set<unknown>();
+
       for (const value of iterateSetLike(safeOther)) {
-        hasValue(this, value) && result.add(value satisfies U as T & U);
+        const key = this.#getEqualityKey(value);
+
+        if (hasValue(this, value) && !seenKeys.has(key)) {
+          seenKeys.add(key);
+          result.add(value satisfies U as T & U);
+        }
       }
     }
 
@@ -140,10 +185,8 @@ abstract class SetView<T> implements ReadonlySet<T> {
   isSupersetOf(other: ReadonlySetLike<unknown>): boolean {
     const safeOther = validateSetLike(other);
 
-    if (this.size < safeOther.size) {
-      return false;
-    }
-
+    // Unlike native `Set`, does not return `false` if this set is smaller than the other set, as the other set could
+    // contain different values which are equal in this set, e.g. 2 different node references with the same ID.
     for (const value of iterateSetLike(safeOther)) {
       if (!hasValue(this, value)) {
         return false;
@@ -162,8 +205,8 @@ abstract class SetView<T> implements ReadonlySet<T> {
       otherSetLike.has(value) || result.add(value);
     }
 
-    for (const value of iterateSetLike(safeOther)) {
-      hasValue(this, value) || result.add(value);
+    for (const value of this.#iterateOtherValuesNotInThis(safeOther)) {
+      result.add(value);
     }
 
     return result;
@@ -173,8 +216,8 @@ abstract class SetView<T> implements ReadonlySet<T> {
     const safeOther = validateSetLike(other);
     const result = new Set<T | U>(this.keys());
 
-    for (const value of iterateSetLike(safeOther)) {
-      hasValue(this, value) || result.add(value);
+    for (const value of this.#iterateOtherValuesNotInThis(safeOther)) {
+      result.add(value);
     }
 
     return result;

@@ -440,6 +440,94 @@ class Overlay<K, V> {
   }
 
   /**
+   * Iterates the content without copying, changes made during iteration are observed as `Map` does: deleted entries
+   * not yet visited are skipped, and new or moved entries are visited at the end.
+   *
+   * Entries of the base version come first in its order, except deleted and moved keys, then new and moved keys in
+   * the order they are set, same as the order after `commit()`.
+   */
+  *#iterateUncommitted(): Generator<readonly [K, V], undefined, unknown> {
+    const base = this.#base;
+    const changes = this.#changes;
+
+    for (const [key, baseValue] of base.entries()) {
+      if (!changes.has(key)) {
+        yield [key, baseValue];
+      } else {
+        const change = changes.get(key);
+
+        if (change !== DELETED && !this.#movedKeys.has(key)) {
+          yield [key, change satisfies V | undefined as V];
+        }
+      }
+    }
+
+    // `Map` iteration is live, keys set during iteration are visited.
+    for (const [key, change] of changes) {
+      if (change !== DELETED && !(base.has(key) && !this.#movedKeys.has(key))) {
+        yield [key, change];
+      }
+    }
+  }
+
+  /**
+   * Iterates the content, see `#iterateUncommitted()`. If committed during iteration, continues on the committed
+   * version, which has the same content and order, as the changes are taken over by the committed version.
+   *
+   * @param iterate Iterates the committed version, e.g. `storage => storage.keys()`.
+   * @param project Projects an entry, same as `iterate`, e.g. `key => key`.
+   */
+  *#iterate<T>(
+    iterate: (storage: VersionedStorage<K, V>) => MapIterator<T>,
+    project: (key: K, value: V) => T
+  ): Generator<T, undefined, unknown> {
+    const iterator = this.#iterateUncommitted();
+
+    for (let index = 0; ; index++) {
+      if (this.#committed) {
+        const rest = iterate(this.#base);
+
+        for (let numSkipped = 0; numSkipped < index; numSkipped++) {
+          rest.next();
+        }
+
+        yield* rest;
+
+        return;
+      }
+
+      const result = iterator.next();
+
+      if (result.done) {
+        return;
+      }
+
+      yield project(...result.value);
+    }
+  }
+
+  entries(): MapIterator<[K, V]> {
+    return this.#iterate(
+      storage => storage.entries(),
+      (key, value) => [key, value]
+    );
+  }
+
+  keys(): MapIterator<K> {
+    return this.#iterate(
+      storage => storage.keys(),
+      key => key
+    );
+  }
+
+  values(): MapIterator<V> {
+    return this.#iterate(
+      storage => storage.values(),
+      (_, value) => value
+    );
+  }
+
+  /**
    * Returns the content as a new `Map`, O(size).
    */
   toMap(): ReadonlyMap<K, V> {
