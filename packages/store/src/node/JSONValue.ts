@@ -48,8 +48,9 @@ function preprocess(key: string, value: unknown): unknown {
 
 function toJSONArray(value: readonly unknown[], ancestors: object[]): JSONValue[] {
   const array: JSONValue[] = [];
+  const { length } = value;
 
-  for (let index = 0; index < value.length; index++) {
+  for (let index = 0; index < length; index++) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const item = toJSONValue(`${index}`, value[+index], ancestors);
 
