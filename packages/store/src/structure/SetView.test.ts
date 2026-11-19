@@ -74,35 +74,55 @@ scenario(
   NodeTest
 );
 
+/** Calls the function and returns its value or the error thrown. */
+function tryCall<T>(fn: () => T): { readonly error: unknown } | { readonly value: T } {
+  try {
+    return Object.freeze({ value: fn() });
+  } catch (error) {
+    return Object.freeze({ error });
+  }
+}
+
 scenario(
   'SetView with invalid set-like size',
   bdd => {
     for (const name of SET_METHOD_NAMES) {
       bdd
-        .given('a FrozenSet and a set-like object with negative size', () => ({
+        .given('a Set, a FrozenSet, and a set-like object with negative size', () => ({
+          frozenSet: new FrozenSet([1]),
           other: { has: () => false, keys: () => [].values(), size: -1 },
-          set: new FrozenSet([1])
+          set: new Set([1])
         }))
-        .when(`${name}() is called`, ({ other, set }) => {
-          try {
-            // `name` is from a constant list of Set method names.
-            // eslint-disable-next-line security/detect-object-injection
-            return set[name](other);
-          } catch (error) {
-            return error;
-          }
-        })
-        .then('should throw RangeError, as native Set does', (_, result) => expect(result).toBeInstanceOf(RangeError));
+        .when(`${name}() is called on both native Set and FrozenSet`, ({ frozenSet, other, set }) => ({
+          // `name` is from a constant list of Set method names.
+          // eslint-disable-next-line security/detect-object-injection
+          actual: tryCall(() => frozenSet[name](other)),
+          // eslint-disable-next-line security/detect-object-injection
+          expected: tryCall(() => set[name](other))
+        }))
+        .then('native Set should throw RangeError', (_, { expected }) =>
+          expect(expected).toEqual({ error: expect.any(RangeError) })
+        )
+        .and('FrozenSet should throw RangeError, as native Set does', (_, { actual }) =>
+          expect(actual).toEqual({ error: expect.any(RangeError) })
+        );
     }
 
     bdd
-      .given('a FrozenSet and a set-like object with size of -0.5', () => ({
+      .given('a Set, a FrozenSet, and a set-like object with size of -0.5', () => ({
+        frozenSet: new FrozenSet([1]),
         other: { has: () => false, keys: () => [].values(), size: -0.5 },
-        set: new FrozenSet([1])
+        set: new Set([1])
       }))
-      .when('union() is called', ({ other, set }) => set.union(other))
-      .then('should not throw as ToIntegerOrInfinity(-0.5) is 0', (_, result) =>
-        expect(Array.from(result)).toEqual([1])
+      .when('union() is called on both native Set and FrozenSet', ({ frozenSet, other, set }) => ({
+        actual: tryCall(() => Array.from(frozenSet.union(other))),
+        expected: tryCall(() => Array.from(set.union(other)))
+      }))
+      .then('native Set should not throw as ToIntegerOrInfinity(-0.5) is 0', (_, { expected }) =>
+        expect(expected).toEqual({ value: [1] })
+      )
+      .and('FrozenSet should return the same as native Set', (_, { actual, expected }) =>
+        expect(actual).toEqual(expected)
       );
   },
   NodeTest
