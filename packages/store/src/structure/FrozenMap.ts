@@ -13,7 +13,6 @@ interface ReadWriteMap<K, V> extends ReadonlyMap<K, V> {
    * This is O(number of changes) if the underlying map is the latest version (i.e. no other overlay on top of the same
    * map has been committed), otherwise, O(size) as the map is copied.
    */
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   commit(): FrozenMap<K, V>;
   delete(key: K): boolean;
   set(key: K, value: V): this;

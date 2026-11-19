@@ -15,6 +15,7 @@ type NodeWithDateCreatedTime = (InternalNode | UnfrozenNode) & {
  * ISO timestamps with different time zones (e.g. `+02:00` and `Z`) cannot be compared as string.
  */
 function parseDateCreatedTime(dateCreated: string | undefined): number {
+  // eslint-disable-next-line no-restricted-globals
   return typeof dateCreated === 'string' ? new Date(dateCreated).getTime() : Infinity;
 }
 
