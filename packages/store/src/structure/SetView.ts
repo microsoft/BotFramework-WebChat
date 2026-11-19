@@ -47,6 +47,12 @@ function hasValue(set: ReadonlySet<unknown>, value: unknown): boolean {
  * Set methods (e.g. `union()`) are implemented without native `Set.prototype` methods, which are not available in all
  * supported browsers. Values in this set are checked by `this.has()` and values in the other set are checked by
  * `other.has()`, so subclasses with custom equality (e.g. `FrozenNodeSet` compares by ID) are respected.
+ *
+ * `core-js-pure` (e.g. `core-js-pure/features/set/union.js`) is intentionally not used:
+ *
+ * - It returns its own wrapper `Set` instead of the native `Set`, thus, `instanceof Set` is `false`
+ * - It clones this set into a new `Set` which compares by SameValueZero, ignoring `this.has()`, thus, custom equality
+ *   is lost, e.g. `FrozenNodeSet.union()` would duplicate node references with the same ID
  */
 abstract class SetView<T> implements ReadonlySet<T> {
   abstract get size(): number;
