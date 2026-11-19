@@ -1,5 +1,4 @@
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import { compareDateCreatedTime, type DateCreatedTime } from './dateCreatedTime.ts';
 import type { InternalNode } from './InternalNode.ts';
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
 import { type ReadWriteSkipList } from '../structure/FrozenSkipList.ts';
@@ -15,11 +14,8 @@ type NodeWithSortedChildIds = InternalNode & {
  * Compares two children: earlier `dateCreated` comes first, children without `dateCreated` come last.
  * If `dateCreated` is the same, compares by `@id`.
  */
-function compareChild(
-  [x, xId]: readonly [DateCreatedTime, Identifier],
-  [y, yId]: readonly [DateCreatedTime, Identifier]
-): number {
-  return compareDateCreatedTime(x, y) || Number(xId > yId) - Number(xId < yId);
+function compareChild([x, xId]: readonly [number, Identifier], [y, yId]: readonly [number, Identifier]): number {
+  return x === y ? Number(xId > yId) - Number(xId < yId) : Number(x > y) - Number(x < y);
 }
 
 /**
@@ -27,14 +23,14 @@ function compareChild(
  *
  * Appending to the end (e.g. a new message) is O(1), otherwise, expected O(log n). No items are shifted.
  *
- * @param dateCreatedTime Parsed `dateCreated` of the child, see `getPreciseDateCreatedTime()`.
- * @param getDateCreatedTime Returns parsed `dateCreated` of existing children, see `getPreciseDateCreatedTime()`.
+ * @param dateCreatedTime `dateCreated` of the child as epoch time, `Infinity` if not set, see `getDateCreatedTime()`.
+ * @param getDateCreatedTime Returns `dateCreated` of existing children as epoch time, see `getDateCreatedTime()`.
  */
 function insertSortedChild(
   sortedChildIds: ReadWriteSkipList<Identifier>,
   id: Identifier,
-  dateCreatedTime: DateCreatedTime,
-  getDateCreatedTime: (id: Identifier) => DateCreatedTime
+  dateCreatedTime: number,
+  getDateCreatedTime: (id: Identifier) => number
 ): void {
   sortedChildIds.insert(id, childId => compareChild([getDateCreatedTime(childId), childId], [dateCreatedTime, id]) > 0);
 }

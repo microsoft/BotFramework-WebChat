@@ -21,7 +21,7 @@ import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createNode from './private/createNode.ts';
 import type { InternalNode } from './private/InternalNode.ts';
-import { compareDateCreatedTime, getPreciseDateCreatedTime, type DateCreatedTime } from './private/dateCreatedTime.ts';
+import { getDateCreatedTime } from './private/dateCreatedTime.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
 import getPartIds from './private/getPartIds.ts';
 import { updateIdentifierIndex } from './private/identifierIndex.ts';
@@ -163,8 +163,8 @@ function setReferenceIds(
  * Reads nodes being modified in a transaction, with drafts applied.
  */
 type NextStateReader = {
-  /** Gets parsed `dateCreated` of the node, `Infinity` if not set or the node does not exist. */
-  getDateCreatedTime(id: Identifier): DateCreatedTime;
+  /** Gets `dateCreated` of the node as epoch time, `Infinity` if not set or the node does not exist. */
+  getDateCreatedTime(id: Identifier): number;
   /** Gets IDs of parents in `isPartOf` of the node, empty if the node does not exist. */
   getPartOfIds(id: Identifier): ReadonlySet<Identifier>;
   has(id: Identifier): boolean;
@@ -189,10 +189,7 @@ function updateSortedChildIds(
 
   for (const id of affectedNodeIds) {
     const prevNode = prevState.get(id);
-    const dateCreatedChanged = !!compareDateCreatedTime(
-      getPreciseDateCreatedTime(prevNode),
-      nextState.getDateCreatedTime(id)
-    );
+    const dateCreatedChanged = getDateCreatedTime(prevNode) !== nextState.getDateCreatedTime(id);
     const prevParentIds = getPartIds(prevNode, 'isPartOf');
     const parentIds = nextState.getPartOfIds(id);
 
@@ -319,8 +316,8 @@ class Store {
     const drafts = new Map<Identifier, ReadWriteNode>();
 
     const nextStateReader: NextStateReader = Object.freeze({
-      getDateCreatedTime: (id: Identifier): DateCreatedTime =>
-        drafts.get(id)?.dateCreatedTime ?? getPreciseDateCreatedTime(nextState.get(id)),
+      getDateCreatedTime: (id: Identifier): number =>
+        drafts.get(id)?.dateCreatedTime ?? getDateCreatedTime(nextState.get(id)),
       getPartOfIds: (id: Identifier): ReadonlySet<Identifier> =>
         drafts.get(id)?.getPartOfIds() ?? getPartIds(nextState.get(id), 'isPartOf'),
       has: (id: Identifier): boolean => drafts.has(id) || nextState.has(id)

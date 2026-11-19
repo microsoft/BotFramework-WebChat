@@ -2709,8 +2709,11 @@ scenario(
           upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
         })
       )
-      .then('should sort by dateCreated, not by @id', ({ store }) =>
-        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a'])
+      .then('should drop sub-millisecond and sort by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b'])
+      )
+      .and('should keep dateCreated as-is', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-a')).toHaveProperty('dateCreated', '2026-01-01T00:00:00.0009000Z')
       );
 
     bdd
@@ -2721,7 +2724,19 @@ scenario(
           upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.000000001Z');
         })
       )
-      .then('should sort by dateCreated, not by @id', ({ store }) =>
+      .then('should drop sub-millisecond and sort by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b'])
+      );
+
+    bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with dateCreated in different milliseconds are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0029999Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0010001Z');
+        })
+      )
+      .then('should sort by dateCreated in milliseconds', ({ store }) =>
         expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a'])
       );
 
@@ -2741,7 +2756,9 @@ scenario(
           upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0009000Z')
         )
       )
-      .then('should re-sort', ({ store }) => expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a']));
+      .then('should keep sorting by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b'])
+      );
   },
   NodeTest
 );

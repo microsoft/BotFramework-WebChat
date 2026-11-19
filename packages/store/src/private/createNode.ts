@@ -58,7 +58,7 @@ function getOwnDataPropertyValue(target: object, key: string): unknown {
  * - Property values are deeply frozen, values which are already deeply immutable are reused as-is, see `deepFreeze()`
  * - The node object itself is not frozen, so it can be modified in place before `freezeNode()` without copying
  * - `hasPart` and `isPartOf` are stored as `FrozenNodeSet`, so `getPartIds()` can get the IDs in O(1)
- * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getPreciseDateCreatedTime()`
+ * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getDateCreatedTime()`
  *
  * All nodes stored in the graph must be created by this function, the returned node is branded as `UnfrozenNode`.
  */

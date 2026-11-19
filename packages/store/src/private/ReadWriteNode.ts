@@ -5,7 +5,7 @@ import { nodeReferenceSchema, type NodeReference } from '../node/NodeReference.t
 import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
 import FrozenSet, { type ReadWriteSet } from '../structure/FrozenSet.ts';
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
-import { attachDateCreatedTime, getPreciseDateCreatedTime, type DateCreatedTime } from './dateCreatedTime.ts';
+import { attachDateCreatedTime, getDateCreatedTime } from './dateCreatedTime.ts';
 import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
 import type { InternalNode } from './InternalNode.ts';
@@ -45,19 +45,19 @@ class ReadWriteNode {
    *             and must not be used by the caller anymore.
    */
   constructor(node: InternalNode | UnfrozenNode) {
-    this.#dateCreatedTime = getPreciseDateCreatedTime(node);
+    this.#dateCreatedTime = getDateCreatedTime(node);
     this.#node = node;
     this.#writableNode = Object.isFrozen(node) ? undefined : node;
 
     Object.freeze(this);
   }
 
-  readonly #dateCreatedTime: DateCreatedTime;
+  readonly #dateCreatedTime: number;
   #node: Node;
   #readWritePartOfIds: ReadWriteSet<Identifier> | undefined;
   #writableNode: WritableNode | undefined;
 
-  get dateCreatedTime(): DateCreatedTime {
+  get dateCreatedTime(): number {
     return this.#dateCreatedTime;
   }
 
