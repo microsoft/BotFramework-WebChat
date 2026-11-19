@@ -389,3 +389,84 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'createNode with accessors on other properties',
+  bdd => {
+    bdd.given
+      .oneOf<{ readonly getNumCalls: () => number; readonly value: object }>([
+        [
+          'a node with a @type getter which throws after the first read',
+          () => {
+            let numCalls = 0;
+
+            return {
+              getNumCalls: () => numCalls,
+              value: {
+                '@id': '_:m-1',
+                get '@type'() {
+                  if (numCalls++) {
+                    throw new Error('Artificial error');
+                  }
+
+                  return new Set(['Message']);
+                }
+              }
+            };
+          }
+        ],
+        [
+          'a node with a text getter which throws after the first read',
+          () => {
+            let numCalls = 0;
+
+            return {
+              getNumCalls: () => numCalls,
+              value: {
+                '@id': '_:m-1',
+                '@type': new Set(['Message']),
+                get text() {
+                  if (numCalls++) {
+                    throw new Error('Artificial error');
+                  }
+
+                  return ['Hello, World!'];
+                }
+              }
+            };
+          }
+        ]
+      ])
+      .when('createNode() is called', ({ value }) => {
+        try {
+          return createNode(value);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should not throw', (_, node) => expect(node).not.toBeInstanceOf(Error))
+      .and('should call the getter once', ({ getNumCalls }) => expect(getNumCalls()).toBe(1));
+
+    bdd
+      .given('a node with a text getter returning a different value after the first read', () => {
+        const validValue = Object.freeze(['Hello, World!']);
+        let numCalls = 0;
+
+        return {
+          validValue,
+          value: {
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            get text() {
+              return numCalls++ ? Object.freeze(['Unvalidated']) : validValue;
+            }
+          }
+        };
+      })
+      .when('createNode() is called', ({ value }) => createNode(value))
+      .then('should store the validated text', (_, node) =>
+        expect(getProperty(node, 'text')).toEqual(['Hello, World!'])
+      );
+  },
+  NodeTest
+);

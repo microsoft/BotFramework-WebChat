@@ -1939,6 +1939,36 @@ scenario(
       );
 
     bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with dateCreated differing within the same millisecond are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0009000Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
+        })
+      )
+      .then('should sort by dateCreated with sub-millisecond precision', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a'])
+      );
+
+    bdd
+      .given('a store with 2 sorted children with dateCreated in the same millisecond', () => {
+        const { controller, store } = createStoreWithConversations();
+
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-1', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
+          upsertDatedMessage(transaction, '_:m-2', ['_:c-1'], '2026-01-01T00:00:00.0005000Z');
+        });
+
+        return { controller, store };
+      })
+      .when('dateCreated of a child is changed within the same millisecond', ({ controller }) =>
+        controller.edit(transaction =>
+          upsertDatedMessage(transaction, '_:m-1', ['_:c-1'], '2026-01-01T00:00:00.0009000Z')
+        )
+      )
+      .then('should re-sort', ({ store }) => expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-2', '_:m-1']));
+
+    bdd
       .given('a store with 3 sorted children and a result of getSortedParts()', () => {
         const { controller, store } = createStoreWithConversations();
 

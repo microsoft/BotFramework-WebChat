@@ -73,3 +73,46 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'SetView with a set-like object of negative size',
+  bdd => {
+    bdd.given
+      .oneOf<number>([
+        ['a size of -1', () => -1],
+        ['a size of -1.5', () => -1.5],
+        ['a size of -Infinity', () => -Infinity]
+      ])
+      .and('a FrozenSet and a set-like object with the size', size => ({
+        other: { has: () => false, keys: () => [][Symbol.iterator](), size },
+        set: new FrozenSet([1])
+      }))
+      .when('Set methods are called', ({ other, set }) =>
+        Object.fromEntries(
+          SET_METHOD_NAMES.map(name => {
+            try {
+              // eslint-disable-next-line security/detect-object-injection
+              set[name](other as unknown as ReadonlySetLike<unknown>);
+            } catch (error) {
+              return [name, error];
+            }
+
+            return [name, undefined];
+          })
+        )
+      )
+      .then('should throw RangeError', (_, result) => {
+        for (const name of SET_METHOD_NAMES) {
+          // eslint-disable-next-line security/detect-object-injection
+          expect([name, result[name]]).toEqual([name, expect.any(RangeError)]);
+        }
+      })
+      .and('native Set methods should also throw RangeError', ({ other }) => {
+        for (const name of SET_METHOD_NAMES) {
+          // eslint-disable-next-line security/detect-object-injection
+          expect(() => new Set([1])[name](other as unknown as ReadonlySetLike<unknown>)).toThrow(RangeError);
+        }
+      });
+  },
+  NodeTest
+);

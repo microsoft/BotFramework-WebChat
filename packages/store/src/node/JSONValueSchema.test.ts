@@ -1,6 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
+import { runInNewContext } from 'node:vm';
 import { parse } from 'valibot';
 import { jsonValueSchema } from './JSONValue.ts';
 
@@ -278,6 +279,48 @@ scenario(
         expect(Object.keys(result as object)).toEqual(['one']);
         expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
       });
+  },
+  NodeTest
+);
+
+scenario(
+  'jsonValueSchema with boxed primitives',
+  bdd => {
+    bdd.given
+      .oneOf<unknown>([
+        ['a boxed Number from another realm', () => runInNewContext('new Number(42)')],
+        ['a boxed String from another realm', () => runInNewContext('new String("abc")')],
+        ['a boxed Boolean from another realm', () => runInNewContext('new Boolean(false)')],
+        ['a boxed Number from another realm nested in an array', () => [runInNewContext('new Number(42)')]],
+        ['an object inheriting from Number.prototype', () => Object.create(Number.prototype)],
+        ['an object inheriting from String.prototype', () => Object.create(String.prototype)],
+        ['an object inheriting from Boolean.prototype', () => Object.create(Boolean.prototype)],
+        ['an object inheriting from BigInt.prototype', () => Object.create(BigInt.prototype)]
+      ])
+      .when('parsed', target => {
+        try {
+          return parse(jsonValueSchema, target);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should be the same as JSON.parse(JSON.stringify())', (target, result) =>
+        expect(result).toEqual(JSON.parse(JSON.stringify(target)))
+      );
+
+    bdd
+      .given('a boxed BigInt from another realm', () => runInNewContext('Object(BigInt(1))'))
+      .when('parsed', target => {
+        try {
+          return parse(jsonValueSchema, target);
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should throw', (_, result) =>
+        expect(result).toEqual(expect.objectContaining({ message: 'JSON value must not contain BigInt' }))
+      )
+      .and('JSON.stringify() should also throw', target => expect(() => JSON.stringify(target)).toThrow());
   },
   NodeTest
 );

@@ -136,3 +136,46 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'FrozenNodeSet Set methods with distinct reference objects of the same ID',
+  bdd => {
+    bdd
+      .given('a FrozenNodeSet and a Set with two different reference objects of the same ID', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:b' }, { '@id': '_:b' }])
+      }))
+      .when('Set methods are called', ({ nodeSet, other }) => ({
+        symmetricDifference: nodeSet.symmetricDifference(other),
+        union: nodeSet.union(other)
+      }))
+      .then('union() should not duplicate references with the same ID', (_, result) =>
+        expect(Array.from(result.union, ({ '@id': id }) => id)).toEqual(['_:a', '_:b'])
+      )
+      .and('symmetricDifference() should not duplicate references with the same ID', (_, result) =>
+        expect(Array.from(result.symmetricDifference, ({ '@id': id }) => id)).toEqual(['_:a', '_:b'])
+      );
+
+    bdd
+      .given(
+        'a FrozenNodeSet and a Set with two different reference objects of the same ID in the FrozenNodeSet',
+        () => ({
+          nodeSet: new FrozenNodeSet(['_:a', '_:b', '_:c']),
+          other: new Set([{ '@id': '_:a' }, { '@id': '_:a' }])
+        })
+      )
+      .when('intersection() is called', ({ nodeSet, other }) => nodeSet.intersection(other))
+      .then('should not duplicate references with the same ID', (_, result) =>
+        expect(Array.from(result, ({ '@id': id }) => id)).toEqual(['_:a'])
+      );
+
+    bdd
+      .given('a FrozenNodeSet and a larger Set with different reference objects of IDs in the FrozenNodeSet', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:a' }, { '@id': '_:a' }])
+      }))
+      .when('isSupersetOf() is called', ({ nodeSet, other }) => nodeSet.isSupersetOf(other))
+      .then('should be true', (_, result) => expect(result).toBe(true));
+  },
+  NodeTest
+);
