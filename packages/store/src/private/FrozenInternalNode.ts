@@ -2,7 +2,7 @@ import { brand, pipe, type InferOutput } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 
 // Not exported, so the brand cannot be forged outside of this module, unlike a string brand name.
-const internalNodeBrand = Symbol('InternalNode');
+const frozenInternalNodeBrand = Symbol('FrozenInternalNode');
 
 /**
  * Schema of the node stored in the graph, i.e. the "internal version" of the node.
@@ -11,10 +11,10 @@ const internalNodeBrand = Symbol('InternalNode');
  * and sorted children). The brand is type-only, it differentiates it from the "external version" which could be
  * created by anyone, so internal functions relying on hidden properties will only accept nodes frozen by `freezeNode()`.
  *
- * `InternalNode` is assignable to `Node`, but `Node` is not assignable to `InternalNode`.
+ * `FrozenInternalNode` is assignable to `Node`, but `Node` is not assignable to `FrozenInternalNode`.
  */
-const internalNodeSchema = pipe(nodeSchema, brand(internalNodeBrand));
+const frozenInternalNodeSchema = pipe(nodeSchema, brand(frozenInternalNodeBrand));
 
-type InternalNode = InferOutput<typeof internalNodeSchema>;
+type FrozenInternalNode = InferOutput<typeof frozenInternalNodeSchema>;
 
-export { internalNodeSchema, type InternalNode };
+export { frozenInternalNodeSchema, type FrozenInternalNode };

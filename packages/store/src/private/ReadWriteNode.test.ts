@@ -9,9 +9,9 @@ import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
 import ReadWriteNode from './ReadWriteNode.ts';
 import { getSortedChildIds } from './sortedChildIds.ts';
-import type { UnfrozenNode } from './UnfrozenNode.ts';
+import type { UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
 
-function createMessage(): UnfrozenNode {
+function createMessage(): UnfrozenInternalNode {
   return createNode({
     '@id': '_:m-1',
     '@type': new Set(['Message']),

@@ -2,7 +2,7 @@ import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import FrozenNodeSet, { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
-import type { UnfrozenNode } from './UnfrozenNode.ts';
+import type { UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
 import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
 import deepFreeze from './deepFreeze.ts';
 import isDangerousKey from './isDangerousKey.ts';
@@ -51,9 +51,10 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
  * - `hasPart` and `isPartOf` are stored as `FrozenNodeSet`, so `getPartIds()` can get the IDs in O(1)
  * - `dateCreated` is parsed once and cached as a hidden property for sorting, see `getDateCreatedTime()`
  *
- * All nodes stored in the graph must be created by this function, the returned node is branded as `UnfrozenNode`.
+ * All nodes stored in the graph must be created by this function, the returned node is branded as
+ * `UnfrozenInternalNode`.
  */
-function createNode(value: unknown): UnfrozenNode {
+function createNode(value: unknown): UnfrozenInternalNode {
   const originalEntries = value && typeof value === 'object' ? new Map(Object.entries(value)) : undefined;
   const safeNode = parse(nodeSchema, originalEntries ? Object.fromEntries(originalEntries) : value);
 
@@ -73,7 +74,7 @@ function createNode(value: unknown): UnfrozenNode {
         })
     ),
     parseDateCreatedTime(safeNode.dateCreated)
-  ) satisfies object as UnfrozenNode;
+  ) satisfies object as UnfrozenInternalNode;
 }
 
 export default createNode;

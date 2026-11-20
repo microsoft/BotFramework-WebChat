@@ -1,5 +1,4 @@
 import { is } from 'valibot';
-import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import { nodeReferenceSchema, type NodeReference } from '../node/NodeReference.ts';
 import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
@@ -8,8 +7,8 @@ import type FrozenSkipList from '../structure/FrozenSkipList.ts';
 import { attachDateCreatedTime, getDateCreatedTime } from './dateCreatedTime.ts';
 import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
-import type { InternalNode } from './InternalNode.ts';
-import type { UnfrozenNode } from './UnfrozenNode.ts';
+import type { FrozenInternalNode } from './FrozenInternalNode.ts';
+import type { UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
 
 type WritableNode = {
   [key: string]: unknown;
@@ -44,7 +43,7 @@ class ReadWriteNode {
    * @param node A node in the graph, or an unfrozen node created by `createNode()`. Unfrozen node is owned by the draft
    *             and must not be used by the caller anymore.
    */
-  constructor(node: InternalNode | UnfrozenNode) {
+  constructor(node: FrozenInternalNode | UnfrozenInternalNode) {
     this.#dateCreatedTime = getDateCreatedTime(node);
     this.#node = node;
     this.#writableNode = Object.isFrozen(node) ? undefined : node;
@@ -53,7 +52,7 @@ class ReadWriteNode {
   }
 
   readonly #dateCreatedTime: number;
-  #node: Node;
+  #node: FrozenInternalNode | UnfrozenInternalNode;
   #readWritePartOfIds: ReadWriteSet<Identifier> | undefined;
   #writableNode: WritableNode | undefined;
 
@@ -70,7 +69,11 @@ class ReadWriteNode {
     if (!this.#writableNode) {
       const { hasPart: _, ...node } = this.#node;
 
-      this.#node = this.#writableNode = attachDateCreatedTime(node, this.#dateCreatedTime);
+      const writableNode: WritableNode = attachDateCreatedTime(node, this.#dateCreatedTime);
+
+      // The copy keeps `isPartOf` as `FrozenNodeSet`, so it is still an unfrozen internal node.
+      this.#node = writableNode satisfies WritableNode as UnfrozenInternalNode;
+      this.#writableNode = writableNode;
     }
 
     return this.#writableNode;
@@ -87,7 +90,10 @@ class ReadWriteNode {
    * This is O(number of properties), regardless of the number of parts. If the draft owns the node, it is frozen in
    * place without copying. The draft can be modified after commit, the next write will copy the committed node.
    */
-  commit(childIds: ReadonlySet<Identifier>, sortedChildIds: FrozenSkipList<Identifier> | undefined): InternalNode {
+  commit(
+    childIds: ReadonlySet<Identifier>,
+    sortedChildIds: FrozenSkipList<Identifier> | undefined
+  ): FrozenInternalNode {
     const node = this.#write();
     const readWritePartOfIds = this.#readWritePartOfIds;
 
@@ -108,10 +114,10 @@ class ReadWriteNode {
     this.#writableNode = undefined;
 
     return (this.#node = freezeNode(
-      node satisfies WritableNode as UnfrozenNode,
+      node satisfies WritableNode as UnfrozenInternalNode,
       childIds,
       sortedChildIds
-    ) satisfies InternalNode);
+    ) satisfies FrozenInternalNode);
   }
 
   /** Gets IDs of parents in `isPartOf` with changes applied. */

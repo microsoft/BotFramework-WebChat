@@ -8,8 +8,8 @@ import createNode from './createNode.ts';
 import { getDateCreatedTime } from './dateCreatedTime.ts';
 import freezeNode from './freezeNode.ts';
 import getPartIds from './getPartIds.ts';
-import type { InternalNode } from './InternalNode.ts';
-import type { UnfrozenNode } from './UnfrozenNode.ts';
+import type { FrozenInternalNode } from './FrozenInternalNode.ts';
+import { unfrozenInternalNodeSchema, type UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
 
 /** Gets a property of the node which is not in the node schema, e.g. `text`. */
 function getProperty(node: object, key: string): unknown {
@@ -113,15 +113,23 @@ scenario(
       );
 
     bdd
-      .given('a node without the cache', () =>
-        parse(nodeSchema, {
+      .given('a node with hasPart which is not a FrozenNodeSet', () =>
+        parse(unfrozenInternalNodeSchema, {
           '@id': '_:conversation',
           '@type': new Set(['Conversation']),
           hasPart: new Set([{ '@id': '_:m-1' }])
         })
       )
-      .when('getPartIds() is called', node => getPartIds(node, 'hasPart'))
-      .then('should build the IDs', (_, partIds) => expect(Array.from(partIds)).toEqual(['_:m-1']));
+      .when('getPartIds() is called', node => {
+        try {
+          return getPartIds(node, 'hasPart');
+        } catch (error) {
+          return error;
+        }
+      })
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(new Error('ASSERTION: hasPart of node "_:conversation" must be a FrozenNodeSet'))
+      );
 
     bdd
       .given('a node without hasPart', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
@@ -155,18 +163,18 @@ scenario(
         parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']) })
       )
       .when('createNode() is called', node => createNode(node))
-      .then('should return UnfrozenNode', (node, unfrozenNode) => {
-        // @ts-expect-error Node is not UnfrozenNode, only nodes created by createNode() are branded.
-        const unbrandedNode: UnfrozenNode = node;
-        const brandedNode: UnfrozenNode = unfrozenNode;
+      .then('should return UnfrozenInternalNode', (node, unfrozenInternalNode) => {
+        // @ts-expect-error Node is not UnfrozenInternalNode, only nodes created by createNode() are branded.
+        const unbrandedNode: UnfrozenInternalNode = node;
+        const brandedNode: UnfrozenInternalNode = unfrozenInternalNode;
 
         expect(brandedNode).toEqual(unbrandedNode);
       })
-      .and('should not be assignable to InternalNode', (_, unfrozenNode) => {
-        // @ts-expect-error UnfrozenNode is not InternalNode, only nodes frozen by freezeNode() are stored in the graph.
-        const internalNode: InternalNode = unfrozenNode;
+      .and('should not be assignable to FrozenInternalNode', (_, unfrozenInternalNode) => {
+        // @ts-expect-error Only nodes frozen by freezeNode() are stored in the graph.
+        const frozenInternalNode: FrozenInternalNode = unfrozenInternalNode;
 
-        expect(internalNode).toBe(unfrozenNode);
+        expect(frozenInternalNode).toBe(unfrozenInternalNode);
       });
 
     bdd

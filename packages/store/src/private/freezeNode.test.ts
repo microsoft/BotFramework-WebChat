@@ -62,7 +62,7 @@ scenario(
       .when(
         'freezeNode() is called again with children',
         node => () =>
-          // @ts-expect-error InternalNode is not UnfrozenNode.
+          // @ts-expect-error FrozenInternalNode is not UnfrozenInternalNode.
           freezeNode(node, new Set(['_:m-2']), undefined)
       )
       .then('should throw', (_, fn) => expect(fn).toThrow(TypeError));
