@@ -10,7 +10,8 @@ scenario(
     bdd.given
       .oneOf([
         ['a blank node identifier', () => '_:m-1'],
-        ['an IRI', () => 'https://example.com/m-1']
+        ['an IRI of https://', () => 'https://example.com/m-1'],
+        ['an IRI of urn:', () => 'urn:com:example:m-1']
       ])
       .when('parsed', value => safeParse(identifierSchema, value))
       .then('should succeed', (_, result) => expect(result.success).toBe(true))
@@ -24,7 +25,8 @@ scenario(
         ['a string without prefix', () => 'm-1'],
         ['an HTTP IRI', () => 'http://example.com/m-1'],
         ['an IRI without host', () => 'https://'],
-        ['an invalid IRI', () => 'https://example .com/']
+        ['an invalid IRI', () => 'https://example .com/'],
+        ['an URN without path', () => 'urn:']
       ])
       .when('parsed', value => safeParse(identifierSchema, value))
       .then('should fail', (_, result) => expect(result.success).toBe(false))
