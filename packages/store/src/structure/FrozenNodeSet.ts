@@ -11,9 +11,18 @@ function toNodeReference(id: Identifier): NodeReference {
   return Object.freeze({ '@id': id });
 }
 
-/** Node references are compared by ID. */
+/**
+ * Node references are compared by ID.
+ *
+ * Keys are prefixed so a node reference never collides with a string of the same ID, e.g. `{ '@id': '_:b' }` and
+ * `'_:b'` are different values.
+ */
 function getEqualityKey(value: unknown): unknown {
-  return value && typeof value === 'object' && '@id' in value ? value['@id'] : value;
+  if (value && typeof value === 'object' && '@id' in value && typeof value['@id'] === 'string') {
+    return `@id:${value['@id']}`;
+  }
+
+  return typeof value === 'string' ? `string:${value}` : value;
 }
 
 /**
