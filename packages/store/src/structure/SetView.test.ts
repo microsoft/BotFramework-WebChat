@@ -73,3 +73,100 @@ scenario(
   },
   NodeTest
 );
+
+/** Calls the function and returns its value or the error thrown. */
+function tryCall<T>(fn: () => T): { readonly error: unknown } | { readonly value: T } {
+  try {
+    return Object.freeze({ value: fn() });
+  } catch (error) {
+    return Object.freeze({ error });
+  }
+}
+
+scenario(
+  'SetView with invalid set-like size',
+  bdd => {
+    for (const name of SET_METHOD_NAMES) {
+      bdd
+        .given('a Set, a FrozenSet, and a set-like object with negative size', () => ({
+          frozenSet: new FrozenSet([1]),
+          other: { has: () => false, keys: () => [].values(), size: -1 },
+          set: new Set([1])
+        }))
+        .when(`${name}() is called on both native Set and FrozenSet`, ({ frozenSet, other, set }) => ({
+          // `name` is from a constant list of Set method names.
+          // eslint-disable-next-line security/detect-object-injection
+          actual: tryCall(() => frozenSet[name](other)),
+          // eslint-disable-next-line security/detect-object-injection
+          expected: tryCall(() => set[name](other))
+        }))
+        .then('native Set should throw RangeError', (_, { expected }) =>
+          expect(expected).toEqual({ error: expect.any(RangeError) })
+        )
+        .and('FrozenSet should throw RangeError, as native Set does', (_, { actual }) =>
+          expect(actual).toEqual({ error: expect.any(RangeError) })
+        );
+    }
+
+    bdd
+      .given('a Set, a FrozenSet, and a set-like object with size of -0.5', () => ({
+        frozenSet: new FrozenSet([1]),
+        other: { has: () => false, keys: () => [].values(), size: -0.5 },
+        set: new Set([1])
+      }))
+      .when('union() is called on both native Set and FrozenSet', ({ frozenSet, other, set }) => ({
+        actual: tryCall(() => Array.from(frozenSet.union(other))),
+        expected: tryCall(() => Array.from(set.union(other)))
+      }))
+      .then('native Set should not throw as ToIntegerOrInfinity(-0.5) is 0', (_, { expected }) =>
+        expect(expected).toEqual({ value: [1] })
+      )
+      .and('FrozenSet should return the same as native Set', (_, { actual, expected }) =>
+        expect(actual).toEqual(expected)
+      );
+  },
+  NodeTest
+);
+
+/** Gets IDs of node references, including duplicates. */
+function toIds(set: Iterable<{ readonly '@id': string }>): string[] {
+  return Array.from(set, ({ '@id': id }) => id);
+}
+
+scenario(
+  'FrozenNodeSet set methods with other set of node references',
+  bdd => {
+    bdd
+      .given('a FrozenNodeSet of _:a and a Set of 2 different node references to _:b', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:b' }, { '@id': '_:b' }])
+      }))
+      .when('union() is called', ({ nodeSet, other }) => nodeSet.union(other))
+      .then('should not duplicate _:b', (_, result) => expect(toIds(result)).toEqual(['_:a', '_:b']));
+
+    bdd
+      .given('a FrozenNodeSet of _:a and a Set of 2 different node references to _:b', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:b' }, { '@id': '_:b' }])
+      }))
+      .when('symmetricDifference() is called', ({ nodeSet, other }) => nodeSet.symmetricDifference(other))
+      .then('should not duplicate _:b', (_, result) => expect(toIds(result)).toEqual(['_:a', '_:b']));
+
+    bdd
+      .given('a FrozenNodeSet of _:a, _:b, _:c and a Set of 2 different node references to _:a', () => ({
+        nodeSet: new FrozenNodeSet(['_:a', '_:b', '_:c']),
+        other: new Set([{ '@id': '_:a' }, { '@id': '_:a' }])
+      }))
+      .when('intersection() is called', ({ nodeSet, other }) => nodeSet.intersection(other))
+      .then('should not duplicate _:a', (_, result) => expect(toIds(result)).toEqual(['_:a']));
+
+    bdd
+      .given('a FrozenNodeSet of _:a and a Set of 2 different node references to _:a', () => ({
+        nodeSet: new FrozenNodeSet(['_:a']),
+        other: new Set([{ '@id': '_:a' }, { '@id': '_:a' }])
+      }))
+      .when('isSupersetOf() is called', ({ nodeSet, other }) => nodeSet.isSupersetOf(other))
+      .then('should be true', (_, result) => expect(result).toBe(true));
+  },
+  NodeTest
+);

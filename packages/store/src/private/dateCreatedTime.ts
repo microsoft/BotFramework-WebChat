@@ -13,6 +13,9 @@ type NodeWithDateCreatedTime = (InternalNode | UnfrozenNode) & {
  * Parses `dateCreated` (ISO timestamp string) as `Date` and returns its epoch time, `Infinity` if not set.
  *
  * ISO timestamps with different time zones (e.g. `+02:00` and `Z`) cannot be compared as string.
+ *
+ * Sub-millisecond digits are dropped (truncated, not rounded), as `Date` does. Children with `dateCreated` within the
+ * same millisecond are sorted by `@id`. The original `dateCreated` string is kept as-is.
  */
 function parseDateCreatedTime(dateCreated: string | undefined): number {
   // eslint-disable-next-line no-restricted-globals
