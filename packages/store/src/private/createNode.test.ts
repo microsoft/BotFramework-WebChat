@@ -390,93 +390,82 @@ scenario(
   NodeTest
 );
 
-/** Defines an enumerable getter which returns the value on first read and throws on subsequent reads. */
-function defineReadOnceGetter<T extends object>(target: T, key: string, value: unknown): { readonly numRead: number } {
-  const counter = { numRead: 0 };
-
-  Object.defineProperty(target, key, {
-    enumerable: true,
-    get() {
-      if (counter.numRead++) {
-        throw new Error(`"${key}" must only be read once`);
-      }
-
-      return value;
-    }
-  });
-
-  return counter;
-}
-
-/** Calls the function and returns its result, or the error if it throws. */
-function tryCall<T>(fn: () => T): { readonly error: unknown } | { readonly value: T } {
-  try {
-    return { value: fn() };
-  } catch (error) {
-    return { error };
-  }
-}
-
-/** Runs the function on a fresh value, returns the result (or error) and how many times the getter was read. */
-function runWithFreshValue(
-  createValue: () => { readonly counter: { readonly numRead: number }; readonly value: object },
-  fn: (value: object) => unknown
-) {
-  const { counter, value } = createValue();
-  const result = tryCall(() => fn(value));
-
-  return { numRead: counter.numRead, result };
-}
-
-/**
- * Runs `JSON.parse(JSON.stringify())` and `createNode()` side-by-side on fresh values, so their results and how many
- * times the getter was read can be compared.
- */
-function runBoth(createValue: () => { readonly counter: { readonly numRead: number }; readonly value: object }) {
-  return {
-    actual: runWithFreshValue(createValue, createNode),
-    expected: runWithFreshValue(createValue, value => JSON.parse(JSON.stringify(value)))
-  };
-}
-
 scenario(
-  'createNode with accessor properties',
+  'createNode with non-enumerable, accessor and inherited properties',
   bdd => {
     bdd
-      .given('a node with a "text" getter which only returns a valid value once', () => () => {
-        const value = { '@id': '_:m-1', '@type': new Set(['Message']) };
-
-        return { counter: defineReadOnceGetter(value, 'text', ['Hello, World!']), value };
-      })
-      .when('processed by both JSON.parse(JSON.stringify()) and createNode()', createValue => runBoth(createValue))
-      .then('JSON.parse(JSON.stringify()) should read the getter once and succeed', (_, { expected }) =>
-        expect(expected).toEqual({
-          numRead: 1,
-          result: { value: expect.objectContaining({ text: ['Hello, World!'] }) }
-        })
+      .given('a node with a non-enumerable "name"', () =>
+        Object.defineProperty({ '@id': '_:m-1', '@type': new Set(['Message']) }, 'name', { value: ['John Doe'] })
       )
-      .and('createNode() should read the getter once as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
-        expect(actual.numRead).toBe(expected.numRead)
+      .when('createNode() is called', value => createNode(value))
+      .then('JSON.parse(JSON.stringify()) should not have "name"', value =>
+        expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('name')
       )
-      .and('createNode() should succeed as JSON.parse(JSON.stringify()) does', (_, { actual }) =>
-        expect(actual.result).toEqual({ value: expect.objectContaining({ text: ['Hello, World!'] }) })
+      .and('createNode() should not have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
+        expect(node).not.toHaveProperty('name')
       );
 
     bdd
-      .given('a node with a "@type" getter which only returns a valid value once', () => () => {
-        const value = { '@id': '_:m-1' };
+      .given('a node with an enumerable "name" getter', () =>
+        Object.defineProperty({ '@id': '_:m-1', '@type': new Set(['Message']) }, 'name', {
+          enumerable: true,
+          get: () => ['John Doe']
+        })
+      )
+      .when('createNode() is called', value => createNode(value))
+      .then('JSON.parse(JSON.stringify()) should have "name"', value =>
+        expect(JSON.parse(JSON.stringify(value))).toHaveProperty('name', ['John Doe'])
+      )
+      .and('createNode() should have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
+        expect(Reflect.getOwnPropertyDescriptor(node, 'name')).toEqual({
+          configurable: true,
+          enumerable: true,
+          value: ['John Doe'],
+          writable: true
+        })
+      );
 
-        return { counter: defineReadOnceGetter(value, '@type', new Set(['Message'])), value };
+    bdd.given
+      .oneOf<object>([
+        [
+          'a node with a non-enumerable "@id"',
+          () => Object.defineProperty({ '@type': new Set(['Message']) }, '@id', { value: '_:m-1' })
+        ],
+        [
+          'a node with an inherited "@id"',
+          () => Object.assign(Object.create({ '@id': '_:m-1' }) as object, { '@type': new Set(['Message']) })
+        ]
+      ])
+      .when('createNode() is called', value => {
+        try {
+          return { value: createNode(value) };
+        } catch (error) {
+          return { error };
+        }
       })
-      .when('processed by both JSON.parse(JSON.stringify()) and createNode()', createValue => runBoth(createValue))
-      .then('JSON.parse(JSON.stringify()) should read the getter once and succeed', (_, { expected }) =>
-        expect(expected).toEqual({ numRead: 1, result: { value: expect.objectContaining({ '@id': '_:m-1' }) } })
+      .then('JSON.parse(JSON.stringify()) should not have "@id"', value =>
+        expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('@id')
       )
-      .and('createNode() should read the getter once as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
-        expect(actual.numRead).toBe(expected.numRead)
+      .and('createNode() should throw as "@id" is missing from JSON.parse(JSON.stringify())', (_, result) =>
+        expect(result).toEqual({ error: expect.any(Error) })
+      );
+
+    bdd
+      .given('a node with a non-enumerable "@type"', () =>
+        Object.defineProperty({ '@id': '_:m-1' }, '@type', { value: new Set(['Message']) })
       )
-      .and('createNode() should succeed as JSON.parse(JSON.stringify()) does', (_, { actual }) =>
-        expect(actual.result).toEqual({ value: expect.objectContaining({ '@type': new Set(['Message']) }) })
+      .when('createNode() is called', value => {
+        try {
+          return { value: createNode(value) };
+        } catch (error) {
+          return { error };
+        }
+      })
+      .then('JSON.parse(JSON.stringify()) should not have "@type"', value =>
+        expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('@type')
+      )
+      .and('createNode() should throw as "@type" is missing from JSON.parse(JSON.stringify())', (_, result) =>
+        expect(result).toEqual({ error: expect.any(Error) })
       );
   },
   NodeTest

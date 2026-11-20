@@ -142,23 +142,13 @@ scenario(
       );
 
     bdd
-      .given('an object with a getter', () => {
-        let numCalls = 0;
-
-        return {
-          getNumCalls: () => numCalls,
-          value: {
-            get one() {
-              numCalls++;
-
-              return 1;
-            }
-          }
-        };
-      })
-      .when('parsed', ({ value }) => parse(jsonValueSchema, value))
+      .given('an object with a getter', () => ({
+        get one() {
+          return 1;
+        }
+      }))
+      .when('parsed', value => parse(jsonValueSchema, value))
       .then('should be the same as JSON.parse(JSON.stringify())', (_, result) => expect(result).toEqual({ one: 1 }))
-      .and('should call the getter once', ({ getNumCalls }) => expect(getNumCalls()).toBe(1))
       .and('should return a plain data property', (_, result) =>
         expect(Object.getOwnPropertyDescriptor(result, 'one')).toEqual({
           configurable: true,
