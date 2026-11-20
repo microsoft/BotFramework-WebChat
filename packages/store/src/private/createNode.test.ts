@@ -389,3 +389,118 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'createNode with non-enumerable, accessor and inherited properties',
+  bdd => {
+    bdd
+      .given('a node with a non-enumerable "name"', () =>
+        Object.defineProperty({ '@id': '_:m-1', '@type': new Set(['Message']) }, 'name', { value: ['John Doe'] })
+      )
+      .when('createNode() is called', value => createNode(value))
+      .then('JSON.parse(JSON.stringify()) should not have "name"', value =>
+        expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('name')
+      )
+      .and('createNode() should not have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
+        expect(node).not.toHaveProperty('name')
+      );
+
+    bdd
+      .given('a node with an enumerable "name" getter', () =>
+        Object.defineProperty({ '@id': '_:m-1', '@type': new Set(['Message']) }, 'name', {
+          enumerable: true,
+          get: () => ['John Doe']
+        })
+      )
+      .when('createNode() is called', value => createNode(value))
+      .then('JSON.parse(JSON.stringify()) should have "name"', value =>
+        expect(JSON.parse(JSON.stringify(value))).toHaveProperty('name', ['John Doe'])
+      )
+      .and('createNode() should have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
+        expect(Reflect.getOwnPropertyDescriptor(node, 'name')).toEqual({
+          configurable: true,
+          enumerable: true,
+          value: ['John Doe'],
+          writable: true
+        })
+      );
+
+    bdd.given
+      .oneOf<object>([
+        [
+          'a node with a non-enumerable "@id"',
+          () => Object.defineProperty({ '@type': new Set(['Message']) }, '@id', { value: '_:m-1' })
+        ],
+        [
+          'a node with an inherited "@id"',
+          () => Object.assign(Object.create({ '@id': '_:m-1' }) as object, { '@type': new Set(['Message']) })
+        ]
+      ])
+      .when('createNode() is called', value => {
+        try {
+          return { value: createNode(value) };
+        } catch (error) {
+          return { error };
+        }
+      })
+      .then('JSON.parse(JSON.stringify()) should not have "@id"', value =>
+        expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('@id')
+      )
+      .and('createNode() should throw as "@id" is missing from JSON.parse(JSON.stringify())', (_, result) =>
+        expect(result).toEqual({ error: expect.any(Error) })
+      );
+
+    bdd
+      .given('a node with a non-enumerable "@type"', () =>
+        Object.defineProperty({ '@id': '_:m-1' }, '@type', { value: new Set(['Message']) })
+      )
+      .when('createNode() is called', value => {
+        try {
+          return { value: createNode(value) };
+        } catch (error) {
+          return { error };
+        }
+      })
+      .then('JSON.parse(JSON.stringify()) should not have "@type"', value =>
+        expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('@type')
+      )
+      .and('createNode() should throw as "@type" is missing from JSON.parse(JSON.stringify())', (_, result) =>
+        expect(result).toEqual({ error: expect.any(Error) })
+      );
+  },
+  NodeTest
+);
+
+scenario(
+  'createNode with null-prototype JSON literal',
+  bdd => {
+    bdd
+      .given('a node with a JSON literal of a frozen null-prototype object', () => ({
+        '@id': '_:m-1',
+        '@type': new Set(['Message']),
+        text: Object.freeze([
+          Object.freeze({
+            '@type': '@json',
+            '@value': Object.freeze(Object.assign(Object.create(null) as Record<string, unknown>, { one: 1 }))
+          })
+        ])
+      }))
+      .when('@value is processed by both JSON.parse(JSON.stringify()) and createNode()', value => {
+        const [literal] = getProperty(createNode(value), 'text') as readonly { readonly '@value': object }[];
+        const [originalLiteral] = value.text;
+
+        return {
+          actual: Object.getPrototypeOf(literal?.['@value']),
+          expected: Object.getPrototypeOf(JSON.parse(JSON.stringify(originalLiteral?.['@value'])))
+        };
+      })
+      .then('JSON.parse(JSON.stringify()) should return a plain object', (_, { expected }) =>
+        expect(expected).toBe(Object.prototype)
+      )
+      .and(
+        'createNode() should return a plain object as JSON.parse(JSON.stringify()) does',
+        (_, { actual, expected }) => expect(actual).toBe(expected)
+      );
+  },
+  NodeTest
+);

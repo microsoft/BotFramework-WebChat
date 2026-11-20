@@ -64,7 +64,7 @@ class ReadWriteSetImpl<T> extends SetView<T> implements ReadWriteSet<T> {
   }
 
   keys(): SetIterator<T> {
-    return this.#overlay.toMap().keys();
+    return this.#overlay.keys();
   }
 }
 

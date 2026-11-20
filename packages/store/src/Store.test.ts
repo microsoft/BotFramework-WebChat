@@ -2697,3 +2697,68 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'getSortedParts with sub-millisecond dateCreated',
+  bdd => {
+    bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with dateCreated within the same millisecond are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0009000Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
+        })
+      )
+      .then('should drop sub-millisecond and sort by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b'])
+      )
+      .and('should keep dateCreated as-is', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-a')).toHaveProperty('dateCreated', '2026-01-01T00:00:00.0009000Z')
+      );
+
+    bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with nanosecond precision dateCreated are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.000000002Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.000000001Z');
+        })
+      )
+      .then('should drop sub-millisecond and sort by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b'])
+      );
+
+    bdd
+      .given('a store with conversations', () => createStoreWithConversations())
+      .when('children with dateCreated in different milliseconds are added', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0029999Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0010001Z');
+        })
+      )
+      .then('should sort by dateCreated in milliseconds', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-b', '_:m-a'])
+      );
+
+    bdd
+      .given('a store with 2 children within the same millisecond', () => {
+        const { controller, store } = createStoreWithConversations();
+
+        controller.edit(transaction => {
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0001000Z');
+          upsertDatedMessage(transaction, '_:m-b', ['_:c-1'], '2026-01-01T00:00:00.0005000Z');
+        });
+
+        return { controller, store };
+      })
+      .when('dateCreated of a child is changed within the same millisecond', ({ controller }) =>
+        controller.edit(transaction =>
+          upsertDatedMessage(transaction, '_:m-a', ['_:c-1'], '2026-01-01T00:00:00.0009000Z')
+        )
+      )
+      .then('should keep sorting by @id', ({ store }) =>
+        expect(getSortedPartIdsOf(store, '_:c-1')).toEqual(['_:m-a', '_:m-b'])
+      );
+  },
+  NodeTest
+);
