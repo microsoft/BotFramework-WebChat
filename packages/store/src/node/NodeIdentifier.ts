@@ -1,4 +1,4 @@
-import { pipe, startsWith, string, union, url, type GenericSchema, type InferOutput } from 'valibot';
+import { check, pipe, string, union, url, type GenericSchema, type InferOutput } from 'valibot';
 import { blankNodeIdentifierSchema } from './BlankNodeIdentifier.ts';
 
 /**
@@ -12,7 +12,10 @@ const identifierSchema = union(
     pipe(
       string('Identifier must be a string'),
       url('Identifier must be an IRI'),
-      startsWith('https://', 'Identifier must starts with https://')
+      check(
+        value => value.startsWith('https://') || (value.startsWith('urn:') && !!new URL(value).pathname),
+        'Identifier must starts with https:// or urn:'
+      )
     ) as GenericSchema<`https://${string}`>
   ],
   '@id is required and must be an IRI or blank node identifier'
