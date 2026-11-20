@@ -1,24 +1,36 @@
-import type { Node } from '../node/Node.ts';
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
+import type { FrozenInternalNode } from './FrozenInternalNode.ts';
+import type { UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
 
 type PartProperty = 'hasPart' | 'isPartOf';
 
 const EMPTY_PART_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
 
 /**
- * Gets IDs of nodes in the `hasPart` or `isPartOf` property.
+ * Gets IDs of nodes in the `hasPart` or `isPartOf` property in O(1) without copying.
  *
- * Returns the IDs in O(1) without copying if the property is a `FrozenNodeSet` (i.e. the node is created by
- * `createNode()`), otherwise, builds them in O(k).
+ * Only accepts nodes created by `createNode()` or frozen by `freezeNode()`, which always store the property as
+ * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createNode()`.
  */
-function getPartIds(node: Pick<Node, PartProperty> | undefined, property: PartProperty): ReadonlySet<Identifier> {
+function getPartIds(
+  node: FrozenInternalNode | UnfrozenInternalNode | undefined,
+  property: PartProperty
+): ReadonlySet<Identifier> {
   const references = property === 'hasPart' ? node?.hasPart : node?.isPartOf;
 
-  return references?.size
-    ? (getNodeSetIds(references) ?? new FrozenSet(Array.from(references, ({ '@id': id }) => id)))
-    : EMPTY_PART_IDS;
+  if (!references?.size) {
+    return EMPTY_PART_IDS;
+  }
+
+  const ids = getNodeSetIds(references);
+
+  if (!ids) {
+    throw new Error(`ASSERTION: ${property} of node "${node?.['@id']}" must be a FrozenNodeSet`);
+  }
+
+  return ids;
 }
 
 export default getPartIds;

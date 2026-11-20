@@ -1,5 +1,5 @@
 import { pipe, rawTransform, unknown, type GenericSchema } from 'valibot';
-import { isDangerousKey } from '../private/deepFreeze.ts';
+import isDangerousKey from '../private/isDangerousKey.ts';
 
 type JSONValue =
   | string
