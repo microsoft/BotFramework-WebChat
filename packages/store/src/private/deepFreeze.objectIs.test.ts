@@ -31,7 +31,7 @@ scenario(
 
     // Note: we cannot test 0 vs. -0 because Array.from(new Set([-0])) returns [0], instead of [-0].
     bdd
-      .given('a Set with 0 as original and a Set with -0 as validated', () => {
+      .given('a Set with NaN as original and a Set with NaN as validated', () => {
         const original = new FrozenSet([NaN]);
         const copy = new FrozenSet([NaN]);
 
