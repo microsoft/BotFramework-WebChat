@@ -27,7 +27,7 @@ function isSameIds(ids: ReadonlySet<string>, value: ReadonlySet<NodeReference>):
  *   as-is, i.e. unchanged parts are reused
  * - Otherwise, IDs are copied from the validated value
  *
- * @param originalValue Value of the own data property before validation, `undefined` for accessor property.
+ * @param originalValue Value of the property before validation.
  * @param value Value after validation, validation always returns a new `Set`.
  */
 function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReference>): FrozenNodeSet {
@@ -39,20 +39,10 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
 }
 
 /**
- * Gets the value of an own data property without calling getters, as they could have side effects or return a
- * different value on every read. Returns `undefined` for accessor properties, so the validated value is copied.
- *
- * @param target Object before validation, it is an object as it passed validation.
- */
-function getOwnDataPropertyValue(target: object, key: string): unknown {
-  const descriptor = Reflect.getOwnPropertyDescriptor(target, key);
-
-  return descriptor && 'value' in descriptor ? descriptor.value : undefined;
-}
-
-/**
  * Validates the value and creates an unfrozen node, call `freezeNode()` to freeze it for storing in the graph.
  *
+ * - Like `JSON.stringify()`, only own enumerable string-keyed properties are read, each of them is read once
+ *   - Non-enumerable or inherited properties are ignored, thus, required properties (e.g. `@id`) defined this way throw
  * - The node is validated against the node schema
  * - The node is a plain object, dangerous keys (e.g. `__proto__`) are skipped, see `isDangerousKey()`
  * - Property values are deeply frozen, values which are already deeply immutable are reused as-is, see `deepFreeze()`
@@ -63,7 +53,8 @@ function getOwnDataPropertyValue(target: object, key: string): unknown {
  * All nodes stored in the graph must be created by this function, the returned node is branded as `UnfrozenNode`.
  */
 function createNode(value: unknown): UnfrozenNode {
-  const safeNode = parse(nodeSchema, value);
+  const originalEntries = value && typeof value === 'object' ? new Map(Object.entries(value)) : undefined;
+  const safeNode = parse(nodeSchema, originalEntries ? Object.fromEntries(originalEntries) : value);
 
   return attachDateCreatedTime(
     Object.fromEntries(
@@ -72,8 +63,7 @@ function createNode(value: unknown): UnfrozenNode {
         .map(([key, safeValue]) => {
           const safePartValue =
             key === 'hasPart' ? safeNode.hasPart : key === 'isPartOf' ? safeNode.isPartOf : undefined;
-          // `value` is an object as it passed validation.
-          const originalValue = getOwnDataPropertyValue(value as object, key);
+          const originalValue = originalEntries?.get(key);
 
           return [
             key,
