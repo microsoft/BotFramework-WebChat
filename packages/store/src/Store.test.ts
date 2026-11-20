@@ -1959,6 +1959,22 @@ scenario(
                 })
               )
             )
+        ],
+        [
+          'upsert() is called inside a getter of the node returned by the updater',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => ({
+                  ...node!,
+                  get text() {
+                    upsertMessage(transaction, '_:m-3');
+
+                    return ['Hello'];
+                  }
+                }))
+              )
+            )
         ]
       ])
       .then('should throw', (_, error) =>

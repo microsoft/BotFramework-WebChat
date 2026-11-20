@@ -30,6 +30,7 @@ import {
   setDraftPartOf,
   type Draft
 } from './private/draft.ts';
+import type { DraftNode } from './private/DraftNode.ts';
 import type { FrozenInternalNode } from './private/FrozenInternalNode.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
 import getPartIds from './private/getPartIds.ts';
@@ -462,20 +463,19 @@ class Store {
             // Clean read: the node in the graph is frozen and up-to-date.
             // Dirty read: a new unfrozen copy with changes made in this transaction, O(number of properties).
             const node: Node | undefined = draftToRead ? readDraft(draftToRead, shownChildIds) : nextState.get(safeId);
-            let nextNode: NodeInit<T>;
+            let safeNode: DraftNode;
 
             updating = true;
 
             try {
-              nextNode = updater(node);
+              // Reading the returned node could call userland code (e.g. getters), it must be read inside the lock.
+              safeNode = createNode(updater(node));
             } finally {
               updating = false;
 
               // OPINION: The node is writable only inside the updater, it is locked after the updater returns or throws.
               node && Object.freeze(node);
             }
-
-            const safeNode = createNode(nextNode);
 
             if (safeNode['@id'] !== safeId) {
               throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);
