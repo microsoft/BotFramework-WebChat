@@ -445,86 +445,38 @@ class Overlay<K, V> {
    *
    * Entries of the base version come first in its order, except deleted and moved keys, then new and moved keys in
    * the order they are set, same as the order after `commit()`.
+   *
+   * If committed during iteration, continues from the same position: presence and values are read by `has()` and
+   * `get()`, which read the committed version after commit. The base version, the changes, and the moved keys are kept
+   * from the start of iteration, as `commit()` does not reorder or remove their keys.
    */
-  *#iterateUncommitted(): Generator<readonly [K, V], undefined, unknown> {
+  *#iterate<T>(project: (key: K, value: V) => T): Generator<T, undefined, unknown> {
     const base = this.#base;
     const changes = this.#changes;
+    const movedKeys = this.#movedKeys;
 
-    for (const [key, baseValue] of base.entries()) {
-      if (!changes.has(key)) {
-        yield [key, baseValue];
-      } else {
-        const change = changes.get(key);
-
-        if (change !== DELETED && !this.#movedKeys.has(key)) {
-          yield [key, change satisfies V | undefined as V];
-        }
-      }
+    for (const key of base.keys()) {
+      this.has(key) && !movedKeys.has(key) && (yield project(key, this.get(key) satisfies V | undefined as V));
     }
 
     // `Map` iteration is live, keys set during iteration are visited.
-    for (const [key, change] of changes) {
-      if (change !== DELETED && !(base.has(key) && !this.#movedKeys.has(key))) {
-        yield [key, change];
-      }
-    }
-  }
-
-  /**
-   * Iterates the content, see `#iterateUncommitted()`. If committed during iteration, continues on the committed
-   * version, which has the same content and order, as the changes are taken over by the committed version.
-   *
-   * @param iterate Iterates the committed version, e.g. `storage => storage.keys()`.
-   * @param project Projects an entry, same as `iterate`, e.g. `key => key`.
-   */
-  *#iterate<T>(
-    iterate: (storage: VersionedStorage<K, V>) => MapIterator<T>,
-    project: (key: K, value: V) => T
-  ): Generator<T, undefined, unknown> {
-    const iterator = this.#iterateUncommitted();
-
-    for (let index = 0; ; index++) {
-      if (this.#committed) {
-        const rest = iterate(this.#base);
-
-        for (let numSkipped = 0; numSkipped < index; numSkipped++) {
-          rest.next();
-        }
-
-        yield* rest;
-
-        return;
-      }
-
-      const result = iterator.next();
-
-      if (result.done) {
-        return;
-      }
-
-      yield project(...result.value);
+    for (const key of changes.keys()) {
+      this.has(key) &&
+        !(base.has(key) && !movedKeys.has(key)) &&
+        (yield project(key, this.get(key) satisfies V | undefined as V));
     }
   }
 
   entries(): MapIterator<[K, V]> {
-    return this.#iterate(
-      storage => storage.entries(),
-      (key, value) => [key, value]
-    );
+    return this.#iterate((key, value) => [key, value]);
   }
 
   keys(): MapIterator<K> {
-    return this.#iterate(
-      storage => storage.keys(),
-      key => key
-    );
+    return this.#iterate(key => key);
   }
 
   values(): MapIterator<V> {
-    return this.#iterate(
-      storage => storage.values(),
-      (_, value) => value
-    );
+    return this.#iterate((_, value) => value);
   }
 
   /**

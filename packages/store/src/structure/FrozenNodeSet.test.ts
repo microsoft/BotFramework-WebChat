@@ -136,3 +136,31 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'FrozenNodeSet Set methods should not treat a string as a node reference with the same ID',
+  bdd => {
+    bdd.given
+      .oneOf<{ readonly nodeSet: FrozenNodeSet; readonly other: ReadonlySet<unknown> }>([
+        [
+          'a FrozenNodeSet and a Set of a string followed by a node reference of the same ID',
+          () => ({ nodeSet: new FrozenNodeSet(['_:a']), other: new Set(['_:b', Object.freeze({ '@id': '_:b' })]) })
+        ],
+        [
+          'a FrozenNodeSet and a Set of a node reference followed by a string of the same ID',
+          () => ({ nodeSet: new FrozenNodeSet(['_:a']), other: new Set([Object.freeze({ '@id': '_:b' }), '_:b']) })
+        ]
+      ])
+      .when('union() and symmetricDifference() are called', ({ nodeSet, other }) => ({
+        symmetricDifference: nodeSet.symmetricDifference(other),
+        union: nodeSet.union(other)
+      }))
+      .then('union() should keep both the string and the node reference', ({ other }, { union }) =>
+        expect(Array.from(union)).toEqual([{ '@id': '_:a' }, ...other])
+      )
+      .and('symmetricDifference() should keep both the string and the node reference', ({ other }, result) =>
+        expect(Array.from(result.symmetricDifference)).toEqual([{ '@id': '_:a' }, ...other])
+      );
+  },
+  NodeTest
+);
