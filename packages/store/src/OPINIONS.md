@@ -23,6 +23,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 - Assume Schema.org but not strictly validated
    - Schema.org is huge spec, we prefer "assume validated by writer" and "assume reader will validate and drop invalid"
 - Synchronous transactional edit and one session at a time
+- Updaters must be pure functions of the node they receive, calling transaction methods (`upsert()`/`delete()`) inside them is not allowed (for now)
 - Always plural: singular value is stored in single-item array
 - `hasPart` and `isPartOf` must be always inverse of other, validate on commit, offer helper to fix them
 - Every node must have a single and unique `@id`, no multiple `@id`

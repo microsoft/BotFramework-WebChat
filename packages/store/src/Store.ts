@@ -52,6 +52,8 @@ interface StoreController {
 interface StoreTransaction {
   /**
    * Deletes a node and removes all references pointing to the deleted node from other nodes.
+   *
+   * `delete()` cannot be called inside an updater of `upsert()`.
    */
   delete(id: Identifier): void;
 
@@ -72,6 +74,10 @@ interface StoreTransaction {
    * identifier) must identify at most one node in the graph. It is only used by `queryByIdentifier()`.
    *
    * Other than named properties (e.g. `@id`, `@type`), all property values must be an array, e.g. `text: ['Hello']`.
+   *
+   * The updater must be a pure function of the node it receives. Transaction methods (i.e. `upsert()` and `delete()`)
+   * cannot be called inside the updater, they will throw without making any changes. Reading the store (e.g.
+   * `getSnapshot()`) inside the updater is allowed.
    */
   upsert<T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void;
 }
@@ -289,6 +295,10 @@ class Store {
     const affectedNodeIds = new Set<Identifier>();
     let ended = false;
 
+    // OPINION: Updaters must be pure functions of the node they receive, transaction methods cannot be called while an
+    //          updater is running. More restriction at first, relax later.
+    let updating = false;
+
     // Key is the ID of children in `hasPart` which are not in the graph yet, value is IDs of their parents.
     // When the child is upserted, the parents will be added to its `isPartOf`.
     const pendingParentIds = new Map<Identifier, Set<Identifier>>();
@@ -309,6 +319,12 @@ class Store {
     const assertNotEnded = (): void => {
       if (ended) {
         throw new Error('Transaction has ended, it cannot be used after the transactor returns');
+      }
+    };
+
+    const assertNotUpdating = (methodName: 'delete' | 'upsert'): void => {
+      if (updating) {
+        throw new Error(`${methodName}() cannot be called inside an updater`);
       }
     };
 
@@ -370,6 +386,7 @@ class Store {
         Object.freeze({
           delete: (id: Identifier): void => {
             assertNotEnded();
+            assertNotUpdating('delete');
 
             const safeId = parse(identifierSchema, id);
             const existed = nextStateReader.has(safeId);
@@ -411,6 +428,7 @@ class Store {
           },
           upsert: <T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void => {
             assertNotEnded();
+            assertNotUpdating('upsert');
 
             const safeId = parse(identifierSchema, id);
 
@@ -418,7 +436,18 @@ class Store {
               throw new TypeError('updater must be a function');
             }
 
-            const safeNode = createNode(updater(getNode(safeId)));
+            const node = getNode(safeId);
+            let nextNode: NodeInit<T>;
+
+            updating = true;
+
+            try {
+              nextNode = updater(node);
+            } finally {
+              updating = false;
+            }
+
+            const safeNode = createNode(nextNode);
 
             if (safeNode['@id'] !== safeId) {
               throw new Error(`Node returned from updater must have @id of "${safeId}", cannot change @id`);

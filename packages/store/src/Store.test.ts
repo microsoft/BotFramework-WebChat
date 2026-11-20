@@ -1584,6 +1584,175 @@ scenario(
 );
 
 scenario(
+  'transaction methods inside an updater',
+  bdd => {
+    bdd
+      .given('a store with 2 messages and a listener', () => {
+        const { controller, store } = createStore();
+        const numCalls = { value: 0 };
+
+        controller.edit(transaction => {
+          upsertMessage(transaction, '_:m-1');
+          upsertMessage(transaction, '_:m-2');
+        });
+
+        store.subscribe(() => numCalls.value++);
+
+        return { controller, numCalls, snapshot: store.getSnapshot(), store };
+      })
+      .when.oneOf<unknown>([
+        [
+          'upsert() is called inside the updater',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => {
+                  upsertMessage(transaction, '_:m-3');
+
+                  return { ...node!, text: ['Hello'] };
+                })
+              )
+            )
+        ],
+        [
+          'delete() is called inside the updater',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', node => {
+                  transaction.delete('_:m-2');
+
+                  return { ...node!, text: ['Hello'] };
+                })
+              )
+            )
+        ]
+      ])
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(
+          expect.objectContaining({
+            message: expect.stringMatching(/^(delete|upsert)\(\) cannot be called inside an updater$/u)
+          })
+        )
+      )
+      .and('should not change the store', ({ snapshot, store }) => expect(store.getSnapshot()).toBe(snapshot))
+      .and('should not notify', ({ numCalls }) => expect(numCalls.value).toBe(0));
+
+    bdd
+      .given('a store with 2 messages', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          upsertMessage(transaction, '_:m-1');
+          upsertMessage(transaction, '_:m-2');
+        });
+
+        return { controller, m2: store.getSnapshot().get('_:m-2'), store };
+      })
+      .when.oneOf<{ readonly errors: readonly unknown[] }>([
+        [
+          'upsert() is called inside the updater and the error is caught',
+          ({ controller }) => {
+            const errors: unknown[] = [];
+
+            controller.edit(transaction =>
+              transaction.upsert('_:m-1', node => {
+                errors.push(catchError(() => upsertMessage(transaction, '_:m-3')));
+                errors.push(catchError(() => upsertMessage(transaction, '_:m-2', '_:m-1')));
+
+                return { ...node!, text: ['Hello'] };
+              })
+            );
+
+            return { errors };
+          }
+        ],
+        [
+          'delete() is called inside the updater and the error is caught',
+          ({ controller }) => {
+            const errors: unknown[] = [];
+
+            controller.edit(transaction =>
+              transaction.upsert('_:m-1', node => {
+                errors.push(catchError(() => transaction.delete('_:m-2')));
+
+                return { ...node!, text: ['Hello'] };
+              })
+            );
+
+            return { errors };
+          }
+        ]
+      ])
+      .then('should throw inside the updater', (_, { errors }) => {
+        expect(errors.length).toBeGreaterThan(0);
+
+        for (const error of errors) {
+          expect(error).toEqual(
+            expect.objectContaining({ message: expect.stringMatching(/cannot be called inside an updater$/u) })
+          );
+        }
+      })
+      .and('should commit the outer upsert', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toEqual({
+          '@id': '_:m-1',
+          '@type': new Set(['Message']),
+          text: ['Hello']
+        })
+      )
+      .and('should not add the node of the nested upsert', ({ store }) =>
+        expect(store.getSnapshot().has('_:m-3')).toBe(false)
+      )
+      .and('should not change the node of the nested call', ({ m2, store }) =>
+        expect(store.getSnapshot().get('_:m-2')).toBe(m2)
+      );
+
+    bdd
+      .given('a store with 2 messages', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          upsertMessage(transaction, '_:m-1');
+          upsertMessage(transaction, '_:m-2');
+        });
+
+        return { controller, store };
+      })
+      .when.oneOf([
+        [
+          'upsert() and delete() are called after an updater returns',
+          ({ controller }) =>
+            controller.edit(transaction => {
+              transaction.upsert('_:m-1', node => ({ ...node!, text: ['Hello'] }));
+              upsertMessage(transaction, '_:m-3');
+              transaction.delete('_:m-2');
+            })
+        ],
+        [
+          'upsert() and delete() are called after an updater throws and the error is caught',
+          ({ controller }) =>
+            controller.edit(transaction => {
+              catchError(() =>
+                transaction.upsert('_:m-1', () => {
+                  throw new Error('artificial');
+                })
+              );
+              transaction.upsert('_:m-1', node => ({ ...node!, text: ['Hello'] }));
+              upsertMessage(transaction, '_:m-3');
+              transaction.delete('_:m-2');
+            })
+        ]
+      ])
+      .then('should upsert', ({ store }) => {
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('text', ['Hello']);
+        expect(store.getSnapshot().has('_:m-3')).toBe(true);
+      })
+      .and('should delete', ({ store }) => expect(store.getSnapshot().has('_:m-2')).toBe(false));
+  },
+  NodeTest
+);
+
+scenario(
   'generated hasPart',
   bdd => {
     bdd
