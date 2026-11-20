@@ -250,3 +250,93 @@ scenario(
   },
   NodeTest
 );
+
+/** Takes the first key from the iterator, modifies the map, then iterates the rest. */
+function iterateWithChange(
+  keys: Iterator<string>,
+  change: () => void
+): { readonly first: string | undefined; readonly rest: readonly string[] } {
+  const first = keys.next().value;
+
+  change();
+
+  const rest: string[] = [];
+
+  for (let result = keys.next(); !result.done; result = keys.next()) {
+    rest.push(result.value);
+  }
+
+  return Object.freeze({ first, rest: Object.freeze(rest) });
+}
+
+scenario(
+  'Overlay iterator should keep its position across commit',
+  bdd => {
+    bdd
+      .given(
+        'an overlay of [a, b, c]',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2],
+              ['c', 3]
+            ])
+          )
+      )
+      .when('the visited key is deleted then committed while iterating keys()', storage => {
+        const overlay = storage.mutate();
+
+        return iterateWithChange(overlay.keys(), () => {
+          overlay.delete('a');
+          overlay.commit();
+        });
+      })
+      .then('should visit the rest of the keys', (_, { first, rest }) => {
+        expect(first).toBe('a');
+        expect(rest).toEqual(['b', 'c']);
+      })
+      .and('should iterate the same as native Map', (storage, actual) => {
+        const map = new Map(storage.toMap());
+
+        expect(actual).toEqual(iterateWithChange(map.keys(), () => map.delete('a')));
+      });
+
+    bdd
+      .given(
+        'an overlay of [a, b, c]',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2],
+              ['c', 3]
+            ])
+          )
+      )
+      .when('the visited key is deleted, set again, then committed while iterating keys()', storage => {
+        const overlay = storage.mutate();
+
+        return iterateWithChange(overlay.keys(), () => {
+          overlay.delete('a');
+          overlay.set('a', 100);
+          overlay.commit();
+        });
+      })
+      .then('should visit the rest of the keys, then the reinserted key', (_, { first, rest }) => {
+        expect(first).toBe('a');
+        expect(rest).toEqual(['b', 'c', 'a']);
+      })
+      .and('should iterate the same as native Map', (storage, actual) => {
+        const map = new Map(storage.toMap());
+
+        expect(actual).toEqual(
+          iterateWithChange(map.keys(), () => {
+            map.delete('a');
+            map.set('a', 100);
+          })
+        );
+      });
+  },
+  NodeTest
+);
