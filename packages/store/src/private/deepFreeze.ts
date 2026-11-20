@@ -55,7 +55,8 @@ function getDataPropertyValue(object: unknown, key: string): unknown {
  *
  * Caveats which `Object.isFrozen()` does not check, they cannot be reused and must be copied:
  *
- * - Prototype other than `Object.prototype`, `null`, or `Array.prototype`, e.g. `Object.create(mutablePrototype)`
+ * - Prototype other than `Object.prototype` or `Array.prototype`, e.g. `Object.create(mutablePrototype)`, and
+ *   `Object.create(null)`, which `JSON.parse(JSON.stringify())` turns into a plain object
  * - Symbol keys or non-enumerable properties, they will not be copied
  * - Getters, they could return a different value on every read (checked by `getDataPropertyValue()`)
  * - Arrays with holes or extra properties (checked by number of keys)
@@ -75,7 +76,7 @@ function getNumReusableKeys(value: object): number | undefined {
     return prototype === Array.prototype ? keys.length - 1 : undefined;
   }
 
-  return prototype === Object.prototype || prototype === null ? keys.length : undefined;
+  return prototype === Object.prototype ? keys.length : undefined;
 }
 
 /** Deeply freezes the item, reuses the original item (from `getDataPropertyValue()`) if possible. */

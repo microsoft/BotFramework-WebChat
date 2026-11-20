@@ -334,3 +334,66 @@ scenario(
   },
   NodeTest
 );
+
+/** Visits all values by `forEach()`, the callback can modify the set while iterating. */
+function forEachValue<T>(set: ReadonlySet<T>, callbackfn: (value: T) => void): T[] {
+  const values: T[] = [];
+
+  set.forEach(value => {
+    values.push(value);
+    callbackfn(value);
+  });
+
+  return values;
+}
+
+scenario(
+  'ReadWriteSet live iteration',
+  bdd => {
+    bdd
+      .given('a writable overlay of [1, 2, 3] and a native Set of the same', () => ({
+        overlay: new FrozenSet([1, 2, 3]).mutate(),
+        set: new Set([1, 2, 3])
+      }))
+      .when('a not-yet-visited value is deleted during forEach()', ({ overlay, set }) => ({
+        actual: forEachValue(overlay, value => value === 1 && overlay.delete(3)),
+        expected: forEachValue(set, value => value === 1 && set.delete(3))
+      }))
+      .then('should not visit the deleted value, as Set does', (_, { actual, expected }) => {
+        expect(expected).toEqual([1, 2]);
+        expect(actual).toEqual(expected);
+      });
+
+    bdd
+      .given('a writable overlay of [1, 2, 3] and a native Set of the same', () => ({
+        overlay: new FrozenSet([1, 2, 3]).mutate(),
+        set: new Set([1, 2, 3])
+      }))
+      .when('a value is added during forEach()', ({ overlay, set }) => ({
+        actual: forEachValue(overlay, value => value === 1 && overlay.add(4)),
+        expected: forEachValue(set, value => value === 1 && set.add(4))
+      }))
+      .then('should visit the added value, as Set does', (_, { actual, expected }) => {
+        expect(expected).toEqual([1, 2, 3, 4]);
+        expect(actual).toEqual(expected);
+      });
+
+    bdd
+      .given('a writable overlay of [1, 2, 3]', () => new FrozenSet([1, 2, 3]).mutate())
+      .when('a not-yet-visited value is deleted and a value is added while iterating keys()', overlay => {
+        const iterator = overlay.keys();
+        const values = [iterator.next().value];
+
+        overlay.delete(2);
+        overlay.add(4);
+
+        for (let result = iterator.next(); !result.done; result = iterator.next()) {
+          values.push(result.value);
+        }
+
+        return values;
+      })
+      .then('should observe the changes, as Set does', (_, values) => expect(values).toEqual([1, 3, 4]));
+  },
+  NodeTest
+);
