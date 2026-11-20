@@ -90,6 +90,9 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - Optional `hasPart` and `isPartOf` must be `Set<Exact<{ '@id': string }>>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
          - Appear in multiple membership: `isPartOf` can contains more than one reference
+      - `toJSON()` is not supported on nodes, property values, and node references, either own or inherited
+         - Otherwise, `JSON.parse(JSON.stringify(node))` would be different from the node
+         - It is only supported inside `@value` of JSON literal, see above
 - Edit must be synchronous and transactional
    - Edit must not be nested into another edit
    - Edit are validated on commit
@@ -98,6 +101,10 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
          - Reader must drop nodes and properties which violate Schema.org definition
    - Upsert
       - Dirty read: updater pass modified version of the node
+         - First read in a transaction: the node in the graph, it is frozen
+         - Subsequent reads: a new plain copy with changes made in the transaction, it is writable only inside the updater and is frozen after the updater returns or throws
+         - Unchanged `hasPart`/`isPartOf` passed back from the updater are not validated nor diffed again, `O(1)` regardless of membership size
+         - Nodes are plain objects, the store may attach hidden state (e.g. cached `dateCreated`) invisible to userland, a copy (e.g. `JSON.parse(JSON.stringify(node))`) is always accepted and hidden state is rebuilt
       - Node edges must be by-reference
       - Nodes are auto-converted to immutable by deep freezing
          - Array and objects are cloned before frozen, inputs are never modified

@@ -20,13 +20,22 @@ import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createNode from './private/createNode.ts';
+import {
+  commitDraft,
+  createDraft,
+  getDraftPartOfIds,
+  getDraftReferenceIds,
+  readDraft,
+  removeDraftReferencesTo,
+  setDraftPartOf,
+  type Draft
+} from './private/draft.ts';
 import type { FrozenInternalNode } from './private/FrozenInternalNode.ts';
-import { getDateCreatedTime } from './private/dateCreatedTime.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
 import getPartIds from './private/getPartIds.ts';
+import { getDateCreatedTime, getSortedChildIds } from './private/hiddenNodeState.ts';
 import { updateIdentifierIndex } from './private/identifierIndex.ts';
-import ReadWriteNode from './private/ReadWriteNode.ts';
-import { getSortedChildIds, insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
+import { insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
 
@@ -82,7 +91,7 @@ interface StoreTransaction {
   upsert<T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void;
 }
 
-const EMPTY_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
+const EMPTY_IDS: FrozenSet<Identifier> = new FrozenSet<Identifier>([]);
 
 const isThenable = is.bind(null, looseObject({ then: function_() }));
 
@@ -329,32 +338,41 @@ class Store {
     };
 
     // Nodes modified in this transaction. Changes are kept in drafts, and nodes are built once on commit.
-    const drafts = new Map<Identifier, ReadWriteNode>();
+    const drafts = new Map<Identifier, Draft>();
 
     const nextStateReader: NextStateReader = Object.freeze({
       getDateCreatedTime: (id: Identifier): number =>
         drafts.get(id)?.dateCreatedTime ?? getDateCreatedTime(nextState.get(id)),
-      getPartOfIds: (id: Identifier): ReadonlySet<Identifier> =>
-        drafts.get(id)?.getPartOfIds() ?? getPartIds(nextState.get(id), 'isPartOf'),
+      getPartOfIds: (id: Identifier): ReadonlySet<Identifier> => {
+        const draft = drafts.get(id);
+
+        return draft ? getDraftPartOfIds(draft) : getPartIds(nextState.get(id), 'isPartOf');
+      },
       has: (id: Identifier): boolean => drafts.has(id) || nextState.has(id)
     });
 
     // Gets the draft of the node, or a new draft if the node is not modified in this transaction yet.
     // The new draft is not kept until `setDraft()` is called.
-    const getDraft = (id: Identifier): ReadWriteNode | undefined => {
-      const node = drafts.get(id) ?? nextState.get(id);
+    const getDraft = (id: Identifier): Draft | undefined => {
+      const node = drafts.get(id) ? undefined : nextState.get(id);
 
-      return node instanceof ReadWriteNode || !node ? node : new ReadWriteNode(node);
+      return drafts.get(id) ?? (node && createDraft(node));
     };
 
-    // Gets the node with `hasPart` reflecting changes made in this transaction.
-    const getNode = (id: Identifier): FrozenInternalNode | undefined => {
-      const draft = drafts.get(id);
+    // Gets child IDs of the node as a frozen set, in O(number of changes) without copying.
+    // If children are being modified, changes are committed and a new overlay is started on top of it.
+    const getChildIds = (id: Identifier): FrozenSet<Identifier> => {
       const childIds = nextChildIds.sets.get(id);
 
-      return draft || childIds
-        ? getDraft(id)?.commit(new FrozenSet(getReferencingIds(nextChildIds, id)), undefined)
-        : nextState.get(id);
+      if (childIds) {
+        const committedChildIds = childIds.commit();
+
+        nextChildIds.sets.set(id, committedChildIds.mutate());
+
+        return committedChildIds;
+      }
+
+      return nextChildIds.map.get(id) ?? EMPTY_IDS;
     };
 
     const setPendingChild = (parentId: Identifier, childId: Identifier, included: boolean): void => {
@@ -366,17 +384,17 @@ class Store {
     };
 
     // Keeps the draft and updates references. Callers must update `nextChildIds` if `isPartOf` is changed.
-    const setDraft = (draft: ReadWriteNode): void => {
+    const setDraft = (draft: Draft): void => {
       const { id } = draft;
 
       drafts.set(id, draft);
-      setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, draft.getReferenceIds());
+      setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getDraftReferenceIds(draft));
       affectedNodeIds.add(id);
     };
 
     // Adds or removes a parent from `isPartOf` of the child, and mirrors it to children of the parent.
-    const setPartOf = (child: ReadWriteNode, parentId: Identifier, included: boolean): void => {
-      child.setPartOf(parentId, included) &&
+    const setPartOf = (child: Draft, parentId: Identifier, included: boolean): void => {
+      setDraftPartOf(child, parentId, included) &&
         mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](child.id);
       setDraft(child);
     };
@@ -417,9 +435,9 @@ class Store {
               const draft = getDraft(nodeId);
 
               if (draft) {
-                const isChild = draft.getPartOfIds().has(safeId);
+                const isChild = getDraftPartOfIds(draft).has(safeId);
 
-                if (draft.removeReferencesTo(safeId)) {
+                if (removeDraftReferencesTo(draft, safeId)) {
                   isChild && mutateReferencingIds(nextChildIds, safeId).delete(nodeId);
                   setDraft(draft);
                 }
@@ -436,7 +454,14 @@ class Store {
               throw new TypeError('updater must be a function');
             }
 
-            const node = getNode(safeId);
+            // Children shown to the updater, no other changes can be made while the updater is running, so they are
+            // still current after the updater returns.
+            const shownChildIds = getChildIds(safeId);
+            const draftToRead = drafts.has(safeId) || nextChildIds.sets.has(safeId) ? getDraft(safeId) : undefined;
+
+            // Clean read: the node in the graph is frozen and up-to-date.
+            // Dirty read: a new unfrozen copy with changes made in this transaction, O(number of properties).
+            const node: Node | undefined = draftToRead ? readDraft(draftToRead, shownChildIds) : nextState.get(safeId);
             let nextNode: NodeInit<T>;
 
             updating = true;
@@ -445,6 +470,9 @@ class Store {
               nextNode = updater(node);
             } finally {
               updating = false;
+
+              // OPINION: The node is writable only inside the updater, it is locked after the updater returns or throws.
+              node && Object.freeze(node);
             }
 
             const safeNode = createNode(nextNode);
@@ -458,43 +486,47 @@ class Store {
 
             // Read before the draft takes ownership of the node, `hasPart` is regenerated on commit.
             const childIds = getPartIds(safeNode, 'hasPart');
-            const draft = new ReadWriteNode(safeNode);
+            const draft = createDraft(safeNode);
 
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
             for (const parentId of pendingParentIds.get(safeId) ?? []) {
-              draft.setPartOf(parentId, true);
+              setDraftPartOf(draft, parentId, true);
             }
 
             pendingParentIds.delete(safeId);
 
-            const parentIds = draft.getPartOfIds();
+            const parentIds = getDraftPartOfIds(draft);
             const prevParentIds = nextStateReader.getPartOfIds(safeId);
 
-            for (const parentId of prevParentIds) {
-              parentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).delete(safeId);
-            }
+            // Unchanged `isPartOf` passed back from the updater keeps the same IDs object, no need to diff.
+            if (parentIds !== prevParentIds) {
+              for (const parentId of prevParentIds) {
+                parentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).delete(safeId);
+              }
 
-            for (const parentId of parentIds) {
-              prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(safeId);
+              for (const parentId of parentIds) {
+                prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(safeId);
+              }
             }
 
             // `hasPart` is not stored, it is mirrored to `isPartOf` of children below.
             setDraft(draft);
 
-            // Copy before iterating as the set will be modified while mirroring.
-            const prevChildIds = new Set(getReferencingIds(nextChildIds, safeId));
+            // Unchanged `hasPart` passed back from the updater keeps the same IDs object, no need to diff. Otherwise,
+            // diff against children shown to the updater, it is frozen and is not modified while mirroring.
+            if (childIds !== shownChildIds && (childIds.size || shownChildIds.size)) {
+              for (const [childId, included] of [
+                ...Array.from(shownChildIds)
+                  .filter(childId => !childIds.has(childId))
+                  .map(childId => [childId, false] as const),
+                ...Array.from(childIds)
+                  .filter(childId => !shownChildIds.has(childId))
+                  .map(childId => [childId, true] as const)
+              ]) {
+                const child = getDraft(childId);
 
-            for (const [childId, included] of [
-              ...Array.from(prevChildIds)
-                .filter(childId => !childIds.has(childId))
-                .map(childId => [childId, false] as const),
-              ...Array.from(childIds)
-                .filter(childId => !prevChildIds.has(childId))
-                .map(childId => [childId, true] as const)
-            ]) {
-              const child = getDraft(childId);
-
-              child ? setPartOf(child, safeId, included) : setPendingChild(safeId, childId, included);
+                child ? setPartOf(child, safeId, included) : setPendingChild(safeId, childId, included);
+              }
             }
           }
         })
@@ -528,7 +560,8 @@ class Store {
       draft &&
         nextState.set(
           id,
-          draft.commit(
+          commitDraft(
+            draft,
             committedChildIds.get(id) ?? EMPTY_IDS,
             nextSortedChildIds.get(id) ?? getSortedChildIds(this.#state.get(id))
           )

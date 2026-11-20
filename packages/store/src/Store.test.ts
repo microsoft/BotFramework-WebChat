@@ -1584,6 +1584,339 @@ scenario(
 );
 
 scenario(
+  'dirty read',
+  bdd => {
+    bdd
+      .given('a store with a conversation and a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+          upsertMessage(transaction, '_:m-1', '_:conversation');
+        });
+
+        return { controller, store };
+      })
+      .when('the message is upserted for the first time in a transaction', ({ controller, store }) => {
+        let received: Node | undefined;
+
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', node => {
+            received = node;
+
+            return { ...node!, text: ['Hello'] };
+          })
+        );
+
+        return { prevNode: store.getSnapshot().get('_:m-1'), received };
+      })
+      .then('should receive a frozen node', (_, { received }) => expect(Object.isFrozen(received)).toBe(true))
+      .and('should receive the node with hasPart and isPartOf', (_, { received }) =>
+        expect(received).toHaveProperty('isPartOf', new Set([{ '@id': '_:conversation' }]))
+      );
+
+    bdd
+      .given('a store with a conversation and a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+          upsertMessage(transaction, '_:m-1', '_:conversation');
+        });
+
+        return { controller, store };
+      })
+      .when(
+        'the message is upserted twice in a transaction, and the second updater modifies the node in place',
+        ({ controller }) => {
+          const result: {
+            isFrozenInsideUpdater?: boolean;
+            isFrozenInsideTransactor?: boolean;
+            received?: Node | undefined;
+            receivedText?: unknown;
+          } = {};
+
+          controller.edit(transaction => {
+            upsertMessage(transaction, '_:m-2');
+            transaction.upsert('_:m-1', node => ({ ...node!, text: ['Hello'] }));
+            transaction.upsert('_:m-1', node => {
+              result.isFrozenInsideUpdater = Object.isFrozen(node);
+              result.received = node;
+              result.receivedText = Reflect.get(node!, 'text');
+
+              const writableNode = node as { -readonly [K in keyof Node]: Node[K] };
+
+              writableNode.isPartOf = new Set(node!.isPartOf).add({ '@id': '_:m-2' });
+
+              return writableNode;
+            });
+
+            result.isFrozenInsideTransactor = Object.isFrozen(result.received);
+          });
+
+          return result;
+        }
+      )
+      .then('should receive changes made by the first updater', (_, { receivedText }) =>
+        expect(receivedText).toEqual(['Hello'])
+      )
+      .and('should receive a writable node inside the updater', (_, { isFrozenInsideUpdater }) =>
+        expect(isFrozenInsideUpdater).toBe(false)
+      )
+      .and('should keep property values deeply frozen', (_, { receivedText }) =>
+        expect(Object.isFrozen(receivedText)).toBe(true)
+      )
+      .and('should freeze the node after the updater returns', (_, { isFrozenInsideTransactor }) =>
+        expect(isFrozenInsideTransactor).toBe(true)
+      )
+      .and('should keep the node frozen after the edit', (_, { received }) => {
+        expect(Object.isFrozen(received)).toBe(true);
+        expect(() => {
+          Reflect.set(received!, 'text', ['Aloha']) ||
+            (() => {
+              throw new TypeError('Cannot set');
+            })();
+        }).toThrow(TypeError);
+      })
+      .and('should commit changes made in place', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty(
+          'isPartOf',
+          new Set([{ '@id': '_:conversation' }, { '@id': '_:m-2' }])
+        )
+      )
+      .and('should mirror to hasPart of the new parent', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-2')).toHaveProperty('hasPart', new Set([{ '@id': '_:m-1' }]))
+      );
+
+    bdd
+      .given('a store with a conversation', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction =>
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }))
+        );
+
+        return { controller, store };
+      })
+      .when('a child is added, then the conversation is upserted in the same transaction', ({ controller }) => {
+        let received: Node | undefined;
+
+        controller.edit(transaction => {
+          upsertMessage(transaction, '_:m-1', '_:conversation');
+          transaction.upsert('_:conversation', node => {
+            received = node;
+
+            return node!;
+          });
+        });
+
+        return received;
+      })
+      .then('should receive hasPart with the new child', (_, received) =>
+        expect(received).toHaveProperty('hasPart', new Set([{ '@id': '_:m-1' }]))
+      )
+      .and('should keep the child', ({ store }) =>
+        expect(store.getSnapshot().get('_:conversation')).toHaveProperty('hasPart', new Set([{ '@id': '_:m-1' }]))
+      );
+
+    bdd
+      .given('a store with a conversation and a message without parent', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+          upsertMessage(transaction, '_:m-1');
+        });
+
+        return { controller, store };
+      })
+      .when('the message is adopted via hasPart, then upserted in the same transaction', ({ controller }) => {
+        let isFrozenInsideUpdater: boolean | undefined;
+        let received: Node | undefined;
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-1' }]) }));
+          transaction.upsert('_:m-1', node => {
+            isFrozenInsideUpdater = Object.isFrozen(node);
+            received = node;
+
+            return { ...node!, text: ['Hello'] };
+          });
+        });
+
+        return { isFrozenInsideUpdater, received };
+      })
+      .then('should receive isPartOf mirrored from the parent', (_, { received }) =>
+        expect(received).toHaveProperty('isPartOf', new Set([{ '@id': '_:conversation' }]))
+      )
+      .and('should receive a writable node inside the updater', (_, { isFrozenInsideUpdater }) =>
+        expect(isFrozenInsideUpdater).toBe(false)
+      )
+      .and('should freeze the node after the updater returns', (_, { received }) =>
+        expect(Object.isFrozen(received)).toBe(true)
+      )
+      .and('should commit the message with the parent', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toEqual({
+          '@id': '_:m-1',
+          '@type': new Set(['Message']),
+          isPartOf: new Set([{ '@id': '_:conversation' }]),
+          text: ['Hello']
+        })
+      );
+
+    bdd
+      .given('a store with a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => upsertMessage(transaction, '_:m-1'));
+
+        return { controller, store };
+      })
+      .when('the message is upserted twice in a transaction, and the second updater throws', ({ controller }) => {
+        let received: Node | undefined;
+
+        controller.edit(transaction => {
+          transaction.upsert('_:m-1', node => ({ ...node!, text: ['Hello'] }));
+
+          catchError(() =>
+            transaction.upsert('_:m-1', node => {
+              received = node;
+
+              throw new Error('Artificial');
+            })
+          );
+        });
+
+        return received;
+      })
+      .then('should freeze the node received by the updater', (_, received) =>
+        expect(Object.isFrozen(received)).toBe(true)
+      )
+      .and('should commit changes made by the first updater', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('text', ['Hello'])
+      );
+
+    bdd
+      .given('a store with a message', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => upsertMessage(transaction, '_:m-1'));
+
+        return { controller, store };
+      })
+      .when('the node received by the updater is cloned by JSON.parse(JSON.stringify())', ({ controller }) =>
+        controller.edit(transaction => {
+          transaction.upsert('_:m-1', node => ({ ...node!, text: ['Hello'] }));
+          transaction.upsert('_:m-1', node => ({
+            ...JSON.parse(JSON.stringify(node)),
+            '@type': new Set(['Message']),
+            text: ['World']
+          }));
+        })
+      )
+      .then('should commit the node', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toEqual({
+          '@id': '_:m-1',
+          '@type': new Set(['Message']),
+          text: ['World']
+        })
+      );
+  },
+  NodeTest
+);
+
+scenario(
+  'toJSON() on nodes',
+  bdd => {
+    bdd
+      .given('a store', () => createStore())
+      .when.oneOf<unknown>([
+        [
+          'the node has toJSON()',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', () => ({
+                  '@id': '_:m-1',
+                  '@type': new Set(['Message']),
+                  // @ts-expect-error toJSON() is not a valid property value.
+                  toJSON: () => ({})
+                }))
+              )
+            )
+        ],
+        [
+          'the node inherits toJSON()',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', () =>
+                  Object.assign(Object.create({ toJSON: () => ({}) }), {
+                    '@id': '_:m-1',
+                    '@type': new Set(['Message'])
+                  })
+                )
+              )
+            )
+        ],
+        [
+          'a node reference in a property value has toJSON()',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction => {
+                upsertMessage(transaction, '_:m-2');
+                transaction.upsert('_:m-1', () => ({
+                  '@id': '_:m-1',
+                  '@type': new Set(['Message']),
+                  citation: [Object.assign(Object.create({ toJSON: () => ({}) }), { '@id': '_:m-2' })]
+                }));
+              })
+            )
+        ],
+        [
+          'a node reference in isPartOf has toJSON()',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction => {
+                upsertMessage(transaction, '_:m-2');
+                transaction.upsert('_:m-1', () => ({
+                  '@id': '_:m-1',
+                  '@type': new Set(['Message']),
+                  isPartOf: new Set([Object.assign(Object.create({ toJSON: () => ({}) }), { '@id': '_:m-2' })])
+                }));
+              })
+            )
+        ]
+      ])
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(
+          expect.objectContaining({ message: expect.stringMatching(/toJSON\(\) is not supported/u) })
+        )
+      )
+      .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
+
+    bdd
+      .given('a store', () => createStore())
+      .when('a JSON literal has toJSON()', ({ controller }) =>
+        controller.edit(transaction =>
+          transaction.upsert('_:m-1', () => ({
+            '@id': '_:m-1',
+            '@type': new Set(['Message']),
+            // @ts-expect-error Date is not a JSON value, but toJSON() is called inside JSON literal.
+            data: [{ '@type': '@json', '@value': { date: new Date(Date.UTC(2026, 0, 1)) } }]
+          }))
+        )
+      )
+      .then('should call toJSON()', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('data', [
+          { '@type': '@json', '@value': { date: '2026-01-01T00:00:00.000Z' } }
+        ])
+      );
+  },
+  NodeTest
+);
+
+scenario(
   'transaction methods inside an updater',
   bdd => {
     bdd

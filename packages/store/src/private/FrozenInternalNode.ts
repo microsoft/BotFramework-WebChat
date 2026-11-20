@@ -7,9 +7,9 @@ const frozenInternalNodeBrand = Symbol('FrozenInternalNode');
 /**
  * Schema of the node stored in the graph, i.e. the "internal version" of the node.
  *
- * It looks the same as `Node`, but it is deeply frozen and has hidden properties attached (e.g. cached `dateCreated`
+ * It looks the same as `Node`, but it is deeply frozen and has hidden state attached (e.g. cached `dateCreated`
  * and sorted children). The brand is type-only, it differentiates it from the "external version" which could be
- * created by anyone, so internal functions relying on hidden properties will only accept nodes frozen by `freezeNode()`.
+ * created by anyone, so internal functions relying on hidden state will only accept nodes frozen by `commitDraft()`.
  *
  * `FrozenInternalNode` is assignable to `Node`, but `Node` is not assignable to `FrozenInternalNode`.
  */

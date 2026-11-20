@@ -5,11 +5,12 @@ import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
 import createNode from './createNode.ts';
-import { getDateCreatedTime } from './dateCreatedTime.ts';
-import freezeNode from './freezeNode.ts';
+import { commitDraft, createDraft } from './draft.ts';
+import { draftNodeSchema, type DraftNode } from './DraftNode.ts';
+import FrozenSet from '../structure/FrozenSet.ts';
 import getPartIds from './getPartIds.ts';
 import type { FrozenInternalNode } from './FrozenInternalNode.ts';
-import { unfrozenInternalNodeSchema, type UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
+import { getDateCreatedTime } from './hiddenNodeState.ts';
 
 /** Gets a property of the node which is not in the node schema, e.g. `text`. */
 function getProperty(node: object, key: string): unknown {
@@ -27,7 +28,7 @@ scenario(
         isPartOf: new Set([{ '@id': '_:conversation' }])
       }))
       .when('createNode() is called', value => createNode(value))
-      .then('should not be frozen, so it can be modified in place before freezeNode()', (_, node) =>
+      .then('should not be frozen, so it can be modified in place before commitDraft()', (_, node) =>
         expect(Object.isFrozen(node)).toBe(false)
       )
       .and('should only have properties from the input', (_, node) => {
@@ -114,7 +115,7 @@ scenario(
 
     bdd
       .given('a node with hasPart which is not a FrozenNodeSet', () =>
-        parse(unfrozenInternalNodeSchema, {
+        parse(draftNodeSchema, {
           '@id': '_:conversation',
           '@type': new Set(['Conversation']),
           hasPart: new Set([{ '@id': '_:m-1' }])
@@ -149,8 +150,10 @@ scenario(
       .and('should keep dateCreated as-is', (_, node) =>
         expect(node).toHaveProperty('dateCreated', '2026-01-01T08:00:00+08:00')
       )
-      .and('should keep the cached time after freezeNode()', (_, node) =>
-        expect(getDateCreatedTime(freezeNode(node, new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
+      .and('should cache the time after commitDraft()', (_, node) =>
+        expect(getDateCreatedTime(commitDraft(createDraft(node), new FrozenSet(), undefined))).toBe(
+          Date.UTC(2026, 0, 1)
+        )
       );
 
     bdd
@@ -163,18 +166,18 @@ scenario(
         parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']) })
       )
       .when('createNode() is called', node => createNode(node))
-      .then('should return UnfrozenInternalNode', (node, unfrozenInternalNode) => {
-        // @ts-expect-error Node is not UnfrozenInternalNode, only nodes created by createNode() are branded.
-        const unbrandedNode: UnfrozenInternalNode = node;
-        const brandedNode: UnfrozenInternalNode = unfrozenInternalNode;
+      .then('should return DraftNode', (node, draftNode) => {
+        // @ts-expect-error Node is not DraftNode, only nodes created by createNode() are branded.
+        const unbrandedNode: DraftNode = node;
+        const brandedNode: DraftNode = draftNode;
 
         expect(brandedNode).toEqual(unbrandedNode);
       })
-      .and('should not be assignable to FrozenInternalNode', (_, unfrozenInternalNode) => {
-        // @ts-expect-error Only nodes frozen by freezeNode() are stored in the graph.
-        const frozenInternalNode: FrozenInternalNode = unfrozenInternalNode;
+      .and('should not be assignable to FrozenInternalNode', (_, draftNode) => {
+        // @ts-expect-error Only nodes committed by commitDraft() are stored in the graph.
+        const frozenInternalNode: FrozenInternalNode = draftNode;
 
-        expect(frozenInternalNode).toBe(unfrozenInternalNode);
+        expect(frozenInternalNode).toBe(draftNode);
       });
 
     bdd

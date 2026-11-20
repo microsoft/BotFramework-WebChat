@@ -35,7 +35,6 @@ const hiddenSymbol = Symbol('hidden');
 
 class Stamp {
   constructor(target: object) {
-    // eslint-disable-next-line no-constructor-return
     return target;
   }
 }
