@@ -20,7 +20,7 @@ import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createNode from './private/createNode.ts';
-import type { InternalNode } from './private/InternalNode.ts';
+import type { FrozenInternalNode } from './private/FrozenInternalNode.ts';
 import { getDateCreatedTime } from './private/dateCreatedTime.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
 import getPartIds from './private/getPartIds.ts';
@@ -179,7 +179,7 @@ type NextStateReader = {
  * @returns Key is the ID of the parent, value is the new sorted child IDs.
  */
 function updateSortedChildIds(
-  prevState: ReadonlyMap<string, InternalNode>,
+  prevState: ReadonlyMap<string, FrozenInternalNode>,
   nextState: NextStateReader,
   affectedNodeIds: ReadonlySet<Identifier>
 ): Map<Identifier, FrozenSkipList<Identifier>> {
@@ -274,7 +274,7 @@ class Store {
   /** Key is an alternate identifier (in `identifier` property), value is `@id` of the node which has it. */
   #identifierIndex: FrozenMap<Identifier, Identifier> = new FrozenMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
-  #state: FrozenMap<string, InternalNode> = new FrozenMap([]);
+  #state: FrozenMap<string, FrozenInternalNode> = new FrozenMap([]);
 
   /**
    * Runs the transactor and commits changes to the store.
@@ -332,7 +332,7 @@ class Store {
     };
 
     // Gets the node with `hasPart` reflecting changes made in this transaction.
-    const getNode = (id: Identifier): InternalNode | undefined => {
+    const getNode = (id: Identifier): FrozenInternalNode | undefined => {
       const draft = drafts.get(id);
       const childIds = nextChildIds.sets.get(id);
 

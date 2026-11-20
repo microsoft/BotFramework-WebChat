@@ -1,11 +1,11 @@
-import type { InternalNode } from './InternalNode.ts';
-import type { UnfrozenNode } from './UnfrozenNode.ts';
+import type { FrozenInternalNode } from './FrozenInternalNode.ts';
+import type { UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
 
 // Hidden property on the node to cache the parsed `dateCreated` as epoch time, so sorting does not parse it on every
 // comparison. A number is cached instead of a `Date` object because `Date` is mutable.
 const dateCreatedTimeSymbol = Symbol('dateCreatedTime');
 
-type NodeWithDateCreatedTime = (InternalNode | UnfrozenNode) & {
+type NodeWithDateCreatedTime = (FrozenInternalNode | UnfrozenInternalNode) & {
   readonly [dateCreatedTimeSymbol]?: number | undefined;
 };
 
