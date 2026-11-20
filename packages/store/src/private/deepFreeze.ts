@@ -1,16 +1,5 @@
 import FrozenSet, { isFrozenSet } from '../structure/FrozenSet.ts';
-
-/**
- * Keys which could be used for prototype pollution, they are skipped when copying an object.
- *
- * Validated value could contain them as own properties, e.g. `JSON.parse('{"__proto__":{}}')`.
- */
-const DANGEROUS_KEYS: ReadonlySet<string> = Object.freeze(new Set(['__proto__', 'constructor', 'prototype']));
-
-/** Checks if the key could be used for prototype pollution, e.g. `__proto__`, `constructor`, and `prototype`. */
-function isDangerousKey(key: string): boolean {
-  return DANGEROUS_KEYS.has(key);
-}
+import isDangerousKey from './isDangerousKey.ts';
 
 /** Marks a `Set` which is being frozen, used to detect a recursive `Set`, which cannot be frozen. */
 const IN_PROGRESS: unique symbol = Symbol('in progress');
@@ -215,4 +204,3 @@ function deepFreeze<T>(originalValue: unknown, value: T): T {
 }
 
 export default deepFreeze;
-export { isDangerousKey };

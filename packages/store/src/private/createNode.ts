@@ -1,10 +1,11 @@
 import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
-import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
-import deepFreeze, { isDangerousKey } from './deepFreeze.ts';
 import FrozenNodeSet, { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import type { UnfrozenNode } from './UnfrozenNode.ts';
+import { attachDateCreatedTime, parseDateCreatedTime } from './dateCreatedTime.ts';
+import deepFreeze from './deepFreeze.ts';
+import isDangerousKey from './isDangerousKey.ts';
 
 function isSameIds(ids: ReadonlySet<string>, value: ReadonlySet<NodeReference>): boolean {
   if (ids.size !== value.size) {
