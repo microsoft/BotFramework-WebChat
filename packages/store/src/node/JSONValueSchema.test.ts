@@ -374,6 +374,46 @@ scenario(
         'jsonValueSchema should return an empty object as JSON.parse(JSON.stringify()) does',
         (_, { actual, expected }) => expect(actual).toEqual(expected)
       );
+
+    bdd
+      .given('a boxed Number with its prototype replaced by Object.prototype', (): unknown =>
+        // eslint-disable-next-line no-new-wrappers
+        Object.setPrototypeOf(new Number(1), Object.prototype)
+      )
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then(
+        'JSON.parse(JSON.stringify()) should unbox it via Object.prototype.valueOf() and return null',
+        (_, { expected }) => expect(expected).toEqual({ value: null })
+      )
+      .and('jsonValueSchema should not unbox it and return an empty object, as documented', (_, { actual }) =>
+        expect(actual).toEqual({ value: {} })
+      );
+
+    bdd
+      .given('a boxed Boolean with its prototype replaced by null', (): unknown =>
+        // eslint-disable-next-line no-new-wrappers
+        Object.setPrototypeOf(new Boolean(true), null)
+      )
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should unbox it', (_, { expected }) =>
+        expect(expected).toEqual({ value: true })
+      )
+      .and('jsonValueSchema should not unbox it and return an empty object, as documented', (_, { actual }) =>
+        expect(actual).toEqual({ value: {} })
+      );
+
+    bdd
+      .given('boxed primitives inside an array and an object with null prototype', (): unknown => ({
+        // eslint-disable-next-line no-new-wrappers
+        array: [new Number(1), Object.assign(Object.create(null), { value: new Boolean(true) })]
+      }))
+      .when('parsed by both JSON.parse(JSON.stringify()) and jsonValueSchema', target => parseBoth(target))
+      .then('JSON.parse(JSON.stringify()) should unbox them', (_, { expected }) =>
+        expect(expected).toEqual({ value: { array: [1, { value: true }] } })
+      )
+      .and('jsonValueSchema should unbox them as JSON.parse(JSON.stringify()) does', (_, { actual, expected }) =>
+        expect(actual).toEqual(expected)
+      );
   },
   NodeTest
 );
