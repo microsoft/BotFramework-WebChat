@@ -1,14 +1,14 @@
-import type { FrozenInternalNode } from '../private/FrozenInternalNode.ts';
-import getPartIds from '../private/getPartIds.ts';
-import type { UnfrozenInternalNode } from '../private/UnfrozenInternalNode.ts';
+import type { FrozenNode } from '../private/FrozenNode.ts';
+import { getHasPartIds, getIsPartOfIds } from '../private/getPartIds.ts';
+import type { DraftNode } from '../private/DraftNode.ts';
 
 /**
  * RULE: A node must not be part of itself.
  */
-function assertNotSelfPart(node: FrozenInternalNode | UnfrozenInternalNode): void {
+function assertNotSelfPart(node: DraftNode | FrozenNode): void {
   const id = node['@id'];
 
-  if (getPartIds(node, 'hasPart').has(id) || getPartIds(node, 'isPartOf').has(id)) {
+  if (getHasPartIds(node).has(id) || getIsPartOfIds(node).has(id)) {
     throw new Error(`Node "${id}" must not be part of itself`);
   }
 }
