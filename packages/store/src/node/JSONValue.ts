@@ -50,7 +50,22 @@ function unbox(value: object): unknown {
 }
 
 /**
+ * Checks if the object is a plain object or array of the current realm, which is never a boxed primitive.
+ *
+ * Checking internal slots in `unbox()` throws for every non-boxed object, which is ~100x slower than this check.
+ */
+function isPlain(value: object): boolean {
+  const prototype = Object.getPrototypeOf(value);
+
+  return prototype === Object.prototype || prototype === Array.prototype || prototype === null;
+}
+
+/**
  * Calls `toJSON()` if any, then unwraps boxed primitives, as `JSON.stringify()` does.
+ *
+ * Plain objects and arrays are not unwrapped, see `isPlain()`. Thus, a boxed primitive with its prototype replaced by
+ * `Object.prototype`, `Array.prototype` or `null` (e.g. `Object.setPrototypeOf(new Boolean(true), null)`) is not unwrapped
+ * and becomes a plain object, while `JSON.stringify()` would unwrap it.
  */
 function preprocess(key: string, value: unknown): unknown {
   if ((value && typeof value === 'object') || typeof value === 'bigint' || typeof value === 'function') {
@@ -59,7 +74,7 @@ function preprocess(key: string, value: unknown): unknown {
     typeof toJSON === 'function' && (value = toJSON.call(value, key));
   }
 
-  return value && typeof value === 'object' ? unbox(value) : value;
+  return value && typeof value === 'object' && !isPlain(value) ? unbox(value) : value;
 }
 
 function toJSONArray(value: readonly unknown[], ancestors: object[]): JSONValue[] {
@@ -107,8 +122,12 @@ function toJSONObject(value: object, ancestors: object[]): Record<string, JSONVa
  * - Arrays become plain arrays of their `length`, extra properties are dropped
  * - Throws on recursion and `BigInt`, as `JSON.stringify()` does
  *
- * The only difference: dangerous keys (e.g. `__proto__`, see `isDangerousKey()`) are removed and their getters are not
- * called, while `JSON.parse()` would create them as own properties.
+ * The only differences:
+ *
+ * - Dangerous keys (e.g. `__proto__`, see `isDangerousKey()`) are removed and their getters are not called, while
+ *   `JSON.parse()` would create them as own properties
+ * - For performance, a boxed primitive with its prototype replaced by `Object.prototype`, `Array.prototype` or `null` is
+ *   not unwrapped, see `preprocess()`
  *
  * @param key Key of the value in its parent, passed to `toJSON()`, `''` for the root.
  * @param ancestors Arrays and objects being converted, to detect recursion.
@@ -141,7 +160,7 @@ function toJSONValue(key: string, originalValue: unknown, ancestors: object[]): 
 
 /**
  * Schema of JSON value, the output is exactly the same as `JSON.parse(JSON.stringify(value))`, except dangerous keys are
- * removed, see `toJSONValue()`.
+ * removed and a rare corner case of boxed primitives, see `toJSONValue()`.
  *
  * Fails when `JSON.parse(JSON.stringify(value))` would throw: recursion, `BigInt`, and when the value itself is omitted
  * (`undefined`, function, or symbol), which `JSON.stringify()` returns `undefined`.

@@ -38,6 +38,7 @@
   },
   "scripts": {
     "benchmark": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --expose-gc ./src/benchmark.ts",
+    "benchmark:json": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON ./src/benchmark.json.ts",
     "benchmark:node": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON ./src/benchmark.node.ts",
     "build": "npm run build:run",
     "build:run": "tsup",
