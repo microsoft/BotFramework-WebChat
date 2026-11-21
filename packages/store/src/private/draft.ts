@@ -1,6 +1,6 @@
 import { is } from 'valibot';
 import type { Identifier } from '../node/NodeIdentifier.ts';
-import { nodeReferenceSchema } from '../node/NodeReference.ts';
+import { nodeReferenceSchema, type NodeReference } from '../node/NodeReference.ts';
 import FrozenNodeSet, { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet, { isFrozenSet, type ReadWriteSet } from '../structure/FrozenSet.ts';
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
@@ -32,7 +32,7 @@ type Draft = {
 
 type NodeObject = Record<string, unknown>;
 
-function isReferenceTo(id: Identifier, value: unknown): boolean {
+function isReferenceTo(id: Identifier, value: unknown): value is NodeReference {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
 }
 
@@ -43,7 +43,7 @@ function isReferenceProperty(key: string, value: unknown): value is readonly unk
   return key !== '@context' && key !== '@id' && key !== '@type' && Array.isArray(value);
 }
 
-function isPartProperty(key: string): boolean {
+function isPartProperty(key: string): key is 'hasPart' | 'isPartOf' {
   return key === 'hasPart' || key === 'isPartOf';
 }
 
@@ -60,9 +60,9 @@ function toNodeSet(currentValue: unknown, ids: FrozenSet<Identifier>): FrozenNod
  * This is O(number of properties), regardless of the number of parts. Properties are kept in the same order, new
  * `hasPart` and `isPartOf` are appended.
  */
-function buildNode(node: object, partOfIds: FrozenSet<Identifier>, childIds: FrozenSet<Identifier>): NodeObject {
+function buildNode(node: object, parentIds: FrozenSet<Identifier>, childIds: FrozenSet<Identifier>): NodeObject {
   const getPartValue = (key: string, value: unknown): FrozenNodeSet | undefined => {
-    const ids = key === 'hasPart' ? childIds : partOfIds;
+    const ids = key === 'hasPart' ? childIds : parentIds;
 
     return ids.size ? toNodeSet(value, ids) : undefined;
   };
@@ -77,7 +77,7 @@ function buildNode(node: object, partOfIds: FrozenSet<Identifier>, childIds: Fro
   }
 
   'hasPart' in nextNode || (childIds.size && (nextNode['hasPart'] = toNodeSet(undefined, childIds)));
-  'isPartOf' in nextNode || (partOfIds.size && (nextNode['isPartOf'] = toNodeSet(undefined, partOfIds)));
+  'isPartOf' in nextNode || (parentIds.size && (nextNode['isPartOf'] = toNodeSet(undefined, parentIds)));
 
   return nextNode;
 }
