@@ -5,7 +5,7 @@ import { type ReadWriteSkipList } from '../structure/FrozenSkipList.ts';
  * Compares two children: earlier `dateCreated` comes first, children without `dateCreated` come last.
  * If `dateCreated` is the same, compares by `@id`.
  */
-function compareChild([x, xId]: readonly [number, Identifier], [y, yId]: readonly [number, Identifier]): number {
+function compareChild(x: number, xId: Identifier, y: number, yId: Identifier): number {
   return x === y ? Number(xId > yId) - Number(xId < yId) : Number(x > y) - Number(x < y);
 }
 
@@ -23,7 +23,7 @@ function insertSortedChild(
   dateCreatedTime: number,
   getDateCreatedTime: (id: Identifier) => number
 ): void {
-  sortedChildIds.insert(id, childId => compareChild([getDateCreatedTime(childId), childId], [dateCreatedTime, id]) > 0);
+  sortedChildIds.insert(id, childId => compareChild(getDateCreatedTime(childId), childId, dateCreatedTime, id) > 0);
 }
 
 /**
