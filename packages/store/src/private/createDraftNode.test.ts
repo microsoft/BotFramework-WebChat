@@ -268,15 +268,7 @@ scenario(
               Object.freeze(Object.defineProperty({ '@type': '@json', '@value': 1 }, 'hidden', { value: 1 }))
             ])
         ],
-        ['a frozen array with an extra property', () => Object.freeze(Object.assign(['Hello, World!'], { extra: 1 }))],
-        [
-          'a frozen array with a subclass prototype',
-          () => {
-            class MyArray<T> extends Array<T> {}
-
-            return Object.freeze(MyArray.from(['Hello, World!']));
-          }
-        ]
+        ['a frozen array with an extra property', () => Object.freeze(Object.assign(['Hello, World!'], { extra: 1 }))]
       ])
       .when('createDraftNode() is called', value =>
         createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
@@ -304,6 +296,68 @@ scenario(
       .then('should not reuse the Set', (value, node) => expect(node['@type']).not.toBe(value))
       .and('should store as read-only Set', (_, node) =>
         expect(() => (node['@type'] as Set<string>).add('Thing')).toThrow(TypeError)
+      );
+
+    bdd.given
+      .oneOf<readonly unknown[]>([
+        [
+          'an array with a subclass prototype',
+          () =>
+            Object.setPrototypeOf(
+              ['Hello, World!'],
+              Object.create(Array.prototype)
+            ) satisfies unknown as readonly unknown[]
+        ],
+        [
+          'a frozen array with a subclass prototype',
+          () =>
+            Object.freeze(
+              Object.setPrototypeOf(['Hello, World!'], Object.create(Array.prototype))
+            ) satisfies unknown as readonly unknown[]
+        ],
+        [
+          'an array with null prototype',
+          () => Object.setPrototypeOf(['Hello, World!'], null) satisfies unknown as readonly unknown[]
+        ]
+      ])
+      .when('createDraftNode() is called', value => {
+        try {
+          createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value });
+        } catch (error) {
+          return error;
+        }
+
+        return undefined;
+      })
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(expect.objectContaining({ message: expect.stringMatching(/must be plain arrays/u) }))
+      );
+
+    bdd.given
+      .oneOf<readonly unknown[]>([
+        ['an array with own toJSON()', () => Object.assign(['Hello, World!'], { toJSON: () => ['Aloha!'] })],
+        [
+          'an array inheriting toJSON()',
+          () =>
+            Object.setPrototypeOf(
+              ['Hello, World!'],
+              Object.assign(Object.create(Array.prototype), { toJSON: () => ['Aloha!'] })
+            ) satisfies unknown as readonly unknown[]
+        ]
+      ])
+      .when('createDraftNode() is called', value => {
+        try {
+          createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value });
+        } catch (error) {
+          return error;
+        }
+
+        return undefined;
+      })
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(
+          expect.objectContaining({ message: expect.stringMatching(/toJSON\(\) is not supported/u) })
+        )
       );
   },
   NodeTest
