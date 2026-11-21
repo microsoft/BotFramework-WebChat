@@ -24,11 +24,20 @@
  *   per child
  * - Query by identifier: after append with identifier, every child is queried by its alternate identifier
  * - Memory: heap used after append, requires `--expose-gc`
+ * - Update parent: after append, the parent is updated with `hasPart` unchanged, one transaction per update
+ * - Update parent add one: after append, a new child is added via `hasPart` of the parent, one transaction per update
+ * - Repeat upsert: after append, the parent is updated multiple times in a single transaction
+ * - Adopt then re-read: same as adopt, then the parent is updated again in the same transaction
+ * - Mirror churn: after append, a new child is added via `isPartOf`, then the parent is updated, repeated multiple
+ *   times in a single transaction
+ *
+ * Benchmarks measured per operation (`µs/op`) run `NUM_OPERATIONS` operations, they should stay flat across a row.
  */
 import type { Node } from './node/Node.ts';
 import Store, { type StoreController } from './Store.ts';
 
 const NUM_NODES = Object.freeze([1_000, 10_000, 50_000, 100_000]);
+const NUM_OPERATIONS = 100;
 const NUM_RUNS = 3;
 const NUM_WARMUP_NODES = 5_000;
 const START_TIME = Date.UTC(2026, 0, 1);
@@ -38,6 +47,8 @@ type Order = 'append' | 'random';
 type Benchmark = {
   readonly fractionDigits: number;
   readonly name: string;
+  /** Number of operations measured, defaults to the number of nodes. */
+  readonly numOperations?: number | undefined;
   /** Multiplier to convert the measured value (e.g. milliseconds) to the unit. */
   readonly scale: number;
   readonly unit: string;
@@ -207,6 +218,82 @@ function queryByIdentifier(numNodes: number): number {
   return performance.now() - start;
 }
 
+/** Appends children, then measures updating the parent with `hasPart` unchanged, one transaction per update. */
+function updateParent(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  for (let index = 0; index < NUM_OPERATIONS; index++) {
+    controller.edit(transaction => transaction.upsert('_:c-1', node => ({ ...node!, text: [`Update ${index}`] })));
+  }
+
+  return performance.now() - start;
+}
+
+/** Appends children, then measures adding a new child via `hasPart` of the parent, one transaction per update. */
+function updateParentAddOne(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  for (let index = numNodes; index < numNodes + NUM_OPERATIONS; index++) {
+    controller.edit(transaction => {
+      transaction.upsert(`_:m-${index}`, () => createMessage(index));
+      transaction.upsert('_:c-1', node => ({
+        ...node!,
+        hasPart: new Set(node!.hasPart).add({ '@id': `_:m-${index}` })
+      }));
+    });
+  }
+
+  return performance.now() - start;
+}
+
+/** Appends children, then measures updating the parent multiple times in a single transaction. */
+function repeatUpsert(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  controller.edit(transaction => {
+    for (let index = 0; index < NUM_OPERATIONS; index++) {
+      transaction.upsert('_:c-1', node => ({ ...node!, text: [`Update ${index}`] }));
+    }
+  });
+
+  return performance.now() - start;
+}
+
+/** Upserts children without parent, then measures adopting them and updating the parent again in one transaction. */
+function adoptThenReread(numNodes: number): number {
+  const { controller } = createStore();
+  const ids = Array.from({ length: numNodes }, (_, index) => `_:m-${index}` as const);
+
+  controller.edit(transaction => ids.forEach((id, index) => transaction.upsert(id, () => createMessage(index))));
+
+  const start = performance.now();
+
+  controller.edit(transaction => {
+    transaction.upsert('_:c-1', node => ({ ...node!, hasPart: new Set(ids.map(id => ({ '@id': id }))) }));
+    transaction.upsert('_:c-1', node => ({ ...node!, text: ['Updated'] }));
+  });
+
+  return performance.now() - start;
+}
+
+/** Appends children, then measures adding a child via `isPartOf` and updating the parent, in one transaction. */
+function mirrorChurn(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  controller.edit(transaction => {
+    for (let index = numNodes; index < numNodes + NUM_OPERATIONS; index++) {
+      transaction.upsert(`_:m-${index}`, () => createMessage(index, new Set([{ '@id': '_:c-1' }])));
+      transaction.upsert('_:c-1', node => ({ ...node!, text: [`Update ${index}`] }));
+    }
+  });
+
+  return performance.now() - start;
+}
+
 function iterate(store: Store, numNodes: number): number {
   const start = performance.now();
   let numIterated = 0;
@@ -247,10 +334,10 @@ function median(values: readonly number[]): number {
 }
 
 /** Runs multiple times and returns the median of average per node. */
-function measure(numNodes: number, fn: () => number | undefined): number | undefined {
+function measure(numOperations: number, fn: () => number | undefined): number | undefined {
   const values = Array.from({ length: NUM_RUNS }, fn);
 
-  return values.every(value => typeof value === 'number') ? median(values) / numNodes : undefined;
+  return values.every(value => typeof value === 'number') ? median(values) / numOperations : undefined;
 }
 
 /** Formats rows as a Markdown table with aligned columns, all columns except the first are right-aligned. */
@@ -343,6 +430,45 @@ const BENCHMARKS: readonly Benchmark[] = Object.freeze([
     run: measureMemory,
     scale: 1,
     unit: 'bytes/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Update parent',
+    numOperations: NUM_OPERATIONS,
+    run: updateParent,
+    scale: 1_000,
+    unit: 'µs/op'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Update parent add one',
+    numOperations: NUM_OPERATIONS,
+    run: updateParentAddOne,
+    scale: 1_000,
+    unit: 'µs/op'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Repeat upsert',
+    numOperations: NUM_OPERATIONS,
+    run: repeatUpsert,
+    scale: 1_000,
+    unit: 'µs/op'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Adopt then re-read',
+    run: adoptThenReread,
+    scale: 1_000,
+    unit: 'µs/node'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Mirror churn',
+    numOperations: NUM_OPERATIONS,
+    run: mirrorChurn,
+    scale: 1_000,
+    unit: 'µs/op'
   }
 ]);
 
@@ -351,11 +477,11 @@ function main(): void {
   upsertChildren(NUM_WARMUP_NODES, 'append');
   upsertChildren(NUM_WARMUP_NODES, 'random');
 
-  const rows = BENCHMARKS.map(({ fractionDigits, name, run, scale, unit }) =>
+  const rows = BENCHMARKS.map(({ fractionDigits, name, numOperations, run, scale, unit }) =>
     Object.freeze([
       `${name} (${unit})`,
       ...NUM_NODES.map(numNodes => {
-        const value = measure(numNodes, () => run(numNodes));
+        const value = measure(numOperations ?? numNodes, () => run(numNodes));
 
         return formatNumber(typeof value === 'number' ? value * scale : undefined, fractionDigits);
       })

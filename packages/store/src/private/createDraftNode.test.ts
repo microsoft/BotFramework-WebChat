@@ -4,12 +4,13 @@ import NodeTest from 'node:test';
 import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
-import createNode from './createNode.ts';
-import { getDateCreatedTime } from './dateCreatedTime.ts';
-import freezeNode from './freezeNode.ts';
-import getPartIds from './getPartIds.ts';
-import type { FrozenInternalNode } from './FrozenInternalNode.ts';
-import { unfrozenInternalNodeSchema, type UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
+import createDraftNode from './createDraftNode.ts';
+import Draft from './Draft.ts';
+import { draftNodeSchema, type DraftNode } from './DraftNode.ts';
+import FrozenSet from '../structure/FrozenSet.ts';
+import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
+import type { FrozenNode } from './FrozenNode.ts';
+import { getDateCreatedTime } from './hiddenNodeState.ts';
 
 /** Gets a property of the node which is not in the node schema, e.g. `text`. */
 function getProperty(node: object, key: string): unknown {
@@ -17,7 +18,7 @@ function getProperty(node: object, key: string): unknown {
 }
 
 scenario(
-  'createNode',
+  'createDraftNode',
   bdd => {
     bdd
       .given('a node with hasPart and isPartOf', () => ({
@@ -26,8 +27,8 @@ scenario(
         hasPart: new Set([{ '@id': '_:m-1' }, { '@id': '_:m-2' }]),
         isPartOf: new Set([{ '@id': '_:conversation' }])
       }))
-      .when('createNode() is called', value => createNode(value))
-      .then('should not be frozen, so it can be modified in place before freezeNode()', (_, node) =>
+      .when('createDraftNode() is called', value => createDraftNode(value))
+      .then('should not be frozen, so it can be modified in place before Draft.commit()', (_, node) =>
         expect(Object.isFrozen(node)).toBe(false)
       )
       .and('should only have properties from the input', (_, node) => {
@@ -42,87 +43,85 @@ scenario(
         expect(node.isPartOf).toBeInstanceOf(Set);
         expect(() => (node.hasPart as Set<unknown>).add({ '@id': '_:m-3' })).toThrow(TypeError);
       })
-      .and('getPartIds() should return IDs in hasPart', (_, node) =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1', '_:m-2'])
+      .and('getHasPartIds() should return IDs in hasPart', (_, node) =>
+        expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1', '_:m-2'])
       )
-      .and('getPartIds() should return IDs in isPartOf', (_, node) =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:conversation'])
+      .and('getIsPartOfIds() should return IDs in isPartOf', (_, node) =>
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:conversation'])
       )
-      .and('getPartIds() should return the same Set on every call without copying', (_, node) =>
-        expect(getPartIds(node, 'hasPart')).toBe(getPartIds(node, 'hasPart'))
+      .and('getHasPartIds() should return the same Set on every call without copying', (_, node) =>
+        expect(getHasPartIds(node)).toBe(getHasPartIds(node))
       )
-      .and('getPartIds() should return a read-only Set', (_, node) =>
-        expect(() => (getPartIds(node, 'hasPart') as Set<string>).add('_:m-3')).toThrow(TypeError)
+      .and('getHasPartIds() should return a read-only Set', (_, node) =>
+        expect(() => (getHasPartIds(node) as Set<string>).add('_:m-3')).toThrow(TypeError)
       );
 
     bdd
-      .given('a node created by createNode()', () =>
-        createNode({
+      .given('a node created by createDraftNode()', () =>
+        createDraftNode({
           '@id': '_:conversation',
           '@type': new Set(['Conversation']),
           hasPart: new Set([{ '@id': '_:m-1' }])
         })
       )
-      .when('spread with a new hasPart and passed to createNode() again', node =>
-        createNode({ ...node, hasPart: new Set([{ '@id': '_:m-1' }, { '@id': '_:m-2' }]) })
+      .when('spread with a new hasPart and passed to createDraftNode() again', node =>
+        createDraftNode({ ...node, hasPart: new Set([{ '@id': '_:m-1' }, { '@id': '_:m-2' }]) })
       )
-      .then('getPartIds() should return the rebuilt IDs', (_, node) =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1', '_:m-2'])
+      .then('getHasPartIds() should return the rebuilt IDs', (_, node) =>
+        expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1', '_:m-2'])
       )
-      .and('previous node should keep its own IDs', node =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1'])
-      );
+      .and('previous node should keep its own IDs', node => expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1']));
 
     bdd
-      .given('a node created by createNode()', () =>
-        createNode({
+      .given('a node created by createDraftNode()', () =>
+        createDraftNode({
           '@id': '_:thread',
           '@type': new Set(['Thread']),
           hasPart: new Set([{ '@id': '_:m-1' }]),
           isPartOf: new Set([{ '@id': '_:conversation' }])
         })
       )
-      .when('spread and passed to createNode() again', node => createNode({ ...node }))
+      .when('spread and passed to createDraftNode() again', node => createDraftNode({ ...node }))
       .then('should reuse hasPart without copying', (node, nextNode) => expect(nextNode.hasPart).toBe(node.hasPart))
       .and('should reuse isPartOf without copying', (node, nextNode) => expect(nextNode.isPartOf).toBe(node.isPartOf))
       .and('should be a different node', (node, nextNode) => expect(nextNode).not.toBe(node));
 
     bdd
-      .given('a node created by createNode()', () =>
-        createNode({
+      .given('a node created by createDraftNode()', () =>
+        createDraftNode({
           '@id': '_:thread',
           '@type': new Set(['Thread']),
           isPartOf: new Set([{ '@id': '_:conversation' }])
         })
       )
-      .when('isPartOf is cloned, modified, and passed to createNode() again', node => {
+      .when('isPartOf is cloned, modified, and passed to createDraftNode() again', node => {
         const isPartOf = new Set(node.isPartOf);
 
         isPartOf.add({ '@id': '_:channel' });
 
-        return createNode({ ...node, isPartOf });
+        return createDraftNode({ ...node, isPartOf });
       })
       .then('should have the new isPartOf', (_, nextNode) =>
-        expect(Array.from(getPartIds(nextNode, 'isPartOf'))).toEqual(['_:conversation', '_:channel'])
+        expect(Array.from(getIsPartOfIds(nextNode))).toEqual(['_:conversation', '_:channel'])
       )
       .and('should store isPartOf as read-only Set', (_, nextNode) =>
         expect(() => (nextNode.isPartOf as Set<unknown>).add({ '@id': '_:m-3' })).toThrow(TypeError)
       )
       .and('should keep the previous isPartOf intact', node =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:conversation'])
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:conversation'])
       );
 
     bdd
       .given('a node with hasPart which is not a FrozenNodeSet', () =>
-        parse(unfrozenInternalNodeSchema, {
+        parse(draftNodeSchema, {
           '@id': '_:conversation',
           '@type': new Set(['Conversation']),
           hasPart: new Set([{ '@id': '_:m-1' }])
         })
       )
-      .when('getPartIds() is called', node => {
+      .when('getHasPartIds() is called', node => {
         try {
-          return getPartIds(node, 'hasPart');
+          return getHasPartIds(node);
         } catch (error) {
           return error;
         }
@@ -132,8 +131,8 @@ scenario(
       );
 
     bdd
-      .given('a node without hasPart', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
-      .when('getPartIds() is called', node => getPartIds(node, 'hasPart'))
+      .given('a node without hasPart', () => createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
+      .when('getHasPartIds() is called', node => getHasPartIds(node))
       .then('should return an empty Set', (_, partIds) => expect(partIds.size).toBe(0));
 
     bdd
@@ -142,51 +141,51 @@ scenario(
         '@type': new Set(['Message']),
         dateCreated: '2026-01-01T08:00:00+08:00'
       }))
-      .when('createNode() is called', value => createNode(value))
+      .when('createDraftNode() is called', value => createDraftNode(value))
       .then('getDateCreatedTime() should return the parsed time', (_, node) =>
         expect(getDateCreatedTime(node)).toBe(Date.UTC(2026, 0, 1))
       )
       .and('should keep dateCreated as-is', (_, node) =>
         expect(node).toHaveProperty('dateCreated', '2026-01-01T08:00:00+08:00')
       )
-      .and('should keep the cached time after freezeNode()', (_, node) =>
-        expect(getDateCreatedTime(freezeNode(node, new Set(), undefined))).toBe(Date.UTC(2026, 0, 1))
+      .and('should cache the time after Draft.commit()', (_, node) =>
+        expect(getDateCreatedTime(new Draft(node).commit(new FrozenSet(), undefined))).toBe(Date.UTC(2026, 0, 1))
       );
 
     bdd
-      .given('a node without dateCreated', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
+      .given('a node without dateCreated', () => createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
       .when('getDateCreatedTime() is called', node => getDateCreatedTime(node))
       .then('should return Infinity', (_, time) => expect(time).toBe(Infinity));
 
     bdd
-      .given('a node validated but not created by createNode()', () =>
+      .given('a node validated but not created by createDraftNode()', () =>
         parse(nodeSchema, { '@id': '_:m-1', '@type': new Set(['Message']) })
       )
-      .when('createNode() is called', node => createNode(node))
-      .then('should return UnfrozenInternalNode', (node, unfrozenInternalNode) => {
-        // @ts-expect-error Node is not UnfrozenInternalNode, only nodes created by createNode() are branded.
-        const unbrandedNode: UnfrozenInternalNode = node;
-        const brandedNode: UnfrozenInternalNode = unfrozenInternalNode;
+      .when('createDraftNode() is called', node => createDraftNode(node))
+      .then('should return DraftNode', (node, draftNode) => {
+        // @ts-expect-error Node is not DraftNode, only nodes created by createDraftNode() are branded.
+        const unbrandedNode: DraftNode = node;
+        const brandedNode: DraftNode = draftNode;
 
         expect(brandedNode).toEqual(unbrandedNode);
       })
-      .and('should not be assignable to FrozenInternalNode', (_, unfrozenInternalNode) => {
-        // @ts-expect-error Only nodes frozen by freezeNode() are stored in the graph.
-        const frozenInternalNode: FrozenInternalNode = unfrozenInternalNode;
+      .and('should not be assignable to FrozenNode', (_, draftNode) => {
+        // @ts-expect-error Only nodes committed by Draft.commit() are stored in the graph.
+        const frozenNode: FrozenNode = draftNode;
 
-        expect(frozenInternalNode).toBe(unfrozenInternalNode);
+        expect(frozenNode).toBe(draftNode);
       });
 
     bdd
-      .given('a node created by createNode()', () =>
-        createNode({
+      .given('a node created by createDraftNode()', () =>
+        createDraftNode({
           '@id': '_:m-1',
           '@type': new Set(['Message']),
           text: ['Hello, World!', { '@type': '@json', '@value': { items: [1, 2, { three: 3 }] } }]
         })
       )
-      .when('spread and passed to createNode() again', node =>
-        createNode({ ...node, keywords: ['greeting'] } satisfies object)
+      .when('spread and passed to createDraftNode() again', node =>
+        createDraftNode({ ...node, keywords: ['greeting'] } satisfies object)
       )
       .then('should reuse @type as-is', (node, nextNode) => expect(nextNode['@type']).toBe(node['@type']))
       .and('should reuse deeply frozen property value as-is', (node, nextNode) =>
@@ -204,8 +203,8 @@ scenario(
           'Hello, World!'
         ])
       )
-      .when('createNode() is called', value =>
-        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
+      .when('createDraftNode() is called', value =>
+        createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
       )
       .then('should reuse the property value as-is', (value, node) => expect(getProperty(node, 'text')).toBe(value));
 
@@ -219,8 +218,8 @@ scenario(
           return { frozenLiteral, mutableLiteral, value: Object.freeze([frozenLiteral, mutableLiteral]) };
         }
       )
-      .when('createNode() is called', ({ value }) =>
-        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
+      .when('createDraftNode() is called', ({ value }) =>
+        createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
       )
       .then('should copy the property value', ({ value }, node) => {
         expect(getProperty(node, 'text')).not.toBe(value);
@@ -279,8 +278,8 @@ scenario(
           }
         ]
       ])
-      .when('createNode() is called', value =>
-        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
+      .when('createDraftNode() is called', value =>
+        createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: value })
       )
       .then('should not reuse the property value', (value, node) => expect(getProperty(node, 'text')).not.toBe(value))
       .and('should deeply freeze the copy with own enumerable data properties only', (_, node) => {
@@ -301,7 +300,7 @@ scenario(
 
     bdd
       .given('a frozen mutable Set', () => Object.freeze(new Set(['Message'])))
-      .when('createNode() is called', value => createNode({ '@id': '_:m-1', '@type': value }))
+      .when('createDraftNode() is called', value => createDraftNode({ '@id': '_:m-1', '@type': value }))
       .then('should not reuse the Set', (value, node) => expect(node['@type']).not.toBe(value))
       .and('should store as read-only Set', (_, node) =>
         expect(() => (node['@type'] as Set<string>).add('Thing')).toThrow(TypeError)
@@ -311,7 +310,7 @@ scenario(
 );
 
 scenario(
-  'createNode with JSON literal',
+  'createDraftNode with JSON literal',
   bdd => {
     bdd
       .given('a node with a JSON literal which is not plain JSON', () => {
@@ -322,7 +321,7 @@ scenario(
           value: { '@id': '_:m-1', '@type': new Set(['Message']), encoding: [{ '@type': '@json', '@value': json }] }
         };
       })
-      .when('createNode() is called', ({ value }) => createNode(value))
+      .when('createDraftNode() is called', ({ value }) => createDraftNode(value))
       .then('should store the JSON literal as JSON.parse(JSON.stringify())', ({ json }, node) =>
         expect(getProperty(node, 'encoding')).toEqual([
           { '@type': '@json', '@value': JSON.parse(JSON.stringify(json)) }
@@ -359,7 +358,7 @@ scenario(
 );
 
 scenario(
-  'createNode with accessors on hasPart/isPartOf',
+  'createDraftNode with accessors on hasPart/isPartOf',
   bdd => {
     bdd
       .given('a node with a hasPart getter returning a different FrozenNodeSet after the first read', () => {
@@ -373,9 +372,9 @@ scenario(
           }
         };
       })
-      .when('createNode() is called', value => createNode(value))
+      .when('createDraftNode() is called', value => createDraftNode(value))
       .then('should store the validated hasPart', (_, node) =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1'])
+        expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1'])
       );
 
     bdd
@@ -390,26 +389,26 @@ scenario(
           }
         };
       })
-      .when('createNode() is called', value => createNode(value))
+      .when('createDraftNode() is called', value => createDraftNode(value))
       .then('should store the validated isPartOf', (_, node) =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:thread'])
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:thread'])
       );
   },
   NodeTest
 );
 
 scenario(
-  'createNode with non-enumerable, accessor and inherited properties',
+  'createDraftNode with non-enumerable, accessor and inherited properties',
   bdd => {
     bdd
       .given('a node with a non-enumerable "name"', () =>
         Object.defineProperty({ '@id': '_:m-1', '@type': new Set(['Message']) }, 'name', { value: ['John Doe'] })
       )
-      .when('createNode() is called', value => createNode(value))
+      .when('createDraftNode() is called', value => createDraftNode(value))
       .then('JSON.parse(JSON.stringify()) should not have "name"', value =>
         expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('name')
       )
-      .and('createNode() should not have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
+      .and('createDraftNode() should not have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
         expect(node).not.toHaveProperty('name')
       );
 
@@ -420,11 +419,11 @@ scenario(
           get: () => ['John Doe']
         })
       )
-      .when('createNode() is called', value => createNode(value))
+      .when('createDraftNode() is called', value => createDraftNode(value))
       .then('JSON.parse(JSON.stringify()) should have "name"', value =>
         expect(JSON.parse(JSON.stringify(value))).toHaveProperty('name', ['John Doe'])
       )
-      .and('createNode() should have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
+      .and('createDraftNode() should have "name" as JSON.parse(JSON.stringify()) does', (_, node) =>
         expect(Reflect.getOwnPropertyDescriptor(node, 'name')).toEqual({
           configurable: true,
           enumerable: true,
@@ -444,9 +443,9 @@ scenario(
           () => Object.assign(Object.create({ '@id': '_:m-1' }) as object, { '@type': new Set(['Message']) })
         ]
       ])
-      .when('createNode() is called', value => {
+      .when('createDraftNode() is called', value => {
         try {
-          return { value: createNode(value) };
+          return { value: createDraftNode(value) };
         } catch (error) {
           return { error };
         }
@@ -454,7 +453,7 @@ scenario(
       .then('JSON.parse(JSON.stringify()) should not have "@id"', value =>
         expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('@id')
       )
-      .and('createNode() should throw as "@id" is missing from JSON.parse(JSON.stringify())', (_, result) =>
+      .and('createDraftNode() should throw as "@id" is missing from JSON.parse(JSON.stringify())', (_, result) =>
         expect(result).toEqual({ error: expect.any(Error) })
       );
 
@@ -462,9 +461,9 @@ scenario(
       .given('a node with a non-enumerable "@type"', () =>
         Object.defineProperty({ '@id': '_:m-1' }, '@type', { value: new Set(['Message']) })
       )
-      .when('createNode() is called', value => {
+      .when('createDraftNode() is called', value => {
         try {
-          return { value: createNode(value) };
+          return { value: createDraftNode(value) };
         } catch (error) {
           return { error };
         }
@@ -472,7 +471,7 @@ scenario(
       .then('JSON.parse(JSON.stringify()) should not have "@type"', value =>
         expect(JSON.parse(JSON.stringify(value))).not.toHaveProperty('@type')
       )
-      .and('createNode() should throw as "@type" is missing from JSON.parse(JSON.stringify())', (_, result) =>
+      .and('createDraftNode() should throw as "@type" is missing from JSON.parse(JSON.stringify())', (_, result) =>
         expect(result).toEqual({ error: expect.any(Error) })
       );
   },
@@ -480,7 +479,7 @@ scenario(
 );
 
 scenario(
-  'createNode with null-prototype JSON literal',
+  'createDraftNode with null-prototype JSON literal',
   bdd => {
     bdd
       .given('a node with a JSON literal of a frozen null-prototype object', () => ({
@@ -493,8 +492,8 @@ scenario(
           })
         ])
       }))
-      .when('@value is processed by both JSON.parse(JSON.stringify()) and createNode()', value => {
-        const [literal] = getProperty(createNode(value), 'text') as readonly { readonly '@value': object }[];
+      .when('@value is processed by both JSON.parse(JSON.stringify()) and createDraftNode()', value => {
+        const [literal] = getProperty(createDraftNode(value), 'text') as readonly { readonly '@value': object }[];
         const [originalLiteral] = value.text;
 
         return {
@@ -506,7 +505,7 @@ scenario(
         expect(expected).toBe(Object.prototype)
       )
       .and(
-        'createNode() should return a plain object as JSON.parse(JSON.stringify()) does',
+        'createDraftNode() should return a plain object as JSON.parse(JSON.stringify()) does',
         (_, { actual, expected }) => expect(actual).toBe(expected)
       );
   },

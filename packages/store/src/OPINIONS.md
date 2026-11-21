@@ -23,6 +23,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 - Assume Schema.org but not strictly validated
    - Schema.org is huge spec, we prefer "assume validated by writer" and "assume reader will validate and drop invalid"
 - Synchronous transactional edit and one session at a time
+- Updaters must be pure functions of the node they receive, calling transaction methods (`upsert()`/`delete()`) inside them is not allowed (for now)
 - Always plural: singular value is stored in single-item array
 - `hasPart` and `isPartOf` must be always inverse of other, validate on commit, offer helper to fix them
 - Every node must have a single and unique `@id`, no multiple `@id`
@@ -89,6 +90,14 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - Optional `hasPart` and `isPartOf` must be `Set<Exact<{ '@id': string }>>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
          - Appear in multiple membership: `isPartOf` can contains more than one reference
+      - `toJSON()` is not supported on nodes, property values, and node references, either own or inherited
+         - Otherwise, `JSON.parse(JSON.stringify(node))` would be different from the node
+         - It is only supported inside `@value` of JSON literal, see above
+      - Nodes, property values, and node references must be plain objects, i.e. prototype is either `Object.prototype` or `null`
+         - Class instances (including subclasses of `Object`) throw, their behaviors (e.g. getters, methods) would be lost in `JSON.parse(JSON.stringify(node))`
+         - `null` prototype is supported as it is the safest dictionary and serializes identically, nodes in the graph are always re-created with `Object.prototype`
+         - Objects from other realms (e.g. `<iframe>`) are not plain as their `Object.prototype` is different
+         - Inside `@value` of JSON literal, any object is supported, see above
 - Edit must be synchronous and transactional
    - Edit must not be nested into another edit
    - Edit are validated on commit
@@ -97,6 +106,11 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
          - Reader must drop nodes and properties which violate Schema.org definition
    - Upsert
       - Dirty read: updater pass modified version of the node
+         - First read in a transaction: the node in the graph, it is frozen
+         - Subsequent reads: a new plain copy with changes made in the transaction, it is writable only inside the updater and is frozen after the updater returns or throws
+         - Unchanged `hasPart`/`isPartOf` passed back from the updater are not validated nor diffed again, `O(1)` regardless of membership size
+         - Nodes are plain objects, the store may attach hidden state (e.g. cached `dateCreated`) invisible to userland, a copy (e.g. `JSON.parse(JSON.stringify(node))`) is always accepted and hidden state is rebuilt
+         - Only userland-facing nodes must be plain, internal-only bookkeeping never exposed to userland (e.g. `Draft`) may use classes
       - Node edges must be by-reference
       - Nodes are auto-converted to immutable by deep freezing
          - Array and objects are cloned before frozen, inputs are never modified
