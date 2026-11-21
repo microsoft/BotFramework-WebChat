@@ -1874,6 +1874,19 @@ scenario(
             )
         ],
         [
+          'a property value array has toJSON()',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', () => ({
+                  '@id': '_:m-1',
+                  '@type': new Set(['Message']),
+                  text: Object.assign(['Hello, World!'], { toJSON: () => ['Aloha!'] })
+                }))
+              )
+            )
+        ],
+        [
           'a node reference in isPartOf has toJSON()',
           ({ controller }) =>
             catchError(() =>
@@ -1978,6 +1991,24 @@ scenario(
       ])
       .then('should throw', (_, error) =>
         expect(error).toEqual(expect.objectContaining({ message: expect.stringMatching(/must be plain objects/u) }))
+      )
+      .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
+
+    bdd
+      .given('a store', () => createStore())
+      .when('a property value array is a subclass of Array', ({ controller }) =>
+        catchError(() =>
+          controller.edit(transaction =>
+            transaction.upsert('_:m-1', () => ({
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              text: Object.setPrototypeOf(['Hello, World!'], Object.create(Array.prototype))
+            }))
+          )
+        )
+      )
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(expect.objectContaining({ message: expect.stringMatching(/must be plain arrays/u) }))
       )
       .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
 
