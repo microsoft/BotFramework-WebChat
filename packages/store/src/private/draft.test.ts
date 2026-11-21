@@ -5,7 +5,7 @@ import type { Identifier } from '../node/NodeIdentifier.ts';
 import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import FrozenSkipList from '../structure/FrozenSkipList.ts';
-import createNode from './createNode.ts';
+import createDraftNode from './createDraftNode.ts';
 import {
   commitDraft,
   createDraft,
@@ -22,7 +22,7 @@ import { getDateCreatedTime, getSortedChildIds } from './hiddenNodeState.ts';
 const NO_CHILDREN = new FrozenSet<Identifier>();
 
 function createMessage(): DraftNode {
-  return createNode({
+  return createDraftNode({
     '@id': '_:m-1',
     '@type': new Set(['Message']),
     citation: [{ '@id': '_:c-1' }, { '@id': '_:c-2' }],
@@ -59,8 +59,8 @@ scenario(
       );
 
     bdd
-      .given('an unfrozen node created by createNode() without hasPart', () =>
-        createNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: ['Hello'] })
+      .given('an unfrozen node created by createDraftNode() without hasPart', () =>
+        createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: ['Hello'] })
       )
       .when('committed without changes', node => commitDraft(createDraft(node), NO_CHILDREN, undefined))
       .then('should freeze the node in place without copying', (node, nextNode) => {
@@ -72,7 +72,7 @@ scenario(
       );
 
     bdd
-      .given('an unfrozen node created by createNode() with stale hasPart', () => createMessage())
+      .given('an unfrozen node created by createDraftNode() with stale hasPart', () => createMessage())
       .when('committed without children', node => commitDraft(createDraft(node), NO_CHILDREN, undefined))
       .then('should not have hasPart', (_, nextNode) => expect(nextNode).not.toHaveProperty('hasPart'))
       .and('should be frozen', (_, nextNode) => expect(Object.isFrozen(nextNode)).toBe(true));

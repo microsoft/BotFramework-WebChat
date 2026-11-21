@@ -67,7 +67,7 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
  *
  * All nodes stored in the graph must be created by this function, the returned node is branded as `DraftNode`.
  */
-function createNode(value: unknown): DraftNode {
+function createDraftNode(value: unknown): DraftNode {
   const originalEntries = value && typeof value === 'object' ? new Map(Object.entries(value)) : undefined;
 
   originalEntries && assertNoToJSON(value, originalEntries);
@@ -99,4 +99,4 @@ function createNode(value: unknown): DraftNode {
   ) satisfies object as DraftNode;
 }
 
-export default createNode;
+export default createDraftNode;

@@ -2,12 +2,12 @@ import { brand, pipe, type InferOutput } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 
 /**
- * Schema of a validated node which is not frozen yet, i.e. created by `createNode()` and before `commitDraft()`.
+ * Schema of a validated node which is not frozen yet, i.e. created by `createDraftNode()` and before `commitDraft()`.
  *
- * It looks the same as `FrozenInternalNode`, all property values are deeply frozen and `hasPart`/`isPartOf` are
+ * It looks the same as `FrozenNode`, all property values are deeply frozen and `hasPart`/`isPartOf` are
  * `FrozenNodeSet`, but the node object itself is not frozen, so it could be modified in place without copying. The
  * brand is type-only, it prevents a draft node from being stored in the graph, as `DraftNode` is not assignable to
- * `FrozenInternalNode`.
+ * `FrozenNode`.
  *
  * A draft node is owned by a single draft, it must never be exposed to userland.
  */

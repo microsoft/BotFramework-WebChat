@@ -5,7 +5,7 @@ import FrozenNodeSet, { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet, { isFrozenSet, type ReadWriteSet } from '../structure/FrozenSet.ts';
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
 import type { DraftNode } from './DraftNode.ts';
-import type { FrozenInternalNode } from './FrozenInternalNode.ts';
+import type { FrozenNode } from './FrozenNode.ts';
 import { getIsPartOfIds } from './getPartIds.ts';
 import { getDateCreatedTime, stampHiddenNodeState } from './hiddenNodeState.ts';
 
@@ -15,7 +15,7 @@ import { getDateCreatedTime, stampHiddenNodeState } from './hiddenNodeState.ts';
  *
  * - `hasPart` and `isPartOf` of `node` are ignored, `hasPart` is generated from the child IDs passed in, and `isPartOf`
  *   is kept in `partOfIds`
- * - If `node` is not frozen (i.e. created by `createNode()`), the draft owns it and could modify it in place
+ * - If `node` is not frozen (i.e. created by `createDraftNode()`), the draft owns it and could modify it in place
  * - If `node` is frozen (i.e. in the graph or handed to userland), it is never modified, it is copied on write
  *
  * The record is mutable and must never be exposed to userland.
@@ -23,7 +23,7 @@ import { getDateCreatedTime, stampHiddenNodeState } from './hiddenNodeState.ts';
 type Draft = {
   readonly dateCreatedTime: number;
   readonly id: Identifier;
-  node: DraftNode | FrozenInternalNode;
+  node: DraftNode | FrozenNode;
   /** `isPartOf` before changes in `partOfOverlay`. */
   partOfIds: FrozenSet<Identifier>;
   /** Changes to `isPartOf` since `partOfIds` is taken, `undefined` if unchanged. */
@@ -93,10 +93,10 @@ function rotatePartOfIds(draft: Draft): FrozenSet<Identifier> {
 }
 
 /**
- * Creates a draft of a node in the graph, or of a draft node created by `createNode()`. A draft node is owned by the
+ * Creates a draft of a node in the graph, or of a draft node created by `createDraftNode()`. A draft node is owned by the
  * draft and must not be used by the caller anymore.
  */
-function createDraft(node: DraftNode | FrozenInternalNode): Draft {
+function createDraft(node: DraftNode | FrozenNode): Draft {
   const partOfIds = getIsPartOfIds(node);
 
   return {
@@ -208,7 +208,7 @@ function commitDraft(
   draft: Draft,
   childIds: FrozenSet<Identifier>,
   sortedChildIds: FrozenSkipList<Identifier> | undefined
-): FrozenInternalNode {
+): FrozenNode {
   const { node } = draft;
   const partOfIds = rotatePartOfIds(draft);
 
@@ -227,7 +227,7 @@ function commitDraft(
   // The node is frozen, the draft no longer owns it.
   return (draft.node = Object.freeze(
     stampHiddenNodeState(nextNode, { dateCreatedTime: draft.dateCreatedTime, sortedChildIds })
-  ) satisfies object as FrozenInternalNode);
+  ) satisfies object as FrozenNode);
 }
 
 export {

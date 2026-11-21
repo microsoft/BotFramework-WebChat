@@ -19,7 +19,7 @@ import type { Node, NodeInit } from './node/Node.ts';
 import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
-import createNode from './private/createNode.ts';
+import createDraftNode from './private/createDraftNode.ts';
 import {
   commitDraft,
   createDraft,
@@ -31,7 +31,7 @@ import {
   type Draft
 } from './private/draft.ts';
 import type { DraftNode } from './private/DraftNode.ts';
-import type { FrozenInternalNode } from './private/FrozenInternalNode.ts';
+import type { FrozenNode } from './private/FrozenNode.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
 import { getHasPartIds, getIsPartOfIds } from './private/getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './private/hiddenNodeState.ts';
@@ -195,7 +195,7 @@ type NextStateReader = {
  * @returns Key is the ID of the parent, value is the new sorted child IDs.
  */
 function updateSortedChildIds(
-  prevState: ReadonlyMap<string, FrozenInternalNode>,
+  prevState: ReadonlyMap<string, FrozenNode>,
   nextState: NextStateReader,
   affectedNodeIds: ReadonlySet<Identifier>
 ): Map<Identifier, FrozenSkipList<Identifier>> {
@@ -290,7 +290,7 @@ class Store {
   /** Key is an alternate identifier (in `identifier` property), value is `@id` of the node which has it. */
   #identifierIndex: FrozenMap<Identifier, Identifier> = new FrozenMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
-  #state: FrozenMap<string, FrozenInternalNode> = new FrozenMap([]);
+  #state: FrozenMap<string, FrozenNode> = new FrozenMap([]);
 
   /**
    * Runs the transactor and commits changes to the store.
@@ -469,7 +469,7 @@ class Store {
 
             try {
               // Reading the returned node could call userland code (e.g. getters), it must be read inside the lock.
-              safeNode = createNode(updater(node));
+              safeNode = createDraftNode(updater(node));
             } finally {
               updating = false;
 
