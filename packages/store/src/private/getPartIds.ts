@@ -31,4 +31,3 @@ function getPartIds(node: DraftNode | FrozenInternalNode | undefined, property: 
 }
 
 export default getPartIds;
-export type { PartProperty };

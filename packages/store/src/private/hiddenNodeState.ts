@@ -98,4 +98,4 @@ function getSortedChildIds(node: object | undefined): FrozenSkipList<Identifier>
   return node && HiddenNodeState.getSortedChildIds(node);
 }
 
-export { getDateCreatedTime, getSortedChildIds, parseDateCreatedTime, stampHiddenNodeState, type HiddenNodeStateInit };
+export { getDateCreatedTime, getSortedChildIds, stampHiddenNodeState };
