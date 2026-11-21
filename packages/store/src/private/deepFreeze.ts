@@ -10,20 +10,41 @@ const IN_PROGRESS: unique symbol = Symbol('in progress');
  * Arrays and objects are pushed before their properties are frozen, and popped after. The frozen version is frozen
  * after all its properties are set. As the depth is usually small, arrays with linear search is faster than `Map`.
  */
-type Memo = {
+class Memo {
   /** Frozen versions of the ancestors, or `IN_PROGRESS` for `Set`, which cannot be referenced before it is created. */
-  readonly frozenValues: unknown[];
-  readonly values: object[];
-};
+  readonly #frozenValues: unknown[] = [];
+  readonly #values: object[] = [];
 
-function pushAncestor(memo: Memo, value: object, frozenValue: unknown): void {
-  memo.frozenValues.push(frozenValue);
-  memo.values.push(value);
-}
+  /**
+   * Gets the frozen version of the ancestor, or `undefined` if the value is not an ancestor.
+   *
+   * Throws if the ancestor is a `Set`, as a recursive `Set` cannot be frozen.
+   */
+  get(value: object): unknown {
+    const index = this.#values.indexOf(value);
 
-function popAncestor(memo: Memo): void {
-  memo.frozenValues.pop();
-  memo.values.pop();
+    if (!~index) {
+      return undefined;
+    }
+
+    const frozenValue = this.#frozenValues[+index];
+
+    if (frozenValue === IN_PROGRESS) {
+      throw new TypeError('Recursive Set cannot be frozen');
+    }
+
+    return frozenValue;
+  }
+
+  pop(): void {
+    this.#frozenValues.pop();
+    this.#values.pop();
+  }
+
+  push(value: object, frozenValue: unknown): void {
+    this.#frozenValues.push(frozenValue);
+    this.#values.push(value);
+  }
 }
 
 /** Returned by `getDataPropertyValue()` if it is not an own, enumerable data property. */
@@ -86,7 +107,7 @@ function deepFreezeArray(
   const numReusableKeys = Array.isArray(originalObject) ? getNumReusableKeys(originalObject) : undefined;
   let reusable = numReusableKeys === value.length;
 
-  pushAncestor(memo, value, frozenValue);
+  memo.push(value, frozenValue);
 
   for (let index = 0; index < value.length; index++) {
     const originalItem = getDataPropertyValue(originalObject, `${index}`);
@@ -96,7 +117,7 @@ function deepFreezeArray(
     frozenValue.push(item);
   }
 
-  popAncestor(memo);
+  memo.pop();
 
   // A recursive array is never reusable, as the recursive reference points to the copy, not the original.
   return reusable && Array.isArray(originalObject) ? originalObject : Object.freeze(frozenValue);
@@ -115,7 +136,7 @@ function deepFreezeObject(originalObject: object | undefined, value: object, mem
   let reusable =
     !!originalObject && !Array.isArray(originalObject) && getNumReusableKeys(originalObject) === keys.length;
 
-  pushAncestor(memo, value, frozenValue);
+  memo.push(value, frozenValue);
 
   for (const key of keys) {
     if (isDangerousKey(key)) {
@@ -133,7 +154,7 @@ function deepFreezeObject(originalObject: object | undefined, value: object, mem
     frozenValue[key] = item;
   }
 
-  popAncestor(memo);
+  memo.pop();
 
   // A recursive object is never reusable, as the recursive reference points to the copy, not the original.
   return reusable && originalObject ? originalObject : Object.freeze(frozenValue);
@@ -144,18 +165,12 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
     return value;
   }
 
-  const ancestorIndex = memo.values.indexOf(value);
+  const ancestorFrozenValue = memo.get(value);
 
-  if (~ancestorIndex) {
-    const frozenValue = memo.frozenValues[+ancestorIndex];
-
-    if (frozenValue === IN_PROGRESS) {
-      throw new TypeError('Recursive Set cannot be frozen');
-    }
-
-    return frozenValue;
+  if (ancestorFrozenValue) {
+    return ancestorFrozenValue;
   } else if (value instanceof Set || isFrozenSet(value)) {
-    pushAncestor(memo, value, IN_PROGRESS);
+    memo.push(value, IN_PROGRESS);
 
     const originalItems = isFrozenSet(originalValue) ? Array.from(originalValue) : [];
     const items = Array.from(value, (item, index) => deepFreezeWithMemo(originalItems[+index], item, memo));
@@ -166,7 +181,7 @@ function deepFreezeWithMemo(originalValue: unknown, value: unknown, memo: Memo):
         ? originalValue
         : new FrozenSet(items);
 
-    popAncestor(memo);
+    memo.pop();
 
     return frozenValue;
   }
@@ -200,7 +215,7 @@ function deepFreeze<T>(originalValue: unknown, value: T): T {
   // Primitives do not need a memo.
   return (!value || typeof value !== 'object'
     ? value
-    : deepFreezeWithMemo(originalValue, value, { frozenValues: [], values: [] })) satisfies unknown as T;
+    : deepFreezeWithMemo(originalValue, value, new Memo())) satisfies unknown as T;
 }
 
 export default deepFreeze;
