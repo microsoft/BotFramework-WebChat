@@ -1,25 +1,18 @@
 import type { Identifier } from '../node/NodeIdentifier.ts';
 import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
-import type { FrozenInternalNode } from './FrozenInternalNode.ts';
-import type { UnfrozenInternalNode } from './UnfrozenInternalNode.ts';
+import type { DraftNode } from './DraftNode.ts';
+import type { FrozenNode } from './FrozenNode.ts';
 
-type PartProperty = 'hasPart' | 'isPartOf';
+type PartNode = DraftNode | FrozenNode;
 
 const EMPTY_PART_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
 
-/**
- * Gets IDs of nodes in the `hasPart` or `isPartOf` property in O(1) without copying.
- *
- * Only accepts nodes created by `createNode()` or frozen by `freezeNode()`, which always store the property as
- * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createNode()`.
- */
 function getPartIds(
-  node: FrozenInternalNode | UnfrozenInternalNode | undefined,
-  property: PartProperty
+  node: PartNode | undefined,
+  references: PartNode['hasPart'] | PartNode['isPartOf'],
+  property: 'hasPart' | 'isPartOf'
 ): ReadonlySet<Identifier> {
-  const references = property === 'hasPart' ? node?.hasPart : node?.isPartOf;
-
   if (!references?.size) {
     return EMPTY_PART_IDS;
   }
@@ -33,5 +26,24 @@ function getPartIds(
   return ids;
 }
 
-export default getPartIds;
-export type { PartProperty };
+/**
+ * Gets IDs of nodes in the `hasPart` property in O(1) without copying.
+ *
+ * Only accepts nodes created by `createDraftNode()` or committed by `Draft.commit()`, which always store the property as
+ * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createDraftNode()`.
+ */
+function getHasPartIds(node: PartNode | undefined): ReadonlySet<Identifier> {
+  return getPartIds(node, node?.hasPart, 'hasPart');
+}
+
+/**
+ * Gets IDs of nodes in the `isPartOf` property in O(1) without copying.
+ *
+ * Only accepts nodes created by `createDraftNode()` or committed by `Draft.commit()`, which always store the property as
+ * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createDraftNode()`.
+ */
+function getIsPartOfIds(node: PartNode | undefined): ReadonlySet<Identifier> {
+  return getPartIds(node, node?.isPartOf, 'isPartOf');
+}
+
+export { getHasPartIds, getIsPartOfIds };
