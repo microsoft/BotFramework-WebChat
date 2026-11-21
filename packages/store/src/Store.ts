@@ -33,7 +33,7 @@ import {
 import type { DraftNode } from './private/DraftNode.ts';
 import type { FrozenInternalNode } from './private/FrozenInternalNode.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
-import getPartIds from './private/getPartIds.ts';
+import { getHasPartIds, getIsPartOfIds } from './private/getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './private/hiddenNodeState.ts';
 import { updateIdentifierIndex } from './private/identifierIndex.ts';
 import { insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
@@ -206,7 +206,7 @@ function updateSortedChildIds(
   for (const id of affectedNodeIds) {
     const prevNode = prevState.get(id);
     const dateCreatedChanged = getDateCreatedTime(prevNode) !== nextState.getDateCreatedTime(id);
-    const prevParentIds = getPartIds(prevNode, 'isPartOf');
+    const prevParentIds = getIsPartOfIds(prevNode);
     const parentIds = nextState.getPartOfIds(id);
 
     for (const parentId of prevParentIds) {
@@ -347,7 +347,7 @@ class Store {
       getPartOfIds: (id: Identifier): ReadonlySet<Identifier> => {
         const draft = drafts.get(id);
 
-        return draft ? getDraftPartOfIds(draft) : getPartIds(nextState.get(id), 'isPartOf');
+        return draft ? getDraftPartOfIds(draft) : getIsPartOfIds(nextState.get(id));
       },
       has: (id: Identifier): boolean => drafts.has(id) || nextState.has(id)
     });
@@ -485,7 +485,7 @@ class Store {
             assertNotSelfPart(safeNode);
 
             // Read before the draft takes ownership of the node, `hasPart` is regenerated on commit.
-            const childIds = getPartIds(safeNode, 'hasPart');
+            const childIds = getHasPartIds(safeNode);
             const draft = createDraft(safeNode);
 
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.

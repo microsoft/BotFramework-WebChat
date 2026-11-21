@@ -63,7 +63,7 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
  * - The node is a plain object, dangerous keys (e.g. `__proto__`) are skipped, see `isDangerousKey()`
  * - Property values are deeply frozen, values which are already deeply immutable are reused as-is, see `deepFreeze()`
  * - The node object itself is not frozen, so it can be modified in place before `commitDraft()` without copying
- * - `hasPart` and `isPartOf` are stored as `FrozenNodeSet`, so `getPartIds()` can get the IDs in O(1)
+ * - `hasPart` and `isPartOf` are stored as `FrozenNodeSet`, so `getHasPartIds()` and `getIsPartOfIds()` can get the IDs in O(1)
  *
  * All nodes stored in the graph must be created by this function, the returned node is branded as `DraftNode`.
  */

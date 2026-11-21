@@ -8,7 +8,7 @@ import createNode from './createNode.ts';
 import { commitDraft, createDraft } from './draft.ts';
 import { draftNodeSchema, type DraftNode } from './DraftNode.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
-import getPartIds from './getPartIds.ts';
+import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
 import type { FrozenInternalNode } from './FrozenInternalNode.ts';
 import { getDateCreatedTime } from './hiddenNodeState.ts';
 
@@ -43,17 +43,17 @@ scenario(
         expect(node.isPartOf).toBeInstanceOf(Set);
         expect(() => (node.hasPart as Set<unknown>).add({ '@id': '_:m-3' })).toThrow(TypeError);
       })
-      .and('getPartIds() should return IDs in hasPart', (_, node) =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1', '_:m-2'])
+      .and('getHasPartIds() should return IDs in hasPart', (_, node) =>
+        expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1', '_:m-2'])
       )
-      .and('getPartIds() should return IDs in isPartOf', (_, node) =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:conversation'])
+      .and('getIsPartOfIds() should return IDs in isPartOf', (_, node) =>
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:conversation'])
       )
-      .and('getPartIds() should return the same Set on every call without copying', (_, node) =>
-        expect(getPartIds(node, 'hasPart')).toBe(getPartIds(node, 'hasPart'))
+      .and('getHasPartIds() should return the same Set on every call without copying', (_, node) =>
+        expect(getHasPartIds(node)).toBe(getHasPartIds(node))
       )
-      .and('getPartIds() should return a read-only Set', (_, node) =>
-        expect(() => (getPartIds(node, 'hasPart') as Set<string>).add('_:m-3')).toThrow(TypeError)
+      .and('getHasPartIds() should return a read-only Set', (_, node) =>
+        expect(() => (getHasPartIds(node) as Set<string>).add('_:m-3')).toThrow(TypeError)
       );
 
     bdd
@@ -67,12 +67,10 @@ scenario(
       .when('spread with a new hasPart and passed to createNode() again', node =>
         createNode({ ...node, hasPart: new Set([{ '@id': '_:m-1' }, { '@id': '_:m-2' }]) })
       )
-      .then('getPartIds() should return the rebuilt IDs', (_, node) =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1', '_:m-2'])
+      .then('getHasPartIds() should return the rebuilt IDs', (_, node) =>
+        expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1', '_:m-2'])
       )
-      .and('previous node should keep its own IDs', node =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1'])
-      );
+      .and('previous node should keep its own IDs', node => expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1']));
 
     bdd
       .given('a node created by createNode()', () =>
@@ -104,13 +102,13 @@ scenario(
         return createNode({ ...node, isPartOf });
       })
       .then('should have the new isPartOf', (_, nextNode) =>
-        expect(Array.from(getPartIds(nextNode, 'isPartOf'))).toEqual(['_:conversation', '_:channel'])
+        expect(Array.from(getIsPartOfIds(nextNode))).toEqual(['_:conversation', '_:channel'])
       )
       .and('should store isPartOf as read-only Set', (_, nextNode) =>
         expect(() => (nextNode.isPartOf as Set<unknown>).add({ '@id': '_:m-3' })).toThrow(TypeError)
       )
       .and('should keep the previous isPartOf intact', node =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:conversation'])
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:conversation'])
       );
 
     bdd
@@ -121,9 +119,9 @@ scenario(
           hasPart: new Set([{ '@id': '_:m-1' }])
         })
       )
-      .when('getPartIds() is called', node => {
+      .when('getHasPartIds() is called', node => {
         try {
-          return getPartIds(node, 'hasPart');
+          return getHasPartIds(node);
         } catch (error) {
           return error;
         }
@@ -134,7 +132,7 @@ scenario(
 
     bdd
       .given('a node without hasPart', () => createNode({ '@id': '_:m-1', '@type': new Set(['Message']) }))
-      .when('getPartIds() is called', node => getPartIds(node, 'hasPart'))
+      .when('getHasPartIds() is called', node => getHasPartIds(node))
       .then('should return an empty Set', (_, partIds) => expect(partIds.size).toBe(0));
 
     bdd
@@ -378,7 +376,7 @@ scenario(
       })
       .when('createNode() is called', value => createNode(value))
       .then('should store the validated hasPart', (_, node) =>
-        expect(Array.from(getPartIds(node, 'hasPart'))).toEqual(['_:m-1'])
+        expect(Array.from(getHasPartIds(node))).toEqual(['_:m-1'])
       );
 
     bdd
@@ -395,7 +393,7 @@ scenario(
       })
       .when('createNode() is called', value => createNode(value))
       .then('should store the validated isPartOf', (_, node) =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:thread'])
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:thread'])
       );
   },
   NodeTest

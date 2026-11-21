@@ -6,7 +6,7 @@ import FrozenSet, { isFrozenSet, type ReadWriteSet } from '../structure/FrozenSe
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
 import type { DraftNode } from './DraftNode.ts';
 import type { FrozenInternalNode } from './FrozenInternalNode.ts';
-import getPartIds from './getPartIds.ts';
+import { getIsPartOfIds } from './getPartIds.ts';
 import { getDateCreatedTime, stampHiddenNodeState } from './hiddenNodeState.ts';
 
 /**
@@ -97,7 +97,7 @@ function rotatePartOfIds(draft: Draft): FrozenSet<Identifier> {
  * draft and must not be used by the caller anymore.
  */
 function createDraft(node: DraftNode | FrozenInternalNode): Draft {
-  const partOfIds = getPartIds(node, 'isPartOf');
+  const partOfIds = getIsPartOfIds(node);
 
   return {
     dateCreatedTime: getDateCreatedTime(node),

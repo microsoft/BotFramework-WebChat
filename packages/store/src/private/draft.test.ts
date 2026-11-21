@@ -16,7 +16,7 @@ import {
   setDraftPartOf
 } from './draft.ts';
 import type { DraftNode } from './DraftNode.ts';
-import getPartIds from './getPartIds.ts';
+import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './hiddenNodeState.ts';
 
 const NO_CHILDREN = new FrozenSet<Identifier>();
@@ -111,7 +111,7 @@ scenario(
         return { childIds, nextNode: commitDraft(createDraft(node), childIds, sortedChildIds), sortedChildIds };
       })
       .then('should have hasPart generated from children', (_, { nextNode }) =>
-        expect(Array.from(getPartIds(nextNode, 'hasPart'))).toEqual(['_:m-2'])
+        expect(Array.from(getHasPartIds(nextNode))).toEqual(['_:m-2'])
       )
       .and('should use the children as-is without copying', (_, { childIds, nextNode }) =>
         expect(getNodeSetIds(nextNode.hasPart)).toBe(childIds)
@@ -156,7 +156,7 @@ scenario(
         expect(Object.isFrozen(readNode)).toBe(false);
       })
       .and('should have current isPartOf', (_, { readNode }) =>
-        expect(Array.from(getPartIds(readNode, 'isPartOf'))).toEqual(['_:c-1', '_:c-2'])
+        expect(Array.from(getIsPartOfIds(readNode))).toEqual(['_:c-1', '_:c-2'])
       )
       .and('should have hasPart using the children as-is', (_, { childIds, readNode }) =>
         expect(getNodeSetIds(readNode.hasPart)).toBe(childIds)
@@ -216,7 +216,7 @@ scenario(
         expect(actual).toEqual(expected)
       )
       .and('should not modify the original node', ({ node }) =>
-        expect(Array.from(getPartIds(node, 'isPartOf'))).toEqual(['_:c-1'])
+        expect(Array.from(getIsPartOfIds(node))).toEqual(['_:c-1'])
       );
 
     bdd
@@ -229,7 +229,7 @@ scenario(
       })
       .when('committed', draft => commitDraft(draft, NO_CHILDREN, undefined))
       .then('should have isPartOf with changes', (_, nextNode) =>
-        expect(Array.from(getPartIds(nextNode, 'isPartOf'))).toEqual(['_:c-1', '_:c-2'])
+        expect(Array.from(getIsPartOfIds(nextNode))).toEqual(['_:c-1', '_:c-2'])
       )
       .and('should keep other properties', (_, nextNode) => {
         expect(Reflect.get(nextNode, 'text')).toEqual(['Hello']);
@@ -251,10 +251,10 @@ scenario(
         return commitDraft(draft, NO_CHILDREN, undefined);
       })
       .then('should have all changes', (_, nextNode) =>
-        expect(Array.from(getPartIds(nextNode, 'isPartOf'))).toEqual(['_:c-1', '_:c-2', '_:c-3'])
+        expect(Array.from(getIsPartOfIds(nextNode))).toEqual(['_:c-1', '_:c-2', '_:c-3'])
       )
       .and('should not modify the first committed node', ({ firstNode }) =>
-        expect(Array.from(getPartIds(firstNode, 'isPartOf'))).toEqual(['_:c-1', '_:c-2'])
+        expect(Array.from(getIsPartOfIds(firstNode))).toEqual(['_:c-1', '_:c-2'])
       );
   },
   NodeTest

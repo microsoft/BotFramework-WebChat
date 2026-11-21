@@ -1,5 +1,5 @@
 import type { FrozenInternalNode } from '../private/FrozenInternalNode.ts';
-import getPartIds from '../private/getPartIds.ts';
+import { getHasPartIds, getIsPartOfIds } from '../private/getPartIds.ts';
 import type { DraftNode } from '../private/DraftNode.ts';
 
 /**
@@ -8,7 +8,7 @@ import type { DraftNode } from '../private/DraftNode.ts';
 function assertNotSelfPart(node: DraftNode | FrozenInternalNode): void {
   const id = node['@id'];
 
-  if (getPartIds(node, 'hasPart').has(id) || getPartIds(node, 'isPartOf').has(id)) {
+  if (getHasPartIds(node).has(id) || getIsPartOfIds(node).has(id)) {
     throw new Error(`Node "${id}" must not be part of itself`);
   }
 }
