@@ -93,6 +93,11 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - `toJSON()` is not supported on nodes, property values, and node references, either own or inherited
          - Otherwise, `JSON.parse(JSON.stringify(node))` would be different from the node
          - It is only supported inside `@value` of JSON literal, see above
+      - Nodes, property values, and node references must be plain objects, i.e. prototype is either `Object.prototype` or `null`
+         - Class instances (including subclasses of `Object`) throw, their behaviors (e.g. getters, methods) would be lost in `JSON.parse(JSON.stringify(node))`
+         - `null` prototype is supported as it is the safest dictionary and serializes identically, nodes in the graph are always re-created with `Object.prototype`
+         - Objects from other realms (e.g. `<iframe>`) are not plain as their `Object.prototype` is different
+         - Inside `@value` of JSON literal, any object is supported, see above
 - Edit must be synchronous and transactional
    - Edit must not be nested into another edit
    - Edit are validated on commit

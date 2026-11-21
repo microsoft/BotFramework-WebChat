@@ -9,28 +9,39 @@ import isDangerousKey from './isDangerousKey.ts';
 // Passed to validation in place of a `FrozenNodeSet`, it is always created by the store from validated IDs.
 const EMPTY_SET: ReadonlySet<never> = Object.freeze(new Set<never>());
 
-function hasToJSON(value: unknown): boolean {
-  return !!value && typeof value === 'object' && typeof Reflect.get(value, 'toJSON') === 'function';
-}
-
 /**
  * OPINION: `toJSON()` is not supported on nodes, property values, and items in sets (e.g. `hasPart`), except inside
  *          `@value` of JSON literal. `JSON.parse(JSON.stringify(node))` would be different from the node.
+ *
+ * OPINION: Nodes, property values, and items in sets must be plain objects, i.e. prototype is either `Object.prototype`
+ *          or `null`, except inside `@value` of JSON literal. Class instances carry behaviors (e.g. getters, methods)
+ *          which `JSON.parse(JSON.stringify(node))` would drop silently.
  */
-function assertNoToJSON(value: unknown, entries: ReadonlyMap<string, unknown>): void {
-  const error = (): TypeError =>
-    new TypeError('toJSON() is not supported on nodes, property values, and node references, use a plain object');
+function assertPlainObject(value: unknown): void {
+  if (value && typeof value === 'object') {
+    if (typeof Reflect.get(value, 'toJSON') === 'function') {
+      throw new TypeError(
+        'toJSON() is not supported on nodes, property values, and node references, use a plain object'
+      );
+    }
 
-  if (hasToJSON(value)) {
-    throw error();
+    const prototype = Object.getPrototypeOf(value);
+
+    if (prototype !== null && prototype !== Object.prototype) {
+      throw new TypeError(
+        'Nodes, property values, and node references must be plain objects, prototype must be Object.prototype or null'
+      );
+    }
   }
+}
+
+function assertPlainNode(value: unknown, entries: ReadonlyMap<string, unknown>): void {
+  assertPlainObject(value);
 
   for (const entryValue of entries.values()) {
     if (Array.isArray(entryValue) || (entryValue instanceof Set && !getNodeSetIds(entryValue))) {
       for (const item of entryValue) {
-        if (hasToJSON(item)) {
-          throw error();
-        }
+        assertPlainObject(item);
       }
     }
   }
@@ -57,6 +68,8 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
  * - Like `JSON.stringify()`, only own enumerable string-keyed properties are read, each of them is read once
  *   - Non-enumerable or inherited properties are ignored, thus, required properties (e.g. `@id`) defined this way throw
  * - `toJSON()` on the node, property values, and node references is not supported and throws
+ * - The node, property values, and node references must be plain objects (prototype is `Object.prototype` or `null`),
+ *   class instances throw, except inside `@value` of JSON literal
  * - The node is validated against the node schema
  *   - `hasPart` and `isPartOf` which are `FrozenNodeSet` (i.e. created by the store) are not validated again, so passing
  *     unchanged parts back is O(1) regardless of the number of parts
@@ -70,7 +83,7 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
 function createDraftNode(value: unknown): DraftNode {
   const originalEntries = value && typeof value === 'object' ? new Map(Object.entries(value)) : undefined;
 
-  originalEntries && assertNoToJSON(value, originalEntries);
+  originalEntries && assertPlainNode(value, originalEntries);
 
   const safeNode = parse(
     nodeSchema,

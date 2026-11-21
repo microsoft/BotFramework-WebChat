@@ -1917,6 +1917,95 @@ scenario(
 );
 
 scenario(
+  'non-plain objects on nodes',
+  bdd => {
+    class MessageNode {
+      readonly '@id' = '_:m-1' as const;
+      readonly '@type' = new Set(['Message']);
+    }
+
+    class NodeReference {
+      readonly '@id' = '_:m-2' as const;
+    }
+
+    bdd
+      .given('a store', () => createStore())
+      .when.oneOf<unknown>([
+        [
+          'the node is a class instance',
+          ({ controller }) =>
+            catchError(() => controller.edit(transaction => transaction.upsert('_:m-1', () => new MessageNode())))
+        ],
+        [
+          'the node inherits from a plain object',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction =>
+                transaction.upsert('_:m-1', () =>
+                  Object.assign(Object.create({}), { '@id': '_:m-1', '@type': new Set(['Message']) })
+                )
+              )
+            )
+        ],
+        [
+          'a node reference in a property value is a class instance',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction => {
+                upsertMessage(transaction, '_:m-2');
+                transaction.upsert('_:m-1', () => ({
+                  '@id': '_:m-1',
+                  '@type': new Set(['Message']),
+                  citation: [new NodeReference()]
+                }));
+              })
+            )
+        ],
+        [
+          'a node reference in isPartOf is a class instance',
+          ({ controller }) =>
+            catchError(() =>
+              controller.edit(transaction => {
+                upsertMessage(transaction, '_:m-2');
+                transaction.upsert('_:m-1', () => ({
+                  '@id': '_:m-1',
+                  '@type': new Set(['Message']),
+                  isPartOf: new Set([new NodeReference()])
+                }));
+              })
+            )
+        ]
+      ])
+      .then('should throw', (_, error) =>
+        expect(error).toEqual(expect.objectContaining({ message: expect.stringMatching(/must be plain objects/u) }))
+      )
+      .and('should not change the store', ({ store }) => expect(store.getSnapshot().size).toBe(0));
+
+    bdd
+      .given('a store', () => createStore())
+      .when('upserting a node and a node reference with null prototype', ({ controller }) =>
+        controller.edit(transaction => {
+          upsertMessage(transaction, '_:m-2');
+          transaction.upsert('_:m-1', () =>
+            Object.assign(Object.create(null), {
+              '@id': '_:m-1',
+              '@type': new Set(['Message']),
+              citation: [Object.assign(Object.create(null), { '@id': '_:m-2' })]
+            })
+          );
+        })
+      )
+      .then('should store the node as a plain object', ({ store }) => {
+        const node = store.getSnapshot().get('_:m-1');
+
+        expect(Object.getPrototypeOf(node)).toBe(Object.prototype);
+        expect(node).toHaveProperty('citation', [{ '@id': '_:m-2' }]);
+      });
+  },
+  NodeTest
+);
+
+scenario(
   'transaction methods inside an updater',
   bdd => {
     bdd
