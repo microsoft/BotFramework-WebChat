@@ -73,7 +73,11 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
                   - Symbol keys and non-enumerable properties are removed, getters are called once
                - Arrays only keep elements up to `length`, extra properties are removed
                - Invalid when `JSON.stringify()` would throw: recursion and `BigInt`
-               - The only exception: dangerous keys (e.g. `__proto__`, `constructor`, `prototype`) are removed for security reason, while `JSON.parse()` would keep them as own properties
+               - The only exceptions:
+                  - Dangerous keys (e.g. `__proto__`, `constructor`, `prototype`) are removed for security reason, while `JSON.parse()` would keep them as own properties
+                  - Boxed primitives with their prototype replaced by `Object.prototype`, `Array.prototype` or `null` (e.g. `Object.setPrototypeOf(new Boolean(true), null)`) are not unwrapped for performance reason, they become plain objects of their own enumerable string-keyed properties, while `JSON.stringify()` would unwrap them (via `valueOf()`/`toString()` of the replaced prototype, which could return `null` or throw)
+                     - Detecting boxed primitives requires calling `valueOf()` which throws on every non-boxed object, skipping plain objects and arrays makes conversion ~100x faster, see `npm run benchmark:json`
+                     - Boxed primitives from other realms (e.g. `<iframe>`) are still unwrapped, as their prototype is not the `Object.prototype` of the current realm
    - Rules
       - Plural form: unless specified, most property values must reside in an array and must have at least 1 item
       - Prohibited `@context` must not be defined, and is assumed "https://schema.org"
