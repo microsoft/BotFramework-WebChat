@@ -5,7 +5,7 @@ import { parse } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 import FrozenNodeSet from '../structure/FrozenNodeSet.ts';
 import createDraftNode from './createDraftNode.ts';
-import { commitDraft, createDraft } from './draft.ts';
+import Draft from './draft.ts';
 import { draftNodeSchema, type DraftNode } from './DraftNode.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
@@ -28,7 +28,7 @@ scenario(
         isPartOf: new Set([{ '@id': '_:conversation' }])
       }))
       .when('createDraftNode() is called', value => createDraftNode(value))
-      .then('should not be frozen, so it can be modified in place before commitDraft()', (_, node) =>
+      .then('should not be frozen, so it can be modified in place before Draft.commit()', (_, node) =>
         expect(Object.isFrozen(node)).toBe(false)
       )
       .and('should only have properties from the input', (_, node) => {
@@ -148,10 +148,8 @@ scenario(
       .and('should keep dateCreated as-is', (_, node) =>
         expect(node).toHaveProperty('dateCreated', '2026-01-01T08:00:00+08:00')
       )
-      .and('should cache the time after commitDraft()', (_, node) =>
-        expect(getDateCreatedTime(commitDraft(createDraft(node), new FrozenSet(), undefined))).toBe(
-          Date.UTC(2026, 0, 1)
-        )
+      .and('should cache the time after Draft.commit()', (_, node) =>
+        expect(getDateCreatedTime(new Draft(node).commit(new FrozenSet(), undefined))).toBe(Date.UTC(2026, 0, 1))
       );
 
     bdd
@@ -172,7 +170,7 @@ scenario(
         expect(brandedNode).toEqual(unbrandedNode);
       })
       .and('should not be assignable to FrozenNode', (_, draftNode) => {
-        // @ts-expect-error Only nodes committed by commitDraft() are stored in the graph.
+        // @ts-expect-error Only nodes committed by Draft.commit() are stored in the graph.
         const frozenNode: FrozenNode = draftNode;
 
         expect(frozenNode).toBe(draftNode);

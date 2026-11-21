@@ -2,7 +2,7 @@ import { brand, pipe, type InferOutput } from 'valibot';
 import { nodeSchema } from '../node/Node.ts';
 
 /**
- * Schema of a validated node which is not frozen yet, i.e. created by `createDraftNode()` and before `commitDraft()`.
+ * Schema of a validated node which is not frozen yet, i.e. created by `createDraftNode()` and before `Draft.commit()`.
  *
  * It looks the same as `FrozenNode`, all property values are deeply frozen and `hasPart`/`isPartOf` are
  * `FrozenNodeSet`, but the node object itself is not frozen, so it could be modified in place without copying. The

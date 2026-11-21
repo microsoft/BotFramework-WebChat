@@ -6,15 +6,7 @@ import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import FrozenSkipList from '../structure/FrozenSkipList.ts';
 import createDraftNode from './createDraftNode.ts';
-import {
-  commitDraft,
-  createDraft,
-  getDraftPartOfIds,
-  getDraftReferenceIds,
-  readDraft,
-  removeDraftReferencesTo,
-  setDraftPartOf
-} from './draft.ts';
+import Draft from './draft.ts';
 import type { DraftNode } from './DraftNode.ts';
 import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './hiddenNodeState.ts';
@@ -35,13 +27,13 @@ function createMessage(): DraftNode {
 }
 
 scenario(
-  'commitDraft()',
+  'Draft.commit()',
   bdd => {
     bdd
       .given('a frozen node in the graph with hasPart', () =>
-        commitDraft(createDraft(createMessage()), new FrozenSet(['_:stale']), undefined)
+        new Draft(createMessage()).commit(new FrozenSet(['_:stale']), undefined)
       )
-      .when('committed without changes', node => commitDraft(createDraft(node), NO_CHILDREN, undefined))
+      .when('committed without changes', node => new Draft(node).commit(NO_CHILDREN, undefined))
       .then('should be a new frozen node', (node, nextNode) => {
         expect(nextNode).not.toBe(node);
         expect(Object.isFrozen(nextNode)).toBe(true);
@@ -62,7 +54,7 @@ scenario(
       .given('an unfrozen node created by createDraftNode() without hasPart', () =>
         createDraftNode({ '@id': '_:m-1', '@type': new Set(['Message']), text: ['Hello'] })
       )
-      .when('committed without changes', node => commitDraft(createDraft(node), NO_CHILDREN, undefined))
+      .when('committed without changes', node => new Draft(node).commit(NO_CHILDREN, undefined))
       .then('should freeze the node in place without copying', (node, nextNode) => {
         expect(nextNode).toBe(node);
         expect(Object.isFrozen(nextNode)).toBe(true);
@@ -73,20 +65,20 @@ scenario(
 
     bdd
       .given('an unfrozen node created by createDraftNode() with stale hasPart', () => createMessage())
-      .when('committed without children', node => commitDraft(createDraft(node), NO_CHILDREN, undefined))
+      .when('committed without children', node => new Draft(node).commit(NO_CHILDREN, undefined))
       .then('should not have hasPart', (_, nextNode) => expect(nextNode).not.toHaveProperty('hasPart'))
       .and('should be frozen', (_, nextNode) => expect(Object.isFrozen(nextNode)).toBe(true));
 
     bdd
       .given('a draft of an unfrozen node committed once', () => {
-        const draft = createDraft(createMessage());
+        const draft = new Draft(createMessage());
 
-        return { draft, firstNode: commitDraft(draft, NO_CHILDREN, undefined) };
+        return { draft, firstNode: draft.commit(NO_CHILDREN, undefined) };
       })
       .when('references are removed and committed again', ({ draft }) => {
-        removeDraftReferencesTo(draft, '_:c-2');
+        draft.removeReferencesTo('_:c-2');
 
-        return commitDraft(draft, NO_CHILDREN, undefined);
+        return draft.commit(NO_CHILDREN, undefined);
       })
       .then('should copy on write', ({ firstNode }, nextNode) => expect(nextNode).not.toBe(firstNode))
       .and('should not modify the first committed node', ({ firstNode }) =>
@@ -108,7 +100,7 @@ scenario(
           .insert('_:m-2', () => false)
           .commit();
 
-        return { childIds, nextNode: commitDraft(createDraft(node), childIds, sortedChildIds), sortedChildIds };
+        return { childIds, nextNode: new Draft(node).commit(childIds, sortedChildIds), sortedChildIds };
       })
       .then('should have hasPart generated from children', (_, { nextNode }) =>
         expect(Array.from(getHasPartIds(nextNode))).toEqual(['_:m-2'])
@@ -124,10 +116,10 @@ scenario(
       .given('a frozen node with children', () => {
         const childIds = new FrozenSet<Identifier>(['_:m-2']);
 
-        return { childIds, node: commitDraft(createDraft(createMessage()), childIds, undefined) };
+        return { childIds, node: new Draft(createMessage()).commit(childIds, undefined) };
       })
       .when('committed again with the same children', ({ childIds, node }) =>
-        commitDraft(createDraft(node), childIds, undefined)
+        new Draft(node).commit(childIds, undefined)
       )
       .then('should reuse hasPart', ({ node }, nextNode) => expect(nextNode.hasPart).toBe(node.hasPart));
   },
@@ -135,21 +127,21 @@ scenario(
 );
 
 scenario(
-  'readDraft()',
+  'Draft.read()',
   bdd => {
     bdd
       .given('a draft of a frozen node with a parent added', () => {
-        const node = commitDraft(createDraft(createMessage()), NO_CHILDREN, undefined);
-        const draft = createDraft(node);
+        const node = new Draft(createMessage()).commit(NO_CHILDREN, undefined);
+        const draft = new Draft(node);
 
-        setDraftPartOf(draft, '_:c-2', true);
+        draft.setPartOf('_:c-2', true);
 
         return { draft, node };
       })
       .when('read with children', ({ draft }) => {
         const childIds = new FrozenSet<Identifier>(['_:m-2']);
 
-        return { childIds, readNode: readDraft(draft, childIds) };
+        return { childIds, readNode: draft.read(childIds) };
       })
       .then('should return a new unfrozen node', ({ node }, { readNode }) => {
         expect(readNode).not.toBe(node);
@@ -162,52 +154,52 @@ scenario(
         expect(getNodeSetIds(readNode.hasPart)).toBe(childIds)
       )
       .and('should share isPartOf with the draft', ({ draft }, { readNode }) =>
-        expect(getNodeSetIds(readNode.isPartOf)).toBe(getDraftPartOfIds(draft))
+        expect(getNodeSetIds(readNode.isPartOf)).toBe(draft.partOfIds)
       )
       .and('should not modify the draft when the node is modified', ({ draft }, { readNode }) => {
         Reflect.set(readNode, 'text', ['Aloha']);
 
-        expect(Reflect.get(commitDraft(draft, NO_CHILDREN, undefined), 'text')).toEqual(['Hello']);
+        expect(Reflect.get(draft.commit(NO_CHILDREN, undefined), 'text')).toEqual(['Hello']);
       });
   },
   NodeTest
 );
 
 scenario(
-  'setDraftPartOf()',
+  'Draft.setPartOf()',
   bdd => {
     bdd
       .given('a draft of a node', () => {
         const node = createMessage();
 
-        return { draft: createDraft(node), node };
+        return { draft: new Draft(node), node };
       })
       .when.oneOf<{ readonly actual: unknown; readonly expected: unknown }>([
         [
           'a new parent is added',
           ({ draft }) => ({
-            actual: [setDraftPartOf(draft, '_:c-2', true), Array.from(getDraftPartOfIds(draft))],
+            actual: [draft.setPartOf('_:c-2', true), Array.from(draft.partOfIds)],
             expected: [true, ['_:c-1', '_:c-2']]
           })
         ],
         [
           'an existing parent is added',
           ({ draft }) => ({
-            actual: [setDraftPartOf(draft, '_:c-1', true), Array.from(getDraftPartOfIds(draft))],
+            actual: [draft.setPartOf('_:c-1', true), Array.from(draft.partOfIds)],
             expected: [false, ['_:c-1']]
           })
         ],
         [
           'an existing parent is removed',
           ({ draft }) => ({
-            actual: [setDraftPartOf(draft, '_:c-1', false), Array.from(getDraftPartOfIds(draft))],
+            actual: [draft.setPartOf('_:c-1', false), Array.from(draft.partOfIds)],
             expected: [true, []]
           })
         ],
         [
           'a non-existing parent is removed',
           ({ draft }) => ({
-            actual: [setDraftPartOf(draft, '_:c-2', false), Array.from(getDraftPartOfIds(draft))],
+            actual: [draft.setPartOf('_:c-2', false), Array.from(draft.partOfIds)],
             expected: [false, ['_:c-1']]
           })
         ]
@@ -221,13 +213,13 @@ scenario(
 
     bdd
       .given('a draft with a parent added', () => {
-        const draft = createDraft(createMessage());
+        const draft = new Draft(createMessage());
 
-        setDraftPartOf(draft, '_:c-2', true);
+        draft.setPartOf('_:c-2', true);
 
         return draft;
       })
-      .when('committed', draft => commitDraft(draft, NO_CHILDREN, undefined))
+      .when('committed', draft => draft.commit(NO_CHILDREN, undefined))
       .then('should have isPartOf with changes', (_, nextNode) =>
         expect(Array.from(getIsPartOfIds(nextNode))).toEqual(['_:c-1', '_:c-2'])
       )
@@ -239,16 +231,16 @@ scenario(
 
     bdd
       .given('a draft committed once', () => {
-        const draft = createDraft(createMessage());
+        const draft = new Draft(createMessage());
 
-        setDraftPartOf(draft, '_:c-2', true);
+        draft.setPartOf('_:c-2', true);
 
-        return { draft, firstNode: commitDraft(draft, NO_CHILDREN, undefined) };
+        return { draft, firstNode: draft.commit(NO_CHILDREN, undefined) };
       })
       .when('modified and committed again', ({ draft }) => {
-        setDraftPartOf(draft, '_:c-3', true);
+        draft.setPartOf('_:c-3', true);
 
-        return commitDraft(draft, NO_CHILDREN, undefined);
+        return draft.commit(NO_CHILDREN, undefined);
       })
       .then('should have all changes', (_, nextNode) =>
         expect(Array.from(getIsPartOfIds(nextNode))).toEqual(['_:c-1', '_:c-2', '_:c-3'])
@@ -261,14 +253,14 @@ scenario(
 );
 
 scenario(
-  'removeDraftReferencesTo()',
+  'Draft.removeReferencesTo()',
   bdd => {
     bdd
-      .given('a draft of a node referencing "_:c-1" in multiple properties', () => createDraft(createMessage()))
+      .given('a draft of a node referencing "_:c-1" in multiple properties', () => new Draft(createMessage()))
       .when('references to "_:c-1" are removed', draft => ({
-        changed: removeDraftReferencesTo(draft, '_:c-1'),
-        nextNode: commitDraft(draft, NO_CHILDREN, undefined),
-        referenceIds: Array.from(getDraftReferenceIds(draft))
+        changed: draft.removeReferencesTo('_:c-1'),
+        nextNode: draft.commit(NO_CHILDREN, undefined),
+        referenceIds: Array.from(draft.getReferenceIds())
       }))
       .then('should return true', (_, { changed }) => expect(changed).toBe(true))
       .and('should remove the reference from arrays', (_, { nextNode }) =>
@@ -285,25 +277,31 @@ scenario(
       .and('should not reference "_:c-1" anymore', (_, { referenceIds }) => expect(referenceIds).toEqual(['_:c-2']));
 
     bdd
-      .given('a draft of a node', () => createDraft(createMessage()))
-      .when('references to a node which is not referenced are removed', draft => ({
-        changed: removeDraftReferencesTo(draft, '_:c-9'),
-        node: draft.node,
-        referenceIds: Array.from(getDraftReferenceIds(draft)).sort()
+      .given('a draft of a node', () => {
+        const node = createMessage();
+
+        return { draft: new Draft(node), node };
+      })
+      .when('references to a node which is not referenced are removed', ({ draft }) => ({
+        changed: draft.removeReferencesTo('_:c-9'),
+        referenceIds: Array.from(draft.getReferenceIds()).sort()
       }))
       .then('should return false', (_, { changed }) => expect(changed).toBe(false))
-      .and('should not copy the node', (draft, { node }) => expect(node).toBe(draft.node))
+      .and('should commit the same node object without copying', ({ draft, node }) =>
+        // With children, `hasPart` is replaced in place, so the draft node is frozen without copying.
+        expect(draft.commit(new FrozenSet(['_:m-2']), undefined)).toBe(node)
+      )
       .and('should keep all references', (_, { referenceIds }) => expect(referenceIds).toEqual(['_:c-1', '_:c-2']));
   },
   NodeTest
 );
 
 scenario(
-  'getDraftReferenceIds()',
+  'Draft.getReferenceIds()',
   bdd => {
     bdd
-      .given('a draft of a node with stale hasPart', () => createDraft(createMessage()))
-      .when('reference IDs are read', draft => getDraftReferenceIds(draft))
+      .given('a draft of a node with stale hasPart', () => new Draft(createMessage()))
+      .when('reference IDs are read', draft => draft.getReferenceIds())
       .then('should exclude hasPart', (_, referenceIds) => expect(referenceIds.has('_:stale')).toBe(false))
       .and('should include isPartOf and other references', (_, referenceIds) =>
         expect(Array.from(referenceIds).sort()).toEqual(['_:c-1', '_:c-2'])

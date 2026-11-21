@@ -20,16 +20,7 @@ import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createDraftNode from './private/createDraftNode.ts';
-import {
-  commitDraft,
-  createDraft,
-  getDraftPartOfIds,
-  getDraftReferenceIds,
-  readDraft,
-  removeDraftReferencesTo,
-  setDraftPartOf,
-  type Draft
-} from './private/draft.ts';
+import Draft from './private/draft.ts';
 import type { DraftNode } from './private/DraftNode.ts';
 import type { FrozenNode } from './private/FrozenNode.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
@@ -344,11 +335,8 @@ class Store {
     const nextStateReader: NextStateReader = Object.freeze({
       getDateCreatedTime: (id: Identifier): number =>
         drafts.get(id)?.dateCreatedTime ?? getDateCreatedTime(nextState.get(id)),
-      getPartOfIds: (id: Identifier): ReadonlySet<Identifier> => {
-        const draft = drafts.get(id);
-
-        return draft ? getDraftPartOfIds(draft) : getIsPartOfIds(nextState.get(id));
-      },
+      getPartOfIds: (id: Identifier): ReadonlySet<Identifier> =>
+        drafts.get(id)?.partOfIds ?? getIsPartOfIds(nextState.get(id)),
       has: (id: Identifier): boolean => drafts.has(id) || nextState.has(id)
     });
 
@@ -357,7 +345,7 @@ class Store {
     const getDraft = (id: Identifier): Draft | undefined => {
       const node = drafts.get(id) ? undefined : nextState.get(id);
 
-      return drafts.get(id) ?? (node && createDraft(node));
+      return drafts.get(id) ?? (node && new Draft(node));
     };
 
     // Gets child IDs of the node as a frozen set, in O(number of changes) without copying.
@@ -389,13 +377,13 @@ class Store {
       const { id } = draft;
 
       drafts.set(id, draft);
-      setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, getDraftReferenceIds(draft));
+      setReferenceIds(nextForwardReferenceIds, nextBackwardReferenceIds, id, draft.getReferenceIds());
       affectedNodeIds.add(id);
     };
 
     // Adds or removes a parent from `isPartOf` of the child, and mirrors it to children of the parent.
     const setPartOf = (child: Draft, parentId: Identifier, included: boolean): void => {
-      setDraftPartOf(child, parentId, included) &&
+      child.setPartOf(parentId, included) &&
         mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](child.id);
       setDraft(child);
     };
@@ -436,9 +424,9 @@ class Store {
               const draft = getDraft(nodeId);
 
               if (draft) {
-                const isChild = getDraftPartOfIds(draft).has(safeId);
+                const isChild = draft.partOfIds.has(safeId);
 
-                if (removeDraftReferencesTo(draft, safeId)) {
+                if (draft.removeReferencesTo(safeId)) {
                   isChild && mutateReferencingIds(nextChildIds, safeId).delete(nodeId);
                   setDraft(draft);
                 }
@@ -462,7 +450,7 @@ class Store {
 
             // Clean read: the node in the graph is frozen and up-to-date.
             // Dirty read: a new unfrozen copy with changes made in this transaction, O(number of properties).
-            const node: Node | undefined = draftToRead ? readDraft(draftToRead, shownChildIds) : nextState.get(safeId);
+            const node: Node | undefined = draftToRead?.read(shownChildIds) ?? nextState.get(safeId);
             let safeNode: DraftNode;
 
             updating = true;
@@ -486,16 +474,16 @@ class Store {
 
             // Read before the draft takes ownership of the node, `hasPart` is regenerated on commit.
             const childIds = getHasPartIds(safeNode);
-            const draft = createDraft(safeNode);
+            const draft = new Draft(safeNode);
 
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
             for (const parentId of pendingParentIds.get(safeId) ?? []) {
-              setDraftPartOf(draft, parentId, true);
+              draft.setPartOf(parentId, true);
             }
 
             pendingParentIds.delete(safeId);
 
-            const parentIds = getDraftPartOfIds(draft);
+            const parentIds = draft.partOfIds;
             const prevParentIds = nextStateReader.getPartOfIds(safeId);
 
             // Unchanged `isPartOf` passed back from the updater keeps the same IDs object, no need to diff.
@@ -560,8 +548,7 @@ class Store {
       draft &&
         nextState.set(
           id,
-          commitDraft(
-            draft,
+          draft.commit(
             committedChildIds.get(id) ?? EMPTY_IDS,
             nextSortedChildIds.get(id) ?? getSortedChildIds(this.#state.get(id))
           )

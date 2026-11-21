@@ -29,7 +29,7 @@ function getPartIds(
 /**
  * Gets IDs of nodes in the `hasPart` property in O(1) without copying.
  *
- * Only accepts nodes created by `createDraftNode()` or committed by `commitDraft()`, which always store the property as
+ * Only accepts nodes created by `createDraftNode()` or committed by `Draft.commit()`, which always store the property as
  * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createDraftNode()`.
  */
 function getHasPartIds(node: PartNode | undefined): ReadonlySet<Identifier> {
@@ -39,7 +39,7 @@ function getHasPartIds(node: PartNode | undefined): ReadonlySet<Identifier> {
 /**
  * Gets IDs of nodes in the `isPartOf` property in O(1) without copying.
  *
- * Only accepts nodes created by `createDraftNode()` or committed by `commitDraft()`, which always store the property as
+ * Only accepts nodes created by `createDraftNode()` or committed by `Draft.commit()`, which always store the property as
  * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createDraftNode()`.
  */
 function getIsPartOfIds(node: PartNode | undefined): ReadonlySet<Identifier> {

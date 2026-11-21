@@ -105,6 +105,7 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
          - Subsequent reads: a new plain copy with changes made in the transaction, it is writable only inside the updater and is frozen after the updater returns or throws
          - Unchanged `hasPart`/`isPartOf` passed back from the updater are not validated nor diffed again, `O(1)` regardless of membership size
          - Nodes are plain objects, the store may attach hidden state (e.g. cached `dateCreated`) invisible to userland, a copy (e.g. `JSON.parse(JSON.stringify(node))`) is always accepted and hidden state is rebuilt
+         - Only userland-facing nodes must be plain, internal-only bookkeeping never exposed to userland (e.g. `Draft`) may use classes
       - Node edges must be by-reference
       - Nodes are auto-converted to immutable by deep freezing
          - Array and objects are cloned before frozen, inputs are never modified

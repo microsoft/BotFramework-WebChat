@@ -52,7 +52,7 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
 }
 
 /**
- * Validates the value and creates a draft node, which is committed to the graph by `commitDraft()`.
+ * Validates the value and creates a draft node, which is committed to the graph by `Draft.commit()`.
  *
  * - Like `JSON.stringify()`, only own enumerable string-keyed properties are read, each of them is read once
  *   - Non-enumerable or inherited properties are ignored, thus, required properties (e.g. `@id`) defined this way throw
@@ -62,7 +62,7 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
  *     unchanged parts back is O(1) regardless of the number of parts
  * - The node is a plain object, dangerous keys (e.g. `__proto__`) are skipped, see `isDangerousKey()`
  * - Property values are deeply frozen, values which are already deeply immutable are reused as-is, see `deepFreeze()`
- * - The node object itself is not frozen, so it can be modified in place before `commitDraft()` without copying
+ * - The node object itself is not frozen, so it can be modified in place before `Draft.commit()` without copying
  * - `hasPart` and `isPartOf` are stored as `FrozenNodeSet`, so `getHasPartIds()` and `getIsPartOfIds()` can get the IDs in O(1)
  *
  * All nodes stored in the graph must be created by this function, the returned node is branded as `DraftNode`.
