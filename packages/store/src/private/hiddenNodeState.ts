@@ -44,7 +44,7 @@ class HiddenNodeState extends Stamp {
     return #sortedChildIds in node ? node.#sortedChildIds : undefined;
   }
 
-  static isStamped(node: object): boolean {
+  static isStamped(node: object): node is HiddenNodeState {
     return #dateCreatedTime in node;
   }
 }
