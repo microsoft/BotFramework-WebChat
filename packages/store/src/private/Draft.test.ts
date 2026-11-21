@@ -6,7 +6,7 @@ import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import FrozenSkipList from '../structure/FrozenSkipList.ts';
 import createDraftNode from './createDraftNode.ts';
-import Draft from './draft.ts';
+import Draft from './Draft.ts';
 import type { DraftNode } from './DraftNode.ts';
 import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './hiddenNodeState.ts';

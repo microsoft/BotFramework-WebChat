@@ -20,7 +20,7 @@ import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createDraftNode from './private/createDraftNode.ts';
-import Draft from './private/draft.ts';
+import Draft from './private/Draft.ts';
 import type { DraftNode } from './private/DraftNode.ts';
 import type { FrozenNode } from './private/FrozenNode.ts';
 import FrozenSkipList, { type ReadWriteSkipList } from './structure/FrozenSkipList.ts';
