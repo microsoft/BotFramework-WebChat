@@ -17,13 +17,15 @@ const EMPTY_SET: ReadonlySet<never> = Object.freeze(new Set<never>());
  *          or `null`, except inside `@value` of JSON literal. Class instances carry behaviors (e.g. getters, methods)
  *          which `JSON.parse(JSON.stringify(node))` would drop silently.
  */
+function assertNoToJSON(value: object): void {
+  if (typeof Reflect.get(value, 'toJSON') === 'function') {
+    throw new TypeError('toJSON() is not supported on nodes, property values, and node references, use a plain object');
+  }
+}
+
 function assertPlainObject(value: unknown): void {
   if (value && typeof value === 'object') {
-    if (typeof Reflect.get(value, 'toJSON') === 'function') {
-      throw new TypeError(
-        'toJSON() is not supported on nodes, property values, and node references, use a plain object'
-      );
-    }
+    assertNoToJSON(value);
 
     const prototype = Object.getPrototypeOf(value);
 
@@ -35,10 +37,24 @@ function assertPlainObject(value: unknown): void {
   }
 }
 
+/**
+ * OPINION: Arrays of property values must be plain arrays, i.e. prototype is `Array.prototype` and without `toJSON()`.
+ *          Subclasses of `Array` carry behaviors which `JSON.parse(JSON.stringify(node))` would drop silently.
+ */
+function assertPlainArray(value: readonly unknown[]): void {
+  assertNoToJSON(value);
+
+  if (Object.getPrototypeOf(value) !== Array.prototype) {
+    throw new TypeError('Property values must be plain arrays, prototype must be Array.prototype');
+  }
+}
+
 function assertPlainNode(value: unknown, entries: ReadonlyMap<string, unknown>): void {
   assertPlainObject(value);
 
   for (const entryValue of entries.values()) {
+    Array.isArray(entryValue) && assertPlainArray(entryValue);
+
     if (Array.isArray(entryValue) || (entryValue instanceof Set && !getNodeSetIds(entryValue))) {
       for (const item of entryValue) {
         assertPlainObject(item);
@@ -70,6 +86,7 @@ function toFrozenNodeSet(originalValue: unknown, value: ReadonlySet<NodeReferenc
  * - `toJSON()` on the node, property values, and node references is not supported and throws
  * - The node, property values, and node references must be plain objects (prototype is `Object.prototype` or `null`),
  *   class instances throw, except inside `@value` of JSON literal
+ * - Arrays of property values must be plain arrays (prototype is `Array.prototype`) without `toJSON()`, otherwise, throw
  * - The node is validated against the node schema
  *   - `hasPart` and `isPartOf` which are `FrozenNodeSet` (i.e. created by the store) are not validated again, so passing
  *     unchanged parts back is O(1) regardless of the number of parts
