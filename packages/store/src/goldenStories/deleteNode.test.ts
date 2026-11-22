@@ -27,7 +27,12 @@ scenario(
       .then('should have no nodes', ({ store }) => {
         expect(Array.from(store.getSnapshot())).toHaveLength(0);
       })
-      .when('the node is deleted again', ({ controller }) => {
+      .and('should call listener twice (insert and delete)', ({ onUpdate }) => {
+        assert.equal(onUpdate.mock.callCount(), 2);
+      })
+      .when('the node is deleted again', ({ controller, onUpdate }) => {
+        onUpdate.mock.resetCalls();
+
         try {
           controller.edit(transaction => {
             transaction.delete('_:m-00001');
@@ -40,6 +45,10 @@ scenario(
       })
       .then('should not throw', (_, error) => {
         assert(!error);
+      })
+      .and('should call listener', ({ onUpdate }) => {
+        // Should not call again.
+        assert.equal(onUpdate.mock.callCount(), 0);
       });
   },
   NodeTest

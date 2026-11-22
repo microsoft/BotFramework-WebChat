@@ -79,6 +79,7 @@ scenario(
       )
       .then('should throw', (_, error) => {
         assert(error);
+        expect(error).toBeInstanceOf(Error);
         expect(error).toHaveProperty('message', expect.stringContaining('in the same transaction'));
       });
   },

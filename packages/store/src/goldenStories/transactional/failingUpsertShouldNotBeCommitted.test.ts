@@ -47,6 +47,7 @@ scenario(
       })
       .then('should throw', (_, error) => {
         assert(error);
+        expect(error).toBeInstanceOf(Error);
         expect(error).toHaveProperty('message', expect.stringContaining('must be array of'));
       })
       .and('should keep the original node', ({ store }) => {

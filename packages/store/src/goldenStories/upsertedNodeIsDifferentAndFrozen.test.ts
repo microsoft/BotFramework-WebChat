@@ -27,6 +27,9 @@ scenario(
       .then('should able to query the upserted node', ({ store }) => {
         assert(store.queryByIdentifier('_:n-1'));
       })
+      .and('should have called the listener', ({ onUpdate }) => {
+        assert.equal(onUpdate.mock.callCount(), 1);
+      })
       .when('the node is queried', ({ store }, outcome) => ({
         ...outcome,
         queried: store.queryByIdentifier('_:n-1')!
@@ -46,7 +49,9 @@ scenario(
       .and('the queried node should be frozen', (_, { queried }) => {
         assert(Object.isFrozen(queried));
       })
-      .when('the upserted node is modified accidentally', (_, outcome) => {
+      .when('the upserted node is modified accidentally', ({ onUpdate }, outcome) => {
+        onUpdate.mock.resetCalls();
+
         outcome.upserted.text.push('Aloha!');
 
         return outcome;
@@ -56,6 +61,9 @@ scenario(
       })
       .and('the queried node should not be changed', (_, { queried }) => {
         expect(queried).toHaveProperty('text', ['Hello, World!']);
+      })
+      .and('should not have called the listener', ({ onUpdate }) => {
+        assert.equal(onUpdate.mock.callCount(), 0);
       });
   },
   NodeTest
