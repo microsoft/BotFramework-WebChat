@@ -1,4 +1,4 @@
-import type { Node } from '../node/Node.ts';
+import type { VettedNode } from '../node/Node.ts';
 import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 
 /**
@@ -9,7 +9,7 @@ import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
  * As `delete()` removes references to the deleted node, only references from affected nodes need to be checked.
  */
 function assertReferencedNodesInGraph(
-  state: ReadonlyMap<string, Node>,
+  state: ReadonlyMap<string, VettedNode>,
   forwardReferenceIds: ReadonlyMap<string, ReadonlySet<NodeIdentifier>>,
   affectedNodeIds: ReadonlySet<NodeIdentifier>
 ): void {

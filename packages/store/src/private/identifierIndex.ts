@@ -1,5 +1,5 @@
 import assertUniqueIdentifier from '../assertion/assertUniqueIdentifier.ts';
-import type { Node } from '../node/Node.ts';
+import type { VettedNode } from '../node/Node.ts';
 import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import type { ReadWriteMap } from '../structure/FrozenMap.ts';
@@ -7,7 +7,7 @@ import type { ReadWriteMap } from '../structure/FrozenMap.ts';
 const EMPTY_IDENTIFIERS: ReadonlySet<NodeIdentifier> = new FrozenSet<NodeIdentifier>([]);
 
 /** Gets alternate identifiers in the `identifier` property, empty if not set or the node does not exist. */
-function getIdentifiers(node: Pick<Node, 'identifier'> | undefined): ReadonlySet<NodeIdentifier> {
+function getIdentifiers(node: Pick<VettedNode, 'identifier'> | undefined): ReadonlySet<NodeIdentifier> {
   return node?.identifier ?? EMPTY_IDENTIFIERS;
 }
 
@@ -20,8 +20,8 @@ function getIdentifiers(node: Pick<Node, 'identifier'> | undefined): ReadonlySet
  * @returns IDs of affected nodes, plus their alternate identifiers before and after the change.
  */
 function updateIdentifierIndex(
-  prevState: ReadonlyMap<string, Node>,
-  nextState: ReadonlyMap<string, Node>,
+  prevState: ReadonlyMap<string, VettedNode>,
+  nextState: ReadonlyMap<string, VettedNode>,
   identifierIndex: ReadWriteMap<NodeIdentifier, NodeIdentifier>,
   affectedNodeIds: ReadonlySet<NodeIdentifier>
 ): Set<NodeIdentifier> {

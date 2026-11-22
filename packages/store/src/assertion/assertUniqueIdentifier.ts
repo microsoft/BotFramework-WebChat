@@ -1,4 +1,4 @@
-import type { Node } from '../node/Node.ts';
+import type { VettedNode } from '../node/Node.ts';
 import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 
 /**
@@ -12,7 +12,7 @@ import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
  * @param ownerId `@id` of the node which has the identifier.
  */
 function assertUniqueIdentifier(
-  state: ReadonlyMap<string, Node>,
+  state: ReadonlyMap<string, VettedNode>,
   identifierIndex: ReadonlyMap<NodeIdentifier, NodeIdentifier>,
   identifier: NodeIdentifier,
   ownerId: NodeIdentifier
