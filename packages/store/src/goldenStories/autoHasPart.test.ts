@@ -9,23 +9,47 @@ scenario(
   bdd => {
     bdd
       .given('a store and a controller', () => createStoreAndController())
-      .when('a parent node with no children, and a child node with parent is upserted', ({ controller }) => {
-        controller.edit(transaction => {
-          transaction.upsert('_:conversation', () => ({
-            '@id': '_:conversation',
-            '@type': new Set(['Conversation']),
-            // Intentionally adding empty `hasPart`, but it should be auto-fixed later when the child is upserted.
-            hasPart: new Set()
-          }));
+      .when.oneOf([
+        [
+          'a parent node with empty "hasPart" property, and a child node with parent is upserted',
+          ({ controller }) => {
+            controller.edit(transaction => {
+              transaction.upsert('_:conversation', () => ({
+                '@id': '_:conversation',
+                '@type': new Set(['Conversation']),
+                // Intentionally adding empty `hasPart`, but it should be auto-fixed later when the child is upserted.
+                hasPart: new Set()
+              }));
 
-          transaction.upsert('_:m-00001', () => ({
-            '@id': '_:m-00001',
-            '@type': new Set(['Message']),
-            // This `isPartOf` should auto-fix the parent node.
-            isPartOf: new Set([{ '@id': '_:conversation' }])
-          }));
-        });
-      })
+              transaction.upsert('_:m-00001', () => ({
+                '@id': '_:m-00001',
+                '@type': new Set(['Message']),
+                // This `isPartOf` should auto-fix the parent node.
+                isPartOf: new Set([{ '@id': '_:conversation' }])
+              }));
+            });
+          }
+        ],
+        [
+          'a parent node with no "hasPart" property, and a child node with parent is upserted',
+          ({ controller }) => {
+            controller.edit(transaction => {
+              transaction.upsert('_:conversation', () => ({
+                '@id': '_:conversation',
+                '@type': new Set(['Conversation'])
+                // Intentionally leaving `hasPart` not defined, but it should be auto-fixed later when the child is upserted.
+              }));
+
+              transaction.upsert('_:m-00001', () => ({
+                '@id': '_:m-00001',
+                '@type': new Set(['Message']),
+                // This `isPartOf` should auto-fix the parent node.
+                isPartOf: new Set([{ '@id': '_:conversation' }])
+              }));
+            });
+          }
+        ]
+      ])
       .then('the parent node should have `hasPart`', ({ store }) => {
         const parent = store.queryByIdentifier('_:conversation')!;
 
