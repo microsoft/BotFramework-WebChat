@@ -1,5 +1,6 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
 import createStoreAndController from '../createStoreAndController.ts';
@@ -71,6 +72,19 @@ scenario(
 
         expect(Array.from(secondChild.isPartOf!)).toStrictEqual([
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
+        ]);
+      })
+      .and('should have called listener twice', ({ onUpdate }) => {
+        assert.equal(onUpdate.mock.callCount(), 2);
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        assert.deepEqual(Array.from(onUpdate.mock.calls[0]?.arguments[0]!), ['_:m-00001']);
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        assert.deepEqual(Array.from(onUpdate.mock.calls[1]?.arguments[0]!).sort(), [
+          '_:conversation',
+          '_:m-00001',
+          '_:m-00002'
         ]);
       });
   },
