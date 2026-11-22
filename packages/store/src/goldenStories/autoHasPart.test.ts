@@ -11,16 +11,18 @@ scenario(
       .given('a store and a controller', () => createStoreAndController())
       .when('a parent node with no children, and a child node with parent is upserted', ({ controller }) => {
         controller.edit(transaction => {
-          // Intentionally adding a child node without parent node exist.
+          transaction.upsert('_:conversation', () => ({
+            '@id': '_:conversation',
+            '@type': new Set(['Conversation']),
+            // Intentionally adding empty `hasPart`, but it should be auto-fixed later when the child is upserted.
+            hasPart: new Set()
+          }));
+
           transaction.upsert('_:m-00001', () => ({
             '@id': '_:m-00001',
             '@type': new Set(['Message']),
+            // This `isPartOf` should auto-fix the parent node.
             isPartOf: new Set([{ '@id': '_:conversation' }])
-          }));
-
-          transaction.upsert('_:conversation', () => ({
-            '@id': '_:conversation',
-            '@type': new Set(['Conversation'])
           }));
         });
       })
