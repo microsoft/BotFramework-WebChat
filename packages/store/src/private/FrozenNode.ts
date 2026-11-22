@@ -7,11 +7,11 @@ const frozenNodeBrand = Symbol('FrozenNode');
 /**
  * Schema of the node stored in the graph, i.e. the "internal version" of the node.
  *
- * It looks the same as `Node`, but it is deeply frozen and has hidden state attached (e.g. cached `dateCreated`
+ * It looks the same as `VettedNode`, but it is deeply frozen and has hidden state attached (e.g. cached `dateCreated`
  * and sorted children). The brand is type-only, it differentiates it from the "external version" which could be
  * created by anyone, so internal functions relying on hidden state will only accept nodes frozen by `Draft.commit()`.
  *
- * `FrozenNode` is assignable to `Node`, but `Node` is not assignable to `FrozenNode`.
+ * `FrozenNode` is assignable to `VettedNode`, but `VettedNode` is not assignable to `FrozenNode`.
  */
 const frozenNodeSchema = pipe(nodeSchema, brand(frozenNodeBrand));
 

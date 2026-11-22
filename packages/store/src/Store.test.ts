@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import type { Node } from './node/Node.ts';
+import type { VettedNode } from './node/Node.ts';
 import type { NodeIdentifier } from './node/NodeIdentifier.ts';
 import Store, { type GetSortedPartsInit, type StoreController, type StoreTransaction } from './Store.ts';
 
@@ -741,7 +741,7 @@ scenario(
 );
 
 function getPartIdsOf(
-  storeOrSnapshot: Store | ReadonlyMap<string, Node>,
+  storeOrSnapshot: Store | ReadonlyMap<string, VettedNode>,
   id: string,
   property: 'hasPart' | 'isPartOf'
 ): string[] {
@@ -1790,7 +1790,7 @@ scenario(
         return { controller, store };
       })
       .when('the message is upserted for the first time in a transaction', ({ controller, store }) => {
-        let received: Node | undefined;
+        let received: VettedNode | undefined;
 
         controller.edit(transaction =>
           transaction.upsert('_:m-1', node => {
@@ -1829,7 +1829,7 @@ scenario(
           const result: {
             isFrozenInsideUpdater?: boolean;
             isFrozenInsideTransactor?: boolean;
-            received?: Node | undefined;
+            received?: VettedNode | undefined;
             receivedText?: unknown;
           } = {};
 
@@ -1840,7 +1840,7 @@ scenario(
               result.received = node;
               result.receivedText = Reflect.get(node!, 'text');
 
-              const writableNode = node as { -readonly [K in keyof Node]: Node[K] };
+              const writableNode = node as { -readonly [K in keyof VettedNode]: VettedNode[K] };
 
               writableNode.isPartOf = new Set(node!.isPartOf).add({ '@id': '_:m-2' });
 
@@ -1895,7 +1895,7 @@ scenario(
         return { controller, store };
       })
       .when('a child is added, then the conversation is upserted in the same transaction', ({ controller }) => {
-        let received: Node | undefined;
+        let received: VettedNode | undefined;
 
         controller.edit(transaction => {
           upsertMessage(transaction, '_:m-1', '_:conversation');
@@ -1928,7 +1928,7 @@ scenario(
       })
       .when('the message is adopted via hasPart, then upserted in the same transaction', ({ controller }) => {
         let isFrozenInsideUpdater: boolean | undefined;
-        let received: Node | undefined;
+        let received: VettedNode | undefined;
 
         controller.edit(transaction => {
           transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-1' }]) }));
@@ -1974,7 +1974,7 @@ scenario(
       .when(
         'the message is adopted via hasPart, confirmed, then upserted again in the same transaction',
         ({ controller }) => {
-          let received: Node | undefined;
+          let received: VettedNode | undefined;
 
           controller.edit(transaction => {
             transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-1' }]) }));
@@ -2005,7 +2005,7 @@ scenario(
         return { controller, store };
       })
       .when('the message is upserted twice in a transaction, and the second updater throws', ({ controller }) => {
-        let received: Node | undefined;
+        let received: VettedNode | undefined;
 
         controller.edit(transaction => {
           transaction.upsert('_:m-1', node => ({ ...node!, text: ['Hello'] }));
@@ -3091,7 +3091,9 @@ scenario(
         [
           'getSortedParts() is called without init',
           ({ store }) =>
-            catchError(() => (store.getSortedParts as (id: NodeIdentifier) => Iterable<Node>).call(store, '_:c-1'))
+            catchError(() =>
+              (store.getSortedParts as (id: NodeIdentifier) => Iterable<VettedNode>).call(store, '_:c-1')
+            )
         ],
         [
           'getSortedParts() is called with unsupported by',
@@ -3228,7 +3230,7 @@ scenario(
             controller.edit(transaction =>
               transaction.upsert(
                 '_:m-1',
-                () => ({ '@id': '_:m-1', '@type': new Set(['Message']), dateCreated }) as unknown as Node
+                () => ({ '@id': '_:m-1', '@type': new Set(['Message']), dateCreated }) as unknown as VettedNode
               )
             )
           )

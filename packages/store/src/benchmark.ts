@@ -33,7 +33,7 @@
  *
  * Benchmarks measured per operation (`µs/op`) run `NUM_OPERATIONS` operations, they should stay flat across a row.
  */
-import type { Node } from './node/Node.ts';
+import type { VettedNode } from './node/Node.ts';
 import Store, { type StoreController } from './Store.ts';
 
 const NUM_NODES = Object.freeze([1_000, 10_000, 50_000, 100_000]);
@@ -128,7 +128,7 @@ function upsertChildren(
   return Object.freeze({ controller, duration: performance.now() - start, store });
 }
 
-function createMessage(index: number, isPartOf?: Node['isPartOf']) {
+function createMessage(index: number, isPartOf?: VettedNode['isPartOf']) {
   const id = `_:m-${index}` as const;
 
   return {

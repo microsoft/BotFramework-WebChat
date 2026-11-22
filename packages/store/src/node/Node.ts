@@ -53,22 +53,22 @@ type NamedProperties = InferOutput<typeof namedPropertiesSchema>;
  * Named properties (e.g. `@id`, `@type`) are typed as-is, all other properties are `PropertyValue`.
  *
  * As named properties are not `PropertyValue`, TypeScript cannot express "all other properties" without an index
- * signature conflicting with named properties. Thus, an object literal cannot be assigned to `Node` directly, use
- * `UpsertNode<T>` to validate an object literal instead.
+ * signature conflicting with named properties. Thus, an object literal cannot be assigned to `VettedNode` directly, use
+ * `Node<T>` to validate an object literal instead.
  */
-type Node = InferOutput<typeof nodeSchema>;
+type VettedNode = InferOutput<typeof nodeSchema>;
 
 /**
- * Validates `T` as a node, for writing, e.g. `<T>(node: UpsertNode<T>)`.
+ * Validates `T` as a node, for writing, e.g. `<T>(node: Node<T>)`.
  *
  * - Named properties (e.g. `@id`, `@type`) must be of their respective types, required ones must be present
  * - All other properties must be `PropertyValue`, e.g. `text: ['Hello']` instead of `text: 'Hello'`
  *
  * At runtime, the node is validated by `nodeSchema`.
  */
-type UpsertNode<T> = T &
+type Node<T> = T &
   Readonly<NamedProperties> & {
     readonly [K in keyof T]: K extends keyof NamedProperties ? NamedProperties[K] : PropertyValue;
   };
 
-export { nodeSchema, type Node, type UpsertNode };
+export { nodeSchema, type Node, type VettedNode };
