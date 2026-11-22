@@ -2,7 +2,7 @@
 
 State machine design was reactive (event-driven) and linear (array).
 
-The new design is transactional (consistent without locking) and hyperlinking (graph).
+The new design is distributed, transactional (consistent without locking), and hyperlinking (graph).
 
 ## Design direction
 
