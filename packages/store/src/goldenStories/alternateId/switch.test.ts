@@ -5,7 +5,7 @@ import * as NodeTest from 'node:test';
 import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
-  'Inserted nodes are sorted by "dateCreated" property',
+  'Switching "identifier" property value between 2 nodes',
   bdd => {
     bdd
       .given('a store and a controller', () => createStoreAndController())
