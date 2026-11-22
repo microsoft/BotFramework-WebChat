@@ -12,6 +12,7 @@ import {
   type InferInput
 } from 'valibot';
 import assertIdentifierNotId from './assertion/assertIdentifierNotId.ts';
+import assertNoPartConflict from './assertion/assertNoPartConflict.ts';
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
@@ -456,8 +457,8 @@ class Store {
             const node: Node | undefined = draftToRead?.read(childIdsInGraph) ?? nextState.get(safeId);
 
             // Children shown to the updater. A node not in the graph is shown as `undefined`, children which joined it
-            // via their `isPartOf` before it is in the graph are not shown, they are kept and not removed by the diff.
-            const shownChildIds = node ? childIdsInGraph : EMPTY_IDS;
+            // via their `isPartOf` before it is in the graph are not shown, they are pending and not diffed.
+            const [shownChildIds, pendingChildIds] = node ? [childIdsInGraph, EMPTY_IDS] : [EMPTY_IDS, childIdsInGraph];
             let safeNode: DraftNode;
 
             updating = true;
@@ -483,8 +484,13 @@ class Store {
             const childIds = getHasPartIds(safeNode);
             const draft = new Draft(safeNode);
 
+            const safePendingParentIds = pendingParentIds.get(safeId) ?? EMPTY_IDS;
+
+            // A pending link dropped by the updater is a conflict, otherwise pending links are kept.
+            assertNoPartConflict(safeNode, childIds, draft.partOfIds, pendingChildIds, safePendingParentIds);
+
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
-            for (const parentId of pendingParentIds.get(safeId) ?? []) {
+            for (const parentId of safePendingParentIds) {
               draft.setPartOf(parentId, true);
             }
 

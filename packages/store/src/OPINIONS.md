@@ -127,6 +127,10 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - Adding a reference to `isPartOf` property, will automatically add a back-reference to the `hasPart` on the other side, and vice versa
       - Removing a node from the graph will automatically remove it from `hasPart` and `isPartOf` of the other nodes which reference it
          - Other edges are not checked nor fixed
+      - Last writer wins: the updater is shown current `hasPart`/`isPartOf`, dropping a membership it was shown removes it from both sides
+      - Pending membership: a membership made by the other side before the node is in the graph is not shown to the updater (it is shown `undefined`)
+         - Omitting `hasPart`/`isPartOf` keeps pending memberships
+         - Declaring `hasPart`/`isPartOf` without a pending membership is a conflict and throws, the edit is abandoned
    - Failed edit will not commit and is abandoned
 - Read
    - Read is always clean and consistent
