@@ -2,11 +2,11 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
-import buildWhenPermutationWithParameters from '../buildWhenPermutationWithParameters.ts';
 import createStoreAndController from '../createStoreAndController.ts';
+import buildWhenPermutationWithParameters from '../buildWhenPermutationWithParameters.ts';
 
 scenario(
-  'Parent node is automatically referenced by child node',
+  '"isPartOf" is auto-fixed without conflict',
   bdd => {
     bdd
       .given('a store and a controller', () => createStoreAndController())
@@ -17,18 +17,11 @@ scenario(
           void
         >(
           [
-            [
-              'a parent node with two children, and both children with empty "isPartOf" property',
-              // Intentionally adding empty `isPartOf`, but it should be auto-fixed later when the parent is upserted.
-              { isPartOf: new Set() }
-            ],
-            [
-              'a parent node with two children, and both children with no "isPartOf" property defined',
-              // Intentionally adding empty `isPartOf`, but it should be auto-fixed later when the parent is upserted.
-              {}
-            ]
+            ['two children node with empty "isPartOf" property', { isPartOf: new Set() }],
+            ['two children node with no "isPartOf" property', {}]
           ],
           (parameter, { controller }) => {
+            // Two children is inserted in a separate transaction.
             controller.edit(transaction => {
               transaction.upsert('_:m-00001', () => ({
                 '@id': '_:m-00001',
@@ -41,11 +34,13 @@ scenario(
                 '@type': new Set(['Message']),
                 ...parameter
               }));
+            });
 
+            // Children are not touched in this transaction, they will be auto-fixed.
+            controller.edit(transaction => {
               transaction.upsert('_:conversation', () => ({
                 '@id': '_:conversation',
                 '@type': new Set(['Conversation']),
-                // This `hasPart` should auto-fix the child node.
                 hasPart: new Set([{ '@id': '_:m-00001' }, { '@id': '_:m-00002' }])
               }));
             });
@@ -53,28 +48,28 @@ scenario(
         )
       )
       .then('the first child node should have `isPartOf`', ({ store }) => {
-        const child = store.queryByIdentifier('_:m-00001')!;
+        const firstChild = store.queryByIdentifier('_:m-00001')!;
 
-        expect(child).toStrictEqual({
+        expect(firstChild).toStrictEqual({
           '@id': '_:m-00001',
           '@type': expect.any(Set),
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(child.isPartOf!)).toStrictEqual([
+        expect(Array.from(firstChild.isPartOf!)).toStrictEqual([
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       })
       .and('the second child node should have `isPartOf`', ({ store }) => {
-        const child = store.queryByIdentifier('_:m-00002')!;
+        const secondChild = store.queryByIdentifier('_:m-00002')!;
 
-        expect(child).toStrictEqual({
+        expect(secondChild).toStrictEqual({
           '@id': '_:m-00002',
           '@type': expect.any(Set),
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(child.isPartOf!)).toStrictEqual([
+        expect(Array.from(secondChild.isPartOf!)).toStrictEqual([
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       });
