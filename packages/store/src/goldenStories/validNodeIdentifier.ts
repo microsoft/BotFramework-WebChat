@@ -1,5 +1,5 @@
 import { scenario } from '@testduet/given-when-then';
-import { assert } from 'node:console';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeIdentifier } from '../index.ts';
 import createStoreAndController from './createStoreAndController.ts';
