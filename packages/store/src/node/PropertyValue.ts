@@ -11,7 +11,7 @@ const propertyValueSchema = pipe(
       string('Property value must be string'),
       jsonLiteralSchema
     ]),
-    'Property value must be boolean, number, string, node reference, or JSON literal'
+    'Property value must be array of boolean, number, string, node reference, or JSON literal'
   ),
   minLength(1, 'Property must have at least one value'),
   readonly()

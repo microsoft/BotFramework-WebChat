@@ -16,7 +16,7 @@ const identifierSchema = union(
         value => value.startsWith('https://') || (value.startsWith('urn:') && !!new URL(value).pathname),
         'Identifier must starts with https:// or urn:'
       )
-    ) as GenericSchema<`https://${string}`>
+    ) as GenericSchema<`https://${string}` | `urn:${string}`>
   ],
   '@id is required and must be an IRI or blank node identifier'
 );
