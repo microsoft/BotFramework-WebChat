@@ -1,5 +1,6 @@
 import { scenario } from '@testduet/given-when-then';
 import assert from 'assert';
+import { expect } from 'expect';
 import * as NodeTest from 'node:test';
 import createStoreAndController from './createStoreAndController.ts';
 
@@ -32,6 +33,7 @@ scenario(
       })
       .then('should throw', (_, error) => {
         assert(error);
+        expect(error).toHaveProperty('message', expect.stringContaining('in the same transaction'));
       });
   },
   NodeTest
