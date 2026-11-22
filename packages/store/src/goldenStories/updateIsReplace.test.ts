@@ -55,7 +55,7 @@ scenario(
         });
       })
       .then('should have replaced the node', ({ store }) => {
-        const node = store.queryByIdentifier('_:m-00001');
+        const node = store.queryByIdentifier('_:m-00001')!;
 
         expect(node).toStrictEqual({
           '@id': '_:m-00001',
@@ -64,6 +64,9 @@ scenario(
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
         expect(Array.from(node?.['@type']!)).toStrictEqual(['CreativeWork']);
+      })
+      .and('must not keep previous properties', ({ store }) => {
+        assert(!('text' in store.queryByIdentifier('_:m-00001')!));
       })
       .and('should have called the listener', ({ onUpdate }) => {
         assert.equal(onUpdate.mock.callCount(), 1);
