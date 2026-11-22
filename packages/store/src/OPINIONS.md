@@ -17,8 +17,8 @@ The new design is distributed, transactional (consistent without locking), and h
 ## Design choice
 
 - [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem)
-  - Consistency: transactional (clean read), all nodes are always validated
-  - High availability: all nodes must be in the graph
+   - Consistency: transactional (clean read), all nodes are always validated
+   - High availability: all nodes must be in the graph
 - Flattened JSON-LD graph for JSON serializability
 - Assume Schema.org but not strictly validated
    - Schema.org is huge spec, we prefer "assume validated by writer" and "assume reader will validate and drop invalid"
@@ -45,10 +45,13 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
 - Subset of JSON-LD 1.1 specification
 - Context is assumed Schema.org to promote interoperability
 - All nodes are stored flat in a hashmap, frozen, and plain
+- Supported IRI: `https:`, `urn:`, or `_:` (blank node identifier)
+   - [IRI](https://en.wikipedia.org/wiki/Internationalized_Resource_Identifier) is Unicode version of URI
+   - Example: `https://example.com/message/1`, `urn:isbn:0-486-27557-4`, `_:node-1`
 - Properties
    - Property name
-      - Term (non-IRI property name) must be based on Schema.org
-      - Non-Schema.org properties must be named using absolute IRIs
+      - Term (non-IRI property name) must be defined in Schema.org
+      - Otherwise, must be IRI
    - Property value
       - Type supported (mixed use in array):
          - `boolean`, `number`, `string`
@@ -69,12 +72,12 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - Rules
       - Plural form: unless specified, most property values must reside in an array and must have at least 1 item
       - Prohibited `@context` must not be defined, and is assumed "https://schema.org"
-      - Required `@id` must be a non-array string which is either an IRI of `https:` or starts with `_:` (blank node identifier)
+      - Required `@id` must be an IRI
       - Required `@type` must be `Set<string>` with at least one value
-         - Term (non-IRI node type) must be based on Schema.org
-         - Non-Schema.org types must be absolute IRIs
+         - Term (non-IRI node type) must be defined in Schema.org
+         - Otherwise, must be IRI
       - Optional `dateCreated` must be a non-array `string` in ISO format
-      - Optional `identifier` must be `Set<string>` of alternate identifiers, each is either an IRI of `https:` or starts with `_:`
+      - Optional `identifier` must be `Set<string>` of IRI
          - Must not contain `@id` of the node
          - Every identifier (either `@id` or alternate identifier) must identify at most one node in the graph
          - Can be changed by upsert, while `@id` is immutable throughout the life of the node
