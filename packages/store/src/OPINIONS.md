@@ -6,7 +6,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 
 ## Design direction
 
-- CAP theorem: C and A, but not P
+- [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem): C and A, but not P
 - High-performance: most operations are `O(1)` and some are `O(log n)` regardless of graph or membership size
 - Embrace open standard: Schema.org and subset of JSON-LD
 - Simple to use: deliberate design choice to minimize work on consumer side
@@ -16,7 +16,7 @@ The new design is transactional (consistent without locking) and hyperlinking (g
 
 ## Design choice
 
-- CAP theorem
+- [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem)
   - Consistency: transactional (clean read), all nodes are always validated
   - High availability: all nodes must be in the graph
 - Flattened JSON-LD graph for JSON serializability
@@ -61,18 +61,6 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
                - Story: JSON literal is what would be sent over the wire, so what you upsert is what the other side would receive
                   - No surprises: it is the same as the well-known behavior of `JSON.stringify()`, nothing more, nothing less
                   - The value is always copied, the input is never modified
-               - `undefined`, function, and symbol
-                  - In object, the key is removed, e.g. `{ one: 1, two: undefined }` become `{ one: 1 }`
-                  - In array, the element become `null`, e.g. `[1, undefined]` become `[1, null]`, and so do holes in sparse array
-                  - As `@value` itself, it is invalid, as `JSON.stringify(undefined)` returns `undefined`, which is not JSON
-               - `NaN`, `Infinity`, and `-Infinity` become `null`, `-0` become `0`
-               - `toJSON()` is called with the key, e.g. `Date` become an ISO string, `URL` become a string
-               - Boxed primitives are unwrapped, e.g. `new Number(1)` become `1`
-               - Other objects become plain objects of their own enumerable string-keyed properties
-                  - E.g. class instance become a plain object, `Map` and `Set` become `{}`
-                  - Symbol keys and non-enumerable properties are removed, getters are called once
-               - Arrays only keep elements up to `length`, extra properties are removed
-               - Invalid when `JSON.stringify()` would throw: recursion and `BigInt`
                - The only exceptions:
                   - Dangerous keys (e.g. `__proto__`, `constructor`, `prototype`) are removed for security reason, while `JSON.parse()` would keep them as own properties
                   - Boxed primitives with their prototype replaced by `Object.prototype`, `Array.prototype` or `null` (e.g. `Object.setPrototypeOf(new Boolean(true), null)`) are not unwrapped for performance reason, they become plain objects of their own enumerable string-keyed properties, while `JSON.stringify()` would unwrap them (via `valueOf()`/`toString()` of the replaced prototype, which could return `null` or throw)
@@ -94,16 +82,14 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - Optional `hasPart` and `isPartOf` must be `Set<Exact<{ '@id': string }>>` (set of blank node identifiers)
          - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
          - Appear in multiple membership: `isPartOf` can contains more than one reference
-      - `toJSON()` is not supported on nodes, property values, and node references, either own or inherited
-         - Otherwise, `JSON.parse(JSON.stringify(node))` would be different from the node
-         - It is only supported inside `@value` of JSON literal, see above
+      - `toJSON()` is not supported except when it is inside `@value` of JSON literal, see above
       - Nodes, property values, and node references must be plain objects, i.e. prototype is either `Object.prototype` or `null`
-         - Class instances (including subclasses of `Object`) throw, their behaviors (e.g. getters, methods) would be lost in `JSON.parse(JSON.stringify(node))`
+         - Class instances (including subclasses of `Object`) throw
          - `null` prototype is supported as it is the safest dictionary and serializes identically, nodes in the graph are always re-created with `Object.prototype`
          - Objects from other realms (e.g. `<iframe>`) are not plain as their `Object.prototype` is different
          - Inside `@value` of JSON literal, any object is supported, see above
       - Arrays of property values must be plain arrays, i.e. prototype is `Array.prototype`, and must not have `toJSON()`, either own or inherited
-         - Subclasses of `Array` throw, their behaviors (e.g. getters, methods) would be lost in `JSON.parse(JSON.stringify(node))`
+         - Subclasses of `Array` throw
          - Arrays from other realms (e.g. `<iframe>`) are not plain as their `Array.prototype` is different
 - Edit must be synchronous and transactional
    - Edit must not be nested into another edit
@@ -116,12 +102,10 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
          - First read in a transaction: the node in the graph, it is frozen
          - Subsequent reads: a new plain copy with changes made in the transaction, it is writable only inside the updater and is frozen after the updater returns or throws
          - Unchanged `hasPart`/`isPartOf` passed back from the updater are not validated nor diffed again, `O(1)` regardless of membership size
-         - Nodes are plain objects, the store may attach hidden state (e.g. cached `dateCreated`) invisible to userland, a copy (e.g. `JSON.parse(JSON.stringify(node))`) is always accepted and hidden state is rebuilt
-         - Only userland-facing nodes must be plain, internal-only bookkeeping never exposed to userland (e.g. `Draft`) may use classes
+         - Nodes are plain objects, the store may attach hidden state invisible to userland, however, copies (e.g. `JSON.parse(JSON.stringify(node))`) is always accepted and hidden state is rebuilt
       - Node edges must be by-reference
       - Nodes are auto-converted to immutable by deep freezing
          - Array and objects are cloned before frozen, inputs are never modified
-         - Objects are cloned as plain object
       - All referenced nodes must be upserted in the same transaction
    - Membership (`hasPart`/`isPartOf`) are auto-fixed on commit
       - Adding a reference to `isPartOf` property, will automatically add a back-reference to the `hasPart` on the other side, and vice versa
@@ -142,3 +126,18 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
    - Changing `identifier` is `O(k)` where `k` is the number of alternate identifiers of the node, an index from alternate identifier to `@id` is updated incrementally
    - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership, where it use skip list to find insertion point
+
+## Behavior of `JSON.parse(JSON.stringify(...))`
+
+- `undefined`, function, and symbol
+   - In object, the key is removed, e.g. `{ one: 1, two: undefined }` become `{ one: 1 }`
+   - In array, the element become `null`, e.g. `[1, undefined]` become `[1, null]`, and so do holes in sparse array
+   - As `@value` itself, it is invalid, as `JSON.stringify(undefined)` returns `undefined`, which is not JSON
+- `NaN`, `Infinity`, and `-Infinity` become `null`, `-0` become `0`
+- `toJSON()` is called with the key, e.g. `Date` become an ISO string, `URL` become a string
+- Boxed primitives are unwrapped, e.g. `new Number(1)` become `1`
+- Other objects become plain objects of their own enumerable string-keyed properties
+   - E.g. class instance become a plain object, `Map` and `Set` become `{}`
+   - Symbol keys and non-enumerable properties are removed, getters are called once
+- Arrays only keep elements up to `length`, extra properties are removed
+- Invalid when `JSON.stringify()` would throw: recursion and `BigInt`
