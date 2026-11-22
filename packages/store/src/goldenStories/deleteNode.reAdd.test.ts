@@ -32,11 +32,11 @@ scenario(
 
           // Re-add the node under the same transa({}) assert(!node);
 
-          return {
+          transaction.upsert('_:m-00001', () => ({
             '@id': '_:m-00001',
             '@type': new Set(['CreativeWork']),
             text: ['Hello, World!']
-          };
+          }));
         });
       })
       .then('should have the new child node', ({ store }) => {
