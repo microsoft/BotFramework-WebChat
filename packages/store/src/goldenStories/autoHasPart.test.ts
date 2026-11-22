@@ -11,7 +11,7 @@ scenario(
       .given('a store and a controller', () => createStoreAndController())
       .when.oneOf([
         [
-          'a parent node with empty "hasPart" property, and a child node with parent is upserted',
+          'a parent node with empty "hasPart" property, and two children with "isPartOf" property is upserted',
           ({ controller }) => {
             controller.edit(transaction => {
               transaction.upsert('_:conversation', () => ({
@@ -27,11 +27,18 @@ scenario(
                 // This `isPartOf` should auto-fix the parent node.
                 isPartOf: new Set([{ '@id': '_:conversation' }])
               }));
+
+              transaction.upsert('_:m-00002', () => ({
+                '@id': '_:m-00002',
+                '@type': new Set(['Message']),
+                // This `isPartOf` should auto-fix the parent node.
+                isPartOf: new Set([{ '@id': '_:conversation' }])
+              }));
             });
           }
         ],
         [
-          'a parent node with no "hasPart" property, and a child node with parent is upserted',
+          'a parent node with no "hasPart" property, and two children with "isPartOf" property is upserted',
           ({ controller }) => {
             controller.edit(transaction => {
               transaction.upsert('_:conversation', () => ({
@@ -42,6 +49,13 @@ scenario(
 
               transaction.upsert('_:m-00001', () => ({
                 '@id': '_:m-00001',
+                '@type': new Set(['Message']),
+                // This `isPartOf` should auto-fix the parent node.
+                isPartOf: new Set([{ '@id': '_:conversation' }])
+              }));
+
+              transaction.upsert('_:m-00002', () => ({
+                '@id': '_:m-00002',
                 '@type': new Set(['Message']),
                 // This `isPartOf` should auto-fix the parent node.
                 isPartOf: new Set([{ '@id': '_:conversation' }])
@@ -60,7 +74,8 @@ scenario(
         });
 
         expect(Array.from(parent.hasPart!)).toStrictEqual([
-          { '@id': '_:m-00001' satisfies BlankNodeIdentifier } satisfies NodeReference
+          { '@id': '_:m-00001' satisfies BlankNodeIdentifier } satisfies NodeReference,
+          { '@id': '_:m-00002' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       });
   },
