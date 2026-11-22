@@ -12,6 +12,7 @@ import {
   type InferInput
 } from 'valibot';
 import assertIdentifierNotId from './assertion/assertIdentifierNotId.ts';
+import assertNoPartChangeToUpserted from './assertion/assertNoPartChangeToUpserted.ts';
 import assertNoPartConflict from './assertion/assertNoPartConflict.ts';
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
@@ -321,6 +322,9 @@ class Store {
     // Key is the ID of the child, value is IDs of parents which added the child to their `hasPart`.
     const parentIdsToConfirm = new Map<NodeIdentifier, Set<NodeIdentifier>>();
 
+    // IDs of nodes upserted in this transaction, their `hasPart`/`isPartOf` cannot be changed by the other side.
+    const upsertedIds = new Set<NodeIdentifier>();
+
     // All edits are done on overlays without copying. If the transactor throws, overlays are discarded and the state
     // is not changed.
     const nextState = this.#state.mutate();
@@ -464,6 +468,7 @@ class Store {
             }
 
             pendingParentIds.delete(safeId);
+            upsertedIds.delete(safeId);
 
             for (const idsToConfirm of [childIdsToConfirm, parentIdsToConfirm]) {
               idsToConfirm.delete(safeId);
@@ -549,6 +554,22 @@ class Store {
             // A pending link not returned from the updater (including omitted) is a conflict.
             assertNoPartConflict(safeId, childIds, draft.partOfIds, pendingChildIds, safePendingParentIds);
 
+            const prevParentIds = nextStateReader.getPartOfIds(safeId);
+
+            // Changing a link of the other side which is upserted in this transaction is a conflict.
+            assertNoPartChangeToUpserted({
+              childIds,
+              id: safeId,
+              parentIds: draft.partOfIds,
+              pendingChildIds,
+              pendingParentIds: safePendingParentIds,
+              prevParentIds,
+              shownChildIds,
+              upsertedIds
+            });
+
+            upsertedIds.add(safeId);
+
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
             for (const parentId of pendingParentIds.get(safeId) ?? []) {
               draft.setPartOf(parentId, true);
@@ -557,7 +578,6 @@ class Store {
             pendingParentIds.delete(safeId);
 
             const parentIds = draft.partOfIds;
-            const prevParentIds = nextStateReader.getPartOfIds(safeId);
 
             // Unchanged `isPartOf` passed back from the updater keeps the same IDs object, no need to diff.
             if (parentIds !== prevParentIds) {

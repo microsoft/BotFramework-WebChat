@@ -131,7 +131,11 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - Pending membership: a membership made by the other side in the same transaction is not shown to the updater, regardless whether the node is in the graph or not
          - Once the node returned it, it is confirmed and shown to subsequent updaters in the same transaction
          - The updater must return `hasPart`/`isPartOf` with all pending memberships, otherwise (including omitting the property), it is a conflict and throws, the edit is abandoned
-         - A node upserted with empty `hasPart`/`isPartOf` before the other side is not a conflict, the other side is the last writer and auto-fixes it
+      - Touched node: once a node is upserted in a transaction, its `hasPart`/`isPartOf` is its own declaration
+         - If the other side is not touched in the same transaction, the membership is auto-fixed on the other side
+         - If both sides are touched and agree on the membership, it is auto-fixed as usual
+         - If both sides are touched and disagree (adding or removing a membership the touched node did not declare, including empty or omitted `hasPart`/`isPartOf`), it is a conflict and throws, the edit is abandoned
+         - Deleting a node in the transaction is not a conflict, it is no longer touched
    - Failed edit will not commit and is abandoned
 - Read
    - Read is always clean and consistent
