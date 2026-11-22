@@ -19,7 +19,6 @@ scenario(
 
         try {
           controller.edit(transaction => {
-            // Intentionally adding a child node without parent node exist.
             transaction.upsert('_:m-00001', () => ({
               '@id': '_:m-00001',
               '@type': new Set(['Message']),
