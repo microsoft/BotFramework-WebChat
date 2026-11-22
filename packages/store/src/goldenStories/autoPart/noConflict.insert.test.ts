@@ -11,16 +11,20 @@ scenario(
       .given('a store and a controller', () => createStoreAndController())
       .when('both parent and children are inserted', ({ controller }) => {
         controller.edit(transaction => {
+          transaction.upsert('_:m-00001', () => ({
+            '@id': '_:m-00001',
+            '@type': new Set(['Message'])
+          }));
+        });
+
+        controller.edit(transaction => {
           transaction.upsert('_:conversation', () => ({
             '@id': '_:conversation',
             '@type': new Set(['Conversation']),
             hasPart: new Set([{ '@id': '_:m-00001' }, { '@id': '_:m-00002' }])
           }));
 
-          transaction.upsert('_:m-00001', () => ({            '@id': '_:m-00001',
-            '@type': new Set(['Message']),
-            isPartOf: new Set([{ '@id': '_:conversation' }])
-          }));
+          // Intentionally insert _:m-00001 in another transaction to have auto-fix run in this transaction.
 
           transaction.upsert('_:m-00002', () => ({
             '@id': '_:m-00002',

@@ -22,8 +22,12 @@ scenario(
             hasPart: new Set([{ '@id': '_:m-00001' }, { '@id': '_:m-00002' }])
           }));
 
-          transaction.upsert('_:m-00001', node => ({ ...node!, isPartOf: new Set([{ '@id': '_:conversation' }]) }));
-          transaction.upsert('_:m-00002', node => ({ ...node!, isPartOf: new Set([{ '@id': '_:conversation' }]) }));
+          // Intentionally left _:m-00001 unchanged to have auto-fix run in this transaction.
+
+          transaction.upsert('_:m-00002', node => ({
+            ...node!,
+            isPartOf: new Set([{ '@id': '_:conversation' }])
+          }));
         });
       })
       .then('the parent node should have `hasPart`', ({ store }) => {
