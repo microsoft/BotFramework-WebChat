@@ -1,8 +1,10 @@
-import assert from 'assert';
-import { type StoreController, Store } from '../index.ts';
+import assert from 'node:assert';
+import { mock, type Mock } from 'node:test';
+import { Store, type StoreController, type StoreListener } from '../index.ts';
 
 function createStoreAndController(): {
   readonly controller: StoreController;
+  readonly onUpdate: Mock<StoreListener>;
   readonly store: Store;
 } {
   let controller: StoreController | undefined;
@@ -14,7 +16,11 @@ function createStoreAndController(): {
 
   assert(controller);
 
-  return Object.freeze({ controller: controller as StoreController, store });
+  const onUpdate = mock.fn<StoreListener>();
+
+  store.subscribe(onUpdate);
+
+  return Object.freeze({ controller: controller as StoreController, onUpdate, store });
 }
 
 export default createStoreAndController;

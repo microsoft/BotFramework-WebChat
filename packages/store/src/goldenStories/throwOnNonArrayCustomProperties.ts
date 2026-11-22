@@ -1,11 +1,10 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import createStoreAndController from './createStoreAndController.ts';
 
 scenario(
-  'All custom properties must be array',
+  'Throw when some custom properties are not array',
   bdd => {
     bdd
       .given('a store and a controller', () => createStoreAndController())
@@ -26,7 +25,8 @@ scenario(
       })
       .then('should throw', (_, error) => {
         assert(error);
-        expect(error).toHaveProperty('message', expect.stringContaining('must be array of'));
+        assert(error instanceof Error);
+        assert((error['message'] as string).includes('must be array of'));
       });
   },
   NodeTest
