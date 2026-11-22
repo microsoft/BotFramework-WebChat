@@ -89,7 +89,6 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
       - Nodes, property values, and node references must be plain objects, i.e. prototype is either `Object.prototype` or `null`
          - Class instances (including subclasses of `Object`) throw
          - `null` prototype is supported as it is the safest dictionary and serializes identically, nodes in the graph are always re-created with `Object.prototype`
-         - Objects from other realms (e.g. `<iframe>`) are not plain as their `Object.prototype` is different
          - Inside `@value` of JSON literal, any object is supported, see above
       - Arrays of property values must be plain arrays, i.e. prototype is `Array.prototype`, and must not have `toJSON()`, either own or inherited
          - Subclasses of `Array` throw
