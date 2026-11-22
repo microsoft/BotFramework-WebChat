@@ -2,8 +2,8 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
-import type { NodeInit } from '../index.ts';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { UpsertNode } from '../index.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import createStoreAndController from './createStoreAndController.ts';
 
 scenario(
@@ -12,8 +12,8 @@ scenario(
     bdd
       .given('a store and a controller', () => createStoreAndController())
       .when('a node is upserted', ({ controller }) => {
-        const upserted: NodeInit<{ text: string[] }> = {
-          '@id': '_:n-1' satisfies Identifier,
+        const upserted: UpsertNode<{ text: string[] }> = {
+          '@id': '_:n-1' satisfies NodeIdentifier,
           '@type': new Set(['Message']),
           text: ['Hello, World!']
         };
