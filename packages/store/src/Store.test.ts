@@ -2,7 +2,7 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
 import type { Node } from './node/Node.ts';
-import type { Identifier } from './node/NodeIdentifier.ts';
+import type { NodeIdentifier } from './node/NodeIdentifier.ts';
 import Store, { type GetSortedPartsInit, type StoreController, type StoreTransaction } from './Store.ts';
 
 function catchError(fn: () => void): unknown {
@@ -824,11 +824,11 @@ scenario(
           transaction.upsert('_:m-2', () => ({ '@id': '_:m-2', '@type': new Set(['Message']) }));
         })
       )
-      .then('should replace hasPart of the parent as the parent is upserted last', ({ store }) =>
-        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-2'])
+      .then('should merge hasPart of the parent as the parent was not shown the child joined before it', ({ store }) =>
+        expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1', '_:m-2'])
       )
       .and('should mirror hasPart to isPartOf of children', ({ store }) => {
-        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf');
+        expect(getPartIdsOf(store, '_:m-1', 'isPartOf')).toEqual(['_:conversation']);
         expect(getPartIdsOf(store, '_:m-2', 'isPartOf')).toEqual(['_:conversation']);
       });
 
@@ -2846,16 +2846,16 @@ scenario(
       .when.oneOf<unknown>([
         [
           'getSortedParts() is called with a non-string',
-          ({ store }) => catchError(() => store.getSortedParts({} as Identifier, { by: 'dateCreated' }))
+          ({ store }) => catchError(() => store.getSortedParts({} as NodeIdentifier, { by: 'dateCreated' }))
         ],
         [
           'getSortedParts() is called with an invalid ID',
-          ({ store }) => catchError(() => store.getSortedParts('m-1' as Identifier, { by: 'dateCreated' }))
+          ({ store }) => catchError(() => store.getSortedParts('m-1' as NodeIdentifier, { by: 'dateCreated' }))
         ],
         [
           'getSortedParts() is called without init',
           ({ store }) =>
-            catchError(() => (store.getSortedParts as (id: Identifier) => Iterable<Node>).call(store, '_:c-1'))
+            catchError(() => (store.getSortedParts as (id: NodeIdentifier) => Iterable<Node>).call(store, '_:c-1'))
         ],
         [
           'getSortedParts() is called with unsupported by',
@@ -3329,7 +3329,7 @@ scenario(
     bdd
       .given('a store with nodes with alternate identifiers', () => createStoreWithIdentifiers())
       .when('queryByIdentifier() is called with an invalid identifier', ({ store }) =>
-        catchError(() => store.queryByIdentifier('m-1' as Identifier))
+        catchError(() => store.queryByIdentifier('m-1' as NodeIdentifier))
       )
       .then('should throw', (_, error) => expect(error).toBeInstanceOf(Error));
   },

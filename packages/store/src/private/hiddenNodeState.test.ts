@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import FrozenSkipList from '../structure/FrozenSkipList.ts';
 import { getDateCreatedTime, getSortedChildIds, stampHiddenNodeState } from './hiddenNodeState.ts';
 
@@ -11,7 +11,7 @@ scenario(
     bdd
       .given('a plain node', () => ({ '@id': '_:m-1', dateCreated: '2026-01-01T00:00:00Z' }))
       .when('hidden state is stamped and the node is frozen', node => {
-        const sortedChildIds = new FrozenSkipList<Identifier>()
+        const sortedChildIds = new FrozenSkipList<NodeIdentifier>()
           .mutate()
           .insert('_:m-2', () => false)
           .commit();

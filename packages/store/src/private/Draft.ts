@@ -1,5 +1,5 @@
 import { is } from 'valibot';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import { nodeReferenceSchema, type NodeReference } from '../node/NodeReference.ts';
 import FrozenNodeSet, { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet, { isFrozenSet, type ReadWriteSet } from '../structure/FrozenSet.ts';
@@ -11,7 +11,7 @@ import { getDateCreatedTime, stampHiddenNodeState } from './hiddenNodeState.ts';
 
 type NodeObject = Record<string, unknown>;
 
-function isReferenceTo(id: Identifier, value: unknown): value is NodeReference {
+function isReferenceTo(id: NodeIdentifier, value: unknown): value is NodeReference {
   return is(nodeReferenceSchema, value) && value['@id'] === id;
 }
 
@@ -27,7 +27,7 @@ function isPartProperty(key: string): key is 'hasPart' | 'isPartOf' {
 }
 
 /** Reuses the `FrozenNodeSet` if it has the same IDs object, so unchanged parts keep the same identity. */
-function toNodeSet(currentValue: unknown, ids: FrozenSet<Identifier>): FrozenNodeSet {
+function toNodeSet(currentValue: unknown, ids: FrozenSet<NodeIdentifier>): FrozenNodeSet {
   return getNodeSetIds(currentValue) === ids
     ? (currentValue satisfies unknown as FrozenNodeSet)
     : new FrozenNodeSet(ids);
@@ -39,7 +39,11 @@ function toNodeSet(currentValue: unknown, ids: FrozenSet<Identifier>): FrozenNod
  * This is O(number of properties), regardless of the number of parts. Properties are kept in the same order, new
  * `hasPart` and `isPartOf` are appended.
  */
-function buildNode(node: object, parentIds: FrozenSet<Identifier>, childIds: FrozenSet<Identifier>): NodeObject {
+function buildNode(
+  node: object,
+  parentIds: FrozenSet<NodeIdentifier>,
+  childIds: FrozenSet<NodeIdentifier>
+): NodeObject {
   const getPartValue = (key: string, value: unknown): FrozenNodeSet | undefined => {
     const ids = key === 'hasPart' ? childIds : parentIds;
 
@@ -84,26 +88,26 @@ class Draft {
     this.id = node['@id'];
     this.#node = node;
     this.#partOfIds = isFrozenSet(partOfIds)
-      ? (partOfIds satisfies ReadonlySet<unknown> as FrozenSet<Identifier>)
+      ? (partOfIds satisfies ReadonlySet<unknown> as FrozenSet<NodeIdentifier>)
       : new FrozenSet(partOfIds);
   }
 
   readonly dateCreatedTime: number;
-  readonly id: Identifier;
+  readonly id: NodeIdentifier;
 
   #node: DraftNode | FrozenNode;
   /** `isPartOf` before changes in `#partOfOverlay`. */
-  #partOfIds: FrozenSet<Identifier>;
+  #partOfIds: FrozenSet<NodeIdentifier>;
   /** Changes to `isPartOf` since `#partOfIds` is taken, `undefined` if unchanged. */
-  #partOfOverlay: ReadWriteSet<Identifier> | undefined;
+  #partOfOverlay: ReadWriteSet<NodeIdentifier> | undefined;
 
   /** IDs of parents in `isPartOf` with changes applied. */
-  get partOfIds(): ReadonlySet<Identifier> {
+  get partOfIds(): ReadonlySet<NodeIdentifier> {
     return this.#partOfOverlay ?? this.#partOfIds;
   }
 
   /** Folds changes in the overlay into `#partOfIds`, O(number of changes). */
-  #rotatePartOfIds(): FrozenSet<Identifier> {
+  #rotatePartOfIds(): FrozenSet<NodeIdentifier> {
     if (this.#partOfOverlay) {
       this.#partOfIds = this.#partOfOverlay.commit();
       this.#partOfOverlay = undefined;
@@ -122,7 +126,7 @@ class Draft {
    * @param childIds IDs of children, `hasPart` is generated from it. `hasPart` of the node is ignored.
    * @param sortedChildIds IDs of children sorted by `dateCreated`, see `getSortedChildIds()`.
    */
-  commit(childIds: FrozenSet<Identifier>, sortedChildIds: FrozenSkipList<Identifier> | undefined): FrozenNode {
+  commit(childIds: FrozenSet<NodeIdentifier>, sortedChildIds: FrozenSkipList<NodeIdentifier> | undefined): FrozenNode {
     const node = this.#node;
     const partOfIds = this.#rotatePartOfIds();
 
@@ -147,8 +151,8 @@ class Draft {
   /**
    * Gets IDs of all nodes referenced by the node with changes applied, excluding `hasPart`.
    */
-  getReferenceIds(): Set<Identifier> {
-    const referenceIds = new Set<Identifier>(this.partOfIds);
+  getReferenceIds(): Set<NodeIdentifier> {
+    const referenceIds = new Set<NodeIdentifier>(this.partOfIds);
 
     for (const [key, value] of Object.entries(this.#node)) {
       if (isReferenceProperty(key, value)) {
@@ -170,7 +174,7 @@ class Draft {
    *
    * @param childIds IDs of children, `hasPart` is generated from it.
    */
-  read(childIds: FrozenSet<Identifier>): DraftNode {
+  read(childIds: FrozenSet<NodeIdentifier>): DraftNode {
     return buildNode(this.#node, this.#rotatePartOfIds(), childIds) satisfies object as DraftNode;
   }
 
@@ -181,7 +185,7 @@ class Draft {
    *
    * @returns `true` if any references are removed, otherwise, `false`.
    */
-  removeReferencesTo(id: Identifier): boolean {
+  removeReferencesTo(id: NodeIdentifier): boolean {
     let changed = false;
 
     const nextEntries = Object.entries(this.#node).flatMap(([key, value]): [string, unknown][] => {
@@ -212,7 +216,7 @@ class Draft {
    *
    * @returns `true` if `isPartOf` is changed, otherwise, `false`.
    */
-  setPartOf(parentId: Identifier, included: boolean): boolean {
+  setPartOf(parentId: NodeIdentifier, included: boolean): boolean {
     if (this.partOfIds.has(parentId) === included) {
       return false;
     }

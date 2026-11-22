@@ -1,5 +1,5 @@
 import type { Node } from '../node/Node.ts';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 
 /**
  * RULE: All referenced nodes must be in the graph.
@@ -10,8 +10,8 @@ import type { Identifier } from '../node/NodeIdentifier.ts';
  */
 function assertReferencedNodesInGraph(
   state: ReadonlyMap<string, Node>,
-  forwardReferenceIds: ReadonlyMap<string, ReadonlySet<Identifier>>,
-  affectedNodeIds: ReadonlySet<Identifier>
+  forwardReferenceIds: ReadonlyMap<string, ReadonlySet<NodeIdentifier>>,
+  affectedNodeIds: ReadonlySet<NodeIdentifier>
 ): void {
   for (const nodeId of affectedNodeIds) {
     for (const referenceId of forwardReferenceIds.get(nodeId) ?? []) {

@@ -1,11 +1,11 @@
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import type FrozenSkipList from '../structure/FrozenSkipList.ts';
 
 type HiddenNodeStateInit = {
   /** `dateCreated` as epoch time, `Infinity` if not set, see `parseDateCreatedTime()`. */
   readonly dateCreatedTime: number;
   /** IDs of children sorted by `dateCreated`, then `@id`, `undefined` if the node has no children. */
-  readonly sortedChildIds: FrozenSkipList<Identifier> | undefined;
+  readonly sortedChildIds: FrozenSkipList<NodeIdentifier> | undefined;
 };
 
 /** Returns the object passed in, so the subclass can attach private fields to a plain object. */
@@ -34,13 +34,13 @@ class HiddenNodeState extends Stamp {
   }
 
   readonly #dateCreatedTime: number;
-  readonly #sortedChildIds: FrozenSkipList<Identifier> | undefined;
+  readonly #sortedChildIds: FrozenSkipList<NodeIdentifier> | undefined;
 
   static getDateCreatedTime(node: object): number | undefined {
     return #dateCreatedTime in node ? node.#dateCreatedTime : undefined;
   }
 
-  static getSortedChildIds(node: object): FrozenSkipList<Identifier> | undefined {
+  static getSortedChildIds(node: object): FrozenSkipList<NodeIdentifier> | undefined {
     return #sortedChildIds in node ? node.#sortedChildIds : undefined;
   }
 
@@ -94,7 +94,7 @@ function getDateCreatedTime(node: object | undefined): number {
  * Gets IDs of children sorted by `dateCreated`, then `@id`. Returns `undefined` if the node has no children or is not
  * stamped (sorted children cannot be rebuilt from the node alone).
  */
-function getSortedChildIds(node: object | undefined): FrozenSkipList<Identifier> | undefined {
+function getSortedChildIds(node: object | undefined): FrozenSkipList<NodeIdentifier> | undefined {
   return node && HiddenNodeState.getSortedChildIds(node);
 }
 
