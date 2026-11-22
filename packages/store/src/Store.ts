@@ -17,7 +17,7 @@ import assertNoPartConflict from './assertion/assertNoPartConflict.ts';
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
-import type { Node, UpsertNode } from './node/Node.ts';
+import type { Node, VettedNode } from './node/Node.ts';
 import { identifierSchema, type NodeIdentifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
@@ -82,7 +82,7 @@ interface StoreTransaction {
    * cannot be called inside the updater, they will throw without making any changes. Reading the store (e.g.
    * `getSnapshot()`) inside the updater is allowed.
    */
-  upsert<T>(id: NodeIdentifier, updater: (node: Node | undefined) => UpsertNode<T>): void;
+  upsert<T>(id: NodeIdentifier, updater: (node: VettedNode | undefined) => Node<T>): void;
 }
 
 const EMPTY_IDS: FrozenSet<NodeIdentifier> = new FrozenSet<NodeIdentifier>([]);
@@ -500,7 +500,7 @@ class Store {
               }
             }
           },
-          upsert: <T>(id: NodeIdentifier, updater: (node: Node | undefined) => UpsertNode<T>): void => {
+          upsert: <T>(id: NodeIdentifier, updater: (node: VettedNode | undefined) => Node<T>): void => {
             assertNotEnded();
             assertNotUpdating('upsert');
 
@@ -523,7 +523,7 @@ class Store {
 
             // Clean read: the node in the graph is frozen and up-to-date.
             // Dirty read: a new unfrozen copy with changes made in this transaction, O(number of properties).
-            const node: Node | undefined =
+            const node: VettedNode | undefined =
               draftToRead?.read(shownChildIds, safePendingParentIds) ?? nextState.get(safeId);
 
             let safeNode: DraftNode;
@@ -685,7 +685,7 @@ class Store {
   /**
    * Gets an immutable snapshot of all nodes. Snapshots are not affected by subsequent commits.
    */
-  getSnapshot(): ReadonlyMap<string, Node> {
+  getSnapshot(): ReadonlyMap<string, VettedNode> {
     return this.#state;
   }
 
@@ -702,7 +702,7 @@ class Store {
    * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
    * subsequent commits.
    */
-  getSortedParts(id: NodeIdentifier, init: GetSortedPartsInit): Iterable<Node> {
+  getSortedParts(id: NodeIdentifier, init: GetSortedPartsInit): Iterable<VettedNode> {
     const safeId = parse(identifierSchema, id);
 
     const { order } = parse(getSortedPartsInitSchema, init);
@@ -712,10 +712,10 @@ class Store {
     const orderedChildIds = order === 'desc' ? sortedChildIds?.reversed() : sortedChildIds;
 
     return Object.freeze({
-      *[Symbol.iterator](): Iterator<Node> {
+      *[Symbol.iterator](): Iterator<VettedNode> {
         if (orderedChildIds) {
           for (const childId of orderedChildIds) {
-            yield state.get(childId) as Node;
+            yield state.get(childId) as VettedNode;
           }
         }
       }
@@ -728,7 +728,7 @@ class Store {
    *
    * This is O(1) regardless of the size of the graph.
    */
-  queryByIdentifier(identifier: NodeIdentifier): Node | undefined {
+  queryByIdentifier(identifier: NodeIdentifier): VettedNode | undefined {
     const safeIdentifier = parse(identifierSchema, identifier);
 
     const state = this.#state;
