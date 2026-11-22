@@ -2,8 +2,8 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
+import buildPermutatedFunction from '../buildPermutatedFunction.ts';
 import createStoreAndController from '../createStoreAndController.ts';
-import buildWhenPermutationWithParameters from '../buildWhenPermutationWithParameters.ts';
 
 scenario(
   '"isPartOf" is auto-fixed without conflict',
@@ -11,13 +11,9 @@ scenario(
     bdd
       .given('a store and a controller', () => createStoreAndController())
       .when.oneOf(
-        buildWhenPermutationWithParameters<
-          { isPartOf: Set<NodeReference> } | { isPartOf?: never },
-          ReturnType<typeof createStoreAndController>,
-          void
-        >(
+        buildPermutatedFunction(
           [
-            ['two children node with empty "isPartOf" property', { isPartOf: new Set() }],
+            ['two children node with empty "isPartOf" property', { isPartOf: new Set<NodeReference>() }],
             ['two children node with no "isPartOf" property', {}]
           ],
           (parameter, { controller }) => {

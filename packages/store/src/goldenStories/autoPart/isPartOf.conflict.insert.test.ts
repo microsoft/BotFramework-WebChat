@@ -3,7 +3,7 @@ import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import { type NodeReference } from '../../index.ts';
-import buildWhenPermutationWithParameters from '../buildWhenPermutationWithParameters.ts';
+import buildPermutatedFunction from '../buildPermutatedFunction.ts';
 import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
@@ -12,10 +12,9 @@ scenario(
     bdd
       .given('a store and a controller', () => createStoreAndController())
       .when.oneOf(
-        buildWhenPermutationWithParameters<
+        buildPermutatedFunction<
           [{ isPartOf: Set<NodeReference> } | { isPartOf?: never }, boolean],
-          ReturnType<typeof createStoreAndController>,
-          void
+          (precondition: ReturnType<typeof createStoreAndController>) => void
         >(
           [
             [

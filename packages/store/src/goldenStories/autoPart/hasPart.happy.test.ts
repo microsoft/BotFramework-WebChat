@@ -3,7 +3,7 @@ import { expect } from 'expect';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
 import createStoreAndController from '../createStoreAndController.ts';
-import buildWhenPermutationWithParameters from '../buildWhenPermutationWithParameters.ts';
+import buildPermutatedFunction from '../buildPermutatedFunction.ts';
 
 scenario(
   '"hasPart" is auto-fixed without conflict',
@@ -11,14 +11,10 @@ scenario(
     bdd
       .given('a store and a controller', () => createStoreAndController())
       .when.oneOf(
-        buildWhenPermutationWithParameters<
-          { hasPart: Set<NodeReference> } | { hasPart?: never },
-          ReturnType<typeof createStoreAndController>,
-          void
-        >(
+        buildPermutatedFunction(
           [
-            ['a parent node with empty "hasPart" property', { hasPart: new Set() }],
-            ['a parent node with no "hasPart" property', {}]
+            ['a parent node with empty "hasPart" property', { hasPart: new Set<NodeReference>() }],
+            ['a parent node with no "hasPart" property', undefined]
           ],
           (parameter, { controller }) => {
             // Parent is inserted in a separate transaction.
@@ -26,7 +22,7 @@ scenario(
               transaction.upsert('_:conversation', () => ({
                 '@id': '_:conversation',
                 '@type': new Set(['Conversation']),
-                ...parameter
+                ...(parameter ? parameter : {})
               }));
             });
 
