@@ -457,7 +457,7 @@ class Store {
             const node: Node | undefined = draftToRead?.read(childIdsInGraph) ?? nextState.get(safeId);
 
             // Children shown to the updater. A node not in the graph is shown as `undefined`, children which joined it
-            // via their `isPartOf` before it is in the graph are not shown, they are pending and not diffed.
+            // via their `isPartOf` before it is in the graph are not shown, they are pending and must be returned.
             const [shownChildIds, pendingChildIds] = node ? [childIdsInGraph, EMPTY_IDS] : [EMPTY_IDS, childIdsInGraph];
             let safeNode: DraftNode;
 
@@ -486,8 +486,8 @@ class Store {
 
             const safePendingParentIds = pendingParentIds.get(safeId) ?? EMPTY_IDS;
 
-            // A pending link dropped by the updater is a conflict, otherwise pending links are kept.
-            assertNoPartConflict(safeNode, childIds, draft.partOfIds, pendingChildIds, safePendingParentIds);
+            // A pending link not returned from the updater (including omitted) is a conflict.
+            assertNoPartConflict(safeId, childIds, draft.partOfIds, pendingChildIds, safePendingParentIds);
 
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
             for (const parentId of safePendingParentIds) {
