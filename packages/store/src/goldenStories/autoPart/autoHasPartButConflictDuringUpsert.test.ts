@@ -2,7 +2,7 @@ import { scenario } from '@testduet/given-when-then';
 import assert from 'assert';
 import { expect } from 'expect';
 import * as NodeTest from 'node:test';
-import createStoreAndController from './createStoreAndController.ts';
+import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
   'Child node is referencing a parent node but parent node is deleting it in same transaction',

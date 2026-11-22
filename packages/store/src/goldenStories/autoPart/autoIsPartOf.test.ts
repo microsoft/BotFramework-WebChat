@@ -1,8 +1,8 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import * as NodeTest from 'node:test';
-import { type BlankNodeIdentifier, type NodeReference } from '../index.ts';
-import createStoreAndController from './createStoreAndController.ts';
+import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
+import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
   'Parent node is automatically referenced by child node',

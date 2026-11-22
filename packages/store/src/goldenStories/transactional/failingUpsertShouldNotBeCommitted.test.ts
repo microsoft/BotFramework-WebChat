@@ -2,7 +2,7 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
-import createStoreAndController from './createStoreAndController.ts';
+import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
   'Failing upsert should not be committed',
