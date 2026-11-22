@@ -43,7 +43,7 @@ scenario(
           hasPart: expect.any(Set)
         });
 
-        expect(Array.from(parent.hasPart!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(parent.hasPart!), [
           { '@id': '_:m-00001' satisfies BlankNodeIdentifier } satisfies NodeReference,
           { '@id': '_:m-00002' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
@@ -57,7 +57,7 @@ scenario(
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(firstChild.isPartOf!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(firstChild.isPartOf!), [
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       })
@@ -70,7 +70,7 @@ scenario(
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(secondChild.isPartOf!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(secondChild.isPartOf!), [
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       })

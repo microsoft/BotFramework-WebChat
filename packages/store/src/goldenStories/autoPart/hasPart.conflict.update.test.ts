@@ -1,8 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
-import { type NodeReference } from '../../index.ts';
+import type { NodeReference } from '../../index.ts';
 import buildPermutatedFunction from '../buildPermutatedFunction.ts';
 import createStoreAndController from '../createStoreAndController.ts';
 
@@ -12,21 +11,18 @@ scenario(
     bdd
       .given('a store and a controller', () => createStoreAndController())
       .when.oneOf(
-        buildPermutatedFunction<
-          [{ hasPart: Set<NodeReference> } | { hasPart?: never }, boolean],
-          (precondition: ReturnType<typeof createStoreAndController>) => void
-        >(
+        buildPermutatedFunction(
           [
             [
               'a parent node with empty "hasPart" property is updated before two children',
-              [{ hasPart: new Set() }, true]
+              [{ hasPart: new Set<NodeReference>() }, true] as const
             ],
-            ['a parent node with no "hasPart" property is updated before two children', [{}, true]],
+            ['a parent node with no "hasPart" property is updated before two children', [{}, true] as const],
             [
               'a parent node with empty "hasPart" property is updated after two children',
-              [{ hasPart: new Set() }, false]
+              [{ hasPart: new Set<NodeReference>() }, false] as const
             ],
-            ['a parent node with no "hasPart" property is updated after two children', [{}, false]]
+            ['a parent node with no "hasPart" property is updated after two children', [{}, false] as const]
           ],
           ([partialNode, updateFirst], { controller }) => {
             controller.edit(transaction => {
@@ -78,8 +74,8 @@ scenario(
       )
       .then('should throw', (_, error) => {
         assert(error);
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toHaveProperty('message', expect.stringContaining('in the same transaction'));
+        assert(error instanceof Error);
+        assert((error['message'] as string).includes('in the same transaction'));
       });
   },
   NodeTest

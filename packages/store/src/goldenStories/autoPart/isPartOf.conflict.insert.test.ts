@@ -1,5 +1,4 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import { type NodeReference } from '../../index.ts';
@@ -12,21 +11,18 @@ scenario(
     bdd
       .given('a store and a controller', () => createStoreAndController())
       .when.oneOf(
-        buildPermutatedFunction<
-          [{ isPartOf: Set<NodeReference> } | { isPartOf?: never }, boolean],
-          (precondition: ReturnType<typeof createStoreAndController>) => void
-        >(
+        buildPermutatedFunction(
           [
             [
               'two children node with empty "isPartOf" property is inserted before parent',
-              [{ isPartOf: new Set() }, true]
+              [{ isPartOf: new Set<NodeReference>() }, true] as const
             ],
-            ['two children node with no "isPartOf" property is inserted before parent', [{}, true]],
+            ['two children node with no "isPartOf" property is inserted before parent', [{}, true] as const],
             [
               'two children node with empty "isPartOf" property is inserted after parent',
-              [{ isPartOf: new Set() }, false]
+              [{ isPartOf: new Set<NodeReference>() }, false] as const
             ],
-            ['two children node with no "isPartOf" property is inserted after parent', [{}, false]]
+            ['two children node with no "isPartOf" property is inserted after parent', [{}, false] as const]
           ],
           ([partialNode, insertFirst], { controller }) => {
             try {
@@ -71,8 +67,8 @@ scenario(
       )
       .then('should throw', (_, error) => {
         assert(error);
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toHaveProperty('message', expect.stringContaining('in the same transaction'));
+        assert(error instanceof Error);
+        assert((error['message'] as string).includes('in the same transaction'));
       });
   },
   NodeTest

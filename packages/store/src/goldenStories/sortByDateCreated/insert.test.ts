@@ -1,5 +1,5 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import createStoreAndController from '../createStoreAndController.ts';
 
@@ -40,12 +40,10 @@ scenario(
         Array.from(store.getSortedParts('_:conversation', { by: 'dateCreated' }))
       )
       .then('should be in correct order', ({ store }, sorted) => {
-        expect(sorted).toStrictEqual([
-          expect.objectContaining({ '@id': '_:m-00001' }),
-          expect.objectContaining({ '@id': '_:m-00002' })
-        ]);
+        assert.equal(sorted[0]?.['@id'], '_:m-00001');
+        assert.equal(sorted[1]?.['@id'], '_:m-00002');
 
-        expect(sorted).toStrictEqual([store.queryByIdentifier('_:m-00001'), store.queryByIdentifier('_:m-00002')]);
+        assert.deepStrictEqual(sorted, [store.queryByIdentifier('_:m-00001'), store.queryByIdentifier('_:m-00002')]);
       });
   },
   NodeTest

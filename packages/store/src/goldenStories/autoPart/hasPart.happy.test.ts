@@ -1,9 +1,10 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
-import createStoreAndController from '../createStoreAndController.ts';
 import buildPermutatedFunction from '../buildPermutatedFunction.ts';
+import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
   '"hasPart" is auto-fixed without conflict',
@@ -52,7 +53,7 @@ scenario(
           hasPart: expect.any(Set)
         });
 
-        expect(Array.from(parent.hasPart!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(parent.hasPart!), [
           { '@id': '_:m-00001' satisfies BlankNodeIdentifier } satisfies NodeReference,
           { '@id': '_:m-00002' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);

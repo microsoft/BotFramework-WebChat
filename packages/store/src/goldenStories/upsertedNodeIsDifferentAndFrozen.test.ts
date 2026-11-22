@@ -41,10 +41,10 @@ scenario(
           text: ['Hello, World!']
         });
 
-        expect(Array.from(queried?.['@type'])).toStrictEqual(['Message']);
+        assert.deepStrictEqual(Array.from(queried?.['@type']), ['Message']);
       })
       .and('should not be reference equal to the upserted node', (_, { queried, upserted }) => {
-        expect(queried).not.toBe(upserted);
+        assert.notEqual(queried, upserted);
       })
       .and('the queried node should be frozen', (_, { queried }) => {
         assert(Object.isFrozen(queried));
@@ -57,10 +57,10 @@ scenario(
         return outcome;
       })
       .then('the upserted node should have the change', (_, { upserted }) => {
-        expect(upserted).toHaveProperty('text', ['Hello, World!', 'Aloha!']);
+        assert.deepStrictEqual(upserted.text, ['Hello, World!', 'Aloha!']);
       })
       .and('the queried node should not be changed', (_, { queried }) => {
-        expect(queried).toHaveProperty('text', ['Hello, World!']);
+        assert.deepStrictEqual(queried['text'], ['Hello, World!']);
       })
       .and('should not have called the listener', ({ onUpdate }) => {
         assert.equal(onUpdate.mock.callCount(), 0);

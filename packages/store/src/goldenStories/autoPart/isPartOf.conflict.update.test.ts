@@ -1,5 +1,4 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import type { NodeReference } from '../../index.ts';
@@ -71,8 +70,8 @@ scenario(
       )
       .then('should throw', (_, error) => {
         assert(error);
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toHaveProperty('message', expect.stringContaining('in the same transaction'));
+        assert(error instanceof Error);
+        assert((error['message'] as string).includes('in the same transaction'));
       });
   },
   NodeTest

@@ -30,16 +30,13 @@ scenario(
         controller.edit(transaction => {
           transaction.delete('_:m-00001');
 
-          // Re-add the node under the same transaction.
-          transaction.upsert('_:m-00001', node => {
-            assert(!node);
+          // Re-add the node under the same transa({}) assert(!node);
 
-            return {
-              '@id': '_:m-00001',
-              '@type': new Set(['CreativeWork']),
-              text: ['Hello, World!']
-            };
-          });
+          return {
+            '@id': '_:m-00001',
+            '@type': new Set(['CreativeWork']),
+            text: ['Hello, World!']
+          };
         });
       })
       .then('should have the new child node', ({ store }) => {
@@ -52,7 +49,7 @@ scenario(
         });
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        expect(Array.from(child?.['@type']!)).toStrictEqual(['CreativeWork']);
+        assert.deepStrictEqual(Array.from(child?.['@type']!), ['CreativeWork']);
       })
       .and('should be disconnected from parent', ({ store }) => {
         // The newly added node does not have "isPartOf" property.
@@ -64,7 +61,7 @@ scenario(
         });
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        expect(Array.from(parent?.['@type']!)).toStrictEqual(['Conversation']);
+        assert.deepStrictEqual(Array.from(parent?.['@type']!), ['Conversation']);
       });
   },
   NodeTest

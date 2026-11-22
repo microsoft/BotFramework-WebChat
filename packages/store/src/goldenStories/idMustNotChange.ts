@@ -1,8 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import createStoreAndController from './createStoreAndController.ts';
-import assert from 'node:assert';
 
 scenario(
   '"@id" must not change',
@@ -44,8 +43,8 @@ scenario(
       })
       .then('should throw', (_, error) => {
         assert(error);
-        expect(error).toBeInstanceOf(Error);
-        expect(error).toHaveProperty('message', expect.stringContaining('must have @id of'));
+        assert(error instanceof Error);
+        assert((error['message'] as string).includes('must have @id of'));
       });
   },
   NodeTest

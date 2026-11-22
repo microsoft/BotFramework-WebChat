@@ -1,5 +1,6 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import { type BlankNodeIdentifier, type NodeReference } from '../../index.ts';
 import buildPermutatedFunction from '../buildPermutatedFunction.ts';
@@ -52,7 +53,7 @@ scenario(
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(firstChild.isPartOf!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(firstChild.isPartOf!), [
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       })
@@ -65,7 +66,7 @@ scenario(
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(secondChild.isPartOf!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(secondChild.isPartOf!), [
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       });

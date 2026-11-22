@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
 import * as NodeTest from 'node:test';
 import createStoreAndController from '../createStoreAndController.ts';
+import assert from 'node:assert';
 
 scenario(
   'Updated nodes are sorted by "dateCreated" property',
@@ -47,12 +47,13 @@ scenario(
         Array.from(store.getSortedParts('_:conversation', { by: 'dateCreated' }))
       )
       .then('should have first child removed from the sort result', ({ store }, sorted) => {
-        expect(sorted).toStrictEqual([expect.objectContaining({ '@id': '_:m-00002' })]);
-
-        expect(sorted).toStrictEqual([store.queryByIdentifier('_:m-00002')]);
+        assert.equal(sorted[0]?.['@id'], '_:m-00002');
+        assert.deepStrictEqual(sorted, [store.queryByIdentifier('_:m-00002')]);
       })
       .and('should have first child removed from the "hasPart" property', ({ store }) => {
-        expect(Array.from(store.queryByIdentifier('_:conversation')!.hasPart!)).toStrictEqual([{ '@id': '_:m-00002' }]);
+        assert.deepStrictEqual(Array.from(store.queryByIdentifier('_:conversation')!.hasPart!), [
+          { '@id': '_:m-00002' }
+        ]);
       });
   },
   NodeTest

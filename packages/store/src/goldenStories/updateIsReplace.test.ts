@@ -28,7 +28,7 @@ scenario(
         });
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        expect(Array.from(node?.['@type']!)).toStrictEqual(['Message']);
+        assert.deepStrictEqual(Array.from(node?.['@type']!), ['Message']);
       })
       .and('should have called the listener', ({ onUpdate }) => {
         assert.equal(onUpdate.mock.callCount(), 1);
@@ -45,7 +45,7 @@ scenario(
             });
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-            expect(Array.from(node?.['@type']!)).toStrictEqual(['Message']);
+            assert.deepStrictEqual(Array.from(node?.['@type']!), ['Message']);
 
             return {
               '@id': '_:m-00001',
@@ -63,7 +63,7 @@ scenario(
         });
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        expect(Array.from(node?.['@type']!)).toStrictEqual(['CreativeWork']);
+        assert.deepStrictEqual(Array.from(node?.['@type']!), ['CreativeWork']);
       })
       .and('must not keep previous properties', ({ store }) => {
         assert(!('text' in store.queryByIdentifier('_:m-00001')!));
@@ -74,8 +74,8 @@ scenario(
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
         const updatedNodeIds = onUpdate.mock.calls[0]?.arguments[0]!;
 
-        expect(updatedNodeIds).toBeInstanceOf(Set);
-        expect(Array.from(updatedNodeIds)).toStrictEqual(['_:m-00001']);
+        assert(updatedNodeIds instanceof Set);
+        assert.deepStrictEqual(Array.from(updatedNodeIds), ['_:m-00001']);
       });
   },
   NodeTest

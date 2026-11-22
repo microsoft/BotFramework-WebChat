@@ -40,7 +40,7 @@ scenario(
           hasPart: expect.any(Set)
         });
 
-        expect(Array.from(parent.hasPart!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(parent.hasPart!), [
           { '@id': '_:m-00001' satisfies BlankNodeIdentifier } satisfies NodeReference,
           { '@id': '_:m-00002' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
@@ -54,7 +54,7 @@ scenario(
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(firstChild.isPartOf!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(firstChild.isPartOf!), [
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       })
@@ -67,7 +67,7 @@ scenario(
           isPartOf: expect.any(Set)
         });
 
-        expect(Array.from(secondChild.isPartOf!)).toStrictEqual([
+        assert.deepStrictEqual(Array.from(secondChild.isPartOf!), [
           { '@id': '_:conversation' satisfies BlankNodeIdentifier } satisfies NodeReference
         ]);
       })
@@ -75,14 +75,14 @@ scenario(
         assert.equal(onUpdate.mock.callCount(), 2);
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        assert.deepEqual(Array.from(onUpdate.mock.calls[0]?.arguments[0]!), [
+        assert.deepStrictEqual(Array.from(onUpdate.mock.calls[0]?.arguments[0]!), [
           '_:conversation',
           '_:m-00001',
           '_:m-00002'
         ]);
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        assert.deepEqual(Array.from(onUpdate.mock.calls[1]?.arguments[0]!).sort(), [
+        assert.deepStrictEqual(Array.from(onUpdate.mock.calls[1]?.arguments[0]!).sort(), [
           '_:conversation',
           '_:m-00001',
           '_:m-00002'

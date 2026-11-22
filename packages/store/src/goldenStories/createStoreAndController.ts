@@ -1,6 +1,6 @@
 import assert from 'node:assert';
-import { type StoreController, type StoreListener, Store } from '../index.ts';
 import { mock, type Mock } from 'node:test';
+import { Store, type StoreController, type StoreListener } from '../index.ts';
 
 function createStoreAndController(): {
   readonly controller: StoreController;

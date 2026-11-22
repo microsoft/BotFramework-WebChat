@@ -1,5 +1,4 @@
 import { scenario } from '@testduet/given-when-then';
-import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
 import createStoreAndController from './createStoreAndController.ts';
@@ -25,7 +24,7 @@ scenario(
         });
       })
       .then('should have no nodes', ({ store }) => {
-        expect(Array.from(store.getSnapshot())).toHaveLength(0);
+        assert.deepStrictEqual(Array.from(store.getSnapshot()), []);
       })
       .and('should call listener twice (insert and delete)', ({ onUpdate }) => {
         assert.equal(onUpdate.mock.callCount(), 2);
