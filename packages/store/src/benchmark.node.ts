@@ -16,7 +16,7 @@
  */
 import { parse, set } from 'valibot';
 import { nodeReferenceSchema } from './node/NodeReference.ts';
-import type { Identifier } from './node/NodeIdentifier.ts';
+import type { NodeIdentifier } from './node/NodeIdentifier.ts';
 import FrozenNodeSet, { getNodeSetIds } from './structure/FrozenNodeSet.ts';
 
 const NUM_ITERATIONS = 1_000_000;
@@ -77,7 +77,7 @@ const privateFieldStamped: readonly object[] = Array.from(
   (_, index) => new PrivateFieldStamp(createPlainObject(index), index)
 );
 
-const nodeSet = new FrozenNodeSet(Array.from({ length: NUM_SET_ITEMS }, (_, index): Identifier => `_:m-${index}`));
+const nodeSet = new FrozenNodeSet(Array.from({ length: NUM_SET_ITEMS }, (_, index): NodeIdentifier => `_:m-${index}`));
 const nodeReferenceSetSchema = set(nodeReferenceSchema);
 
 const MICRO_BENCHMARKS: readonly MicroBenchmark[] = Object.freeze([

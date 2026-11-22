@@ -1,6 +1,6 @@
 import type { Exact } from 'type-fest';
 import { pipe, readonly, strictObject, type InferOutput } from 'valibot';
-import { identifierSchema, type Identifier } from './NodeIdentifier.ts';
+import { identifierSchema, type NodeIdentifier } from './NodeIdentifier.ts';
 
 const nodeReferenceSchema = pipe(
   strictObject({ '@id': identifierSchema }, 'Node reference must not contains any properties'),
@@ -16,6 +16,6 @@ const nodeReferenceSchema = pipe(
  * If `T` is not specified, it is the schema output, which will become `never` if the schema output has any properties
  * other than `@id`.
  */
-type NodeReference<T = InferOutput<typeof nodeReferenceSchema>> = Exact<{ readonly '@id': Identifier }, T>;
+type NodeReference<T = InferOutput<typeof nodeReferenceSchema>> = Exact<{ readonly '@id': NodeIdentifier }, T>;
 
 export { nodeReferenceSchema, type NodeReference };

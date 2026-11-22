@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import FrozenSkipList from '../structure/FrozenSkipList.ts';
@@ -11,7 +11,7 @@ import type { DraftNode } from './DraftNode.ts';
 import { getHasPartIds, getIsPartOfIds } from './getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './hiddenNodeState.ts';
 
-const NO_CHILDREN = new FrozenSet<Identifier>();
+const NO_CHILDREN = new FrozenSet<NodeIdentifier>();
 
 function createMessage(): DraftNode {
   return createDraftNode({
@@ -94,8 +94,8 @@ scenario(
     bdd
       .given('a node', () => createMessage())
       .when('committed with children and sorted children', node => {
-        const childIds = new FrozenSet<Identifier>(['_:m-2']);
-        const sortedChildIds = new FrozenSkipList<Identifier>()
+        const childIds = new FrozenSet<NodeIdentifier>(['_:m-2']);
+        const sortedChildIds = new FrozenSkipList<NodeIdentifier>()
           .mutate()
           .insert('_:m-2', () => false)
           .commit();
@@ -114,7 +114,7 @@ scenario(
 
     bdd
       .given('a frozen node with children', () => {
-        const childIds = new FrozenSet<Identifier>(['_:m-2']);
+        const childIds = new FrozenSet<NodeIdentifier>(['_:m-2']);
 
         return { childIds, node: new Draft(createMessage()).commit(childIds, undefined) };
       })
@@ -139,9 +139,9 @@ scenario(
         return { draft, node };
       })
       .when('read with children', ({ draft }) => {
-        const childIds = new FrozenSet<Identifier>(['_:m-2']);
+        const childIds = new FrozenSet<NodeIdentifier>(['_:m-2']);
 
-        return { childIds, readNode: draft.read(childIds) };
+        return { childIds, readNode: draft.read(childIds, new Set()) };
       })
       .then('should return a new unfrozen node', ({ node }, { readNode }) => {
         expect(readNode).not.toBe(node);

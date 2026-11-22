@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import { FrozenSet } from '../structure.ts';
+import FrozenSet from '../structure/FrozenSet.ts';
 import deepFreeze from './deepFreeze.ts';
 
 scenario(

@@ -126,7 +126,11 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - Membership (`hasPart`/`isPartOf`) are auto-fixed on commit
       - Adding a reference to `isPartOf` property, will automatically add a back-reference to the `hasPart` on the other side, and vice versa
       - Removing a node from the graph will automatically remove it from `hasPart` and `isPartOf` of the other nodes which reference it
-         - Other edges are not checked nor fixed
+         - Other edges are not checked nor fixed, such as `about`/`subjectOf`, `exampleOfWork`/`workExample`, `owner/owns`, etc.
+      - Auto-fix will apply to nodes that are not upserted in the current transaction
+         - If both nodes are upserted, their `hasPart` and `isPartOf` must agree with each other, otherwise, it is a conflict and will fail on commit
+      - Upserting a node without `hasPart` and/or `isPartOf` means it is deleting all edges of the node
+      - Deleting a node in the transaction is not a conflict, it is no longer touched
    - Failed edit will not commit and is abandoned
 - Read
    - Read is always clean and consistent

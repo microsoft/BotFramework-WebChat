@@ -2,7 +2,7 @@ import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import assert from 'node:assert';
 import * as NodeTest from 'node:test';
-import createStoreAndController from './createStoreAndController.ts';
+import createStoreAndController from '../createStoreAndController.ts';
 
 scenario(
   'Failing upsert should not be committed',
@@ -47,7 +47,8 @@ scenario(
       })
       .then('should throw', (_, error) => {
         assert(error);
-        expect(error).toHaveProperty('message', expect.stringContaining('must be array of'));
+        assert(error instanceof Error);
+        assert((error['message'] as string).includes('must be array of'));
       })
       .and('should keep the original node', ({ store }) => {
         const node = store.queryByIdentifier('_:n-00001')!;
@@ -58,7 +59,7 @@ scenario(
           text: ['Hello, World!']
         });
 
-        expect(Array.from(node['@type'])).toStrictEqual(['Message']);
+        assert.deepStrictEqual(Array.from(node['@type']), ['Message']);
       })
       .and('should not keep other node in the same transaction', ({ store }) => {
         assert(!store.queryByIdentifier('_:n-00002'));

@@ -1,4 +1,4 @@
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import type { NodeReference } from '../node/NodeReference.ts';
 import FrozenSet, { isFrozenSet } from './FrozenSet.ts';
 import SetView from './SetView.ts';
@@ -7,7 +7,7 @@ function throwReadonly(): never {
   throw new TypeError('Cannot modify a readonly Set');
 }
 
-function toNodeReference(id: Identifier): NodeReference {
+function toNodeReference(id: NodeIdentifier): NodeReference {
   return Object.freeze({ '@id': id });
 }
 
@@ -37,17 +37,19 @@ function getEqualityKey(value: unknown): unknown {
  * Similar to `FrozenSet`, it does not extend `Set` and its prototype is chained to `Set.prototype`.
  */
 class FrozenNodeSet extends SetView<NodeReference> {
-  constructor(ids: Iterable<Identifier>) {
+  constructor(ids: Iterable<NodeIdentifier>) {
     super(getEqualityKey);
 
-    this.#ids = isFrozenSet(ids) ? (ids satisfies ReadonlySet<unknown> as ReadonlySet<Identifier>) : new FrozenSet(ids);
+    this.#ids = isFrozenSet(ids)
+      ? (ids satisfies ReadonlySet<unknown> as ReadonlySet<NodeIdentifier>)
+      : new FrozenSet(ids);
 
     Object.freeze(this);
   }
 
-  readonly #ids: ReadonlySet<Identifier>;
+  readonly #ids: ReadonlySet<NodeIdentifier>;
 
-  static getIds(value: unknown): ReadonlySet<Identifier> | undefined {
+  static getIds(value: unknown): ReadonlySet<NodeIdentifier> | undefined {
     return value && typeof value === 'object' && #ids in value ? value.#ids : undefined;
   }
 
@@ -83,7 +85,7 @@ Object.freeze(FrozenNodeSet);
  *
  * @returns A read-only `Set` of IDs, or `undefined` if the value is not created by `FrozenNodeSet`.
  */
-function getNodeSetIds(value: unknown): ReadonlySet<Identifier> | undefined {
+function getNodeSetIds(value: unknown): ReadonlySet<NodeIdentifier> | undefined {
   return FrozenNodeSet.getIds(value);
 }
 
