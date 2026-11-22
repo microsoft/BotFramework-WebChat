@@ -31,7 +31,7 @@ scenario(
           ],
           ([partialNode, updateFirst], { controller }) => {
             controller.edit(transaction => {
-              transaction.upsert('_:m-conversation', () => ({
+              transaction.upsert('_:conversation', () => ({
                 '@id': '_:conversation',
                 '@type': new Set(['Conversation'])
               }));
