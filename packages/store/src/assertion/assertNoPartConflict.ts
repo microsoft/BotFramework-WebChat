@@ -3,8 +3,8 @@ import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 /**
  * RULE: A node must not drop a pending part declared by another node in the same transaction.
  *
- * Links made by the other side before the node is in the graph are pending, the updater was shown `undefined` and did
- * not see them. If `hasPart`/`isPartOf` returned from the updater does not include a pending link (including omitting
+ * Links made by the other side in the same transaction are pending until the node confirms them, the updater was not
+ * shown them, regardless whether the node is in the graph or not. If `hasPart`/`isPartOf` returned from the updater does not include a pending link (including omitting
  * the property), it is a conflict between 2 writers in the same transaction.
  *
  * @param id ID of the node being upserted.

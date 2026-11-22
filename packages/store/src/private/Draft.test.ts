@@ -141,7 +141,7 @@ scenario(
       .when('read with children', ({ draft }) => {
         const childIds = new FrozenSet<NodeIdentifier>(['_:m-2']);
 
-        return { childIds, readNode: draft.read(childIds) };
+        return { childIds, readNode: draft.read(childIds, new Set()) };
       })
       .then('should return a new unfrozen node', ({ node }, { readNode }) => {
         expect(readNode).not.toBe(node);

@@ -173,9 +173,15 @@ class Draft {
    * updater.
    *
    * @param childIds IDs of children, `hasPart` is generated from it.
+   * @param hiddenParentIds IDs of parents to exclude from `isPartOf`.
    */
-  read(childIds: FrozenSet<NodeIdentifier>): DraftNode {
-    return buildNode(this.#node, this.#rotatePartOfIds(), childIds) satisfies object as DraftNode;
+  read(childIds: FrozenSet<NodeIdentifier>, hiddenParentIds: ReadonlySet<NodeIdentifier>): DraftNode {
+    const partOfIds = this.#rotatePartOfIds();
+    const shownPartOfIds = hiddenParentIds.size
+      ? new FrozenSet(Array.from(partOfIds).filter(id => !hiddenParentIds.has(id)))
+      : partOfIds;
+
+    return buildNode(this.#node, shownPartOfIds, childIds) satisfies object as DraftNode;
   }
 
   /**

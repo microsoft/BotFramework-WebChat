@@ -86,6 +86,13 @@ interface StoreTransaction {
 
 const EMPTY_IDS: FrozenSet<NodeIdentifier> = new FrozenSet<NodeIdentifier>([]);
 
+function withoutIds(
+  ids: FrozenSet<NodeIdentifier>,
+  excludedIds: ReadonlySet<NodeIdentifier>
+): FrozenSet<NodeIdentifier> {
+  return excludedIds.size ? new FrozenSet(Array.from(ids).filter(id => !excludedIds.has(id))) : ids;
+}
+
 const isThenable = is.bind(null, looseObject({ then: function_() }));
 
 const getSortedPartsInitSchema = pipe(
@@ -308,6 +315,12 @@ class Store {
     // When the child is upserted, the parents will be added to its `isPartOf`.
     const pendingParentIds = new Map<NodeIdentifier, Set<NodeIdentifier>>();
 
+    // Links made by the other side in this transaction, which the node must confirm when it is upserted.
+    // Key is the ID of the parent, value is IDs of children which added the parent to their `isPartOf`.
+    const childIdsToConfirm = new Map<NodeIdentifier, Set<NodeIdentifier>>();
+    // Key is the ID of the child, value is IDs of parents which added the child to their `hasPart`.
+    const parentIdsToConfirm = new Map<NodeIdentifier, Set<NodeIdentifier>>();
+
     // All edits are done on overlays without copying. If the transactor throws, overlays are discarded and the state
     // is not changed.
     const nextState = this.#state.mutate();
@@ -376,6 +389,42 @@ class Store {
       mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](childId);
     };
 
+    const setToConfirm = (
+      idsToConfirm: Map<NodeIdentifier, Set<NodeIdentifier>>,
+      id: NodeIdentifier,
+      linkedId: NodeIdentifier,
+      included: boolean
+    ): void => {
+      let ids = idsToConfirm.get(id);
+
+      ids || idsToConfirm.set(id, (ids = new Set()));
+      included ? ids.add(linkedId) : ids.delete(linkedId);
+    };
+
+    // Removes links to confirm of the node, returns them.
+    const takeIdsToConfirm = (
+      idsToConfirm: Map<NodeIdentifier, Set<NodeIdentifier>>,
+      id: NodeIdentifier
+    ): ReadonlySet<NodeIdentifier> => {
+      const ids = idsToConfirm.get(id) ?? EMPTY_IDS;
+
+      idsToConfirm.delete(id);
+
+      return ids;
+    };
+
+    // Adds or removes a child from children of the parent after the child changed its `isPartOf`. Unless the parent made
+    // the link, the parent must confirm it.
+    const setChildOf = (
+      parentId: NodeIdentifier,
+      childId: NodeIdentifier,
+      included: boolean,
+      confirmedParentIds: ReadonlySet<NodeIdentifier>
+    ): void => {
+      mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](childId);
+      confirmedParentIds.has(parentId) || setToConfirm(childIdsToConfirm, parentId, childId, included);
+    };
+
     // Keeps the draft and updates references. Callers must update `nextChildIds` if `isPartOf` is changed.
     const setDraft = (draft: Draft): void => {
       const { id } = draft;
@@ -415,6 +464,15 @@ class Store {
             }
 
             pendingParentIds.delete(safeId);
+
+            for (const idsToConfirm of [childIdsToConfirm, parentIdsToConfirm]) {
+              idsToConfirm.delete(safeId);
+
+              for (const ids of idsToConfirm.values()) {
+                ids.delete(safeId);
+              }
+            }
+
             drafts.delete(safeId);
             nextState.delete(safeId);
             existed && affectedNodeIds.add(safeId);
@@ -452,13 +510,17 @@ class Store {
             const childIdsInGraph = getChildIds(safeId);
             const draftToRead = drafts.has(safeId) || nextChildIds.sets.has(safeId) ? getDraft(safeId) : undefined;
 
+            // Links made by the other side in this transaction are not shown to the updater, they are pending and
+            // must be returned from the updater.
+            const pendingChildIds = takeIdsToConfirm(childIdsToConfirm, safeId);
+            const safePendingParentIds = takeIdsToConfirm(parentIdsToConfirm, safeId);
+            const shownChildIds = withoutIds(childIdsInGraph, pendingChildIds);
+
             // Clean read: the node in the graph is frozen and up-to-date.
             // Dirty read: a new unfrozen copy with changes made in this transaction, O(number of properties).
-            const node: Node | undefined = draftToRead?.read(childIdsInGraph) ?? nextState.get(safeId);
+            const node: Node | undefined =
+              draftToRead?.read(shownChildIds, safePendingParentIds) ?? nextState.get(safeId);
 
-            // Children shown to the updater. A node not in the graph is shown as `undefined`, children which joined it
-            // via their `isPartOf` before it is in the graph are not shown, they are pending and must be returned.
-            const [shownChildIds, pendingChildIds] = node ? [childIdsInGraph, EMPTY_IDS] : [EMPTY_IDS, childIdsInGraph];
             let safeNode: DraftNode;
 
             updating = true;
@@ -484,13 +546,11 @@ class Store {
             const childIds = getHasPartIds(safeNode);
             const draft = new Draft(safeNode);
 
-            const safePendingParentIds = pendingParentIds.get(safeId) ?? EMPTY_IDS;
-
             // A pending link not returned from the updater (including omitted) is a conflict.
             assertNoPartConflict(safeId, childIds, draft.partOfIds, pendingChildIds, safePendingParentIds);
 
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
-            for (const parentId of safePendingParentIds) {
+            for (const parentId of pendingParentIds.get(safeId) ?? []) {
               draft.setPartOf(parentId, true);
             }
 
@@ -502,11 +562,11 @@ class Store {
             // Unchanged `isPartOf` passed back from the updater keeps the same IDs object, no need to diff.
             if (parentIds !== prevParentIds) {
               for (const parentId of prevParentIds) {
-                parentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).delete(safeId);
+                parentIds.has(parentId) || setChildOf(parentId, safeId, false, safePendingParentIds);
               }
 
               for (const parentId of parentIds) {
-                prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(safeId);
+                prevParentIds.has(parentId) || setChildOf(parentId, safeId, true, safePendingParentIds);
               }
             }
 
@@ -527,6 +587,9 @@ class Store {
                 const child = getDraft(childId);
 
                 child ? setPartOf(child, safeId, included) : setPendingChild(safeId, childId, included);
+
+                // Children which made the link are confirmed, otherwise, the child must confirm it.
+                pendingChildIds.has(childId) || setToConfirm(parentIdsToConfirm, childId, safeId, included);
               }
             }
           }

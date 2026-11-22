@@ -911,27 +911,30 @@ scenario(
       .when(
         'a child joins the parent via isPartOf, then the parent is upserted with hasPart without the child',
         ({ controller }) =>
-          controller.edit(transaction => {
-            transaction.upsert('_:m-1', () => ({
-              '@id': '_:m-1',
-              '@type': new Set(['Message']),
-              isPartOf: new Set([{ '@id': '_:conversation' }])
-            }));
+          catchError(() =>
+            controller.edit(transaction => {
+              transaction.upsert('_:m-1', () => ({
+                '@id': '_:m-1',
+                '@type': new Set(['Message']),
+                isPartOf: new Set([{ '@id': '_:conversation' }])
+              }));
 
-            // The updater was shown the child in hasPart, dropping it is not a conflict, last writer wins.
-            transaction.upsert('_:conversation', () => ({
-              '@id': '_:conversation',
-              '@type': new Set(['Conversation']),
-              hasPart: new Set()
-            }));
-          })
+              // The link made by the child in this transaction is pending, dropping it is a conflict.
+              transaction.upsert('_:conversation', () => ({
+                '@id': '_:conversation',
+                '@type': new Set(['Conversation']),
+                hasPart: new Set()
+              }));
+            })
+          )
       )
-      .then('should drop the child from the parent', ({ store }) =>
-        expect(store.getSnapshot().get('_:conversation')).not.toHaveProperty('hasPart')
+      .then('should throw a conflict', (_, error) =>
+        expect(error).toHaveProperty(
+          'message',
+          'Node "_:conversation" must have part "_:m-1" in hasPart, as "_:m-1" is part of it in the same transaction'
+        )
       )
-      .and('should drop the parent from the child', ({ store }) =>
-        expect(store.getSnapshot().get('_:m-1')).not.toHaveProperty('isPartOf')
-      );
+      .and('should not commit the child', ({ store }) => expect(store.getSnapshot().has('_:m-1')).toBe(false));
 
     bdd
       .given('an empty store', () => createStore())
@@ -1216,14 +1219,14 @@ scenario(
           transaction.upsert('_:conversation', node => {
             parentInTransaction = node;
 
-            return node!;
+            return { ...node!, hasPart: new Set([{ '@id': '_:m-1' }]) };
           });
         });
 
         return parentInTransaction;
       })
-      .then('should reflect the child inside the transaction', (_, parentInTransaction) =>
-        expect(Array.from((parentInTransaction as Node).hasPart ?? [])).toEqual([{ '@id': '_:m-1' }])
+      .then('should not show the pending child inside the transaction', (_, parentInTransaction) =>
+        expect(parentInTransaction).not.toHaveProperty('hasPart')
       )
       .and('should commit', ({ store }) => expect(getPartIdsOf(store, '_:conversation', 'hasPart')).toEqual(['_:m-1']));
 
@@ -1849,14 +1852,14 @@ scenario(
           transaction.upsert('_:conversation', node => {
             received = node;
 
-            return node!;
+            return { ...node!, hasPart: new Set([{ '@id': '_:m-1' }]) };
           });
         });
 
         return received;
       })
-      .then('should receive hasPart with the new child', (_, received) =>
-        expect(received).toHaveProperty('hasPart', new Set([{ '@id': '_:m-1' }]))
+      .then('should not receive the pending child in hasPart', (_, received) =>
+        expect(received).not.toHaveProperty('hasPart')
       )
       .and('should keep the child', ({ store }) =>
         expect(store.getSnapshot().get('_:conversation')).toHaveProperty('hasPart', new Set([{ '@id': '_:m-1' }]))
@@ -1883,14 +1886,14 @@ scenario(
             isFrozenInsideUpdater = Object.isFrozen(node);
             received = node;
 
-            return { ...node!, text: ['Hello'] };
+            return { ...node!, isPartOf: new Set([{ '@id': '_:conversation' }]), text: ['Hello'] };
           });
         });
 
         return { isFrozenInsideUpdater, received };
       })
-      .then('should receive isPartOf mirrored from the parent', (_, { received }) =>
-        expect(received).toHaveProperty('isPartOf', new Set([{ '@id': '_:conversation' }]))
+      .then('should not receive the pending parent in isPartOf', (_, { received }) =>
+        expect(received).not.toHaveProperty('isPartOf')
       )
       .and('should receive a writable node inside the updater', (_, { isFrozenInsideUpdater }) =>
         expect(isFrozenInsideUpdater).toBe(false)
@@ -1905,6 +1908,42 @@ scenario(
           isPartOf: new Set([{ '@id': '_:conversation' }]),
           text: ['Hello']
         })
+      );
+
+    bdd
+      .given('a store with a conversation and a message without parent', () => {
+        const { controller, store } = createStore();
+
+        controller.edit(transaction => {
+          transaction.upsert('_:conversation', () => ({ '@id': '_:conversation', '@type': new Set(['Conversation']) }));
+          upsertMessage(transaction, '_:m-1');
+        });
+
+        return { controller, store };
+      })
+      .when(
+        'the message is adopted via hasPart, confirmed, then upserted again in the same transaction',
+        ({ controller }) => {
+          let received: Node | undefined;
+
+          controller.edit(transaction => {
+            transaction.upsert('_:conversation', node => ({ ...node!, hasPart: new Set([{ '@id': '_:m-1' }]) }));
+            transaction.upsert('_:m-1', node => ({ ...node!, isPartOf: new Set([{ '@id': '_:conversation' }]) }));
+            transaction.upsert('_:m-1', node => {
+              received = node;
+
+              return { ...node!, text: ['Hello'] };
+            });
+          });
+
+          return received;
+        }
+      )
+      .then('should receive the confirmed parent in isPartOf', (_, received) =>
+        expect(received).toHaveProperty('isPartOf', new Set([{ '@id': '_:conversation' }]))
+      )
+      .and('should commit the message with the parent', ({ store }) =>
+        expect(store.getSnapshot().get('_:m-1')).toHaveProperty('isPartOf', new Set([{ '@id': '_:conversation' }]))
       );
 
     bdd
