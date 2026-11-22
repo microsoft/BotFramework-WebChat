@@ -1,4 +1,4 @@
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 
 /**
  * RULE: All nodes in `hasPart` must be in the graph.
@@ -9,7 +9,7 @@ import type { Identifier } from '../node/NodeIdentifier.ts';
  * @param pendingParentIds Map of child IDs to IDs of parents which have the child in `hasPart`, but the child is not
  *                         in the graph.
  */
-function assertNoPendingParts(pendingParentIds: ReadonlyMap<Identifier, ReadonlySet<Identifier>>): void {
+function assertNoPendingParts(pendingParentIds: ReadonlyMap<NodeIdentifier, ReadonlySet<NodeIdentifier>>): void {
   for (const [childId, parentIds] of pendingParentIds) {
     const [parentId] = parentIds;
 

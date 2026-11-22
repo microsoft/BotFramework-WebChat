@@ -1,4 +1,4 @@
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import { getNodeSetIds } from '../structure/FrozenNodeSet.ts';
 import FrozenSet from '../structure/FrozenSet.ts';
 import type { DraftNode } from './DraftNode.ts';
@@ -6,13 +6,13 @@ import type { FrozenNode } from './FrozenNode.ts';
 
 type PartNode = DraftNode | FrozenNode;
 
-const EMPTY_PART_IDS: ReadonlySet<Identifier> = new FrozenSet<Identifier>([]);
+const EMPTY_PART_IDS: ReadonlySet<NodeIdentifier> = new FrozenSet<NodeIdentifier>([]);
 
 function getPartIds(
   node: PartNode | undefined,
   references: PartNode['hasPart'] | PartNode['isPartOf'],
   property: 'hasPart' | 'isPartOf'
-): ReadonlySet<Identifier> {
+): ReadonlySet<NodeIdentifier> {
   if (!references?.size) {
     return EMPTY_PART_IDS;
   }
@@ -32,7 +32,7 @@ function getPartIds(
  * Only accepts nodes created by `createDraftNode()` or committed by `Draft.commit()`, which always store the property as
  * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createDraftNode()`.
  */
-function getHasPartIds(node: PartNode | undefined): ReadonlySet<Identifier> {
+function getHasPartIds(node: PartNode | undefined): ReadonlySet<NodeIdentifier> {
   return getPartIds(node, node?.hasPart, 'hasPart');
 }
 
@@ -42,7 +42,7 @@ function getHasPartIds(node: PartNode | undefined): ReadonlySet<Identifier> {
  * Only accepts nodes created by `createDraftNode()` or committed by `Draft.commit()`, which always store the property as
  * `FrozenNodeSet`. Throws if the property is not a `FrozenNodeSet`, i.e. the node did not go through `createDraftNode()`.
  */
-function getIsPartOfIds(node: PartNode | undefined): ReadonlySet<Identifier> {
+function getIsPartOfIds(node: PartNode | undefined): ReadonlySet<NodeIdentifier> {
   return getPartIds(node, node?.isPartOf, 'isPartOf');
 }
 

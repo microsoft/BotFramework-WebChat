@@ -12,11 +12,13 @@ import {
   type InferInput
 } from 'valibot';
 import assertIdentifierNotId from './assertion/assertIdentifierNotId.ts';
+import assertNoPartChangeToUpserted from './assertion/assertNoPartChangeToUpserted.ts';
+import assertNoPartConflict from './assertion/assertNoPartConflict.ts';
 import assertNoPendingParts from './assertion/assertNoPendingParts.ts';
 import assertNotSelfPart from './assertion/assertNotSelfPart.ts';
 import assertReferencedNodesInGraph from './assertion/assertReferencedNodesInGraph.ts';
-import type { Node, NodeInit } from './node/Node.ts';
-import { identifierSchema, type Identifier } from './node/NodeIdentifier.ts';
+import type { Node, UpsertNode } from './node/Node.ts';
+import { identifierSchema, type NodeIdentifier } from './node/NodeIdentifier.ts';
 import FrozenMap, { type ReadWriteMap } from './structure/FrozenMap.ts';
 import FrozenSet, { type ReadWriteSet } from './structure/FrozenSet.ts';
 import createDraftNode from './private/createDraftNode.ts';
@@ -29,7 +31,7 @@ import { getDateCreatedTime, getSortedChildIds } from './private/hiddenNodeState
 import { updateIdentifierIndex } from './private/identifierIndex.ts';
 import { insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
 
-type StoreListener = (affectedNodeIds: ReadonlySet<Identifier>) => void;
+type StoreListener = (affectedNodeIds: ReadonlySet<NodeIdentifier>) => void;
 
 interface StoreSource {
   start(controller: StoreController): void;
@@ -56,7 +58,7 @@ interface StoreTransaction {
    *
    * `delete()` cannot be called inside an updater of `upsert()`.
    */
-  delete(id: Identifier): void;
+  delete(id: NodeIdentifier): void;
 
   /**
    * Inserts or updates a node. The updater will receive the current node (or `undefined` if not exists).
@@ -80,10 +82,17 @@ interface StoreTransaction {
    * cannot be called inside the updater, they will throw without making any changes. Reading the store (e.g.
    * `getSnapshot()`) inside the updater is allowed.
    */
-  upsert<T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void;
+  upsert<T>(id: NodeIdentifier, updater: (node: Node | undefined) => UpsertNode<T>): void;
 }
 
-const EMPTY_IDS: FrozenSet<Identifier> = new FrozenSet<Identifier>([]);
+const EMPTY_IDS: FrozenSet<NodeIdentifier> = new FrozenSet<NodeIdentifier>([]);
+
+function withoutIds(
+  ids: FrozenSet<NodeIdentifier>,
+  excludedIds: ReadonlySet<NodeIdentifier>
+): FrozenSet<NodeIdentifier> {
+  return excludedIds.size ? new FrozenSet(Array.from(ids).filter(id => !excludedIds.has(id))) : ids;
+}
 
 const isThenable = is.bind(null, looseObject({ then: function_() }));
 
@@ -98,7 +107,7 @@ const getSortedPartsInitSchema = pipe(
 
 type GetSortedPartsInit = InferInput<typeof getSortedPartsInitSchema>;
 
-type ReferenceIds = FrozenMap<Identifier, FrozenSet<Identifier>>;
+type ReferenceIds = FrozenMap<NodeIdentifier, FrozenSet<NodeIdentifier>>;
 
 /**
  * Backward reference IDs (or child IDs) being modified in a transaction.
@@ -107,25 +116,28 @@ type ReferenceIds = FrozenMap<Identifier, FrozenSet<Identifier>>;
  * being modified are mutated via an overlay and kept in `sets` until commit.
  */
 type MutableBackwardReferenceIds = {
-  readonly map: ReadWriteMap<Identifier, FrozenSet<Identifier>>;
-  readonly sets: Map<Identifier, ReadWriteSet<Identifier>>;
+  readonly map: ReadWriteMap<NodeIdentifier, FrozenSet<NodeIdentifier>>;
+  readonly sets: Map<NodeIdentifier, ReadWriteSet<NodeIdentifier>>;
 };
 
-function getReferencingIds(backwardReferenceIds: MutableBackwardReferenceIds, id: Identifier): ReadonlySet<Identifier> {
+function getReferencingIds(
+  backwardReferenceIds: MutableBackwardReferenceIds,
+  id: NodeIdentifier
+): ReadonlySet<NodeIdentifier> {
   return backwardReferenceIds.sets.get(id) ?? backwardReferenceIds.map.get(id) ?? EMPTY_IDS;
 }
 
 function mutateReferencingIds(
   backwardReferenceIds: MutableBackwardReferenceIds,
-  id: Identifier
-): ReadWriteSet<Identifier> {
+  id: NodeIdentifier
+): ReadWriteSet<NodeIdentifier> {
   let referencingIds = backwardReferenceIds.sets.get(id);
 
   // A new empty set is created every time, mutating a shared empty set would make other mutations of it O(size).
   referencingIds ||
     backwardReferenceIds.sets.set(
       id,
-      (referencingIds = (backwardReferenceIds.map.get(id) ?? new FrozenSet<Identifier>([])).mutate())
+      (referencingIds = (backwardReferenceIds.map.get(id) ?? new FrozenSet<NodeIdentifier>([])).mutate())
     );
 
   return referencingIds;
@@ -147,10 +159,10 @@ function commitBackwardReferenceIds(backwardReferenceIds: MutableBackwardReferen
  * Updates forward and backward reference maps with the new set of reference IDs of a node.
  */
 function setReferenceIds(
-  forwardReferenceIds: ReadWriteMap<Identifier, FrozenSet<Identifier>>,
+  forwardReferenceIds: ReadWriteMap<NodeIdentifier, FrozenSet<NodeIdentifier>>,
   backwardReferenceIds: MutableBackwardReferenceIds,
-  id: Identifier,
-  nextReferenceIds: ReadonlySet<Identifier>
+  id: NodeIdentifier,
+  nextReferenceIds: ReadonlySet<NodeIdentifier>
 ): void {
   const prevReferenceIds = forwardReferenceIds.get(id) ?? EMPTY_IDS;
 
@@ -171,10 +183,10 @@ function setReferenceIds(
  */
 type NextStateReader = {
   /** Gets `dateCreated` of the node as epoch time, `Infinity` if not set or the node does not exist. */
-  getDateCreatedTime(id: Identifier): number;
+  getDateCreatedTime(id: NodeIdentifier): number;
   /** Gets IDs of parents in `isPartOf` of the node, empty if the node does not exist. */
-  getPartOfIds(id: Identifier): ReadonlySet<Identifier>;
-  has(id: Identifier): boolean;
+  getPartOfIds(id: NodeIdentifier): ReadonlySet<NodeIdentifier>;
+  has(id: NodeIdentifier): boolean;
 };
 
 /**
@@ -188,11 +200,11 @@ type NextStateReader = {
 function updateSortedChildIds(
   prevState: ReadonlyMap<string, FrozenNode>,
   nextState: NextStateReader,
-  affectedNodeIds: ReadonlySet<Identifier>
-): Map<Identifier, FrozenSkipList<Identifier>> {
-  const insertions: [Identifier, Identifier][] = [];
-  const removals: [Identifier, Identifier][] = [];
-  const sortedChildIds = new Map<Identifier, ReadWriteSkipList<Identifier>>();
+  affectedNodeIds: ReadonlySet<NodeIdentifier>
+): Map<NodeIdentifier, FrozenSkipList<NodeIdentifier>> {
+  const insertions: [NodeIdentifier, NodeIdentifier][] = [];
+  const removals: [NodeIdentifier, NodeIdentifier][] = [];
+  const sortedChildIds = new Map<NodeIdentifier, ReadWriteSkipList<NodeIdentifier>>();
 
   for (const id of affectedNodeIds) {
     const prevNode = prevState.get(id);
@@ -210,14 +222,14 @@ function updateSortedChildIds(
   }
 
   // A new empty list is created for every parent, mutating a shared empty list would make other mutations of it O(size).
-  const mutate = (parentId: Identifier): ReadWriteSkipList<Identifier> => {
+  const mutate = (parentId: NodeIdentifier): ReadWriteSkipList<NodeIdentifier> => {
     let mutableSortedChildIds = sortedChildIds.get(parentId);
 
     mutableSortedChildIds ||
       sortedChildIds.set(
         parentId,
         (mutableSortedChildIds = (
-          getSortedChildIds(prevState.get(parentId)) ?? new FrozenSkipList<Identifier>()
+          getSortedChildIds(prevState.get(parentId)) ?? new FrozenSkipList<NodeIdentifier>()
         ).mutate())
       );
 
@@ -256,7 +268,7 @@ class Store {
 
         editing = true;
 
-        let affectedNodeIds: ReadonlySet<Identifier> | undefined;
+        let affectedNodeIds: ReadonlySet<NodeIdentifier> | undefined;
 
         try {
           affectedNodeIds = this.#commit(transactor);
@@ -279,7 +291,7 @@ class Store {
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
   #forwardReferenceIds: ReferenceIds = new FrozenMap([]);
   /** Key is an alternate identifier (in `identifier` property), value is `@id` of the node which has it. */
-  #identifierIndex: FrozenMap<Identifier, Identifier> = new FrozenMap([]);
+  #identifierIndex: FrozenMap<NodeIdentifier, NodeIdentifier> = new FrozenMap([]);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
   #state: FrozenMap<string, FrozenNode> = new FrozenMap([]);
 
@@ -292,8 +304,8 @@ class Store {
    * @returns IDs of nodes which are added, updated, or deleted, plus their alternate identifiers before and after the
    *          change, or `undefined` if nothing is changed.
    */
-  #commit(transactor: (transaction: StoreTransaction) => void): ReadonlySet<Identifier> | undefined {
-    const affectedNodeIds = new Set<Identifier>();
+  #commit(transactor: (transaction: StoreTransaction) => void): ReadonlySet<NodeIdentifier> | undefined {
+    const affectedNodeIds = new Set<NodeIdentifier>();
     let ended = false;
 
     // OPINION: Updaters must be pure functions of the node they receive, transaction methods cannot be called while an
@@ -302,7 +314,16 @@ class Store {
 
     // Key is the ID of children in `hasPart` which are not in the graph yet, value is IDs of their parents.
     // When the child is upserted, the parents will be added to its `isPartOf`.
-    const pendingParentIds = new Map<Identifier, Set<Identifier>>();
+    const pendingParentIds = new Map<NodeIdentifier, Set<NodeIdentifier>>();
+
+    // Links made by the other side in this transaction, which the node must confirm when it is upserted.
+    // Key is the ID of the parent, value is IDs of children which added the parent to their `isPartOf`.
+    const childIdsToConfirm = new Map<NodeIdentifier, Set<NodeIdentifier>>();
+    // Key is the ID of the child, value is IDs of parents which added the child to their `hasPart`.
+    const parentIdsToConfirm = new Map<NodeIdentifier, Set<NodeIdentifier>>();
+
+    // IDs of nodes upserted in this transaction, their `hasPart`/`isPartOf` cannot be changed by the other side.
+    const upsertedIds = new Set<NodeIdentifier>();
 
     // All edits are done on overlays without copying. If the transactor throws, overlays are discarded and the state
     // is not changed.
@@ -330,19 +351,19 @@ class Store {
     };
 
     // Nodes modified in this transaction. Changes are kept in drafts, and nodes are built once on commit.
-    const drafts = new Map<Identifier, Draft>();
+    const drafts = new Map<NodeIdentifier, Draft>();
 
     const nextStateReader: NextStateReader = Object.freeze({
-      getDateCreatedTime: (id: Identifier): number =>
+      getDateCreatedTime: (id: NodeIdentifier): number =>
         drafts.get(id)?.dateCreatedTime ?? getDateCreatedTime(nextState.get(id)),
-      getPartOfIds: (id: Identifier): ReadonlySet<Identifier> =>
+      getPartOfIds: (id: NodeIdentifier): ReadonlySet<NodeIdentifier> =>
         drafts.get(id)?.partOfIds ?? getIsPartOfIds(nextState.get(id)),
-      has: (id: Identifier): boolean => drafts.has(id) || nextState.has(id)
+      has: (id: NodeIdentifier): boolean => drafts.has(id) || nextState.has(id)
     });
 
     // Gets the draft of the node, or a new draft if the node is not modified in this transaction yet.
     // The new draft is not kept until `setDraft()` is called.
-    const getDraft = (id: Identifier): Draft | undefined => {
+    const getDraft = (id: NodeIdentifier): Draft | undefined => {
       const node = drafts.get(id) ? undefined : nextState.get(id);
 
       return drafts.get(id) ?? (node && new Draft(node));
@@ -350,7 +371,7 @@ class Store {
 
     // Gets child IDs of the node as a frozen set, in O(number of changes) without copying.
     // If children are being modified, changes are committed and a new overlay is started on top of it.
-    const getChildIds = (id: Identifier): FrozenSet<Identifier> => {
+    const getChildIds = (id: NodeIdentifier): FrozenSet<NodeIdentifier> => {
       const childIds = nextChildIds.sets.get(id);
 
       if (childIds) {
@@ -364,12 +385,48 @@ class Store {
       return nextChildIds.map.get(id) ?? EMPTY_IDS;
     };
 
-    const setPendingChild = (parentId: Identifier, childId: Identifier, included: boolean): void => {
+    const setPendingChild = (parentId: NodeIdentifier, childId: NodeIdentifier, included: boolean): void => {
       let parentIds = pendingParentIds.get(childId);
 
       parentIds || pendingParentIds.set(childId, (parentIds = new Set()));
       included ? parentIds.add(parentId) : parentIds.delete(parentId);
       mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](childId);
+    };
+
+    const setToConfirm = (
+      idsToConfirm: Map<NodeIdentifier, Set<NodeIdentifier>>,
+      id: NodeIdentifier,
+      linkedId: NodeIdentifier,
+      included: boolean
+    ): void => {
+      let ids = idsToConfirm.get(id);
+
+      ids || idsToConfirm.set(id, (ids = new Set()));
+      included ? ids.add(linkedId) : ids.delete(linkedId);
+    };
+
+    // Removes links to confirm of the node, returns them.
+    const takeIdsToConfirm = (
+      idsToConfirm: Map<NodeIdentifier, Set<NodeIdentifier>>,
+      id: NodeIdentifier
+    ): ReadonlySet<NodeIdentifier> => {
+      const ids = idsToConfirm.get(id) ?? EMPTY_IDS;
+
+      idsToConfirm.delete(id);
+
+      return ids;
+    };
+
+    // Adds or removes a child from children of the parent after the child changed its `isPartOf`. Unless the parent made
+    // the link, the parent must confirm it.
+    const setChildOf = (
+      parentId: NodeIdentifier,
+      childId: NodeIdentifier,
+      included: boolean,
+      confirmedParentIds: ReadonlySet<NodeIdentifier>
+    ): void => {
+      mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](childId);
+      confirmedParentIds.has(parentId) || setToConfirm(childIdsToConfirm, parentId, childId, included);
     };
 
     // Keeps the draft and updates references. Callers must update `nextChildIds` if `isPartOf` is changed.
@@ -382,7 +439,7 @@ class Store {
     };
 
     // Adds or removes a parent from `isPartOf` of the child, and mirrors it to children of the parent.
-    const setPartOf = (child: Draft, parentId: Identifier, included: boolean): void => {
+    const setPartOf = (child: Draft, parentId: NodeIdentifier, included: boolean): void => {
       child.setPartOf(parentId, included) &&
         mutateReferencingIds(nextChildIds, parentId)[included ? 'add' : 'delete'](child.id);
       setDraft(child);
@@ -391,7 +448,7 @@ class Store {
     try {
       const result: unknown = transactor(
         Object.freeze({
-          delete: (id: Identifier): void => {
+          delete: (id: NodeIdentifier): void => {
             assertNotEnded();
             assertNotUpdating('delete');
 
@@ -411,6 +468,16 @@ class Store {
             }
 
             pendingParentIds.delete(safeId);
+            upsertedIds.delete(safeId);
+
+            for (const idsToConfirm of [childIdsToConfirm, parentIdsToConfirm]) {
+              idsToConfirm.delete(safeId);
+
+              for (const ids of idsToConfirm.values()) {
+                ids.delete(safeId);
+              }
+            }
+
             drafts.delete(safeId);
             nextState.delete(safeId);
             existed && affectedNodeIds.add(safeId);
@@ -433,7 +500,7 @@ class Store {
               }
             }
           },
-          upsert: <T>(id: Identifier, updater: (node: Node | undefined) => NodeInit<T>): void => {
+          upsert: <T>(id: NodeIdentifier, updater: (node: Node | undefined) => UpsertNode<T>): void => {
             assertNotEnded();
             assertNotUpdating('upsert');
 
@@ -443,14 +510,22 @@ class Store {
               throw new TypeError('updater must be a function');
             }
 
-            // Children shown to the updater, no other changes can be made while the updater is running, so they are
-            // still current after the updater returns.
-            const shownChildIds = getChildIds(safeId);
+            // No other changes can be made while the updater is running, so children are still current after the
+            // updater returns.
+            const childIdsInGraph = getChildIds(safeId);
             const draftToRead = drafts.has(safeId) || nextChildIds.sets.has(safeId) ? getDraft(safeId) : undefined;
+
+            // Links made by the other side in this transaction are not shown to the updater, they are pending and
+            // must be returned from the updater.
+            const pendingChildIds = takeIdsToConfirm(childIdsToConfirm, safeId);
+            const safePendingParentIds = takeIdsToConfirm(parentIdsToConfirm, safeId);
+            const shownChildIds = withoutIds(childIdsInGraph, pendingChildIds);
 
             // Clean read: the node in the graph is frozen and up-to-date.
             // Dirty read: a new unfrozen copy with changes made in this transaction, O(number of properties).
-            const node: Node | undefined = draftToRead?.read(shownChildIds) ?? nextState.get(safeId);
+            const node: Node | undefined =
+              draftToRead?.read(shownChildIds, safePendingParentIds) ?? nextState.get(safeId);
+
             let safeNode: DraftNode;
 
             updating = true;
@@ -476,6 +551,25 @@ class Store {
             const childIds = getHasPartIds(safeNode);
             const draft = new Draft(safeNode);
 
+            // A pending link not returned from the updater (including omitted) is a conflict.
+            assertNoPartConflict(safeId, childIds, draft.partOfIds, pendingChildIds, safePendingParentIds);
+
+            const prevParentIds = nextStateReader.getPartOfIds(safeId);
+
+            // Changing a link of the other side which is upserted in this transaction is a conflict.
+            assertNoPartChangeToUpserted({
+              childIds,
+              id: safeId,
+              parentIds: draft.partOfIds,
+              pendingChildIds,
+              pendingParentIds: safePendingParentIds,
+              prevParentIds,
+              shownChildIds,
+              upsertedIds
+            });
+
+            upsertedIds.add(safeId);
+
             // The node is in `hasPart` of parents upserted before the node is in the graph, mirror them now.
             for (const parentId of pendingParentIds.get(safeId) ?? []) {
               draft.setPartOf(parentId, true);
@@ -484,16 +578,15 @@ class Store {
             pendingParentIds.delete(safeId);
 
             const parentIds = draft.partOfIds;
-            const prevParentIds = nextStateReader.getPartOfIds(safeId);
 
             // Unchanged `isPartOf` passed back from the updater keeps the same IDs object, no need to diff.
             if (parentIds !== prevParentIds) {
               for (const parentId of prevParentIds) {
-                parentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).delete(safeId);
+                parentIds.has(parentId) || setChildOf(parentId, safeId, false, safePendingParentIds);
               }
 
               for (const parentId of parentIds) {
-                prevParentIds.has(parentId) || mutateReferencingIds(nextChildIds, parentId).add(safeId);
+                prevParentIds.has(parentId) || setChildOf(parentId, safeId, true, safePendingParentIds);
               }
             }
 
@@ -514,6 +607,9 @@ class Store {
                 const child = getDraft(childId);
 
                 child ? setPartOf(child, safeId, included) : setPendingChild(safeId, childId, included);
+
+                // Children which made the link are confirmed, otherwise, the child must confirm it.
+                pendingChildIds.has(childId) || setToConfirm(parentIdsToConfirm, childId, safeId, included);
               }
             }
           }
@@ -574,7 +670,7 @@ class Store {
     return new FrozenSet(affectedIdentifiers);
   }
 
-  #notifyAll(affectedNodeIds: ReadonlySet<Identifier>) {
+  #notifyAll(affectedNodeIds: ReadonlySet<NodeIdentifier>) {
     for (const listener of this.#listeners) {
       try {
         listener(affectedNodeIds);
@@ -606,7 +702,7 @@ class Store {
    * lazily while iterating, O(1) per child. The iterable can be iterated multiple times and is not affected by
    * subsequent commits.
    */
-  getSortedParts(id: Identifier, init: GetSortedPartsInit): Iterable<Node> {
+  getSortedParts(id: NodeIdentifier, init: GetSortedPartsInit): Iterable<Node> {
     const safeId = parse(identifierSchema, id);
 
     const { order } = parse(getSortedPartsInitSchema, init);
@@ -632,7 +728,7 @@ class Store {
    *
    * This is O(1) regardless of the size of the graph.
    */
-  queryByIdentifier(identifier: Identifier): Node | undefined {
+  queryByIdentifier(identifier: NodeIdentifier): Node | undefined {
     const safeIdentifier = parse(identifierSchema, identifier);
 
     const state = this.#state;

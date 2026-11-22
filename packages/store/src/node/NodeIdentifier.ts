@@ -21,6 +21,6 @@ const identifierSchema = union(
   '@id is required and must be an IRI or blank node identifier'
 );
 
-type Identifier = InferOutput<typeof identifierSchema>;
+type NodeIdentifier = InferOutput<typeof identifierSchema>;
 
-export { identifierSchema, type Identifier };
+export { identifierSchema, type NodeIdentifier };

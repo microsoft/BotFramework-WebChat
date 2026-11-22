@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 import FrozenNodeSet, { getNodeSetIds } from './FrozenNodeSet.ts';
 import FrozenSet from './FrozenSet.ts';
 
@@ -9,7 +9,7 @@ scenario(
   'new FrozenNodeSet()',
   bdd => {
     bdd
-      .given('IDs', (): Identifier[] => ['_:m-1', '_:m-2'])
+      .given('IDs', (): NodeIdentifier[] => ['_:m-1', '_:m-2'])
       .when('new FrozenNodeSet() is called', ids => new FrozenNodeSet(ids))
       .then('should be a Set', (_, nodeSet) => expect(nodeSet).toBeInstanceOf(Set))
       .and('should be frozen', (_, nodeSet) => expect(Object.isFrozen(nodeSet)).toBe(true))
@@ -43,7 +43,7 @@ scenario(
         expect(Array.from(getNodeSetIds(nodeSet) ?? [])).toEqual(['_:m-1', '_:m-2'])
       )
       .and('getNodeSetIds() should return a read-only Set of IDs', (_, nodeSet) =>
-        expect(() => (getNodeSetIds(nodeSet) as Set<Identifier>).add('_:m-3')).toThrow(TypeError)
+        expect(() => (getNodeSetIds(nodeSet) as Set<NodeIdentifier>).add('_:m-3')).toThrow(TypeError)
       )
       .and('should not expose the IDs as properties', (_, nodeSet) => {
         expect(Object.keys(nodeSet)).toEqual([]);
@@ -51,7 +51,7 @@ scenario(
       });
 
     bdd
-      .given('a mutable array of IDs', (): Identifier[] => ['_:m-1'])
+      .given('a mutable array of IDs', (): NodeIdentifier[] => ['_:m-1'])
       .when('new FrozenNodeSet() is called and the array is modified', ids => {
         const nodeSet = new FrozenNodeSet(ids);
 
@@ -62,7 +62,7 @@ scenario(
       .then('should not be affected', (_, nodeSet) => expect(nodeSet.size).toBe(1));
 
     bdd
-      .given('a read-only Set of IDs', () => new FrozenSet<Identifier>(['_:m-1']))
+      .given('a read-only Set of IDs', () => new FrozenSet<NodeIdentifier>(['_:m-1']))
       .when('new FrozenNodeSet() is called', ids => new FrozenNodeSet(ids))
       .then('getNodeSetIds() should return the same Set without copying', (ids, nodeSet) =>
         expect(getNodeSetIds(nodeSet)).toBe(ids)

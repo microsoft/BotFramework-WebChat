@@ -1,5 +1,5 @@
 import type { Node } from '../node/Node.ts';
-import type { Identifier } from '../node/NodeIdentifier.ts';
+import type { NodeIdentifier } from '../node/NodeIdentifier.ts';
 
 /**
  * RULE: An identifier, either `@id` or in `identifier` (alternate identifiers), must identify at most one node.
@@ -13,9 +13,9 @@ import type { Identifier } from '../node/NodeIdentifier.ts';
  */
 function assertUniqueIdentifier(
   state: ReadonlyMap<string, Node>,
-  identifierIndex: ReadonlyMap<Identifier, Identifier>,
-  identifier: Identifier,
-  ownerId: Identifier
+  identifierIndex: ReadonlyMap<NodeIdentifier, NodeIdentifier>,
+  identifier: NodeIdentifier,
+  ownerId: NodeIdentifier
 ): void {
   const otherId = identifier !== ownerId && state.has(identifier) ? identifier : identifierIndex.get(identifier);
 

@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
-import { assert } from 'node:console';
+import assert from 'node:assert';
 import * as NodeTest from 'node:test';
-import { type BlankNodeIdentifier, type Identifier } from '../index.ts';
+import { type BlankNodeIdentifier, type NodeIdentifier } from '../index.ts';
 import createStoreAndController from './createStoreAndController.ts';
 
 scenario(
@@ -17,12 +17,12 @@ scenario(
           }));
 
           transaction.upsert('urn:node-identifier', () => ({
-            '@id': 'urn:node-identifier' satisfies Identifier,
+            '@id': 'urn:node-identifier' satisfies NodeIdentifier,
             '@type': new Set(['Message'])
           }));
 
           transaction.upsert('https://node-identifier', () => ({
-            '@id': 'https://node-identifier' satisfies Identifier,
+            '@id': 'https://node-identifier' satisfies NodeIdentifier,
             '@type': new Set(['Message'])
           }));
         });
