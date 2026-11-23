@@ -15,67 +15,24 @@ rules:
           message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'
 
 overrides:
-  # Reducers are pure functions of (state, action), so Redux and React's `useReducer` (Strict Mode, rebases) can call them
-  # again with the same result. A time, a new ID or a side effect comes from `prepare/`: `prepareAction()` adds the values
-  # to `meta` before the reducers, `afterDispatch()` runs the side effects after them.
+  # Reducers, and the code of core they import, are pure functions of (state, action): the time and new IDs come in the
+  # action's `meta`, side effects run in prepare/runEffects.ts. The base config bans `Date` and the timers already.
+  # Not linted: the packages they import (base, core-graph, core-json-ld); the parts that reducers use are pure.
   - files:
-      - 'src/reducers/**'
+      - src/prepare/prepareAction.ts
+      - src/reducer.ts
+      - src/reducers/**
+      - src/utils/getActivityLivestreamingMetadata.ts
+      - src/utils/getOrgSchemaMessage.ts
+      - src/utils/isDate.ts
+      - src/utils/parseTimestamp.ts
     excludedFiles:
       - '*.spec.*'
     rules:
-      no-restricted-globals:
-        - error
-        - name: cancelAnimationFrame
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: cancelIdleCallback
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: clearImmediate
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: clearInterval
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: clearTimeout
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: crypto
-          message: Reducers must be pure, read a new ID from the action (prepare/prepareAction.ts)
-        - name: Date
-          message: Reducers must be pure, read the time from the action (prepare/prepareAction.ts), or parse with utils/parseTimestamp.ts
-        - name: performance
-          message: Reducers must be pure, read the time from the action (prepare/prepareAction.ts)
-        - name: queueMicrotask
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: requestAnimationFrame
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: requestIdleCallback
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: setImmediate
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: setInterval
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-        - name: setTimeout
-          message: Reducers must be pure, use an effect in prepare/afterDispatch.ts
-      no-restricted-imports:
-        - error
-        - paths:
-            - name: uuid
-              message: Reducers must be pure, read a new ID from the action (prepare/prepareAction.ts)
-          patterns:
-            - group:
-                - '@msinternal/botframework-webchat-api-*'
-              message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'
-            - group:
-                - '**/types/GlobalScopePonyfill'
-              message: Reducers must be pure, read the time from the action (prepare/prepareAction.ts) instead of the ponyfill
-      no-restricted-properties:
-        - error
-        - object: Math
-          property: random
-          message: Reducers must be pure, read a new ID from the action (prepare/prepareAction.ts)
-        - object: URL
-          property: createObjectURL
-          message: Make sure content type is sanitized before presenting the URL in HTML
+      no-console: [error, {}]
       no-restricted-syntax:
         - error
-        - selector: MemberExpression[object.name='console']
-          message: Reducers must be pure, log in prepare/afterDispatch.ts
-        - selector: Identifier[name='ponyfill']
-          message: Reducers must be pure, read the time from the action (prepare/prepareAction.ts) instead of the ponyfill
+        - selector: "ImportDeclaration[source.value='uuid'], ImportDeclaration[source.value=/GlobalScopePonyfill$/], Identifier[name=/^(crypto|performance|ponyfill)$/], MemberExpression[object.name='Math'][property.name='random']"
+          message: Reducers must be pure, read the time and new IDs from the action's meta (prepare/prepareAction.ts)
+        - selector: Identifier[name='queueMicrotask']
+          message: Reducers must be pure, run side effects in prepare/runEffects.ts
