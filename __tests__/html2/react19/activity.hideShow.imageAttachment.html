@@ -3,9 +3,18 @@
   <head>
     <title>React 19: an image attachment from a data URI keeps one blob: URL, revoked when hidden or unmounted</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style>
+      /* Outside Web Chat, at the bottom of the snapshot. */
+      .revoked-image {
+        bottom: 10px;
+        left: 10px;
+        position: fixed;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
+    <aside class="revoked-image"></aside>
     <script type="importmap">
       {
         "imports": {
@@ -26,104 +35,123 @@
       import { Activity, createElement, StrictMode, version } from 'react';
       import { createRoot } from 'react-dom/client';
 
-      run(async function () {
-        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
-        window.WebChat = { createStoreWithOptions, testIds };
+      run(
+        async function () {
+          // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+          window.WebChat = { createStoreWithOptions, testIds };
 
-        // Tracks the blob: URLs of PNG images that are not revoked yet. The typing indicator's GIF is not counted.
-        const liveImageURLs = new Set();
-        const { createObjectURL, revokeObjectURL } = URL;
+          // Tracks the blob: URLs of PNG images that are not revoked yet. The typing indicator's GIF is not counted.
+          const liveImageURLs = new Set();
+          const { createObjectURL, revokeObjectURL } = URL;
 
-        URL.createObjectURL = object => {
-          const url = createObjectURL(object);
+          URL.createObjectURL = object => {
+            const url = createObjectURL(object);
 
-          object.type === 'image/png' && liveImageURLs.add(url);
+            object.type === 'image/png' && liveImageURLs.add(url);
 
-          return url;
-        };
+            return url;
+          };
 
-        URL.revokeObjectURL = url => {
-          liveImageURLs.delete(url);
-          revokeObjectURL(url);
-        };
+          URL.revokeObjectURL = url => {
+            liveImageURLs.delete(url);
+            revokeObjectURL(url);
+          };
 
-        const canvas = document.createElement('canvas');
+          const canvas = document.createElement('canvas');
 
-        canvas.height = 100;
-        canvas.width = 200;
+          canvas.height = 100;
+          canvas.width = 200;
 
-        const context = canvas.getContext('2d');
+          const context = canvas.getContext('2d');
 
-        context.fillStyle = 'Green';
-        context.fillRect(0, 0, 200, 100);
+          context.fillStyle = 'Green';
+          context.fillRect(0, 0, 200, 100);
 
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        // GIVEN: React 19.2 or later in Strict Mode, which renders twice, and runs the effects, their cleanups, and the effects again.
-        expect(version).toBe('19.3.1');
+          // GIVEN: React 19.2 or later in Strict Mode, which renders twice, and runs the effects, their cleanups, and the effects again.
+          expect(version).toBe('19.3.1');
 
-        const root = createRoot(document.getElementById('webchat'));
-        // A new element each time, as JSX does: showing Web Chat again renders it before its effects run again.
-        const render = mode =>
-          root.render(
-            createElement(
-              StrictMode,
-              {},
+          const root = createRoot(document.getElementById('webchat'));
+          // A new element each time, as JSX does: showing Web Chat again renders it before its effects run again.
+          const render = mode =>
+            root.render(
               createElement(
-                Activity,
-                { mode },
-                createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+                StrictMode,
+                {},
+                createElement(
+                  Activity,
+                  { mode },
+                  createElement(ReactWebChat, { directLine, store, styleOptions: { hideSendBox: true } })
+                )
               )
-            )
-          );
+            );
 
-        // The image is loaded from the only blob: URL not revoked: a revoked one would not load.
-        const expectImageLoadedFromLiveURL = async () => {
-          const image = pageElements.activities()[0].querySelector('img.webchat__fixed-width-image__image');
+          // The image is loaded from the only blob: URL not revoked: a revoked one would not load.
+          const expectImageLoadedFromLiveURL = async () => {
+            const image = pageElements.activities()[0].querySelector('img.webchat__fixed-width-image__image');
 
-          await waitFor(() => expect(image.complete).toBe(true));
-          expect(image.naturalWidth).toBe(200);
-          expect([...liveImageURLs]).toEqual([image.src]);
-        };
+            await waitFor(() => expect(image.complete).toBe(true));
+            expect(image.naturalWidth).toBe(200);
+            expect([...liveImageURLs]).toEqual([image.src]);
+          };
 
-        // WHEN: Web Chat is rendered in a visible <Activity> and the bot sends an image as a data URI.
-        render('visible');
+          // WHEN: Web Chat is rendered in a visible <Activity> and the bot sends an image as a data URI.
+          render('visible');
 
-        await pageConditions.uiConnected();
-        await directLine.emulateIncomingActivity({
-          attachments: [
-            { contentType: 'image/png', contentUrl: canvas.toDataURL('image/png'), name: 'Green rectangle' }
-          ],
-          from: { id: 'bot', role: 'bot' },
-          type: 'message'
-        });
-        await pageConditions.numActivitiesShown(1);
-        await pageConditions.scrollStabilized();
+          await pageConditions.uiConnected();
+          await directLine.emulateIncomingActivity({
+            attachments: [
+              { contentType: 'image/png', contentUrl: canvas.toDataURL('image/png'), name: 'Green rectangle' }
+            ],
+            from: { id: 'bot', role: 'bot' },
+            type: 'message'
+          });
+          await pageConditions.numActivitiesShown(1);
+          await pageConditions.scrollStabilized();
 
-        // THEN: Web Chat shows the green rectangle from one blob: URL.
-        await expectImageLoadedFromLiveURL();
-        await host.snapshot('local');
+          // THEN: Web Chat shows the green rectangle from one blob: URL.
+          await expectImageLoadedFromLiveURL();
+          await host.snapshot('local');
 
-        // WHEN: The <Activity> hides Web Chat.
-        render('hidden');
+          const [firstURL] = liveImageURLs;
 
-        // THEN: The blob: URL is revoked.
-        await waitFor(() => expect(liveImageURLs.size).toBe(0));
+          // WHEN: The <Activity> hides Web Chat.
+          render('hidden');
 
-        // WHEN: The <Activity> shows Web Chat again.
-        render('visible');
+          // THEN: The blob: URL is revoked.
+          await waitFor(() => expect(liveImageURLs.size).toBe(0));
 
-        // THEN: The image loads from a new blob: URL.
-        // No snapshot: after it is shown again, Web Chat loses some styles (React 19.2 <Activity> support is not complete yet).
-        await waitFor(() => expect(liveImageURLs.size).toBe(1));
-        await expectImageLoadedFromLiveURL();
+          // WHEN: The <Activity> shows Web Chat again.
+          render('visible');
 
-        // WHEN: Web Chat is unmounted.
-        root.unmount();
+          // THEN: The image loads from a new blob: URL.
+          await waitFor(() => expect(liveImageURLs.size).toBe(1));
+          await expectImageLoadedFromLiveURL();
 
-        // THEN: The blob: URL is revoked.
-        expect(liveImageURLs.size).toBe(0);
-      });
+          // An <img> outside Web Chat loads the first blob: URL, which is revoked.
+          const revokedImage = document.createElement('img');
+
+          revokedImage.alt = 'The first blob: URL, revoked';
+          revokedImage.src = firstURL;
+          document.querySelector('.revoked-image').append(revokedImage);
+
+          await waitFor(() => expect(revokedImage.complete).toBe(true));
+          expect(revokedImage.naturalWidth).toBe(0); // Broken: a revoked URL does not load.
+
+          // THEN: Web Chat shows the green rectangle from the new blob: URL; at the bottom, the revoked first one shows as a broken image with its alt text.
+          // The transcript is at the top: after it is shown again, Web Chat loses some styles (React 19.2 <Activity> support is not complete yet).
+          await host.snapshot('local');
+
+          // WHEN: Web Chat is unmounted.
+          root.unmount();
+
+          // THEN: The blob: URL is revoked.
+          expect(liveImageURLs.size).toBe(0);
+        },
+        // The <img> outside Web Chat logs the failed load of the revoked blob: URL.
+        { ignoreErrors: 'Failed to load resource: net::ERR_FILE_NOT_FOUND' }
+      );
     </script>
   </body>
 </html>
