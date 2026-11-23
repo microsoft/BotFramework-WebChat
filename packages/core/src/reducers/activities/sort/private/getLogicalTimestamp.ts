@@ -1,4 +1,5 @@
-import type { GlobalScopePonyfill } from '../../../../types/GlobalScopePonyfill';
+import isDate from '../../../../utils/isDate';
+import parseTimestamp from '../../../../utils/parseTimestamp';
 import type { Activity } from '../types';
 
 /**
@@ -6,13 +7,12 @@ import type { Activity } from '../types';
  *
  * Chat adapter may send sequence ID to affect activity reordering. Sequence ID is supposed to be Unix timestamp.
  *
+ * A `timestamp` given as a `Date` is used too; `afterDispatch()` warns about it.
+ *
  * @param activity Activity to get sequence ID from.
  * @returns Sequence ID.
  */
-export default function getLogicalTimestamp(
-  activity: Activity,
-  ponyfill: Pick<GlobalScopePonyfill, 'Date'>
-): number | undefined {
+export default function getLogicalTimestamp(activity: Activity): number | undefined {
   const sequenceId = activity.channelData?.['webchat:sequence-id'];
 
   if (typeof sequenceId === 'number') {
@@ -22,10 +22,8 @@ export default function getLogicalTimestamp(
   const { timestamp } = activity;
 
   if (typeof timestamp === 'string') {
-    return +new ponyfill.Date(timestamp);
-  } else if (typeof timestamp !== 'undefined' && (timestamp as any) instanceof ponyfill.Date) {
-    console.warn('botframework-webchat: "timestamp" must be of type string, instead of Date.');
-
+    return parseTimestamp(timestamp);
+  } else if (isDate(timestamp)) {
     return +timestamp;
   }
 

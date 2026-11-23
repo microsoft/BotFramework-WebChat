@@ -8,5 +8,6 @@ export {
 export { type StoreDebugAPI } from '../types/StoreDebugAPI';
 export { default as isPresentational } from '../utils/isPresentational';
 export { default as StoreDebugAPIRegistry } from '../internal/StoreDebugAPIRegistry';
+export { default as StorePonyfillRegistry } from '../internal/StorePonyfillRegistry';
 
 export { RestrictedDebugAPI, type InferPublic } from '@msinternal/botframework-webchat-core-debug-api';

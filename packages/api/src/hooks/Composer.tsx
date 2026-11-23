@@ -40,6 +40,7 @@ import {
   type GlobalScopePonyfill,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { StorePonyfillRegistry } from 'botframework-webchat-core/internal.js';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import updateIn from 'simple-update-in';
 import {
@@ -810,7 +811,7 @@ const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
   const memoizedStore = useMemo(() => {
     const nextStore = store || createStoreWithOptions({ ponyfill });
 
-    const storePonyfill = nextStore.getState().internal?.ponyfill || {};
+    const storePonyfill: Partial<GlobalScopePonyfill> = StorePonyfillRegistry.get(nextStore) || {};
 
     const keys = new Set([...Object.keys(storePonyfill), ...Object.keys(ponyfill)]);
 

@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
-import type { GlobalScopePonyfill } from '../../../types/GlobalScopePonyfill';
 import getActivityLivestreamingMetadata from '../../../utils/getActivityLivestreamingMetadata';
+import parseTimestamp from '../../../utils/parseTimestamp';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
 import computePartListTimestamp from './private/computePartListTimestamp';
 import computeSortedActivities from './private/computeSortedActivities';
@@ -61,10 +61,10 @@ const INITIAL_STATE = Object.freeze({
 // - Update activity: when replacing an activity, data from their previous revision matters
 // - Duplicate timestamps: activities without timestamp can't be sort deterministically with quick sort
 
-function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activity: Activity): State {
+function upsert(state: State, activity: Activity): State {
   const activityLocalId = getLocalIdFromActivity(activity);
   const existingActivity = state.activityMap.get(activityLocalId)?.activity;
-  const logicalTimestamp = getLogicalTimestamp(activity, ponyfill);
+  const logicalTimestamp = getLogicalTimestamp(activity);
   const activityLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
   // An update can leave, join, or move between HowTo groupings.
@@ -76,7 +76,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     getPartGroupingMetadataMap(existingActivity).get('HowTo')?.groupingId !==
       getPartGroupingMetadataMap(activity).get('HowTo')?.groupingId
   ) {
-    return upsert(ponyfill, deleteActivityByLocalId(state, activityLocalId), activity);
+    return upsert(deleteActivityByLocalId(state, activityLocalId), activity);
   }
 
   // #region Streaming fast path
@@ -278,6 +278,9 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
     const wasFinalized = livestreamSessionMapEntry ? livestreamSessionMapEntry.finalized : false;
 
     if (wasFinalized) {
+      // A known exception to pure reducers: whether the session was concluded is known only here, deep in the upsert.
+      // Under React's Strict Mode, the warning would show twice.
+      // eslint-disable-next-line no-restricted-syntax
       console.warn(
         `botframework-webchat: Cannot update livestreaming session ${sessionId} because it has been concluded`
       );
@@ -428,7 +431,7 @@ function upsert(ponyfill: Pick<GlobalScopePonyfill, 'Date'>, state: State, activ
         const yLocalTimestamp = yActivity?.activity.localTimestamp;
 
         if (typeof xLocalTimestamp !== 'undefined' && typeof yLocalTimestamp !== 'undefined') {
-          return +new ponyfill.Date(xLocalTimestamp) - +new ponyfill.Date(yLocalTimestamp);
+          return parseTimestamp(xLocalTimestamp) - parseTimestamp(yLocalTimestamp);
         }
       }
 

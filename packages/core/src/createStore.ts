@@ -8,12 +8,14 @@ import {
 import createSagaMiddleware from 'redux-saga';
 
 import sagaError from './actions/sagaError';
-import createReducer from './createReducer';
 import createSagas from './createSagas';
+import createPrepareMiddleware from './prepare/createPrepareMiddleware';
+import reducer from './reducer';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import StoreDebugAPIRegistry from './internal/StoreDebugAPIRegistry';
+import StorePonyfillRegistry from './internal/StorePonyfillRegistry';
 
 // The Redux DevTools browser extension sets this global, Redux Toolkit reads it the same way.
 // Typed here instead of globally, so it is not part of the published typings.
@@ -42,7 +44,11 @@ type CreateStoreOptions = {
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
 
-function createEnhancerAndSagaMiddleware(getStore: () => any, ...middlewares: readonly Middleware[]) {
+function createEnhancerAndSagaMiddleware(
+  getStore: () => any,
+  prepareMiddleware: Middleware,
+  ...middlewares: readonly Middleware[]
+) {
   const sagaMiddleware = createSagaMiddleware({
     onError: (...args) => {
       const [err] = args;
@@ -56,7 +62,8 @@ function createEnhancerAndSagaMiddleware(getStore: () => any, ...middlewares: re
   });
 
   return {
-    enhancer: applyMiddleware(...middlewares, sagaMiddleware),
+    // Innermost: the reducers get every action prepared, the host middleware and the sagas see it as dispatched.
+    enhancer: applyMiddleware(...middlewares, sagaMiddleware, prepareMiddleware),
     sagaMiddleware
   };
 }
@@ -132,20 +139,21 @@ export function withOptions(
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
   // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
-  const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
+  const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(
+    () => store,
+    createPrepareMiddleware({ debugAPI: restrictedStoreDebugAPI, ponyfill }),
+    ...middlewares
+  );
 
   const devToolsWindow: WindowWithReduxDevTools | undefined =
     options.devTools && typeof window !== 'undefined' ? window : undefined;
   const composeWithDevTools = devToolsWindow?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
-  store = createReduxStore(
-    createReducer(ponyfill, restrictedStoreDebugAPI),
-    initialState || {},
-    composeWithDevTools ? composeWithDevTools(enhancer) : enhancer
-  );
+  store = createReduxStore(reducer, initialState || {}, composeWithDevTools ? composeWithDevTools(enhancer) : enhancer);
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
   StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
+  StorePonyfillRegistry.set(store, ponyfill);
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
   sagaMiddleware.run(createSagas({ ponyfill }));
