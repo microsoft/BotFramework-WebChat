@@ -2,6 +2,7 @@ import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import { VOICE_START_RECORDING } from '../actions/startVoiceRecording';
+import { toIncomingActivity, type GroupedActivitiesState } from '../reducers/activities/groupedActivities';
 import type { RestrictedStoreDebugAPI } from '../types/StoreDebugAPI';
 import type { WebChatActivity } from '../types/WebChatActivity';
 import isDate from '../utils/isDate';
@@ -10,7 +11,10 @@ import type { PreparedIncomingActivityAction } from './types';
 type AfterDispatchContext = {
   readonly debugAPI: RestrictedStoreDebugAPI;
   /** The state before the action was reduced. */
-  readonly previousState: { readonly voice: { readonly voiceState: string } };
+  readonly previousState: {
+    readonly groupedActivities: GroupedActivitiesState;
+    readonly voice: { readonly voiceState: string };
+  };
 };
 
 function warnIfTimestampIsDate({ timestamp }: WebChatActivity): void {
@@ -31,9 +35,19 @@ const EFFECTS: ReadonlyMap<string, (action: any, context: AfterDispatchContext) 
   ],
   [
     INCOMING_ACTIVITY,
-    ({ meta: { fallbackId }, payload: { activity } }: PreparedIncomingActivityAction, { debugAPI }) => {
-      // The debug context cannot call `getState()` while the store is reducing: the breakpoint is called in a microtask.
-      queueMicrotask(() => debugAPI.UNSAFE_callBreakpoint.incomingActivity({ activity }));
+    (action: PreparedIncomingActivityAction, { debugAPI, previousState }) => {
+      const {
+        meta: { fallbackId },
+        payload: { activity }
+      } = action;
+
+      // The debug context cannot call `getState()` while the store is reducing: the breakpoint is called in a microtask,
+      // with the activity as the reducer put it in the transcript.
+      queueMicrotask(() =>
+        debugAPI.UNSAFE_callBreakpoint.incomingActivity({
+          activity: toIncomingActivity(previousState.groupedActivities, action)
+        })
+      );
 
       warnIfTimestampIsDate(activity);
 
