@@ -25,7 +25,9 @@ type RunEffectsContext = {
 function warnOnUpsert({ livestreamSessionMap }: GroupedActivitiesState, activity: WebChatActivity): void {
   const { sessionId } = getActivityLivestreamingMetadata(activity) || {};
 
-  isDate(activity.timestamp) &&
+  // `getLogicalTimestamp()` orders by a numeric sequence ID first and never reads the timestamp then.
+  typeof activity.channelData?.['webchat:sequence-id'] !== 'number' &&
+    isDate(activity.timestamp) &&
     console.warn('botframework-webchat: "timestamp" must be of type string, instead of Date.');
 
   sessionId &&

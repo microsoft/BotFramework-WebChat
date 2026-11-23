@@ -112,6 +112,26 @@ test('an update to a concluded livestream session warns and is dropped', () => {
   warn.mockRestore();
 });
 
+test('a `Date` timestamp warns only when no numeric sequence ID orders the activity', () => {
+  const { store } = createStoreWithClock(1_000);
+  const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+  // eslint-disable-next-line no-restricted-globals
+  const timestamp = new Date(1); // A `Date` object, not a time from the clock.
+
+  try {
+    // Ordered by its sequence ID: the timestamp is not read.
+    store.dispatch(incomingActivity({ ...ACTIVITY, channelData: { 'webchat:sequence-id': 1 }, id: 'a-1', timestamp }));
+
+    expect(warn).not.toHaveBeenCalled();
+
+    store.dispatch(incomingActivity({ ...ACTIVITY, id: 'a-2', timestamp }));
+
+    expect(warn.mock.calls).toEqual([['botframework-webchat: "timestamp" must be of type string, instead of Date.']]);
+  } finally {
+    warn.mockRestore();
+  }
+});
+
 test('the reducer gives the same state when called twice with the same prepared action', () => {
   // What React's Strict Mode does to the reducer of `useReducer()`.
   const state = reducer(undefined, { type: 'INIT' } as any);
