@@ -66,7 +66,7 @@
         expect(getMicrophoneButton()).toBeNull();
         await host.snapshot('local');
 
-        // WHEN: The <Activity> hides Web Chat, and the adapter gets a voice configuration while it is hidden.
+        // WHEN: The <Activity> hides Web Chat, and the adapter gets a voice configuration (speech-to-speech) while it is hidden.
         render('hidden');
 
         await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('offsetParent', null));
@@ -79,7 +79,8 @@
 
         await waitFor(() => expect(pageElements.sendBoxTextBox()).not.toHaveProperty('offsetParent', null));
 
-        // THEN: Web Chat reads the current capabilities when it listens again: the microphone button replaces the send button.
+        // THEN: Web Chat reads the current capabilities when it listens again: the speech-to-speech microphone button replaces the send button.
+        //       (The Fluent send box shows it for an adapter with a voice configuration; Web Speech is not involved.)
         await waitFor(() => expect(getMicrophoneButton()).toBeTruthy());
         await host.snapshot('local');
       });
