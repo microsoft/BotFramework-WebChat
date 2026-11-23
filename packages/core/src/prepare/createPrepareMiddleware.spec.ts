@@ -82,6 +82,36 @@ test('the side effects of an action run when a reducer throws', async () => {
   expect(breakpoint.mock.calls[0][1].activity).toHaveProperty('id', 'a-1');
 });
 
+test('an update to a concluded livestream session warns and is dropped', () => {
+  const { store } = createStoreWithClock(1_000);
+  const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+  store.dispatch(
+    incomingActivity({
+      ...ACTIVITY,
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-1',
+      type: 'typing'
+    })
+  );
+  store.dispatch(incomingActivity({ ...ACTIVITY, channelData: { streamId: 'a-1', streamType: 'final' }, id: 'a-2' }));
+  store.dispatch(
+    incomingActivity({
+      ...ACTIVITY,
+      channelData: { streamId: 'a-1', streamSequence: 2, streamType: 'streaming' },
+      id: 'a-3',
+      type: 'typing'
+    })
+  );
+
+  expect(warn.mock.calls).toEqual([
+    ['botframework-webchat: Cannot update livestreaming session a-1 because it has been concluded']
+  ]);
+  expect(store.getState().activities.map(({ id }) => id)).toEqual(['a-2']);
+
+  warn.mockRestore();
+});
+
 test('the reducer gives the same state when called twice with the same prepared action', () => {
   // What React's Strict Mode does to the reducer of `useReducer()`.
   const state = reducer(undefined, { type: 'INIT' } as any);

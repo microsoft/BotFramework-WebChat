@@ -3,9 +3,11 @@ import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { POST_ACTIVITY_FULFILLED, POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import { VOICE_START_RECORDING } from '../actions/startVoiceRecording';
 import type { GroupedActivitiesState } from '../reducers/activities/groupedActivities';
+import type { LivestreamSessionId } from '../reducers/activities/sort/types';
 import toIncomingActivity from '../reducers/activities/toIncomingActivity';
 import type { RestrictedStoreDebugAPI } from '../types/StoreDebugAPI';
 import type { WebChatActivity } from '../types/WebChatActivity';
+import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
 import isDate from '../utils/isDate';
 import type { PreparedIncomingActivityAction } from './types';
 
@@ -18,8 +20,19 @@ type RunEffectsContext = {
   };
 };
 
-function warnIfTimestampIsDate({ timestamp }: WebChatActivity): void {
-  isDate(timestamp) && console.warn('botframework-webchat: "timestamp" must be of type string, instead of Date.');
+// The warnings of `upsert()`, in its order. The activity has the same timestamp and livestream metadata as the one the
+// reducer upserts.
+function warnOnUpsert({ livestreamSessionMap }: GroupedActivitiesState, activity: WebChatActivity): void {
+  const { sessionId } = getActivityLivestreamingMetadata(activity) || {};
+
+  isDate(activity.timestamp) &&
+    console.warn('botframework-webchat: "timestamp" must be of type string, instead of Date.');
+
+  sessionId &&
+    livestreamSessionMap.get(sessionId as LivestreamSessionId)?.finalized &&
+    console.warn(
+      `botframework-webchat: Cannot update livestreaming session ${sessionId} because it has been concluded`
+    );
 }
 
 // For each action type, what used to run inside its reducers but is a side effect: debug breakpoints and warnings.
@@ -36,21 +49,18 @@ const EFFECTS: ReadonlyMap<string, (action: any, context: RunEffectsContext) => 
   ],
   [
     INCOMING_ACTIVITY,
-    (action: PreparedIncomingActivityAction, { debugAPI, previousState }) => {
+    (action: PreparedIncomingActivityAction, { debugAPI, previousState: { groupedActivities } }) => {
       const {
         meta: { fallbackId },
         payload: { activity }
       } = action;
+      let incomingActivity = activity;
 
-      // The debug context cannot call `getState()` while the store is reducing: the breakpoint is called in a microtask,
-      // with the activity as the reducer put it in the transcript.
-      queueMicrotask(() =>
-        debugAPI.UNSAFE_callBreakpoint.incomingActivity({
-          activity: toIncomingActivity(previousState.groupedActivities, action)
-        })
-      );
+      // The debug context reads the next state: call the breakpoint in a microtask, after the reducers, with the activity
+      // as the reducer puts it in the transcript (or as dispatched, if making it throws).
+      queueMicrotask(() => debugAPI.UNSAFE_callBreakpoint.incomingActivity({ activity: incomingActivity }));
 
-      warnIfTimestampIsDate(activity);
+      incomingActivity = toIncomingActivity(groupedActivities, action);
 
       activity.from?.role !== 'user' &&
         !activity.id &&
@@ -61,10 +71,18 @@ const EFFECTS: ReadonlyMap<string, (action: any, context: RunEffectsContext) => 
             newActivityId: fallbackId
           }
         );
+
+      warnOnUpsert(groupedActivities, incomingActivity);
     }
   ],
-  [POST_ACTIVITY_FULFILLED, ({ payload: { activity } }) => warnIfTimestampIsDate(activity)],
-  [POST_ACTIVITY_PENDING, ({ payload: { activity } }) => warnIfTimestampIsDate(activity)],
+  [
+    POST_ACTIVITY_FULFILLED,
+    ({ payload: { activity } }, { previousState }) => warnOnUpsert(previousState.groupedActivities, activity)
+  ],
+  [
+    POST_ACTIVITY_PENDING,
+    ({ payload: { activity } }, { previousState }) => warnOnUpsert(previousState.groupedActivities, activity)
+  ],
   [
     VOICE_START_RECORDING,
     (_, { previousState: { voice } }) =>

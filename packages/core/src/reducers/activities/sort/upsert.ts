@@ -278,12 +278,7 @@ function upsert(state: State, activity: Activity): State {
     const wasFinalized = livestreamSessionMapEntry ? livestreamSessionMapEntry.finalized : false;
 
     if (wasFinalized) {
-      // A known exception to pure reducers: whether the session was concluded is known only here, deep in the upsert.
-      // Under React's Strict Mode, the warning would show twice.
-      // eslint-disable-next-line no-restricted-syntax
-      console.warn(
-        `botframework-webchat: Cannot update livestreaming session ${sessionId} because it has been concluded`
-      );
+      // `runEffects()` warns about it.
 
       // This is a special case.
       // TODO: [P1] Revisit this and see how we should process activity after the livestream is finalized.
