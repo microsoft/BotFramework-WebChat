@@ -28,7 +28,7 @@ const PREPARERS: ReadonlyMap<string, Readonly<Record<string, (deps: PrepareDeps)
  * action (e.g. React's Strict Mode, time travel) gives the same state.
  */
 export default function prepareAction<T extends Action>(action: T, deps: PrepareDeps): T {
-  const preparers = PREPARERS.get(action.type);
+  const preparers = PREPARERS.get(action?.type);
 
   if (!preparers) {
     return action;

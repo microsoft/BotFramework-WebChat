@@ -132,6 +132,12 @@ test('a `Date` timestamp warns only when no numeric sequence ID orders the activ
   }
 });
 
+test.each([undefined, null])('dispatch(%p) throws the error of Redux', action => {
+  const { store } = createStoreWithClock(1_000);
+
+  expect(() => store.dispatch(action as any)).toThrow(/^Actions must be plain objects/u);
+});
+
 test('the reducer gives the same state when called twice with the same prepared action', () => {
   // What React's Strict Mode does to the reducer of `useReducer()`.
   const state = reducer(undefined, { type: 'INIT' } as any);

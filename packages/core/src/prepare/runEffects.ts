@@ -96,5 +96,5 @@ const EFFECTS: ReadonlyMap<string, (action: any, context: RunEffectsContext) => 
  * the reducers get, not the next state.
  */
 export default function runEffects(action: { readonly type: string }, context: RunEffectsContext): void {
-  EFFECTS.get(action.type)?.(action, context);
+  EFFECTS.get(action?.type)?.(action, context);
 }
