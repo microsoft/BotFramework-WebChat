@@ -15,7 +15,6 @@ import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import StoreDebugAPIRegistry from './internal/StoreDebugAPIRegistry';
-import StorePonyfillRegistry from './internal/StorePonyfillRegistry';
 
 // The Redux DevTools browser extension sets this global, Redux Toolkit reads it the same way.
 // Typed here instead of globally, so it is not part of the published typings.
@@ -149,11 +148,15 @@ export function withOptions(
     options.devTools && typeof window !== 'undefined' ? window : undefined;
   const composeWithDevTools = devToolsWindow?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
-  store = createReduxStore(reducer, initialState || {}, composeWithDevTools ? composeWithDevTools(enhancer) : enhancer);
+  // `internal.ponyfill` is for `<Composer>`, to check that it matches its own; the reducer keeps it as it is.
+  store = createReduxStore(
+    reducer,
+    { ...initialState, internal: { ponyfill } },
+    composeWithDevTools ? composeWithDevTools(enhancer) : enhancer
+  );
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
   StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
-  StorePonyfillRegistry.set(store, ponyfill);
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
   sagaMiddleware.run(createSagas({ ponyfill }));

@@ -28,6 +28,8 @@ const combinedReducer = combineActivitiesReducer(
     connectivityStatus,
     dictateInterims,
     dictateState,
+    // The ponyfill of the store, from the initial state (`createStore()`).
+    internal: (state = {}) => state,
     language,
     notifications,
     readyState,
