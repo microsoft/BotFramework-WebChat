@@ -30,12 +30,13 @@ const PREPARERS: ReadonlyMap<string, Readonly<Record<string, (deps: PrepareDeps)
 export default function prepareAction<T extends Action>(action: T, deps: PrepareDeps): T {
   const preparers = PREPARERS.get(action.type);
 
-  return preparers
-    ? {
-        ...action,
-        meta: { ...action.meta, ...Object.fromEntries(Object.entries(preparers).map(([key, make]) => [key, make(deps)])) }
-      }
-    : action;
+  if (!preparers) {
+    return action;
+  }
+
+  const values = Object.fromEntries(Object.entries(preparers).map(([key, make]) => [key, make(deps)]));
+
+  return { ...action, meta: { ...action.meta, ...values } };
 }
 
 /** Returns the action if `prepareAction()` prepared it or it needs nothing, throws otherwise. */
