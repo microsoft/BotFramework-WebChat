@@ -102,6 +102,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
       rootHeight,
       rootWidth,
       rootZIndex,
+      scrollToEndButtonFontSize,
       sendBoxAttachmentBarMaxHeight,
       sendBoxBackground,
       sendBoxBorderBottom,
@@ -213,8 +214,8 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.BackgroundToastWarn}: ${toastWarnBackgroundColor};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButton}: ${transcriptOverlayButtonBackground};
   ${CustomPropertyNames.BackgroundTranscriptOverlayButtonDisabled}: ${transcriptOverlayButtonBackgroundOnDisabled};
-  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonFocus}: ${transcriptOverlayButtonBackgroundOnFocus};
-  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonHover}: ${transcriptOverlayButtonBackgroundOnHover};
+  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonFocus}: ${orUnset(transcriptOverlayButtonBackgroundOnFocus)};
+  ${CustomPropertyNames.BackgroundTranscriptOverlayButtonHover}: ${orUnset(transcriptOverlayButtonBackgroundOnHover)};
   ${CustomPropertyNames.BackgroundTranscriptTerminator}: ${transcriptTerminatorBackgroundColor};
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
@@ -274,6 +275,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps, ref: R
   ${CustomPropertyNames.FontMonospace}: ${monospaceFont};
   ${CustomPropertyNames.FontPrimary}: ${primaryFont};
   ${CustomPropertyNames.FontSizeConnectivity}: ${toLength(connectivityTextSize)};
+  ${CustomPropertyNames.FontSizeScrollToEndButton}: ${toLength(scrollToEndButtonFontSize)};
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.FontSizeToast}: ${toLength(toastFontSize)};
   ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
