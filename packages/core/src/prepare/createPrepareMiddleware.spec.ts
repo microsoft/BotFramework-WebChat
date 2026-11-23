@@ -53,3 +53,11 @@ test('the reducer gives the same state when called twice with the same prepared 
 
   expect(reducer(state, action)).toEqual(reducer(state, action));
 });
+
+test('an action that was not prepared throws when it reaches the reducer', () => {
+  const state = reducer(undefined, { type: 'INIT' } as any);
+
+  expect(() => reducer(state, incomingActivity(ACTIVITY) as any)).toThrow(
+    'botframework-webchat: action "DIRECT_LINE/INCOMING_ACTIVITY" reached the reducer without being prepared; dispatch it through the store'
+  );
+});
