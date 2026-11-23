@@ -36,7 +36,7 @@ export default function prepareAction<T extends Action>(action: T, deps: Prepare
 
   const values = Object.fromEntries(Object.entries(preparers).map(([key, make]) => [key, make(deps)]));
 
-  return { ...action, meta: { ...action.meta, ...values } };
+  return Object.freeze({ ...action, meta: Object.freeze({ ...action.meta, ...values }) });
 }
 
 /** Returns the action if `prepareAction()` prepared it or it needs nothing, throws otherwise. */
