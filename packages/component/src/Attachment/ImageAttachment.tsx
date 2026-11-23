@@ -57,6 +57,8 @@ const ImageAttachment = memo(function ImageAttachment(props: ImageAttachmentProp
 
       setBlobURL(url);
 
+      // Revoke without clearing the state: revoking does not affect an <img> already loaded,
+      // and this effect sets a new URL before the image shows again (<Activity> or Strict Mode).
       return () => URL.revokeObjectURL(url);
     }
   }, [blob]);
