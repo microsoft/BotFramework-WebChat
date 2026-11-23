@@ -54,13 +54,11 @@ const EFFECTS: ReadonlyMap<string, (action: any, context: RunEffectsContext) => 
         meta: { fallbackId },
         payload: { activity }
       } = action;
-      let incomingActivity = activity;
+      const incomingActivity = toIncomingActivity(groupedActivities, action);
 
       // The debug context reads the next state: call the breakpoint in a microtask, after the reducers, with the activity
-      // as the reducer puts it in the transcript (or as dispatched, if making it throws).
+      // as the reducer puts it in the transcript.
       queueMicrotask(() => debugAPI.UNSAFE_callBreakpoint.incomingActivity({ activity: incomingActivity }));
-
-      incomingActivity = toIncomingActivity(groupedActivities, action);
 
       activity.from?.role !== 'user' &&
         !activity.id &&
