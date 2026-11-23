@@ -1,0 +1,17 @@
+:global(.webchat) .inline-markdown {
+  button[data-markdown-href] {
+    appearance: none;
+    background-color: transparent;
+    border: 0;
+    color: var(--webchat__color--accent);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+
+    @media screen and (forced-colors: active) {
+      color: LinkText;
+      text-decoration: underline;
+    }
+  }
+}
