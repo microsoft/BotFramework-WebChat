@@ -7,7 +7,7 @@ import type { Activity } from '../types';
  *
  * Chat adapter may send sequence ID to affect activity reordering. Sequence ID is supposed to be Unix timestamp.
  *
- * A `timestamp` given as a `Date` is used too; `afterDispatch()` warns about it.
+ * A `timestamp` given as a `Date` is used too; `runEffects()` warns about it.
  *
  * @param activity Activity to get sequence ID from.
  * @returns Sequence ID.

@@ -1,6 +1,7 @@
 import incomingActivity from '../actions/incomingActivity';
 import setNotification from '../actions/setNotification';
 import { withOptions } from '../createStore';
+import StoreDebugAPIRegistry from '../internal/StoreDebugAPIRegistry';
 import reducer from '../reducer';
 
 type Action = { readonly meta?: unknown; readonly type: string };
@@ -44,6 +45,41 @@ test('a notification is stamped with the time of the ponyfill', () => {
   store.dispatch(setNotification({ id: 'n1', level: 'info', message: 'Hello' }));
 
   expect(store.getState().notifications.n1).toHaveProperty('timestamp', 2_000);
+});
+
+test('the side effects of an action run before the nested dispatch of a store listener', async () => {
+  const { store } = createStoreWithClock(1_000);
+  const breakpoint = jest.fn();
+
+  (StoreDebugAPIRegistry.get(store).breakpoint as any).incomingActivity = breakpoint;
+
+  // A host that adds a disclaimer after the activity, from a store listener.
+  store.subscribe(
+    () =>
+      store.getState().activities.at(-1)?.id === 'a-1' &&
+      store.dispatch(incomingActivity({ ...ACTIVITY, id: 'disclaimer' }))
+  );
+
+  store.dispatch(incomingActivity({ ...ACTIVITY, id: 'a-1' }));
+  await Promise.resolve();
+
+  expect(breakpoint.mock.calls.map(([, { activity }]) => activity.id)).toEqual(['a-1', 'disclaimer']);
+});
+
+test('the side effects of an action run when a reducer throws', async () => {
+  const { store } = createStoreWithClock(1_000);
+  const breakpoint = jest.fn();
+
+  (StoreDebugAPIRegistry.get(store).breakpoint as any).incomingActivity = breakpoint;
+
+  expect(() =>
+    // `entities` must be an array.
+    store.dispatch(incomingActivity({ ...ACTIVITY, entities: { type: 'https://schema.org/Message' }, id: 'a-1' }))
+  ).toThrow(TypeError);
+  await Promise.resolve();
+
+  expect(breakpoint).toHaveBeenCalledTimes(1);
+  expect(breakpoint.mock.calls[0][1].activity).toHaveProperty('id', 'a-1');
 });
 
 test('the reducer gives the same state when called twice with the same prepared action', () => {

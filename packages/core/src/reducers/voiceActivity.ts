@@ -71,7 +71,7 @@ export default function voiceActivity(
       };
 
     case VOICE_START_RECORDING:
-      // `afterDispatch()` warns if the state was not "idle".
+      // `runEffects()` warns if the state was not "idle".
       return {
         ...state,
         microphoneMuted: false,

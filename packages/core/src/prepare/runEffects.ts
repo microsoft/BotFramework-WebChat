@@ -9,9 +9,9 @@ import type { WebChatActivity } from '../types/WebChatActivity';
 import isDate from '../utils/isDate';
 import type { PreparedIncomingActivityAction } from './types';
 
-type AfterDispatchContext = {
+type RunEffectsContext = {
   readonly debugAPI: RestrictedStoreDebugAPI;
-  /** The state before the action was reduced. */
+  /** The state the reducers get. */
   readonly previousState: {
     readonly groupedActivities: GroupedActivitiesState;
     readonly voice: { readonly voiceState: string };
@@ -23,9 +23,9 @@ function warnIfTimestampIsDate({ timestamp }: WebChatActivity): void {
 }
 
 // For each action type, what used to run inside its reducers but is a side effect: debug breakpoints and warnings.
-const EFFECTS: ReadonlyMap<string, (action: any, context: AfterDispatchContext) => void> = new Map<
+const EFFECTS: ReadonlyMap<string, (action: any, context: RunEffectsContext) => void> = new Map<
   string,
-  (action: any, context: AfterDispatchContext) => void
+  (action: any, context: RunEffectsContext) => void
 >([
   [
     DELETE_ACTIVITY,
@@ -73,9 +73,10 @@ const EFFECTS: ReadonlyMap<string, (action: any, context: AfterDispatchContext) 
   ]
 ]);
 
-/** Runs the side effects of an action, once, after the reducers reduced it (`prepareAction()` prepared it). */
-export default function afterDispatch(action: { readonly type: string }, context: AfterDispatchContext): void {
+/**
+ * Runs the side effects of an action that `prepareAction()` prepared, once, before the reducers. They read the state
+ * the reducers get, not the next state.
+ */
+export default function runEffects(action: { readonly type: string }, context: RunEffectsContext): void {
   EFFECTS.get(action.type)?.(action, context);
 }
-
-export type { AfterDispatchContext };

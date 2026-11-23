@@ -19,7 +19,7 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 
 /**
  * The activity of an `INCOMING_ACTIVITY` as it goes into the transcript: patched, with its local ID and send status.
- * Pure: the reducer upserts it, and `afterDispatch()` makes it again (same state and action) for the debug breakpoint.
+ * Pure: the reducer upserts it, and `runEffects()` makes it too (same state and action) for the debug breakpoint.
  */
 export default function toIncomingActivity(state: State, action: PreparedIncomingActivityAction): WebChatActivity {
   let {
@@ -90,7 +90,7 @@ export default function toIncomingActivity(state: State, action: PreparedIncomin
     let { id } = activity;
 
     if (!id) {
-      // `afterDispatch()` warns about it.
+      // `runEffects()` warns about it.
       id = action.meta.fallbackId;
 
       activity = updateIn(activity, ['id'], () => id);

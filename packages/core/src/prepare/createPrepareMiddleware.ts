@@ -3,12 +3,12 @@ import { v4 } from 'uuid';
 
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { RestrictedStoreDebugAPI } from '../types/StoreDebugAPI';
-import afterDispatch from './afterDispatch';
 import prepareAction from './prepareAction';
+import runEffects from './runEffects';
 
 /**
- * The innermost middleware: prepares each action just before the reducers (`prepareAction()`), then runs its side
- * effects (`afterDispatch()`). Every action passes here, the ones of the host and of the sagas too. The middleware
+ * The innermost middleware: prepares each action (`prepareAction()`), runs its side effects (`runEffects()`), then
+ * passes it to the reducers. Every action passes here, the ones of the host and of the sagas too. The middleware
  * outside, and `dispatch()`'s return value, keep the action as it was dispatched.
  */
 export default function createPrepareMiddleware({
@@ -24,11 +24,14 @@ export default function createPrepareMiddleware({
     next =>
     (action: any) => {
       const prepared = prepareAction(action, deps);
-      const previousState = getState();
+
+      // Before the reducers, as when they ran inside them: before the store listeners and their nested dispatches, and
+      // also when a reducer throws. `getState()` is the state the reducers get.
+      runEffects(prepared, { debugAPI, previousState: getState() });
+
       const result = next(prepared);
 
-      afterDispatch(prepared, { debugAPI, previousState });
-
+      // Redux's `dispatch()` returns the action it got: return the dispatched one. Anything else (an enhancer's) passes.
       return result === prepared ? action : result;
     };
 }
