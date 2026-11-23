@@ -1,6 +1,6 @@
 ## Background
 
-State machine design was reactive (event-driven) and linear (array).
+The original state machine design was reactive (event-driven) and linear (array).
 
 The new design is distributed, transactional (consistent without locking), and hyperlinking (graph).
 
@@ -143,3 +143,14 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - Symbol keys and non-enumerable properties are removed, getters are called once
 - Arrays only keep elements up to `length`, extra properties are removed
 - Invalid when `JSON.stringify()` would throw: recursion and `BigInt`
+
+## Summary on transaction commit
+
+- Auto-inferencing `hasPart` and `isPartOf` edges if only one side of the edge is touched
+- Verify consistencies
+   - Referenced nodes are in the system
+   - Alternate identifier are unique across nodes
+   - `hasPart` and `isPartOf` edges are inverse of each other
+   - Custom properties are in array of either primitives or JSON literals
+- Sort child nodes by `dateCreated` by insertion sort
+- Create indices for `@id` and `identifier` for quick lookup
