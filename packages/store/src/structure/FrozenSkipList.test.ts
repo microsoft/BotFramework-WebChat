@@ -1,6 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 import { expect } from 'expect';
 import NodeTest from 'node:test';
+import { array, is, looseObject, unknown } from 'valibot';
 import FrozenSkipList, { type ReadWriteSkipList } from './FrozenSkipList.ts';
 
 type SkipList<T> = ReadWriteSkipList<T> | FrozenSkipList<T>;
@@ -230,6 +231,25 @@ scenario(
         expect(Array.from({ [Symbol.iterator]: () => iterator })).toEqual([2, 3]);
       })
       .and('should have the changes in the new version', (_, next) => expectItems(next, [1, 2.5, 3]));
+
+    bdd
+      .given('a committed list', () => createList([1, 2, 3]))
+      .when('an entry is read via the protected read() from JavaScript', list => {
+        const entry: unknown = Reflect.apply(Reflect.get(list, 'read'), list, [2]);
+
+        if (!is(looseObject({ next: array(unknown()), previous: array(unknown()) }), entry)) {
+          throw new Error('read() should return an entry');
+        }
+
+        return entry;
+      })
+      .then('should have the entry frozen', (_, entry) => expect(Object.isFrozen(entry)).toBe(true))
+      .and('should not allow replacing links of the entry', (list, entry) => {
+        Reflect.set(entry, 'next', []);
+        Reflect.set(entry, 'previous', []);
+
+        expectItems(list, [1, 2, 3]);
+      });
 
     bdd
       .given('an overlay', () => createList([1, 2]).mutate())
