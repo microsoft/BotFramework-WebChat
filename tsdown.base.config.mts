@@ -1,3 +1,4 @@
+import escapeStringRegexp from 'escape-string-regexp';
 import { type UserConfig } from 'tsdown';
 
 import { istanbulPlugin } from './rolldownPlugins.mjs';
@@ -127,7 +128,7 @@ function iifeOptions(config: Config): Partial<Config> {
 
 /** tsup `noExternal: ['x']` also bundles "x/y", tsdown `deps.alwaysBundle: ['x']` does not. */
 function packagePattern(name: string): RegExp {
-  return new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\/]/gu, '\\$&')}(?:/|$)`, 'u');
+  return new RegExp(`^${escapeStringRegexp(name)}(?:/|$)`, 'u');
 }
 
 export { applyConfig, createDualFormatConfigs, iifeOptions, packagePattern, type Config };
