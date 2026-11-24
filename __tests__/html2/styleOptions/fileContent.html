@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Every style option of the file attachment set to a value other than its default.
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              accent: 'Green',
+              bubbleTextColor: 'Purple',
+              hideSendBox: true,
+              paddingRegular: 20, // Numbers are in pixels.
+              primaryFont: 'serif'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The bot sends a downloadable file with a long name and its size, and a file without a URL.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/pdf',
+              contentUrl: 'https://example.com/report.pdf',
+              name: 'quarterly-report-with-every-appendix-and-the-detailed-tables.pdf' // Long, to show the margin next to the icon.
+            },
+            { contentType: 'application/octet-stream', name: 'notes.bin' } // No URL: not downloadable.
+          ],
+          channelData: { attachmentSizes: [12345, 678] },
+          from: { role: 'bot' },
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Green file names and download icon, purple sizes, a serif font, 20 pixels of padding and of margin before the icon.
+        await host.snapshot('local');
+
+        // WHEN: The download link is focused.
+        document.querySelector('.webchat__fileContent__buttonLink').focus();
+
+        await waitFor(() =>
+          expect(document.activeElement).toBe(document.querySelector('.webchat__fileContent__buttonLink'))
+        );
+
+        // THEN: The download link has a light gray background.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

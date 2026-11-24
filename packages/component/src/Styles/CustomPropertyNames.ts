@@ -8,6 +8,7 @@ const CustomPropertyNames = Object.freeze({
   BackgroundCodeBlock: '--webchat__background--code-block',
   BackgroundImageSpinnerAnimation: '--webchat__background-image--spinner-animation',
   BackgroundImageTypingAnimation: '--webchat__background-image--typing-animation',
+  BackgroundRoot: '--webchat__background--root',
   BackgroundSendBox: '--webchat__background--send-box',
   BackgroundSendBoxButtonShade: '--webchat__background--send-box-button-shade',
   BackgroundSendBoxButtonShadeActive: '--webchat__background--send-box-button-shade-active',
@@ -85,9 +86,11 @@ const CustomPropertyNames = Object.freeze({
   FontPrimary: '--webchat__font--primary',
   FontMonospace: '--webchat__font--monospace',
   FontSizeConnectivity: '--webchat__font-size--connectivity',
+  FontSizeScrollToEndButton: '--webchat__font-size--scroll-to-end-button',
   FontSizeSmall: '--webchat__font-size--small',
   FontSizeToast: '--webchat__font-size--toast',
   FontSizeTranscriptTerminator: '--webchat__font-size--transcript-terminator',
+  HeightRoot: '--webchat__height--root',
   HeightSpinnerAnimation: '--webchat__height--spinner-animation',
   HeightToaster: '--webchat__height--toaster',
   HeightTypingAnimation: '--webchat__height--typing-animation',
@@ -120,10 +123,12 @@ const CustomPropertyNames = Object.freeze({
   SpaceBubbleNubUser: '--webchat__space--bubble-nub-user',
   TransitionDuration: '--webchat__transition-duration',
   TransitionEasing: '--webchat__transition-easing',
+  WidthRoot: '--webchat__width--root',
   WidthSpinnerAnimation: '--webchat__width--spinner-animation',
   WidthToastIcon: '--webchat__width--toast-icon',
   WidthTypingAnimation: '--webchat__width--typing-animation',
-  WordBreakMessageActivity: '--webchat__word-break--message-activity'
+  WordBreakMessageActivity: '--webchat__word-break--message-activity',
+  ZIndexRoot: '--webchat__z-index--root'
 }) satisfies Readonly<Record<string, `--webchat__${string}`>>;
 
 export default CustomPropertyNames;

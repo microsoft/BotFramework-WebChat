@@ -1,0 +1,17 @@
+/* .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader */
+:global(.webchat) .screen-reader-text {
+  color: transparent;
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  /*
+   * We need to set top: 0, otherwise, it will repro:
+   * - Run NVDA
+   * - Make the transcript long enough to show the scrollbar
+   * - Press SHIFT-TAB, focus on upload button
+   * - Press up arrow multiple times
+   */
+  top: 0;
+  white-space: nowrap;
+  width: 1px;
+}

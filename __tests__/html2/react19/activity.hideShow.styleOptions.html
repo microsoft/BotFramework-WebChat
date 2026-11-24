@@ -41,24 +41,28 @@
             createElement(Activity, { mode }, createElement(ReactWebChat, { directLine, store, styleOptions }))
           );
 
+        // The same style options object for both renders: a new object, even an empty one, gets a new class name below.
+        const initialStyleOptions = {};
+
         // WHEN: Web Chat is rendered in a visible <Activity>.
-        render('visible', {});
+        render('visible', initialStyleOptions);
 
         await pageConditions.uiConnected();
 
         // WHEN: The <Activity> hides Web Chat.
-        render('hidden', {});
+        render('hidden', initialStyleOptions);
 
         await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('offsetParent', null));
 
-        const getSurface = () => document.querySelector('.webchat__surface');
-        const surfaceClassName = getSurface().className;
+        const getCustomPropertiesContainer = () => document.querySelector('.webchat__css-custom-properties');
+        const customPropertiesClassName = getCustomPropertiesContainer().className;
 
         // WHEN: The host changes the background color while Web Chat is hidden.
         render('hidden', { backgroundColor: '#FFFFE0' }); // Light yellow.
 
-        // React renders hidden children at a lower priority: the new background color is a new class name.
-        await waitFor(() => expect(getSurface().className).not.toBe(surfaceClassName));
+        // React renders hidden children at a lower priority: new style options are a new class name on the element that
+        // carries the CSS custom properties, such as the background color. Their <style> is added when Web Chat shows.
+        await waitFor(() => expect(getCustomPropertiesContainer().className).not.toBe(customPropertiesClassName));
 
         // WHEN: The <Activity> shows Web Chat again.
         render('visible', { backgroundColor: '#FFFFE0' });

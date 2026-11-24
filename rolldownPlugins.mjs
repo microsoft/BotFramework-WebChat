@@ -1,10 +1,9 @@
 // Rolldown flavor of esbuildPlugins.mjs and esbuildBabelPluginIstanbul.ts, for tsdown.base.config.mts.
 import { transformAsync } from '@babel/core';
-import { decode, encode } from '@jridgewell/sourcemap-codec';
 import { Features, transform } from 'lightningcss';
 import { Buffer } from 'node:buffer';
 import { readFile } from 'node:fs/promises';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import lightningCssPlugin from 'unplugin-lightningcss/rolldown';
 
@@ -60,49 +59,13 @@ function getEntryModuleIds(context, entryId) {
 }
 
 /**
- * Concatenates the compiled CSS modules of an entry into one CSS file and one source map, like esbuild.
- *
- * @param {readonly { code: string; map: import('rolldown').SourceMapInput }[]} modules
- * @param {(source: string) => string} toSourcePath
- */
-function concatCSS(modules, toSourcePath) {
-  const mappings = [];
-  const sources = [];
-  const sourcesContent = [];
-
-  for (const { code, map } of modules) {
-    const sourceOffset = sources.length;
-
-    sources.push(...map.sources.map(toSourcePath));
-    sourcesContent.push(...(map.sourcesContent ?? map.sources.map(() => null)));
-
-    // Every module starts on a new line: a module of N lines takes N lines of mappings.
-    const lines = decode(map.mappings);
-    const numLines = code.split('\n').length - 1;
-
-    for (let index = 0; index < numLines; index++) {
-      mappings.push(
-        (lines[+index] || []).map(([column, source, originalLine, originalColumn]) =>
-          typeof source === 'number' ? [column, source + sourceOffset, originalLine, originalColumn] : [column]
-        )
-      );
-    }
-  }
-
-  return {
-    code: modules.map(({ code }) => code).join(''),
-    map: { mappings: encode(mappings), names: [], sources, sourcesContent, version: 3 }
-  };
-}
-
-/**
- * Compiles CSS modules (`*.module.css`) with Lightning CSS and emits `<entry>.css` (and `.css.map`) for every entry with
- * CSS. esbuild bundles CSS itself; rolldown does not.
+ * Compiles CSS modules (`*.module.css`) with Lightning CSS and emits `<entry>.css` for every entry with CSS, which
+ * injectCSSRolldownPlugin injects into the entry's script. esbuild bundles CSS itself; rolldown does not.
  *
  * The CSS of each module is lowered for `target` with Lightning CSS, as esbuild lowers the bundled CSS (e.g. CSS nesting for
  * safari15). Lightning CSS also adds the `-webkit-` prefixes that the targets need, a few more than esbuild does.
  *
- * The source map is rule-level: Lightning CSS maps each rule (selector) to its source, not each declaration.
+ * No CSS source map: the packages do not export `<entry>.css`, and the injected CSS has no source map.
  *
  * The plugin instance keeps the compiled CSS of the build: use one instance per build (tsdown.base.config.mts creates one
  * in the `build:before` hook, with the build's own `minify` and `target`).
@@ -111,7 +74,7 @@ function concatCSS(modules, toSourcePath) {
  * @returns {import('rolldown').Plugin[]}
  */
 function cssPlugin({ minify, target }) {
-  /** @type {Map<string, { code: string; map: import('rolldown').SourceMapInput }>} */
+  /** @type {Map<string, string>} */
   const cssById = new Map();
   const targets = toLightningCSSTargets(target);
 
@@ -123,51 +86,34 @@ function cssPlugin({ minify, target }) {
       transform: {
         filter: { id: CSS_MODULE_ID_PATTERN },
         handler(code, id) {
-          // unplugin-lightningcss reads `*.module.css` itself: without this, `tsdown --watch` misses changes to it.
-          this.addWatchFile(id.replace(CSS_MODULE_ID_PATTERN, '.module.css'));
-
           if (!BUILT_CSS_PATTERN.test(id)) {
-            // No source map: the class map is generated code (its own source would be this code, with an absolute path).
-            return { code: sortClassMap(code, id) };
+            // Empty source map: the class map is generated code, without a source to map to. Without a map, rolldown warns.
+            return { code: sortClassMap(code, id), map: { mappings: '' } };
           }
 
-          const result = transform({
+          const css = transform({
             code: Buffer.from(removePreserveReason(code, id)),
             exclude: EXCLUDED_FEATURES,
             filename: id,
             minify,
-            sourceMap: true,
             targets
-          });
+          }).code.toString();
 
-          const css = result.code.toString();
+          cssById.set(id, css.endsWith('\n') ? css : `${css}\n`);
 
-          cssById.set(id, {
-            code: css.endsWith('\n') ? css : `${css}\n`,
-            // Lightning CSS writes the file name relative to its project root ("/"), keep the absolute one.
-            map: { ...JSON.parse(result.map?.toString() ?? '{"mappings":"","version":3}'), sources: [id] }
-          });
-
-          // The CSS module becomes an empty JavaScript module (as with @tsdown/css), its CSS is in cssById.
-          return { code: '', map: null, moduleSideEffects: 'no-treeshake', moduleType: 'js' };
+          // The CSS module becomes an empty JavaScript module: generateBundle() finds its CSS through the module graph.
+          return { code: '', map: null, moduleType: 'js' };
         }
       },
-      generateBundle({ dir = 'dist', sourcemap }, bundle) {
+      generateBundle(_, bundle) {
         for (const chunk of Object.values(bundle)) {
           if (chunk.type === 'chunk' && chunk.isEntry && chunk.facadeModuleId) {
-            const modules = getEntryModuleIds(this, chunk.facadeModuleId).flatMap(id => cssById.get(id) ?? []);
+            const css = getEntryModuleIds(this, chunk.facadeModuleId)
+              .map(id => cssById.get(id) ?? '')
+              .join('');
 
-            if (modules.length) {
-              const fileName = chunk.fileName.replace(/\.[cm]?js$/u, '.css');
-              const { code, map } = concatCSS(modules, source => relative(dir, source).replaceAll('\\', '/'));
-
-              this.emitFile({
-                fileName,
-                source: sourcemap ? `${code}/*# sourceMappingURL=${fileName}.map */\n` : code,
-                type: 'asset'
-              });
-
-              sourcemap && this.emitFile({ fileName: `${fileName}.map`, source: JSON.stringify(map), type: 'asset' });
+            if (css) {
+              this.emitFile({ fileName: chunk.fileName.replace(/\.[cm]?js$/u, '.css'), source: css, type: 'asset' });
             }
           }
         }

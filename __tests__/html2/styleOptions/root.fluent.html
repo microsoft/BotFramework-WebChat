@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      /* TODO: [P*] Can we eliminate this style? */
+      .fui-FluentProvider,
+      .webchat-fluent {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-provider": "/__dist__/packages/test/test-assets/out/@fluentui/react-provider.js",
+          "@fluentui/tokens": "/__dist__/packages/test/test-assets/out/@fluentui/tokens.js",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "react-jsx-runtime": "/__dist__/packages/bundle/static/react/jsx-runtime.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider } from '@fluentui/react-provider';
+      import { webLightTheme } from '@fluentui/tokens';
+      import { createStoreWithOptions, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const fluentTheme = {
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
+        };
+
+        // GIVEN: The Fluent theme with custom root style options.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: 'fluent' },
+              createElement(ReactWebChat, {
+                directLine,
+                store,
+                styleOptions: {
+                  backgroundColor: 'LightYellow', // The Fluent theme sets its own surface color.
+                  rootHeight: 480,
+                  rootWidth: '75%'
+                }
+              })
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Web Chat is 480 pixels tall and 75% wide, with the Fluent surface color instead of light yellow.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

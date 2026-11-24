@@ -1,3 +1,4 @@
+import escapeStringRegexp from 'escape-string-regexp';
 import { type UserConfig } from 'tsdown';
 
 import { cssPlugin, inputSourceMapPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
@@ -19,7 +20,8 @@ type Config = UserConfig & {
 // Port of tsup.base.config.ts.
 function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config): Config {
   return overrideOptions({
-    // CSS modules are compiled by our cssPlugin (rolldownPlugins.mjs), not by @tsdown/css.
+    // Our cssPlugin (rolldownPlugins.mjs) compiles CSS modules. `false` turns off tsdown's CSS support: without
+    // @tsdown/css installed, it fails the build on every `.css` module, ours included.
     css: false,
     define: {
       // TSD does not support define, thus we need to use `globalThis.*` instead.
@@ -33,7 +35,9 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       // Like tsup (rollup-plugin-dts), `.d.ts` import the types of every package instead of inlining them, even with
       // `deps.alwaysBundle` (tsup `noExternal`). Packages that need them inlined run dtsroll after the build.
       dts: { alwaysBundle: [], neverBundle: true },
-      // devDependencies are bundled on purpose, like tsup.
+      // Like tsup, a package bundles every import outside its dependencies and peerDependencies: our private packages
+      // (devDependencies, never published), core-js-pure in base, @jridgewell/sourcemap-codec in styles. `false` only
+      // turns off the tsdown hint that lists the bundled npm packages.
       onlyBundle: false
     },
     dts: {
@@ -60,7 +64,8 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
     ignoreWatch: ['./dist/'],
     inputOptions: (options, format) => ({
       ...options,
-      // unplugin-lightningcss exports dashed class names as `export { _x as "a-b" }`: rolldown warns for each of them.
+      // unplugin-lightningcss exports every class as `export { _x as "class-name" }`. String export names need ES2022:
+      // rolldown warns for each class in the ES2019 (CommonJS) builds, although bundling removes these exports.
       // rolldown also warns when JavaScript plugins (Lightning CSS, istanbul) take most of the build time.
       checks: { ...options.checks, pluginTimings: false, toleratedTransform: false },
       // tsdown builds CommonJS for Node.js, ours is for browsers too (uses the "browser" conditions of dependencies).
@@ -136,7 +141,7 @@ function iifeOptions(config: Config): Partial<Config> {
 
 /** tsup `noExternal: ['x']` also bundles "x/y", tsdown `deps.alwaysBundle: ['x']` does not. */
 function packagePattern(name: string): RegExp {
-  return new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\/]/gu, '\\$&')}(?:/|$)`, 'u');
+  return new RegExp(`^${escapeStringRegexp(name)}(?:/|$)`, 'u');
 }
 
 export { applyConfig, createDualFormatConfigs, iifeOptions, packagePattern, type Config };
