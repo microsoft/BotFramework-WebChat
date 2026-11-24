@@ -1,6 +1,34 @@
+import actionSinkMachine from './actionSinkMachine';
+import connectionStatusToNotificationMachine from './connection/connectionStatusToNotificationMachine';
+import connectionStatusUpdateMachine from './connection/connectionStatusUpdateMachine';
+import connectMachine from './connection/connectMachine';
+import detectSlowConnectionMachine from './connection/detectSlowConnectionMachine';
+import observeActivityMachine from './incoming/observeActivityMachine';
+import queueIncomingActivityMachine from './incoming/queueIncomingActivityMachine';
+import clearSuggestedActionsOnPostActivityMachine from './outgoing/clearSuggestedActionsOnPostActivityMachine';
+import postActivityMachine from './outgoing/postActivityMachine';
+import postVoiceActivityMachine from './outgoing/postVoiceActivityMachine';
+import {
+  emitTypingIndicatorMachine,
+  sendEventMachine,
+  sendFilesMachine,
+  sendMessageBackMachine,
+  sendMessageMachine,
+  sendPostBackMachine
+} from './outgoing/sendToPostActivityMachines';
 import createChannel, { isPut } from './private/createChannel';
 import createScope from './private/createScope';
 import { asap, immediately } from './private/scheduler';
+import sendTypingIndicatorOnSetSendBoxMachine from './sendBox/sendTypingIndicatorOnSetSendBoxMachine';
+import submitSendBoxMachine from './sendBox/submitSendBoxMachine';
+import {
+  markAllAsSpokenOnStopSpeakActivityMachine,
+  speakActivityAndStartDictateOnIncomingActivityFromOthersMachine,
+  startDictateOnSpeakCompleteMachine,
+  startSpeakActivityOnPostActivityMachine,
+  stopDictateOnCardActionMachine,
+  stopSpeakingActivityOnInputMachine
+} from './speech/speechMachines';
 import type { Machine, MachineAction, MachineHost } from './types';
 
 type Machines = {
@@ -12,12 +40,40 @@ type Machines = {
   readonly stop: () => void;
 };
 
+// In the order redux-saga forked the sagas they replaced: machines waiting for the same action are called in this order.
+const MACHINES: readonly Machine[] = Object.freeze([
+  actionSinkMachine,
+  clearSuggestedActionsOnPostActivityMachine,
+  connectionStatusToNotificationMachine,
+  connectionStatusUpdateMachine,
+  connectMachine,
+  detectSlowConnectionMachine,
+  emitTypingIndicatorMachine,
+  markAllAsSpokenOnStopSpeakActivityMachine,
+  observeActivityMachine,
+  postActivityMachine,
+  postVoiceActivityMachine,
+  queueIncomingActivityMachine,
+  sendEventMachine,
+  sendFilesMachine,
+  sendMessageBackMachine,
+  sendMessageMachine,
+  sendPostBackMachine,
+  sendTypingIndicatorOnSetSendBoxMachine,
+  speakActivityAndStartDictateOnIncomingActivityFromOthersMachine,
+  startDictateOnSpeakCompleteMachine,
+  startSpeakActivityOnPostActivityMachine,
+  stopDictateOnCardActionMachine,
+  stopSpeakingActivityOnInputMachine,
+  submitSendBoxMachine
+]);
+
 /**
- * Runs the machines without redux-saga: each machine takes the actions, selects the state and puts actions through the
- * host, in the order of redux-saga. An error that no machine catches stops every machine, then goes to
+ * What the sagas did, without redux-saga: each machine takes the actions, selects the state and puts actions through
+ * the host, in the order of redux-saga. An error that no machine catches stops every machine, then goes to
  * `host.onError()`.
  */
-export default function createMachines(host: MachineHost, machines: readonly Machine[]): Machines {
+export default function createMachines(host: MachineHost, machines: readonly Machine[] = MACHINES): Machines {
   const channel = createChannel();
   const root = createScope({ channel, host }, undefined);
 

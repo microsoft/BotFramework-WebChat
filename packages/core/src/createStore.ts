@@ -5,11 +5,10 @@ import {
   type Store,
   type StoreEnhancer
 } from 'redux';
-import createSagaMiddleware from 'redux-saga';
 
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
-import createSagas from './createSagas';
+import createMachinesMiddleware from './machines/createMachinesMiddleware';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
@@ -25,8 +24,8 @@ type CreateStoreOptions = {
   /**
    * True, to enable Redux development tools, otherwise, false.
    *
-   * Because Web Chat use sagas for business logics, some store state are keep at JavaScript heaps.
-   * Time-travelling and saving/restoring store state are not supported.
+   * Because Web Chat keeps some of its business logic state outside of the store (in its machines), time-travelling
+   * and saving/restoring store state are not supported.
    */
   devTools?: boolean;
 
@@ -41,25 +40,6 @@ type CreateStoreOptions = {
    */
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
-
-function createEnhancerAndSagaMiddleware(getStore: () => any, ...middlewares: readonly Middleware[]) {
-  const sagaMiddleware = createSagaMiddleware({
-    onError: (...args) => {
-      const [err] = args;
-
-      console.error(err);
-
-      const store = getStore();
-
-      store && store.dispatch(sagaError());
-    }
-  });
-
-  return {
-    enhancer: applyMiddleware(...middlewares, sagaMiddleware),
-    sagaMiddleware
-  };
-}
 
 /**
  * Creates a Redux store internally used by Web Chat.
@@ -131,8 +111,17 @@ export function withOptions(
 
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
-  // We are sure the "getStore" (first argument) is not called on "createEnhancerAndSagaMiddleware()".
-  const { enhancer, sagaMiddleware } = createEnhancerAndSagaMiddleware(() => store, ...middlewares);
+  // The machines run after every middleware of the host (the innermost), and start once the store exists.
+  const machines = createMachinesMiddleware({
+    // An error that no machine catches stops every machine.
+    onError: error => {
+      console.error(error);
+      store && store.dispatch(sagaError());
+    },
+    ponyfill
+  });
+
+  const enhancer = applyMiddleware(...middlewares, machines.middleware);
 
   const devToolsWindow: WindowWithReduxDevTools | undefined =
     options.devTools && typeof window !== 'undefined' ? window : undefined;
@@ -148,7 +137,7 @@ export function withOptions(
   StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
 
   // TODO: [P1] When we redesign the store and chat adapter, we shoulstore.getState().activities
-  sagaMiddleware.run(createSagas({ ponyfill }));
+  machines.start();
 
   return store;
 }
