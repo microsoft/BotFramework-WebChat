@@ -10,33 +10,16 @@ function isDeprecation(message) {
 // "redux" or "webchat", for every page of the run (see runHTML.js).
 const TEST_ENGINE = process.env.WEBCHAT_TEST_ENGINE;
 
-// With the "webchat" engine, a test passes only if the page ran on it, and `<Composer>` without a `store` created no
-// Redux store.
+// With the "webchat" engine, every store that the helpers of the page-object created must be the engine: a page that
+// lost the engine of the run would test Redux instead. Pages that render without a store stay on Redux.
 async function checkTestEngine(webDriver) {
-  const { counts, engine } = await webDriver.executeScript(() => {
-    // This code will ship to browser VM where "document", "location" and "window" are available.
-    /* eslint-disable no-undef */
-    const cookie = document.cookie.split('; ').find(entry => entry.startsWith('webchat-test-engine='));
-    const internal = window.__WEBCHAT_TEST_INTERNAL__ || (window.WebChat && window.WebChat.internal);
-    const getStoreCounts = internal && internal.__INTERNAL_DO_NOT_USE__getStoreCounts;
+  // This code will ship to browser VM where "window" is available.
+  // eslint-disable-next-line no-undef
+  const stores = await webDriver.executeScript(() => window.__webChatTestStores__ || []);
 
-    return {
-      counts: typeof getStoreCounts === 'function' ? getStoreCounts() : null,
-      // As `testHelpers.getTestEngine()` of the page-object.
-      engine:
-        new URLSearchParams(location.hash.replace(/^#/u, '')).get('webchat-test-engine') ||
-        (cookie ? decodeURIComponent(cookie.split('=')[1]) : 'redux')
-    };
-    /* eslint-enable no-undef */
-  });
-
-  if (engine !== (TEST_ENGINE || 'redux')) {
-    throw new Error(`WebChatTest: The run uses the "${TEST_ENGINE || 'redux'}" engine, but the page used "${engine}".`);
-  }
-
-  if (engine === 'webchat' && counts && counts.redux) {
+  if (stores.includes('redux')) {
     throw new Error(
-      `WebChatTest: With the "webchat" engine, <Composer> without a store must not create a Redux store, store counts: ${JSON.stringify(counts)}.`
+      `WebChatTest: With the "webchat" engine, the helpers must not create a Redux store, stores created: ${stores.join(', ')}.`
     );
   }
 }
@@ -73,7 +56,7 @@ module.exports = (webDriver, resolve) =>
       throw new Error(webDriver.__snapshotfail__ || 'At least one of the snapshot test failed');
     }
 
-    await checkTestEngine(webDriver);
+    TEST_ENGINE === 'webchat' && (await checkTestEngine(webDriver));
 
     resolve();
   };

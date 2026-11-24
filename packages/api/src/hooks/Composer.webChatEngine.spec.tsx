@@ -7,16 +7,17 @@ jest.mock('../providers/SpeechToSpeech/private/useRecorder', () => ({
 }));
 
 import { act, render, waitFor } from '@testing-library/react';
-import { createStore } from 'botframework-webchat-core';
+import { createStoreWithOptions } from 'botframework-webchat-core';
+import { createWebChatEngine } from 'botframework-webchat-core/internal.js';
 import React from 'react';
 
-import { getStoreCounts, setWebChatEngineEnabled } from '../providers/internalWebChatEngine';
 import Composer from './Composer';
 import useActivities from './useActivities';
 import useConnectivityStatus from './useConnectivityStatus';
 import useSendBoxValue from './useSendBoxValue';
 import useSendMessage from './useSendMessage';
 
+type CreateStore = typeof createWebChatEngine;
 type Observer = { readonly next?: ((value: any) => void) | undefined };
 
 // A Direct Line that echoes every activity it posts, as the channel does. `connectionStatus$` replays its status.
@@ -62,11 +63,11 @@ function createDirectLine() {
   };
 }
 
-// Renders <Composer> without a store, connects, types and sends "Hello". Returns a line per render of the probe.
-async function connectTypeAndSend() {
+// Renders <Composer> on a store from `createStore`, connects, types and sends "Hello". Returns a line per render of the
+// probe.
+async function connectTypeAndSend(createStore: CreateStore): Promise<readonly string[]> {
   const { directLine, setStatus } = createDirectLine();
   const lines: string[] = [];
-  let cardActionDispatch: (action: unknown) => unknown;
   let probe: { sendMessage: (text: string) => void; setSendBoxValue: (value: string) => void };
 
   function Probe() {
@@ -84,16 +85,7 @@ async function connectTypeAndSend() {
   }
 
   const { unmount } = render(
-    <Composer
-      cardActionMiddleware={[
-        ({ dispatch }) => {
-          cardActionDispatch = dispatch;
-
-          return next => next;
-        }
-      ]}
-      directLine={directLine as any}
-    >
+    <Composer directLine={directLine as any} store={createStore({})}>
       <Probe />
     </Composer>
   );
@@ -108,22 +100,46 @@ async function connectTypeAndSend() {
 
   unmount();
 
-  return { cardActionDispatch, lines };
+  return lines;
 }
 
-afterEach(() => setWebChatEngineEnabled(false));
+// Returns the error message of each action that the `dispatch` of card action middleware rejects.
+async function rejectByCardActionDispatch(createStore: CreateStore, actions: readonly unknown[]): Promise<string[]> {
+  let cardActionDispatch: ((action: unknown) => unknown) | undefined;
 
-test('without a store, the engine renders the same values, as many times, as Redux', async () => {
-  const reduxRun = await connectTypeAndSend();
-  const countsBefore = getStoreCounts();
+  const { unmount } = render(
+    <Composer
+      cardActionMiddleware={[
+        ({ dispatch }) => {
+          cardActionDispatch = dispatch;
 
-  setWebChatEngineEnabled(true);
+          return next => next;
+        }
+      ]}
+      directLine={createDirectLine().directLine as any}
+      store={createStore({})}
+    />
+  );
 
-  const engineRun = await connectTypeAndSend();
+  await waitFor(() => expect(cardActionDispatch).toBeDefined());
+  unmount();
 
-  expect(getStoreCounts()).toEqual({ engine: countsBefore.engine + 1, redux: countsBefore.redux });
-  expect(engineRun.lines).toEqual(reduxRun.lines);
-  expect(reduxRun.lines).toEqual([
+  return actions.map(action => {
+    try {
+      cardActionDispatch(action);
+    } catch ({ message }) {
+      return message;
+    }
+
+    return 'no error';
+  });
+}
+
+test('on the engine, <Composer> renders the same values, as many times, as on Redux', async () => {
+  const reduxLines = await connectTypeAndSend(createStoreWithOptions);
+
+  expect(await connectTypeAndSend(createWebChatEngine)).toEqual(reduxLines);
+  expect(reduxLines).toEqual([
     'uninitialized "" []',
     'connected "" []',
     'connected "Hello" []',
@@ -132,38 +148,18 @@ test('without a store, the engine renders the same values, as many times, as Red
     'connected "Hello" [Hello undefined]',
     'connected "Hello" [Hello sent]'
   ]);
-
-  // Card action middleware gets the dispatch of the store, which checks actions as Redux does.
-  for (const action of [{}, { type: 1 }, () => undefined]) {
-    let reduxError: Error;
-
-    try {
-      reduxRun.cardActionDispatch(action);
-    } catch (error) {
-      reduxError = error;
-    }
-
-    expect(() => engineRun.cardActionDispatch(action)).toThrow(reduxError.message);
-  }
 });
 
-test('with the engine enabled, a store passed by the host is used as is', async () => {
-  const actionTypes: string[] = [];
-  const store = createStore({}, () => next => (action: { readonly type: string }) => {
-    actionTypes.push(action.type);
+test('on the engine, card action middleware gets a dispatch that checks actions as Redux does', async () => {
+  // An async action creator without thunk middleware dispatches a Promise.
+  const actions = [{}, { type: 1 }, () => undefined, Promise.resolve({ type: 'WEB_CHAT/SET_SEND_BOX' })];
+  const reduxMessages = await rejectByCardActionDispatch(createStoreWithOptions, actions);
 
-    return next(action);
-  });
-
-  const countsBefore = getStoreCounts();
-
-  setWebChatEngineEnabled(true);
-
-  const { unmount } = render(<Composer directLine={createDirectLine().directLine as any} store={store} />);
-
-  await waitFor(() => expect(actionTypes).toContain('DIRECT_LINE/CONNECT'));
-
-  unmount();
-
-  expect(getStoreCounts()).toEqual(countsBefore);
+  expect(await rejectByCardActionDispatch(createWebChatEngine, actions)).toEqual(reduxMessages);
+  expect(reduxMessages.map(message => message.split('. ').slice(0, 2).join('. '))).toEqual([
+    'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.',
+    'Action "type" property must be a string. Instead, the actual type was: \'number\'',
+    "Actions must be plain objects. Instead, the actual type was: 'function'",
+    "Actions must be plain objects. Instead, the actual type was: 'Promise'"
+  ]);
 });

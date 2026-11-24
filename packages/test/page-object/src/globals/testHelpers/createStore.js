@@ -1,4 +1,4 @@
-import getTestEngine, { getWebChatInternal } from './webChatEngine';
+import getTestEngine, { getWebChatInternal, noteTestStore } from './webChatEngine';
 
 let actionHistory;
 let activeStore;
@@ -31,7 +31,7 @@ function createStoreWithOptions(options = {}, initialState = {}, ...middleware) 
     throw new Error('WebChatTest: The "webchat" engine needs `createWebChatEngine` of the internal entry of Web Chat.');
   }
 
-  return create(
+  const createdStore = create(
     options,
     initialState,
     concatMiddleware(
@@ -48,6 +48,10 @@ function createStoreWithOptions(options = {}, initialState = {}, ...middleware) 
       ...middleware
     )
   );
+
+  noteTestStore(createdStore);
+
+  return createdStore;
 }
 
 export default function createStore(initialState = {}, ...middleware) {

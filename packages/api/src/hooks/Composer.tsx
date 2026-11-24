@@ -10,6 +10,7 @@ import { ReduxProvider, ReduxStoreComposer, useDispatch } from '@msinternal/botf
 import {
   clearSuggestedActions,
   connect as createConnectAction,
+  createStoreWithOptions,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
@@ -76,7 +77,6 @@ import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatus
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import CapabilitiesComposer from '../providers/Capabilities/CapabilitiesComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
-import { createDefaultStore } from '../providers/internalWebChatEngine';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import { SpeechToSpeechComposer } from '../providers/SpeechToSpeech/SpeechToSpeechComposer';
 import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer';
@@ -799,7 +799,7 @@ type ComposerProps = ComposerWithStoreProps & {
   readonly styleOptions?: StyleOptions | undefined;
 };
 
-// We will create a store if it was not passed in: a Redux store, or the engine when it is enabled (internal).
+// We will create a Redux store if it was not passed in
 const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
   validateProps(composerWithStorePropsSchema, propsWithStore);
 
@@ -808,7 +808,7 @@ const ComposerWithStore = (propsWithStore: ComposerWithStoreProps) => {
   const [ponyfill] = usePonyfill();
 
   const memoizedStore = useMemo(() => {
-    const nextStore = store || createDefaultStore({ ponyfill });
+    const nextStore = store || createStoreWithOptions({ ponyfill });
 
     const storePonyfill = nextStore.getState().internal?.ponyfill || {};
 

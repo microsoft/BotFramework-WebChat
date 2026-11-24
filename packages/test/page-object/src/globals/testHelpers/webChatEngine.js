@@ -3,9 +3,8 @@
 //
 // - The runner sets it for every page from `WEBCHAT_TEST_ENGINE`, as the "webchat-test-engine" parameter of the URL
 //   fragment, and as a cookie of the same name (kept when a page redirects to another fragment).
-// - With "webchat", `createStore()` of the helpers creates the engine, and the page-object turns on the internal switch
-//   `__INTERNAL_DO_NOT_USE__setWebChatEngineEnabled()` as soon as `window.WebChat` is set, so `<Composer>` without a
-//   `store` creates the engine too. Pages that call `WebChat.createStore()` themselves stay on Redux.
+// - With "webchat", `createStore()` of the helpers creates the engine. Pages that call `WebChat.createStore()`
+//   themselves, or render without a store, stay on Redux.
 
 const TEST_ENGINES = Object.freeze(['redux', 'webchat']);
 const TEST_ENGINE_NAME = 'webchat-test-engine';
@@ -32,41 +31,29 @@ export default function getTestEngine() {
  * ESM page imports through its import map.
  */
 export function getWebChatInternal() {
-  return window.__WEBCHAT_TEST_INTERNAL__ || window.WebChat?.internal;
-}
-
-function applyTestEngine(internal) {
-  const setWebChatEngineEnabled = internal?.__INTERNAL_DO_NOT_USE__setWebChatEngineEnabled;
-
-  // Without the switch (e.g. an older bundle), Web Chat runs on Redux: with "webchat", the runner fails the test.
-  typeof setWebChatEngineEnabled === 'function' && setWebChatEngineEnabled(getTestEngine() === 'webchat');
+  return window.__webChatTestInternal__ || window.WebChat?.internal;
 }
 
 /**
- * Applies the engine of the test to Web Chat as soon as `window.WebChat` is set, before the page renders it. Called once,
- * when the page-object loads.
+ * Notes the kind of a store that the helpers created, for `done()` of the runner: with "webchat", it fails the test if
+ * one of them is a Redux store.
+ */
+export function noteTestStore(store) {
+  // Only a Redux store has `replaceReducer()`.
+  (window.__webChatTestStores__ = window.__webChatTestStores__ || []).push(
+    typeof store.replaceReducer === 'function' ? 'redux' : 'webchat'
+  );
+}
+
+/**
+ * With "webchat", finds the internal entry of an ESM page that imports "botframework-webchat" through its import map,
+ * and sets `window.WebChat` without it. Called once, when the page-object loads.
  */
 export function installTestEngine() {
-  let webChat = window.WebChat;
+  if (getTestEngine() !== 'webchat') {
+    return;
+  }
 
-  webChat && applyTestEngine(webChat.internal);
-
-  Object.defineProperty(window, 'WebChat', {
-    configurable: true,
-    enumerable: true,
-    get: () => webChat,
-    set: value => {
-      webChat = value;
-
-      // Each bundle sets `window.WebChat` with its own internal entry.
-      applyTestEngine(value?.internal);
-    }
-  });
-
-  // An ESM page that imports "botframework-webchat" through its import map, and sets `window.WebChat` without the
-  // internal entry: the internal entry of the same module. The page's own imports load it first, and `run()` talks to
-  // the host before calling the test, so it is applied before Web Chat renders. Not a literal, so the bundler leaves it
-  // to the browser.
   let importMap;
 
   try {
@@ -75,16 +62,14 @@ export function installTestEngine() {
     importMap = {};
   }
 
+  // The page's own imports load the module first, and `run()` talks to the host before calling the test, so the entry
+  // is set before the helpers need it. Not a literal, so the bundler leaves it to the browser.
   if (importMap.imports?.['botframework-webchat']) {
     const specifier = 'botframework-webchat';
 
     import(/* webpackIgnore: true */ specifier)
       .then(({ internal }) => {
-        if (internal && !window.__WEBCHAT_TEST_INTERNAL__) {
-          window.__WEBCHAT_TEST_INTERNAL__ = internal;
-
-          applyTestEngine(internal);
-        }
+        window.__webChatTestInternal__ = window.__webChatTestInternal__ || internal;
       })
       .catch(() => undefined);
   }

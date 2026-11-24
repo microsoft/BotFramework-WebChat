@@ -26,5 +26,5 @@ window.renderWebChat = renderWebChat;
 window.testHelpers = testHelpers;
 window.updateIn = updateIn;
 
-// Before Web Chat loads: applies the engine of the test ("redux" or "webchat") when `window.WebChat` is set.
+// Before Web Chat loads: with the "webchat" engine, finds the internal entry of an ESM page (see `webChatEngine.js`).
 installTestEngine();

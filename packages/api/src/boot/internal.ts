@@ -5,8 +5,4 @@ export { default as useSetDictateState } from '../hooks/internal/useSetDictateSt
 export { default as useShouldShowMicrophoneButton } from '../hooks/internal/useShouldShowMicrophoneButton';
 export { LegacyActivityContextProvider, type LegacyActivityContextType } from '../legacy/LegacyActivityBridgeContext';
 export { default as useIsSending } from '../providers/ActivitySendStatus/useIsSending';
-export {
-  getStoreCounts as __INTERNAL_DO_NOT_USE__getStoreCounts,
-  setWebChatEngineEnabled as __INTERNAL_DO_NOT_USE__setWebChatEngineEnabled
-} from '../providers/internalWebChatEngine';
 export { default as StyleOptionsComposer } from '../providers/StyleOptions/StyleOptionsComposer';
