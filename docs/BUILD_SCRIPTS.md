@@ -100,7 +100,7 @@ This section lists verification steps to validate the implementation against the
       -  No instrumentation code (smaller than test builds)
 -  Direct Line Speech SDK
    -  This is tested separately as Direct Line Speech SDK is designed not to live in our monorepo structure
-   -  One `tsup` build produces every output in `dist/`
+   -  One `tsdown` build produces every output in `dist/`
       -  `import` loads `botframework-directlinespeech-sdk.mjs`, `require()` loads `botframework-directlinespeech-sdk.js`, with types in `.d.mts` and `.d.ts`
       -  `<script>` loads `directlinespeech.development.js` or `directlinespeech.production.min.js`, which set `window.DirectLineSpeech`
    -  Development build
