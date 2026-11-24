@@ -1,4 +1,4 @@
-import { createStore, createStyleSet } from 'botframework-webchat';
+import { createStore } from 'botframework-webchat';
 import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 
@@ -38,7 +38,7 @@ function MinimizableWebChat() {
     []
   );
 
-  const styleSet = useMemo(() => createStyleSet({ backgroundColor: 'Transparent' }), []);
+  const styleOptions = useMemo(() => ({ backgroundColor: 'Transparent' }), []);
 
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
@@ -98,7 +98,7 @@ function MinimizableWebChat() {
             className="react-web-chat"
             onFetchToken={handleFetchToken}
             store={store}
-            styleSet={styleSet}
+            styleOptions={styleOptions}
             token={token}
           />
         </div>
