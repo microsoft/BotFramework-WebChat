@@ -104,9 +104,10 @@ class ReadWriteSkipListImpl<T> extends SkipListView<T> implements ReadWriteSkipL
   }
 
   commit(): FrozenSkipList<T> {
-    for (const { next, previous } of this.#ownedEntries) {
-      Object.freeze(next);
-      Object.freeze(previous);
+    for (const entry of this.#ownedEntries) {
+      Object.freeze(entry.next);
+      Object.freeze(entry.previous);
+      Object.freeze(entry);
     }
 
     this.#ownedEntries.clear();
