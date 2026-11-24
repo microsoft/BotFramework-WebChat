@@ -24,6 +24,9 @@ const ReducedMotionComposer = memo(({ children }: ReducedMotionComposerProps) =>
 
     shouldReduceMotionQueryList.addEventListener('change', handleChange);
 
+    // Catches changes made while not listening, e.g. while a hidden <Activity> (React 19.2+) ran the cleanup.
+    setShouldReduceMotion(shouldReduceMotionQueryList.matches);
+
     return () => shouldReduceMotionQueryList.removeEventListener('change', handleChange);
   }, [setShouldReduceMotion, shouldReduceMotionQueryList]);
 

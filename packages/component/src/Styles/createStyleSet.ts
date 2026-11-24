@@ -153,6 +153,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
      * This style set will be removed on or after 2028-10-16.
      */
     errorNotification: createErrorNotificationStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Attachment/FileContent.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     fileContent: createFileContentStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
@@ -174,6 +179,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
     root: createRootStyle(strictStyleOptions),
+    /**
+     * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.
+     * The live styles are in `packages/component/src/Middleware/ScrollToEndButton/ScrollToEndButton.module.css`.
+     * This style set will be removed on or after 2028-10-16.
+     */
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),
     /**
      * @deprecated Not used for rendering since 4.19.3, customizing it has no effect.

@@ -1,0 +1,40 @@
+:global(.webchat) .scroll-to-end-button {
+  appearance: none;
+  background-color: var(--webchat__background--transcript-overlay-button);
+  border-radius: var(--webchat__padding--regular);
+  border-width: 0;
+  color: var(--webchat__color--transcript-overlay-button);
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat__font-size--scroll-to-end-button);
+  outline: 0;
+  padding: var(--webchat__padding--regular);
+
+  @media screen and (forced-colors: active) {
+    border-width: initial;
+    outline: initial;
+  }
+
+  &:hover {
+    background-color: var(
+      --webchat__background--transcript-overlay-button-hover,
+      var(--webchat__background--transcript-overlay-button)
+    );
+    color: var(--webchat__color--transcript-overlay-button-hover, var(--webchat__color--transcript-overlay-button));
+  }
+
+  &:focus {
+    background-color: var(
+      --webchat__background--transcript-overlay-button-focus,
+      var(--webchat__background--transcript-overlay-button)
+    );
+    color: var(--webchat__color--transcript-overlay-button-focus, var(--webchat__color--transcript-overlay-button));
+  }
+
+  /* Without a focus background, the hover background stays. */
+  &:focus:hover {
+    background-color: var(
+      --webchat__background--transcript-overlay-button-focus,
+      var(--webchat__background--transcript-overlay-button-hover, var(--webchat__background--transcript-overlay-button))
+    );
+  }
+}

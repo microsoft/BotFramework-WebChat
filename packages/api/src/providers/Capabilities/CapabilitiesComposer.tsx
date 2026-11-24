@@ -39,6 +39,9 @@ const CapabilitiesComposer = memo(({ children }: Props) => {
     if (typeof directLine?.addEventListener === 'function') {
       directLine.addEventListener('capabilitieschanged', handleCapabilitiesChange);
 
+      // Catches changes made while not listening, e.g. while a hidden <Activity> (React 19.2+) ran the cleanup.
+      handleCapabilitiesChange();
+
       return () => directLine.removeEventListener('capabilitieschanged', handleCapabilitiesChange);
     }
   }, [directLine]);
