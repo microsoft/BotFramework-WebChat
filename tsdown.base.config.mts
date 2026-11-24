@@ -1,7 +1,8 @@
 import escapeStringRegexp from 'escape-string-regexp';
+import sourcemaps from 'rollup-plugin-sourcemaps2';
 import { type UserConfig } from 'tsdown';
 
-import { cssPlugin, inputSourceMapPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
+import { cssPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
@@ -83,7 +84,13 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       strict: true
     }),
     platform: 'browser',
-    plugins: [inputSourceMapPlugin(), ...(env === 'test' ? [istanbulPlugin()] : [])],
+    plugins: [
+      // Like esbuild: maps bundled files that have a source map (our packages' `dist`, npm packages) to their original
+      // sources. rolldown ignores the `//# sourceMappingURL` of its inputs. Only JavaScript: its `load` hook would also
+      // load the CSS modules (`*.module.css?css_module`) before unplugin-lightningcss can.
+      sourcemaps({ include: /\.[cm]?js$/u }),
+      ...(env === 'test' ? [istanbulPlugin()] : [])
+    ],
     report: false,
     sourcemap: true,
     target: [...TARGET],

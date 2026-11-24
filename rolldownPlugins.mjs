@@ -2,8 +2,7 @@
 import { transformAsync } from '@babel/core';
 import { Features, transform } from 'lightningcss';
 import { Buffer } from 'node:buffer';
-import { readFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import lightningCssPlugin from 'unplugin-lightningcss/rolldown';
 
@@ -160,35 +159,4 @@ function istanbulPlugin() {
   };
 }
 
-/**
- * Like esbuild: when a bundled file has a source map (e.g. our packages' `dist`), the output maps to its original sources.
- * rolldown does not read the `//# sourceMappingURL` of its inputs.
- */
-function inputSourceMapPlugin() {
-  return {
-    name: 'webchat:input-source-map',
-    load: {
-      filter: { id: { exclude: /^\0/u, include: /\.[cm]?js$/u } },
-      async handler(id) {
-        const code = await readFile(id, 'utf8');
-        const [, url] = /\n\/\/# sourceMappingURL=(\S+)\s*$/u.exec(code) || [];
-        const mapPath = url && !url.startsWith('data:') && resolve(dirname(id), url);
-        const map = mapPath && JSON.parse(await readFile(mapPath, 'utf8').catch(() => 'null'));
-
-        return map
-          ? {
-              code,
-              // Absolute paths, so rolldown writes them relative to the output like its own sources.
-              map: {
-                ...map,
-                sourceRoot: undefined,
-                sources: map.sources.map(source => resolve(dirname(mapPath), map.sourceRoot || '', source))
-              }
-            }
-          : { code };
-      }
-    }
-  };
-}
-
-export { cssPlugin, inputSourceMapPlugin, istanbulPlugin };
+export { cssPlugin, istanbulPlugin };
