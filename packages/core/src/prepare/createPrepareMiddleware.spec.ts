@@ -153,3 +153,17 @@ test('an action that was not prepared throws when it reaches the reducer', () =>
     'botframework-webchat: action "DIRECT_LINE/INCOMING_ACTIVITY" reached the reducer without being prepared; dispatch it through the store'
   );
 });
+
+test.each([
+  ['a missing `now`', { fallbackId: 'a-1', localId: '_:l-1' }],
+  ['an undefined `now`', { fallbackId: 'a-1', localId: '_:l-1', now: undefined }],
+  ['a string `now`', { fallbackId: 'a-1', localId: '_:l-1', now: '3000' }],
+  ['a numeric `fallbackId`', { fallbackId: 1, localId: '_:l-1', now: 3_000 }],
+  ['a `localId` that is not an identifier', { fallbackId: 'a-1', localId: 'l 1', now: 3_000 }]
+])('an action with %s in its meta throws when it reaches the reducer', (_, meta) => {
+  const state = reducer(undefined, { type: 'INIT' } as any);
+
+  expect(() => reducer(state, { ...incomingActivity(ACTIVITY), meta } as any)).toThrow(
+    'botframework-webchat: action "DIRECT_LINE/INCOMING_ACTIVITY" reached the reducer without being prepared; dispatch it through the store'
+  );
+});
