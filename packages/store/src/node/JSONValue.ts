@@ -11,7 +11,7 @@ type JSONValue =
   | readonly JSONValue[];
 
 /** Returned by `toJSONValue()` when `JSON.stringify()` would skip the value, i.e. `undefined`, function, and symbol. */
-const OMITTED: unique symbol = Symbol('omitted');
+const OMITTED: unique symbol = Symbol('webchat-store-omitted');
 
 /** Thrown when `JSON.stringify()` would throw. */
 class JSONValueError extends TypeError {}
