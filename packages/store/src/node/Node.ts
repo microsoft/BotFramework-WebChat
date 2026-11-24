@@ -20,7 +20,7 @@ const namedPropertiesSchema = object({
   '@context': optional(undefined_('Does not support @context')),
   // OPINION: Each node can has a single ID only.
   '@id': identifierSchema,
-  '@type': pipe(set(string()), minSize(1, 'Node must have at least one @type')),
+  '@type': pipe(set(string()), minSize(1, 'Node must have at least one @type'), readonly()),
   // OPINION: dateCreated must be an ISO timestamp string with time zone and not in a set/array.
   dateCreated: optional(
     pipe(
