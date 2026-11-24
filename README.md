@@ -13,7 +13,7 @@ This repository is part of the [Microsoft Bot Framework](https://github.com/micr
 
 Web Chat supports [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). Web developers are recommended to enable CSP to improve security and protect conversations. You can read more about CSP in [this article](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/CONTENT_SECURITY_POLICY.md).
 
-Note: The [Bot Framework SDK](https://github.com/microsoft/botframework-sdk) was archived on GitHub on December 2025. *This* Web Chat component specifically is *not* archived, and still is available on GitHub as under the related licences covered in this readme.
+Note: The [Bot Framework SDK](https://github.com/microsoft/botframework-sdk) was archived on GitHub on December 2025. _This_ Web Chat component specifically is _not_ archived, and still is available on GitHub as under the related licences covered in this readme.
 
 <hr />
 
@@ -283,7 +283,7 @@ To use Redux DevTools, use the `createStoreWithDevTools` function for creating a
 
 There are some limitations when using the Redux DevTools:
 
-- The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
+- The Redux store runs its side effects in a middleware, which keeps some state outside of the store. Time-traveling may break the UI.
 - Many UI states are stored in React context and state. They are not exposed in the Redux store.
 - Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
 - Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) instead.
