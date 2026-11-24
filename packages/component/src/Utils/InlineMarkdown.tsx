@@ -7,7 +7,7 @@ import {
   stripParagraphContainer
 } from '@msinternal/botframework-webchat-component-better-link';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyleOptions } from 'botframework-webchat-api/hook.js';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
 import { micromark } from 'micromark';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -26,8 +26,8 @@ import {
   type InferInput
 } from 'valibot';
 
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import createCustomEvent from './createCustomEvent';
+import styles from './InlineMarkdown.module.css';
 
 const referenceEventSchema = union([instance(Event), object({ data: string() })]);
 
@@ -45,34 +45,7 @@ type InlineMarkdownProps = InferInput<typeof inlineMarkdownPropsSchema>;
 const InlineMarkdown = (props: InlineMarkdownProps) => {
   const { markdown, onReference, references } = validateProps(inlineMarkdownPropsSchema, props);
 
-  const [{ accent }] = useStyleOptions();
-  const styleToClassName = useStyleToEmotionObject();
-
-  // We inlined the style here because this style is:
-  // 1. Internal to Web Chat
-  // 2. Not customizable from developers (other than setting `styleOptions.accent`)
-  const className = useMemo(
-    () =>
-      styleToClassName({
-        '& button[data-markdown-href]': {
-          appearance: 'none',
-          backgroundColor: 'transparent',
-          border: 0,
-          color: accent,
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-          fontSize: 'inherit',
-          padding: 0
-        },
-        '@media screen and (forced-colors: active)': {
-          '& button[data-markdown-href]': {
-            color: 'LinkText',
-            textDecoration: 'underline'
-          }
-        }
-      }) + '',
-    [accent, styleToClassName]
-  );
+  const classNames = useStyles(styles, webChatPrefixedClassName);
 
   const html = useMemo(() => {
     let markdownWithLinkReferenceDefinitions = markdown;
@@ -114,7 +87,7 @@ const InlineMarkdown = (props: InlineMarkdownProps) => {
     [onReference]
   );
 
-  return <span className={className} dangerouslySetInnerHTML={html} onClick={handleClick} />;
+  return <span className={classNames['inline-markdown']} dangerouslySetInnerHTML={html} onClick={handleClick} />;
 };
 
 export default InlineMarkdown;

@@ -1,5 +1,6 @@
 import { validateProps, type InferReactProps } from '@msinternal/botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles, webChatPrefixedClassName } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo, type SyntheticEvent } from 'react';
 import {
   args,
@@ -17,33 +18,7 @@ import {
   void_
 } from 'valibot';
 
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
-import CSSTokens from '../Styles/CSSTokens';
-
-const ROOT_STYLE = {
-  '&.webchat__fixed-width-image': {
-    display: 'flex',
-    justifyContent: 'center',
-    maxHeight: CSSTokens.MaxHeightImageBubble,
-    minHeight: CSSTokens.MinHeightImageBubble,
-    overflow: 'hidden',
-    position: 'relative',
-
-    '& .webchat__fixed-width-image__filler': {
-      visibility: 'hidden',
-      width: '100%'
-    },
-
-    '& .webchat__fixed-width-image__image': {
-      left: '50%',
-      objectFit: 'cover',
-      position: 'absolute',
-      top: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '100%'
-    }
-  }
-};
+import styles from './FixedWidthImage.module.css';
 
 // React calls event handlers with a `SyntheticEvent`, which is not an `Event`, it wraps one in `nativeEvent`.
 // `custom()` passes the event as-is, `object()` would pass a copy with only the validated properties.
@@ -72,16 +47,12 @@ type FixedWidthImageProps = InferReactProps<typeof fixedWidthImagePropsSchema>;
 function FixedWidthImage(props: FixedWidthImageProps) {
   const { alt, className, onError, onLoad, src } = validateProps(fixedWidthImagePropsSchema, props);
 
+  const classNames = useStyles(styles, webChatPrefixedClassName);
+
   return (
-    <div
-      className={classNames(
-        'webchat__fixed-width-image',
-        useStyleToEmotionObject()(ROOT_STYLE) + '',
-        (className || '') + ''
-      )}
-    >
-      <img alt="" className="webchat__fixed-width-image__filler" role="none" src={src} />
-      <img alt={alt} className="webchat__fixed-width-image__image" onError={onError} onLoad={onLoad} src={src} />
+    <div className={cx(classNames['fixed-width-image'], className)}>
+      <img alt="" className={classNames['fixed-width-image__filler']} role="none" src={src} />
+      <img alt={alt} className={classNames['fixed-width-image__image']} onError={onError} onLoad={onLoad} src={src} />
     </div>
   );
 }

@@ -1,0 +1,10 @@
+:global(.webchat) .live-region-activity {
+  color: transparent;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  width: 1px;
+}
