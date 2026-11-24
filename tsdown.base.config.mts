@@ -139,7 +139,7 @@ function iifeOptions(config: Config): Partial<Config> {
       comments: options.minify ? MINIFIED_COMMENTS : { annotation: false, jsdoc: true, legal: true },
       // tsdown names it `<name>.iife.js`.
       entryFileNames: '[name].js',
-      // rolldown drops the "use strict" of each CommonJS module, so the whole script is strict.
+      // One "use strict" for the whole script: rolldown drops the "use strict" of each CommonJS module.
       strict: true
     }),
     target: [...config.target, 'es2019']
