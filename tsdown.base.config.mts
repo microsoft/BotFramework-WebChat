@@ -8,7 +8,7 @@ const { npm_package_version } = process.env;
 const minify = env === 'production' || env === 'test';
 const TARGET = Object.freeze(['chrome100', 'firefox100', 'safari15']);
 
-// When minified, esbuild drops annotations (`/* @__PURE__ */`) and JSDoc comments, rolldown keeps them by default.
+// Minified output keeps legal comments only: rolldown keeps annotations (`/* @__PURE__ */`) and JSDoc by default.
 const MINIFIED_COMMENTS = Object.freeze({ annotation: false, jsdoc: false, legal: true });
 
 type Config = UserConfig & {
@@ -32,12 +32,13 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       define: 'undefined'
     },
     deps: {
-      // Like tsup (rollup-plugin-dts), `.d.ts` import the types of every package instead of inlining them, even with
-      // `deps.alwaysBundle` (tsup `noExternal`). Packages that need them inlined run dtsroll after the build.
+      // `.d.ts` import the types of every package instead of inlining them, also of the packages in
+      // `deps.alwaysBundle`. Packages that need them inlined run dtsroll after the build.
       dts: { alwaysBundle: [], neverBundle: true },
-      // Like tsup, a package bundles every import outside its dependencies and peerDependencies: our private packages
-      // (devDependencies, never published), core-js-pure in base, @jridgewell/sourcemap-codec in styles. `false` only
-      // turns off the tsdown hint that lists the bundled npm packages.
+      // A package bundles every import outside its dependencies and peerDependencies: our private packages
+      // (devDependencies, never published), core-js-pure in base, @jridgewell/sourcemap-codec in styles, and npm
+      // packages missing from package.json (e.g. handler-chain in api). `false` only turns off the tsdown hint that
+      // lists the bundled npm packages.
       onlyBundle: false
     },
     dts: {
@@ -78,10 +79,11 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
     outputOptions: options => ({
       ...options,
       ...(options.minify ? { comments: MINIFIED_COMMENTS } : {}),
-      // Like esbuild: `__esModule` in every CommonJS entry (rolldown adds it only with a default export).
+      // `__esModule` in every CommonJS entry, as published so far: bundlers then take a default import from
+      // `exports.default`. rolldown adds it only to entries with a default export.
       esModule: true,
       exports: 'named',
-      // Like esbuild: CommonJS output starts with "use strict".
+      // "use strict" at the top of CommonJS output: our sources are ES modules, which are strict without the directive.
       strict: true
     }),
     platform: 'browser',
@@ -120,11 +122,11 @@ function createDualFormatConfigs(
 }
 
 /**
- * Options of an IIFE build, like tsup `format: 'iife'`. rolldown cannot split an IIFE: one entry per config.
+ * Options of an IIFE build. rolldown cannot split an IIFE: one entry per config.
  */
 function iifeOptions(config: Config): Partial<Config> {
   return {
-    // tsup bundles every dependency into an IIFE.
+    // A script tag cannot import: the IIFE bundles every dependency.
     deps: { ...config.deps, alwaysBundle: () => true },
     dts: false,
     format: 'iife',
@@ -141,7 +143,7 @@ function iifeOptions(config: Config): Partial<Config> {
   };
 }
 
-/** tsup `noExternal: ['x']` also bundles "x/y", tsdown `deps.alwaysBundle: ['x']` does not. */
+/** Matches the package and its subpaths ("x", "x/y"): `deps.alwaysBundle: ['x']` matches "x" only. */
 function packagePattern(name: string): RegExp {
   return new RegExp(`^${escapeStringRegexp(name)}(?:/|$)`, 'u');
 }

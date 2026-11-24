@@ -23,7 +23,7 @@ const BASE_CONFIG = {
   moduleTypes: { '.js': 'jsx' },
   output: {
     chunkFileNames: 'botframework-webchat/chunk-[hash].js',
-    // Like esbuild: no annotations or JSDoc in minified code.
+    // Minified: legal comments only, rolldown keeps annotations and JSDoc by default.
     comments: { annotation: false, jsdoc: false, legal: true },
     dir: resolve(fileURLToPath(import.meta.url), '../static/'),
     entryFileNames: '[name].js',
@@ -43,7 +43,7 @@ const BASE_CONFIG = {
       'react-is': '@msinternal/react-is'
     }
   },
-  // Like esbuild when minifying for browsers.
+  // Browsers have no `process`: React and other packages read `process.env.NODE_ENV` to pick their production code.
   transform: { define: { 'process.env.NODE_ENV': '"production"' }, target },
   tsconfig: './src/tsconfig.json'
 };

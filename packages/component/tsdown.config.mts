@@ -11,7 +11,8 @@ function withPackageOptions(config: Config, moduleFormat: string): Partial<Confi
     plugins: [
       ...config.plugins,
       injectCSSRolldownPlugin({
-        // cssPlugin (/rolldownPlugins.mjs) emits one CSS file per entry point, like esbuild.
+        // cssPlugin (/rolldownPlugins.mjs) emits one CSS file per entry.
+        // Chunks shared with the main entry inject its CSS.
         ignoreCSSEntries: ['dist/botframework-webchat-component.component.css'],
         stylesPlaceholder: componentStyleContentPlaceholder
       }),
