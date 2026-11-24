@@ -26,6 +26,9 @@
  * - Memory: heap used after append, requires `--expose-gc`
  * - Update parent: after append, the parent is updated with `hasPart` unchanged, one transaction per update
  * - Update parent add one: after append, a new child is added via `hasPart` of the parent, one transaction per update
+ * - Change dateCreated: after append, `dateCreated` of a child is changed so it moves to the middle, one transaction
+ *   per child
+ * - Delete then re-add: after append, a child is deleted, then upserted again in another transaction
  * - Repeat upsert: after append, the parent is updated multiple times in a single transaction
  * - Adopt then re-read: same as adopt, then the parent is updated again in the same transaction
  * - Mirror churn: after append, a new child is added via `isPartOf`, then the parent is updated, repeated multiple
@@ -248,6 +251,38 @@ function updateParentAddOne(numNodes: number): number {
   return performance.now() - start;
 }
 
+/** Appends children, then measures moving a child to the middle by changing its `dateCreated`, one transaction each. */
+function changeDateCreated(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  for (let index = 0; index < NUM_OPERATIONS; index++) {
+    controller.edit(transaction =>
+      transaction.upsert(`_:m-${index}`, node => ({
+        ...node!,
+        dateCreated: new Date(START_TIME + (numNodes / 2 + index) * 1_000 + 500).toISOString()
+      }))
+    );
+  }
+
+  return performance.now() - start;
+}
+
+/** Appends children, then measures deleting a child and adding it back, two transactions per operation. */
+function deleteThenReAdd(numNodes: number): number {
+  const { controller } = upsertChildren(numNodes, 'append');
+  const start = performance.now();
+
+  for (let index = 0; index < NUM_OPERATIONS; index++) {
+    controller.edit(transaction => transaction.delete(`_:m-${index}`));
+    controller.edit(transaction =>
+      transaction.upsert(`_:m-${index}`, () => createMessage(index, new Set([{ '@id': '_:c-1' }])))
+    );
+  }
+
+  return performance.now() - start;
+}
+
 /** Appends children, then measures updating the parent multiple times in a single transaction. */
 function repeatUpsert(numNodes: number): number {
   const { controller } = upsertChildren(numNodes, 'append');
@@ -444,6 +479,22 @@ const BENCHMARKS: readonly Benchmark[] = Object.freeze([
     name: 'Update parent add one',
     numOperations: NUM_OPERATIONS,
     run: updateParentAddOne,
+    scale: 1_000,
+    unit: 'µs/op'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Change dateCreated',
+    numOperations: NUM_OPERATIONS,
+    run: changeDateCreated,
+    scale: 1_000,
+    unit: 'µs/op'
+  },
+  {
+    fractionDigits: 2,
+    name: 'Delete then re-add',
+    numOperations: NUM_OPERATIONS,
+    run: deleteThenReAdd,
     scale: 1_000,
     unit: 'µs/op'
   },
