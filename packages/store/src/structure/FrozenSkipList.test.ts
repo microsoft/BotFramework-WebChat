@@ -232,6 +232,7 @@ scenario(
       })
       .and('should have the changes in the new version', (_, next) => expectItems(next, [1, 2.5, 3]));
 
+    // This test is defense-in-depth, not reachable by public.
     bdd
       .given('a committed list', () => createList([1, 2, 3]))
       .when('an entry is read via the protected read() from JavaScript', list => {
