@@ -1,5 +1,10 @@
 // We should review exports in this file to make sure 1P = 3P.
-export { usePostVoiceActivity, useShouldShowMicrophoneButton } from 'botframework-webchat-api/internal.js';
+export {
+  __INTERNAL_DO_NOT_USE__getStoreCounts,
+  __INTERNAL_DO_NOT_USE__setWebChatEngineEnabled,
+  usePostVoiceActivity,
+  useShouldShowMicrophoneButton
+} from 'botframework-webchat-api/internal.js';
 export {
   CodeHighlighterComposer,
   combineCSSModules,
@@ -22,3 +27,4 @@ export {
   getVoiceActivityText,
   isVoiceTranscriptActivity
 } from 'botframework-webchat-core';
+export { createWebChatEngine } from 'botframework-webchat-core/internal.js';
