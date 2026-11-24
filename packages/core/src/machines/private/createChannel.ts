@@ -13,7 +13,7 @@ type Channel = {
   readonly take: (match: Match, then: (action: MachineAction) => void) => () => void;
 };
 
-// The actions put by a machine, as the `SAGA_ACTION` symbol redux-saga sets on them: by identity, for good, for every
+// The actions put by a machine, as the `SAGA_ACTION` property redux-saga sets on them: by identity, for good, for every
 // store (a host that passes the same object on later passes it marked).
 const putActions = new WeakSet<object>();
 
