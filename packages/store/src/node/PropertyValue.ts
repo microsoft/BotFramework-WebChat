@@ -21,7 +21,7 @@ function hasOnlyKeys(value: object, keys: readonly string[]): boolean {
 }
 
 /** Returned by `convertItem()` when the item is invalid, issues are already added. */
-const INVALID: unique symbol = Symbol('invalid');
+const INVALID: unique symbol = Symbol('webchat-invalid');
 
 /** Validates and converts an item of property value, calls `addIssue()` with the messages if it is invalid. */
 function convertItem(item: unknown, addIssue: (message: string) => void): PropertyValueItem | typeof INVALID {
