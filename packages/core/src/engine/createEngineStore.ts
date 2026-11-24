@@ -1,6 +1,7 @@
 import { __DO_NOT_USE__ActionTypes, type Action, type Reducer, type Store } from 'redux';
 
-import validateAction, { kindOf } from './validateAction';
+import kindOf from './kindOf';
+import validateAction from './validateAction';
 
 /** The part of a Redux store that Web Chat and hosts use: no enhancers, `replaceReducer()` or observable. */
 type EngineStore<TState = any> = Readonly<Pick<Store<TState>, 'dispatch' | 'getState' | 'subscribe'>>;

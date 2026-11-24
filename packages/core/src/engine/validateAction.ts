@@ -1,44 +1,31 @@
-import type { MachineAction } from '../machines/types';
+import { isPlainObject, type Action } from 'redux';
 
-// As `miniKindOf()` of Redux, for the common kinds: dates, errors, maps and the like are "object" here.
-export function kindOf(value: unknown): string {
-  return value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value;
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-
-  let proto = value;
-
-  while (Object.getPrototypeOf(proto) !== null) {
-    proto = Object.getPrototypeOf(proto);
-  }
-
-  return Object.getPrototypeOf(value) === proto || Object.getPrototypeOf(value) === null;
-}
+import kindOf from './kindOf';
 
 /**
- * The checks of `dispatch()` of a Redux store (Redux 5.0.1, with the messages of its development build): throws if
+ * The checks of `dispatch()` of a Redux store, with the messages of the development build of Redux 5.0.1: throws if
  * `action` is not an action.
  */
-export default function validateAction(action: unknown): asserts action is MachineAction {
+export default function validateAction(action: unknown): asserts action is Action {
+  // Redux's own helper, until the engine replaces the Redux store and `redux` goes.
   if (!isPlainObject(action)) {
     throw new Error(
       `Actions must be plain objects. Instead, the actual type was: '${kindOf(action)}'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.`
     );
   }
 
-  if (typeof action.type === 'undefined') {
+  const { type } = action as { readonly type?: unknown };
+
+  if (typeof type === 'undefined') {
     throw new Error(
       'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.'
     );
   }
 
-  if (typeof action.type !== 'string') {
+  if (typeof type !== 'string') {
+    // As Redux, a symbol throws a TypeError here: it cannot be converted to a string.
     throw new Error(
-      `Action "type" property must be a string. Instead, the actual type was: '${kindOf(action.type)}'. Value was: '${String(action.type)}' (stringified)`
+      `Action "type" property must be a string. Instead, the actual type was: '${kindOf(type)}'. Value was: '${type}' (stringified)`
     );
   }
 }

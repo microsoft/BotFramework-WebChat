@@ -1,9 +1,9 @@
-// The engine store, pinned to Redux 5.0.1: each case runs once on Redux's `createStore()` + `applyMiddleware()` and once
-// on `createEngineStore()` + `applyEngineMiddleware()`. Both must log the same lines, error messages in full, and the
-// first 2 sentences of each line must read as written below.
-import { applyMiddleware, createStore, type Middleware } from 'redux';
+// The engine store, pinned to Redux 5.0.1: each case runs once on Redux's `createStore()` and once on
+// `createEngineStore()`, both with Redux's `applyMiddleware()`. Both must log the same lines, error messages in full, and
+// the first 2 sentences of each line must read as written below.
+import { applyMiddleware, createStore, type Middleware, type StoreEnhancerStoreCreator } from 'redux';
 
-import applyEngineMiddleware from './applyEngineMiddleware';
+import { createWebChatEngine } from '../createStore';
 import createEngineStore, { type EngineStore } from './createEngineStore';
 
 type TestAction = { readonly type: string; readonly value?: string };
@@ -34,7 +34,7 @@ function run(kind: 'engine' | 'redux', { run }: Case): string[] {
 
     return kind === 'redux'
       ? createStore(reducer, preloadedState, applyMiddleware(...middlewares))
-      : applyEngineMiddleware(createEngineStore(reducer, preloadedState), middlewares);
+      : applyMiddleware(...middlewares)(createEngineStore as StoreEnhancerStoreCreator)(reducer, preloadedState);
   }, log);
 
   return lines;
@@ -75,84 +75,6 @@ const CASES: Readonly<Record<string, Case>> = {
       store.subscribe(() => log('listener'));
       log(`state ${store.getState().value}`);
     }
-  },
-  'runs the first middleware outermost and returns what next() returned': {
-    expected: [
-      'reduce INIT',
-      '1 in a',
-      '2 in a1',
-      'reduce SET',
-      'listener a12',
-      '2 out a12',
-      '1 out a12',
-      'returned a12'
-    ],
-    run: (create, log) => {
-      const rewrite: (name: string) => Middleware = name => () => next => action => {
-        const { value } = action as TestAction;
-
-        log(`${name} in ${value}`);
-
-        const result = next(set(`${value}${name}`)) as TestAction;
-
-        log(`${name} out ${result.value}`);
-
-        return result;
-      };
-
-      const store = create({ middlewares: [rewrite('1'), rewrite('2')] });
-
-      store.subscribe(() => log(`listener ${store.getState().value}`));
-      log(`returned ${store.dispatch(set('a')).value}`);
-    }
-  },
-  'dispatches from the middleware API through the whole chain': {
-    expected: [
-      'reduce INIT',
-      'outer SET',
-      'reduce SET',
-      'inner after SET: 1',
-      'outer PING',
-      'reduce PING',
-      'inner after PING: 1'
-    ],
-    run: (create, log) => {
-      const store = create({
-        middlewares: [
-          logTypes(log, 'outer'),
-          ({ dispatch, getState }) =>
-            next =>
-            action => {
-              const result = next(action);
-
-              log(`inner after ${(action as TestAction).type}: ${getState().value}`);
-              (action as TestAction).type === 'SET' && dispatch({ type: 'PING' });
-
-              return result;
-            }
-        ]
-      });
-
-      store.dispatch(set('1'));
-    }
-  },
-  'throws when a middleware dispatches while the chain is built': {
-    expected: [
-      'reduce INIT',
-      'create: Dispatching while constructing your middleware is not allowed. Other middleware would not be applied to this dispatch.'
-    ],
-    run: (create, log) =>
-      attempt(log, 'create', () =>
-        create({
-          middlewares: [
-            ({ dispatch }) => {
-              dispatch(set('1'));
-
-              return next => action => next(action);
-            }
-          ]
-        })
-      )
   },
   'returns the dispatched action itself without middleware': {
     expected: ['reduce INIT', 'reduce SET', 'same object: true'],
@@ -303,6 +225,46 @@ const CASES: Readonly<Record<string, Case>> = {
       attempt(log, 'null prototype', () => store.dispatch(Object.assign(Object.create(null), set('1'))));
     }
   },
+  'names the kind of what is not an action as Redux does': {
+    expected: [
+      'reduce INIT',
+      "Promise: Actions must be plain objects. Instead, the actual type was: 'Promise'",
+      "Date: Actions must be plain objects. Instead, the actual type was: 'date'",
+      "Error: Actions must be plain objects. Instead, the actual type was: 'error'",
+      "Map: Actions must be plain objects. Instead, the actual type was: 'Map'",
+      "Set: Actions must be plain objects. Instead, the actual type was: 'Set'",
+      "WeakMap: Actions must be plain objects. Instead, the actual type was: 'WeakMap'",
+      "RegExp: Actions must be plain objects. Instead, the actual type was: 'regexp'",
+      "Uint8Array: Actions must be plain objects. Instead, the actual type was: 'uint8array'",
+      "symbol: Actions must be plain objects. Instead, the actual type was: 'symbol'",
+      'type null: Action "type" property must be a string. Instead, the actual type was: \'null\'',
+      'type Date: Action "type" property must be a string. Instead, the actual type was: \'date\'',
+      // A TypeError from stringifying the symbol into the message.
+      'type symbol: Cannot convert a Symbol value to a string'
+    ],
+    run: (create, log) => {
+      // eslint-disable-next-line no-restricted-globals -- a date to dispatch, not a clock
+      const date = new Date(0);
+      const store = create();
+
+      for (const [label, action] of [
+        ['Promise', Promise.resolve(set('1'))],
+        ['Date', date],
+        ['Error', new Error('1')],
+        ['Map', new Map()],
+        ['Set', new Set()],
+        ['WeakMap', new WeakMap()],
+        ['RegExp', /1/u],
+        ['Uint8Array', new Uint8Array()],
+        ['symbol', Symbol('1')],
+        ['type null', { type: null }],
+        ['type Date', { type: date }],
+        ['type symbol', { type: Symbol('1') }]
+      ] as const) {
+        attempt(log, label, () => store.dispatch(action as any));
+      }
+    }
+  },
   'throws when the reducer calls the store': {
     expected: [
       'reduce INIT',
@@ -345,11 +307,8 @@ describe.each(Object.entries(CASES))('An engine store %s', (_, testCase) => {
   });
 });
 
-test('An engine store has dispatch, getState and subscribe as its own enumerable properties, and is frozen', () => {
-  const store = applyEngineMiddleware(
-    createEngineStore((state: TestState = { value: '' }) => state, undefined),
-    []
-  );
+test('The store of createWebChatEngine() has dispatch, getState and subscribe as its own enumerable properties, and is frozen', () => {
+  const store = createWebChatEngine({});
 
   // `GraphProvider` gets `{ ...store, subscribe }`.
   expect(Object.keys({ ...store }).sort()).toEqual(['dispatch', 'getState', 'subscribe']);
