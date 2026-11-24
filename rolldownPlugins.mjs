@@ -86,8 +86,8 @@ function cssPlugin({ minify, target }) {
         filter: { id: CSS_MODULE_ID_PATTERN },
         handler(code, id) {
           if (!BUILT_CSS_PATTERN.test(id)) {
-            // No source map: the class map is generated code (its own source would be this code, with an absolute path).
-            return { code: sortClassMap(code, id) };
+            // Empty source map: the class map is generated code, without a source to map to. Without a map, rolldown warns.
+            return { code: sortClassMap(code, id), map: { mappings: '' } };
           }
 
           const css = transform({
