@@ -100,8 +100,8 @@ function cssPlugin({ minify, target }) {
 
           cssById.set(id, css.endsWith('\n') ? css : `${css}\n`);
 
-          // The CSS module becomes an empty JavaScript module (as with @tsdown/css), its CSS is in cssById.
-          return { code: '', map: null, moduleSideEffects: 'no-treeshake', moduleType: 'js' };
+          // The CSS module becomes an empty JavaScript module: generateBundle() finds its CSS through the module graph.
+          return { code: '', map: null, moduleType: 'js' };
         }
       },
       generateBundle(_, bundle) {
