@@ -32,7 +32,9 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       // Like tsup (rollup-plugin-dts), `.d.ts` import the types of every package instead of inlining them, even with
       // `deps.alwaysBundle` (tsup `noExternal`). Packages that need them inlined run dtsroll after the build.
       dts: { alwaysBundle: [], neverBundle: true },
-      // devDependencies are bundled on purpose, like tsup.
+      // Like tsup, a package bundles every import outside its dependencies and peerDependencies: our private packages
+      // (devDependencies, never published), core-js-pure in base, @jridgewell/sourcemap-codec in styles. `false` only
+      // turns off the tsdown hint that lists the bundled npm packages.
       onlyBundle: false
     },
     dts: {
