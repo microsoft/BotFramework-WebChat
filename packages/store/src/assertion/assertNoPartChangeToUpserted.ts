@@ -25,10 +25,25 @@ function findChange(
   confirmedIds: ReadonlySet<NodeIdentifier>,
   upsertedIds: ReadonlySet<NodeIdentifier>
 ): readonly [NodeIdentifier, boolean] | undefined {
-  const addedId = Array.from(nextIds).find(id => upsertedIds.has(id) && !prevIds.has(id) && !confirmedIds.has(id));
-  const removedId = Array.from(prevIds).find(id => upsertedIds.has(id) && !nextIds.has(id));
+  // Unchanged membership passed back from the updater keeps the same IDs object, no need to scan, O(1).
+  if (nextIds === prevIds) {
+    return undefined;
+  }
 
-  return addedId ? [addedId, true] : removedId ? [removedId, false] : undefined;
+  // Iterate the sets directly, copying them into arrays costs memory proportional to the membership size.
+  for (const id of nextIds) {
+    if (upsertedIds.has(id) && !prevIds.has(id) && !confirmedIds.has(id)) {
+      return [id, true];
+    }
+  }
+
+  for (const id of prevIds) {
+    if (upsertedIds.has(id) && !nextIds.has(id)) {
+      return [id, false];
+    }
+  }
+
+  return undefined;
 }
 
 /**
