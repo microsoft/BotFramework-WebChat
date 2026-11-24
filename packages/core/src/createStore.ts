@@ -9,7 +9,8 @@ import {
 
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
-import { type EngineStore } from './engine/createEngineStore';
+import applyEngineMiddleware from './engine/applyEngineMiddleware';
+import createEngineStore, { type EngineStore } from './engine/createEngineStore';
 import createMachinesMiddleware from './machines/createMachinesMiddleware';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
@@ -158,6 +159,22 @@ export function withOptions(
 
     return createReduxStore(reducer, preloadedState, composeWithDevTools ? composeWithDevTools(enhancer) : enhancer);
   });
+}
+
+/**
+ * Creates the store of Web Chat on the engine instead of Redux: the same reducer, machines and middleware, without
+ * enhancers (`devTools` is ignored).
+ *
+ * Internal, for `<Composer>` without a `store` behind a switch and for tests, until it replaces the Redux store.
+ */
+export function createWebChatEngine(
+  options: Readonly<Pick<CreateStoreOptions, 'ponyfill'>>,
+  initialState?: any | undefined,
+  ...middlewares: readonly Middleware[]
+): EngineStore {
+  return assemble(options.ponyfill, initialState, middlewares, (reducer, preloadedState, chain) =>
+    applyEngineMiddleware(createEngineStore(reducer, preloadedState), chain)
+  );
 }
 
 /**
