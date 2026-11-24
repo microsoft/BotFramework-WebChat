@@ -30,6 +30,7 @@ import { getHasPartIds, getIsPartOfIds } from './private/getPartIds.ts';
 import { getDateCreatedTime, getSortedChildIds } from './private/hiddenNodeState.ts';
 import { updateIdentifierIndex } from './private/identifierIndex.ts';
 import { insertSortedChild, removeSortedChild } from './private/sortedChildIds.ts';
+import type { VersionedStorageInit } from './structure/VersionedStorage.ts';
 
 type StoreListener = (affectedNodeIds: ReadonlySet<NodeIdentifier>) => void;
 
@@ -86,6 +87,12 @@ interface StoreTransaction {
 }
 
 const EMPTY_IDS: FrozenSet<NodeIdentifier> = new FrozenSet<NodeIdentifier>([]);
+
+/**
+ * Members keyed by ID have no contract on iteration order, including `getSnapshot()`. Without preserving order, a node
+ * deleted then upserted again is written in place, instead of copying the whole map.
+ */
+const UNORDERED: VersionedStorageInit = Object.freeze({ preserveOrder: false });
 
 function withoutIds(
   ids: FrozenSet<NodeIdentifier>,
@@ -285,15 +292,15 @@ class Store {
   }
 
   /** Key is the node being referenced, values are IDs of nodes which reference the key node. */
-  #backwardReferenceIds: ReferenceIds = new FrozenMap([]);
+  #backwardReferenceIds: ReferenceIds = new FrozenMap([], UNORDERED);
   /** Key is the parent node, values are IDs of children which have the parent in `isPartOf`. */
-  #childIds: ReferenceIds = new FrozenMap([]);
+  #childIds: ReferenceIds = new FrozenMap([], UNORDERED);
   /** Key is the node containing node references, values are IDs of nodes being referenced by the key node. */
-  #forwardReferenceIds: ReferenceIds = new FrozenMap([]);
+  #forwardReferenceIds: ReferenceIds = new FrozenMap([], UNORDERED);
   /** Key is an alternate identifier (in `identifier` property), value is `@id` of the node which has it. */
-  #identifierIndex: FrozenMap<NodeIdentifier, NodeIdentifier> = new FrozenMap([]);
+  #identifierIndex: FrozenMap<NodeIdentifier, NodeIdentifier> = new FrozenMap([], UNORDERED);
   #listeners: Set<StoreListener> = new Set<StoreListener>();
-  #state: FrozenMap<string, FrozenNode> = new FrozenMap([]);
+  #state: FrozenMap<string, FrozenNode> = new FrozenMap([], UNORDERED);
 
   /**
    * Runs the transactor and commits changes to the store.
@@ -684,6 +691,8 @@ class Store {
 
   /**
    * Gets an immutable snapshot of all nodes. Snapshots are not affected by subsequent commits.
+   *
+   * Iteration order is unspecified, callers must not depend on it, e.g. use `getSortedParts()` for sorted children.
    */
   getSnapshot(): ReadonlyMap<string, VettedNode> {
     return this.#state;
