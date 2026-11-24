@@ -58,6 +58,24 @@ scenario(
       );
 
     bdd
+      .given('isPartOf with an added parent and a previous parent which must not be scanned', () =>
+        Object.freeze({
+          childIds: new Set<NodeIdentifier>(),
+          id: '_:m-1',
+          parentIds: new Set<NodeIdentifier>(['_:p-1']),
+          pendingChildIds: new Set<NodeIdentifier>(),
+          pendingParentIds: new Set<NodeIdentifier>(),
+          prevParentIds: createUnscannableSet(['_:p-2']),
+          shownChildIds: new Set<NodeIdentifier>(),
+          upsertedIds: new Set<NodeIdentifier>(['_:p-1', '_:p-2'])
+        })
+      )
+      .when('the assertion is called', options => () => assertNoPartChangeToUpserted(options))
+      .then('should throw for the added parent without scanning for removed parents', (_, fn) =>
+        expect(fn).toThrow('Node "_:p-1" must have part "_:m-1" in hasPart, as "_:m-1" is part of it')
+      );
+
+    bdd
       .given('isPartOf with a removed parent upserted in the same transaction', () =>
         Object.freeze({
           childIds: new Set<NodeIdentifier>(),

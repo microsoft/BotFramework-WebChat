@@ -31,9 +31,14 @@ function findChange(
   }
 
   const addedId = Array.from(nextIds).find(id => upsertedIds.has(id) && !prevIds.has(id) && !confirmedIds.has(id));
+
+  if (addedId) {
+    return [addedId, true];
+  }
+
   const removedId = Array.from(prevIds).find(id => upsertedIds.has(id) && !nextIds.has(id));
 
-  return addedId ? [addedId, true] : removedId ? [removedId, false] : undefined;
+  return removedId ? [removedId, false] : undefined;
 }
 
 /**
