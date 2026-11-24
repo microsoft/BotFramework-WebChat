@@ -5,8 +5,8 @@ import { UNREGISTER_ACTION_SINK, unregisterActionSinkActionSchema } from '../act
 import type { Machine } from './types';
 
 /**
- * `actionSinkSaga`: each sink registered gets every action after it (as the machines take them), until it is
- * unregistered. The transport of `<SuggestedActionsComposer>` (`botframework-webchat-redux-store`).
+ * Each sink registered gets every action after it (as the machines take them), until it is unregistered. The transport
+ * of `<SuggestedActionsComposer>` (`botframework-webchat-redux-store`).
  */
 const actionSinkMachine: Machine = scope =>
   scope.on(

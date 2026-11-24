@@ -1,8 +1,8 @@
 /**
  * @jest-environment @happy-dom/jest-environment
  */
-// The action sinks (the transport of `<SuggestedActionsComposer>`): no parity script registers one. Pinned on the
-// sagas, which the machine replaced.
+// The action sinks (the transport of `<SuggestedActionsComposer>`), pinned: the expected calls were recorded with
+// redux-saga.
 import registerActionSink from '../actions/registerActionSink';
 import setDictateState from '../actions/setDictateState';
 import unregisterActionSink from '../actions/unregisterActionSink';

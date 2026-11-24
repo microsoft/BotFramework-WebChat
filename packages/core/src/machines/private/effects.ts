@@ -12,7 +12,7 @@ export function putEach(scope: Scope, actions: readonly MachineAction[], then?: 
   first ? scope.put(first, () => putEach(scope, rest, then)) : then?.();
 }
 
-/** `forkPut()` of the sagas: puts the actions one after the other, in a forked scope, without waiting for them. */
+/** Puts the actions one after the other, in a forked scope, without waiting for them. */
 export function forkPut(scope: Scope, ...actions: readonly MachineAction[]): void {
   scope.fork(child => putEach(child, actions));
 }

@@ -101,7 +101,7 @@ function handleVoiceActivity(online: Scope, activity: any, next: () => void): vo
   next();
 }
 
-/** `observeActivitySaga`: while online, queues each activity from Direct Line, patched; voice activities aside. */
+/** While online, queues each activity from Direct Line, patched; voice activities aside. */
 const observeActivityMachine: Machine = scope =>
   scope.whileOnline(({ directLine, userID }, online) =>
     online.observeEach(directLine.activity$, (activity: DirectLineActivity, next) => {

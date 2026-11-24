@@ -8,15 +8,15 @@ import type { Machine } from '../types';
 const CONNECTIVITY_STATUS_NOTIFICATION_ID = 'connectivitystatus';
 
 /**
- * `connectionStatusToNotificationSaga`: the "connectivitystatus" notification of the Direct Line of the latest
- * `CONNECT`. Quirk kept: it follows that Direct Line after a disconnect too, until the next `CONNECT`.
+ * The "connectivitystatus" notification of the Direct Line of the latest `CONNECT`. It follows that Direct Line after a
+ * disconnect too, until the next `CONNECT`.
  */
 const connectionStatusToNotificationMachine: Machine = scope =>
   scope.onLatest(is(CONNECT), ({ payload: { directLine } }, worker) => {
     let reconnecting = false;
 
     worker.observeEach(directLine.connectionStatus$, (value, next) => {
-      // The notification has no `alt` or `data`, as in the saga (JavaScript): `setNotification()` sets them `undefined`.
+      // The notification has no `alt` or `data`: `setNotification()` sets them `undefined`.
       const putNotification = (level: string, message: string) =>
         worker.put(setNotification({ id: CONNECTIVITY_STATUS_NOTIFICATION_ID, level, message } as any), next);
 

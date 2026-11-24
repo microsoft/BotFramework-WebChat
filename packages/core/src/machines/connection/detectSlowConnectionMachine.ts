@@ -6,8 +6,8 @@ import type { Machine } from '../types';
 const SLOW_CONNECTION_AFTER = 15000;
 
 /**
- * `detectSlowConnectionSaga`: `CONNECT_STILL_PENDING` if a connection or reconnection is not fulfilled or rejected
- * within 15 seconds. The timer is cleared when it completes (the saga left it running).
+ * `CONNECT_STILL_PENDING` if a connection or reconnection is not fulfilled or rejected within 15 seconds. The timer is
+ * cleared when it completes.
  */
 const detectSlowConnectionMachine: Machine = scope => {
   const loop = () =>

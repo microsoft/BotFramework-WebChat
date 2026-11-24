@@ -22,19 +22,12 @@ import type { Machine, Scope } from '../types';
 const selectDictateState = (scope: Scope): number =>
   scope.select(dictateStateSelector as (state: ReduxState) => unknown) as number;
 
-// The speech machines, one per saga of the same name. The Web Speech calls stay in the components.
-//
-// Quirks kept, as the sagas (to fix later): offline (also reconnecting), typing, interims and posts do not stop the
-// speech, and nothing is spoken; any mark and any dictate state set (also unchanged) checks whether to start the
-// dictation; stopping the speech marks every activity to be spoken as spoken, which then starts the dictation if it
-// will start; every message posted stops the dictation unless dictating; an activity ignoring input stops the
-// dictation, also when not spoken; a spoken message with an attachment of `content: null` (without `speak` or `text`)
-// throws, which stops everything.
+// The Web Speech calls stay in the components.
 
 /**
- * `speakActivityAndStartDictateOnIncomingActivityFromOthersSaga`: while online, an activity from others (from any
- * source) is marked to be spoken if speaking the incoming activities; if it expects input, the dictation will start
- * once it is spoken (unless dictating continuously); if it ignores input, the dictation stops.
+ * While online, an activity from others (from any source) is marked to be spoken if speaking the incoming activities; if
+ * it expects input, the dictation will start once it is spoken (unless dictating continuously); if it ignores input,
+ * the dictation stops.
  */
 export const speakActivityAndStartDictateOnIncomingActivityFromOthersMachine: Machine = scope =>
   scope.whileOnline(({ userID }, online) =>
@@ -61,6 +54,7 @@ export const speakActivityAndStartDictateOnIncomingActivityFromOthersMachine: Ma
         shouldSpeak &&
         (activity.speak ||
           activity.text ||
+          // TODO: [P2] An attachment with `content: null` throws here, which stops every machine.
           ~(activity.attachments || []).findIndex(
             ({ content: { speak } = {} }: { readonly content?: { readonly speak?: string } }) => speak
           ))
@@ -70,7 +64,7 @@ export const speakActivityAndStartDictateOnIncomingActivityFromOthersMachine: Ma
     )
   );
 
-/** `startDictateOnSpeakCompleteSaga`: the dictation starts once nothing is to be spoken, if it will start. */
+/** The dictation starts once nothing is to be spoken, if it will start. */
 export const startDictateOnSpeakCompleteMachine: Machine = scope =>
   scope.on(
     ({ type }) => type === MARK_ACTIVITY || type === SET_DICTATE_STATE,
@@ -82,7 +76,7 @@ export const startDictateOnSpeakCompleteMachine: Machine = scope =>
     }
   );
 
-/** `markAllAsSpokenOnStopSpeakActivitySaga`: stopping the speech marks the activities to be spoken as spoken. */
+/** Stopping the speech marks the activities to be spoken as spoken. */
 export const markAllAsSpokenOnStopSpeakActivityMachine: Machine = scope =>
   scope.on(
     ({ type }) => type === STOP_SPEAKING_ACTIVITY,
@@ -94,8 +88,7 @@ export const markAllAsSpokenOnStopSpeakActivityMachine: Machine = scope =>
   );
 
 /**
- * `startSpeakActivityOnPostActivitySaga`: while online, posting while dictating continuously, or a message by speech,
- * starts speaking the incoming activities.
+ * While online, posting while dictating continuously, or a message by speech, starts speaking the incoming activities.
  */
 export const startSpeakActivityOnPostActivityMachine: Machine = scope =>
   scope.whileOnline((_, online) =>
@@ -111,8 +104,7 @@ export const startSpeakActivityOnPostActivityMachine: Machine = scope =>
   );
 
 /**
- * `stopDictateOnCardActionSaga`: while online, posting a message (as a card action does) stops the dictation, unless
- * dictating continuously.
+ * While online, posting a message (as a card action does) stops the dictation, unless dictating continuously.
  */
 export const stopDictateOnCardActionMachine: Machine = scope =>
   scope.whileOnline((_, online) =>
@@ -125,8 +117,8 @@ export const stopDictateOnCardActionMachine: Machine = scope =>
   );
 
 /**
- * `stopSpeakingActivityOnInputSaga`: while online, typing, interims (barge-in) and posting a message by keyboard stop
- * the speech; not posting while dictating continuously, by speech, or anything but a message.
+ * While online, typing, interims (barge-in) and posting a message by keyboard stop the speech; not posting while
+ * dictating continuously, by speech, or anything but a message.
  */
 export const stopSpeakingActivityOnInputMachine: Machine = scope =>
   scope.whileOnline((_, online) =>

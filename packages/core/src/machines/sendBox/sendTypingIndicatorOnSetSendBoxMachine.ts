@@ -15,12 +15,9 @@ function takeSendTypingIndicator(scope: Scope, value: boolean, then: () => void)
 }
 
 /**
- * `sendTypingIndicatorOnSetSendBoxSaga`: while online and the typing indicator is enabled, each text set in the send
- * box emits the typing indicator, at most every 3 seconds (t = 0, 3000, 6000): one set before then waits, the latest
- * restarting the wait. Posting cancels the wait; posting a message also restarts the 3 seconds.
- *
- * Quirks kept, as the saga: the same text set again emits again; an event posted cancels the wait without restarting
- * the 3 seconds. The timer is cleared when cancelled (the saga left it running).
+ * While online and the typing indicator is enabled, each text set in the send box emits the typing indicator, at most
+ * every 3 seconds (t = 0, 3000, 6000): one set before then waits, the latest restarting the wait. Posting cancels the
+ * wait; posting a message also restarts the 3 seconds.
  */
 const sendTypingIndicatorOnSetSendBoxMachine: Machine = scope =>
   scope.whileOnline((_, online) => {

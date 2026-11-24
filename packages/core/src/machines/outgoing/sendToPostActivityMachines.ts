@@ -25,8 +25,8 @@ type PostBackActivity = {
 } & ({ text: string } | { value: any });
 
 /**
- * While online, puts `POST_ACTIVITY` for each action that matches, as the `send*ToPostActivitySaga` did. The payloads
- * are read as the sagas read them, without validation: a raw action dispatched by a host works the same.
+ * While online, puts `POST_ACTIVITY` for each action that matches. The payloads are read without validation: a raw
+ * action dispatched by a host works too.
  */
 function sendToPostActivity(
   match: (action: MachineAction) => unknown,
@@ -36,19 +36,16 @@ function sendToPostActivity(
     scope.whileOnline((_, online) => online.on(match, (action, worker) => worker.put(toPostActivity(action))));
 }
 
-/** `emitTypingIndicatorToPostActivitySaga`. */
 export const emitTypingIndicatorMachine = sendToPostActivity(
   ({ type }) => type === EMIT_TYPING_INDICATOR,
   () => postActivity({ type: 'typing' } as any)
 );
 
-/** `sendEventToPostActivitySaga`. */
 export const sendEventMachine = sendToPostActivity(
   ({ payload, type }) => type === SEND_EVENT && payload.name,
   ({ payload: { name, value } }) => postActivity({ name, type: 'event', value } as any)
 );
 
-/** `sendFilesToPostActivitySaga`. */
 export const sendFilesMachine = sendToPostActivity(
   ({ payload, type }) => type === SEND_FILES && payload.files.length,
   ({ payload: { files } }) =>
@@ -66,7 +63,6 @@ export const sendFilesMachine = sendToPostActivity(
     } as any)
 );
 
-/** `sendMessageBackToPostActivitySaga`. */
 // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#message-back
 export const sendMessageBackMachine = sendToPostActivity(
   ({ type }) => type === SEND_MESSAGE_BACK,
@@ -89,7 +85,7 @@ export const sendMessageBackMachine = sendToPostActivity(
     > as WebChatActivity)
 );
 
-/** `sendMessageToPostActivitySaga`: the only one that posts with the method of the action. */
+/** The only one that posts with the method of the action. */
 export const sendMessageMachine = sendToPostActivity(
   ({ payload, type }) => type === SEND_MESSAGE && (payload.text || payload.attachments?.length),
   ({ payload: { attachments = EMPTY_ATTACHMENTS, channelData, method, replyToId, text } }) =>
@@ -117,7 +113,6 @@ export const sendMessageMachine = sendToPostActivity(
     )
 );
 
-/** `sendPostBackToPostActivitySaga`. */
 // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#post-back
 export const sendPostBackMachine = sendToPostActivity(
   ({ type }) => type === SEND_POST_BACK,

@@ -15,8 +15,8 @@ const hasReplied = (activities: readonly WebChatActivity[], replyToId: string): 
   !!activities.find(activity => activity.id === replyToId || activity.replyToId === replyToId);
 
 /**
- * The race of the saga: `waitForActivityId()` (the activity replied to arrives in the transcript) against a 5 seconds
- * timeout. Calls `then` with `true` if it timed out. If already replied, `then` is called now and the timer never starts.
+ * Races the activity replied to (it arrives in the transcript) against a 5 seconds timeout. Calls `then` with `true` if
+ * it timed out. If already replied, `then` is called now and the timer never starts.
  */
 function waitForActivityId(
   worker: Scope,
@@ -110,12 +110,11 @@ function queueIncomingActivity(
 }
 
 /**
- * `queueIncomingActivitySaga`: while online, each activity queued (by Direct Line or the host) goes to the transcript
- * (`INCOMING_ACTIVITY`), then the suggested actions of the last message are set. A reply to an activity not in the
- * transcript yet is held until it is there, or for 5 seconds, unless the bot has not spoken yet.
+ * While online, each activity queued (by Direct Line or the host) goes to the transcript (`INCOMING_ACTIVITY`), then the
+ * suggested actions of the last message are set. A reply to an activity not in the transcript yet is held until it is
+ * there, or for 5 seconds, unless the bot has not spoken yet.
  *
- * The transcript is selected as the queued activity is taken, so no activity slips between the two. The timer is cleared
- * once the activity replied to arrives (the saga left it running).
+ * The transcript is selected as the queued activity is taken, so no activity slips between the two.
  */
 const queueIncomingActivityMachine: Machine = scope =>
   scope.whileOnline(({ userID }, online) =>

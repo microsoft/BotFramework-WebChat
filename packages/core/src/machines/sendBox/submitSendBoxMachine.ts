@@ -7,12 +7,7 @@ import sendBoxValueSelector from '../../selectors/sendBoxValue';
 import { is } from '../private/effects';
 import type { Machine } from '../types';
 
-/**
- * `submitSendBoxSaga`: while online, submitting sends the text (trimmed) and the attachments, then clears both.
- *
- * Quirks kept, as the saga: submitting while offline does nothing and keeps the send box; submitting only spaces
- * clears the send box and sends nothing.
- */
+/** While online, submitting sends the text (trimmed) and the attachments, then clears both. */
 const submitSendBoxMachine: Machine = scope =>
   scope.whileOnline((_, online) =>
     online.on(is(SUBMIT_SEND_BOX), ({ payload: { channelData, method } }, worker) => {

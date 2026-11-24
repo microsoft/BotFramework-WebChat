@@ -6,7 +6,7 @@ import { is } from '../private/effects';
 import type { Machine } from '../types';
 
 /**
- * `postVoiceActivitySaga`: while online, posts each voice activity.
+ * While online, posts each voice activity.
  *
  * Unlike `postActivityMachine`, this machine:
  * - Does NOT wait for echo back
