@@ -124,6 +124,29 @@ scenario(
       .and('FrozenSet should return the same as native Set', (_, { actual, expected }) =>
         expect(actual).toEqual(expected)
       );
+
+    for (const name of SET_METHOD_NAMES) {
+      bdd
+        .given('an empty Set, an empty FrozenSet, and a set-like object with size of -0.5', () => ({
+          frozenSet: new FrozenSet<number>([]),
+          other: { has: () => false, keys: () => [].values(), size: -0.5 },
+          set: new Set<number>()
+        }))
+        .when(`${name}() is called on both native Set and FrozenSet`, ({ frozenSet, other, set }) => {
+          const toComparable = (value: unknown) => (value instanceof Set ? Array.from(value) : value);
+
+          return {
+            // `name` is from a constant list of Set method names.
+            // eslint-disable-next-line security/detect-object-injection
+            actual: tryCall(() => toComparable(frozenSet[name](other))),
+            // eslint-disable-next-line security/detect-object-injection
+            expected: tryCall(() => toComparable(set[name](other)))
+          };
+        })
+        .then('FrozenSet should compare with the size normalized to 0, as native Set does', (_, { actual, expected }) =>
+          expect(actual).toEqual(expected)
+        );
+    }
   },
   NodeTest
 );
