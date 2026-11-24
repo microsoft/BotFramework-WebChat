@@ -2,12 +2,14 @@ import {
   applyMiddleware,
   createStore as createReduxStore,
   type Middleware,
+  type Reducer,
   type Store,
   type StoreEnhancer
 } from 'redux';
 
 import sagaError from './actions/sagaError';
 import createReducer from './createReducer';
+import { type EngineStore } from './engine/createEngineStore';
 import createMachinesMiddleware from './machines/createMachinesMiddleware';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
@@ -41,25 +43,14 @@ type CreateStoreOptions = {
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
 
-/**
- * Creates a Redux store internally used by Web Chat.
- *
- * This store is critical for Web Chat business logics to operate, please use with cautions.
- */
-
 // The complexity is introduced by the check of ponyfill.
 // eslint-disable-next-line complexity
-export function withOptions(
-  options: CreateStoreOptions,
-  initialState?: any | undefined,
-  ...middlewares: readonly Middleware[]
-): Store {
+function resolvePonyfill(ponyfillFromOptions: Partial<GlobalScopePonyfill>): GlobalScopePonyfill {
   // IE Mode does not have `globalThis`.
   const globalThisOrWindow = typeof globalThis === 'undefined' ? window : globalThis;
-  const ponyfillFromOptions: Partial<GlobalScopePonyfill> = options.ponyfill || {};
 
   // TODO: [P2] Dedupe: when we have an utility package, move this code there and mark it as internal use.
-  const ponyfill: GlobalScopePonyfill = {
+  return {
     cancelAnimationFrame:
       ponyfillFromOptions.cancelAnimationFrame ||
       // Using clock functions from global if not provided.
@@ -104,10 +95,23 @@ export function withOptions(
       // eslint-disable-next-line no-restricted-globals
       (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
   };
+}
+
+/**
+ * Builds the store of Web Chat on a base store: the reducer, the machines after every middleware of the host, and the
+ * debug API.
+ */
+function assemble<TStore extends EngineStore>(
+  ponyfillFromOptions: Partial<GlobalScopePonyfill> | undefined,
+  initialState: any,
+  middlewares: readonly Middleware[],
+  createBaseStore: (reducer: Reducer, preloadedState: any, chain: readonly Middleware[]) => TStore
+): TStore {
+  const ponyfill = resolvePonyfill(ponyfillFromOptions || {});
 
   // We are doing lazy init and cyclic dependencies.
   // eslint-disable-next-line prefer-const
-  let store: Store | undefined;
+  let store: TStore | undefined;
 
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
@@ -121,17 +125,10 @@ export function withOptions(
     ponyfill
   });
 
-  const enhancer = applyMiddleware(...middlewares, machines.middleware);
-
-  const devToolsWindow: WindowWithReduxDevTools | undefined =
-    options.devTools && typeof window !== 'undefined' ? window : undefined;
-  const composeWithDevTools = devToolsWindow?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
-
-  store = createReduxStore(
-    createReducer(ponyfill, restrictedStoreDebugAPI),
-    initialState || {},
-    composeWithDevTools ? composeWithDevTools(enhancer) : enhancer
-  );
+  store = createBaseStore(createReducer(ponyfill, restrictedStoreDebugAPI), initialState || {}, [
+    ...middlewares,
+    machines.middleware
+  ]);
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
   StoreDebugAPIRegistry.set(store, restrictedStoreDebugAPI.toPublic());
@@ -140,6 +137,27 @@ export function withOptions(
   machines.start();
 
   return store;
+}
+
+/**
+ * Creates a Redux store internally used by Web Chat.
+ *
+ * This store is critical for Web Chat business logics to operate, please use with cautions.
+ */
+export function withOptions(
+  options: CreateStoreOptions,
+  initialState?: any | undefined,
+  ...middlewares: readonly Middleware[]
+): Store {
+  return assemble(options.ponyfill, initialState, middlewares, (reducer, preloadedState, chain) => {
+    const enhancer = applyMiddleware(...chain);
+
+    const devToolsWindow: WindowWithReduxDevTools | undefined =
+      options.devTools && typeof window !== 'undefined' ? window : undefined;
+    const composeWithDevTools = devToolsWindow?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+
+    return createReduxStore(reducer, preloadedState, composeWithDevTools ? composeWithDevTools(enhancer) : enhancer);
+  });
 }
 
 /**

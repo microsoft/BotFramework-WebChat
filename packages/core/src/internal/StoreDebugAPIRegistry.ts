@@ -1,4 +1,4 @@
-import type createStore from '../createStore';
+import type { EngineStore } from '../engine/createEngineStore';
 import type { StoreDebugAPI } from '../types/StoreDebugAPI';
 
-export default new WeakMap<ReturnType<typeof createStore>, StoreDebugAPI>();
+export default new WeakMap<EngineStore, StoreDebugAPI>();
