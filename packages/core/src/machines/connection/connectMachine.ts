@@ -72,8 +72,8 @@ function rectifyUserID(
 }
 
 /**
- * `runAsyncEffectUntilDisconnect()` of `connectSaga`: puts `*_PENDING`, then races `DISCONNECT` (an error) with `body`;
- * then puts `*_FULFILLING` and `*_FULFILLED`, or `*_REJECTED`. It returns once these puts ran (they are forked).
+ * Puts `*_PENDING`, then races `DISCONNECT` (an error) with `body`; then puts `*_FULFILLING` and `*_FULFILLED`, or
+ * `*_REJECTED`. It returns once these puts ran (they are forked).
  */
 function runAsyncUntilDisconnect<T>(
   scope: Scope,
@@ -124,15 +124,14 @@ function runAsyncUntilDisconnect<T>(
   );
 }
 
-/** The inner `connectSaga()`: keeps `activity$` subscribed (Direct Line starts then), until online or failed. */
+/** Keeps `activity$` subscribed (Direct Line starts then), until online or failed. */
 function connectDirectLine(scope: Scope, directLine: any, returns: (endDirectLine: () => void) => void): void {
   const activitySubscription = directLine.activity$.subscribe({ next: () => 0 });
   const unsubscribeActivity = activitySubscription.unsubscribe.bind(activitySubscription);
 
   let online = false;
 
-  // Unsubscribed if it failed (any error, as the saga's `catch`) or was cancelled: once online, Direct Line relies on
-  // the subscription.
+  // Unsubscribed if it failed (any error) or was cancelled: once online, Direct Line relies on the subscription.
   scope.finally(() => online || unsubscribeActivity());
 
   const loop = () =>
@@ -154,7 +153,7 @@ function connectDirectLine(scope: Scope, directLine: any, returns: (endDirectLin
   loop();
 }
 
-/** `reconnectSaga()`: waits for the connection to be online again. */
+/** Waits for the connection to be online again. */
 function reconnectDirectLine(scope: Scope): void {
   const loop = () =>
     scope.take(is(UPDATE_CONNECTION_STATUS), ({ payload: { connectionStatus } }) => {
@@ -209,16 +208,18 @@ function connection(
   };
 
   // Once online, `end()` first: on DISCONNECT (no error), or an error. An `end()` that throws is the error.
-  const end = (error?: { readonly error: unknown } | undefined) => {
-    let disconnectMeta = error;
-
+  const endDirectLineSafely = (): { readonly error: unknown } | undefined => {
     try {
-      endDirectLine();
-    } catch (endError) {
-      disconnectMeta = { error: endError };
+      endDirectLine?.();
+    } catch (error) {
+      return { error };
     }
 
-    finish(disconnectMeta);
+    return undefined;
+  };
+
+  const end = (error?: { readonly error: unknown } | undefined) => {
+    finish(endDirectLineSafely() ?? error);
     then();
   };
 
@@ -235,7 +236,7 @@ function connection(
 
       let connectionStatus: number | undefined;
 
-      // As in the saga's `try`: an action that cannot be read is an error of the connection, not of the store.
+      // An action that cannot be read is an error of the connection, not of the store.
       try {
         ({ payload: { connectionStatus } = {} as any } = action);
       } catch (error) {
@@ -258,20 +259,8 @@ function connection(
     });
   };
 
-  // Stopped (a saga error): as the connect loop cancelled, it ends the connection without an error, and stops.
-  scope.finally(cancelled => {
-    if (cancelled) {
-      let disconnectMeta: { readonly error: unknown } | undefined;
-
-      try {
-        endDirectLine?.();
-      } catch (error) {
-        disconnectMeta = { error };
-      }
-
-      finish(disconnectMeta);
-    }
-  });
+  // Stopped by an uncaught error: disconnects as on `DISCONNECT`, and stops.
+  scope.finally(cancelled => cancelled && finish(endDirectLineSafely()));
 
   runAsyncUntilDisconnect<() => void>(
     scope,
@@ -287,17 +276,12 @@ function connection(
 }
 
 /**
- * `connectSaga`: connects to Direct Line on `CONNECT`, as `CONNECT_PENDING`, `CONNECT_FULFILLING`, `CONNECT_FULFILLED`
- * (or `CONNECT_REJECTED`), the reconnections the same, then disconnects on `DISCONNECT` or an error, as
- * `DISCONNECT_PENDING` and `DISCONNECT_FULFILLED`. Takes `CONNECT` again only after.
+ * Connects to Direct Line on `CONNECT`, as `CONNECT_PENDING`, `CONNECT_FULFILLING`, `CONNECT_FULFILLED` (or
+ * `CONNECT_REJECTED`), the reconnections the same, then disconnects on `DISCONNECT` or an error, as `DISCONNECT_PENDING`
+ * and `DISCONNECT_FULFILLED`. Takes `CONNECT` again only after.
  *
- * Quirks kept, as the saga (to fix later):
- *
- * - disconnecting before online does not call `end()` (only the keep-alive subscription of `activity$` is
- *   unsubscribed), and is an error (status "error");
- * - an `end()` that throws, or no `end()`, makes a disconnection an error;
- * - `CONNECT` while connected is not taken;
- * - an error while putting `CONNECT_FULFILLED` (a listener) fails the connection, and leaves `activity$` subscribed.
+ * TODO: [P2] An error while putting `CONNECT_FULFILLED` (a listener throws) fails the connection and leaves `activity$`
+ *       subscribed.
  */
 const connectMachine: Machine = scope => {
   const loop = () => scope.take(is(CONNECT), action => scope.fork(child => connection(child, action, loop)));
