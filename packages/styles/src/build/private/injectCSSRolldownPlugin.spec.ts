@@ -1,7 +1,8 @@
 /// <reference types="jest" />
 
 import * as JestGlobals from '@jest/globals';
-import { decode, encode } from '@jridgewell/sourcemap-codec';
+import { encode } from '@jridgewell/sourcemap-codec';
+import { originalPositionFor, TraceMap } from '@jridgewell/trace-mapping';
 import { scenario } from '@testduet/given-when-then';
 import { join } from 'node:path';
 import type { Rolldown } from 'tsdown';
@@ -79,37 +80,21 @@ function createBundle(banner: string | undefined): Rolldown.OutputBundle {
 }
 
 function readChunk(bundle: Rolldown.OutputBundle) {
-  const { code } = bundle['index.js'] as Rolldown.OutputChunk;
-  const { mappings, sources }: { mappings: string; sources: readonly string[] } = JSON.parse(
-    (bundle['index.js.map'] as Rolldown.OutputAsset).source as string
-  );
-
-  return Object.freeze({ js: code, mappings: decode(mappings), sources });
+  return Object.freeze({
+    js: (bundle['index.js'] as Rolldown.OutputChunk).code,
+    map: new TraceMap((bundle['index.js.map'] as Rolldown.OutputAsset).source as string)
+  });
 }
 
 // Original position of the first generated "return", which comes after the embedded styles.
-function mapReturn({
-  js,
-  mappings,
-  sources
-}: {
-  js: string;
-  mappings: ReturnType<typeof decode>;
-  sources: readonly string[];
-}) {
-  const index = js.indexOf('return');
-  const before = js.slice(0, index);
-  const column = index - before.lastIndexOf('\n') - 1;
-  // The last segment that starts at or before the column, as source map consumers do.
-  const segment = (mappings[before.split('\n').length - 1] || [])
-    .filter(([generatedColumn]) => generatedColumn <= column)
-    .at(-1);
-
-  return Object.freeze({
-    column: segment?.[3],
-    line: segment?.[2] === undefined ? undefined : segment[2] + 1,
-    source: segment?.[1] === undefined ? undefined : sources[segment[1]]
+function mapReturn({ js, map }: ReturnType<typeof readChunk>) {
+  const before = js.slice(0, js.indexOf('return'));
+  const { column, line, source } = originalPositionFor(map, {
+    column: before.length - before.lastIndexOf('\n') - 1,
+    line: before.split('\n').length
   });
+
+  return Object.freeze({ column, line, source });
 }
 
 scenario(
