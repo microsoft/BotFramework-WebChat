@@ -2,9 +2,15 @@
  * Iterates the keys of a set-like object.
  *
  * Unlike `for...of`, it does not require the iterator returned by `keys()` to be iterable, as `Set` methods do.
+ *
+ * When the caller terminates early (e.g. `break` or `return` inside `for...of`), the iterator returned by `keys()` is
+ * closed by calling its `return()`, as `Set` methods do via `IteratorClose()`. The iterator is not closed if it is
+ * exhausted or if its `next()` throws.
+ *
+ * @see {@link https://tc39.es/ecma262/#sec-iteratorclose ECMAScript: IteratorClose}
  */
 function* iterateSetLike<T>(setLike: ReadonlySetLike<T>): Generator<T, void, unknown> {
-  const iterator = setLike.keys();
+  const iterator: Iterator<T> = setLike.keys();
 
   for (;;) {
     const result = iterator.next();
@@ -13,7 +19,15 @@ function* iterateSetLike<T>(setLike: ReadonlySetLike<T>): Generator<T, void, unk
       return;
     }
 
-    yield result.value;
+    let completed = false;
+
+    try {
+      yield result.value;
+
+      completed = true;
+    } finally {
+      completed || iterator.return?.();
+    }
   }
 }
 
@@ -21,23 +35,40 @@ function* iterateSetLike<T>(setLike: ReadonlySetLike<T>): Generator<T, void, unk
  * Validates a set-like object as `Set` methods do, i.e. `size` is a non-negative number, `has()` and `keys()` are
  * functions.
  *
+ * Returns a record with the normalized `size`, and `has()` and `keys()` bound to the original set-like object. Each
+ * property is read once, so later reads are not affected by getters.
+ *
  * @see {@link https://tc39.es/ecma262/#sec-getsetrecord ECMAScript: GetSetRecord}
  */
 function validateSetLike<T>(setLike: ReadonlySetLike<T>): ReadonlySetLike<T> {
-  if (
-    !setLike ||
-    typeof setLike !== 'object' ||
-    Number.isNaN(Number(setLike.size)) ||
-    typeof setLike.has !== 'function' ||
-    typeof setLike.keys !== 'function'
-  ) {
+  if (!setLike || typeof setLike !== 'object') {
     throw new TypeError('The argument must be a set-like object');
-  } else if (Math.trunc(Number(setLike.size)) < 0) {
-    // As `ToIntegerOrInfinity()`, `-0.5` is truncated to `0`.
+  }
+
+  const rawSize = Number(setLike.size);
+
+  if (Number.isNaN(rawSize)) {
+    throw new TypeError('The argument must be a set-like object');
+  }
+
+  // As `ToIntegerOrInfinity()`, `-0.5` is truncated to `0`, and `-0` is normalized to `0`.
+  const size = Math.trunc(rawSize) || 0;
+
+  if (size < 0) {
     throw new RangeError('The size of the set-like object must not be negative');
   }
 
-  return setLike;
+  const { has, keys } = setLike;
+
+  if (typeof has !== 'function' || typeof keys !== 'function') {
+    throw new TypeError('The argument must be a set-like object');
+  }
+
+  return Object.freeze({
+    has: (value: T) => has.call(setLike, value),
+    keys: () => keys.call(setLike),
+    size
+  });
 }
 
 /**

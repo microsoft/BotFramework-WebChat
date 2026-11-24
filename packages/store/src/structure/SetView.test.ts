@@ -124,6 +124,29 @@ scenario(
       .and('FrozenSet should return the same as native Set', (_, { actual, expected }) =>
         expect(actual).toEqual(expected)
       );
+
+    for (const name of SET_METHOD_NAMES) {
+      bdd
+        .given('an empty Set, an empty FrozenSet, and a set-like object with size of -0.5', () => ({
+          frozenSet: new FrozenSet<number>([]),
+          other: { has: () => false, keys: () => [].values(), size: -0.5 },
+          set: new Set<number>()
+        }))
+        .when(`${name}() is called on both native Set and FrozenSet`, ({ frozenSet, other, set }) => {
+          const toComparable = (value: unknown) => (value instanceof Set ? Array.from(value) : value);
+
+          return {
+            // `name` is from a constant list of Set method names.
+            // eslint-disable-next-line security/detect-object-injection
+            actual: tryCall(() => toComparable(frozenSet[name](other))),
+            // eslint-disable-next-line security/detect-object-injection
+            expected: tryCall(() => toComparable(set[name](other)))
+          };
+        })
+        .then('FrozenSet should compare with the size normalized to 0, as native Set does', (_, { actual, expected }) =>
+          expect(actual).toEqual(expected)
+        );
+    }
   },
   NodeTest
 );
@@ -167,6 +190,90 @@ scenario(
       }))
       .when('isSupersetOf() is called', ({ nodeSet, other }) => nodeSet.isSupersetOf(other))
       .then('should be true', (_, result) => expect(result).toBe(true));
+  },
+  NodeTest
+);
+
+/**
+ * Creates a set-like object whose `keys()` returns a non-iterable iterator, which records whether it is closed via
+ * `return()`.
+ */
+function createClosableSetLike(values: readonly number[]) {
+  const state = { numReturnCalled: 0 };
+
+  return Object.freeze({
+    has: (value: unknown) => values.includes(value as number),
+    keys: () => {
+      let index = 0;
+
+      // Intentionally not iterable (no `[Symbol.iterator]`), as `Set` methods do not require it.
+      return {
+        next: () =>
+          index < values.length ? { done: false, value: values[index++] } : { done: true, value: undefined },
+        return: () => {
+          state.numReturnCalled++;
+
+          return { done: true, value: undefined };
+        }
+      };
+    },
+    size: values.length,
+    state
+  });
+}
+
+scenario(
+  'SetView should close the iterator of the other set-like object on early termination',
+  bdd => {
+    bdd
+      .given('a Set, a FrozenSet of 1, 2, 3, and 2 set-like objects of 1 with closable iterators', () => ({
+        actualOther: createClosableSetLike([1]),
+        expectedOther: createClosableSetLike([1]),
+        frozenSet: new FrozenSet([1, 2, 3]),
+        set: new Set([1, 2, 3])
+      }))
+      .when(
+        'isDisjointFrom() is called on both native Set and FrozenSet',
+        ({ actualOther, expectedOther, frozenSet, set }) => ({
+          actual: frozenSet.isDisjointFrom(actualOther),
+          expected: set.isDisjointFrom(expectedOther)
+        })
+      )
+      .then('should return false', (_, { actual, expected }) => {
+        expect(expected).toBe(false);
+        expect(actual).toBe(false);
+      })
+      .and('native Set should close the iterator', ({ expectedOther }) =>
+        expect(expectedOther.state.numReturnCalled).toBe(1)
+      )
+      .and('FrozenSet should close the iterator, as native Set does', ({ actualOther }) =>
+        expect(actualOther.state.numReturnCalled).toBe(1)
+      );
+
+    bdd
+      .given('a Set, a FrozenSet of 1, 2, 3, and 2 set-like objects of 4 with closable iterators', () => ({
+        actualOther: createClosableSetLike([4]),
+        expectedOther: createClosableSetLike([4]),
+        frozenSet: new FrozenSet([1, 2, 3]),
+        set: new Set([1, 2, 3])
+      }))
+      .when(
+        'isSupersetOf() is called on both native Set and FrozenSet',
+        ({ actualOther, expectedOther, frozenSet, set }) => ({
+          actual: frozenSet.isSupersetOf(actualOther),
+          expected: set.isSupersetOf(expectedOther)
+        })
+      )
+      .then('should return false', (_, { actual, expected }) => {
+        expect(expected).toBe(false);
+        expect(actual).toBe(false);
+      })
+      .and('native Set should close the iterator', ({ expectedOther }) =>
+        expect(expectedOther.state.numReturnCalled).toBe(1)
+      )
+      .and('FrozenSet should close the iterator, as native Set does', ({ actualOther }) =>
+        expect(actualOther.state.numReturnCalled).toBe(1)
+      );
   },
   NodeTest
 );
