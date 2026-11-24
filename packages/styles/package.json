@@ -60,7 +60,7 @@
     "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
     "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
     "build:pre:watch": "../../scripts/npm/build-watch.sh",
-    "build:run": "tsup",
+    "build:run": "tsdown",
     "bump": "vg bump prod && vg bump dev && (npm audit fix || exit 0)",
     "eslint": "npm run precommit",
     "postversion": "../../scripts/npm/postversion.sh",
@@ -87,7 +87,7 @@
     "@types/node": "^25.9.1",
     "cross-env": "^10.1.0",
     "esbuild": "^0.28.1",
-    "tsup": "^9.0.0",
+    "tsdown": "^0.23.7",
     "type-fest": "^5.6.0",
     "typescript": "^6.0.3"
   },
