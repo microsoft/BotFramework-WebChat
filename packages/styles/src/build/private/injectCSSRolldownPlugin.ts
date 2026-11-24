@@ -73,11 +73,7 @@ export default function injectCSSRolldownPlugin({
           }
 
           const cssSource = cssFilesMap.get(Array.from(cssCandidateKeys).at(0)!)?.source;
-          // Like esbuild's in-memory CSS output, without the source map comment.
-          const cssText = (typeof cssSource === 'string' ? cssSource : new TextDecoder().decode(cssSource)).replace(
-            /\/\*# sourceMappingURL=\S+ \*\/\n?$/u,
-            ''
-          );
+          const cssText = typeof cssSource === 'string' ? cssSource : new TextDecoder().decode(cssSource);
 
           if (!cssText) {
             throw new Error(
