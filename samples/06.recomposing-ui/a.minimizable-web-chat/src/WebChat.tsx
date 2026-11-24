@@ -1,4 +1,4 @@
-import ReactWebChat, { createDirectLine, type createStore } from 'botframework-webchat';
+import ReactWebChat, { createDirectLine, type createStore, type StyleOptions } from 'botframework-webchat';
 import React, { memo, useEffect, useMemo } from 'react';
 
 import './WebChat.css';
@@ -7,11 +7,11 @@ type Props = Readonly<{
   className?: string | undefined;
   onFetchToken?: (() => void) | undefined;
   store: ReturnType<typeof createStore>;
-  styleSet: any;
+  styleOptions: StyleOptions;
   token: string;
 }>;
 
-function WebChat({ className, onFetchToken, store, styleSet, token }: Props) {
+function WebChat({ className, onFetchToken, store, styleOptions, token }: Props) {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
   useEffect(() => {
@@ -19,7 +19,12 @@ function WebChat({ className, onFetchToken, store, styleSet, token }: Props) {
   }, [onFetchToken]);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleSet={styleSet} />
+    <ReactWebChat
+      className={`${className || ''} web-chat`}
+      directLine={directLine}
+      store={store}
+      styleOptions={styleOptions}
+    />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">
