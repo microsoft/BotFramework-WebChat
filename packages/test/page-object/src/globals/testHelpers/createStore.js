@@ -1,3 +1,5 @@
+import getTestEngine, { getWebChatInternal } from './webChatEngine';
+
 let actionHistory;
 let activeStore;
 
@@ -21,7 +23,15 @@ function concatMiddleware(...middlewares) {
 }
 
 function createStoreWithOptions(options = {}, initialState = {}, ...middleware) {
-  return window.WebChat.createStoreWithOptions(
+  // With the "webchat" engine: the same store contract, without Redux.
+  const create =
+    getTestEngine() === 'webchat' ? getWebChatInternal()?.createWebChatEngine : window.WebChat.createStoreWithOptions;
+
+  if (typeof create !== 'function') {
+    throw new Error('WebChatTest: The "webchat" engine needs `createWebChatEngine` of the internal entry of Web Chat.');
+  }
+
+  return create(
     options,
     initialState,
     concatMiddleware(

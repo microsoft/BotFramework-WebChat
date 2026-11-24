@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: Web Chat shows what the store got while an Activity hid it</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, internal, ReactWebChat, testIds } from 'botframework-webchat';
+      import { Activity, createElement, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` and `pageElements` only, should find ways to eliminate this line.
+        // `internal` has the Web Chat engine, which the emulator creates when the test runs on it.
+        window.WebChat = { createStoreWithOptions, internal, testIds };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps them.
+        expect(version).toBe('19.3.1');
+
+        const root = createRoot(document.getElementById('webchat'));
+        // The same element each time: showing Web Chat again does not re-render it, only its effects run again.
+        const webChat = createElement(ReactWebChat, { directLine, store });
+        const render = mode => root.render(createElement(Activity, { mode }, webChat));
+
+        render('visible');
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The <Activity> hides Web Chat, then the host sets the send box through the store.
+        render('hidden');
+
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('offsetParent', null));
+
+        store.dispatch({ payload: { text: 'Set while hidden' }, type: 'WEB_CHAT/SET_SEND_BOX' });
+
+        // WHEN: The <Activity> shows Web Chat again.
+        render('visible');
+
+        // THEN: The send box shows the text set while Web Chat was hidden.
+        await waitFor(() => expect(pageElements.sendBoxTextBox()).toHaveProperty('value', 'Set while hidden'));
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

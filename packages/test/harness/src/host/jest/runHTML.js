@@ -13,6 +13,15 @@ const DEFAULT_OPTIONS = {
   webDriverURL: 'http://localhost:4445/wd/hub/'
 };
 
+// The store of Web Chat for every page: "redux" or "webchat" (the Web Chat engine, internal and for tests only).
+// Pages read it from the "webchat-test-engine" parameter of the URL fragment (not the search: the server redirects
+// "page.html?search" to "page" without the search; the fragment is kept).
+const TEST_ENGINE = process.env.WEBCHAT_TEST_ENGINE;
+
+if (TEST_ENGINE && !['redux', 'webchat'].includes(TEST_ENGINE)) {
+  throw new Error(`WEBCHAT_TEST_ENGINE must be "redux" or "webchat", not "${TEST_ENGINE}".`);
+}
+
 afterEach(async () => {
   try {
     // We must stop the bridge too, otherwise, it will cause timeout.
@@ -49,6 +58,23 @@ global.runHTML = async function runHTML(url, options = DEFAULT_OPTIONS) {
 
   try {
     const absoluteURL = new URL(url, 'https://webchat2/__tests__/html2/');
+
+    // The engine is also a cookie, kept when a page redirects to a URL with another fragment. Every test sets or deletes
+    // it before loading the page: jest-server reuses pooled sessions, which keep the cookies of the previous test.
+    global.__operation__ = 'setting the test engine cookie';
+
+    await webDriver.sendDevToolsCommand(
+      ...(TEST_ENGINE
+        ? ['Network.setCookie', { name: 'webchat-test-engine', path: '/', url: absoluteURL.origin, value: TEST_ENGINE }]
+        : ['Network.deleteCookies', { name: 'webchat-test-engine', url: absoluteURL.origin }])
+    );
+
+    if (TEST_ENGINE) {
+      const fragment = new URLSearchParams(absoluteURL.hash.replace(/^#/u, ''));
+
+      fragment.set('webchat-test-engine', TEST_ENGINE);
+      absoluteURL.hash = fragment.toString();
+    }
 
     global.__operation__ = `loading URL ${absoluteURL.toString()}`;
 
