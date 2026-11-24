@@ -12,7 +12,7 @@ test.each([['directlinespeech.development.js'], ['directlinespeech.production.mi
     jest.requireActual(`../../dist/${filename}`);
 
     expect(Object.keys(window.DirectLineSpeech).sort()).toEqual(['buildInfo', 'createAdapters']);
-    expect(window.DirectLineSpeech.buildInfo).toHaveProperty('buildTool', 'tsup');
+    expect(window.DirectLineSpeech.buildInfo).toHaveProperty('buildTool', 'tsdown');
     expect(window.DirectLineSpeech.buildInfo).toHaveProperty('moduleFormat', 'global');
   }
 );

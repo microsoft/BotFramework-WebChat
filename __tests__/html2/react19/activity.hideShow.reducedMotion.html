@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>React 19: Web Chat follows a change of prefers-reduced-motion made while an &lt;Activity&gt; hid it</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/": "/__dist__/packages/bundle/static/botframework-webchat/",
+          "react": "https://esm.sh/react@19.3.1?dev",
+          "react-dom": "https://esm.sh/react-dom@19.3.1?dev",
+          "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, testIds } from 'botframework-webchat';
+      import { Composer } from 'botframework-webchat/component.js';
+      import { useShouldReduceMotion } from 'botframework-webchat/hook.js';
+      import { Activity, createElement, version } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions, testIds };
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const ShouldReduceMotion = () => {
+          const [shouldReduceMotion] = useShouldReduceMotion();
+
+          return createElement('p', { id: 'should-reduce-motion' }, `Should reduce motion: ${shouldReduceMotion}`);
+        };
+
+        const emulateReducedMotion = value =>
+          host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+            features: [{ name: 'prefers-reduced-motion', value }]
+          });
+
+        const getShouldReduceMotionElement = () => document.getElementById('should-reduce-motion');
+
+        // GIVEN: React 19.2 or later: a hidden <Activity> runs the cleanup of the effects of its children, and keeps their state.
+        expect(version).toBe('19.3.1');
+
+        const root = createRoot(document.getElementById('webchat'));
+        // A new element each time, as JSX does: showing Web Chat again renders it before its effects run again.
+        const render = mode =>
+          root.render(
+            createElement(
+              Activity,
+              { mode },
+              createElement(Composer, { directLine, store }, createElement(ShouldReduceMotion))
+            )
+          );
+
+        // WHEN: Web Chat is rendered in a visible <Activity>.
+        render('visible');
+
+        // THEN: Web Chat reduces motion: the test harness emulates "prefers-reduced-motion: reduce" for every test.
+        await waitFor(() =>
+          expect(getShouldReduceMotionElement()).toHaveProperty('textContent', 'Should reduce motion: true')
+        );
+
+        // WHEN: The user turns off reduced motion.
+        await emulateReducedMotion('no-preference');
+
+        // THEN: Web Chat follows the change while it listens.
+        await waitFor(() =>
+          expect(getShouldReduceMotionElement()).toHaveProperty('textContent', 'Should reduce motion: false')
+        );
+        await host.snapshot('local');
+
+        // WHEN: The <Activity> hides Web Chat, and the user turns on reduced motion while it is hidden.
+        render('hidden');
+
+        await waitFor(() => expect(getShouldReduceMotionElement()).toHaveProperty('offsetParent', null));
+
+        await emulateReducedMotion('reduce');
+
+        // WHEN: The <Activity> shows Web Chat again.
+        render('visible');
+
+        await waitFor(() => expect(getShouldReduceMotionElement()).not.toHaveProperty('offsetParent', null));
+
+        // THEN: Web Chat reads the current preference when it listens again, without waiting for the next change.
+        await waitFor(() =>
+          expect(getShouldReduceMotionElement()).toHaveProperty('textContent', 'Should reduce motion: true')
+        );
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
