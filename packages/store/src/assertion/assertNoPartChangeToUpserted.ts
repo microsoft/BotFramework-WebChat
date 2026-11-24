@@ -30,15 +30,20 @@ function findChange(
     return undefined;
   }
 
-  const addedId = Array.from(nextIds).find(id => upsertedIds.has(id) && !prevIds.has(id) && !confirmedIds.has(id));
-
-  if (addedId) {
-    return [addedId, true];
+  // Iterate the sets directly, copying them into arrays costs memory proportional to the membership size.
+  for (const id of nextIds) {
+    if (upsertedIds.has(id) && !prevIds.has(id) && !confirmedIds.has(id)) {
+      return [id, true];
+    }
   }
 
-  const removedId = Array.from(prevIds).find(id => upsertedIds.has(id) && !nextIds.has(id));
+  for (const id of prevIds) {
+    if (upsertedIds.has(id) && !nextIds.has(id)) {
+      return [id, false];
+    }
+  }
 
-  return removedId ? [removedId, false] : undefined;
+  return undefined;
 }
 
 /**
