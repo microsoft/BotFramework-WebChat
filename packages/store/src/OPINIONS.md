@@ -123,8 +123,8 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - `getSnapshot()` returns a hashmap of nodes keyed by `@id`, there is no contract on its iteration order
       - Iteration order is unspecified and may change between versions (e.g. a deleted node upserted again may not be the last), callers must not depend on it
       - Story: the graph is a set of nodes, not a list, the only order offered by the store is sorted children via `getSortedParts()`
-      - Not preserving order allows a deleted node upserted again to be written in place, instead of copying the whole hashmap, keeping it `O(1)` regardless of the size of the graph
-      - Same applies to other hashmaps in the store, such as indices and the storage of sorted children (skip list), which iterate by links instead
+      - Not preserving order allows a deleted node upserted again to be written in place, instead of copying the whole hashmap of the graph
+      - Same applies to other hashmaps inside the store, such as indices and the storage of sorted children (the skip list iterates by links, not by its hashmap)
    - Query a single node by ID
    - Query a single node by either `@id` or one of its alternate identifiers via `queryByIdentifier()`, `O(1)`
    - Listeners are notified with `@id` of affected nodes (including deleted nodes), plus their alternate identifiers before and after the change
@@ -134,7 +134,7 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - Changing `identifier` is `O(k)` where `k` is the number of alternate identifiers of the node, an index from alternate identifier to `@id` is updated incrementally
    - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership, where it use skip list to find insertion point
       - Changing `dateCreated` relinks the node in the skip list (delete then insert), it is also `O(log n)` as the storage of the skip list does not preserve iteration order
-   - Deleting a node then upserting it again is `O(1)` regardless of the size of the graph, as `getSnapshot()` does not preserve iteration order
+   - Deleting a node then upserting it again does not copy the hashmap of the graph, as `getSnapshot()` does not preserve iteration order
 
 ## Behavior of `JSON.parse(JSON.stringify(...))`
 
