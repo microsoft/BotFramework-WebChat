@@ -213,7 +213,9 @@ class FrozenSkipList<T> extends SkipListView<T> implements SkipListReader<T> {
 
     this.#storage = storage
       ? (storage satisfies VersionedStorage<unknown, unknown> as VersionedStorage<Key<T>, Entry<T>>)
-      : new VersionedStorage(new Map());
+      : // Items are iterated by links, not by the storage, so the storage does not need to preserve order. Otherwise,
+        // relinking an item (delete then insert) would copy the storage.
+        new VersionedStorage(new Map(), { preserveOrder: false });
 
     Object.freeze(this);
   }

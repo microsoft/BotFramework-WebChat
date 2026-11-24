@@ -340,3 +340,172 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'VersionedStorage without preserving order',
+  bdd => {
+    bdd
+      .given('a storage of [a, b, c] with a deleted key', () => {
+        const storage = new VersionedStorage(
+          new Map([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
+          ]),
+          { preserveOrder: false }
+        );
+
+        const overlay = storage.mutate();
+
+        overlay.delete('a');
+
+        return Object.freeze({ storage, withoutA: overlay.commit() });
+      })
+      .when('the deleted key is set again and committed', ({ withoutA }) => {
+        const overlay = withoutA.mutate();
+
+        overlay.set('a', 100);
+
+        return overlay.commit();
+      })
+      .then('should not preserve order', ({ withoutA }) => expect(withoutA.preserveOrder).toBe(false))
+      .and('should write the key in place without moving it to the end', (_, next) =>
+        expect(Array.from(next.toMap())).toEqual([
+          ['a', 100],
+          ['b', 2],
+          ['c', 3]
+        ])
+      )
+      .and('should read the key', (_, next) => {
+        expect(next.get('a')).toBe(100);
+        expect(next.has('a')).toBe(true);
+        expect(next.size).toBe(3);
+      })
+      .and('should keep older versions intact', ({ storage, withoutA }) => {
+        expect(Array.from(storage.toMap())).toEqual([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ]);
+        expect(Array.from(withoutA.toMap())).toEqual([
+          ['b', 2],
+          ['c', 3]
+        ]);
+        expect(withoutA.has('a')).toBe(false);
+        expect(withoutA.size).toBe(2);
+      });
+
+    bdd
+      .given(
+        'a storage of [a, b]',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2]
+            ]),
+            { preserveOrder: false }
+          )
+      )
+      .when('a key is deleted then set again in the same overlay', storage => {
+        const overlay = storage.mutate();
+
+        overlay.delete('a');
+        overlay.set('a', 100);
+
+        return overlay;
+      })
+      .then('the overlay should keep the key in place', (_, overlay) => {
+        expect(Array.from(overlay.keys())).toEqual(['a', 'b']);
+        expect(Array.from(overlay.toMap())).toEqual([
+          ['a', 100],
+          ['b', 2]
+        ]);
+      })
+      .and('the committed version should keep the key in place', (_, overlay) => {
+        const next = overlay.commit();
+
+        expect(Array.from(next.toMap())).toEqual([
+          ['a', 100],
+          ['b', 2]
+        ]);
+        expect(next.preserveOrder).toBe(false);
+      });
+
+    bdd
+      .given('a storage which a key is deleted and set again many times', () => {
+        const versions: VersionedStorage<string, number>[] = [
+          new VersionedStorage(
+            new Map([
+              ['a', 0],
+              ['b', 0]
+            ]),
+            { preserveOrder: false }
+          )
+        ];
+
+        for (let index = 1; index <= 100; index++) {
+          const overlay = versions.at(-1)!.mutate();
+
+          index % 2 ? overlay.delete('a') : overlay.set('a', index);
+
+          versions.push(overlay.commit());
+        }
+
+        return versions;
+      })
+      .when('every version is read', versions => versions.map(version => Array.from(version.entries())))
+      .then('every version should have its own content', (_, entries) =>
+        entries.forEach((entry, index) =>
+          expect(entry).toEqual(
+            index % 2
+              ? [['b', 0]]
+              : [
+                  ['a', index],
+                  ['b', 0]
+                ]
+          )
+        )
+      )
+      .and('every version should have its own size', versions =>
+        versions.forEach((version, index) => expect(version.size).toBe(index % 2 ? 1 : 2))
+      );
+
+    bdd
+      .given(
+        'a storage of [a, b, c]',
+        () =>
+          new VersionedStorage(
+            new Map([
+              ['a', 1],
+              ['b', 2],
+              ['c', 3]
+            ]),
+            { preserveOrder: false }
+          )
+      )
+      .when('a key is deleted and set again in another commit while iterating the head', storage => {
+        const overlay1 = storage.mutate();
+
+        overlay1.delete('b');
+
+        const withoutB = overlay1.commit();
+
+        return Object.freeze({
+          withoutB,
+          ...iterateWithChange(withoutB.keys(), () => {
+            const overlay2 = withoutB.mutate();
+
+            overlay2.set('b', 200);
+            overlay2.delete('c');
+            overlay2.commit();
+          })
+        });
+      })
+      .then('should iterate the content of the version being iterated', (_, { first, rest }) => {
+        expect(first).toBe('a');
+        expect(rest).toEqual(['c']);
+      });
+  },
+  NodeTest
+);

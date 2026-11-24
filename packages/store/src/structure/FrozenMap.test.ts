@@ -487,3 +487,39 @@ scenario(
   },
   NodeTest
 );
+
+scenario(
+  'new FrozenMap() without preserving order',
+  bdd => {
+    bdd
+      .given('a readonly map with a deleted key', () => {
+        const map = new FrozenMap(
+          [
+            ['a', 1],
+            ['b', 2]
+          ],
+          { preserveOrder: false }
+        );
+
+        const mutableMap = map.mutate();
+
+        mutableMap.delete('a');
+
+        return Object.freeze({ map, withoutA: mutableMap.commit() });
+      })
+      .when('the deleted key is set again and committed', ({ withoutA }) => withoutA.mutate().set('a', 100).commit())
+      .then('should have the key', (_, map) => {
+        expect(map.get('a')).toBe(100);
+        expect(map.size).toBe(2);
+        expect(Array.from(map.keys()).sort()).toEqual(['a', 'b']);
+      })
+      .and('should keep older versions intact', ({ map, withoutA }) => {
+        expect(Array.from(map)).toEqual([
+          ['a', 1],
+          ['b', 2]
+        ]);
+        expect(Array.from(withoutA)).toEqual([['b', 2]]);
+      });
+  },
+  NodeTest
+);

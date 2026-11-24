@@ -1,5 +1,5 @@
 import MapView from './MapView.ts';
-import { VersionedStorage, type Overlay } from './VersionedStorage.ts';
+import { VersionedStorage, type Overlay, type VersionedStorageInit } from './VersionedStorage.ts';
 
 /**
  * A writable overlay on top of a read-only `Map`.
@@ -94,10 +94,13 @@ let nextStorage: VersionedStorage<unknown, unknown> | undefined;
  *
  * Similar to `FrozenSet`, it does not extend `Map` but its prototype is chained to `Map.prototype`.
  *
+ * Iteration order is the same as `Map` by default. With `init.preserveOrder` set to `false`, iteration order is
+ * unspecified, so a deleted key which is set again does not copy the map, see `VersionedStorage` for details.
+ *
  * Note: keys and values are not frozen, freeze them before passing in if needed.
  */
 class FrozenMap<K, V> extends MapView<K, V> {
-  constructor(iterable?: Iterable<readonly [K, V]> | null | undefined) {
+  constructor(iterable?: Iterable<readonly [K, V]> | null | undefined, init?: VersionedStorageInit | undefined) {
     super();
 
     const storage = nextStorage;
@@ -107,7 +110,7 @@ class FrozenMap<K, V> extends MapView<K, V> {
     // Copy into a private storage so changes to the original iterable will not leak in.
     this.#storage = storage
       ? (storage satisfies VersionedStorage<unknown, unknown> as VersionedStorage<K, V>)
-      : new VersionedStorage(new Map(iterable));
+      : new VersionedStorage(new Map(iterable), init);
 
     Object.freeze(this);
   }
