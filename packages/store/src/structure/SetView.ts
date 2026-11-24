@@ -2,9 +2,15 @@
  * Iterates the keys of a set-like object.
  *
  * Unlike `for...of`, it does not require the iterator returned by `keys()` to be iterable, as `Set` methods do.
+ *
+ * When the caller terminates early (e.g. `break` or `return` inside `for...of`), the iterator returned by `keys()` is
+ * closed by calling its `return()`, as `Set` methods do via `IteratorClose()`. The iterator is not closed if it is
+ * exhausted or if its `next()` throws.
+ *
+ * @see {@link https://tc39.es/ecma262/#sec-iteratorclose ECMAScript: IteratorClose}
  */
 function* iterateSetLike<T>(setLike: ReadonlySetLike<T>): Generator<T, void, unknown> {
-  const iterator = setLike.keys();
+  const iterator: Iterator<T> = setLike.keys();
 
   for (;;) {
     const result = iterator.next();
@@ -13,7 +19,15 @@ function* iterateSetLike<T>(setLike: ReadonlySetLike<T>): Generator<T, void, unk
       return;
     }
 
-    yield result.value;
+    let completed = false;
+
+    try {
+      yield result.value;
+
+      completed = true;
+    } finally {
+      completed || iterator.return?.();
+    }
   }
 }
 
