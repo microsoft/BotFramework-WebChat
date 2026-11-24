@@ -45,9 +45,7 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       // rolldown-plugin-dts emits declarations module by module as they load, and TypeScript 6 prints union members in
       // the order it created their types: 2 clean builds printed the same union differently. stableTypeOrdering (hidden
       // TypeScript 6.0 option) orders them like TypeScript 7 does. Remove on TypeScript 7 (always stable).
-      compilerOptions: { stableTypeOrdering: true },
-      // tsup does not emit declaration maps.
-      sourcemap: false
+      compilerOptions: { stableTypeOrdering: true }
     },
     env: {
       node_env: env,
