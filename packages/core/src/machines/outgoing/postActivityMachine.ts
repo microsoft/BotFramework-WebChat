@@ -22,6 +22,104 @@ import type { Machine, OnlineSession, Scope } from '../types';
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
 const HARD_SEND_TIMEOUT = 300000;
 
+type Meta = { readonly clientActivityID: string; readonly method: string };
+
+/**
+ * Posts the activity: "sent" (`POST_ACTIVITY_FULFILLED`) once it returned and echoed back, in any order. "Send failed"
+ * after `sendTimeout` (`POST_ACTIVITY_IMPEDED`); rejected after 5 minutes or on an error (`POST_ACTIVITY_REJECTED`).
+ */
+function send(worker: Scope, directLine: any, outgoingActivity: WebChatOutgoingActivity, meta: Meta): void {
+  let echoBack: WebChatActivity | undefined;
+  let returned = false;
+  let stopHardTimeout = () => undefined;
+  let stopRace = () => undefined;
+  let stopTakingEcho = () => undefined;
+
+  const reject = (error: unknown) => {
+    stopRace();
+    console.error('botframework-webchat: Failed to post activity to chat adapter.', error);
+    worker.put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: error });
+  };
+
+  // A step that throws rejects the post.
+  const step =
+    <T extends unknown[]>(fn: (...args: T) => void) =>
+    (...args: T) => {
+      try {
+        fn(...args);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+  const fulfillIfSent = () => {
+    if (echoBack && returned) {
+      stopRace();
+      worker.put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } }, undefined, reject);
+    }
+  };
+
+  const takeEcho = () => {
+    stopTakingEcho = worker.take(
+      is(INCOMING_ACTIVITY),
+      step(({ payload: { activity } }) => {
+        if (activity.channelData?.clientActivityID === meta.clientActivityID && activity.id) {
+          echoBack = activity;
+          fulfillIfSent();
+        } else {
+          takeEcho();
+        }
+      })
+    );
+  };
+
+  const onReturned = () => {
+    returned = true;
+    fulfillIfSent();
+  };
+
+  // For backward compatibility, "send failed" in `channelData.state` (deprecated in favor of
+  // `channelData['webchat:send-status']`, #4362).
+  const impede = (sendTimeout: number) =>
+    worker.put(
+      { type: POST_ACTIVITY_IMPEDED, meta, payload: { activity: outgoingActivity } },
+      step(() => {
+        stopHardTimeout = worker.sleep(HARD_SEND_TIMEOUT - sendTimeout, () =>
+          reject(
+            echoBack
+              ? new Error('timed out while waiting for postActivity to return any values')
+              : new Error('timed out while waiting for outgoing message to echo back')
+          )
+        );
+      }),
+      reject
+    );
+
+  try {
+    // The timeout: the post may take too long to return (Direct Line returns after the bot did), or to echo back.
+    const sendTimeout: number = worker.select(sendTimeoutSelector);
+    const posting = directLine.postActivity(outgoingActivity);
+
+    // The echo may come before `postActivity()` returns: it is taken first.
+    takeEcho();
+
+    const stopObserving = worker.observeOnce(posting, step(onReturned), reject);
+    const stopTimeout = worker.sleep(
+      sendTimeout,
+      step(() => impede(sendTimeout))
+    );
+
+    stopRace = () => {
+      stopTakingEcho();
+      stopObserving();
+      stopTimeout();
+      stopHardTimeout();
+    };
+  } catch (error) {
+    reject(error);
+  }
+}
+
 function postActivity(
   worker: Scope,
   { directLine, userID, username }: OnlineSession,
@@ -98,115 +196,18 @@ function postActivity(
   const meta = { clientActivityID, method };
 
   worker.put({ type: POST_ACTIVITY_PENDING, meta, payload: { activity: outgoingActivity } }, () => {
-    let echoed: boolean | undefined;
-    let stopRace = () => undefined;
-
-    // The `catch`: "send failed".
-    const reject = (error: unknown) => {
-      stopRace();
-      console.error('botframework-webchat: Failed to post activity to chat adapter.', error);
-      worker.put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: error });
-    };
-
-    // What throws inside the `try` is caught.
-    const attempt =
-      <T extends unknown[]>(fn: (...args: T) => void) =>
-      (...args: T) => {
-        try {
-          fn(...args);
-        } catch (error) {
-          reject(error);
-        }
-      };
-
     worker.finally(
       cancelled =>
         cancelled && worker.put({ type: POST_ACTIVITY_REJECTED, error: true, meta, payload: new Error('cancelled') })
     );
 
-    attempt(() => {
-      // The echo may come before `postActivity()` returns: the race waits for both, then "sent".
-      const sendTimeout: number = worker.select(sendTimeoutSelector);
-      const posting = directLine.postActivity(outgoingActivity);
-      let echoBack: any;
-      let returned = false;
-
-      const sent = () => {
-        if (echoed && returned) {
-          stopRace();
-          worker.put({ type: POST_ACTIVITY_FULFILLED, meta, payload: { activity: echoBack } }, undefined, reject);
-        }
-      };
-
-      let stopTakingEcho: () => void;
-
-      const takeEcho = () => {
-        stopTakingEcho = worker.take(
-          is(INCOMING_ACTIVITY),
-          attempt(({ payload: { activity } }) => {
-            if (activity.channelData?.clientActivityID === clientActivityID && activity.id) {
-              echoed = true;
-              echoBack = activity;
-              sent();
-            } else {
-              takeEcho();
-            }
-          })
-        );
-      };
-
-      takeEcho();
-
-      const stopObserving = worker.observeOnce(
-        posting,
-        attempt(() => {
-          returned = true;
-          sent();
-        }),
-        reject
-      );
-
-      // The timeout: the post may take too long to return (Direct Line returns after the bot did), or to echo back.
-      let stopHardTimeout = () => undefined;
-
-      const stopTimeout = worker.sleep(
-        sendTimeout,
-        attempt(() =>
-          // For backward compatibility, "send failed" in `channelData.state` (deprecated in favor of
-          // `channelData['webchat:send-status']`, #4362).
-          worker.put(
-            { type: POST_ACTIVITY_IMPEDED, meta, payload: { activity: outgoingActivity } },
-            attempt(() => {
-              stopHardTimeout = worker.sleep(
-                HARD_SEND_TIMEOUT - sendTimeout,
-                attempt(() => {
-                  throw !echoed
-                    ? new Error('timed out while waiting for outgoing message to echo back')
-                    : new Error('timed out while waiting for postActivity to return any values');
-                })
-              );
-            }),
-            reject
-          )
-        )
-      );
-
-      stopRace = () => {
-        stopTakingEcho();
-        stopObserving();
-        stopTimeout();
-        stopHardTimeout();
-      };
-    })();
+    send(worker, directLine, outgoingActivity, meta);
   });
 }
 
 /**
- * `postActivitySaga`: while online, posts each `POST_ACTIVITY` to Direct Line: "sending" (`POST_ACTIVITY_PENDING`),
- * then "sent" once it returned and echoed back, or "send failed" (`POST_ACTIVITY_IMPEDED` after `sendTimeout`;
- * `POST_ACTIVITY_REJECTED` after 5 minutes, on an error, or when going offline).
- *
- * The timers are cleared when the post completes (the saga left them running).
+ * While online, posts each `POST_ACTIVITY` to Direct Line: "sending" (`POST_ACTIVITY_PENDING`), then as `send()`. The
+ * timers are cleared when the post completes.
  */
 const postActivityMachine: Machine = scope =>
   scope.whileOnline((session, online) => {
