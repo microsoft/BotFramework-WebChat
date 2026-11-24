@@ -123,8 +123,6 @@ We intended to keep custom parts minimal to reduce code complexity and learning 
    - `getSnapshot()` returns a hashmap of nodes keyed by `@id`, there is no contract on its iteration order
       - Iteration order is unspecified and may change between versions (e.g. a deleted node upserted again may not be the last), callers must not depend on it
       - Story: the graph is a set of nodes, not a list, the only order offered by the store is sorted children via `getSortedParts()`
-      - Not preserving order allows a deleted node upserted again to be written in place, instead of copying the whole hashmap of the graph
-      - Same applies to other hashmaps inside the store, such as indices and the storage of sorted children (the skip list iterates by links, not by its hashmap)
    - Query a single node by ID
    - Query a single node by either `@id` or one of its alternate identifiers via `queryByIdentifier()`, `O(1)`
    - Listeners are notified with `@id` of affected nodes (including deleted nodes), plus their alternate identifiers before and after the change
