@@ -31,8 +31,8 @@
  * - Delete then re-add: after append, a child is deleted, then upserted again in another transaction
  * - Repeat upsert: after append, the parent is updated multiple times in a single transaction
  * - Adopt then re-read: same as adopt, then the parent is updated again in the same transaction
- * - Mirror churn: after append, a new child is added via `isPartOf`, then the parent is updated, repeated multiple
- *   times in a single transaction
+ * - Mirror churn: after append, the parent is updated with a new child in `hasPart`, then the new child is upserted
+ *   with `isPartOf`, repeated multiple times in a single transaction
  *
  * Benchmarks measured per operation (`µs/op`) run `NUM_OPERATIONS` operations, they should stay flat across a row.
  */
@@ -174,7 +174,8 @@ function pending(numNodes: number): number {
       hasPart: new Set(ids.map(id => ({ '@id': id })))
     }));
 
-    ids.forEach((id, index) => transaction.upsert(id, () => createMessage(index)));
+    // `isPartOf` must be returned, as `hasPart` of the parent is upserted in the same transaction.
+    ids.forEach((id, index) => transaction.upsert(id, () => createMessage(index, new Set([{ '@id': '_:c-2' }]))));
   });
 
   return performance.now() - start;
@@ -240,7 +241,7 @@ function updateParentAddOne(numNodes: number): number {
 
   for (let index = numNodes; index < numNodes + NUM_OPERATIONS; index++) {
     controller.edit(transaction => {
-      transaction.upsert(`_:m-${index}`, () => createMessage(index));
+      transaction.upsert(`_:m-${index}`, () => createMessage(index, new Set([{ '@id': '_:c-1' }])));
       transaction.upsert('_:c-1', node => ({
         ...node!,
         hasPart: new Set(node!.hasPart).add({ '@id': `_:m-${index}` })
@@ -314,15 +315,20 @@ function adoptThenReread(numNodes: number): number {
   return performance.now() - start;
 }
 
-/** Appends children, then measures adding a child via `isPartOf` and updating the parent, in one transaction. */
+/** Appends children, then measures updating the parent and adding a child on both sides, in one transaction. */
 function mirrorChurn(numNodes: number): number {
   const { controller } = upsertChildren(numNodes, 'append');
   const start = performance.now();
 
   controller.edit(transaction => {
     for (let index = numNodes; index < numNodes + NUM_OPERATIONS; index++) {
+      // Both sides are upserted in the same transaction, they must agree with each other.
+      transaction.upsert('_:c-1', node => ({
+        ...node!,
+        hasPart: new Set(node!.hasPart).add({ '@id': `_:m-${index}` }),
+        text: [`Update ${index}`]
+      }));
       transaction.upsert(`_:m-${index}`, () => createMessage(index, new Set([{ '@id': '_:c-1' }])));
-      transaction.upsert('_:c-1', node => ({ ...node!, text: [`Update ${index}`] }));
     }
   });
 

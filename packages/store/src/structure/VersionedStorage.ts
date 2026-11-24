@@ -39,6 +39,17 @@ type OlderState<K, V> = {
 
 type State<K, V> = OlderState<K, V> | OwnerState<K, V>;
 
+type VersionedStorageInit = {
+  /**
+   * `true` (default) to iterate in the same order as `Map`, deleted keys which are set again are moved to the end, which
+   * copies the underlying `Map`.
+   *
+   * `false` if the caller does not depend on iteration order, deleted keys which are set again are written in place
+   * without copying. Iteration order is unspecified, but consistent within the same version.
+   */
+  readonly preserveOrder?: boolean | undefined;
+};
+
 /** Returns a new `Map` of the base with changes applied, tombstones are removed and moved keys are moved to the end. */
 function mergeChanges<K, V>(
   base: ReadonlyMap<K, V | typeof DELETED>,
@@ -78,7 +89,8 @@ let commitChanges: <K, V>(
  * - Iterating an older version is O(size of the underlying `Map`) once, the content is kept for subsequent iterations
  * - Committing on top of the head is O(number of changes)
  * - Copying, O(size): committing on top of an older version (branching), moving a key to the end (setting a key which
- *   is deleted earlier), or when there are more tombstones than live entries (amortized to O(1) per deletion)
+ *   is deleted earlier, only when preserving order), or when there are more tombstones than live entries (amortized to
+ *   O(1) per deletion)
  *
  * Why undo log: a read-only version must never change after it is handed out, e.g. `Store.getSnapshot()` returns it
  * directly, and callers (such as `useSyncExternalStore()` or diffing previous/next snapshots) could still read it after
@@ -94,15 +106,21 @@ let commitChanges: <K, V>(
  * deleted keys are kept as tombstones in place, and moving a key copies to a new `Map` for the head. Iterators are not
  * affected by later commits.
  *
+ * With `preserveOrder: false`, iteration order is unspecified: deleted keys which are set again are written over their
+ * tombstones in place, without copying. A shared `Map` is still never reordered, so every version sharing it iterates
+ * in the same relative order.
+ *
  * Usage: `storage.mutate()` returns a writable `Overlay`, `overlay.commit()` returns a new read-only version. An overlay
  * cannot be used to create another overlay.
  */
 class VersionedStorage<K, V> {
-  constructor(map: Map<K, V>) {
+  constructor(map: Map<K, V>, init?: VersionedStorageInit | undefined) {
+    this.#preserveOrder = init?.preserveOrder ?? true;
     this.#size = map.size;
     this.#state = Object.freeze({ isHead: true, map, numTombstones: 0 });
   }
 
+  readonly #preserveOrder: boolean;
   #size: number;
   #state: State<K, V>;
 
@@ -124,7 +142,9 @@ class VersionedStorage<K, V> {
       // Copy, this version keeps its underlying `Map` (if any) untouched.
       state.isHead && (this.#state = Object.freeze({ ...state, isHead: false }));
 
-      return new VersionedStorage(mergeChanges(state.map ?? this.toMap(), changes, movedKeys));
+      return new VersionedStorage(mergeChanges(state.map ?? this.toMap(), changes, movedKeys), {
+        preserveOrder: this.#preserveOrder
+      });
     }
 
     const { map } = state;
@@ -133,12 +153,17 @@ class VersionedStorage<K, V> {
     // Swap in place: apply each change to the map, and replace it with the previous value to become the undo log.
     // Keys are only overwritten in place, the order of the map is not changed.
     for (const [key, value] of changes) {
+      // Missing keys are also `DELETED` in the undo log, but they are not tombstones.
+      const wasTombstone = map.get(key) === DELETED;
+
       changes.set(key, map.has(key) ? (map.get(key) satisfies V | typeof DELETED | undefined as V) : DELETED);
       map.set(key, value);
-      value === DELETED && numTombstones++;
+
+      // Without preserving order, setting a deleted key overwrites its tombstone in place.
+      value === DELETED ? numTombstones++ : wasTombstone && numTombstones--;
     }
 
-    const next = new VersionedStorage<K, V>(EMPTY_MAP);
+    const next = new VersionedStorage<K, V>(EMPTY_MAP, { preserveOrder: this.#preserveOrder });
 
     next.#size = map.size - numTombstones;
     next.#state = Object.freeze({ isHead: true, map, numTombstones });
@@ -153,8 +178,8 @@ class VersionedStorage<K, V> {
 
     if (movedKeys.size || (numTombstones > MIN_NUM_TOMBSTONES_TO_COMPACT && numTombstones > this.#size)) {
       return false;
-    } else if (!numTombstones) {
-      // No tombstones to set.
+    } else if (!numTombstones || !this.#preserveOrder) {
+      // No tombstones to set, or tombstones can be set in place as order is not preserved.
       return true;
     }
 
@@ -166,6 +191,11 @@ class VersionedStorage<K, V> {
     }
 
     return true;
+  }
+
+  /** `false` if iteration order is unspecified, see `VersionedStorageInit`. */
+  get preserveOrder(): boolean {
+    return this.#preserveOrder;
   }
 
   get size(): number {
@@ -392,7 +422,7 @@ class Overlay<K, V> {
 
     this.has(key) || this.#size++;
 
-    if (this.#changes.has(key) && this.#changes.get(key) === DELETED) {
+    if (this.#base.preserveOrder && this.#changes.has(key) && this.#changes.get(key) === DELETED) {
       // Re-append so the key is ordered after other new keys.
       this.#changes.delete(key);
       this.#movedKeys.add(key);
@@ -444,7 +474,8 @@ class Overlay<K, V> {
    * not yet visited are skipped, and new or moved entries are visited at the end.
    *
    * Entries of the base version come first in its order, except deleted and moved keys, then new and moved keys in
-   * the order they are set, same as the order after `commit()`.
+   * the order they are set, same as the order after `commit()`. Without preserving order, keys are never moved: a
+   * deleted key which is set again keeps its position in the base version.
    *
    * If committed during iteration, continues from the same position: presence and values are read by `has()` and
    * `get()`, which read the committed version after commit. The base version, the changes, and the moved keys are kept
@@ -492,4 +523,4 @@ Object.freeze(Overlay);
 Object.freeze(VersionedStorage.prototype);
 Object.freeze(VersionedStorage);
 
-export { VersionedStorage, type Overlay };
+export { VersionedStorage, type Overlay, type VersionedStorageInit };
