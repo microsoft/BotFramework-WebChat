@@ -3,11 +3,11 @@
  */
 // The runner of the machines, pinned: each case runs a few machines on a Redux store and checks what an outermost
 // middleware sees (with the depth of each dispatch), the errors and what the machines logged themselves. The expected
-// lines are what redux-saga did with sagas written as the twins of these machines, before the machines replaced it.
+// lines were recorded from redux-saga 1.5.0 running sagas written as the twins of these machines: the timing hosts saw.
 import { applyMiddleware, createStore, type Middleware } from 'redux';
 
-import createMachines from '../createMachines';
-import type { Machine, MachineAction } from '../types';
+import createMachinesMiddleware from '../createMachinesMiddleware';
+import type { Machine, MachineAction, Subscribable } from '../types';
 
 type Case = {
   /** What redux-saga did. */
@@ -25,13 +25,21 @@ const is =
 // eslint-disable-next-line no-restricted-globals
 const ponyfill = { clearTimeout, setTimeout } as any;
 
+// Emits at once: `observeOnce()` calls back a microtask later, as `call()` of a resolved promise did.
+const resolved: Subscribable<void> = {
+  subscribe: ({ next }) => {
+    next();
+
+    return { unsubscribe: () => undefined };
+  }
+};
+
 async function run({ host, machines, script }: Case): Promise<string[]> {
   const lines: string[] = [];
   const log = (line: string) => lines.push(line);
   let depth = 0;
   // eslint-disable-next-line prefer-const
   let store: ReturnType<typeof createStore>;
-  let instance: ReturnType<typeof createMachines>;
 
   const recorder: Middleware = () => next => (action: any) => {
     log(`${'>'.repeat(++depth)} ${action.type}`);
@@ -60,20 +68,10 @@ async function run({ host, machines, script }: Case): Promise<string[]> {
     return state + 1;
   };
 
-  const machinesMiddleware: Middleware = ({ dispatch, getState }) => {
-    instance = createMachines({ dispatch, getState, onError, ponyfill }, machines(log));
+  const { middleware, start } = createMachinesMiddleware({ machines: machines(log), onError, ponyfill });
 
-    return next => action => {
-      const result = next(action);
-
-      instance.afterReduce(action as any);
-
-      return result;
-    };
-  };
-
-  store = createStore(reducer, applyMiddleware(recorder, ...(host ? [host] : []), machinesMiddleware));
-  instance.start();
+  store = createStore(reducer, applyMiddleware(recorder, ...(host ? [host] : []), middleware));
+  start();
 
   try {
     await script(action => store.dispatch(action as any));
@@ -218,7 +216,7 @@ const CASES: Readonly<Record<string, Case>> = {
     machines: () => [
       scope =>
         scope.take(is('P'), () =>
-          scope.wait(Promise.resolve(), () => {
+          scope.observeOnce(resolved, () => {
             scope.fork(child => child.put({ type: 'CHILD' }));
             scope.put({ type: 'PARENT' });
           })
@@ -233,7 +231,7 @@ const CASES: Readonly<Record<string, Case>> = {
     machines: log => [
       scope =>
         scope.take(is('P'), () =>
-          scope.wait(Promise.resolve(), () => {
+          scope.observeOnce(resolved, () => {
             scope.fork(child => {
               child.fork(grandchild => grandchild.put({ type: 'FORKED_PUT' }));
               log('the child goes on');
@@ -300,7 +298,7 @@ const CASES: Readonly<Record<string, Case>> = {
         }),
       scope =>
         scope.take(is('GO'), () =>
-          scope.wait(Promise.resolve(), () => {
+          scope.observeOnce(resolved, () => {
             throw new Error('boom');
           })
         )
@@ -374,7 +372,7 @@ const CASES: Readonly<Record<string, Case>> = {
   }
 };
 
-test.each(Object.keys(CASES))('%s: the machines do what redux-saga did', async name => {
+test.each(Object.keys(CASES))('%s', async name => {
   // eslint-disable-next-line security/detect-object-injection
   const entry = CASES[name];
 

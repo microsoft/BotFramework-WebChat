@@ -49,14 +49,6 @@ type Scope = {
     then: (value: T) => void,
     onError?: ((error: unknown) => void) | undefined
   ) => () => void;
-  /**
-   * `channel(buffers.expanding())`: values put while no one takes are kept; a `take()` gets the first one now, or waits
-   * for the next one (as what the scope waits for).
-   */
-  readonly channel: <T>() => {
-    readonly put: (value: T) => void;
-    readonly take: (then: (value: T) => void) => void;
-  };
   /** Calls `fn` when the scope ends: `true` if it was stopped, as `yield cancelled()` in a `finally` block. LIFO. */
   readonly finally: (fn: (cancelled: boolean) => void) => void;
   /** `fork()`: runs `body` in a child scope now; its puts run after the current task. */
@@ -94,12 +86,6 @@ type Scope = {
   readonly stop: () => void;
   /** `take()`: the next action that matches; returns the function that stops waiting (a lost `race()`). */
   readonly take: (match: Match, then: (action: MachineAction) => void) => () => void;
-  /** `call(promise)`: a microtask after it settles. */
-  readonly wait: <T>(
-    promise: PromiseLike<T>,
-    then: (value: T) => void,
-    onError?: ((error: unknown) => void) | undefined
-  ) => () => void;
   /**
    * `whileConnected()`: runs `body` in a child scope from `*_FULFILLING` until `DISCONNECT_PENDING` or
    * `RECONNECT_PENDING`, each time.
@@ -107,7 +93,7 @@ type Scope = {
   readonly whileOnline: (body: (session: OnlineSession, scope: Scope) => void) => void;
 };
 
-/** A machine: what one saga did, started in its scope. */
+/** A machine, started in its own scope. */
 type Machine = (scope: Scope) => void;
 
 export type { Machine, MachineAction, MachineHost, Match, OnlineSession, Scope, Subscribable };

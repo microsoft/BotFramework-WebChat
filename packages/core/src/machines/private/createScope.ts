@@ -227,32 +227,6 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
         settle(effect) && child.stop();
       };
     },
-    channel: <T>() => {
-      const buffer: T[] = [];
-      let taker: { readonly effect: Effect; readonly then: (value: T) => void } | undefined;
-
-      return Object.freeze({
-        put: (value: T) => {
-          const current = taker;
-
-          taker = undefined;
-
-          current ? settle(current.effect) && run(() => current.then(value)) : buffer.push(value);
-        },
-        take: (then: (value: T) => void) => {
-          if (buffer.length) {
-            then(buffer.shift());
-          } else {
-            taker = {
-              effect: addEffect(() => {
-                taker = undefined;
-              }),
-              then
-            };
-          }
-        }
-      });
-    },
     finally: (fn: (cancelled: boolean) => void) => {
       finallies.push(fn);
     },
@@ -371,8 +345,6 @@ export default function createScope(env: Env, parent: Parent | undefined): Node 
       stop();
     },
     take,
-    wait: <T>(promise: PromiseLike<T>, then: (value: T) => void, onError?: ((error: unknown) => void) | undefined) =>
-      wait(promise, then, onError),
     whileOnline: (body: (session: OnlineSession, scope: Scope) => void) => {
       const loop = () =>
         take(isOnline, action => {

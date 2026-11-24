@@ -31,7 +31,7 @@ function createRoot() {
 }
 
 describe('a scope', () => {
-  test('clears the timer of a sleep when it stops (redux-saga leaves it running)', () => {
+  test('clears the timer of a sleep when it stops', () => {
     const { calls, root, timers } = createRoot();
 
     root.start(scope => {
@@ -71,7 +71,16 @@ describe('a scope', () => {
 
     root.start(scope => {
       scope.finally(cancelled => calls.push(`finally ${cancelled}`));
-      scope.wait(Promise.resolve(), () => calls.push('resolved'));
+      scope.observeOnce(
+        {
+          subscribe: ({ next }) => {
+            next(undefined);
+
+            return { unsubscribe: () => undefined };
+          }
+        },
+        () => calls.push('resolved')
+      );
     });
 
     await Promise.resolve();
