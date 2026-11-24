@@ -60,9 +60,6 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
         buildOptions.plugins = [buildOptions.plugins, cssPlugin({ minify: !!minify && minify !== 'dce-only', target })];
       }
     },
-    // onSuccess touches package.json for `npm start` (notify-build.sh) of dependent packages: `tsdown --watch` would
-    // reload its config on every touch.
-    ignoreWatch: ['./dist/', './package.json'],
     inputOptions: (options, format) => ({
       ...options,
       // unplugin-lightningcss exports every class as `export { _x as "class-name" }`. String export names need ES2022:
