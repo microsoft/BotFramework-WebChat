@@ -20,7 +20,8 @@ type Config = UserConfig & {
 // Port of tsup.base.config.ts.
 function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config): Config {
   return overrideOptions({
-    // CSS modules are compiled by our cssPlugin (rolldownPlugins.mjs), not by @tsdown/css.
+    // Our cssPlugin (rolldownPlugins.mjs) compiles CSS modules. `false` turns off tsdown's CSS support: without
+    // @tsdown/css installed, it fails the build on every `.css` module, ours included.
     css: false,
     define: {
       // TSD does not support define, thus we need to use `globalThis.*` instead.
@@ -63,7 +64,8 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
     ignoreWatch: ['./dist/'],
     inputOptions: (options, format) => ({
       ...options,
-      // unplugin-lightningcss exports dashed class names as `export { _x as "a-b" }`: rolldown warns for each of them.
+      // unplugin-lightningcss exports every class as `export { _x as "class-name" }`. String export names need ES2022:
+      // rolldown warns for each class in the ES2019 (CommonJS) builds, although bundling removes these exports.
       // rolldown also warns when JavaScript plugins (Lightning CSS, istanbul) take most of the build time.
       checks: { ...options.checks, pluginTimings: false, toleratedTransform: false },
       // tsdown builds CommonJS for Node.js, ours is for browsers too (uses the "browser" conditions of dependencies).
