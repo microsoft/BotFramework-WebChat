@@ -31,6 +31,13 @@ export default function injectCSSRolldownPlugin({
     throw new Error('inject-css-plugin: no placeholder for styles provided');
   }
 
+  // The placeholder is found as written between quotes, so it must not contain a character that a string literal escapes.
+  if (!/^[\w@.-]+$/u.test(stylesPlaceholder)) {
+    throw new Error(
+      `inject-css-plugin: the placeholder for styles may contain only letters, digits, "_", "@", "." and "-": ${JSON.stringify(stylesPlaceholder)}`
+    );
+  }
+
   // Unlike esbuild, the rolldown (oxc) minifier prints strings as template literals: `@--STYLES--@`.
   const stylesPlaceholderQuotes = Object.freeze(['"', "'", '`'].map(quote => `${quote}${stylesPlaceholder}${quote}`));
   const ignoreCSSEntriesSet = new Set<string>(ignoreCSSEntries);
@@ -94,11 +101,7 @@ export default function injectCSSRolldownPlugin({
           }
 
           const cssSource = cssFilesMap.get(Array.from(cssCandidateKeys).at(0)!)?.source;
-          // Like esbuild's in-memory CSS output, without the source map comment.
-          const cssText = (typeof cssSource === 'string' ? cssSource : new TextDecoder().decode(cssSource)).replace(
-            /\/\*# sourceMappingURL=\S+ \*\/\n?$/u,
-            ''
-          );
+          const cssText = typeof cssSource === 'string' ? cssSource : new TextDecoder().decode(cssSource);
 
           if (!cssText) {
             throw new Error(

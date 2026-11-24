@@ -8,6 +8,22 @@ import type { Rolldown } from 'tsdown';
 
 import injectCSSRolldownPlugin from './injectCSSRolldownPlugin';
 
+test.each(['a\\b', 'a"b', "a'b", 'a`b', 'a$b', 'a b'])(
+  'a placeholder with a character that a string literal may escape (%p) throws',
+  stylesPlaceholder => {
+    expect(() => injectCSSRolldownPlugin({ stylesPlaceholder })).toThrow(
+      'inject-css-plugin: the placeholder for styles may contain only letters, digits, "_", "@", "." and "-"'
+    );
+  }
+);
+
+test.each(['@--COMPONENT-STYLES-CONTENT--@', '@--DECORATOR-STYLES-CONTENT--@', '@--FLUENT-STYLES-CONTENT--@'])(
+  'the placeholder %p is accepted',
+  stylesPlaceholder => {
+    expect(() => injectCSSRolldownPlugin({ stylesPlaceholder })).not.toThrow();
+  }
+);
+
 const PLACEHOLDER = '@--STYLES--@';
 
 // Characters that JSON.stringify() escapes, so the embedded string is longer than the CSS.
@@ -44,7 +60,7 @@ function createBundle(banner: string | undefined): Rolldown.OutputBundle {
   const mappings = encode(lines.map((_, index) => (index === lines.length - 1 ? segments : [])));
 
   return {
-    'index.css': { fileName: 'index.css', source: `${CSS}/*# sourceMappingURL=index.css.map */\n`, type: 'asset' },
+    'index.css': { fileName: 'index.css', source: CSS, type: 'asset' },
     'index.js': {
       code: lines.join('\n'),
       facadeModuleId: '/index.js',
@@ -123,7 +139,6 @@ scenario(
         )
         .then('the CSS should replace the placeholder', ({ embedded }) => {
           expect(embedded.js).not.toContain(PLACEHOLDER);
-          // Without the source map comment of the CSS file.
           expect(embedded.js).toContain(`const e=${JSON.stringify(CSS)};`);
         })
         .and('should map to the same source position as without the plugin', (_, { embedded, placeholder }) => {

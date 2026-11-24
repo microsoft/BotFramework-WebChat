@@ -32,7 +32,7 @@ function withPackageOptions(config: Config, moduleFormat: string): Partial<Confi
         // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"
         'shiki', // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
         // Issues related to Webpack 4 when it tries to statically analyze dependencies.
-        // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsup to proxy require() into __require() for dynamic loading.
+        // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing rolldown (like esbuild) to proxy require() into __require() for dynamic loading.
         // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
         'uuid'
       ].map(packagePattern)
@@ -75,7 +75,6 @@ function createIIFEConfig(name: 'webchat' | 'webchat-es5' | 'webchat-minimal'): 
 }
 
 export default defineConfig([
-  // Build IIFE before CJS/ESM to make npm start faster.
   createIIFEConfig('webchat'),
   createIIFEConfig('webchat-es5'),
   createIIFEConfig('webchat-minimal'),

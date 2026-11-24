@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { waitFor } from '@testduet/wait-for';
+      import { createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Every style option of the scroll to end button set to a value other than its default.
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              hideSendBox: true,
+              scrollToEndButtonBehavior: 'any', // Shows the button whenever the transcript is not at the end.
+              scrollToEndButtonFontSize: '1.25em', // Strings are used as is.
+              transcriptOverlayButtonBackground: 'Navy',
+              transcriptOverlayButtonBackgroundOnFocus: 'Purple',
+              transcriptOverlayButtonBackgroundOnHover: 'Green',
+              transcriptOverlayButtonColor: 'Yellow',
+              transcriptOverlayButtonColorOnFocus: 'Aqua',
+              transcriptOverlayButtonColorOnHover: 'White'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: Enough messages to scroll the transcript.
+        for (let index = 1; index <= 20; index++) {
+          // eslint-disable-next-line no-await-in-loop
+          await directLine.emulateIncomingActivity({
+            from: { role: 'bot' },
+            text: `Message ${index}`,
+            type: 'message'
+          });
+        }
+
+        await pageConditions.numActivitiesShown(20);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: The user scrolls to the top.
+        await pageObjects.scrollToTop();
+        await pageConditions.scrollToEndButtonShown();
+        await pageConditions.scrollStabilized(0);
+
+        // THEN: A navy "More messages" button with yellow text, in a larger font.
+        await host.snapshot('local');
+
+        // WHEN: The button is focused.
+        pageElements.scrollToEndButton().focus();
+
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.scrollToEndButton()));
+
+        // THEN: The button is purple with aqua text.
+        await host.snapshot('local');
+
+        // WHEN: The focused button is hovered.
+        await host.hover(pageElements.scrollToEndButton());
+
+        await waitFor(() => expect(pageElements.scrollToEndButton().matches(':focus:hover')).toBe(true));
+
+        // THEN: No change, still purple with aqua text: focus wins over hover.
+        await host.snapshot('local');
+
+        // WHEN: The hovered button loses focus.
+        pageElements.scrollToEndButton().blur();
+
+        await waitFor(() => expect(pageElements.scrollToEndButton().matches(':focus')).toBe(false));
+
+        expect(pageElements.scrollToEndButton().matches(':hover')).toBe(true);
+
+        // THEN: The button is green with white text.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
