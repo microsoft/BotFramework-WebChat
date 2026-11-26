@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import type { LocalId } from '../property/LocalId';
@@ -23,7 +21,7 @@ scenario('get logical timestamp', bdd => {
           type: 'message'
         }) satisfies WebChatActivity
     )
-    .when('getting its logical timestamp', activity => getLogicalTimestamp(activity, { Date }))
+    .when('getting its logical timestamp', activity => getLogicalTimestamp(activity))
     .then('should get 123', (_, actual) => expect(actual).toBe(123));
 
   bdd
@@ -44,6 +42,6 @@ scenario('get logical timestamp', bdd => {
           type: 'message'
         }) satisfies WebChatActivity
     )
-    .when('getting its logical timestamp', activity => getLogicalTimestamp(activity, { Date }))
+    .when('getting its logical timestamp', activity => getLogicalTimestamp(activity))
     .then('should get 123', (_, actual) => expect(actual).toBe(123));
 });

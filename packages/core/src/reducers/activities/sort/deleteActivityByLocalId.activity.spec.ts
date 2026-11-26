@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import deleteActivityByLocalId from './deleteActivityByLocalId';
@@ -45,7 +44,7 @@ scenario('deleting activity', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('2 activities are upserted', state => upsert({ Date }, upsert({ Date }, state, activity1), activity2))
+    .when('2 activities are upserted', state => upsert(upsert(state, activity1), activity2))
     .then('should have 2 activities', (_, state) => {
       expect(state.activityIdToLocalIdMap).toHaveProperty('size', 2);
       expect(state.activityMap).toHaveProperty('size', 2);
@@ -114,7 +113,7 @@ scenario('deleting an outgoing activity', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('1 activity are upserted', state => upsert({ Date }, state, activity1))
+    .when('1 activity are upserted', state => upsert(state, activity1))
     .then('should have 1 activity', (_, state) => {
       expect(state.activityIdToLocalIdMap).toHaveProperty('size', 1);
       expect(state.activityMap).toHaveProperty('size', 1);

@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { parse } from 'valibot';
@@ -126,11 +125,7 @@ scenario('delete livestream activities in part grouping', bdd => {
   bdd
     .given('an initial state', () => INITIAL_STATE)
     .when('4 activities are upserted', state =>
-      upsert(
-        { Date },
-        upsert({ Date }, upsert({ Date }, upsert({ Date }, state, activity1), activity2), activity3),
-        activity4
-      )
+      upsert(upsert(upsert(upsert(state, activity1), activity2), activity3), activity4)
     )
     .then('should have 4 activities in map, 2 visible', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 4);
