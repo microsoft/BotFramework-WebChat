@@ -70,7 +70,8 @@ module.exports = {
     '<rootDir>/bundle/__tests__/types/__typescript__/',
     '<rootDir>/core/__tests__/types/__typescript__/',
     '<rootDir>/directlinespeech/__tests__/utilities/',
-    '<rootDir>/playground/'
+    '<rootDir>/playground/',
+    '<rootDir>/store/'
   ],
   transform: {
     '\\.m?[jt]sx?$': [

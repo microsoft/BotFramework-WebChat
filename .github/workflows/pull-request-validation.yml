@@ -264,8 +264,13 @@ jobs:
           --logHeapUsage \
           --runInBand \
           --silent \
-          --testPathPattern=/packages/\
+          '--testPathPattern=/packages/(?!store/)'
         timeout-minutes: 10
+
+      - name: Run node --test under /packages/store/
+        run: npm test
+        timeout-minutes: 5
+        working-directory: ./packages/store/
 
       - if: always()
         name: Append ID to test result
