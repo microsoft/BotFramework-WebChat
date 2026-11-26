@@ -3,7 +3,7 @@ import type { State } from '../../reducers/activities/sort/types';
 import type { WebChatActivity } from '../WebChatActivity';
 import type { Notification } from './Notification';
 
-// TODO: Should build this using typings of createReducer.
+// TODO: Should build this using typings of reducer.ts.
 type ReduxState = {
   activities: WebChatActivity[];
   clockSkewAdjustment: number;

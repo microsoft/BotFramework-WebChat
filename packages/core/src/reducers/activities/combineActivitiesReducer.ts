@@ -1,12 +1,10 @@
 import { isForbiddenPropertyName } from '@msinternal/botframework-webchat-base/utils';
 import type { ActionFromReducersMapObject, combineReducers, Reducer, StateFromReducersMapObject } from 'redux';
-import type { GlobalScopePonyfill } from '../../types/GlobalScopePonyfill';
-import type { RestrictedStoreDebugAPI } from '../../types/StoreDebugAPI';
 import type { WebChatActivity } from '../../types/WebChatActivity';
-import createGroupedActivitiesReducer, {
+import groupedActivitiesReducer, {
   type GroupedActivitiesAction,
   type GroupedActivitiesState
-} from './createGroupedActivitiesReducer';
+} from './groupedActivities';
 
 type ActivitiesState = {
   activities: readonly WebChatActivity[];
@@ -16,19 +14,14 @@ type ActivitiesState = {
 /**
  * Creates a reducer by combining slice `activities` and `groupedActivities` to an existing sliced reducer.
  *
- * @param ponyfill
  * @param existingSlicedReducer
  * @returns
  */
 export default function combineActivitiesReducer<M>(
-  ponyfill: GlobalScopePonyfill,
-  restrictedStoreDebugAPI: RestrictedStoreDebugAPI,
   existingSlicedReducer: ReturnType<typeof combineReducers<M>>
 ): Reducer<StateFromReducersMapObject<M> & ActivitiesState, ActionFromReducersMapObject<M> & GroupedActivitiesAction> {
   type ExistingState = StateFromReducersMapObject<M>;
   type ExistingAction = ActionFromReducersMapObject<M>;
-
-  const groupedActivitiesReducer = createGroupedActivitiesReducer(ponyfill, restrictedStoreDebugAPI);
 
   return function (
     state: (ExistingState & ActivitiesState) | undefined,
