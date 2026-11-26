@@ -115,7 +115,6 @@ test('an update to a concluded livestream session warns and is dropped', () => {
 test('a `Date` timestamp warns only when no numeric sequence ID orders the activity', () => {
   const { store } = createStoreWithClock(1_000);
   const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-  // eslint-disable-next-line no-restricted-globals
   const timestamp = new Date(1); // A `Date` object, not a time from the clock.
 
   try {
