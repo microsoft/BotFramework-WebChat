@@ -1,6 +1,5 @@
 import { IdentifierSchema, type Identifier } from '@msinternal/botframework-webchat-core-graph';
 import type { Tagged } from 'type-fest';
-import { v4 } from 'uuid';
 import { object, parse, pipe, safeParse, transform, type InferOutput } from 'valibot';
 import type { Activity } from '../types';
 
@@ -42,19 +41,18 @@ function setLocalIdInActivity(activity: Readonly<Activity>, value: LocalId | und
   };
 }
 
-// TODO: [P1] We can use a UUID v6 (reorder). Then, we can drop `receivedAt`.
-function generateLocalId(): LocalId {
-  return parse(LocalIdSchema, `_:${v4()}`);
-}
-
-function generateLocalIdInActivity(activity: Readonly<Activity>): Activity {
+/**
+ * Sets the local ID of an activity new to the transcript. The ID comes from the action (`meta.localId`, made by
+ * `prepareAction()`): the reducers do not make random values.
+ */
+function setNewLocalIdInActivity(activity: Readonly<Activity>, localId: LocalId): Activity {
   if (queryLocalIdFromActivity(activity)) {
     throw new Error(
       'botframework-webchat: Cannot generate a new local ID for activity because the activity already has a local ID'
     );
   }
 
-  return setLocalIdInActivity(activity, generateLocalId());
+  return setLocalIdInActivity(activity, localId);
 }
 
-export { generateLocalIdInActivity, getLocalIdFromActivity, LocalIdSchema, setLocalIdInActivity, type LocalId };
+export { getLocalIdFromActivity, LocalIdSchema, setLocalIdInActivity, setNewLocalIdInActivity, type LocalId };

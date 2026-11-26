@@ -45,7 +45,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('upserted', state => upsert({ Date }, state, activity1))
+    .when('upserted', state => upsert(state, activity1))
     .then('`activityIdToLocalIdMap` should match', (_, state) => {
       expect(state.activityIdToLocalIdMap).toEqual(new Map<string, LocalId>([['a-00001', '_:a-00001' as LocalId]]));
     })
@@ -77,7 +77,7 @@ scenario('upserting 2 activities with timestamps', bdd => {
     .and('should match `sortedActivities` snapshot', (_, state) => {
       expect(state).toHaveProperty('sortedActivities', [activityToExpectation(activity1, 1_000)]);
     })
-    .when('another activity is upserted', (_, state) => upsert({ Date }, state, activity2))
+    .when('another activity is upserted', (_, state) => upsert(state, activity2))
     .then('`activityIdToLocalIdMap` should match', (_, state) => {
       expect(state.activityIdToLocalIdMap).toEqual(
         new Map<string, LocalId>([
@@ -212,7 +212,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('upserting an activity with t=1000ms', state => upsert({ Date }, state, activity1))
+    .when('upserting an activity with t=1000ms', state => upsert(state, activity1))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -240,7 +240,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
     .and('`sortedActivities` should match', (_, state) => {
       expect(state.sortedActivities).toEqual([activityToExpectation(activity1, 1_000)]);
     })
-    .when('upserting an activity with t=undefined', (_, state) => upsert({ Date }, state, activity2))
+    .when('upserting an activity with t=undefined', (_, state) => upsert(state, activity2))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -285,7 +285,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         activityToExpectation(activity2, 2_000)
       ]);
     })
-    .when('upserting an activity with t=2_000ms', (_, state) => upsert({ Date }, state, activity3))
+    .when('upserting an activity with t=2_000ms', (_, state) => upsert(state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -345,7 +345,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         activityToExpectation(activity3, 3_000)
       ]);
     })
-    .when('upserting an activity with t=1500ms', (_, state) => upsert({ Date }, state, activity4))
+    .when('upserting an activity with t=1500ms', (_, state) => upsert(state, activity4))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -420,9 +420,7 @@ scenario('upserting activities which some with timestamp and some without', bdd 
         activityToExpectation(activity3, 3_000)
       ]);
     })
-    .when('upserting the t=undefined activity is updated with t=1750ms', (_, state) =>
-      upsert({ Date }, state, activity2b)
-    )
+    .when('upserting the t=undefined activity is updated with t=1750ms', (_, state) => upsert(state, activity2b))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
