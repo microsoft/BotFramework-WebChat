@@ -20,7 +20,6 @@ function createDeferred<T>(): Deferred<T> {
 }
 
 function hasResolve(promise): Promise<boolean> {
-  // eslint-disable-next-line no-restricted-globals
   return Promise.race([promise.then(() => true), new Promise(resolve => setTimeout(() => resolve(false), 0))]);
 }
 

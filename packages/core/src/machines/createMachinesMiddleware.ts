@@ -63,9 +63,9 @@ const MACHINES: readonly Machine[] = Object.freeze([
 ]);
 
 /**
- * The machines as the innermost middleware of the store. Each action is reduced first, then goes to the machines: a put
- * one now, any other after the current task. What they put goes through every middleware again. An error that no
- * machine catches stops every machine, then goes to `onError()`.
+ * The machines' middleware, inside every middleware of the host. Each action is reduced first, then goes to the
+ * machines: a put one now, any other after the current task. What they put goes through every middleware again. An
+ * error that no machine catches stops every machine, then goes to `onError()`.
  */
 export default function createMachinesMiddleware({
   machines = MACHINES,

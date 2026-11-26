@@ -22,7 +22,6 @@ const is =
   ({ type }: MachineAction) =>
     types.includes(type);
 
-// eslint-disable-next-line no-restricted-globals
 const ponyfill = { clearTimeout, setTimeout } as any;
 
 // Emits at once: `observeOnce()` calls back a microtask later, as `call()` of a resolved promise did.

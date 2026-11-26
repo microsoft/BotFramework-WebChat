@@ -9,9 +9,10 @@ import {
 } from 'redux';
 
 import sagaError from './actions/sagaError';
-import createReducer from './createReducer';
 import createEngineStore, { type EngineStore } from './engine/createEngineStore';
 import createMachinesMiddleware from './machines/createMachinesMiddleware';
+import createPrepareMiddleware from './prepare/createPrepareMiddleware';
+import reducer from './reducer';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
@@ -116,7 +117,7 @@ function assemble<TStore extends EngineStore>(
 
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
-  // The machines run after every middleware of the host (the innermost), and start once the store exists.
+  // The machines run after every middleware of the host, and start once the store exists.
   const machines = createMachinesMiddleware({
     // An error that no machine catches stops every machine.
     onError: error => {
@@ -126,9 +127,12 @@ function assemble<TStore extends EngineStore>(
     ponyfill
   });
 
-  store = createBaseStore(createReducer(ponyfill, restrictedStoreDebugAPI), initialState || {}, [
+  // Innermost: the reducers get every action prepared, the host middleware and the machines see it as dispatched.
+  // `internal.ponyfill` is for `<Composer>`, to check that it matches its own; the reducer keeps it as it is.
+  store = createBaseStore(reducer, { ...initialState, internal: { ponyfill } }, [
     ...middlewares,
-    machines.middleware
+    machines.middleware,
+    createPrepareMiddleware({ debugAPI: restrictedStoreDebugAPI, ponyfill })
   ]);
 
   // TODO: [P1] When we redesign the store and chat adapter, we should have the Debug API stored somewhere else.
