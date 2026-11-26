@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="../static/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { render, systemUnderTest } from '../static/index.js';
+
+      run(
+        async function () {
+          await render({ interactMode: 2 });
+
+          await systemUnderTest.focusChatHistory();
+
+          // WHEN: TAB key is pressed.
+          await host.sendKeys('TAB');
+
+          // THEN: Should focus on the <input> inside the address form.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormTextBox);
+
+          // WHEN: TAB key is pressed 3 times.
+          await host.sendTab(3);
+
+          // THEN: Should focus on the submit butotn inside the address form.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
+
+          // WHEN: TAB key is pressed again.
+          await host.sendTab();
+
+          // THEN: Should focus on the send box.
+          expect(document.activeElement).toBe(systemUnderTest.addressFormSubmitButton);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
