@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../types/WebChatActivity';

@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 import { scenario } from '@testduet/given-when-then';
 import type { WebChatActivity } from '../../../../types/WebChatActivity';
 import type { LocalId } from '../property/LocalId';
