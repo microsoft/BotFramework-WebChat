@@ -287,6 +287,7 @@
     "prettier": "^3.8.3",
     "read-package-up": "^12.0.0",
     "read-pkg": "^10.1.0",
+    "rollup-plugin-sourcemaps2": "^0.5.10",
     "selenium-webdriver": "^4.44.0",
     "strip-ansi": "^6.0.1",
     "tsdown": "^0.23.7",

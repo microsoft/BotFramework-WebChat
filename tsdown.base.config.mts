@@ -1,4 +1,5 @@
 import escapeStringRegexp from 'escape-string-regexp';
+import sourcemaps from 'rollup-plugin-sourcemaps2';
 import { type UserConfig } from 'tsdown';
 
 import { cssPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
@@ -79,11 +80,17 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       // Like esbuild: `__esModule` in every CommonJS entry (rolldown adds it only with a default export).
       esModule: true,
       exports: 'named',
-      // Like esbuild: CommonJS and IIFE output start with "use strict".
+      // Like esbuild: CommonJS output starts with "use strict".
       strict: true
     }),
     platform: 'browser',
-    plugins: env === 'test' ? [istanbulPlugin()] : [],
+    plugins: [
+      // Like esbuild: maps bundled files that have a source map (our packages' `dist`, npm packages) to their original
+      // sources. rolldown ignores the `//# sourceMappingURL` of its inputs. Only JavaScript: its `load` hook would also
+      // load the CSS modules (`*.module.css?css_module`) before unplugin-lightningcss can.
+      sourcemaps({ include: /\.[cm]?js$/u }),
+      ...(env === 'test' ? [istanbulPlugin()] : [])
+    ],
     report: false,
     sourcemap: true,
     target: [...TARGET],
@@ -132,8 +139,7 @@ function iifeOptions(config: Config): Partial<Config> {
       comments: options.minify ? MINIFIED_COMMENTS : { annotation: false, jsdoc: true, legal: true },
       // tsdown names it `<name>.iife.js`.
       entryFileNames: '[name].js',
-      // `exports` does not exist in a classic script.
-      esModule: false,
+      // One "use strict" for the whole script: rolldown drops the "use strict" of each CommonJS module.
       strict: true
     }),
     target: [...config.target, 'es2019']
