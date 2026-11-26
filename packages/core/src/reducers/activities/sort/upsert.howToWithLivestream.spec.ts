@@ -125,7 +125,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('the first activity is upserted', state => upsert({ Date }, state, activity1))
+    .when('the first activity is upserted', state => upsert(state, activity1))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -194,7 +194,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('`sortedActivities` should match snapshot', (_, state) => {
       expect(state.sortedActivities).toEqual([activityToExpectation(activity1, 1_000)]);
     })
-    .when('the second activity is upserted', (_, state) => upsert({ Date }, state, activity2))
+    .when('the second activity is upserted', (_, state) => upsert(state, activity2))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -281,7 +281,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
         activityToExpectation(activity2, 2_000)
       ]);
     })
-    .when('the third activity is upserted', (_, state) => upsert({ Date }, state, activity3))
+    .when('the third activity is upserted', (_, state) => upsert(state, activity3))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -419,11 +419,9 @@ scenario('re-sending the final revision of a livestream in a grouping without `i
 
   bdd
     .given('a finalized livestream session in a part grouping', () =>
-      upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2)
+      upsert(upsert(INITIAL_STATE, activity1), activity2)
     )
-    .when('the final revision is re-sent without `isPartOf`', state =>
-      upsert({ Date }, state, activity2WithoutGrouping)
-    )
+    .when('the final revision is re-sent without `isPartOf`', state => upsert(state, activity2WithoutGrouping))
     .then('the livestream session should stay finalized', (_, state) => {
       expect(state.livestreamSessionMap.get('a-00001' as LivestreamSessionId)).toHaveProperty('finalized', true);
     })
@@ -489,11 +487,9 @@ scenario('re-sending an older revision of a finalized livestream in a grouping w
 
   bdd
     .given('a finalized livestream session in a part grouping', () =>
-      upsert({ Date }, upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2), activity3)
+      upsert(upsert(upsert(INITIAL_STATE, activity1), activity2), activity3)
     )
-    .when('the second revision is re-sent without `isPartOf`', state =>
-      upsert({ Date }, state, activity2WithoutGrouping)
-    )
+    .when('the second revision is re-sent without `isPartOf`', state => upsert(state, activity2WithoutGrouping))
     .then('should keep the second revision in `activityMap`', (_, state) => {
       expect(state.activityMap.get('_:a-00002' as LocalId)?.activity).toEqual(activityToExpectation(activity2));
     })
@@ -550,9 +546,9 @@ scenario('re-sending a revision of an ongoing livestream in a grouping', bdd => 
 
   bdd
     .given('an ongoing livestream session with 2 revisions in a part grouping', () =>
-      upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2)
+      upsert(upsert(INITIAL_STATE, activity1), activity2)
     )
-    .when('the second revision is re-sent with a changed text', state => upsert({ Date }, state, activity2Changed))
+    .when('the second revision is re-sent with a changed text', state => upsert(state, activity2Changed))
     .then('`activityMap` should have the changed revision', (_, state) => {
       expect(state.activityMap.get('_:a-00002' as LocalId)).toEqual({
         activity: activityToExpectation(activity2Changed),
@@ -627,9 +623,9 @@ scenario('re-sending a middle revision of an ongoing livestream in a grouping', 
 
   bdd
     .given('an ongoing livestream session with 3 revisions in a part grouping', () =>
-      upsert({ Date }, upsert({ Date }, upsert({ Date }, INITIAL_STATE, activity1), activity2), activity3)
+      upsert(upsert(upsert(INITIAL_STATE, activity1), activity2), activity3)
     )
-    .when('the second revision is re-sent with a changed text', state => upsert({ Date }, state, activity2Changed))
+    .when('the second revision is re-sent with a changed text', state => upsert(state, activity2Changed))
     .then('`activityMap` should have the changed revision', (_, state) => {
       expect(state.activityMap.get('_:a-00002' as LocalId)).toEqual({
         activity: activityToExpectation(activity2Changed),

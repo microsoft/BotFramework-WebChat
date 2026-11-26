@@ -67,7 +67,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('upserted', state => upsert({ Date }, state, activity1))
+    .when('upserted', state => upsert(state, activity1))
     .then('should have added to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -115,7 +115,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
     .and('`sortedActivities` should match snapshot', (_, state) => {
       expect(state).toHaveProperty('sortedActivities', [activityToExpectation(activity1)]);
     })
-    .when('upsert another activity into same group', (_, state) => upsert({ Date }, state, activity2))
+    .when('upsert another activity into same group', (_, state) => upsert(state, activity2))
     .then('should add to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -181,7 +181,7 @@ scenario('upserting plain activity in the same grouping', bdd => {
         activityToExpectation(activity2)
       ]);
     })
-    .when('the third activity is upserted', (_, state) => upsert({ Date }, state, activity3))
+    .when('the third activity is upserted', (_, state) => upsert(state, activity3))
     .then('should add to `activityMap`', (_, state) => {
       expect(state.activityMap).toEqual(
         new Map<LocalId, ActivityMapEntry>([
@@ -278,7 +278,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('upserted', state => upsert({ Date }, state, activity1))
+    .when('upserted', state => upsert(state, activity1))
     .then('should have added a new part grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
         new Map<HowToGroupingId, HowToGroupingMapEntry>([
@@ -307,9 +307,7 @@ scenario('upserting plain activity in two different grouping', bdd => {
     .and('`sortedActivities` should match snapshot', (_, state) => {
       expect(state.sortedActivities).toEqual([activityToExpectation(activity1, 1_000)]);
     })
-    .when('upsert another activity into same group with a former timestamp', (_, state) =>
-      upsert({ Date }, state, activity2)
-    )
+    .when('upsert another activity into same group with a former timestamp', (_, state) => upsert(state, activity2))
     .then('should update existing part grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
         new Map<HowToGroupingId, HowToGroupingMapEntry>([
@@ -390,9 +388,9 @@ scenario('updating an activity out of its grouping', bdd => {
 
   bdd
     .given('3 activities in a grouping', () =>
-      [activity1, activity2, activity3].reduce((state, activity) => upsert({ Date }, state, activity), INITIAL_STATE)
+      [activity1, activity2, activity3].reduce((state, activity) => upsert(state, activity), INITIAL_STATE)
     )
-    .when('the second activity is updated without `isPartOf`', state => upsert({ Date }, state, nextActivity2))
+    .when('the second activity is updated without `isPartOf`', state => upsert(state, nextActivity2))
     .then('should remove it from the grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
         new Map<HowToGroupingId, HowToGroupingMapEntry>([
@@ -443,9 +441,9 @@ scenario('updating an activity into another grouping', bdd => {
 
   bdd
     .given('2 groupings with an activity each', () =>
-      [activity1, activity2].reduce((state, activity) => upsert({ Date }, state, activity), INITIAL_STATE)
+      [activity1, activity2].reduce((state, activity) => upsert(state, activity), INITIAL_STATE)
     )
-    .when('the first activity is updated into the second grouping', state => upsert({ Date }, state, nextActivity1))
+    .when('the first activity is updated into the second grouping', state => upsert(state, nextActivity1))
     .then('should drop the emptied grouping and add it to the second grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
         new Map<HowToGroupingId, HowToGroupingMapEntry>([
@@ -491,9 +489,9 @@ scenario('updating an activity into a grouping', bdd => {
 
   bdd
     .given('an activity and a grouping', () =>
-      [activity1, activity2].reduce((state, activity) => upsert({ Date }, state, activity), INITIAL_STATE)
+      [activity1, activity2].reduce((state, activity) => upsert(state, activity), INITIAL_STATE)
     )
-    .when('the activity is updated into the grouping', state => upsert({ Date }, state, nextActivity1))
+    .when('the activity is updated into the grouping', state => upsert(state, nextActivity1))
     .then('should add it to the grouping', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
         new Map<HowToGroupingId, HowToGroupingMapEntry>([
@@ -539,9 +537,9 @@ scenario('updating an activity in the same grouping', bdd => {
 
   bdd
     .given('2 activities in a grouping', () =>
-      [activity1, activity2].reduce((state, activity) => upsert({ Date }, state, activity), INITIAL_STATE)
+      [activity1, activity2].reduce((state, activity) => upsert(state, activity), INITIAL_STATE)
     )
-    .when('the first activity is updated', state => upsert({ Date }, state, nextActivity1))
+    .when('the first activity is updated', state => upsert(state, nextActivity1))
     .then('should keep the grouping as-is', (_, state) => {
       expect(state.howToGroupingMap).toEqual(
         new Map<HowToGroupingId, HowToGroupingMapEntry>([

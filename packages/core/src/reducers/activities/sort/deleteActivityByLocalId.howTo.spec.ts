@@ -69,7 +69,7 @@ scenario('deleting an activity in the same grouping', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('2 activities are upserted', state => upsert({ Date }, upsert({ Date }, state, activity1), activity2))
+    .when('2 activities are upserted', state => upsert(upsert(state, activity1), activity2))
     .then('should have 2 activities', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 2);
       expect(state.howToGroupingMap).toHaveProperty('size', 1);

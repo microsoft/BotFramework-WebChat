@@ -71,10 +71,7 @@ export default function voiceActivity(
       };
 
     case VOICE_START_RECORDING:
-      if (state.voiceState !== 'idle') {
-        console.warn(`botframework-webchat: Should not transit from "${state.voiceState}" to "listening"`);
-      }
-
+      // `runEffects()` warns if the state was not "idle".
       return {
         ...state,
         microphoneMuted: false,

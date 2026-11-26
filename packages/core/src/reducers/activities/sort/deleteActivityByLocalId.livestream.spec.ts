@@ -92,9 +92,7 @@ scenario('deleting an activity', bdd => {
 
   bdd
     .given('an initial state', () => INITIAL_STATE)
-    .when('3 activities are upserted', state =>
-      upsert({ Date }, upsert({ Date }, upsert({ Date }, state, activity1), activity2), activity3)
-    )
+    .when('3 activities are upserted', state => upsert(upsert(upsert(state, activity1), activity2), activity3))
     .then('should have 3 activities in map, 1 visible', (_, state) => {
       expect(state.activityMap).toHaveProperty('size', 3);
       expect(state.howToGroupingMap).toHaveProperty('size', 0);
