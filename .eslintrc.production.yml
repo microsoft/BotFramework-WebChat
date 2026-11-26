@@ -4,8 +4,10 @@ overrides:
     - '__tests__/**/*.mjs'
     - '*.spec.js'
     - '*.spec.mjs'
+    - '*.spec.ts'
     - '*.test.js'
     - '*.test.mjs'
+    - '*.test.ts'
 
     env:
       jest: true

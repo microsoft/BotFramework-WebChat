@@ -7,8 +7,9 @@ import {
 } from 'redux';
 
 import sagaError from './actions/sagaError';
-import createReducer from './createReducer';
 import createMachinesMiddleware from './machines/createMachinesMiddleware';
+import createPrepareMiddleware from './prepare/createPrepareMiddleware';
+import reducer from './reducer';
 import { RestrictedStoreDebugAPI } from './types/StoreDebugAPI';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
@@ -111,7 +112,7 @@ export function withOptions(
 
   const restrictedStoreDebugAPI = new RestrictedStoreDebugAPI(() => store?.getState().activities);
 
-  // The machines run after every middleware of the host (the innermost), and start once the store exists.
+  // The machines run after every middleware of the host, and start once the store exists.
   const machines = createMachinesMiddleware({
     // An error that no machine catches stops every machine.
     onError: error => {
@@ -121,15 +122,21 @@ export function withOptions(
     ponyfill
   });
 
-  const enhancer = applyMiddleware(...middlewares, machines.middleware);
+  // Innermost: the reducers get every action prepared, the host middleware and the machines see it as dispatched.
+  const enhancer = applyMiddleware(
+    ...middlewares,
+    machines.middleware,
+    createPrepareMiddleware({ debugAPI: restrictedStoreDebugAPI, ponyfill })
+  );
 
   const devToolsWindow: WindowWithReduxDevTools | undefined =
     options.devTools && typeof window !== 'undefined' ? window : undefined;
   const composeWithDevTools = devToolsWindow?.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
+  // `internal.ponyfill` is for `<Composer>`, to check that it matches its own; the reducer keeps it as it is.
   store = createReduxStore(
-    createReducer(ponyfill, restrictedStoreDebugAPI),
-    initialState || {},
+    reducer,
+    { ...initialState, internal: { ponyfill } },
     composeWithDevTools ? composeWithDevTools(enhancer) : enhancer
   );
 

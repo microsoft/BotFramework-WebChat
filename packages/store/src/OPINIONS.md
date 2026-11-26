@@ -1,0 +1,161 @@
+## Background
+
+The original state machine design was reactive (event-driven) and linear (array).
+
+The new design is distributed, transactional (consistent without locking), and hyperlinking (graph).
+
+## Design direction
+
+- [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem): C and A, but not P
+- High-performance: most operations are `O(1)` and some are `O(log n)` regardless of graph or membership size
+- Embrace open standard: Schema.org and subset of JSON-LD
+- Simple to use: deliberate design choice to minimize work on consumer side
+- Minimalist: expose minimal set of API and minimal behaviors
+- Hyperlinking: objects are referenced by ID and can be cyclic
+- Extensibility: new properties and types can be added at anytime
+
+## Design choice
+
+- [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem)
+   - Consistency: transactional (clean read), all nodes are always validated
+   - High availability: all nodes must be in the graph
+- Flattened JSON-LD graph for JSON serializability
+- Assume Schema.org but not strictly validated
+   - Schema.org is huge spec, we prefer "assume validated by writer" and "assume reader will validate and drop invalid"
+- Synchronous transactional edit and one session at a time
+- Updaters must be pure functions of the node they receive, calling transaction methods (`upsert()`/`delete()`) inside them is not allowed (for now)
+- Always plural: singular value is stored in single-item array
+- `hasPart` and `isPartOf` must be always inverse of other, validate on commit, offer helper to fix them
+- Every node must have a single and unique `@id`, no multiple `@id`
+- Every node can has zero-to-many alternate identifiers in `identifier`, for lookup only
+- Every node can has multiple `@types` for extensibility reason
+- Able to iterate a sorted list of children based on `dateCreated`, can extend upto 3 hardcoded properties
+
+The store is a standard, plain and opinionated JSON-LD graph implementation. The only custom parts are:
+
+- Consistency: a simple and friendly way to auto-inverse `hasPart`/`isPartOf`
+- High performance: able to iterate children sorted by `dateCreated`
+- Ease to use: alternate identifiers in `iedntifier` property for lookup only, not for linking such as `hasPart`/`isPartOf`
+
+We intended to keep custom parts minimal to reduce code complexity and learning curve.
+
+## Implementation
+
+- CAP theorem: always consistent and high availability, no partitioning
+- Subset of JSON-LD 1.1 specification
+- Context is assumed Schema.org to promote interoperability
+- All nodes are stored flat in a hashmap, frozen, and plain
+- Supported IRI: `https:`, `urn:`, or `_:` (blank node identifier)
+   - [IRI](https://en.wikipedia.org/wiki/Internationalized_Resource_Identifier) is Unicode version of URI
+   - Example: `https://example.com/message/1`, `urn:isbn:0-486-27557-4`, `_:node-1`
+- Properties
+   - Property name
+      - Term (non-IRI property name) must be defined in Schema.org
+      - Otherwise, must be IRI
+   - Property value
+      - Type supported (mixed use in array):
+         - `boolean`, `number`, `string`
+            - Date time (temporal) should be represented by `string` in ISO format
+         - Blank node reference
+            - `Exact<{ '@id': string }>`, must not reference the node itself
+         - JSON literal
+            - `Exact<{ '@type': '@json', '@value': object }>`
+            - `@value` behaves exactly the same as `JSON.parse(JSON.stringify(value))`
+               - Story: JSON literal is what would be sent over the wire, so what you upsert is what the other side would receive
+                  - No surprises: it is the same as the well-known behavior of `JSON.stringify()`, nothing more, nothing less
+                  - The value is always copied, the input is never modified
+               - The only exceptions:
+                  - Dangerous keys (e.g. `__proto__`, `constructor`, `prototype`) are removed for security reason, while `JSON.parse()` would keep them as own properties
+                  - Boxed primitives with their prototype replaced by `Object.prototype`, `Array.prototype` or `null` (e.g. `Object.setPrototypeOf(new Boolean(true), null)`) are not unwrapped for performance reason, they become plain objects of their own enumerable string-keyed properties, while `JSON.stringify()` would unwrap them (via `valueOf()`/`toString()` of the replaced prototype, which could return `null` or throw)
+                     - Detecting boxed primitives requires calling `valueOf()` which throws on every non-boxed object, skipping plain objects and arrays makes conversion ~100x faster, see `npm run benchmark:json`
+                     - Boxed primitives from other realms (e.g. `<iframe>`) are still unwrapped, as their prototype is not the `Object.prototype` of the current realm
+   - Rules
+      - Plural form: unless specified, most property values must reside in an array and must have at least 1 item
+      - Prohibited `@context` must not be defined, and is assumed "https://schema.org"
+      - Required `@id` must be an IRI
+      - Required `@type` must be `Set<string>` with at least one value
+         - Term (non-IRI node type) must be defined in Schema.org
+         - Otherwise, must be IRI
+      - Optional `dateCreated` must be a non-array `string` in ISO format
+      - Optional `identifier` must be `Set<string>` of IRI
+         - Must not contain `@id` of the node
+         - Every identifier (either `@id` or alternate identifier) must identify at most one node in the graph
+         - Can be changed by upsert, while `@id` is immutable throughout the life of the node
+         - Only used by `queryByIdentifier()`, it does not participate in `hasPart`/`isPartOf` nor node references
+      - Optional `hasPart` and `isPartOf` must be `Set<Exact<{ '@id': string }>>` (set of blank node identifiers)
+         - Appear once in the same membership: a node must not appear twice in the same `hasPart` property
+         - Appear in multiple membership: `isPartOf` can contains more than one reference
+      - `toJSON()` is not supported except when it is inside `@value` of JSON literal, see above
+      - Nodes, property values, and node references must be plain objects, i.e. prototype is either `Object.prototype` or `null`
+         - Class instances (including subclasses of `Object`) throw
+         - `null` prototype is supported as it is the safest dictionary and serializes identically, nodes in the graph are always re-created with `Object.prototype`
+         - Inside `@value` of JSON literal, any object is supported, see above
+      - Arrays of property values must be plain arrays, i.e. prototype is `Array.prototype`, and must not have `toJSON()`, either own or inherited
+         - Subclasses of `Array` throw
+         - Arrays from other realms (e.g. `<iframe>`) are not plain as their `Array.prototype` is different
+- Edit must be synchronous and transactional
+   - Edit must not be nested into another edit
+   - Edit are validated on commit
+      - Nodes are not strict validated against Schema.org definition, they are "loosely validated" and "assume validated"
+         - Writer must follow Schema.org definition
+         - Reader must drop nodes and properties which violate Schema.org definition
+   - Upsert
+      - Dirty read: updater pass modified version of the node
+         - First read in a transaction: the node in the graph, it is frozen
+         - Subsequent reads: a new plain copy with changes made in the transaction, it is writable only inside the updater and is frozen after the updater returns or throws
+         - Unchanged `hasPart`/`isPartOf` passed back from the updater are not validated nor diffed again, `O(1)` regardless of membership size
+         - Nodes are plain objects, the store may attach hidden state invisible to userland, however, copies (e.g. `JSON.parse(JSON.stringify(node))`) is always accepted and hidden state is rebuilt
+      - Node edges must be by-reference
+      - Nodes are auto-converted to immutable by deep freezing
+         - Array and objects are cloned before frozen, inputs are never modified
+      - All referenced nodes must be upserted in the same transaction
+   - Membership (`hasPart`/`isPartOf`) are auto-fixed on commit
+      - Adding a reference to `isPartOf` property, will automatically add a back-reference to the `hasPart` on the other side, and vice versa
+      - Removing a node from the graph will automatically remove it from `hasPart` and `isPartOf` of the other nodes which reference it
+         - Other edges are not checked nor fixed, such as `about`/`subjectOf`, `exampleOfWork`/`workExample`, `owner/owns`, etc.
+      - Auto-fix will apply to nodes that are not upserted in the current transaction
+         - If both nodes are upserted, their `hasPart` and `isPartOf` must agree with each other, otherwise, it is a conflict and will fail on commit
+      - Upserting a node without `hasPart` and/or `isPartOf` means it is deleting all edges of the node
+      - Deleting a node in the transaction is not a conflict, it is no longer touched
+   - Failed edit will not commit and is abandoned
+- Read
+   - Read is always clean and consistent
+   - `getSnapshot()` returns a hashmap of nodes keyed by `@id`, there is no contract on its iteration order
+      - Iteration order is unspecified and may change between versions (e.g. a deleted node upserted again may not be the last), callers must not depend on it
+      - Story: the graph is a set of nodes, not a list, the only order offered by the store is sorted children via `getSortedParts()`
+   - Query a single node by ID
+   - Query a single node by either `@id` or one of its alternate identifiers via `queryByIdentifier()`, `O(1)`
+   - Listeners are notified with `@id` of affected nodes (including deleted nodes), plus their alternate identifiers before and after the change
+   - Iterate multiple nodes in the same membership by the ID of the member list node, sorted by `dateCreated` in either ascending or descending order
+- Performance characteristics
+   - Unless specified, most read and write operations are `O(1)` regardless the size of the graph or membership
+   - Changing `identifier` is `O(k)` where `k` is the number of alternate identifiers of the node, an index from alternate identifier to `@id` is updated incrementally
+   - Upserting a node with `isPartOf` and `dateCreated` property and being sorted to the middle of the list, the operation will be `O(log n)` where `n` is the size of the membership, where it use skip list to find insertion point
+      - Changing `dateCreated` relinks the node in the skip list (delete then insert), it is also `O(log n)` as the storage of the skip list does not preserve iteration order
+   - Deleting a node then upserting it again does not copy the hashmap of the graph, as `getSnapshot()` does not preserve iteration order
+
+## Behavior of `JSON.parse(JSON.stringify(...))`
+
+- `undefined`, function, and symbol
+   - In object, the key is removed, e.g. `{ one: 1, two: undefined }` become `{ one: 1 }`
+   - In array, the element become `null`, e.g. `[1, undefined]` become `[1, null]`, and so do holes in sparse array
+   - As `@value` itself, it is invalid, as `JSON.stringify(undefined)` returns `undefined`, which is not JSON
+- `NaN`, `Infinity`, and `-Infinity` become `null`, `-0` become `0`
+- `toJSON()` is called with the key, e.g. `Date` become an ISO string, `URL` become a string
+- Boxed primitives are unwrapped, e.g. `new Number(1)` become `1`
+- Other objects become plain objects of their own enumerable string-keyed properties
+   - E.g. class instance become a plain object, `Map` and `Set` become `{}`
+   - Symbol keys and non-enumerable properties are removed, getters are called once
+- Arrays only keep elements up to `length`, extra properties are removed
+- Invalid when `JSON.stringify()` would throw: recursion and `BigInt`
+
+## Summary on transaction commit
+
+- Auto-inferencing `hasPart` and `isPartOf` edges if only one side of the edge is touched
+- Verify consistencies
+   - Referenced nodes are in the system
+   - Alternate identifier are unique across nodes
+   - `hasPart` and `isPartOf` edges are inverse of each other
+   - Custom properties are in array of either primitives or JSON literals
+- Sort child nodes by `dateCreated` by insertion sort
+- Create indices for `@id` and `identifier` for quick lookup
