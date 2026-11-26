@@ -1,4 +1,19 @@
 :global(.webchat) .surface {
+  background-color: var(--webchat__background--root);
   display: flex;
   flex-direction: column;
+  height: var(--webchat__height--root);
+  width: var(--webchat__width--root);
+  z-index: var(--webchat__z-index--root);
+}
+
+:global(.webchat) .surface__connectivity-status,
+:global(.webchat) .surface__send-box,
+:global(.webchat) .surface__toaster {
+  flex-shrink: 0;
+}
+
+/* Only inside BasicWebChat: a standalone <BasicTranscript> is not stretched. */
+:global(.webchat) .surface__transcript :global(.webchat__basic-transcript) {
+  flex: 1;
 }

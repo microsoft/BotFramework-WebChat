@@ -1,0 +1,38 @@
+{
+  "name": "botframework-webchat-store",
+  "version": "0.0.0-0",
+  "description": "",
+  "license": "MIT",
+  "author": "",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-store.d.mts",
+        "default": "./dist/botframework-webchat-store.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-store.d.ts",
+        "default": "./dist/botframework-webchat-store.js"
+      }
+    }
+  },
+  "scripts": {
+    "benchmark": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --expose-gc ./src/benchmark.ts",
+    "benchmark:json": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON ./src/benchmark.json.ts",
+    "benchmark:node": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON ./src/benchmark.node.ts",
+    "build": "npm run build:run",
+    "build:run": "tsup",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "test": "npm run test:node",
+    "test:node": "node --test"
+  },
+  "dependencies": {
+    "valibot": "1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "type-fest": "^5.6.0"
+  }
+}

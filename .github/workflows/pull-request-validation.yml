@@ -264,8 +264,13 @@ jobs:
           --logHeapUsage \
           --runInBand \
           --silent \
-          --testPathPattern=/packages/\
+          '--testPathPattern=/packages/(?!store/)'
         timeout-minutes: 10
+
+      - name: Run node --test under /packages/store/
+        run: npm test
+        timeout-minutes: 5
+        working-directory: ./packages/store/
 
       - if: always()
         name: Append ID to test result
@@ -521,18 +526,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - continue-on-error: true # Do not error out on re-run, the first attempt already merged and deleted the artifacts
-        name: Merge test result artifacts
-        uses: actions/upload-artifact/merge@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          delete-merged: true
-          name: test-result
-          pattern: test-result-*
-
+      # Download each job's artifact: an artifact merged in this job is sometimes not found 1 second later.
       - name: Download test results
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: test-result
+          merge-multiple: true
+          pattern: test-result-*
 
       - name: Install lcov
         run: sudo apt install -y lcov
