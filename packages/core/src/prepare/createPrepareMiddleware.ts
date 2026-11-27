@@ -8,7 +8,7 @@ import runEffects from './runEffects';
 
 /**
  * The innermost middleware: prepares each action (`prepareAction()`), runs its side effects (`runEffects()`), then
- * passes it to the reducers. Every action passes here, the ones of the host and of the sagas too. The middleware
+ * passes it to the reducers. Every action passes here, the ones of the host and of the machines too. The middleware
  * outside, and `dispatch()`'s return value, keep the action as it was dispatched.
  */
 export default function createPrepareMiddleware({

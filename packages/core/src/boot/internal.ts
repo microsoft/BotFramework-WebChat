@@ -5,6 +5,8 @@ export {
   type SetRawStateAction
 } from '../internal/actions/setRawState';
 
+export { createWebChatEngine } from '../createStore';
+export { type EngineStore } from '../engine/createEngineStore';
 export { type StoreDebugAPI } from '../types/StoreDebugAPI';
 export { default as isPresentational } from '../utils/isPresentational';
 export { default as StoreDebugAPIRegistry } from '../internal/StoreDebugAPIRegistry';

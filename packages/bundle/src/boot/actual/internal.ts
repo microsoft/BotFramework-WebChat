@@ -22,3 +22,4 @@ export {
   getVoiceActivityText,
   isVoiceTranscriptActivity
 } from 'botframework-webchat-core';
+export { createWebChatEngine } from 'botframework-webchat-core/internal.js';

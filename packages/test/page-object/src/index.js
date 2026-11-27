@@ -11,6 +11,7 @@ import * as pageElements from './globals/pageElements/index';
 import * as pageObjects from './globals/pageObjects/index';
 import * as testHelpers from './globals/testHelpers/index';
 import renderWebChat from './globals/renderWebChat';
+import { installTestEngine } from './globals/testHelpers/webChatEngine';
 import withResolvers from './utils/withResolvers';
 
 window.classNames = classNames;
@@ -24,3 +25,6 @@ window.pageObjects = pageObjects;
 window.renderWebChat = renderWebChat;
 window.testHelpers = testHelpers;
 window.updateIn = updateIn;
+
+// Before Web Chat loads: with the "webchat" engine, finds the internal entry of an ESM page (see `webChatEngine.js`).
+installTestEngine();
