@@ -188,6 +188,6 @@
     "redux-saga": "1.5.0",
     "simple-update-in": "2.2.0",
     "uuid": "14.0.1",
-    "valibot": "1.4.2"
+    "valibot": "^1.4.2"
   }
 }
