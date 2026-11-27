@@ -2,24 +2,6 @@
   "name": "@msinternal/botframework-webchat-debug-theme",
   "version": "0.0.0-0",
   "description": "botframework-webchat-debug-theme package",
-  "main": "./dist/botframework-webchat-debug-theme.js",
-  "types": "./dist/botframework-webchat-debug-theme.d.ts",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/botframework-webchat-debug-theme.d.mts",
-        "default": "./dist/botframework-webchat-debug-theme.mjs"
-      },
-      "require": {
-        "types": "./dist/botframework-webchat-debug-theme.d.ts",
-        "default": "./dist/botframework-webchat-debug-theme.js"
-      }
-    },
-    "./tsconfig.json": "./src/ts-config/config.json",
-    "./env": {
-      "types": "./src/env.d.ts"
-    }
-  },
   "author": "Microsoft Corporation",
   "license": "MIT",
   "private": true,
