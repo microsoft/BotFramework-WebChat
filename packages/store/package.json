@@ -29,7 +29,7 @@
     "test:node": "node --test"
   },
   "dependencies": {
-    "valibot": "1.2.0"
+    "valibot": "1.4.2"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
