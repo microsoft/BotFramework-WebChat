@@ -1,10 +1,28 @@
+import { decode, encode } from '@jridgewell/sourcemap-codec';
 import path from 'node:path';
 import type { Rolldown } from 'tsdown';
 
-import { mapOutputsToRootOutputs, updateMappings, type InjectCSSPluginOptions, type Metafile } from './injectCSSPlugin';
+export interface InjectCSSPluginOptions {
+  ignoreCSSEntries?: string[];
+  stylesPlaceholder: string;
+}
 
-// Rolldown flavor of injectCSSPlugin (esbuild), with the same options and logic. rolldown has no metafile: the same graph
-// is built from `chunk.imports`. It expects `<entry>.css` in the bundle, emitted by cssPlugin (/rolldownPlugins.mjs).
+// Shifts the generated columns after the placeholder on its line, by how much longer the embedded string is.
+// Other lines do not move: JSON.stringify() escapes line breaks.
+function updateMappings(encoded: string, line: number, column: number, offset: number) {
+  const mappings = decode(encoded);
+
+  for (const segment of mappings[+line] || []) {
+    if (segment[0] > column) {
+      segment[0] += offset;
+    }
+  }
+
+  return encode(mappings);
+}
+
+// Embeds the CSS of an entry (`<entry>.css`, emitted by cssPlugin in /rolldownPlugins.mjs) into the string placeholder
+// of its chunk. The entries that own a chunk are the entry chunks that import it, directly or through other chunks.
 export default function injectCSSRolldownPlugin({
   ignoreCSSEntries,
   stylesPlaceholder
@@ -30,24 +48,28 @@ export default function injectCSSRolldownPlugin({
       // After cssPlugin emitted the CSS files.
       order: 'post',
       handler({ dir = 'dist' }, bundle) {
-        // Same keys as esbuild's metafile (e.g. "dist/botframework-webchat-component.css"), for the same ignoreCSSEntries.
+        // Keys as in ignoreCSSEntries, relative to the package: "dist/botframework-webchat-component.css".
         const toKey = (fileName: string) =>
           path.posix.join(path.relative(process.cwd(), dir).replaceAll('\\', '/'), fileName);
         const chunks = Object.values(bundle).filter((file): file is Rolldown.OutputChunk => file.type === 'chunk');
+        const chunksByFileName = new Map(chunks.map(chunk => [chunk.fileName, chunk]));
+        // File names of the entry chunks that load each chunk.
+        const ownersByFileName = new Map<string, Set<string>>();
 
-        const metafile: Metafile = {
-          outputs: Object.fromEntries(
-            chunks.map(chunk => [
-              toKey(chunk.fileName),
-              {
-                ...(chunk.isEntry && chunk.facadeModuleId ? { entryPoint: chunk.facadeModuleId } : {}),
-                imports: chunk.imports.map(fileName => ({ path: toKey(fileName) }))
-              }
-            ])
-          )
-        };
+        for (const { fileName: entryFileName } of chunks.filter(chunk => chunk.isEntry)) {
+          const stack = [entryFileName];
 
-        const { outputToRoots } = mapOutputsToRootOutputs(metafile);
+          while (stack.length) {
+            const fileName = stack.pop()!;
+            const owners = ownersByFileName.get(fileName) ?? new Set<string>();
+            const imported = chunksByFileName.get(fileName);
+
+            if (imported && !owners.has(entryFileName)) {
+              ownersByFileName.set(fileName, owners.add(entryFileName));
+              stack.push(...imported.imports);
+            }
+          }
+        }
 
         for (const chunk of chunks) {
           const jsText = chunk.code;
@@ -59,11 +81,10 @@ export default function injectCSSRolldownPlugin({
 
           const outKey = toKey(chunk.fileName);
           const cssFilesMap = new Map(
-            (outputToRoots.get(outKey) || []).flatMap(owner => {
-              const cssKey = owner.replace(/\.[cm]?js$/u, '.css');
-              const cssFile = bundle[path.posix.relative(toKey(''), cssKey)];
+            [...(ownersByFileName.get(chunk.fileName) ?? [])].sort().flatMap(owner => {
+              const cssFile = bundle[owner.replace(/\.[cm]?js$/u, '.css')];
 
-              return cssFile?.type === 'asset' ? [[cssKey, cssFile] as const] : [];
+              return cssFile?.type === 'asset' ? [[toKey(cssFile.fileName), cssFile] as const] : [];
             })
           );
 

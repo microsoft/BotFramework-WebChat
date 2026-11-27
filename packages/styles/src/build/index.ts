@@ -1,2 +1,1 @@
-export { default as injectCSSPlugin, type InjectCSSPluginOptions } from './private/injectCSSPlugin';
-export { default as injectCSSRolldownPlugin } from './private/injectCSSRolldownPlugin';
+export { default as injectCSSRolldownPlugin, type InjectCSSPluginOptions } from './private/injectCSSRolldownPlugin';

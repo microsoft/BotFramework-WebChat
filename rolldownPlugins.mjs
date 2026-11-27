@@ -1,9 +1,10 @@
-// Rolldown flavor of esbuildPlugins.mjs and esbuildBabelPluginIstanbul.ts, for tsdown.base.config.mts.
+// Rolldown plugins of tsdown.base.config.mts and the static builds (packages/*/rolldown.static.mjs).
 import { transformAsync } from '@babel/core';
 import { Features, transform } from 'lightningcss';
 import { Buffer } from 'node:buffer';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sourcemaps from 'rollup-plugin-sourcemaps2';
 import lightningCssPlugin from 'unplugin-lightningcss/rolldown';
 
 import { lightningCSSPluginOptions, removePreserveReason, sortClassMap } from './lightningCSSOptions.mjs';
@@ -122,7 +123,16 @@ function cssPlugin({ minify, target }) {
 }
 
 /**
- * Adds istanbul coverage counters to our sources (`NODE_ENV=test`), like esbuildBabelPluginIstanbul.ts.
+ * Maps bundled files that have a source map (our packages' `dist`, npm packages) to their original sources: rolldown
+ * ignores the `//# sourceMappingURL` of its inputs. Only JavaScript: its `load` hook would also load the CSS modules
+ * (`*.module.css?css_module`) before unplugin-lightningcss can.
+ */
+function inputSourceMapPlugin() {
+  return sourcemaps({ include: /\.[cm]?js$/u });
+}
+
+/**
+ * Adds istanbul coverage counters to our sources (`NODE_ENV=test`).
  *
  * @returns {import('rolldown').Plugin}
  */
@@ -141,7 +151,7 @@ function istanbulPlugin() {
       order: 'pre',
       async handler(code, id) {
         const result = await transformAsync(code, {
-          configFile: join(fileURLToPath(import.meta.url), '../esbuildBabelPluginIstanbul.babel.config.json'),
+          configFile: join(fileURLToPath(import.meta.url), '../babelPluginIstanbul.config.json'),
           filename: id,
           rootMode: 'root',
           sourceFileName: id,
@@ -159,4 +169,4 @@ function istanbulPlugin() {
   };
 }
 
-export { cssPlugin, istanbulPlugin };
+export { cssPlugin, inputSourceMapPlugin, istanbulPlugin };

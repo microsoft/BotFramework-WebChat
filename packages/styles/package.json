@@ -82,11 +82,11 @@
   },
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.5",
+    "@jridgewell/trace-mapping": "^0.3.29",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/node": "^25.9.1",
     "cross-env": "^10.1.0",
-    "esbuild": "^0.28.1",
     "tsdown": "^0.23.7",
     "type-fest": "^5.6.0",
     "typescript": "^6.0.3"

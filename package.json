@@ -291,7 +291,6 @@
     "selenium-webdriver": "^4.44.0",
     "strip-ansi": "^6.0.1",
     "tsdown": "^0.23.7",
-    "tsup": "^9.0.0",
     "typescript": "^6.0.3",
     "unplugin-lightningcss": "^0.4.5"
   },

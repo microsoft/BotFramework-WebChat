@@ -19,7 +19,7 @@ const removePreserveReasonVisitor = Object.freeze({
 /**
  * Options of unplugin-lightningcss.
  *
- * @type { NonNullable<Parameters<typeof import('unplugin-lightningcss/esbuild').default>[0]> }
+ * @type { NonNullable<Parameters<typeof import('unplugin-lightningcss/rolldown').default>[0]> }
  */
 const lightningCSSPluginOptions = Object.freeze({
   include: [/\.module\.css$/u],

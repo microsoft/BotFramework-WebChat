@@ -1,15 +1,14 @@
 import escapeStringRegexp from 'escape-string-regexp';
-import sourcemaps from 'rollup-plugin-sourcemaps2';
 import { type UserConfig } from 'tsdown';
 
-import { cssPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
+import { cssPlugin, inputSourceMapPlugin, istanbulPlugin } from './rolldownPlugins.mjs';
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
 const minify = env === 'production' || env === 'test';
 const TARGET = Object.freeze(['chrome100', 'firefox100', 'safari15']);
 
-// When minified, esbuild drops annotations (`/* @__PURE__ */`) and JSDoc comments, rolldown keeps them by default.
+// Minified output keeps legal comments only: rolldown keeps annotations (`/* @__PURE__ */`) and JSDoc by default.
 const MINIFIED_COMMENTS = Object.freeze({ annotation: false, jsdoc: false, legal: true });
 
 type Config = UserConfig & {
@@ -18,7 +17,7 @@ type Config = UserConfig & {
   target: string[];
 };
 
-// Port of tsup.base.config.ts.
+// Shared options of every tsdown build.
 function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config): Config {
   return overrideOptions({
     // Our cssPlugin (rolldownPlugins.mjs) compiles CSS modules. `false` turns off tsdown's CSS support: without
@@ -33,21 +32,20 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
       define: 'undefined'
     },
     deps: {
-      // Like tsup (rollup-plugin-dts), `.d.ts` import the types of every package instead of inlining them, even with
-      // `deps.alwaysBundle` (tsup `noExternal`). Packages that need them inlined run dtsroll after the build.
+      // `.d.ts` import the types of every package instead of inlining them, also of the packages in
+      // `deps.alwaysBundle`. Packages that need them inlined run dtsroll after the build.
       dts: { alwaysBundle: [], neverBundle: true },
-      // Like tsup, a package bundles every import outside its dependencies and peerDependencies: our private packages
-      // (devDependencies, never published), core-js-pure in base, @jridgewell/sourcemap-codec in styles. `false` only
-      // turns off the tsdown hint that lists the bundled npm packages.
+      // A package bundles every import outside its dependencies and peerDependencies: our private packages
+      // (devDependencies, never published), core-js-pure in base, @jridgewell/sourcemap-codec in styles, and npm
+      // packages missing from package.json (e.g. handler-chain in api). `false` only turns off the tsdown hint that
+      // lists the bundled npm packages.
       onlyBundle: false
     },
     dts: {
       // rolldown-plugin-dts emits declarations module by module as they load, and TypeScript 6 prints union members in
       // the order it created their types: 2 clean builds printed the same union differently. stableTypeOrdering (hidden
       // TypeScript 6.0 option) orders them like TypeScript 7 does. Remove on TypeScript 7 (always stable).
-      compilerOptions: { stableTypeOrdering: true },
-      // tsup does not emit declaration maps.
-      sourcemap: false
+      compilerOptions: { stableTypeOrdering: true }
     },
     env: {
       node_env: env,
@@ -62,7 +60,6 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
         buildOptions.plugins = [buildOptions.plugins, cssPlugin({ minify: !!minify && minify !== 'dce-only', target })];
       }
     },
-    ignoreWatch: ['./dist/'],
     inputOptions: (options, format) => ({
       ...options,
       // unplugin-lightningcss exports every class as `export { _x as "class-name" }`. String export names need ES2022:
@@ -77,20 +74,15 @@ function applyConfig(overrideOptions: (options: Omit<Config, 'entry'>) => Config
     outputOptions: options => ({
       ...options,
       ...(options.minify ? { comments: MINIFIED_COMMENTS } : {}),
-      // Like esbuild: `__esModule` in every CommonJS entry (rolldown adds it only with a default export).
+      // `__esModule` in every CommonJS entry, as published so far: bundlers then take a default import from
+      // `exports.default`. rolldown adds it only to entries with a default export.
       esModule: true,
       exports: 'named',
-      // Like esbuild: CommonJS output starts with "use strict".
+      // "use strict" at the top of CommonJS output: our sources are ES modules, which are strict without the directive.
       strict: true
     }),
     platform: 'browser',
-    plugins: [
-      // Like esbuild: maps bundled files that have a source map (our packages' `dist`, npm packages) to their original
-      // sources. rolldown ignores the `//# sourceMappingURL` of its inputs. Only JavaScript: its `load` hook would also
-      // load the CSS modules (`*.module.css?css_module`) before unplugin-lightningcss can.
-      sourcemaps({ include: /\.[cm]?js$/u }),
-      ...(env === 'test' ? [istanbulPlugin()] : [])
-    ],
+    plugins: [inputSourceMapPlugin(), ...(env === 'test' ? [istanbulPlugin()] : [])],
     report: false,
     sourcemap: true,
     target: [...TARGET],
@@ -125,11 +117,11 @@ function createDualFormatConfigs(
 }
 
 /**
- * Options of an IIFE build, like tsup `format: 'iife'`. rolldown cannot split an IIFE: one entry per config.
+ * Options of an IIFE build. rolldown cannot split an IIFE: one entry per config.
  */
 function iifeOptions(config: Config): Partial<Config> {
   return {
-    // tsup bundles every dependency into an IIFE.
+    // A script tag cannot import: the IIFE bundles every dependency.
     deps: { ...config.deps, alwaysBundle: () => true },
     dts: false,
     format: 'iife',
@@ -146,7 +138,7 @@ function iifeOptions(config: Config): Partial<Config> {
   };
 }
 
-/** tsup `noExternal: ['x']` also bundles "x/y", tsdown `deps.alwaysBundle: ['x']` does not. */
+/** Matches the package and its subpaths ("x", "x/y"): `deps.alwaysBundle: ['x']` matches "x" only. */
 function packagePattern(name: string): RegExp {
   return new RegExp(`^${escapeStringRegexp(name)}(?:/|$)`, 'u');
 }

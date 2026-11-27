@@ -42,7 +42,7 @@
         // THEN: It should have `<meta name="botframework-webchat:api">`.
         expect(metaMap.has('botframework-webchat:api')).toBe(true);
         expect(metaMap.get('botframework-webchat:api')).toEqual(
-          expect.stringMatching(/build-tool=(tsup|tsdown)(;|$)/u)
+          expect.stringMatching(/build-tool=tsdown(;|$)/u)
         );
         expect(metaMap.get('botframework-webchat:api')).toEqual(expect.stringContaining('module-format='));
         expect(metaMap.get('botframework-webchat:api')).toEqual(expect.stringContaining('version='));
@@ -50,7 +50,7 @@
 
         // THEN: It should have `<meta name="botframework-webchat">`.
         expect(metaMap.has('botframework-webchat')).toBe(true);
-        expect(metaMap.get('botframework-webchat')).toEqual(expect.stringMatching(/build-tool=(tsup|tsdown)(;|$)/u));
+        expect(metaMap.get('botframework-webchat')).toEqual(expect.stringMatching(/build-tool=tsdown(;|$)/u));
         expect(metaMap.get('botframework-webchat')).toEqual(expect.stringContaining('module-format=global'));
         expect(metaMap.get('botframework-webchat')).toEqual(expect.stringContaining(`variant=${variant}`));
         expect(metaMap.get('botframework-webchat')).toEqual(expect.stringContaining('version='));
@@ -59,7 +59,7 @@
         // THEN: It should have `<meta name="botframework-webchat:component">`.
         expect(metaMap.has('botframework-webchat:component')).toBe(true);
         expect(metaMap.get('botframework-webchat:component')).toEqual(
-          expect.stringMatching(/build-tool=(tsup|tsdown)(;|$)/u)
+          expect.stringMatching(/build-tool=tsdown(;|$)/u)
         );
         expect(metaMap.get('botframework-webchat:component')).toEqual(expect.stringContaining('module-format='));
         expect(metaMap.get('botframework-webchat:component')).toEqual(expect.stringContaining('version='));
@@ -68,7 +68,7 @@
         // THEN: It should have `<meta name="botframework-webchat:core">`.
         expect(metaMap.has('botframework-webchat:core')).toBe(true);
         expect(metaMap.get('botframework-webchat:core')).toEqual(
-          expect.stringMatching(/build-tool=(tsup|tsdown)(;|$)/u)
+          expect.stringMatching(/build-tool=tsdown(;|$)/u)
         );
         expect(metaMap.get('botframework-webchat:core')).toEqual(expect.stringContaining('module-format='));
         expect(metaMap.get('botframework-webchat:core')).toEqual(expect.stringContaining('version='));
@@ -112,8 +112,8 @@
           expect(WebChat.Components.AdaptiveCardContent).toBeUndefined();
         }
 
-        // THEN: `buildInfo.buildTool` should be "tsup" or "tsdown".
-        expect(WebChat).toHaveProperty('buildInfo.buildTool', expect.stringMatching(/^(tsup|tsdown)$/u));
+        // THEN: `buildInfo.buildTool` should be "tsdown".
+        expect(WebChat).toHaveProperty('buildInfo.buildTool', 'tsdown');
 
         // THEN: `buildInfo.moduleFromat` should be "global".
         expect(WebChat).toHaveProperty('buildInfo.moduleFormat', 'global'); // Bundle

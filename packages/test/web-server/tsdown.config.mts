@@ -6,7 +6,7 @@ function createConfig(entry: Record<string, string>): UserConfig {
   return {
     deps: { alwaysBundle: [/^(?:compression|express|selfsigned)(?:\/|$)/u], onlyBundle: false },
     entry,
-    // Like tsup: .js, not .cjs.
+    // `.js`, not `.cjs`: the container and package.json "main" load dist/index.js.
     fixedExtension: false,
     format: 'cjs',
     platform: 'node',

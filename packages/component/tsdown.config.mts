@@ -11,8 +11,8 @@ function withPackageOptions(config: Config, moduleFormat: string): Partial<Confi
     plugins: [
       ...config.plugins,
       injectCSSRolldownPlugin({
-        // esbuild does not fully support CSS code splitting, every entry point has its own CSS file.
-        // Related to https://github.com/evanw/esbuild/issues/608.
+        // cssPlugin (/rolldownPlugins.mjs) emits one CSS file per entry.
+        // Chunks shared with the main entry inject its CSS.
         ignoreCSSEntries: ['dist/botframework-webchat-component.component.css'],
         stylesPlaceholder: componentStyleContentPlaceholder
       }),
