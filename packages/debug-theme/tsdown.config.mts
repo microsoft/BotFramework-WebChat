@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type Rolldown } from 'tsdown';
 
-import { createDualFormatConfigs, iifeOptions, type Config } from '../../tsdown.base.config.mts';
+import { applyConfig, iifeOptions, type Config } from '../../tsdown.base.config.mts';
 
 const EXTERNAL_UMD_PATH = join(fileURLToPath(import.meta.url), '../src/external.umd');
 
@@ -22,31 +22,18 @@ const umdResolvePlugin: Rolldown.Plugin = {
   }
 };
 
-const [esmConfig, cjsConfig] = createDualFormatConfigs(
-  { 'botframework-webchat-debug-theme': './src/index.ts' },
-  {
-    cjs: config => ({ define: { ...config.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"' } }),
-    esm: config => ({ define: { ...config.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"' } })
-  }
-);
-
+// Only the scripts are built: the test pages load them, nothing imports the package.
 function createIIFEConfig(name: 'development' | 'production.min'): Config {
-  return {
-    ...esmConfig,
-    ...iifeOptions(esmConfig),
-    define: { ...esmConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"' },
+  return applyConfig(config => ({
+    ...config,
+    ...iifeOptions(config),
+    define: { ...config.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"' },
     entry: { [`botframework-webchat-debug-theme.${name}`]: './src/bundle.ts' },
-    minify: name === 'production.min' || esmConfig.minify,
-    onSuccess: undefined,
-    plugins: [...esmConfig.plugins, umdResolvePlugin],
+    minify: name === 'production.min' || config.minify,
+    plugins: [...config.plugins, umdResolvePlugin],
     // Unlike the bundle, the theme scripts are not lowered to ES2019.
-    target: esmConfig.target
-  };
+    target: config.target
+  }));
 }
 
-export default defineConfig([
-  esmConfig,
-  cjsConfig,
-  createIIFEConfig('development'),
-  createIIFEConfig('production.min')
-]);
+export default defineConfig([createIIFEConfig('development'), createIIFEConfig('production.min')]);
