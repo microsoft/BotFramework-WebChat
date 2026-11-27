@@ -61,10 +61,10 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
         // We assume web developers will not set a timeout value longer than 5 minutes.
         //
         // The older one use a user-defined timeout, which could be a small number (say, 5s).
-        // At t=6s after a message is being sent, the message will be marked as "send failed" and the saga which "wait/listen to delivery status" will stop.
-        // Changing `styleOptions.sendTimeout` to 20s will not "revive" the message back to "sending" because the saga has already stopped.
+        // At t=6s after a message is being sent, the message will be marked as "send failed" and the machine which "wait/listen to delivery status" will stop.
+        // Changing `styleOptions.sendTimeout` to 20s will not "revive" the message back to "sending" because the machine has already stopped.
         // Thus, in our old code, we could not make the `state` field useful because it lacks "revivability". Thus, we simply ignored it.
-        // As the saga had already stopped, changing `styleOptions.sendTimeout` will not "revive" the message back to "sending."
+        // As the machine had already stopped, changing `styleOptions.sendTimeout` will not "revive" the message back to "sending."
         // Not able to "revive" the message equally means our React props cannot be changed on-the-fly.
         //
         // The downside of not using `state` field means, if the activity fail immediately or fatally (e.g. network error),
@@ -78,7 +78,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
         // activity is visually timed out or not. And UI should expect `styleOptions` could change at any time.
         //
         // The 5 minutes timeout is currently hardcoded and should be large enough to support user-defined timeouts.
-        // As Redux Saga use stack/heap to keep track of waits and this could be expensive, the 5 minutes timeout will GC the waits.
+        // As the machine keeps track of the waits in memory, which could be expensive, the 5 minutes timeout will GC the waits.
         // The hardcoded timeout value can be easily increased with the cost of memory.
         //
         // In the future:
